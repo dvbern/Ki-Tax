@@ -25,21 +25,29 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
-public enum MergeFieldVerrechnungKibon implements MergeFieldProvider {
+public enum MergeFieldLastenausgleichKibon implements MergeFieldProvider {
 
 	// This template exists only in german, since its use is intern
 
-	datumErstellt(new SimpleMergeField<>("datumErstellt", DATE_CONVERTER)),
-	betragProKind(new SimpleMergeField<>("betragProKind", BIGDECIMAL_CONVERTER)),
+	jahr(new SimpleMergeField<>("jahr", BIGDECIMAL_CONVERTER)),
 
-	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
-	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),
-	kinderTotal(new SimpleMergeField<>("kinderTotal", LONG_CONVERTER)),
-	kinderBereitsVerrechnet(new SimpleMergeField<>("kinderBereitsVerrechnet", LONG_CONVERTER)),
+	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
+	kindName(new SimpleMergeField<>("kindName", STRING_CONVERTER)),
+	kindVorname(new SimpleMergeField<>("kindVorname", STRING_CONVERTER)),
+	kindGeburtsdatum(new SimpleMergeField<>("kindGeburtsdatum", DATE_CONVERTER)),
+	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
+	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
+	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
+	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
+	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER)),
+	tarif(new SimpleMergeField<>("tarif", STRING_CONVERTER)),
+	zusatz(new SimpleMergeField<>("zusatz", BOOLEAN_X_CONVERTER)),
+	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 
@@ -47,7 +55,7 @@ public enum MergeFieldVerrechnungKibon implements MergeFieldProvider {
 	@Nonnull
 	private final MergeField<?> mergeField;
 
-	<V> MergeFieldVerrechnungKibon(@Nonnull MergeField<V> mergeField) {
+	<V> MergeFieldLastenausgleichKibon(@Nonnull MergeField<V> mergeField) {
 		this.mergeField = mergeField;
 	}
 

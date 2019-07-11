@@ -218,6 +218,17 @@ export class ReportAsyncRS {
             });
     }
 
+    public getLastenausgleichKibonReportExcel(year: string): IPromise<string> {
+        const reportParams = this.httpParamSerializer({
+            year,
+        });
+        return this.http
+            .get(`${this.serviceURL}/excel/lastenausgleich?${reportParams}`, {timeout: this.reportingTimeout})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }

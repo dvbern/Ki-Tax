@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSStatistikParameter extends TSAbstractMutableEntity {
+    private _jahr: string;
     private _gesuchsperiode: string;
     private _stichtag: moment.Moment;
     private _von: moment.Moment;
@@ -125,5 +126,13 @@ export default class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set betragProKind(value: number) {
         this._betragProKind = value;
+    }
+
+    public get jahr(): string {
+        return this._jahr;
+    }
+
+    public set jahr(value: string) {
+        this._jahr = value;
     }
 }

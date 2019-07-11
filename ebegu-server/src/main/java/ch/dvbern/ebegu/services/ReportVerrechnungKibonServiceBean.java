@@ -62,7 +62,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonDataRow;
-import ch.dvbern.ebegu.reporting.vrerechnungKibon.VerrechnungKibonExcelConverter;
+import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonExcelConverter;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
