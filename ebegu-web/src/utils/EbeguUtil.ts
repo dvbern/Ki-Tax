@@ -73,18 +73,6 @@ export default class EbeguUtil {
         return a && b ? a.id === b.id : a === b;
     }
 
-    public static isTagesschulangebotEnabled(): boolean {
-        return false;
-    }
-
-    public static getTitleVerantwortlicher(isSchulamt: boolean): string {
-        if (!EbeguUtil.isTagesschulangebotEnabled()) {
-            return 'VERANTWORTLICHER_OHNE_SCHULAMT';
-        }
-
-        return isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
-    }
-
     /**
      * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als
      * string zurueck

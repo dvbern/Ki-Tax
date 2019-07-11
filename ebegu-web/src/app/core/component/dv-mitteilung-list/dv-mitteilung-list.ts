@@ -445,7 +445,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public canUebergebenAnSchulamt(mitteilung: TSMitteilung): boolean {
-        if (EbeguUtil.isTagesschulangebotEnabled()) {
+        if (this.gesuchModelManager.isTagesschulangebotEnabled()) {
             return !this.isBetreuungsmitteilung(mitteilung) &&
                 this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.JUGENDAMT) && !mitteilung.isErledigt();
         }
@@ -453,7 +453,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public canUebergebenAnJugendamt(mitteilung: TSMitteilung): boolean {
-        if (EbeguUtil.isTagesschulangebotEnabled()) {
+        if (this.gesuchModelManager.isTagesschulangebotEnabled()) {
             return !this.isBetreuungsmitteilung(mitteilung) &&
                 this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.SCHULAMT) && !mitteilung.isErledigt();
         }

@@ -97,10 +97,10 @@
 
                         <div class="row" ng-show="!vm.gesuchsperiode.isEntwurf()">
                             <div class="col-md-6 form-group">
-                                <div class="row col-md-12" ng-show="!vm.gesuchsperiode.hasTagesschulenAnmeldung()">
+                                <div class="row col-md-12" ng-show="!vm.isTagesschulangebotEnabled()">
                                     <label data-translate="FREISCHALTUNG_TAGESSCHULE_NONE"/>
                                 </div>
-                                <div class="row" ng-show="vm.gesuchsperiode.hasTagesschulenAnmeldung()">
+                                <div class="row" ng-show="vm.isTagesschulangebotEnabled()">
                                     <div class="col-md-4">
                                         <label data-translate="FREISCHALTUNG_TAGESSCHULE"
                                                for="datumFreischaltungTagesschule_ID"/>
@@ -133,9 +133,9 @@
                                 </div>
                             </div>
                             <div class="col-md-6 form-group">
-                                <div class="row col-md-12" ng-show="!vm.gesuchsperiode.hasTagesschulenAnmeldung()">
+                                <div class="row col-md-12" ng-show="!vm.isTagesschulangebotEnabled()">
                                 </div>
-                                <div class="row" ng-show="vm.gesuchsperiode.hasTagesschulenAnmeldung()">
+                                <div class="row" ng-show="vm.isTagesschulangebotEnabled()">
                                     <div class="col-md-4">
                                         <label data-translate="ERSTER_SCHULTAG_TAGESSCHULE"
                                                for="datumErsterSchultag_ID"/>

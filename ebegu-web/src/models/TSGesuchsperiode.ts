@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import EbeguUtil from '../utils/EbeguUtil';
 import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
@@ -86,7 +87,7 @@ export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
     }
 
     public hasTagesschulenAnmeldung(): boolean {
-        return this._datumFreischaltungTagesschule !== null && this.datumFreischaltungTagesschule !== undefined;
+        return EbeguUtil.isNotNullOrUndefined(this.datumFreischaltungTagesschule);
     }
 
     public isEntwurf(): boolean {

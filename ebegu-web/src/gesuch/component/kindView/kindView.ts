@@ -18,7 +18,6 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
@@ -155,8 +154,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         maxValueEinstellungKey: TSEinstellungKey
     ): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
                 .forEach(value => { this.minValueAllowed = Number(value.value); });

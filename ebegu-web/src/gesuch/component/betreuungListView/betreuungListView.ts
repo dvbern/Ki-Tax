@@ -250,6 +250,10 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         // Anmeldung Schulamt: Solange das Gesuch noch "normal" editiert werden kann, soll der Weg ueber "Betreuung
         // hinzufuegen" verwendet werden Nachdem readonly: nur fuer Jugendamt, Schulamt und Gesuchsteller verfuegbar
         // sein. Nur fuer GP.hasTagesschulenAnmeldung().
+        if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
+            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
+            return false;
+        }
         const isStatus = isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)
             || this.gesuchModelManager.isGesuchReadonlyForRole()
             || this.gesuchModelManager.isKorrekturModusJugendamt()
@@ -258,9 +262,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         const isRole = this.authServiceRS.isOneOfRoles(allowedRoles);
         const isGesuchsperiode = this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung();
         const istNotStatusFreigabequittung = this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG;
-        const isSchulamtAngeboteEnabled = EbeguUtil.isTagesschulangebotEnabled();
-
-        return isSchulamtAngeboteEnabled && isStatus && isRole && isGesuchsperiode && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
+        return isStatus && isRole && isGesuchsperiode && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
     }
 
     /**

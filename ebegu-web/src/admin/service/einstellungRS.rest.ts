@@ -16,22 +16,29 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
+import {Observable, ReplaySubject} from 'rxjs';
+import GlobalCacheService from '../../gesuch/service/globalCacheService';
+import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import TSEinstellung from '../../models/TSEinstellung';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import ICacheObject = angular.ICacheObject;
 
 export class EinstellungRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
     public serviceURL: string;
+
+    private readonly tagesschuleEnabledSubject$ = new ReplaySubject<TSEinstellung | null>(1);
+    private readonly _tageschuleEnabledForMandant$: Observable<TSEinstellung | null>
+        = this.tagesschuleEnabledSubject$.asObservable();
 
     public constructor(
         public readonly http: IHttpService,
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly globalCacheService: GlobalCacheService,
     ) {
         this.serviceURL = `${REST_API}einstellung`;
     }
@@ -56,6 +63,14 @@ export class EinstellungRS {
             });
     }
 
+    public findEinstellungTagesschuleEnabledForMandant(): void {
+        this.http.get(`${this.serviceURL}/tagesschuleEnabledForMandant`)
+            .then((param: IHttpResponse<TSEinstellung>) => {
+                this.tagesschuleEnabledSubject$.next(
+                    this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), param.data));
+            });
+    }
+
     public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .then((response: any) => {
@@ -63,10 +78,17 @@ export class EinstellungRS {
             });
     }
 
-    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string, cache: ICacheObject): IPromise<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN);
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`, {cache})
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });
+    }
+
+    // Use the observable, when the state must be updated automatically, when the principal changes.
+    // e.g. printing the name of the current user
+    public tageschuleEnabledForMandant$(): Observable<TSEinstellung | null> {
+        return this._tageschuleEnabledForMandant$;
     }
 }

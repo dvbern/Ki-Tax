@@ -20,6 +20,7 @@ import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
 import {from as fromPromise, Observable, of, Subject} from 'rxjs';
 import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -27,7 +28,6 @@ import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
@@ -47,9 +47,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
-    private readonly unsubscribeTour$ = new Subject<void>();
 
-    public readonly showMenuAnmeldungen = EbeguUtil.isTagesschulangebotEnabled();
+    private _tageschuleEnabledForMandant: boolean;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -59,9 +58,13 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
-        private readonly kibonGuidedTourService: KiBonGuidedTourService
-    ) {
+        private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly einstellungRS: EinstellungRS,
 
+    ) {
+    }
+
+    public ngOnInit(): void {
         // navbar depends on the principal. trigger change detection when the principal changes
 
         this.authServiceRS.principal$
@@ -73,7 +76,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 err => LOG.error(err),
             );
         this.kibonGuidedTourService.guidedTour$
-            .pipe(takeUntil(this.unsubscribeTour$))
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 next => {
                     this.tourStart(next);
@@ -81,6 +84,18 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
+
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public createNewFall(): void {
@@ -104,13 +119,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 ,
                 err => LOG.error(err),
             );
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
-        this.unsubscribeTour$.next();
-        this.unsubscribeTour$.complete();
     }
 
     public ngAfterViewInit(): void {
@@ -178,4 +186,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
     }
 
+    public isTagesschulangebotEnabled(): boolean {
+        return this._tageschuleEnabledForMandant;
+    }
 }

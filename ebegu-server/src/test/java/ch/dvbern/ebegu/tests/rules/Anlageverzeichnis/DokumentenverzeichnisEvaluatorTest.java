@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -164,6 +165,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	private void createFamilienSituation(Gesuch gesuch, boolean gemeinsam, boolean sozialhilfe) {
 		final FamiliensituationContainer famSitContainer = TestDataUtil.createDefaultFamiliensituationContainer();
 		Familiensituation famSit = famSitContainer.extractFamiliensituation();
+		Objects.requireNonNull(famSit).setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		Assert.assertNotNull(famSit);
 		famSit.setGemeinsameSteuererklaerung(gemeinsam);
 		famSit.setSozialhilfeBezueger(sozialhilfe);
@@ -519,6 +521,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2016, 8, 1), Constants.GESUCHSPERIODE_17_18_AB));
 
 		testgesuch.setGesuchsperiode(gesuchsperiode);
+		createFamilienSituation(testgesuch, true, false);
 
 		Assert.assertNotNull(testgesuch.getGesuchsteller1());
 		Assert.assertNotNull(testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
