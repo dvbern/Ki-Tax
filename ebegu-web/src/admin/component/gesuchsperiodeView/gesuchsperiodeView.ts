@@ -111,11 +111,13 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.updateExistErlaeuterung(this.gesuchsperiode);
         });
 
-        this.einstellungenRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribe$))
+        this.einstellungenRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
-                err => LOG.error(err));
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {

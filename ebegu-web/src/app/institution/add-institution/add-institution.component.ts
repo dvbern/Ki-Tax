@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
     templateUrl: './add-institution.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddInstitutionComponent implements OnInit {
+export class AddInstitutionComponent implements OnInit, OnDestroy {
 
     @ViewChild(NgForm) public form: NgForm;
 
@@ -52,7 +52,7 @@ export class AddInstitutionComponent implements OnInit {
     public adminMail: string;
 
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $state: StateService,
@@ -74,7 +74,8 @@ export class AddInstitutionComponent implements OnInit {
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStart = futureMonthBegin;
         this.beguStartDatumMin = futureMonthBegin;
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
@@ -83,8 +84,8 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public ngOnDestroy(): void {
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public cancel(): void {

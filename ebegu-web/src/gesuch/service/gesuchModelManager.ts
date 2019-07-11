@@ -119,7 +119,7 @@ export default class GesuchModelManager {
     public emptyKinderList: Array<TSKindContainer> = [];
 
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -157,7 +157,8 @@ export default class GesuchModelManager {
                 },
                 err => this.log.error(err),
             );
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
@@ -165,8 +166,8 @@ export default class GesuchModelManager {
     }
 
     public $onDestroy(): void {
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     /**

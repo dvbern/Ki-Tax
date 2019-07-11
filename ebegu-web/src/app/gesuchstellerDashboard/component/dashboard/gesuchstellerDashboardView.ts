@@ -74,7 +74,7 @@ export class GesuchstellerDashboardViewController implements IController {
     public mapOfNewestAntraege: { [key: string]: string } = {};
 
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $state: StateService,
@@ -101,7 +101,8 @@ export class GesuchstellerDashboardViewController implements IController {
 
         this.initViewModel();
 
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
@@ -109,8 +110,8 @@ export class GesuchstellerDashboardViewController implements IController {
     }
 
     public $onDestroy(): void {
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {

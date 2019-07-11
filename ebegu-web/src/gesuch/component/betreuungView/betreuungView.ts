@@ -132,7 +132,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public provPensum: number;
 
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $state: StateService,
@@ -239,16 +239,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 });
         });
 
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
-                err => LOG.error(err));
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     /**

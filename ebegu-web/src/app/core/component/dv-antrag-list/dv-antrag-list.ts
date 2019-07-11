@@ -105,10 +105,8 @@ export class DVAntragListController implements IController {
     public onAdd: () => void;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    private readonly unsubscribeGemeinden$ = new Subject<void>();
-
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -136,18 +134,18 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
-                err => LOG.error(err));
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {
-        this.unsubscribeGemeinden$.next();
-        this.unsubscribeGemeinden$.complete();
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public updateInstitutionenList(): void {
@@ -167,7 +165,7 @@ export class DVAntragListController implements IController {
 
     private updateGemeindenList(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
-            .pipe(takeUntil(this.unsubscribeGemeinden$))
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },

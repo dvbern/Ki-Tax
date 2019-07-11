@@ -47,10 +47,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
-    private readonly unsubscribeTour$ = new Subject<void>();
 
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -78,7 +76,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 err => LOG.error(err),
             );
         this.kibonGuidedTourService.guidedTour$
-            .pipe(takeUntil(this.unsubscribeTour$))
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 next => {
                     this.tourStart(next);
@@ -87,7 +85,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 err => LOG.error(err),
             );
 
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
@@ -97,10 +96,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
-        this.unsubscribeTour$.next();
-        this.unsubscribeTour$.complete();
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
     }
 
     public createNewFall(): void {

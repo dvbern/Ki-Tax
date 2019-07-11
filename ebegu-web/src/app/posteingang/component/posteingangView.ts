@@ -60,7 +60,6 @@ export class PosteingangViewController implements IController {
     public gemeindenList: Array<TSGemeinde> = [];
 
     private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribeTsEnabled$ = new Subject<void>();
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
@@ -73,18 +72,18 @@ export class PosteingangViewController implements IController {
 
     public $onInit(): void {
         this.updateGemeindenList();
-        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(tsEnabledForMandantEinstellung => {
                     this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
-                err => LOG.error(err));
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
-        this.unsubscribeTsEnabled$.next();
-        this.unsubscribeTsEnabled$.complete();
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
