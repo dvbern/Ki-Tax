@@ -159,7 +159,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		Familiensituation familiensituationErstgesuch
 	) {
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return (!EbeguUtil.isKorrekturmodusGemeinde(gesuch) || (EbeguUtil.isKorrekturmodusGemeinde(gesuch) && gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getGesuchstellerGS() == null))
+		return (!EbeguUtil.isKorrekturmodusGemeinde(gesuch) || (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getGesuchstellerGS() == null))
 			&& ((!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
 			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch)));
