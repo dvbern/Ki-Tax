@@ -31,7 +31,8 @@ export class EinstellungRS {
     public serviceURL: string;
 
     private readonly tagesschuleEnabledSubject$ = new ReplaySubject<TSEinstellung | null>(1);
-    private _tageschuleEnabledForMandant$: Observable<TSEinstellung | null> = this.tagesschuleEnabledSubject$.asObservable();
+    private readonly _tageschuleEnabledForMandant$: Observable<TSEinstellung | null>
+        = this.tagesschuleEnabledSubject$.asObservable();
 
     public constructor(
         public readonly http: IHttpService,
@@ -65,7 +66,8 @@ export class EinstellungRS {
     public findEinstellungTagesschuleEnabledForMandant(): void {
         this.http.get(`${this.serviceURL}/tagesschuleEnabledForMandant`)
             .then((param: IHttpResponse<TSEinstellung>) => {
-                this.tagesschuleEnabledSubject$.next(this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), param.data));
+                this.tagesschuleEnabledSubject$.next(
+                    this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), param.data));
             });
     }
 
