@@ -14,7 +14,9 @@
  */
 
 import {IComponentOptions, ILogService, IOnInit, IPromise, IWindowService} from 'angular';
-import {take} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {take, takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSBenutzerStatus} from '../../../../models/enums/TSBenutzerStatus';
@@ -55,6 +57,7 @@ export class DVBenutzerListController implements IOnInit {
         'AuthServiceRS',
         '$window',
         'GemeindeRS',
+        'EinstellungRS',
     ];
 
     public totalResultCount: number;
@@ -78,10 +81,13 @@ export class DVBenutzerListController implements IOnInit {
     public tableId: string;
     public tableTitle: string;
 
+    private isTagesschuleEnabled: boolean = false;
+
     public onFilterChange: (changedTableState: any) => IPromise<any>;
     public onEdit: (user: any) => void;
     public readonly TSRoleUtil = TSRoleUtil;
     public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $log: ILogService,
@@ -90,14 +96,28 @@ export class DVBenutzerListController implements IOnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
+        public readonly einstellungRS: EinstellungRS,
     ) {
     }
 
     public $onInit(): void {
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                einstellung => {
+                    this.isTagesschuleEnabled = einstellung.getValueAsBoolean();
+                },
+                err => this.$log.error(err)
+            );
         // statt diese Listen zu laden koenne man sie auch von aussen setzen
         this.updateInstitutionenList();
         this.updateTraegerschaftenList();
         this.updateGemeindeList();
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private updateInstitutionenList(): void {
@@ -151,7 +171,7 @@ export class DVBenutzerListController implements IOnInit {
     };
 
     public getRollen(): ReadonlyArray<TSRole> {
-        return this.authServiceRS.getVisibleRolesForPrincipal();
+        return this.authServiceRS.getVisibleRolesForPrincipal(this.isTagesschuleEnabled);
     }
 
     /**
