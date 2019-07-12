@@ -273,6 +273,9 @@ export default class AuthServiceRS {
                     : PERMISSIONS[Permission.ROLE_BG];
 
             case TSRole.ADMIN_TS:
+                return isTagesschuleEnabled
+                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
+                    : PERMISSIONS[Permission.ROLE_TS];
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
