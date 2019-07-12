@@ -252,7 +252,7 @@ export default class AuthServiceRS {
         return false;
     }
 
-    public getVisibleRolesForPrincipal(): ReadonlyArray<TSRole> {
+    public getVisibleRolesForPrincipal(isTagesschuleEnabled: boolean): ReadonlyArray<TSRole> {
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:
                 return TSRoleUtil.getAllRolesButAnonymous();
@@ -268,9 +268,14 @@ export default class AuthServiceRS {
                 return PERMISSIONS[Permission.ROLE_MANDANT];
 
             case TSRole.ADMIN_BG:
-                return PERMISSIONS[Permission.ROLE_BG];
+                return isTagesschuleEnabled
+                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
+                    : PERMISSIONS[Permission.ROLE_BG];
 
             case TSRole.ADMIN_TS:
+                return isTagesschuleEnabled
+                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
+                    : PERMISSIONS[Permission.ROLE_TS];
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
