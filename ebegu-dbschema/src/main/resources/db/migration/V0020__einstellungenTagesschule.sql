@@ -11,7 +11,7 @@ INSERT INTO einstellung (
 	gesuchsperiode_id,
 	mandant_id)
 SELECT * FROM (SELECT
-				   UNHEX(REPLACE(UUID(), '-', '')) as id,
+				   UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci , '-', '')) as id,
 				   '2019-06-28 00:00:00' as timestamp_erstellt,
 				   '2019-06-28 00:00:00' as timestamp_mutiert,
 				   'flyway' as user_erstellt,
