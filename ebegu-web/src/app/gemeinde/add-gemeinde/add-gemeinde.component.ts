@@ -20,8 +20,9 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {from, Observable, Subject} from 'rxjs';
+import {map, takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
@@ -29,7 +30,10 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+
+const LOG = LogFactory.createLog('AddGemeindeComponent');
 
 @Component({
     selector: 'dv-add-gemeinde',
@@ -49,6 +53,13 @@ export class AddGemeindeComponent implements OnInit {
     public unregisteredGemeinden$: Observable<TSBfsGemeinde[]>;
     public selectedUnregisteredGemeinde: TSBfsGemeinde;
 
+    public gemeindeHasBetreuungsgutscheine: boolean;
+    public gemeindeHasTagesschule: boolean;
+    public gemeindeHasFerieninsel: boolean;
+
+    public tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribe$ = new Subject<void>();
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
@@ -56,6 +67,7 @@ export class AddGemeindeComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -82,6 +94,20 @@ export class AddGemeindeComponent implements OnInit {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this.gesuchsperiodeList = response;
         });
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this.tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
+        if (!this.tageschuleEnabledForMandant) {
+            this.gemeindeHasBetreuungsgutscheine = true;
+        }
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public cancel(): void {
@@ -94,7 +120,7 @@ export class AddGemeindeComponent implements OnInit {
         }
 
         this.errorService.clearAll();
-        if (this.isStartDateValid()) {
+        if (this.isAtLeastOneAngebotSelected() && this.isStartDateValid()) {
             this.persistGemeinde();
         }
     }
@@ -109,7 +135,14 @@ export class AddGemeindeComponent implements OnInit {
         }
     }
 
+    private isAtLeastOneAngebotSelected(): boolean {
+        return this.gemeindeHasBetreuungsgutscheine || this.gemeindeHasTagesschule || this.gemeindeHasFerieninsel;
+    }
+
     private isStartDateValid(): boolean {
+        if (!this.gemeindeHasBetreuungsgutscheine) {
+            return true;
+        }
         const day = this.gemeinde.betreuungsgutscheineStartdatum.format('D');
         if ('1' !== day) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
@@ -123,7 +156,14 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.gemeinde.betreuungsgutscheineStartdatum, this.adminMail)
+        this.gemeindeRS.createGemeinde(
+            this.gemeinde,
+            this.gemeinde.betreuungsgutscheineStartdatum,
+            this.adminMail,
+            this.gemeindeHasBetreuungsgutscheine,
+            this.gemeindeHasTagesschule,
+            this.gemeindeHasFerieninsel
+        )
             .then(neueGemeinde => {
                 this.gemeinde = neueGemeinde;
                 this.navigateBack();

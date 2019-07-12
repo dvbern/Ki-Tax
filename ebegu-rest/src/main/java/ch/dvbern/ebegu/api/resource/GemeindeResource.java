@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -113,13 +114,23 @@ public class GemeindeResource {
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
-		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguBietenAb,
+		@Nullable @Valid @QueryParam("date") String stringDateBeguBietenAb,
+		@Nonnull @NotNull @Valid @QueryParam("hasBG") String stringHasBetreuungsgutscheine,
+		@Nonnull @NotNull @Valid @QueryParam("hasTS") String stringHasTagesschule,
+		@Nonnull @NotNull @Valid @QueryParam("hasFI") String stringHasFerieninsel,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
 		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
+
+		//TODO (hefr) die flags als einstellungen speichern!
+		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllGesuchsperioden();
+		for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
+			Einstellung hasBG = new Einstellung(EinstellungKey.BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE, stringHasBetreuungsgutscheine, gesuchsperiode,
+				persistedGemeinde.getMandant(), persistedGemeinde);
+		}
 
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde));

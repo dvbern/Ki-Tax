@@ -70,21 +70,39 @@
                 <!-- Betreuungsgutscheine anbieten ab | Administrator - E-Mail Adresse -->
                 <div class="row">
                     <div class="col-sm-6">
+
                         <div class="form-group">
-                            <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
-                            <input class="dv-mat-datepicker" type="text"
-                                   name="begu_start" id="begu_start_ID"
-                                   [(ngModel)]="gemeinde.betreuungsgutscheineStartdatum"
-                                   [min]="beguStartDatumMin"
-                                   [matDatepicker]="begu_start"
-                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                                   required>
-                            <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
-                            <mat-datepicker #begu_start></mat-datepicker>
-                            <dv-error-messages inputid="begu_start_ID"
-                                               [errorObject]="form.controls.begu_start?.errors">
-                            </dv-error-messages>
+                            <label class="md-no-float" translate for="begu_start_ID"  *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
+
+                            <mat-checkbox id="angebotBG" name="angebotBG"
+                                          [(ngModel)]="gemeindeHasBetreuungsgutscheine" *ngIf="tageschuleEnabledForMandant">
+                                {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
+
+                            <div class="form-group" *ngIf="gemeindeHasBetreuungsgutscheine">
+                                <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                                <input class="dv-mat-datepicker" type="text"
+                                       name="begu_start" id="begu_start_ID"
+                                       [(ngModel)]="gemeinde.betreuungsgutscheineStartdatum"
+                                       [min]="beguStartDatumMin"
+                                       [matDatepicker]="begu_start"
+                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                       required>
+                                <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                                <mat-datepicker #begu_start></mat-datepicker>
+                                <dv-error-messages inputid="begu_start_ID"
+                                                   [errorObject]="form.controls.begu_start?.errors">
+                                </dv-error-messages>
+                            </div>
+
+                            <mat-checkbox id="angebotTS" name="angebotTS"
+                                          [(ngModel)]="gemeindeHasTagesschule" *ngIf="tageschuleEnabledForMandant">
+                                {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
+
+                            <mat-checkbox id="angebotFI" name="angebotFI"
+                                          [(ngModel)]="gemeindeHasFerieninsel" *ngIf="tageschuleEnabledForMandant">
+                                {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
                         </div>
+
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
