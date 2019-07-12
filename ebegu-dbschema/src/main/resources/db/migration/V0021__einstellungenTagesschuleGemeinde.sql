@@ -67,7 +67,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))            
 			 'flyway'                                    as user_mutiert,
 			 0                                           as version,
 			 'BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE' as einstellung_key,
-			 'false'                                     as value,
+			 'true'                                      as value,
 			 NULL                                        as gemeinde_id,
 			 gp.id                                       as gesuchsperiode_id,
 			 NULL                                        as mandant_id
