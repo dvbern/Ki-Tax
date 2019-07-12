@@ -101,6 +101,10 @@
                             <mat-checkbox id="angebotFI" name="angebotFI"
                                           [(ngModel)]="gemeindeHasFerieninsel" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
+
+                            <div class="dv-error-messages" *ngIf="showMessageKeinAngebotSelected">
+                                <span>{{'GEMEINDE_ANGEBOT_EMPTY_SELECTION' | translate}}</span>
+                            </div>
                         </div>
 
                     </div>

@@ -1404,6 +1404,7 @@
     "GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE": "",
     "GEMEINDE_ANGEBOT_TAGESSCHULE": "",
     "GEMEINDE_ANGEBOT_FERIENINSEL": "",
+    "GEMEINDE_ANGEBOT_EMPTY_SELECTION": "",
     "INSTITUTION_BEGU_START": "Accepter les bons de garde à partir de",
     "INSTITUTION_BEGU_START_END": "Accepter les bons de garde à partir de / jusqu'à",
     "INSTITUTION_BEGU_AKZEPTIEREN": "Accepter les bons de garde ",

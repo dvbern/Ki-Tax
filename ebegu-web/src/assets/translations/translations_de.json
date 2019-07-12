@@ -1404,6 +1404,7 @@
     "GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE": "Betreuungsgutscheine",
     "GEMEINDE_ANGEBOT_TAGESSCHULE": "Tagesschule",
     "GEMEINDE_ANGEBOT_FERIENINSEL": "Ferieninsel",
+    "GEMEINDE_ANGEBOT_EMPTY_SELECTION": "Bitte wählen Sie mindestens ein Angebot aus",
     "INSTITUTION_BEGU_START": "Betreuungsgutscheine akzeptieren ab",
     "INSTITUTION_BEGU_START_END": "Betreuungsgutscheine akzeptieren ab / bis",
     "INSTITUTION_BEGU_AKZEPTIEREN": "Betreuungsgutscheine akzeptieren",

@@ -60,6 +60,8 @@ export class AddGemeindeComponent implements OnInit {
     public tageschuleEnabledForMandant: boolean;
     private readonly unsubscribe$ = new Subject<void>();
 
+    public showMessageKeinAngebotSelected: boolean = false;
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
@@ -136,7 +138,9 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private isAtLeastOneAngebotSelected(): boolean {
-        return this.gemeindeHasBetreuungsgutscheine || this.gemeindeHasTagesschule || this.gemeindeHasFerieninsel;
+        this.showMessageKeinAngebotSelected =
+            !(this.gemeindeHasBetreuungsgutscheine || this.gemeindeHasTagesschule || this.gemeindeHasFerieninsel);
+        return this.showMessageKeinAngebotSelected;
     }
 
     private isStartDateValid(): boolean {
