@@ -1,5 +1,3 @@
-# TODO (hefr) achtung bestehende gemeinden!!!
-
 INSERT INTO einstellung (id,
 						 timestamp_erstellt,
 						 timestamp_mutiert,
@@ -12,7 +10,7 @@ INSERT INTO einstellung (id,
 						 gesuchsperiode_id,
 						 mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 '2019-06-28 00:00:00'              as timestamp_erstellt,
 			 '2019-06-28 00:00:00'              as timestamp_mutiert,
 			 'flyway'                           as user_erstellt,
@@ -37,7 +35,7 @@ INSERT INTO einstellung (id,
 						 gesuchsperiode_id,
 						 mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 '2019-06-28 00:00:00'              as timestamp_erstellt,
 			 '2019-06-28 00:00:00'              as timestamp_mutiert,
 			 'flyway'                           as user_erstellt,
@@ -62,7 +60,7 @@ INSERT INTO einstellung (id,
 						 gesuchsperiode_id,
 						 mandant_id)
 SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))             as id,
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))             as id,
 			 '2019-06-28 00:00:00'                       as timestamp_erstellt,
 			 '2019-06-28 00:00:00'                       as timestamp_mutiert,
 			 'flyway'                                    as user_erstellt,

@@ -192,7 +192,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createAdminGemeindeByEmail() {
 		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
 		final String adminMail = "gemeinde@example.com";
-		final Benutzer adminGemeinde = benutzerService.createAdminGemeindeByEmail(adminMail, gemeinde);
+		final Benutzer adminGemeinde = benutzerService.createAdminGemeindeByEmail(adminMail, UserRole.ADMIN_BG, gemeinde);
 
 		assertCommonBenutzerFields(adminMail, adminGemeinde);
 

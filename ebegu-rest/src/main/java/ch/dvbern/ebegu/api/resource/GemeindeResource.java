@@ -115,9 +115,9 @@ public class GemeindeResource {
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
 		@Nullable @Valid @QueryParam("date") String stringDateBeguBietenAb,
-		@Nonnull @NotNull @Valid @QueryParam("hasBG") String stringHasBetreuungsgutscheine,
-		@Nonnull @NotNull @Valid @QueryParam("hasTS") String stringHasTagesschule,
-		@Nonnull @NotNull @Valid @QueryParam("hasFI") String stringHasFerieninsel,
+		@Nonnull @NotNull @Valid @QueryParam("hasBG") String hasBetreuungsgutscheine,
+		@Nonnull @NotNull @Valid @QueryParam("hasTS") String hasTagesschule,
+		@Nonnull @NotNull @Valid @QueryParam("hasFI") String hasFerieninsel,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -125,21 +125,52 @@ public class GemeindeResource {
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
 
-		//TODO (hefr) die flags als einstellungen speichern!
-		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllGesuchsperioden();
-		for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
-			Einstellung hasBG = new Einstellung(EinstellungKey.BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE, stringHasBetreuungsgutscheine, gesuchsperiode,
-				persistedGemeinde.getMandant(), persistedGemeinde);
-		}
+		// Die Flags als Einstellungen für jede vorhandene Gesuchsperiode speichern
+		saveEinstellungenForGemeinde(persistedGemeinde, hasBetreuungsgutscheine, hasTagesschule, hasFerieninsel);
 
+		// Aufgrund der Flags entscheiden, in welcher Rolle der Admin eingeladen werden soll
+		UserRole roleOfAdmin = getUserRoleForGemeindeAdmin(hasBetreuungsgutscheine, hasTagesschule, hasFerieninsel);
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
-			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde));
+			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, roleOfAdmin, persistedGemeinde));
 
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 
 		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde));
 
 		return converter.gemeindeToJAX(persistedGemeinde);
+	}
+
+	private UserRole getUserRoleForGemeindeAdmin(
+		@Nonnull String hasBetreuungsgutscheine, @Nonnull String hasTagesschule, @Nonnull String hasFerieninsel
+	) {
+		boolean hasBG = Boolean.valueOf(hasBetreuungsgutscheine);
+		boolean hasTS = Boolean.valueOf(hasTagesschule) || Boolean.valueOf(hasFerieninsel);
+		UserRole roleOfAdmin = UserRole.ADMIN_GEMEINDE;
+		if (!hasBG) {
+			roleOfAdmin = UserRole.ADMIN_TS;
+		} else if (!hasTS) {
+			roleOfAdmin = UserRole.ADMIN_BG;
+		}
+		return roleOfAdmin;
+	}
+
+	private void saveEinstellungenForGemeinde(
+		@Nonnull Gemeinde persistedGemeinde, @Nonnull String hasBetreuungsgutscheine, @Nonnull String hasTagesschule, @Nonnull String hasFerieninsel
+	) {
+		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllGesuchsperioden();
+		for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
+			Einstellung hasBG = new Einstellung(EinstellungKey.BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE, hasBetreuungsgutscheine, gesuchsperiode,
+				persistedGemeinde.getMandant(), persistedGemeinde);
+			einstellungService.saveEinstellung(hasBG);
+
+			Einstellung hasTS = new Einstellung(EinstellungKey.TAGESSCHULE_ENABLED_FOR_GEMEINDE, hasTagesschule, gesuchsperiode,
+				persistedGemeinde.getMandant(), persistedGemeinde);
+			einstellungService.saveEinstellung(hasTS);
+
+			Einstellung hasFI = new Einstellung(EinstellungKey.FERIENINSEL_ENABLED_FOR_GEMEINDE, hasFerieninsel, gesuchsperiode,
+				persistedGemeinde.getMandant(), persistedGemeinde);
+			einstellungService.saveEinstellung(hasFI);
+		}
 	}
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxGemeinde.class)
