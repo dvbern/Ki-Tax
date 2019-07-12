@@ -53,9 +53,9 @@ export class AddGemeindeComponent implements OnInit {
     public unregisteredGemeinden$: Observable<TSBfsGemeinde[]>;
     public selectedUnregisteredGemeinde: TSBfsGemeinde;
 
-    public gemeindeHasBetreuungsgutscheine: boolean;
-    public gemeindeHasTagesschule: boolean;
-    public gemeindeHasFerieninsel: boolean;
+    public gemeindeHasBetreuungsgutscheine: boolean = false;
+    public gemeindeHasTagesschule: boolean = false;
+    public gemeindeHasFerieninsel: boolean = false;
 
     public tageschuleEnabledForMandant: boolean;
     private readonly unsubscribe$ = new Subject<void>();
@@ -138,9 +138,10 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private isAtLeastOneAngebotSelected(): boolean {
-        this.showMessageKeinAngebotSelected =
-            !(this.gemeindeHasBetreuungsgutscheine || this.gemeindeHasTagesschule || this.gemeindeHasFerieninsel);
-        return this.showMessageKeinAngebotSelected;
+        const hasAngebot =
+            this.gemeindeHasBetreuungsgutscheine || this.gemeindeHasTagesschule || this.gemeindeHasFerieninsel;
+        this.showMessageKeinAngebotSelected = !hasAngebot;
+        return hasAngebot;
     }
 
     private isStartDateValid(): boolean {
