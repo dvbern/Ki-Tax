@@ -484,7 +484,7 @@
     "INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN": "Ecole enfantine",
     "INSTITUTION_ALTERSKATEGORIE_SCHULE": "Ecole",
     "INSTITUTION_PLAETZE": "Places",
-    "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "Propose des places subventionnées",
+    "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "Propose des places subventionnées (Garderies de la ville de Berne : sont autorisées à facturer les bons de garde municipaux)",
     "INSTITUTION_ANZAHL_PLAETZE": "Nombre de places",
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN": "Dont places réservées pour les entreprises",
     "INSTITUTION_ANZAHL_PLAETZE_PARAM": "Nombre de places : {{anzahlPlaetze}}",
