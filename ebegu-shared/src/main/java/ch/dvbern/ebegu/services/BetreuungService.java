@@ -143,7 +143,7 @@ public interface BetreuungService {
 	Optional<Betreuung> findBetreuungWithBetreuungsPensen(@Nonnull String key);
 
 	/**
-	 * entfernt eine Betreuung aus der Databse
+	 * entfernt eine Betreuung aus der Database
 	 *
 	 * @param betreuungId Id der Betreuung zu entfernen
 	 */

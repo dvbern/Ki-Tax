@@ -21,11 +21,13 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,6 +60,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
@@ -134,6 +137,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Dokument;
@@ -192,10 +196,12 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -223,6 +229,7 @@ import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -1208,7 +1215,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
 
-		Collection<Institution> institutionen = institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
+		Collection<Institution> institutionen =
+			institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
 		// its enough if we just pass the names here, we only want to display it later
 		jaxTraegerschaft.setInstitutionNames(institutionen.stream()
 			.map(Institution::getName)
@@ -2523,6 +2531,36 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
 
 		return jaxBetreuung;
+	}
+
+	private Set<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(Set<BetreuungspensumAbweichung> abweichungenFromServer) {
+
+		Set<BetreuungspensumAbweichung> storedAbweichungen = betreuungFromServer.getBetreuungspensumAbweichungen();
+		Gesuchsperiode gp = betreuungFromServer.extractGesuchsperiode();
+		LocalDate from = gp.getGueltigkeit().getGueltigAb(); // TODO use first Betreuungspensum from date
+		LocalDate to = gp.getGueltigkeit().getGueltigBis(); // TODO use last Betreuungspensum to date
+
+		Map<LocalDate, BetreuungspensumAbweichung> abweichungen = new HashMap<>();
+
+		while (from.isBefore(to)) {
+			//			if (storedAbweichungen.forEach(x ->))
+			BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
+			abweichung.setBetreuung(betreuung);
+			abweichung.setOriginalPensumMerged(null); // TODO
+			abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
+			YearMonth month = YearMonth.from(from);
+			DateRange gueltigkeit = new DateRange(month.atDay(1), month.atEndOfMonth());
+			abweichung.setGueltigkeit(gueltigkeit);
+
+			abweichung.setUnitForDisplay(PensumUnits.DAYS);
+			if (betreuungFromServer.isAngebotTagesfamilien()) {
+				abweichung.setUnitForDisplay(PensumUnits.HOURS);
+			}
+
+			abweichungen.put(from, new BetreuungspensumAbweichung());
+			from = from.plusMonths(1);
+		}
+
 	}
 
 	@Nullable

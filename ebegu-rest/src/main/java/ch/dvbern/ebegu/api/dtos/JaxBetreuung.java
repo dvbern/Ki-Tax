@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.util.Constants;
@@ -112,6 +113,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	@Nullable
 	private AnmeldungMutationZustand anmeldungMutationZustand;
+
+	@NotNull
+	private List<BetreuungspensumAbweichung> betreuungspensumAbweichungen = new ArrayList<>();
 
 	private boolean keineDetailinformationen = false;
 
@@ -332,5 +336,13 @@ public class JaxBetreuung extends JaxAbstractDTO {
 			return getBetreuungNummer().compareTo(other.getBetreuungNummer());
 		}
 		return super.compareTo(o);
+	}
+
+	public List<BetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
+		return betreuungspensumAbweichungen;
+	}
+
+	public void setBetreuungspensumAbweichungen(List<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 }

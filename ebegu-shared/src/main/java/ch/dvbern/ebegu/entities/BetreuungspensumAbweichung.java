@@ -33,6 +33,8 @@ import org.hibernate.envers.Audited;
 @Entity
 public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 
+	private static final long serialVersionUID = -8308660793880620086L;
+
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private BetreuungspensumAbweichungStatus status = BetreuungspensumAbweichungStatus.NONE;
@@ -61,5 +63,13 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 
 	public void setOriginalPensumMerged(Betreuungspensum originalPensumMerged) {
 		this.originalPensumMerged = originalPensumMerged;
+	}
+
+	public Betreuung getBetreuung() {
+		return betreuung;
+	}
+
+	public void setBetreuung(Betreuung betreuung) {
+		this.betreuung = betreuung;
 	}
 }

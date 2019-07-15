@@ -46,4 +46,44 @@
         </div>
     </div>
 
+
+    <div class="row marginTop40">
+        <div class="col-md-12 table-responsive">
+
+            <table st-table="displayedCollection" st-safe-src="kind.betreuungen"
+                   class="table table-hover">
+                <thead>
+                <tr>
+                    <th data-translate="MONAT"></th>
+                    <th data-translate="TAGE"></th>
+                    <th data-translate="STUNDEN"></th>
+                    <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
+                    <th data-translate="STATUS"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="betreuung in displayedCollection" st-select-row="betreuung"
+                    st-select-mode="single"
+                    ng-click="vm.editBetreuung(kind, betreuung)" role="row" tabindex="-1">
+                    <td ng-bind="vm.getBetreuungsangebotTyp(betreuung) | translate"
+                        class="betreuung-table-header"></td>
+                    <td class="betreuung-status ng-class:betreuung.betreuungsstatus;">
+                        <div ng-bind="betreuung.betreuungsstatus | translate"></div>
+                        <span class="betreuung-bar"></span>
+                    </td>
+                    <td ng-bind="vm.getBetreuungDetails(betreuung) | translate"
+                        class="betreuung-table-header">
+                    </td>
+                    <td ng-bind="betreuung.bgNummer"></td>
+                    <td ng-if="vm.showMitteilung()" width="5%">
+                        <dv-loading-button type="button" button-click="vm.gotoMitteilung(betreuung)"
+                                           button-class="dv-btn-operation centered-btn">
+                            <i class="fa fa-lg fa-envelope-o"></i>
+                        </dv-loading-button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
