@@ -51,8 +51,6 @@ import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -72,8 +70,6 @@ import static java.util.Objects.requireNonNull;
 @Local(GemeindeService.class)
 @PermitAll
 public class GemeindeServiceBean extends AbstractBaseService implements GemeindeService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(GemeindeServiceBean.class);
 
 	@Inject
 	private Persistence persistence;
