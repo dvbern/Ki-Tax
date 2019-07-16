@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -40,7 +40,7 @@ const LOG = LogFactory.createLog('AddGemeindeComponent');
     templateUrl: './add-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddGemeindeComponent implements OnInit {
+export class AddGemeindeComponent implements OnInit, OnDestroy {
 
     @ViewChild(NgForm) public form: NgForm;
 
@@ -163,7 +163,6 @@ export class AddGemeindeComponent implements OnInit {
     private persistGemeinde(): void {
         this.gemeindeRS.createGemeinde(
             this.gemeinde,
-            this.gemeinde.betreuungsgutscheineStartdatum,
             this.adminMail,
             this.gemeindeHasBetreuungsgutscheine,
             this.gemeindeHasTagesschule,

@@ -114,7 +114,6 @@ public class GemeindeResource {
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
-		@Nullable @Valid @QueryParam("date") String stringDateBeguBietenAb,
 		@Nonnull @NotNull @Valid @QueryParam("hasBG") String hasBetreuungsgutscheine,
 		@Nonnull @NotNull @Valid @QueryParam("hasTS") String hasTagesschule,
 		@Nonnull @NotNull @Valid @QueryParam("hasFI") String hasFerieninsel,
@@ -145,13 +144,13 @@ public class GemeindeResource {
 	) {
 		boolean hasBG = Boolean.valueOf(hasBetreuungsgutscheine);
 		boolean hasTS = Boolean.valueOf(hasTagesschule) || Boolean.valueOf(hasFerieninsel);
-		UserRole roleOfAdmin = UserRole.ADMIN_GEMEINDE;
 		if (!hasBG) {
-			roleOfAdmin = UserRole.ADMIN_TS;
-		} else if (!hasTS) {
-			roleOfAdmin = UserRole.ADMIN_BG;
+			return UserRole.ADMIN_TS;
 		}
-		return roleOfAdmin;
+		if (!hasTS) {
+			return UserRole.ADMIN_BG;
+		}
+		return UserRole.ADMIN_GEMEINDE;
 	}
 
 	private void saveEinstellungenForGemeinde(

@@ -16,7 +16,6 @@
  */
 
 import {IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
-import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
@@ -27,7 +26,6 @@ import TSBenutzer from '../../models/TSBenutzer';
 import TSBfsGemeinde from '../../models/TSBfsGemeinde';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
-import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -106,7 +104,7 @@ export default class GemeindeRS implements IEntityRS {
      * It sends all required parameters (new Gemeinde, beguStartDatum and User) to the server so the server can create
      * all required objects within a single transaction.
      */
-    public createGemeinde(gemeinde: TSGemeinde, beguStartDatum: moment.Moment, email: string,
+    public createGemeinde(gemeinde: TSGemeinde, email: string,
                           bgEnabled: boolean, tsEnabled: boolean, fiEnabled: boolean): IPromise<TSGemeinde> {
 
         const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde);
@@ -114,7 +112,6 @@ export default class GemeindeRS implements IEntityRS {
         return this.$http.post(this.serviceURL, restGemeinde,
             {
                 params: {
-                    date: DateUtil.momentToLocalDate(beguStartDatum),
                     adminMail: email,
                     hasBG: bgEnabled,
                     hasTS: tsEnabled,
