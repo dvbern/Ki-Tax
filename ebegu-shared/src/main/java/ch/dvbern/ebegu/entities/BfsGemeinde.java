@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -79,6 +80,12 @@ public class BfsGemeinde  implements Serializable {
 	@NotNull
 	@Column(nullable = false)
 	private LocalDate gueltigAb;
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_bfsgemeinde_verbund_id"), nullable = true)
+	private BfsGemeinde verbund;
+
 
 	public BfsGemeinde() {
 		id = UUID.randomUUID().toString();
@@ -154,5 +161,14 @@ public class BfsGemeinde  implements Serializable {
 
 	public void setGueltigAb(LocalDate gueltigAb) {
 		this.gueltigAb = gueltigAb;
+	}
+
+	@Nullable
+	public BfsGemeinde getVerbund() {
+		return verbund;
+	}
+
+	public void setVerbund(@Nullable BfsGemeinde verbund) {
+		this.verbund = verbund;
 	}
 }
