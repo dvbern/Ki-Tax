@@ -854,17 +854,22 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			target.setDokumentGrunds(new HashSet<>());
 			this.getDokumentGrunds().forEach(
 				dokumentGrund -> {
-					boolean hasSecondGS = target.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode();
-					if (!hasSecondGS) {
-						boolean isDokumentOfSecondGS = dokumentGrund.getPersonType() == DokumentGrundPersonType.GESUCHSTELLER
-							&& dokumentGrund.getPersonNumber() != null && 2 == dokumentGrund.getPersonNumber();
-						if (!isDokumentOfSecondGS) {
-							target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
-						}
+					if (!isDokumentOfSecondGesuchstellerButHasNoSecondGesuchsteller(target, dokumentGrund)) {
+						target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
 					}
 				}
 			);
 		}
+	}
+
+	private boolean isDokumentOfSecondGesuchstellerButHasNoSecondGesuchsteller(@Nonnull Gesuch target, @Nonnull DokumentGrund dokumentGrund) {
+		boolean hasSecondGS = target.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode();
+		if (!hasSecondGS) {
+			boolean isDokumentOfSecondGS = dokumentGrund.getPersonType() == DokumentGrundPersonType.GESUCHSTELLER
+				&& dokumentGrund.getPersonNumber() != null && 2 == dokumentGrund.getPersonNumber();
+			return isDokumentOfSecondGS;
+		}
+		return false;
 	}
 
 	@Nonnull
