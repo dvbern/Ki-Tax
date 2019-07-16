@@ -94,5 +94,4 @@ export class GemeindeKonfigComponent implements OnInit {
             });
         });
     }
-
 }
