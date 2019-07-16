@@ -269,7 +269,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
-        tsBetreuung.keineKesbPlatzierung = false;
+        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = false;
 
         return tsBetreuung;
     }
@@ -700,7 +700,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public platzAnfordern(): void {
         if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
-            if (this.getBetreuungModel().keineKesbPlatzierung) {
+            if (this.getErweiterteBetreuungJA().keineKesbPlatzierung) {
                 this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
             } else {
                 this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
@@ -726,7 +726,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.isGesuchValid()) {
             return;
         }
-        if (this.getBetreuungModel().keineKesbPlatzierung) {
+        if (this.getErweiterteBetreuungJA().keineKesbPlatzierung) {
             this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
             return;
         }

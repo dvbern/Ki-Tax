@@ -24,6 +24,8 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSBetreuung from '../../../models/TSBetreuung';
+import TSErweiterteBetreuung from '../../../models/TSErweiterteBetreuung';
+import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuungContainer';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
@@ -76,7 +78,11 @@ describe('betreuungView', () => {
         betreuung = new TSBetreuung();
         betreuung.timestampErstellt = DateUtil.today();
         betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
-        betreuung.keineKesbPlatzierung = true;
+        const erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+        erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
+        erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = true;
+        betreuung.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
+
         kind = new TSKindContainer();
         $stateParams = $injector.get('$stateParams');
         spyOn(gesuchModelManager, 'getKindToWorkWith').and.returnValue(kind);

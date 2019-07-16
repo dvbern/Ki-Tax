@@ -201,8 +201,6 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(60));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 
-		betreuung.setKeineKesbPlatzierung(true);
-
 		ErweiterteBetreuungContainer erwBetContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		betreuung.setErweiterteBetreuungContainer(erwBetContainer);
 

@@ -667,7 +667,6 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		betreuung.setKeineKesbPlatzierung(true);
 		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		erweiterteBetreuungContainer.setBetreuung(betreuung);
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
@@ -680,7 +679,6 @@ public final class TestDataUtil {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
-		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
 		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		erweitContainer.setBetreuung(betreuung);
@@ -828,9 +826,8 @@ public final class TestDataUtil {
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
 		gesuch.getKindContainers().add(betreuung.getKind());
-		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
+		betreuung.setErweiterteBetreuungContainer(TestDataUtil.createDefaultErweiterteBetreuungContainer());
 		return betreuung;
 	}
 
@@ -1712,6 +1709,7 @@ public final class TestDataUtil {
 		ErweiterteBetreuungContainer erwBetContainer = new ErweiterteBetreuungContainer();
 		ErweiterteBetreuung erwBet = new ErweiterteBetreuung();
 		erwBet.setErweiterteBeduerfnisse(false);
+		erwBet.setKeineKesbPlatzierung(true);
 		erwBetContainer.setErweiterteBetreuungJA(erwBet);
 		return erwBetContainer;
 	}

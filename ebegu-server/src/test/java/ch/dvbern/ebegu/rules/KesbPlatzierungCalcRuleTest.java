@@ -63,7 +63,8 @@ public class KesbPlatzierungCalcRuleTest {
 
 	@Test
 	public void testPensumWithKesbPlatzierung() {
-		betreuung.setKeineKesbPlatzierung(false);
+		Assert.assertNotNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA());
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKeineKesbPlatzierung(false);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
@@ -75,7 +76,8 @@ public class KesbPlatzierungCalcRuleTest {
 
 	@Test
 	public void testPensumWithoutKesbPlatzierung() {
-		betreuung.setKeineKesbPlatzierung(true);
+		Assert.assertNotNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA());
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKeineKesbPlatzierung(true);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(1, result.size());
 		Assert.assertNotEquals(0, result.get(0).getAnspruchberechtigtesPensum());
