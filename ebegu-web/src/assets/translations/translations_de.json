@@ -484,7 +484,7 @@
     "INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN": "Kindergarten",
     "INSTITUTION_ALTERSKATEGORIE_SCHULE": "Schule",
     "INSTITUTION_PLAETZE": "Plätze",
-    "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "Hat subventionierte Plätze",
+    "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "Hat subventionierte Plätze (Kitas aus der Stadt Bern: darf städtische Betreuungsgutscheine abrechnen)",
     "INSTITUTION_ANZAHL_PLAETZE": "Anzahl Plätze",
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN": "Davon für Firmen reserviert",
     "INSTITUTION_ANZAHL_PLAETZE_PARAM": "Anzahl Plätze: {{anzahlPlaetze}}",
