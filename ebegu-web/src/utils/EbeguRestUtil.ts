@@ -18,6 +18,7 @@ import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSitua
 import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -45,6 +46,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../models/TSBetreuungsmitteilung';
 import TSBetreuungsmitteilungPensum from '../models/TSBetreuungsmitteilungPensum';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
+import TSBetreuungspensumAbweichung from '../models/TSBetreuungspensumAbweichung';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
 import TSBfsGemeinde from '../models/TSBfsGemeinde';
 import TSDokument from '../models/TSDokument';
@@ -114,6 +116,7 @@ import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import TSLand from '../models/types/TSLand';
 import DateUtil from './DateUtil';
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 
 export default class EbeguRestUtil {
 
@@ -1777,9 +1780,37 @@ export default class EbeguRestUtil {
             betreuungTS.anmeldungMutationZustand = betreuungFromServer.anmeldungMutationZustand;
             betreuungTS.keineDetailinformationen = betreuungFromServer.keineDetailinformationen;
             betreuungTS.bgNummer = betreuungFromServer.bgNummer;
+            betreuungTS.betreuungspensumAbweichungen =
+                this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             return betreuungTS;
         }
         return undefined;
+    }
+
+    public parseBetreuungspensumAbweichungen(data: Array<any>): TSBetreuungspensumAbweichung[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBetreuungspensumAbweichung(new TSBetreuungspensumAbweichung(), item))
+            : [this.parseBetreuungspensumAbweichung(new TSBetreuungspensumAbweichung(), data)];
+    }
+
+    public parseBetreuungspensumAbweichung(
+        abweichungTS: TSBetreuungspensumAbweichung,
+        abweichungFromServer: any,
+    ): TSBetreuungspensumAbweichung {
+        this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
+        abweichungTS.status = abweichungFromServer.status;
+        abweichungTS.originalPensumMerged =
+            this.parseBetreuungspensum(new TSBetreuungspensum(), abweichungFromServer.originalPensumMerged);
+
+        abweichungTS.pensum = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
+            abweichungTS.pensum / MULTIPLIER_KITA :
+            abweichungTS.pensum / MULTIPLIER_TAGESFAMILIEN;
+
+
+        return abweichungTS;
     }
 
     public parseBetreuungspensumContainers(data: Array<any>): TSBetreuungspensumContainer[] {

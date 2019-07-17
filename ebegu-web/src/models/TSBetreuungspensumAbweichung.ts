@@ -19,12 +19,28 @@ import {TSBetreuungspensumAbweichungStatus} from './enums/TSBetreuungspensumAbwe
 import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 import TSBetreuungspensum from './TSBetreuungspensum';
 
-export default class TSBetreuungspensumAbweichungen extends TSAbstractDecimalPensumEntity {
+export default class TSBetreuungspensumAbweichung extends TSAbstractDecimalPensumEntity {
 
     private _status: TSBetreuungspensumAbweichungStatus;
     private _originalPensumMerged: TSBetreuungspensum;
 
     public constructor() {
         super();
+    }
+
+    public get status(): TSBetreuungspensumAbweichungStatus {
+        return this._status;
+    }
+
+    public set status(value: TSBetreuungspensumAbweichungStatus) {
+        this._status = value;
+    }
+
+    public get originalPensumMerged(): TSBetreuungspensum {
+        return this._originalPensumMerged;
+    }
+
+    public set originalPensumMerged(value: TSBetreuungspensum) {
+        this._originalPensumMerged = value;
     }
 }

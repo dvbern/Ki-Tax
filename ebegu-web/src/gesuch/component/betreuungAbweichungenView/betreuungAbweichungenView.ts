@@ -21,8 +21,11 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
+import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
+import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -68,6 +71,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public kindModel: TSKindContainer;
     public isNewestGesuch: boolean;
+    public displayedCollection: TSBetreuungspensumAbweichung[];
 
     public constructor(
         private readonly $state: StateService,
@@ -109,7 +113,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
                 this.gesuchModelManager.setBetreuungIndex(betreuungIndex);
             }
 
-          // just to read!
+            // just to read!
             this.kindModel = this.gesuchModelManager.getKindToWorkWith();
         } else {
             this.$log.error('There is no kind available with kind-number:' + this.$stateParams.kindNumber);
@@ -117,9 +121,21 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
+        this.displayedCollection = this.model.betreuungspensumAbweichungen;
+
+        console.log(this.displayedCollection);
     }
 
     public getKindModel(): TSKindContainer {
         return this.kindModel;
+    }
+
+    public getAbweichung(index: number): TSBetreuungspensumAbweichung {
+        if (this.model.betreuungspensumAbweichungen && index >= 0
+            && index < this.model.betreuungspensumAbweichungen.length) {
+            return this.model.betreuungspensumAbweichungen[index];
+        }
+
+        return undefined;
     }
 }

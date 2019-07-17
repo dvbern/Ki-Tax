@@ -36,4 +36,27 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	private JaxBetreuungspensum originalPensumMerged;
 
+	public BetreuungspensumAbweichungStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(BetreuungspensumAbweichungStatus status) {
+		this.status = status;
+	}
+
+	public JaxBetreuung getBetreuung() {
+		return betreuung;
+	}
+
+	public void setBetreuung(JaxBetreuung betreuung) {
+		this.betreuung = betreuung;
+	}
+
+	public JaxBetreuungspensum getOriginalPensumMerged() {
+		return originalPensumMerged;
+	}
+
+	public void setOriginalPensumMerged(JaxBetreuungspensum originalPensumMerged) {
+		this.originalPensumMerged = originalPensumMerged;
+	}
 }

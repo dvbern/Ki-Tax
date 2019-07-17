@@ -206,6 +206,8 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.rechner.AbstractBGRechner;
+import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.services.AdresseService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -2530,37 +2532,37 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
 		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
 
+		jaxBetreuung.setBetreuungspensumAbweichungen(betreuungspensumAbweichungenToJax(betreuungFromServer));
+
 		return jaxBetreuung;
 	}
 
-	private Set<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(Set<BetreuungspensumAbweichung> abweichungenFromServer) {
+	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(Betreuung betreuung) {
 
-		Set<BetreuungspensumAbweichung> storedAbweichungen = betreuungFromServer.getBetreuungspensumAbweichungen();
-		Gesuchsperiode gp = betreuungFromServer.extractGesuchsperiode();
-		LocalDate from = gp.getGueltigkeit().getGueltigAb(); // TODO use first Betreuungspensum from date
-		LocalDate to = gp.getGueltigkeit().getGueltigBis(); // TODO use last Betreuungspensum to date
+		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
+		LocalDate from = gp.getGueltigkeit().getGueltigAb();
+		LocalDate to = gp.getGueltigkeit().getGueltigBis();
 
-		Map<LocalDate, BetreuungspensumAbweichung> abweichungen = new HashMap<>();
+		List<JaxBetreuungspensumAbweichung> abweichungen = new ArrayList<>();
 
 		while (from.isBefore(to)) {
-			//			if (storedAbweichungen.forEach(x ->))
-			BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
-			abweichung.setBetreuung(betreuung);
-			abweichung.setOriginalPensumMerged(null); // TODO
+			JaxBetreuungspensumAbweichung abweichung = new JaxBetreuungspensumAbweichung();
+//			abweichung.setOriginalPensumMerged(null); // TODO
 			abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
 			YearMonth month = YearMonth.from(from);
-			DateRange gueltigkeit = new DateRange(month.atDay(1), month.atEndOfMonth());
-			abweichung.setGueltigkeit(gueltigkeit);
+			abweichung.setGueltigAb(month.atDay(1));
+			abweichung.setGueltigBis(month.atEndOfMonth());
 
 			abweichung.setUnitForDisplay(PensumUnits.DAYS);
-			if (betreuungFromServer.isAngebotTagesfamilien()) {
+			if (betreuung.isAngebotTagesfamilien()) {
 				abweichung.setUnitForDisplay(PensumUnits.HOURS);
 			}
 
-			abweichungen.put(from, new BetreuungspensumAbweichung());
+			abweichungen.add(abweichung);
 			from = from.plusMonths(1);
 		}
 
+		return abweichungen;
 	}
 
 	@Nullable
