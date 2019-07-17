@@ -304,6 +304,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Nonnull
 	@Override
+	@PermitAll
 	public Einstellung findEinstellungTagesschuleEnabledForMandant() {
 
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
