@@ -52,21 +52,8 @@ public class BfsGemeinde  implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private Long histNummer;
-
-	@NotNull
-	@Column(nullable = false)
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	private String kanton;
-
-	@NotNull
-	@Column(nullable = false)
-	private Long bezirkNummer;
-
-	@NotNull
-	@Column(nullable = false)
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
-	private String bezirk;
 
 	@NotNull
 	@Column(nullable = false)
@@ -107,36 +94,12 @@ public class BfsGemeinde  implements Serializable {
 		this.mandant = mandant;
 	}
 
-	public Long getHistNummer() {
-		return histNummer;
-	}
-
-	public void setHistNummer(Long histNummer) {
-		this.histNummer = histNummer;
-	}
-
 	public String getKanton() {
 		return kanton;
 	}
 
 	public void setKanton(String kanton) {
 		this.kanton = kanton;
-	}
-
-	public Long getBezirkNummer() {
-		return bezirkNummer;
-	}
-
-	public void setBezirkNummer(Long bezirkNummer) {
-		this.bezirkNummer = bezirkNummer;
-	}
-
-	public String getBezirk() {
-		return bezirk;
-	}
-
-	public void setBezirk(String bezirk) {
-		this.bezirk = bezirk;
 	}
 
 	public Long getBfsNummer() {
