@@ -19,6 +19,10 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
+import {EditGemeindeComponentBG} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
+import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.component';
+import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
+import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeKonfigComponent} from './gemeinde-konfiguration/gemeinde-konfig.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
@@ -39,6 +43,10 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
+        EditGemeindeComponentBG,
+        EditGemeindeComponentFI,
+        EditGemeindeComponentStammdaten,
+        EditGemeindeComponentTS,
         ViewGemeindeComponent,
         GemeindeKonfigComponent,
     ],
@@ -46,6 +54,10 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
+        EditGemeindeComponentBG,
+        EditGemeindeComponentFI,
+        EditGemeindeComponentTS,
+        EditGemeindeComponentStammdaten,
         ViewGemeindeComponent,
         GemeindeKonfigComponent,
     ],

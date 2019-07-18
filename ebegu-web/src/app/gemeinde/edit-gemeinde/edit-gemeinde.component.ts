@@ -25,7 +25,6 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
@@ -158,10 +157,6 @@ export class EditGemeindeComponent implements OnInit {
     private validateData(stammdaten: TSGemeindeStammdaten): boolean {
         return (stammdaten.korrespondenzspracheDe || stammdaten.korrespondenzspracheFr)
             && this.form.valid;
-    }
-
-    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
-        return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
     private navigateBack(): void {

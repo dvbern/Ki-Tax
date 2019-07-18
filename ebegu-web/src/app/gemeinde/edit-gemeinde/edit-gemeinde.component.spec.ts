@@ -20,6 +20,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -43,6 +44,11 @@ describe('EditGemeindeComponent', () => {
         ['getAllGesuchsperioden']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, [
+        'hasTagesschuleInAnyGesuchsperiode',
+        'hasFerieninselInAnyGesuchsperiode',
+        'hasBetreuungsgutscheineInAnyGesuchsperiode'
+    ]);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
@@ -62,6 +68,7 @@ describe('EditGemeindeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungServiceSpy},
             ],
             declarations: [
             ],
