@@ -13,8 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../../utils/EbeguUtil';
-
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
     TAGESFAMILIEN = 'TAGESFAMILIEN',
@@ -22,38 +20,26 @@ export enum TSBetreuungsangebotTyp {
     FERIENINSEL = 'FERIENINSEL'
 }
 
-export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
-    if (EbeguUtil.isTagesschulangebotEnabled()) {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE,
-            TSBetreuungsangebotTyp.FERIENINSEL,
-        ];
-    }
-
-    return [
-        TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
-    ];
+export function getTSBetreuungsangebotTypValuesForMandant(
+    tagesschuleEnabledForMandant: boolean
+): Array<TSBetreuungsangebotTyp> {
+    return getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+        tagesschuleEnabledForMandant, true);
 }
 
-/**
- * These are all BetreuungsangebotTyp for a period without Tagesschuleanmeldungen, normally 17/18
- */
-export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array<TSBetreuungsangebotTyp> {
-    if (EbeguUtil.isTagesschulangebotEnabled()) {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE,
-        ];
+export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+    tagesschuleEnabledForMandant: boolean, tagesschuleAnmeldungenConfigured: boolean
+): Array<TSBetreuungsangebotTyp> {
+    const angebote: Array<TSBetreuungsangebotTyp> = [];
+    angebote.push(TSBetreuungsangebotTyp.KITA);
+    angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured) {
+        angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-
-    return [
-        TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
-    ];
+    if (tagesschuleEnabledForMandant) {
+        angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
+    }
+    return angebote;
 }
 
 export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {

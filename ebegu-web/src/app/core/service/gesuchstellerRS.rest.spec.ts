@@ -61,6 +61,7 @@ describe('GesuchstellerRS', () => {
         $httpBackend.whenGET(url).respond(mockGesuchstellerRest);
 
         TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {

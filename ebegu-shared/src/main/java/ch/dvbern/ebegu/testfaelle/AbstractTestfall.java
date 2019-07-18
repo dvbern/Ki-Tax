@@ -296,7 +296,6 @@ public abstract class AbstractTestfall {
 			betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			betreuung.setDatumBestaetigung(LocalDate.now());
 		}
-		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setVertrag(Boolean.TRUE);
 
 		// default ErweiterteBetreuung
@@ -304,6 +303,7 @@ public abstract class AbstractTestfall {
 		erwBedContainer.setBetreuung(betreuung);
 		ErweiterteBetreuung erwBed = new ErweiterteBetreuung();
 		erwBed.setErweiterteBeduerfnisse(false);
+		erwBed.setKeineKesbPlatzierung(true);
 		erwBedContainer.setErweiterteBetreuungJA(erwBed);
 		betreuung.setErweiterteBetreuungContainer(erwBedContainer);
 

@@ -16,8 +16,11 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import * as moment from 'moment';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
@@ -39,6 +42,7 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const LOG = LogFactory.createLog('GesuchsperiodeViewComponentConfig');
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
     public transclude: boolean = false;
@@ -74,6 +78,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public isErlaeuterungDE: boolean = false;
     public isErlaeuterungFR: boolean = false;
 
+    private _tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribe$ = new Subject<void>();
+
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
         private readonly dvDialog: DvDialog,
@@ -103,6 +110,19 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
             this.updateExistErlaeuterung(this.gesuchsperiode);
         });
+
+        this.einstellungenRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err)
+            );
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public getTSGesuchsperiodeStatusValues(): Array<TSGesuchsperiodeStatus> {
@@ -313,5 +333,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
             this.isErlaeuterungFR = !!result;
         });
+    }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this._tageschuleEnabledForMandant;
     }
 }

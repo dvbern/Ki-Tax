@@ -79,6 +79,7 @@ export class StatistikViewController implements IController {
     public minDate: moment.Moment;
     public userjobs: Array<TSWorkJob>;
     public allJobs: Array<TSBatchJobInformation>;
+    public years: string[];
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -101,6 +102,7 @@ export class StatistikViewController implements IController {
                 this.maxDate = this._gesuchsperioden[0].gueltigkeit.gueltigBis;
                 this.minDate = DateUtil.localDateToMoment('2017-01-01');
             }
+            this.calculateYears();
         });
 
         this.refreshUserJobs();
@@ -247,6 +249,12 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
+            case TSStatistikParameterType.LASTENAUSGLEICH_KIBON:
+                this.reportAsyncRS.getLastenausgleichKibonReportExcel(this._statistikParameter.jahr)
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
@@ -304,5 +312,23 @@ export class StatistikViewController implements IController {
             }));
             this.allJobs = res;
         });
+    }
+
+    /**
+     * Takes all years of all Gesuchsperioden and saves them as a string into an array
+     */
+    private calculateYears(): void {
+        this.years = [];
+        this.gesuchsperioden
+            .forEach(periode => {
+                if (this.years.indexOf(periode.getBasisJahrPlus1().toString()) < 0) {
+                    this.years.push(periode.getBasisJahrPlus1().toString());
+                }
+                if (this.years.indexOf(periode.getBasisJahrPlus2().toString()) < 0) {
+                    this.years.push(periode.getBasisJahrPlus2().toString());
+                }
+            });
+
+        this.years.sort();
     }
 }
