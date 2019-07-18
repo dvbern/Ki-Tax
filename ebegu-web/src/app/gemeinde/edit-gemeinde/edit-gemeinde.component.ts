@@ -71,7 +71,12 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
+
         this.navigationSource = this.$transition$.from();
+        if (this.navigationSource.name === 'einladung.abschliessen') {
+            this.editMode = true;
+        }
+
         this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
 
         this.stammdaten$ = from(
