@@ -25,8 +25,8 @@
                       data-translate-value-geschlecht="{{vm.getKindModel().kindJA.geschlecht | translate}}"
                       data-translate-value-geburtsdatum="{{vm.getKindModel().kindJA.geburtsdatum | amDateFormat : 'DD.MM.YYYY'}}"></span>
             </h2>
-            <dv-bisher gs="vm.getKindModel().kindGS"
-                       ja="vm.getKindModel().kindJA"
+            <dv-bisher gs="vm.getErweiterteBetreuungGS()"
+                       ja="vm.getErweiterteBetreuungJA()"
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
         </div>
@@ -255,7 +255,7 @@
                          dv-show-expression="!vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.getBetreuungModel().keineKesbPlatzierung"
+                                <md-checkbox ng-model="vm.getErweiterteBetreuungJA().keineKesbPlatzierung"
                                              name="keineKesbPlatzierung"
                                              aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
                                              dv-enable-element
@@ -263,6 +263,9 @@
                                              dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
                                     <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
                                 </md-checkbox>
+                                <dv-bisher gs="vm.getErweiterteBetreuungGS().keineKesbPlatzierung"
+                                           ja="vm.getErweiterteBetreuungJA().keineKesbPlatzierung"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
                             </div>
                         </div>
                     </div>
