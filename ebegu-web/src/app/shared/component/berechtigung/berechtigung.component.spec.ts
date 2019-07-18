@@ -19,10 +19,12 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {of} from 'rxjs';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSBerechtigung from '../../../../models/TSBerechtigung';
+import TSEinstellung from '../../../../models/TSEinstellung';
 import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
@@ -43,6 +45,8 @@ describe('BerechtigungComponent', () => {
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const einstellungServiceSpy = jasmine
+        .createSpyObj<EinstellungRS>(EinstellungRS.name, ['tageschuleEnabledForMandant$']);
 
     const inputSelector = '.dv-input-container-medium';
 
@@ -53,6 +57,7 @@ describe('BerechtigungComponent', () => {
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
+        einstellungServiceSpy.tageschuleEnabledForMandant$.and.returnValue(of(new TSEinstellung()) as any);
 
         TestBed.configureTestingModule({
             imports: [
@@ -65,6 +70,7 @@ describe('BerechtigungComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: EinstellungRS, useValue: einstellungServiceSpy},
             ],
         })
             .compileComponents();

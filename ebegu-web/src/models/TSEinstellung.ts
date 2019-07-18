@@ -71,4 +71,8 @@ export default class TSEinstellung extends TSAbstractDateRangedEntity {
     public set gesuchsperiodeId(value: string) {
         this._gesuchsperiodeId = value;
     }
+
+    public getValueAsBoolean(): boolean {
+        return 'true' === this._value;
+    }
 }

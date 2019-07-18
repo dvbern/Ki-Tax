@@ -83,7 +83,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             TSWizardStepName.FAMILIENSITUATION,
             $timeout);
         this.gesuchModelManager.initFamiliensituation();
-        this.model = angular.copy(this.gesuchModelManager.getGesuch().familiensituationContainer);
+        this.model = angular.copy(this.getGesuch().familiensituationContainer);
         this.initialFamiliensituation = angular.copy(this.gesuchModelManager.getFamiliensituation());
         this.familienstatusValues = getTSFamilienstatusValues();
 
@@ -106,13 +106,13 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                 // promise immediately
                 // Update wizardStepStatus also if the form is empty and not dirty
                 this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
-                return this.$q.when(this.gesuchModelManager.getGesuch().familiensituationContainer);
+                return this.$q.when(this.getGesuch().familiensituationContainer);
             }
 
             if (this.isConfirmationRequired()) {
                 const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
-                    gsfullname: this.gesuchModelManager.getGesuch().gesuchsteller2
-                        ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '',
+                    gsfullname: this.getGesuch().gesuchsteller2
+                        ? this.getGesuch().gesuchsteller2.extractFullName() : '',
                 });
                 return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'FAMILIENSITUATION_WARNING',
@@ -132,10 +132,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.errorService.clearAll();
         return this.familiensituationRS.saveFamiliensituation(
             this.model,
-            this.gesuchModelManager.getGesuch().id
+            this.getGesuch().id
         ).then((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
-            this.gesuchModelManager.getGesuch().familiensituationContainer = familienContainerResponse;
+            this.getGesuch().familiensituationContainer = familienContainerResponse;
             // Gesuchsteller may changed...
             return this.gesuchModelManager.reloadGesuch().then(() => {
                 return this.model;
@@ -187,22 +187,26 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
      * in a Mutation the GS2 is new and will be removed
      */
     private isConfirmationRequired(): boolean {
-        return !this.isKorrekturModusJugendamt() && ((!this.isMutation() && this.checkChanged2To1GS()) ||
-            (this.isMutation() && this.checkChanged2To1GSMutation()));
+        return (!this.isKorrekturModusJugendamt()
+            || (this.isKorrekturModusJugendamt()
+                && this.getGesuch().gesuchsteller2
+                && !this.getGesuch().gesuchsteller2.gesuchstellerGS))
+            && ((!this.isMutation() && this.checkChanged2To1GS())
+                || (this.isMutation() && this.checkChanged2To1GSMutation()));
     }
 
     private checkChanged2To1GS(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return this.gesuchModelManager.getGesuch().gesuchsteller2
-            && this.gesuchModelManager.getGesuch().gesuchsteller2.id
+        return this.getGesuch().gesuchsteller2
+            && this.getGesuch().gesuchsteller2.id
             && this.initialFamiliensituation.hasSecondGesuchsteller(bis)
             && this.isScheidung();
     }
 
     private checkChanged2To1GSMutation(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return this.gesuchModelManager.getGesuch().gesuchsteller2
-            && this.gesuchModelManager.getGesuch().gesuchsteller2.id
+        return this.getGesuch().gesuchsteller2
+            && this.getGesuch().gesuchsteller2.id
             && this.isScheidung()
             && this.model.familiensituationErstgesuch
             && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);

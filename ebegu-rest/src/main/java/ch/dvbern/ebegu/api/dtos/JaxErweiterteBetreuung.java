@@ -34,6 +34,9 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	private boolean erweiterteBeduerfnisseBestaetigt;
 
+	@NotNull
+	private Boolean keineKesbPlatzierung;
+
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
@@ -56,5 +59,13 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	public void setErweiterteBeduerfnisseBestaetigt(boolean erweiterteBeduerfnisseBestaetigt) {
 		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
+	}
+
+	public Boolean getKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 }

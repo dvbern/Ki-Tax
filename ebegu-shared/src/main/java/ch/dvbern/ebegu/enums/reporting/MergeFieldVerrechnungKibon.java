@@ -31,6 +31,8 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldVerrechnungKibon implements MergeFieldProvider {
 
+	// This template exists only in german, since its use is intern
+
 	datumErstellt(new SimpleMergeField<>("datumErstellt", DATE_CONVERTER)),
 	betragProKind(new SimpleMergeField<>("betragProKind", BIGDECIMAL_CONVERTER)),
 

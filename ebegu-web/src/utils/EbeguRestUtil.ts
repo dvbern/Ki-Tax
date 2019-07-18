@@ -1641,7 +1641,6 @@ export default class EbeguRestUtil {
         restBetreuung.datumAblehnung = DateUtil.momentToLocalDate(betreuung.datumAblehnung);
         restBetreuung.datumBestaetigung = DateUtil.momentToLocalDate(betreuung.datumBestaetigung);
         restBetreuung.vertrag = betreuung.vertrag;
-        restBetreuung.keineKesbPlatzierung = betreuung.keineKesbPlatzierung;
         if (betreuung.institutionStammdaten) {
             restBetreuung.institutionStammdaten =
                 this.institutionStammdatenToRestObject({}, betreuung.institutionStammdaten);
@@ -1750,7 +1749,6 @@ export default class EbeguRestUtil {
             betreuungTS.datumAblehnung = DateUtil.localDateToMoment(betreuungFromServer.datumAblehnung);
             betreuungTS.datumBestaetigung = DateUtil.localDateToMoment(betreuungFromServer.datumBestaetigung);
             betreuungTS.vertrag = betreuungFromServer.vertrag;
-            betreuungTS.keineKesbPlatzierung = betreuungFromServer.keineKesbPlatzierung;
             betreuungTS.betreuungsstatus = betreuungFromServer.betreuungsstatus;
             betreuungTS.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                 betreuungFromServer.institutionStammdaten);
@@ -1944,6 +1942,7 @@ export default class EbeguRestUtil {
         restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
         restErweiterteBetreuung.erweiterteBeduerfnisseBestaetigt =
             erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+        restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -1959,6 +1958,7 @@ export default class EbeguRestUtil {
             erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
             erweiterteBetreuungTS.erweiterteBeduerfnisseBestaetigt =
                 erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
+            erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);

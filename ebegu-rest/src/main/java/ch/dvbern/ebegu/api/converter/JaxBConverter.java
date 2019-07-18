@@ -44,6 +44,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
@@ -99,7 +100,6 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
@@ -2165,7 +2165,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setVertrag(betreuungJAXP.getVertrag());
-		betreuung.setKeineKesbPlatzierung(betreuungJAXP.getKeineKesbPlatzierung());
 
 		// InstitutionStammdaten muessen bereits existieren
 		if (betreuungJAXP.getInstitutionStammdaten() != null) {
@@ -2233,6 +2232,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
+		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -2506,7 +2506,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
-		jaxBetreuung.setKeineKesbPlatzierung(betreuungFromServer.getKeineKesbPlatzierung());
 		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
 			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
@@ -2909,6 +2908,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
+		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
@@ -4207,7 +4207,7 @@ public class JaxBConverter extends AbstractConverter {
 		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
 			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
-			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
+			.filter(map -> map.getKey().isGemeindeEinstellung())
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 		return konfiguration;

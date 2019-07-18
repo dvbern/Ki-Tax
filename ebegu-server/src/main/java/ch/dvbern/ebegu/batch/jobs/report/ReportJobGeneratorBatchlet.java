@@ -37,6 +37,7 @@ import javax.inject.Named;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichKibonService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
@@ -66,11 +67,13 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	private ReportVerrechnungKibonService reportVerrechnungKibonService;
 
 	@Inject
+	private ReportLastenausgleichKibonService reportLastenausgleichKibonService;
+
+	@Inject
 	private JobContext jobCtx;
 
 	@Inject
 	private JobDataContainer jobDataContainer;
-
 
 	@Override
 	public String process() {
@@ -86,7 +89,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		} catch (ExcelMergeException | MergeDocException e) {
 			LOG.error("ExcelMergeException occured while creating a report in a batch process ", e);
 		} catch (URISyntaxException | IOException e) {
-				LOG.error("IOException occured while creating a report in a batch process, maybe template could not be loaded?", e);
+			LOG.error("IOException occured while creating a report in a batch process, maybe template could not be loaded?", e);
 		}
 		return BatchStatus.FAILED.toString();
 	}
@@ -178,6 +181,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			boolean doSave = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
 			return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
+		}
+		case VORLAGE_REPORT_LASTENAUSGLEICH_KIBON: {
+			return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
 		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

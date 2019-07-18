@@ -40,7 +40,9 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 	protected void executeRule(
 		@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (!betreuung.isAngebotSchulamt() && !betreuung.getKeineKesbPlatzierung()) {
+		if (!betreuung.isAngebotSchulamt()
+			&& (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
+			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung())) {
 			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());

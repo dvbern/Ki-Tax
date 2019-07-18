@@ -190,12 +190,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde) {
+	public Benutzer createAdminGemeindeByEmail(
+		@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde
+	) {
 		requireNonNull(gemeinde);
 
 		return createBenutzerFromEmail(
 			adminMail,
-			UserRole.ADMIN_BG,
+			userRole,
 			gemeinde,
 			b -> b.getGemeindeList().add(gemeinde));
 	}

@@ -23,10 +23,10 @@ package ch.dvbern.ebegu.enums;
 public enum EinstellungKey {
 
 	// Die Gemeinde kennt eine Kontingentierung der Gutscheine
-	GEMEINDE_KONTINGENTIERUNG_ENABLED,
+	GEMEINDE_KONTINGENTIERUNG_ENABLED(EinstellungTyp.GEMEINDE),
 
 	// Bis zu welcher Schulstufe sollen Gutscheine ausgestellt werden?
-	GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+	GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE(EinstellungTyp.GEMEINDE),
 
 
 	// *** Einstellungen fuer die Gutscheinberechnung
@@ -104,4 +104,31 @@ public enum EinstellungKey {
 	//Pensum Fachstelle soziale Integration
 	FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
 	FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
+
+	BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE(EinstellungTyp.GEMEINDE),
+	TAGESSCHULE_ENABLED_FOR_GEMEINDE(EinstellungTyp.GEMEINDE),
+	FERIENINSEL_ENABLED_FOR_GEMEINDE(EinstellungTyp.GEMEINDE),
+
+	TAGESSCHULE_ENABLED_FOR_MANDANT(EinstellungTyp.MANDANT);
+
+
+
+
+	private EinstellungTyp typ;
+
+	EinstellungKey () {
+		this(EinstellungTyp.SYSTEM);
+	}
+
+	EinstellungKey(EinstellungTyp typ) {
+		this.typ = typ;
+	}
+
+	public boolean isGemeindeEinstellung() {
+		return EinstellungTyp.GEMEINDE == typ;
+	}
+
+	public boolean isMandantEinstellung() {
+		return EinstellungTyp.MANDANT == typ;
+	}
 }

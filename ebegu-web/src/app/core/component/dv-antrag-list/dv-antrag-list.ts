@@ -16,15 +16,12 @@
 import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {
-    getTSAntragStatusPendenzValues,
-    getTSAntragStatusValuesByRole,
-    TSAntragStatus,
-} from '../../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
@@ -69,7 +66,7 @@ export class DVAntragListController implements IController {
         'AuthServiceRS',
         '$window',
         'GemeindeRS',
-        'AuthLifeCycleService',
+        'EinstellungRS',
     ];
 
     public totalResultCount: number;
@@ -108,6 +105,7 @@ export class DVAntragListController implements IController {
     public onAdd: () => void;
     public readonly TSRoleUtil = TSRoleUtil;
 
+    private _tageschuleEnabledForMandant: boolean;
     private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
@@ -117,6 +115,7 @@ export class DVAntragListController implements IController {
         private readonly authServiceRS: AuthServiceRS,
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -135,6 +134,13 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {
@@ -217,7 +223,7 @@ export class DVAntragListController implements IController {
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValues();
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
     }
 
     /**
@@ -260,5 +266,9 @@ export class DVAntragListController implements IController {
     public getColumnsNumber(): number {
         const element = this.$window.document.getElementById('antraegeHeadRow');
         return element.childElementCount;
+    }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this._tageschuleEnabledForMandant;
     }
 }

@@ -696,6 +696,48 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
+
+                <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                    <dv-accordion-tab tabid="lastenausgleich">
+                        <tab-title>
+                            <span class="uppercase" data-translate="LASTENAUSGLEICH_KIBON_STATISTIK"></span>
+                            <dv-tooltip input-id="lastenausgleich_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_LASTENAUSGLEICH_KIBON_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
+                        <tab-body>
+                            <form name="lastenausgleich"
+                                  ng-submit="vm.generateStatistik(lastenausgleich, vm.TSStatistikParameterType.LASTENAUSGLEICH_KIBON)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label class="md-no-float" for="jahr_lastenausgleich"
+                                                   data-translate="PARAMETER_JAHR"></label>
+                                            <div class="dv-select-style">
+                                                <select name="jahr_lastenausgleich" id="jahr_lastenausgleich"
+                                                        ng-model="vm.statistikParameter.jahr"
+                                                        ng-options="year for year in vm.years | orderBy: 'name'"
+                                                        class="form-control">
+                                                </select>
+                                                <dv-error-messages for="lastenausgleich.jahr_lastenausgleich.$error"
+                                                                   class="error"></dv-error-messages>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3 col-xs-offset-6 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
+
             </dv-accordion>
         </div>
     </div>

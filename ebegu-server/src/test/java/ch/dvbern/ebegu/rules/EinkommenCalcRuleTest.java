@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -25,6 +26,9 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
+import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -137,7 +141,45 @@ public class EinkommenCalcRuleTest {
 		assertTrue(bemerkungenAbschnitt3.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV2));
 	}
 
+	@Test
+	public void sozialhilfebezueger() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000),
+			BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000), true, false));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(0, (new BigDecimal("0.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
+		assertFalse(result.get(0).isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		assertEquals(2, result.get(0).getBemerkungenMap().size());
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+	}
+
+	@Test
+	public void nurPauschaleFuerErweiterteBeduernisse() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000),
+			BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000), false, true));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(0, (new BigDecimal("159000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
+		assertFalse(result.get(0).isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		assertEquals(3, result.get(0).getBemerkungenMap().size());
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
+	}
+
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {
+		return prepareData(massgebendesEinkommen, angebot, pensum, monatlicheVollkosten, false, false);
+	}
+
+	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten,
+		boolean sozialhilfeempfaenger, boolean nurZuschlagFuerBesondereBeduerfnisse) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, angebot, pensum, monatlicheVollkosten);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
@@ -148,6 +190,20 @@ public class EinkommenCalcRuleTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(massgebendesEinkommen);
+		if (sozialhilfeempfaenger) {
+			Objects.requireNonNull(gesuch.extractFamiliensituation()).setSozialhilfeBezueger(true);
+		}
+		if (nurZuschlagFuerBesondereBeduerfnisse) {
+			betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
+			betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(new ErweiterteBetreuung());
+			ErweiterteBetreuung erweiterteBetreuungJA = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+			Objects.requireNonNull(erweiterteBetreuungJA);
+			erweiterteBetreuungJA.setErweiterteBeduerfnisse(true);
+			erweiterteBetreuungJA.setFachstelle(new Fachstelle());
+			erweiterteBetreuungJA.setErweiterteBeduerfnisseBestaetigt(true);
+			erweiterteBetreuungJA.setKeineKesbPlatzierung(true);
+			Objects.requireNonNull(gesuch.extractFamiliensituation()).setAntragNurFuerBehinderungszuschlag(true);
+		}
 		return betreuung;
 	}
 }

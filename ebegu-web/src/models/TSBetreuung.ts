@@ -40,7 +40,6 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _betreuungNummer: number;
     private _verfuegung: TSVerfuegung;
     private _vertrag: boolean;
-    private _keineKesbPlatzierung: boolean;
     private _datumAblehnung: moment.Moment;
     private _datumBestaetigung: moment.Moment;
     private _kindFullname: string;
@@ -138,14 +137,6 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set vertrag(value: boolean) {
         this._vertrag = value;
-    }
-
-    public get keineKesbPlatzierung(): boolean {
-        return this._keineKesbPlatzierung;
-    }
-
-    public set keineKesbPlatzierung(value: boolean) {
-        this._keineKesbPlatzierung = value;
     }
 
     public get datumAblehnung(): moment.Moment {

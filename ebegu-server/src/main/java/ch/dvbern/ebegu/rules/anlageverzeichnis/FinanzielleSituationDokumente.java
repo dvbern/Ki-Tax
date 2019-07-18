@@ -90,8 +90,10 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr, stichtag);
 
-		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag);
+		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+			final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
+			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag);
+		}
 	}
 
 	private void getAllDokumenteGesuchsteller(
