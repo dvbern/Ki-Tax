@@ -30,6 +30,9 @@ export function getTSBetreuungsangebotTypValuesForMandant(
 export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
     tagesschuleEnabledForMandant: boolean, tagesschuleAnmeldungenConfigured: boolean
 ): Array<TSBetreuungsangebotTyp> {
+    console.log('--- getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen');
+    console.log('tagesschuleEnabledForMandant', tagesschuleEnabledForMandant);
+    console.log('tagesschuleAnmeldungenConfigured', tagesschuleAnmeldungenConfigured);
     const angebote: Array<TSBetreuungsangebotTyp> = [];
     angebote.push(TSBetreuungsangebotTyp.KITA);
     angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);

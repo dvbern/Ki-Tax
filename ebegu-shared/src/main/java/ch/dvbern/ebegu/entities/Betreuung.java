@@ -25,6 +25,7 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,7 +41,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -63,8 +63,6 @@ import ch.dvbern.ebegu.validators.CheckBetreuungZeitraumInstitutionsStammdatenZe
 import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -83,14 +81,15 @@ import org.hibernate.search.annotations.Indexed;
 @CheckAbwesenheitDatesOverlapping
 @CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
+@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_betreuung_kind_id"))
 @Table(
 	uniqueConstraints =
-		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
+	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-public class Betreuung extends AbstractMutableEntity implements Comparable<Betreuung>, Searchable {
+public class Betreuung extends AbstractPlatz implements Searchable {
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
@@ -108,10 +107,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
 
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_kind_id"), nullable = false)
-	private KindContainer kind;
 
 	@NotNull
 	@ManyToOne(optional = false)
@@ -142,21 +137,19 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String grundAblehnung;
 
-	@NotNull
-	@Min(1)
-	@Column(nullable = false)
-	private Integer betreuungNummer = 1;
 
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE,  orphanRemoval = true, mappedBy = "betreuung")
 	private Verfuegung verfuegung;
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_belegung_tagesschule_id"), nullable = true)
 	private BelegungTagesschule belegungTagesschule;
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_belegung_ferieninsel_id"), nullable = true)
@@ -182,41 +175,36 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Column(nullable = true)
 	private Boolean abwesenheitMutiert;
 
-	@Column(nullable = false)
-	private boolean gueltig = false;
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private AnmeldungMutationZustand anmeldungMutationZustand;
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
 	public Betreuung() {
 	}
 
-	public KindContainer getKind() {
-		return kind;
-	}
 
-	public void setKind(KindContainer kind) {
-		this.kind = kind;
-	}
-
+	@Nonnull
 	public InstitutionStammdaten getInstitutionStammdaten() {
 		return institutionStammdaten;
 	}
 
-	public void setInstitutionStammdaten(InstitutionStammdaten institutionStammdaten) {
+	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
 	}
 
+	@Nonnull
 	public Betreuungsstatus getBetreuungsstatus() {
 		return betreuungsstatus;
 	}
 
-	public void setBetreuungsstatus(Betreuungsstatus betreuungsstatus) {
+	public void setBetreuungsstatus(@Nonnull Betreuungsstatus betreuungsstatus) {
 		this.betreuungsstatus = betreuungsstatus;
 	}
 
@@ -254,14 +242,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.grundAblehnung = grundAblehnung;
 	}
 
-	public Integer getBetreuungNummer() {
-		return betreuungNummer;
-	}
-
-	public void setBetreuungNummer(Integer betreuungNummer) {
-		this.betreuungNummer = betreuungNummer;
-	}
-
 	@Nullable
 	public Verfuegung getVerfuegung() {
 		return verfuegung;
@@ -271,29 +251,34 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.verfuegung = verfuegung;
 	}
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	public BelegungTagesschule getBelegungTagesschule() {
 		return belegungTagesschule;
 	}
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	public void setBelegungTagesschule(@Nullable BelegungTagesschule belegungTagesschule) {
 		this.belegungTagesschule = belegungTagesschule;
 	}
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	public BelegungFerieninsel getBelegungFerieninsel() {
 		return belegungFerieninsel;
 	}
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	public void setBelegungFerieninsel(@Nullable BelegungFerieninsel belegungFerieninsel) {
 		this.belegungFerieninsel = belegungFerieninsel;
 	}
 
+	@Nonnull
 	public Boolean getVertrag() {
 		return vertrag;
 	}
 
-	public void setVertrag(Boolean vertrag) {
+	public void setVertrag(@Nonnull Boolean vertrag) {
 		this.vertrag = vertrag;
 	}
 
@@ -331,14 +316,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	public void setAbwesenheitMutiert(@Nullable Boolean abwesenheitMutiert) {
 		this.abwesenheitMutiert = abwesenheitMutiert;
-	}
-
-	public boolean isGueltig() {
-		return gueltig;
-	}
-
-	public void setGueltig(boolean gueltig) {
-		this.gueltig = gueltig;
 	}
 
 	@Nullable
@@ -432,13 +409,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return BetreuungsangebotTyp.TAGESSCHULE == getBetreuungsangebotTyp() || BetreuungsangebotTyp.FERIENINSEL == getBetreuungsangebotTyp();
 	}
 
-	@Nullable
+	@Override
+	@Nonnull
 	@Transient
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
-		if (getInstitutionStammdaten() != null) {
-			return getInstitutionStammdaten().getBetreuungsangebotTyp();
-		}
-		return null;
+		return getInstitutionStammdaten().getBetreuungsangebotTyp();
 	}
 
 	/**
@@ -447,29 +422,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Transient
 	public String getBetreuungsangebotTypTranslated(@Nonnull String sprache) {
 		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), Locale.forLanguageTag(sprache));
-	}
-
-	/**
-	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
-	 */
-	@Transient
-	@SuppressFBWarnings("NM_CONFUSING")
-	public String getBGNummer() {
-		// some users like Institutionen don't have access to the Kind, so it must be proved that getKind() doesn't return null
-		if (getKind() != null && getKind().getGesuch() != null) {
-			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
-			String betreuung = String.valueOf(getBetreuungNummer());
-			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
-		}
-		return "";
-	}
-
-	@Override
-	public int compareTo(@Nonnull Betreuung other) {
-		CompareToBuilder compareToBuilder = new CompareToBuilder();
-		compareToBuilder.append(this.getBetreuungNummer(), other.getBetreuungNummer());
-		compareToBuilder.append(this.getId(), other.getId());
-		return compareToBuilder.toComparison();
 	}
 
 	/**
@@ -503,11 +455,9 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@Nonnull
 	public Betreuung copyBetreuung(@Nonnull Betreuung target, @Nonnull AntragCopyType copyType, @Nonnull KindContainer targetKindContainer, @Nonnull Eingangsart targetEingangsart) {
-		super.copyAbstractEntity(target, copyType);
-
+		super.copyAbstractPlatz(target, copyType, targetKindContainer);
 		switch (copyType) {
 		case MUTATION:
-			target.setKind(targetKindContainer);
 			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			// Bereits verfuegte Betreuungen werden als BESTAETIGT kopiert, alle anderen behalten ihren Status
 			if (this.getBetreuungsstatus().isGeschlossenJA()) {
@@ -541,14 +491,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
 			}
 			target.setGrundAblehnung(this.getGrundAblehnung());
-			target.setBetreuungNummer(this.getBetreuungNummer());
 			target.setVerfuegung(null);
 			target.setVertrag(this.getVertrag());
 			target.setDatumAblehnung(this.getDatumAblehnung());
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);
 			target.setAbwesenheitMutiert(null);
-			target.setGueltig(false);
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
 
 			// EBEGU-1559
@@ -620,6 +568,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return extractGesuch().getDossier().getId();
 	}
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	// Funktion zum Kopieren von Tagesschule und Ferieninsel Angebote
 	public void copyAnmeldung(Betreuung betreuung) {
 		if (this.getBetreuungsstatus() != betreuung.getBetreuungsstatus()) {

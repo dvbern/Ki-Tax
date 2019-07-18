@@ -15,22 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.mocks;
+package ch.dvbern.ebegu.entities;
 
-import java.util.Collection;
-import java.util.Collections;
+import javax.persistence.Entity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.metamodel.Attribute;
+import org.hibernate.envers.Audited;
 
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+/**
+ * Entität für Ferieninseln
+ */
+@Entity
+@Audited
+public class Ferieninsel extends AbstractInstitution {
 
-public class CriteriaQueryHelperMock extends CriteriaQueryHelper {
+	private static final long serialVersionUID = -9037857320548372570L;
 
-	@Nonnull
-	@Override
-	public <A, E, E1 extends E> Collection<E1> getEntitiesByAttribute(@Nonnull Class<E1> entityClass, @Nullable A attributeValue, @Nonnull Attribute<E, A> attribute) {
-		return Collections.EMPTY_LIST;
+	public Ferieninsel() {
 	}
 }

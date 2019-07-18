@@ -17,56 +17,31 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von Institution in der Datenbank.
  */
 @Audited
 @Entity
-public class Institution extends AbstractMutableEntity implements HasMandant, Displayable {
+public class Institution extends AbstractInstitution {
 
 	private static final long serialVersionUID = -8706487439884760618L;
-
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = false)
-	@NotNull
-	private String name;
-
-	@Nullable
-	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_traegerschaft_id"))
-	private Traegerschaft traegerschaft;
-
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_mandant_id"))
-	private Mandant mandant;
 
 	@NotNull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
 
-	@NotNull
 	@Column(nullable = false)
 	private boolean stammdatenCheckRequired = false;
 
@@ -74,40 +49,12 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	public Institution() {
 	}
 
-	@Override
 	@Nonnull
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Nullable
-	public Traegerschaft getTraegerschaft() {
-		return traegerschaft;
-	}
-
-	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
-		this.traegerschaft = traegerschaft;
-	}
-
-	@Override
-	@NotNull
-	public Mandant getMandant() {
-		return mandant;
-	}
-
-	public void setMandant(@NotNull Mandant mandant) {
-		this.mandant = mandant;
-	}
-
 	public InstitutionStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(InstitutionStatus status) {
+	public void setStatus(@Nonnull InstitutionStatus status) {
 		this.status = status;
 	}
 
@@ -120,7 +67,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	}
 
 	public boolean isUnknownInstitution() {
-		return this.name.equals(Constants.UNKNOWN_INSTITUTION_NAME);
+		return this.getName().equals(Constants.UNKNOWN_INSTITUTION_NAME);
 	}
 
 	@Override
@@ -136,8 +83,8 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 			return false;
 		}
 		final Institution otherInstitution = (Institution) other;
-		return getStatus() == otherInstitution.getStatus() &&
-			Objects.equals(getName(), otherInstitution.getName());
+		return super.isSame(otherInstitution)
+			&& getStatus() == otherInstitution.getStatus();
 	}
 
 }

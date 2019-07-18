@@ -63,7 +63,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
-public class InstitutionStammdaten extends AbstractDateRangedEntity {
+public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 
 	private static final long serialVersionUID = -8403411439882700618L;
 
@@ -83,12 +83,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_institution_id"), nullable = false)
 	private Institution institution;
 
-	@NotNull
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
-	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = false)
-	private String mail;
-
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
@@ -103,11 +97,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	private String oeffnungszeiten;
-
-	@NotNull
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
-	private Adresse adresse;
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -147,14 +136,13 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Column(nullable = true)
 	private BigDecimal anzahlPlaetzeFirmen;
 
-	@Column(nullable = false)
-	private boolean sendMailWennOffenePendenzen = true;
-
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_tagesschule_id"), nullable = true)
 	private InstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 
+	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_ferieninsel_id"), nullable = true)
@@ -171,6 +159,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.iban = iban;
 	}
 
+	@Override
 	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
@@ -180,20 +169,13 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
+	@Nonnull
 	public Institution getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(Institution institution) {
+	public void setInstitution(@Nonnull Institution institution) {
 		this.institution = institution;
-	}
-
-	public Adresse getAdresse() {
-		return adresse;
-	}
-
-	public void setAdresse(Adresse adresse) {
-		this.adresse = adresse;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
@@ -232,14 +214,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setInstitutionStammdatenFerieninsel(@Nullable InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 
 	@Nullable
@@ -327,14 +301,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
-	public boolean getSendMailWennOffenePendenzen() {
-		return sendMailWennOffenePendenzen;
-	}
-
-	public void setSendMailWennOffenePendenzen(boolean sendMailWennOffenePendenzen) {
-		this.sendMailWennOffenePendenzen = sendMailWennOffenePendenzen;
-	}
-
 	/**
 	 * Returns true when today is contained in the Gueltigkeit range
 	 */
@@ -368,9 +334,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			return false;
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;
-		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
-			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
-			Objects.equals(getIban(), otherInstStammdaten.getIban()) &&
-			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse());
+		return getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp()
+			&& EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution())
+			&& Objects.equals(getIban(), otherInstStammdaten.getIban());
 	}
 }
