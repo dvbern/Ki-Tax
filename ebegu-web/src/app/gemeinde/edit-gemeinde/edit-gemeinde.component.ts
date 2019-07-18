@@ -52,6 +52,7 @@ export class EditGemeindeComponent implements OnInit {
     private hasTS: Observable<boolean>;
     private hasFI: Observable<boolean>;
     private hasBG: Observable<boolean>;
+    public editMode: boolean = false;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -170,11 +171,12 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
 
-        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-            ? 'gemeinde.view'
-            : this.navigationSource;
-
-        this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
+        this.editMode = false;
+        // const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
+        //     ? 'gemeinde.view'
+        //     : this.navigationSource;
+        //
+        // this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
     }
 
     public isRegistering(): boolean {
@@ -193,5 +195,9 @@ export class EditGemeindeComponent implements OnInit {
         this.hasBG = from(this.einstellungRS.hasBetreuungsgutscheineInAnyGesuchsperiode(
             this.gemeindeId,
         ).then(response => response));
+    }
+
+    public setEditMode(): void {
+        this.editMode = true;
     }
 }

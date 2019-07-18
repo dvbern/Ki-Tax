@@ -27,6 +27,7 @@ export class EditGemeindeComponentFI implements OnInit {
 
     @Input() public form: NgForm;
     @Input() private gemeindeId: string;
+    @Input() public editMode: boolean;
 
     public constructor(
     ) {

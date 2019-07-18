@@ -32,6 +32,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() public beguStartStr: string;
     @Input() private gemeindeId: string;
+    @Input() public editMode: boolean;
 
     public constructor(
     ) {

@@ -17,40 +17,66 @@
 
 <div class="dv-content"
      *ngIf="stammdaten$ | async as stammdaten">
-    <fieldset>
-        <div class="row">
-            <!-- Betreuungsgutscheine anbieten ab -->
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <h3 translate>BEGU_START</h3>
-                    <p>{{beguStartStr}}</p>
+    <div *ngIf="editMode; else viewModeTemplate">
+        <fieldset>
+            <div class="row">
+                <!-- Betreuungsgutscheine anbieten ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>BEGU_START</h3>
+                        <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+                <!-- Standardverantwortliche BG -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate
+                            class="required"
+                            for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
+                        <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
+                                    id="verantwortliche_bg_id"
+                                    name="verantwortliche_bg_id"
+                                    class="form-control"
+                                    [compareWith]="compareBenutzer"
+                                    required>
+                            <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                {{vbg.vorname}} {{vbg.nachname}}
+                            </mat-option>
+                        </mat-select>
+                        <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
+                                           inputId="verantwortliche_bg_id"></dv-error-messages>
+                    </div>
                 </div>
             </div>
-            <!-- Standardverantwortliche BG -->
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <h3 translate
-                        class="required"
-                        for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
-                    <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
-                                id="verantwortliche_bg_id"
-                                name="verantwortliche_bg_id"
-                                class="form-control"
-                                [compareWith]="compareBenutzer"
-                                required>
-                        <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                            {{vbg.vorname}} {{vbg.nachname}}
-                        </mat-option>
-                    </mat-select>
-                    <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
-                                       inputId="verantwortliche_bg_id"></dv-error-messages>
-                </div>
-            </div>
-        </div>
-        <dv-gemeinde-konfiguration
-            [konfigurationsListe]="stammdaten.konfigurationsListe"
-            [gemeindeStatus]="stammdaten.gemeinde.status">
-        </dv-gemeinde-konfiguration>
-    </fieldset>
-</div>
+            <dv-gemeinde-konfiguration
+                [konfigurationsListe]="stammdaten.konfigurationsListe"
+                [gemeindeStatus]="stammdaten.gemeinde.status">
+            </dv-gemeinde-konfiguration>
+        </fieldset>
+    </div>
 
+    <ng-template #viewModeTemplate>
+        <fieldset>
+            <div class="row">
+                <!-- Betreuungsgutscheine anbieten ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>BEGU_START</h3>
+                        <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+                <!-- Standardverantwortliche -->
+                <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>STANDARD_VERANTWORTLICHE</h3>
+                        <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
+                    </div>
+                </div>
+            </div>
+            <dv-gemeinde-konfiguration
+                [konfigurationsListe]="stammdaten.konfigurationsListe"
+                [gemeindeStatus]="stammdaten.gemeinde.status">
+            </dv-gemeinde-konfiguration>
+        </fieldset>
+    </ng-template>
+</div>

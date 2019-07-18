@@ -15,24 +15,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {Observable} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
+import {Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 
 @Component({
     selector: 'dv-edit-gemeinde-stammdaten',
     templateUrl: './edit-gemeinde-stammdaten.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditGemeindeComponentStammdaten implements OnInit {
+export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     @Input() public form: NgForm;
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private gemeindeId: string;
     @Input() public keineBeschwerdeAdresse: boolean;
+    @Input() public editMode: boolean;
+    public korrespondenzsprache: string;
+
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -40,5 +50,27 @@ export class EditGemeindeComponentStammdaten implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
+        this.stammdaten$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+            stammdaten => this.initStrings(stammdaten),
+            err => LOG.error(err)
+        );
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    private initStrings(stammdaten: TSGemeindeStammdaten): void {
+        const languages: string[] = [];
+        if (stammdaten.korrespondenzspracheDe) {
+            languages.push(this.translate.instant('DEUTSCH'));
+        }
+        if (stammdaten.korrespondenzspracheFr) {
+            languages.push(this.translate.instant('FRANZOESISCH'));
+        }
+        this.korrespondenzsprache = languages.join(', ');
     }
 }

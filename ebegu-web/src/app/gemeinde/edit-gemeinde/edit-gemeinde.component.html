@@ -39,6 +39,7 @@
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
                                              [keineBeschwerdeAdresse]="keineBeschwerdeAdresse"
+                                             [editMode]="editMode"
                                              [form]="form">
                 </dv-edit-gemeinde-stammdaten>
             </mat-tab>
@@ -47,18 +48,21 @@
                 <dv-edit-gemeinde-bg [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
                                      [beguStartStr]="beguStartStr"
+                                     [editMode]="editMode"
                                      [form]="form">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"
                      *ngIf="hasTS | async">
                 <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
+                                     [editMode]="editMode"
                                      [form]="form">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}"
                      *ngIf="hasFI | async">
                 <dv-edit-gemeinde-fi [gemeindeId]="gemeindeId"
+                                     [editMode]="editMode"
                                      [form]="form">
                 </dv-edit-gemeinde-fi>
             </mat-tab>
@@ -66,7 +70,12 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
+            <dv-loading-button *ngIf="!editMode"
+                               (buttonClick)="setEditMode()">
+                <span translate>GEMEINDE_EDIT</span>
+            </dv-loading-button>
+            <dv-loading-button *ngIf="editMode"
+                               [type]="'submit'">
                 <span translate>GEMEINDE_SPEICHERN</span>
             </dv-loading-button>
 
