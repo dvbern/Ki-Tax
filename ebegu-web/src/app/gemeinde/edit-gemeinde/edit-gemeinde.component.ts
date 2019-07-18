@@ -37,6 +37,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ['./edit-gemeinde.component.less'],
 })
 export class EditGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
