@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -47,7 +49,10 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 	// every Zeitabschnitt containing any date of this.gueltigkeit
 	// merged by its part of the current Gueltigkeit into one monthly (=this.gueltigkeit) Betreuungspensum.
 	@Transient
-	private Betreuungspensum originalPensumMerged = null;
+	private BigDecimal originalPensumMerged = null;
+
+	@Transient
+	private BigDecimal originalKostenMerged = null;
 
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
@@ -57,12 +62,36 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 		this.status = status;
 	}
 
-	public Betreuungspensum getOriginalPensumMerged() {
+	public BigDecimal getOriginalPensumMerged() {
 		return originalPensumMerged;
 	}
 
-	public void setOriginalPensumMerged(Betreuungspensum originalPensumMerged) {
+	public void setOriginalPensumMerged(BigDecimal originalPensumMerged) {
 		this.originalPensumMerged = originalPensumMerged;
+	}
+
+	public BigDecimal getOriginalKostenMerged() {
+		return originalKostenMerged;
+	}
+
+	public void setOriginalKostenMerged(BigDecimal originalKostenMerged) {
+		this.originalKostenMerged = originalKostenMerged;
+	}
+
+	public void addPensum(BigDecimal pensum) {
+		if (originalPensumMerged == null) {
+			this.originalPensumMerged = pensum;
+		} else {
+			this.originalPensumMerged.add(pensum);
+		}
+	}
+
+	public void addKosten(BigDecimal kosten) {
+		if (originalKostenMerged == null) {
+			this.originalKostenMerged = kosten;
+		} else {
+			this.originalKostenMerged.add(kosten);
+		}
 	}
 
 	public Betreuung getBetreuung() {

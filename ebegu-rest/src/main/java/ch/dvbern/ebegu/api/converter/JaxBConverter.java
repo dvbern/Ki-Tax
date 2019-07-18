@@ -22,6 +22,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +39,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -2538,30 +2541,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(Betreuung betreuung) {
 
-		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
-		LocalDate from = gp.getGueltigkeit().getGueltigAb();
-		LocalDate to = gp.getGueltigkeit().getGueltigBis();
-
-		List<JaxBetreuungspensumAbweichung> abweichungen = new ArrayList<>();
-
-		while (from.isBefore(to)) {
-			JaxBetreuungspensumAbweichung abweichung = new JaxBetreuungspensumAbweichung();
-//			abweichung.setOriginalPensumMerged(null); // TODO
-			abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
-			YearMonth month = YearMonth.from(from);
-			abweichung.setGueltigAb(month.atDay(1));
-			abweichung.setGueltigBis(month.atEndOfMonth());
-
-			abweichung.setUnitForDisplay(PensumUnits.DAYS);
-			if (betreuung.isAngebotTagesfamilien()) {
-				abweichung.setUnitForDisplay(PensumUnits.HOURS);
-			}
-
-			abweichungen.add(abweichung);
-			from = from.plusMonths(1);
-		}
-
-		return abweichungen;
+		dfdfsfdsfs
 	}
 
 	@Nullable
@@ -4211,5 +4191,89 @@ public class JaxBConverter extends AbstractConverter {
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 		return konfiguration;
+	}
+
+	// we need to purge empty BetreuungspensumAbweichungen so we do not lose the DB constraint
+	private List<JaxBetreuungspensumAbweichung> purgeJaxAbweichungen(List<JaxBetreuungspensumAbweichung> abweichungen) {
+		return abweichungen.stream()
+			.filter(abweichung -> abweichung.getMonatlicheBetreuungskosten().compareTo(BigDecimal.ZERO) > 0
+				&& abweichung.getPensum().compareTo(BigDecimal.ZERO) > 0
+				&& abweichung.getOriginalPensumMerged() != null).collect(Collectors.toList());
+	}
+
+	private List<BetreuungspensumAbweichung> fillAbweichungen(Betreuung betreuung) {
+		// TODO KIBON-621: fill with
+		return initEmptyAbweichungen(betreuung)
+			.stream(abweichung -> extractOriginalPensum(betreuung.getBetreuungspensumContainers(), abweichung));
+	}
+
+	private BetreuungspensumAbweichung extractOriginalPensum(Set<BetreuungspensumContainer> pensen,
+		BetreuungspensumAbweichung abweichung) {
+
+		LocalDate abweichungVon = abweichung.getGueltigkeit().getGueltigAb();
+		LocalDate abweichungBis = abweichung.getGueltigkeit().getGueltigBis();
+
+		for (BetreuungspensumContainer container : pensen) {
+			Betreuungspensum pensum = container.getBetreuungspensumJA();
+			LocalDate von = pensum.getGueltigkeit().getGueltigAb();
+			LocalDate bis = pensum.getGueltigkeit().getGueltigBis();
+
+			if ((von.isBefore(abweichungVon) || von.getMonth().equals(abweichungVon.getMonth()))
+				&& (bis.isAfter(abweichungBis) || bis.getMonth().equals(abweichungBis.getMonth()))) {
+				//HIT!!
+				if (von.isBefore(abweichungVon)) {
+					von = abweichungVon;
+				}
+
+				if (bis.isAfter(abweichungVon)) {
+					bis = abweichungBis;
+				}
+				BigDecimal anteil = calculateAnteilMonatInklWeekend(von, bis);
+				abweichung.addPensum(pensum.getPensum().multiply(anteil));
+				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
+			}
+		}
+		return abweichung;
+	}
+
+	private BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
+		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
+		long nettoTageIntervall = daysBetween(von, bis);
+		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall),
+			MathUtil.EXACT.from(nettoTageMonat));
+	}
+
+	protected long daysBetween(@Nonnull LocalDate start, @Nonnull LocalDate end) {
+		return Stream.iterate(start, d -> d.plusDays(1))
+			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
+			.count();
+	}
+
+	// initiate an empty BetreuungspensumAbweichung for every month within the Gesuchsperiode
+	private List<BetreuungspensumAbweichung> initEmptyAbweichungen(Betreuung betreuung) {
+		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
+		LocalDate from = gp.getGueltigkeit().getGueltigAb();
+		LocalDate to = gp.getGueltigkeit().getGueltigBis();
+
+		List<BetreuungspensumAbweichung> abweichungen = new ArrayList<>();
+
+		while (from.isBefore(to)) {
+			BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
+			abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
+			YearMonth month = YearMonth.from(from);
+			abweichung.setGueltigkeit(new DateRange(month.atDay(1), month.atEndOfMonth()));
+
+			abweichung.setUnitForDisplay(PensumUnits.DAYS);
+			if (betreuung.isAngebotTagesfamilien()) {
+				abweichung.setUnitForDisplay(PensumUnits.HOURS);
+			}
+
+			abweichungen.add(abweichung);
+			from = from.plusMonths(1);
+		}
+
+		return abweichungen;
 	}
 }
