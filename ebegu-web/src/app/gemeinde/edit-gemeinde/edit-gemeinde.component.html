@@ -48,21 +48,21 @@
                 <dv-edit-gemeinde-bg [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
                                      [beguStartStr]="beguStartStr"
-                                     [editMode]="editMode"
+                                     [editMode]="editModeForBG()"
                                      [form]="form">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"
                      *ngIf="hasTS | async">
                 <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
-                                     [editMode]="editMode"
+                                     [editMode]="editModeForTSFI()"
                                      [form]="form">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}"
                      *ngIf="hasFI | async">
                 <dv-edit-gemeinde-fi [gemeindeId]="gemeindeId"
-                                     [editMode]="editMode"
+                                     [editMode]="editModeForTSFI()"
                                      [form]="form">
                 </dv-edit-gemeinde-fi>
             </mat-tab>

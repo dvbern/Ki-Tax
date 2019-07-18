@@ -78,7 +78,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(EinstellungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class EinstellungServiceBean extends AbstractBaseService implements EinstellungService {
 
 	@Inject
@@ -326,6 +326,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	}
 
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public boolean findEinstellungInAnyGesuchsperiode(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull EinstellungKey einstellungKey,

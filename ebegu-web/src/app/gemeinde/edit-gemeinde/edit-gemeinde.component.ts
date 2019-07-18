@@ -22,6 +22,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
@@ -61,6 +62,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -171,12 +173,15 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
 
-        this.editMode = false;
-        // const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-        //     ? 'gemeinde.view'
-        //     : this.navigationSource;
-        //
-        // this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
+        if (!this.editMode) {
+            const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
+                ? 'gemeinde.edit'
+                : this.navigationSource;
+
+            this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
+        }
+
+        this.setViewMode();
     }
 
     public isRegistering(): boolean {
@@ -199,5 +204,23 @@ export class EditGemeindeComponent implements OnInit {
 
     public setEditMode(): void {
         this.editMode = true;
+    }
+
+    private setViewMode(): void {
+        this.editMode = false;
+    }
+
+    public editModeForBG(): boolean {
+        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+           return this.editMode;
+        }
+        return false;
+    }
+
+    public editModeForTSFI(): boolean {
+        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+           return this.editMode;
+        }
+        return false;
     }
 }

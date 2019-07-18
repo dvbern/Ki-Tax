@@ -63,14 +63,6 @@ const states: Ng2StateDeclaration[] = [
             },
         },
     },
-    {
-        name: 'gemeinde.edit',
-        url: '/view/:gemeindeId',
-        component: EditGemeindeComponent,
-        data: {
-            roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-        },
-    },
 ];
 
 @NgModule({
