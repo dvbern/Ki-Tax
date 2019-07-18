@@ -161,26 +161,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Standardverantwortliche BG -->
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label translate
-                                           class="required"
-                                           for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</label>
-                                    <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
-                                                id="verantwortliche_bg_id"
-                                                name="verantwortliche_bg_id"
-                                                class="form-control"
-                                                [compareWith]="compareBenutzer"
-                                                required>
-                                        <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                                            {{vbg.vorname}} {{vbg.nachname}}
-                                        </mat-option>
-                                    </mat-select>
-                                    <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
-                                                       inputId="verantwortliche_bg_id"></dv-error-messages>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
@@ -370,6 +350,26 @@
                                 <div class="form-group">
                                     <h3 translate>BEGU_START</h3>
                                     <p>{{beguStartStr}}</p>
+                                </div>
+                            </div>
+                            <!-- Standardverantwortliche BG -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <h3 translate
+                                        class="required"
+                                        for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
+                                    <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
+                                                id="verantwortliche_bg_id"
+                                                name="verantwortliche_bg_id"
+                                                class="form-control"
+                                                [compareWith]="compareBenutzer"
+                                                required>
+                                        <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                            {{vbg.vorname}} {{vbg.nachname}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
+                                                       inputId="verantwortliche_bg_id"></dv-error-messages>
                                 </div>
                             </div>
                         </div>
