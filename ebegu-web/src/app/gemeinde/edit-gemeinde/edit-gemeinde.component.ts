@@ -21,6 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
@@ -48,6 +49,9 @@ export class EditGemeindeComponent implements OnInit {
     private fileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;
+    private hasTS: Observable<boolean>;
+    private hasFI: Observable<boolean>;
+    private hasBG: Observable<boolean>;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -55,6 +59,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -81,6 +86,9 @@ export class EditGemeindeComponent implements OnInit {
                 if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
                     this.beguStartStr = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
                 }
+
+                this.getEinstellungenFromGemeinde();
+
                 return stammdaten;
             }));
     }
@@ -175,5 +183,19 @@ export class EditGemeindeComponent implements OnInit {
 
     public isRegistering(): boolean {
         return this.isRegisteringGemeinde;
+    }
+
+    private getEinstellungenFromGemeinde(): void {
+        this.hasTS = from(this.einstellungRS.hasTagesschuleInAnyGesuchsperiode(
+            this.gemeindeId,
+        ).then(response => response));
+
+        this.hasFI = from(this.einstellungRS.hasFerieninselInAnyGesuchsperiode(
+            this.gemeindeId,
+        ).then(response => response));
+
+        this.hasBG = from(this.einstellungRS.hasBetreuungsgutscheineInAnyGesuchsperiode(
+            this.gemeindeId,
+        ).then(response => response));
     }
 }

@@ -123,6 +123,15 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		return findEinstellung(EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT, new Gemeinde(), new Gesuchsperiode());
 	}
 
+	@Override
+	public boolean findEinstellungInAnyGesuchsperiode(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull EinstellungKey einstellungKey,
+		@Nonnull String value
+	) {
+		return true;
+	}
+
 	@Nonnull
 	@Override
 	public Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode) {

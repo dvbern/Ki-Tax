@@ -54,10 +54,10 @@ export class EinstellungRS {
 
     public findEinstellung(
         key: TSEinstellungKey,
-        gemeinde: TSGemeinde,
-        gesuchsperiode: TSGesuchsperiode,
+        gemeindeId: string,
+        gesuchsperiodeId: string,
     ): IPromise<TSEinstellung> {
-        return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeinde.id}/gp/${gesuchsperiode.id}`)
+        return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`)
             .then((param: IHttpResponse<TSEinstellung>) => {
                 return param.data;
             });
@@ -90,5 +90,26 @@ export class EinstellungRS {
     // e.g. printing the name of the current user
     public tageschuleEnabledForMandant$(): Observable<TSEinstellung | null> {
         return this._tageschuleEnabledForMandant$;
+    }
+
+    public hasTagesschuleInAnyGesuchsperiode(gemeindeId: string): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/hasTagesschule/gemeinde/${gemeindeId}`)
+            .then((param: any) => {
+                return param.data;
+            });
+    }
+
+    public hasFerieninselInAnyGesuchsperiode(gemeindeId: string): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/hasFerieninsel/gemeinde/${gemeindeId}`)
+            .then((param: any) => {
+                return param.data;
+            });
+    }
+
+    public hasBetreuungsgutscheineInAnyGesuchsperiode(gemeindeId: string): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/hasBetreuungsgutscheine/gemeinde/${gemeindeId}`)
+            .then((param: any) => {
+                return param.data;
+            });
     }
 }

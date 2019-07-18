@@ -1607,5 +1607,9 @@
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
     "FILTER": "Filter",
     "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
-    "MANDANT_AMT": "Sozialamt"
+    "MANDANT_AMT": "Sozialamt",
+    "GEMEINDE_TAB_STAMMDATEN": "Stammdaten",
+    "GEMEINDE_TAB_BG": "Betreuungsgutscheine",
+    "GEMEINDE_TAB_TS": "Tagesschule",
+    "GEMEINDE_TAB_FI": "Ferieninsel"
 }

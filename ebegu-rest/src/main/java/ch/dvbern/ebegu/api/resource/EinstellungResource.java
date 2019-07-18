@@ -126,6 +126,67 @@ public class EinstellungResource {
 		return converter.einstellungToJAX(einstellungService.findEinstellung(einstellungKey, gemeinde, gp));
 	}
 
+	@ApiOperation(value = "Returns true if the given Gemeinde has Tagesschule configured in any Gesuchsperiode",
+		response = JaxEinstellung.class)
+	@Nullable
+	@GET
+	@Path("/hasTagesschule/gemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasTagesschuleInAnyGesuchsperiode(
+		@Nonnull @PathParam("gemeindeId") String gemeindeId
+	) {
+		return hasEinstellungWithGivenValueInAnyGesuchsperiode(
+			gemeindeId,
+			EinstellungKey.TAGESSCHULE_ENABLED_FOR_GEMEINDE,
+			"true");
+	}
+
+	@ApiOperation(value = "Returns true if the given Gemeinde has Ferieninsel configured in any Gesuchsperiode",
+		response = JaxEinstellung.class)
+	@Nullable
+	@GET
+	@Path("/hasFerieninsel/gemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasFerieninselInAnyGesuchsperiode(
+		@Nonnull @PathParam("gemeindeId") String gemeindeId
+	) {
+		return hasEinstellungWithGivenValueInAnyGesuchsperiode(
+			gemeindeId,
+			EinstellungKey.FERIENINSEL_ENABLED_FOR_GEMEINDE,
+			"true");
+	}
+
+	@ApiOperation(value = "Returns true if the given Gemeinde has Betreuungsgutscheine configured in any Gesuchsperiode",
+		response = JaxEinstellung.class)
+	@Nullable
+	@GET
+	@Path("/hasBetreuungsgutscheine/gemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasBetreuungsgutscheineInAnyGesuchsperiode(
+		@Nonnull @PathParam("gemeindeId") String gemeindeId
+	) {
+		return hasEinstellungWithGivenValueInAnyGesuchsperiode(
+			gemeindeId,
+			EinstellungKey.BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE,
+			"true");
+	}
+
+	private Response hasEinstellungWithGivenValueInAnyGesuchsperiode(
+		@Nonnull String gemeindeId,
+		@Nonnull EinstellungKey key,
+		@SuppressWarnings("SameParameterValue") @Nonnull String value
+	) {
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("findEinstellung",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		return Response.ok(
+			einstellungService.findEinstellungInAnyGesuchsperiode(gemeinde, key, value)
+		).build();
+	}
+
 	@ApiOperation(value = "Gibt zurück, ob für den Mandanten des eingeloggten Benutzers die Tagesschulanmeldungen aktiviert sind",
 		response = JaxEinstellung.class)
 	@Nullable
@@ -151,12 +212,11 @@ public class EinstellungResource {
 		Objects.requireNonNull(id.getId());
 		String gesuchsperiodeId = converter.toEntityId(id);
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
-		if (gesuchsperiode.isPresent()) {
-			return einstellungService.getAllEinstellungenBySystem(gesuchsperiode.get()).stream()
+		return gesuchsperiode
+			.map(value -> einstellungService.getAllEinstellungenBySystem(value)
+				.stream()
 				.map(einstellung -> converter.einstellungToJAX(einstellung))
-				.collect(Collectors.toList());
-		}
-		return Collections.emptyList();
+				.collect(Collectors.toList())).orElse(Collections.emptyList());
 	}
 
 	@ApiOperation(value = "Get all kiBon parameter for a specific Gesuchsperiode. The id of the gesuchsperiode is " +
@@ -172,11 +232,10 @@ public class EinstellungResource {
 		Objects.requireNonNull(id.getId());
 		String gesuchsperiodeId = converter.toEntityId(id);
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
-		if (gesuchsperiode.isPresent()) {
-			return einstellungService.getAllEinstellungenByMandant(gesuchsperiode.get()).stream()
+		return gesuchsperiode
+			.map(value -> einstellungService.getAllEinstellungenByMandant(value)
+				.stream()
 				.map(einstellung -> converter.einstellungToJAX(einstellung))
-				.collect(Collectors.toList());
-		}
-		return Collections.emptyList();
+				.collect(Collectors.toList())).orElse(Collections.emptyList());
 	}
 }

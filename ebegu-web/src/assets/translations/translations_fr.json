@@ -1607,5 +1607,9 @@
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Oui, rendre une décision",
     "FILTER": "Filtre",
     "MANDANT_DIREKTION": "Direction de la santé publique et de la prévoyance sociale",
-    "MANDANT_AMT": "Office des affaires sociales"
+    "MANDANT_AMT": "Office des affaires sociales",
+    "GEMEINDE_TAB_STAMMDATEN": "Données de base",
+    "GEMEINDE_TAB_BG": "Bons de garde",
+    "GEMEINDE_TAB_TS": "Ecole à journée continue",
+    "GEMEINDE_TAB_FI": "Ilots de vacances"
 }

@@ -157,8 +157,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         // Die Einstellung bezueglich Kontingentierung lesen
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-            this.gesuchModelManager.getDossier().gemeinde,
-            this.gesuchModelManager.getGesuchsperiode(),
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getGesuchsperiode().id,
         )
             .then(response => {
                 this.kontingentierungEnabled = JSON.parse(response.value);

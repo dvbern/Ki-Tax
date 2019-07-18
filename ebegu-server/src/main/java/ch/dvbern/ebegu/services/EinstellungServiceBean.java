@@ -324,4 +324,16 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 		return einstellung;
 	}
+
+	@Override
+	public boolean findEinstellungInAnyGesuchsperiode(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull EinstellungKey einstellungKey,
+		@Nonnull String value
+	) {
+		return gesuchsperiodeService.getAllGesuchsperioden().stream()
+			.anyMatch(gesuchsperiode ->
+				findEinstellung(einstellungKey, gemeinde, gesuchsperiode).getValue().equals(value)
+			);
+	}
 }
