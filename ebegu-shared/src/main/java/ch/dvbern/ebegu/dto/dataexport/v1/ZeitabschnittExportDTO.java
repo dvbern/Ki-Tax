@@ -23,14 +23,15 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
- * This is a DTO that is used to export the relevant Information about a {@link ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt}.
+ * This is a DTO that is used to export the relevant Information about a {@link VerfuegungZeitabschnitt}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class  ZeitabschnittExportDTO implements Comparable<ZeitabschnittExportDTO> {
+public class  ZeitabschnittExportDTO {
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -203,10 +204,5 @@ public class  ZeitabschnittExportDTO implements Comparable<ZeitabschnittExportDT
 			minimalerElternbeitrag,
 			verguenstigung
 		);
-	}
-
-	@Override
-	public int compareTo(ZeitabschnittExportDTO o) {
-		return getVon().compareTo(o.getVon());
 	}
 }
