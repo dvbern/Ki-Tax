@@ -62,7 +62,7 @@
                 <tbody>
                 <tr ng-repeat="betreuung in vm.displayedCollection"
                     st-select-mode="single" role="row" tabindex="-1">
-                    <td>{{vm.getAbweichung($index).gueltigkeit.gueltigAb}}</td>
+                    <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
                     <td>
                         <input aria-describedby="provMonatlicheBetreuungskosten-error"
                                id="provMonatlicheBetreuungskosten" type="number"

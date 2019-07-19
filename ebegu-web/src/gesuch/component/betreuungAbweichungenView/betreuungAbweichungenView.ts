@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {DatePipe} from '@angular/common';
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -140,6 +141,10 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
 
         return undefined;
+    }
+
+    public getFormattedDate(abweichung: TSBetreuungspensumAbweichung) {
+        return `${abweichung.gueltigkeit.gueltigAb.month() + 1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
     }
 
     private percentageToEffective(abweichung: TSBetreuungspensumAbweichung) {
