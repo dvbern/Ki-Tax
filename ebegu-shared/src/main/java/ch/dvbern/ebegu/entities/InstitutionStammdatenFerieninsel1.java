@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -51,6 +52,8 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_fi_gueltig_bis", columnList = "gueltigBis")
 	}
 )
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverride(name="adresse", joinColumns=@JoinColumn(name="adresse_id"), foreignKey = @ForeignKey(name = "FK_institution_stammdaten_ferieninsel_adresse_id"))
 // TODO (KIBON-616): Umbenennen
 public class InstitutionStammdatenFerieninsel1 extends AbstractInstitutionStammdaten {
 

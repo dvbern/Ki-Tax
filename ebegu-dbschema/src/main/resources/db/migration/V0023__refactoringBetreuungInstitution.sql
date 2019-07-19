@@ -241,7 +241,6 @@ alter table institution_stammdaten_tagesschule1
 alter table institution_stammdaten_tagesschule1
 	add constraint UK_institution_stammdaten_ts_tagesschule_id unique (tagesschule_id);
 
-
 alter table anmeldung_ferieninsel_aud
 	add constraint FK_anmeldung_ferieninsel_aud_revinfo
 foreign key (rev)
@@ -253,7 +252,7 @@ foreign key (rev)
 references revinfo (rev);
 
 alter table anmeldung_ferieninsel
-	add constraint FK_betreuung_kind_id
+	add constraint FK_anmeldung_ferieninsel_kind_id
 foreign key (fi_kind_id)
 references kind_container (id);
 
@@ -268,7 +267,7 @@ foreign key (institution_stammdaten_id)
 references institution_stammdaten_ferieninsel1 (id);
 
 alter table anmeldung_tagesschule
-	add constraint FK_betreuung_kind_id
+	add constraint FK_anmeldung_tagesschule_kind_id
 foreign key (ts_kind_id)
 references kind_container (id);
 
@@ -283,12 +282,12 @@ foreign key (institution_stammdaten_id)
 references institution_stammdaten_tagesschule1 (id);
 
 alter table ferieninsel
-	add constraint FK_institution_mandant_id
+	add constraint FK_ferieninsel_mandant_id
 foreign key (mandant_id)
 references mandant (id);
 
 alter table ferieninsel
-	add constraint FK_institution_traegerschaft_id
+	add constraint FK_ferieninsel_traegerschaft_id
 foreign key (traegerschaft_id)
 references traegerschaft (id);
 
@@ -297,19 +296,18 @@ alter table ferieninsel_aud
 foreign key (rev)
 references revinfo (rev);
 
-
 alter table institution_stammdaten_ferieninsel1_aud
-	add constraint FK_institution_stammdaten_ferieninsel_aud_revinfo
+	add constraint FK_institution_stammdaten_fi_ferieninsel_aud_revinfo
 foreign key (rev)
 references revinfo (rev);
-
 
 alter table institution_stammdaten_tagesschule1_aud
-	add constraint FK_institution_stammdaten_tagesschule_aud_revinfo
+	add constraint FK_institution_stammdaten_ts_tagesschule_aud_revinfo
 foreign key (rev)
 references revinfo (rev);
+
 alter table institution_stammdaten_ferieninsel1
-	add constraint FK_institution_stammdaten_adresse_id
+	add constraint FK_institution_stammdaten_ferieninsel_adresse_id
 foreign key (adresse_id)
 references adresse (id);
 
@@ -319,7 +317,7 @@ foreign key (ferieninsel_id)
 references ferieninsel (id);
 
 alter table institution_stammdaten_tagesschule1
-	add constraint FK_institution_stammdaten_adresse_id
+	add constraint FK_institution_stammdaten_tagesschule_adresse_id
 foreign key (adresse_id)
 references adresse (id);
 
@@ -329,12 +327,12 @@ foreign key (tagesschule_id)
 references tagesschule (id);
 
 alter table tagesschule
-	add constraint FK_institution_mandant_id
+	add constraint FK_tagesschule_mandant_id
 foreign key (mandant_id)
 references mandant (id);
 
 alter table tagesschule
-	add constraint FK_institution_traegerschaft_id
+	add constraint FK_tagesschule_traegerschaft_id
 foreign key (traegerschaft_id)
 references traegerschaft (id);
 

@@ -42,13 +42,11 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@AssociationOverride(name="kind", joinColumns={@JoinColumn(name="ts_kind_id")}, foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id"))
-//@AssociationOverrides(
-//	@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id"))
-//)
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverride(name = "kind", joinColumns = @JoinColumn(name = "kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id"))
 @Table(
 	uniqueConstraints =
-	@UniqueConstraint(columnNames = { "betreuungNummer", "ts_kind_id" }, name = "UK_anmeldung_tagesschule_kind_betreuung_nummer")
+	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_anmeldung_tagesschule_kind_betreuung_nummer")
 )
 public class AnmeldungTagesschule extends AbstractAnmeldung {
 
@@ -71,14 +69,6 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	public AnmeldungTagesschule() {
 	}
 
-////	@Override
-//	@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id"))
-//	@Override
-//	@ManyToOne(optional = false)
-//	@JoinColumn(foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id"), nullable = false)
-//	public KindContainer getKind() {
-//		return super.getKind();
-//	}
 
 	@NotNull
 	public InstitutionStammdatenTagesschule1 getInstitutionStammdaten() {

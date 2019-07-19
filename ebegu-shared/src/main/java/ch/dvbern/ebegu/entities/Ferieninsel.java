@@ -17,7 +17,11 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 
 import org.hibernate.envers.Audited;
 
@@ -26,6 +30,11 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverrides({
+	@AssociationOverride(name = "traegerschaft", joinColumns = @JoinColumn(name = "traegerschaft_id"), foreignKey = @ForeignKey(name = "FK_ferieninsel_traegerschaft_id")),
+	@AssociationOverride(name = "mandant", joinColumns = @JoinColumn(name = "mandant_id"), foreignKey = @ForeignKey(name = "FK_ferieninsel_mandant_id"))
+})
 public class Ferieninsel extends AbstractInstitution {
 
 	private static final long serialVersionUID = -9037857320548372570L;

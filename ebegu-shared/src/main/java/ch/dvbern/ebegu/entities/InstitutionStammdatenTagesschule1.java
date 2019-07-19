@@ -22,6 +22,7 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -54,6 +55,8 @@ import org.hibernate.envers.Audited;
 		@Index(name = "IX_institution_stammdaten_ts_gueltig_bis", columnList = "gueltigBis")
 	}
 )
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverride(name="adresse", joinColumns=@JoinColumn(name="adresse_id"), foreignKey = @ForeignKey(name = "FK_institution_stammdaten_tagesschule_adresse_id"))
 // TODO (KIBON-616): Umbenennen
 public class InstitutionStammdatenTagesschule1 extends AbstractInstitutionStammdaten {
 

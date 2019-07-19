@@ -39,7 +39,6 @@ import org.hibernate.envers.Audited;
 @MappedSuperclass
 @Audited
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class AbstractAnmeldung extends AbstractPlatz {
 
 	private static final long serialVersionUID = -9037857320548372570L;

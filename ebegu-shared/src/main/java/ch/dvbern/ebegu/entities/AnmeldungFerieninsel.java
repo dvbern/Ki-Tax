@@ -42,10 +42,11 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="fi_kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_kind_id"))
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_kind_id"))
 @Table(
 	uniqueConstraints =
-	@UniqueConstraint(columnNames = { "betreuungNummer", "fi_kind_id" }, name = "UK_anmeldung_ferieninsel_kind_betreuung_nummer")
+	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_anmeldung_ferieninsel_kind_betreuung_nummer")
 )
 public class AnmeldungFerieninsel extends AbstractAnmeldung {
 

@@ -25,7 +25,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -41,18 +43,17 @@ import org.hibernate.envers.Audited;
 @MappedSuperclass
 @Audited
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@Inheritance(strategy = InheritanceType.JOINED)
-//@Table(
-//	uniqueConstraints =
-//	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_anmeldung_ferieninsel_kind_betreuung_nummer")
-//)
+@Table(
+	uniqueConstraints =
+	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_platz_kind_betreuung_nummer")
+)
 public abstract class AbstractPlatz extends AbstractMutableEntity implements Comparable<AbstractPlatz> {
 
 	private static final long serialVersionUID = -9037857320548372570L;
 
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_kind_id"), nullable = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_platz_kind_id"), nullable = false)
 	private KindContainer kind;
 
 	@NotNull

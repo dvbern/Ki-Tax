@@ -49,12 +49,12 @@ public abstract class AbstractInstitution extends AbstractMutableEntity implemen
 
 	@Nullable
 	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_traegerschaft_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_abstractinstitution_traegerschaft_id"))
 	private Traegerschaft traegerschaft;
 
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_mandant_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_abstractinstitution_mandant_id"))
 	private Mandant mandant;
 
 

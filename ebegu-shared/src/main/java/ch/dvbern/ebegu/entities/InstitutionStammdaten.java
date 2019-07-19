@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -63,6 +64,8 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverride(name="adresse", joinColumns=@JoinColumn(name="adresse_id"), foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"))
 public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 
 	private static final long serialVersionUID = -8403411439882700618L;

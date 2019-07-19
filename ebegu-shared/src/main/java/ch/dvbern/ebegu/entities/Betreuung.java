@@ -81,6 +81,7 @@ import org.hibernate.search.annotations.Indexed;
 @CheckAbwesenheitDatesOverlapping
 @CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
 @AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_betreuung_kind_id"))
 @Table(
 	uniqueConstraints =

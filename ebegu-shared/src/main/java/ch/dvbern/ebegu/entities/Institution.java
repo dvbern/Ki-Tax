@@ -18,10 +18,14 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
@@ -33,6 +37,11 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
+// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
+@AssociationOverrides({
+	@AssociationOverride(name = "traegerschaft", joinColumns = @JoinColumn(name = "traegerschaft_id"), foreignKey = @ForeignKey(name = "FK_institution_traegerschaft_id")),
+	@AssociationOverride(name = "mandant", joinColumns = @JoinColumn(name = "mandant_id"), foreignKey = @ForeignKey(name = "FK_institution_mandant_id"))
+})
 public class Institution extends AbstractInstitution {
 
 	private static final long serialVersionUID = -8706487439884760618L;
