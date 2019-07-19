@@ -125,6 +125,8 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.validateData(stammdaten)) {
             return;
         }
+        this.setViewMode();
+
         this.errorService.clearAll();
         if (this.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
@@ -137,21 +139,22 @@ export class EditGemeindeComponent implements OnInit {
 
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
             if (this.fileToUpload) {
-                this.persistLogo(this.fileToUpload, true);
-            } else {
-                this.navigateBack();
+                this.persistLogo(this.fileToUpload);
+            } else if (this.isRegisteringGemeinde) {
+                this.$state.go('welcome');
+                return;
             }
         });
     }
 
-    private persistLogo(file: File, navigateBack: boolean): void {
-        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(() => {
-            if (navigateBack) {
+    private persistLogo(file: File): void {
+        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(
+            () => {
                 this.navigateBack();
-            }
-        }, () => {
-            this.errorService.clearAll();
-            this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+            },
+            () => {
+                this.errorService.clearAll();
+                this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
         });
     }
 
@@ -178,15 +181,11 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
 
-        if (!this.editMode) {
-            const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-                ? 'gemeinde.edit'
-                : this.navigationSource;
+        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
+            ? 'gemeinde.edit'
+            : this.navigationSource;
 
-            this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
-        }
-
-        this.setViewMode();
+        this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
     }
 
     public isRegistering(): boolean {
