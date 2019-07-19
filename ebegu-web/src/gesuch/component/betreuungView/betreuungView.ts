@@ -129,9 +129,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
-    public provPensum: number;
 
-    private _tageschuleEnabledForMandant: boolean;
     private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
@@ -239,13 +237,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 });
         });
 
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err)
-            );
     }
 
     public $onDestroy(): void {
@@ -592,12 +583,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private setBetreuungsangebotTypValues(): void {
-        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        const tsConfigured = gesuchsperiode && gesuchsperiode.hasTagesschulenAnmeldung();
-        const betreuungsangebotTypValues =
-            getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-                this._tageschuleEnabledForMandant, tsConfigured);
-        this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                tsEnabledForMandantEinstellung => {
+                    const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+                    const tsConfigured = gesuchsperiode && gesuchsperiode.hasTagesschulenAnmeldung();
+                    const betreuungsangebotTypValues =
+                        getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+                            tsEnabledForMandantEinstellung.getValueAsBoolean(), tsConfigured);
+
+                    this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
+                },
+                err => LOG.error(err)
+            );
     }
 
     public cancel(): void {
