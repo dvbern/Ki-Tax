@@ -110,7 +110,7 @@
                 <th st-sort="gemeinde" class="sortable zahlungsauftrag-percent-15 uppercase"
                     data-translate="GEMEINDE"></th>
                 <th data-translate="ZAHLUNG_PAIN001" dv-show-element class="zahlungsauftrag-percent-10 uppercase"
-                    dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']"></th>
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']"></th>
                 <th data-translate="ZAHLUNG_DETAILPOSITIONEN" class="zahlungsauftrag-percent-15 uppercase"></th>
                 <th class="zahlungsauftrag-percent-15 sortable uppercase" st-sort="betragTotalAuftrag"
                     data-translate="ZAHLUNG_TOTAL" id="betragTotalAuftrag"></th>
@@ -119,9 +119,9 @@
                 <th st-sort="status" class="sortable zahlungsauftrag-percent-10 uppercase"
                     data-translate="ZAHLUNG_STATUS"></th>
                 <th class="zahlungsauftrag-percent-5" dv-show-element
-                    dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']"></th>
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']"></th>
                 <th class="zahlungsauftrag-percent-5" dv-show-element
-                    dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']"></th>
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']"></th>
             </tr>
             </thead>
             <tbody>
@@ -149,7 +149,7 @@
                 <td title="{{row.gemeinde.name}}" ng-bind="row.gemeinde.name"></td>
                 <!-- downloadPain -->
                 <td class="symbol" dv-show-element
-                    dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']">
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
                     <dv-loading-button type="button" button-click="vm.downloadPain(row)"
                                        button-class="dv-btn-operation">
                         <i class="fa fa-lg fa-file-code-o"></i>
