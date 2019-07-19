@@ -102,6 +102,12 @@ public interface VerfuegungService {
 	Verfuegung getEvaluateFamiliensituationVerfuegung(@Nonnull Gesuch gesuch);
 
 	/**
+	 * Initialises für jede Betreuung die transienten Felder hinter
+	 * {@link Betreuung#getVorgaengerAusbezahlteVerfuegung()} und {@link Betreuung#getVorgaengerVerfuegung()}
+	 */
+	void initializeVorgaengerVerfuegungen(@Nonnull Gesuch gesuch);
+
+	/**
 	 * gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
 	 * kann null sein
 	 *

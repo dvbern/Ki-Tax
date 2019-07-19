@@ -238,7 +238,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId) {
-		// Bei Nich-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
+		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
 			zeitabschnitt.setAnspruchberechtigtesPensum(0);
@@ -348,18 +348,27 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
+		initializeVorgaengerVerfuegungen(gesuch);
+
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+	}
+
+	@Override
+	public void initializeVorgaengerVerfuegungen(@Nonnull Gesuch gesuch) {
 		gesuch.getKindContainers()
 			.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.forEach(this::setVorgaengerVerfuegungen);
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
-	private void setVorgaengerVerfuegungen(Betreuung betreuung) {
-		Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuung);
-		betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung.orElse(null));
-		Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
-		betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
+	private void setVorgaengerVerfuegungen(@Nonnull Betreuung betreuung) {
+		Verfuegung vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuung)
+			.orElse(null);
+		betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung);
+
+		Verfuegung vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung)
+			.orElse(null);
+		betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung);
 	}
 
 	@Override
@@ -439,26 +448,32 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
-	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
-		@Nonnull Betreuung betreuungNeu, @Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
-		Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuungNeu);
-		if (vorgaengerAusbezahlteVerfuegung.isPresent()) {
-			List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerAusbezahlteVerfuegung = findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(),
-				vorgaengerAusbezahlteVerfuegung.get());
-			for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitteOnVorgaengerAusbezahlteVerfuegung) {
-				final Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-				if ((zeitabschnitt.getZahlungsstatus().isVerrechnet() || zeitabschnitt.getZahlungsstatus().isIgnoriert()) && isNotInZeitabschnitteList
-					(zeitabschnitt, vorgaengerZeitabschnitte)) {
-					// Diesen ins Result, for weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder kein Vorgaenger
+	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Betreuung betreuungNeu,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
+
+		findVorgaengerAusbezahlteVerfuegung(betreuungNeu)
+			.map(verfuegung -> findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(), verfuegung))
+			.ifPresent(zeitabschnitte -> zeitabschnitte.forEach(zeitabschnitt -> {
+
+				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zeitabschnitt.getZahlungsstatus();
+
+				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())
+					&& isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte)) {
+					// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
+					// kein Vorgaenger
 					vorgaengerZeitabschnitte.add(zeitabschnitt);
 				} else {
-					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter zurueckgehen
-					findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnittNeu, vorgaengerBetreuung, vorgaengerZeitabschnitte);
+					Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter
+					// zurueckgehen
+					findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+						zeitabschnittNeu,
+						vorgaengerBetreuung,
+						vorgaengerZeitabschnitte);
 				}
-			}
-		}
-		//noinspection UnnecessaryReturnStatement: Abbruchbedingung: Es gibt keinen Vorgaenger mehr
-		return;
+			}));
 	}
 
 	@Nonnull

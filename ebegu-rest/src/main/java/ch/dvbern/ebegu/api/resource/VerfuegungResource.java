@@ -87,7 +87,6 @@ public class VerfuegungResource {
 	@Inject
 	private InstitutionService institutionService;
 
-	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
 	private JaxBConverter converter;
 
