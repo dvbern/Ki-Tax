@@ -21,7 +21,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.AssociationOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -64,9 +63,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
-// Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
-@AssociationOverride(name="adresse", joinColumns=@JoinColumn(name="adresse_id"), foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"))
-public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
+public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -8403411439882700618L;
 
@@ -86,6 +83,12 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_institution_id"), nullable = false)
 	private Institution institution;
 
+	@NotNull
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = false)
+	private String mail;
+
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
@@ -100,6 +103,11 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	private String oeffnungszeiten;
+
+	@NotNull
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
+	private Adresse adresse;
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -139,13 +147,14 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 	@Column(nullable = true)
 	private BigDecimal anzahlPlaetzeFirmen;
 
-	// TODO (KIBON-616): Entfernen, bereits verschoben
+	@Column(nullable = false)
+	private boolean sendMailWennOffenePendenzen = true;
+
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_tagesschule_id"), nullable = true)
 	private InstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 
-	// TODO (KIBON-616): Entfernen, bereits verschoben
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_ferieninsel_id"), nullable = true)
@@ -162,7 +171,6 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 		this.iban = iban;
 	}
 
-	@Override
 	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
@@ -172,13 +180,20 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
-	@Nonnull
 	public Institution getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(@Nonnull Institution institution) {
+	public void setInstitution(Institution institution) {
 		this.institution = institution;
+	}
+
+	public Adresse getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(Adresse adresse) {
+		this.adresse = adresse;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
@@ -217,6 +232,14 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 
 	public void setInstitutionStammdatenFerieninsel(@Nullable InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 
 	@Nullable
@@ -304,6 +327,14 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
+	public boolean getSendMailWennOffenePendenzen() {
+		return sendMailWennOffenePendenzen;
+	}
+
+	public void setSendMailWennOffenePendenzen(boolean sendMailWennOffenePendenzen) {
+		this.sendMailWennOffenePendenzen = sendMailWennOffenePendenzen;
+	}
+
 	/**
 	 * Returns true when today is contained in the Gueltigkeit range
 	 */
@@ -337,8 +368,9 @@ public class InstitutionStammdaten extends AbstractInstitutionStammdaten {
 			return false;
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;
-		return getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp()
-			&& EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution())
-			&& Objects.equals(getIban(), otherInstStammdaten.getIban());
+		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
+			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
+			Objects.equals(getIban(), otherInstStammdaten.getIban()) &&
+			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse());
 	}
 }
