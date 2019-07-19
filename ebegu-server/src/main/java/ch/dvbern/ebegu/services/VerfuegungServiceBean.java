@@ -47,11 +47,9 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -307,20 +305,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Collection<Verfuegung> verfuegungen = criteriaQueryHelper.getAll(Verfuegung.class);
 		authorizer.checkReadAuthorizationVerfuegungen(verfuegungen);
 		return verfuegungen;
-	}
-
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public void removeVerfuegung(@Nonnull Verfuegung verfuegung) {
-		Objects.requireNonNull(verfuegung);
-		Optional<Verfuegung> entityToRemove = this.findVerfuegung(verfuegung.getId());
-		Verfuegung loadedVerf = entityToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			verfuegung));
-		authorizer.checkWriteAuthorization(loadedVerf);
-		loadedVerf.getZeitabschnitte().forEach(verfuegungZeitabschnitt ->
-			persistence.remove(verfuegungZeitabschnitt)
-		);
-		persistence.remove(loadedVerf);
 	}
 
 	@Nonnull

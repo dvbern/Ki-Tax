@@ -88,13 +88,6 @@ public interface VerfuegungService {
 	Collection<Verfuegung> getAllVerfuegungen();
 
 	/**
-	 * entfernt eine Verfuegung aus der Databse
-	 *
-	 * @param verfuegung Verfuegung zu entfernen
-	 */
-	void removeVerfuegung(@Nonnull Verfuegung verfuegung);
-
-	/**
 	 * Berechnet die Verfuegung fuer ein Gesuch
 	 *
 	 * @return gibt die Betreuung mit der berechneten angehangten Verfuegung zurueck

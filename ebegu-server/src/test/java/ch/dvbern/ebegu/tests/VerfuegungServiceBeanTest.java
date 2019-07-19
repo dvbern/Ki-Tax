@@ -193,12 +193,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void removeVerfuegung() {
-		Verfuegung verfuegung = insertVerfuegung();
-		this.verfuegungService.removeVerfuegung(verfuegung);
-	}
-
-	@Test
 	public void findVerrechnetenVorgaengerNoVorgaenger() {
 		VerfuegungZeitabschnitt zeitabschnitt = createGesuchWithVerfuegungZeitabschnitt();
 
