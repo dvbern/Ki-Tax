@@ -1800,13 +1800,9 @@ export default class EbeguRestUtil {
     ): TSBetreuungspensumAbweichung {
         this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
         abweichungTS.status = abweichungFromServer.status;
-        abweichungTS.originalPensumMerged =
-            this.parseBetreuungspensum(new TSBetreuungspensum(), abweichungFromServer.originalPensumMerged);
-
-        abweichungTS.pensum = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
-            abweichungTS.pensum / MULTIPLIER_KITA :
-            abweichungTS.pensum / MULTIPLIER_TAGESFAMILIEN;
-
+        abweichungTS.originalKostenMerged = abweichungFromServer.originalKostenMerged;
+        abweichungTS.originalPensumMerged = abweichungFromServer.originalPensumMerged;
+        abweichungTS.pensum = abweichungFromServer.pensum;
 
         return abweichungTS;
     }

@@ -21,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -89,10 +90,6 @@ public class KitaRechner extends AbstractBGRechner {
 	 */
 	@Nonnull
 	private BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
-		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
-		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
-		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
-		long nettoTageIntervall = daysBetween(von, bis);
-		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall), MathUtil.EXACT.from(nettoTageMonat));
+		return DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 	}
 }

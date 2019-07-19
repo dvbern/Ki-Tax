@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -34,7 +36,9 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	private JaxBetreuung betreuung; // TODO KIBON-621 is this an overkill?
 
-	private JaxBetreuungspensum originalPensumMerged;
+	private BigDecimal originalPensumMerged;
+
+	private BigDecimal originalKostenMerged ;
 
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
@@ -52,11 +56,19 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 		this.betreuung = betreuung;
 	}
 
-	public JaxBetreuungspensum getOriginalPensumMerged() {
+	public BigDecimal getOriginalPensumMerged() {
 		return originalPensumMerged;
 	}
 
-	public void setOriginalPensumMerged(JaxBetreuungspensum originalPensumMerged) {
+	public void setOriginalPensumMerged(BigDecimal originalPensumMerged) {
 		this.originalPensumMerged = originalPensumMerged;
+	}
+
+	public BigDecimal getOriginalKostenMerged() {
+		return originalKostenMerged;
+	}
+
+	public void setOriginalKostenMerged(BigDecimal originalKostenMerged) {
+		this.originalKostenMerged = originalKostenMerged;
 	}
 }

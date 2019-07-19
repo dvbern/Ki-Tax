@@ -237,6 +237,7 @@ import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
@@ -2539,9 +2540,21 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxBetreuung;
 	}
 
-	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(Betreuung betreuung) {
+	@Nonnull
+	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
+		return fillAbweichungen(betreuung).stream().map(this::betreuungspensumAbweichungToJax)
+			.collect(Collectors.toList());
+	}
 
-		dfdfsfdsfs
+	@Nonnull
+	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(@Nonnull BetreuungspensumAbweichung abweichung) {
+		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
+		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
+		jaxAbweichung.setOriginalKostenMerged(abweichung.getOriginalKostenMerged());
+		jaxAbweichung.setOriginalPensumMerged(abweichung.getOriginalPensumMerged());
+		jaxAbweichung.setStatus(abweichung.getStatus());
+
+		return jaxAbweichung;
 	}
 
 	@Nullable
@@ -2824,7 +2837,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
-		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
 	}
@@ -4202,9 +4214,13 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	private List<BetreuungspensumAbweichung> fillAbweichungen(Betreuung betreuung) {
-		// TODO KIBON-621: fill with
-		return initEmptyAbweichungen(betreuung)
-			.stream(abweichung -> extractOriginalPensum(betreuung.getBetreuungspensumContainers(), abweichung));
+		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen(betreuung);
+
+
+		for (BetreuungspensumAbweichung abweichung : initialAbweichungen) {
+			extractOriginalPensum(betreuung.getBetreuungspensumContainers(), abweichung);
+		}
+		return initialAbweichungen;
 	}
 
 	private BetreuungspensumAbweichung extractOriginalPensum(Set<BetreuungspensumContainer> pensen,
@@ -4228,7 +4244,7 @@ public class JaxBConverter extends AbstractConverter {
 				if (bis.isAfter(abweichungVon)) {
 					bis = abweichungBis;
 				}
-				BigDecimal anteil = calculateAnteilMonatInklWeekend(von, bis);
+				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 				abweichung.addPensum(pensum.getPensum().multiply(anteil));
 				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
 			}
@@ -4236,44 +4252,51 @@ public class JaxBConverter extends AbstractConverter {
 		return abweichung;
 	}
 
-	private BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
-		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
-		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
-		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
-		long nettoTageIntervall = daysBetween(von, bis);
-		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall),
-			MathUtil.EXACT.from(nettoTageMonat));
-	}
-
-	protected long daysBetween(@Nonnull LocalDate start, @Nonnull LocalDate end) {
-		return Stream.iterate(start, d -> d.plusDays(1))
-			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
-			.count();
-	}
-
 	// initiate an empty BetreuungspensumAbweichung for every month within the Gesuchsperiode
-	private List<BetreuungspensumAbweichung> initEmptyAbweichungen(Betreuung betreuung) {
+	private List<BetreuungspensumAbweichung> initAbweichungen(@Nonnull final Betreuung betreuung) {
 		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
 		LocalDate from = gp.getGueltigkeit().getGueltigAb();
 		LocalDate to = gp.getGueltigkeit().getGueltigBis();
 
 		List<BetreuungspensumAbweichung> abweichungen = new ArrayList<>();
+		Set<BetreuungspensumAbweichung> abweichungenFromDb = betreuung.getBetreuungspensumAbweichungen();
 
 		while (from.isBefore(to)) {
-			BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
-			abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
-			YearMonth month = YearMonth.from(from);
-			abweichung.setGueltigkeit(new DateRange(month.atDay(1), month.atEndOfMonth()));
 
-			abweichung.setUnitForDisplay(PensumUnits.DAYS);
-			if (betreuung.isAngebotTagesfamilien()) {
-				abweichung.setUnitForDisplay(PensumUnits.HOURS);
+			// check if we already stored something in the database
+			if (abweichungenFromDb != null) {
+				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
+				abweichungen.add(existing.orElse(createEmptyAbweichung(from, betreuung.isAngebotTagesfamilien())));
+			} else {
+				abweichungen.add(createEmptyAbweichung(from, betreuung.isAngebotTagesfamilien()));
 			}
-
-			abweichungen.add(abweichung);
 			from = from.plusMonths(1);
 		}
 
 		return abweichungen;
+	}
+
+	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien) {
+		BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
+		abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
+		YearMonth month = YearMonth.from(from);
+		abweichung.setGueltigkeit(new DateRange(month.atDay(1), month.atEndOfMonth()));
+
+		abweichung.setUnitForDisplay(PensumUnits.DAYS);
+		if (isTagesfamilien) {
+			abweichung.setUnitForDisplay(PensumUnits.HOURS);
+		}
+
+		// we want it to be null for validation reasons!
+		abweichung.setPensum(null);
+		abweichung.setMonatlicheBetreuungskosten(null);
+
+		return abweichung;
+	}
+
+	private Optional<BetreuungspensumAbweichung> searchExistingAbweichung(@Nonnull LocalDate from,
+		@Nonnull Set<BetreuungspensumAbweichung> abweichungenFromDb) {
+		return abweichungenFromDb.stream()
+			.filter(a -> a.getGueltigkeit().getGueltigAb().equals(from)).findFirst();
 	}
 }

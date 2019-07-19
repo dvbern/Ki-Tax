@@ -60,7 +60,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
+                <tr ng-repeat="betreuung in vm.displayedCollection"
                     st-select-mode="single" role="row" tabindex="-1">
                     <td>{{vm.getAbweichung($index).gueltigkeit.gueltigAb}}</td>
                     <td>
@@ -71,10 +71,8 @@
                                dv-max-length class="form-control"
                                ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                ng-required="true"
-                               ng-attr-placeholder="{{'gugus'}}">
+                               ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
                     </td>
-                    <td>{{vm.getAbweichung($index).pensum}}</td>
-                    <td>{{vm.getAbweichung($index).pensum}}</td>
                     <td>
                         <input aria-describedby="provMonatlicheBetreuungskosten-error"
                                id="provMonatlicheBetreuungskosten" type="number"
@@ -83,7 +81,7 @@
                                dv-max-length class="form-control"
                                ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                ng-required="true"
-                               ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                               ng-attr-placeholder="{{vm.getAbweichung($index).originalKostenMerged}}">
                     </td>
                     <td>{{vm.getAbweichung($index).status}}</td>
                 </tbody>

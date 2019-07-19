@@ -15,11 +15,15 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -99,5 +103,27 @@ public final class DateUtil {
 
 	public static LocalDate getMin(@Nonnull LocalDate date1, @Nonnull LocalDate date2) {
 		return date1.isBefore(date2) ? date1 : date2;
+	}
+
+	/**
+	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
+	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
+	 */
+	public static BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
+		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
+		long nettoTageIntervall = daysBetween(von, bis);
+		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall), MathUtil.EXACT.from(nettoTageMonat));
+	}
+
+
+	/**
+	 * Berechnet die Anzahl Tage zwischen zwei Daten
+	 */
+	public static long daysBetween(@Nonnull LocalDate start, @Nonnull LocalDate end) {
+		return Stream.iterate(start, d -> d.plusDays(1))
+			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
+			.count();
 	}
 }

@@ -18,6 +18,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -123,7 +124,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
         this.displayedCollection = this.model.betreuungspensumAbweichungen;
 
-        console.log(this.displayedCollection);
+        this.displayedCollection.forEach(element => {
+            this.percentageToEffective(element);
+        });
     }
 
     public getKindModel(): TSKindContainer {
@@ -131,11 +134,23 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getAbweichung(index: number): TSBetreuungspensumAbweichung {
-        if (this.model.betreuungspensumAbweichungen && index >= 0
-            && index < this.model.betreuungspensumAbweichungen.length) {
-            return this.model.betreuungspensumAbweichungen[index];
+        if (this.displayedCollection && index >= 0
+            && index < this.displayedCollection.length) {
+            return this.displayedCollection[index];
         }
 
         return undefined;
+    }
+
+    private percentageToEffective(abweichung: TSBetreuungspensumAbweichung) {
+        const multiplier = abweichung.unitForDisplay === TSPensumUnits.DAYS
+            ? MULTIPLIER_KITA
+            : MULTIPLIER_TAGESFAMILIEN;
+        if (abweichung.pensum) {
+            abweichung.pensum = Math.round(((abweichung.pensum * multiplier)*100 / 100));
+        }
+        if (abweichung.originalPensumMerged) {
+            abweichung.originalPensumMerged = Math.round(((abweichung.originalPensumMerged * multiplier)*100 / 100));
+        }
     }
 }
