@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -82,7 +82,10 @@ import org.hibernate.search.annotations.Indexed;
 @CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
-@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_betreuung_kind_id"))
+@AssociationOverrides({
+	@AssociationOverride(name = "kind", joinColumns = @JoinColumn(name = "kind_id"), foreignKey = @ForeignKey(name = "FK_betreuung_kind_id")),
+	@AssociationOverride(name="institutionStammdaten", joinColumns=@JoinColumn(name="institutionStammdaten_id"), foreignKey = @ForeignKey(name = "FK_betreuung_institution_stammdaten_id"))
+})
 @Table(
 	uniqueConstraints =
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
@@ -107,12 +110,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 	@Transient
 	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
-
-
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_institution_stammdaten_id"), nullable = false)
-	private InstitutionStammdaten institutionStammdaten;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -188,16 +185,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 	private boolean keineDetailinformationen = false;
 
 	public Betreuung() {
-	}
-
-
-	@Nonnull
-	public InstitutionStammdaten getInstitutionStammdaten() {
-		return institutionStammdaten;
-	}
-
-	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
-		this.institutionStammdaten = institutionStammdaten;
 	}
 
 	@Nonnull
@@ -350,6 +337,9 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
+		if (!super.isSame(other)) {
+			return false;
+		}
 		if (!(other instanceof Betreuung)) {
 			return false;
 		}
@@ -369,12 +359,11 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		if (inklStatus) {
 			statusSame = this.getBetreuungsstatus() == otherBetreuung.getBetreuungsstatus();
 		}
-		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
 
 		boolean sameErweiterteBeduerfnisse =
 			getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
 
-		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && sameErweiterteBeduerfnisse;
+		return pensenSame && abwesenheitenSame && statusSame && sameErweiterteBeduerfnisse;
 	}
 
 	@Transient
@@ -408,13 +397,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 	@Transient
 	public boolean isAngebotSchulamt() {
 		return BetreuungsangebotTyp.TAGESSCHULE == getBetreuungsangebotTyp() || BetreuungsangebotTyp.FERIENINSEL == getBetreuungsangebotTyp();
-	}
-
-	@Override
-	@Nonnull
-	@Transient
-	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
-		return getInstitutionStammdaten().getBetreuungsangebotTyp();
 	}
 
 	/**
@@ -459,7 +441,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		super.copyAbstractPlatz(target, copyType, targetKindContainer);
 		switch (copyType) {
 		case MUTATION:
-			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			// Bereits verfuegte Betreuungen werden als BESTAETIGT kopiert, alle anderen behalten ihren Status
 			if (this.getBetreuungsstatus().isGeschlossenJA()) {
 				// Falls sämtliche Betreuungspensum-Container dieser Betreuung ein effektives Pensum von 0 haben, handelt es sich um die
@@ -480,10 +461,8 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 				target.getAbwesenheitContainers().add(abwesenheitContainer.copyAbwesenheitContainer(new AbwesenheitContainer(), copyType, target));
 			}
 
-			if(erweiterteBetreuungContainer != null){
-				target.setErweiterteBetreuungContainer(erweiterteBetreuungContainer
-					.copyErweiterteBetreuungContainer(new ErweiterteBetreuungContainer(), copyType, target));
-			}
+			target.setErweiterteBetreuungContainer(erweiterteBetreuungContainer
+				.copyErweiterteBetreuungContainer(new ErweiterteBetreuungContainer(), copyType, target));
 
 			if (belegungFerieninsel != null) {
 				target.setBelegungFerieninsel(belegungFerieninsel.copyBelegungFerieninsel(new BelegungFerieninsel(), copyType));
@@ -582,13 +561,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 				this.setBelegungTagesschule(betreuung.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
 			}
 		}
-	}
-
-	@Nonnull
-	public String getInstitutionAndBetreuungsangebottyp(@Nonnull Locale locale) {
-		String angebot = ServerMessageUtil
-			.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp(), locale);
-		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
 	}
 
 	public boolean hasAnspruch() {

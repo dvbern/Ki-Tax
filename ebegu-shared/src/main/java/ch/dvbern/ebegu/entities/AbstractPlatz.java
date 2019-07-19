@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.ForeignKey;
@@ -33,6 +35,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -57,6 +60,11 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	private KindContainer kind;
 
 	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_platz_institution_stammdaten_id"), nullable = false)
+	private InstitutionStammdaten institutionStammdaten;
+
+	@NotNull
 	@Min(1)
 	@Column(nullable = false)
 	private Integer betreuungNummer = 1;
@@ -65,23 +73,33 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	private boolean gueltig = false;
 
 
-	public AbstractPlatz() {
+	protected AbstractPlatz() {
 	}
 
-
+	@Nonnull
 	public KindContainer getKind() {
 		return kind;
 	}
 
-	public void setKind(KindContainer kind) {
+	public void setKind(@Nonnull KindContainer kind) {
 		this.kind = kind;
 	}
 
+	@Nonnull
+	public InstitutionStammdaten getInstitutionStammdaten() {
+		return institutionStammdaten;
+	}
+
+	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
+		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nonnull
 	public Integer getBetreuungNummer() {
 		return betreuungNummer;
 	}
 
-	public void setBetreuungNummer(Integer betreuungNummer) {
+	public void setBetreuungNummer(@Nonnull Integer betreuungNummer) {
 		this.betreuungNummer = betreuungNummer;
 	}
 
@@ -100,7 +118,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@SuppressFBWarnings("NM_CONFUSING")
 	public String getBGNummer() {
 		// some users like Institutionen don't have access to the Kind, so it must be proved that getKind() doesn't return null
-		if (getKind() != null && getKind().getGesuch() != null) {
+		if (getKind().getGesuch() != null) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
 			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;
@@ -123,6 +141,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 		switch (copyType) {
 		case MUTATION:
 			target.setKind(targetKindContainer);
+			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			target.setBetreuungNummer(this.getBetreuungNummer());
 			target.setGueltig(false);
 			break;
@@ -134,7 +153,33 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 		return target;
 	}
 
+
+	@Override
+	public boolean isSame(AbstractEntity other) {
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof AbstractPlatz)) {
+			return false;
+		}
+		final AbstractPlatz otherBetreuung = (AbstractPlatz) other;
+		return this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
+	}
+
 	@Nonnull
 	@Transient
-	public abstract BetreuungsangebotTyp getBetreuungsangebotTyp();
+	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
+		return getInstitutionStammdaten().getBetreuungsangebotTyp();
+	}
+
+	@Nonnull
+	public String getInstitutionAndBetreuungsangebottyp(@Nonnull Locale locale) {
+		String angebot = ServerMessageUtil
+			.translateEnumValue(getBetreuungsangebotTyp(), locale);
+		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
+	}
 }

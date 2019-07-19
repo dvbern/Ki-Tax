@@ -17,23 +17,22 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import org.hibernate.envers.Audited;
 
@@ -43,7 +42,11 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
-@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_kind_id"))
+@AssociationOverrides({
+	@AssociationOverride(name="kind", joinColumns=@JoinColumn(name="kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_kind_id")),
+	@AssociationOverride(name="institutionStammdaten", joinColumns=@JoinColumn(name="institutionStammdaten_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_institution_stammdaten_id"))
+})
+
 @Table(
 	uniqueConstraints =
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_anmeldung_ferieninsel_kind_betreuung_nummer")
@@ -51,11 +54,6 @@ import org.hibernate.envers.Audited;
 public class AnmeldungFerieninsel extends AbstractAnmeldung {
 
 	private static final long serialVersionUID = -9037857320548372570L;
-
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_anmeldung_ferieninsel_institution_stammdaten_id"), nullable = false)
-	private InstitutionStammdatenFerieninsel1 institutionStammdaten;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -66,15 +64,6 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 	public AnmeldungFerieninsel() {
 	}
 
-
-	@NotNull
-	public InstitutionStammdatenFerieninsel1 getInstitutionStammdaten() {
-		return institutionStammdaten;
-	}
-
-	public void setInstitutionStammdaten(@NotNull InstitutionStammdatenFerieninsel1 institutionStammdaten) {
-		this.institutionStammdaten = institutionStammdaten;
-	}
 
 	@Nullable
 	public BelegungFerieninsel getBelegungFerieninsel() {
@@ -94,11 +83,14 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
+		if (!super.isSame(other)) {
+			return false;
+		}
 		if (!(other instanceof AnmeldungFerieninsel)) {
 			return false;
 		}
 		final AnmeldungFerieninsel otherBetreuung = (AnmeldungFerieninsel) other;
-		return this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
+		return Objects.equals(this.getBelegungFerieninsel(), otherBetreuung.getBelegungFerieninsel());
 	}
 
 	@Nonnull
@@ -111,7 +103,6 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 		super.copyAbstractAnmeldung(target, copyType, targetKindContainer, targetEingangsart);
 		switch (copyType) {
 		case MUTATION:
-			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			if (belegungFerieninsel != null) {
 				target.setBelegungFerieninsel(belegungFerieninsel.copyBelegungFerieninsel(new BelegungFerieninsel(), copyType));
 			}
@@ -133,12 +124,5 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 				this.setBelegungFerieninsel(betreuung.getBelegungFerieninsel().copyBelegungFerieninsel(new BelegungFerieninsel(), AntragCopyType.MUTATION));
 			}
 		}
-	}
-
-	@Nonnull
-	@Override
-	@Transient
-	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
-		return getInstitutionStammdaten().getBetreuungsangebotTyp();
 	}
 }

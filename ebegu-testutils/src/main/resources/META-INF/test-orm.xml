@@ -359,8 +359,4 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.VerrechnungKibonDetail"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungFerieninsel"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungTagesschule"/>
-	<entity class="ch.dvbern.ebegu.entities.Ferieninsel"/>
-	<entity class="ch.dvbern.ebegu.entities.Tagesschule"/>
-	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule1"/>
-	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel1"/>
 </entity-mappings>
