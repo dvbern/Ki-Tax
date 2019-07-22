@@ -1652,6 +1652,18 @@ export default class EbeguRestUtil {
                     betPensCont));
             });
         }
+        if (betreuung.betreuungspensumAbweichungen) {
+            restBetreuung.betreuungspensumAbweichungen = [];
+            // only send Abweichungen with actual Abweichungen
+            betreuung.betreuungspensumAbweichungen.filter(element => {
+                return element.originalPensumMerged && element.originalKostenMerged;
+            })
+            betreuung.betreuungspensumAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
+                restBetreuung.betreuungspensumAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
+                    abweichung));
+            });
+        }
+
         if (betreuung.abwesenheitContainers) {
             restBetreuung.abwesenheitContainers = [];
             betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
@@ -1685,6 +1697,14 @@ export default class EbeguRestUtil {
         restAngebot.sprichtAmtssprache = angebotDTO.sprichtAmtssprache;
         return restAngebot;
 
+    }
+
+    public betreuungspensumAbweichungToRestObject(restAbweichung: any, abweichung: TSBetreuungspensumAbweichung): any {
+        this.abstractBetreuungspensumEntityToRestObject(restAbweichung, abweichung);
+
+        restAbweichung.status = abweichung.status;
+
+        return restAbweichung;
     }
 
     public betreuungspensumContainerToRestObject(restBetPensCont: any, betPensCont: TSBetreuungspensumContainer): any {

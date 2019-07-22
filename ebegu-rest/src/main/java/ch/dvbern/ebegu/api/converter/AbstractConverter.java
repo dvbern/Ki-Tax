@@ -208,6 +208,16 @@ public class AbstractConverter {
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
+		JaxBetreuungspensumAbweichung jaxPensum,
+		BetreuungspensumAbweichung pensumEntity) {
+
+		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
+		pensumEntity.setPensum(jaxPensum.getPensum());
+		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
+		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+	}
+
+	protected void convertAbstractPensumFieldsToEntity(
 		JaxBetreuungsmitteilungPensum jaxPensum,
 		BetreuungsmitteilungPensum pensumEntity) {
 

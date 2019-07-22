@@ -21,7 +21,8 @@
     <div class="row viewTitle">
         <div class="col-md-8">
             <h2>
-                <span>{{vm.getKindModel().kindJA.getFullName()}} / </span><span data-translate="ABWEICHUNGEN_MELDEN"></span>
+                <span>{{vm.getKindModel().kindJA.getFullName()}} / </span><span
+                data-translate="ABWEICHUNGEN_MELDEN"></span>
             </h2>
             <dv-bisher gs="vm.getKindModel().kindGS"
                        ja="vm.getKindModel().kindJA"
@@ -53,8 +54,8 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th data-translate="MONAT"></th>
-                    <th data-translate="TAGE"></th>
+                    <th data-translate="MONTH"></th>
+                    <th data-translate="DAYS"></th>
                     <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
                     <th data-translate="STATUS"></th>
                 </tr>
@@ -64,19 +65,20 @@
                     st-select-mode="single" role="row" tabindex="-1">
                     <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
                     <td>
-                        <input aria-describedby="provMonatlicheBetreuungskosten-error"
-                               id="provMonatlicheBetreuungskosten" type="number"
-                               name="provMonatlicheBetreuungskosten"
+                        <input aria-describedby="pensum-error"
+                               id="pensum" type="number"
+                               name="pensum"
                                ng-model="vm.getAbweichung($index).pensum"
-                               dv-max-length class="form-control"
+                               class="form-control"
                                ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                ng-required="true"
                                ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
                     </td>
                     <td>
-                        <input aria-describedby="provMonatlicheBetreuungskosten-error"
-                               id="provMonatlicheBetreuungskosten" type="number"
-                               name="provMonatlicheBetreuungskosten"
+                        <input aria-describedby="kosten-error"
+                               id="kosten" type="number"
+                               name="kosten"
+
                                ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
                                dv-max-length class="form-control"
                                ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
@@ -87,8 +89,14 @@
                 </tbody>
             </table>
         </div>
-        <div ng-repeat="abweichung in vm.model.betreuungspensumAbweichungen">
-            <div></div>
-        </div>
     </div>
+    <!-- Save -->
+    <span dv-show-element
+          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+          dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+                        <dv-loading-button button-click="vm.saveAbweichungen()" type="submit">
+                            <span class="uppercase" data-translate="SPEICHERN"></span>
+                        </dv-loading-button>
+                    </span>
+
 </div>

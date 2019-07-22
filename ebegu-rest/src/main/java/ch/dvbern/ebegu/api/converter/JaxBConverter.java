@@ -2158,6 +2158,13 @@ public class JaxBConverter extends AbstractConverter {
 		);
 		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
+		betreuung.setBetreuungspensumAbweichungen(betreuungspensumAbweichungenToEntity(
+			betreuungJAXP.getBetreuungspensumAbweichungen(),
+			betreuung.getBetreuungspensumAbweichungen()
+		));
+//		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
+
+
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
 			betreuungJAXP.getErweiterteBetreuungContainer(),
 			betreuung.getErweiterteBetreuungContainer()
@@ -2222,6 +2229,44 @@ public class JaxBConverter extends AbstractConverter {
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
+	}
+
+	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungenToEntity (
+		final @Nonnull List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
+		final @Nonnull Set<BetreuungspensumAbweichung> abweichungen) {
+
+		final Set<BetreuungspensumAbweichung> transformedAbweichungen = new TreeSet<>();
+		for (final JaxBetreuungspensumAbweichung jaxAbweichung : abweichungenJAXP) {
+			final BetreuungspensumAbweichung abweichungToMergeWith = abweichungen
+				.stream()
+				.filter(existingAbweichung -> existingAbweichung.getId().equals(jaxAbweichung.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElse(new BetreuungspensumAbweichung());
+			final BetreuungspensumAbweichung abweichungToAdd =
+				betreuungspensumAbweichungToEntity(jaxAbweichung, abweichungToMergeWith);
+			final boolean added = transformedAbweichungen.add(abweichungToAdd);
+			if (!added) {
+				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", abweichungToAdd);
+			}
+		}
+
+		// change the existing collection to reflect changes
+		// Already tested: All existing Betreuungspensen of the list remain as they were, that means their data are
+		// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
+		abweichungen.clear();
+		abweichungen.addAll(transformedAbweichungen);
+
+		return abweichungen;
+	}
+
+	private BetreuungspensumAbweichung betreuungspensumAbweichungToEntity (
+		final @Nonnull JaxBetreuungspensumAbweichung jaxAbweichung,
+		final @Nonnull BetreuungspensumAbweichung abweichung
+	) {
+		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
+		abweichung.setStatus(jaxAbweichung.getStatus());
+
+		return abweichung;
 	}
 
 	private ErweiterteBetreuung erweiterteBetreuungToEntity(
@@ -4241,7 +4286,7 @@ public class JaxBConverter extends AbstractConverter {
 					von = abweichungVon;
 				}
 
-				if (bis.isAfter(abweichungVon)) {
+				if (bis.isAfter(abweichungBis)) {
 					bis = abweichungBis;
 				}
 				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);

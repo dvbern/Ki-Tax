@@ -82,7 +82,7 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 		if (originalPensumMerged == null) {
 			this.originalPensumMerged = pensum;
 		} else {
-			this.originalPensumMerged.add(pensum);
+			setOriginalPensumMerged(this.originalPensumMerged.add(pensum));
 		}
 	}
 
@@ -90,7 +90,7 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 		if (originalKostenMerged == null) {
 			this.originalKostenMerged = kosten;
 		} else {
-			this.originalKostenMerged.add(kosten);
+			setOriginalKostenMerged(this.originalKostenMerged.add(kosten));
 		}
 	}
 

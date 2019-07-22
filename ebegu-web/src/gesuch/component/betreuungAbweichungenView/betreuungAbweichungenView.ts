@@ -23,13 +23,16 @@ import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/const
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
+import TSExceptionReport from '../../../models/TSExceptionReport';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -74,6 +77,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public kindModel: TSKindContainer;
     public isNewestGesuch: boolean;
     public displayedCollection: TSBetreuungspensumAbweichung[];
+    public isSavingData: boolean; // Semaphore
 
     public constructor(
         private readonly $state: StateService,
@@ -157,5 +161,15 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         if (abweichung.originalPensumMerged) {
             abweichung.originalPensumMerged = Math.round(((abweichung.originalPensumMerged * multiplier)*100 / 100));
         }
+    }
+
+    public saveAbweichungen(): void {
+        // if (!this.isGesuchValid()) {
+        //     return;
+        // }
+
+        this.model.betreuungspensumAbweichungen = this.displayedCollection;
+
+        this.gesuchModelManager.saveAbweichungen(this.model);
     }
 }
