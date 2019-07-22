@@ -16,5 +16,13 @@
   -->
 
 <div class="dv-content">
+    <div *ngIf="editMode; else viewModeTemplate">
+        <fieldset ngModelGroup="dv-edit-gemeinde-ts">
+        </fieldset>
+    </div>
+    <ng-template #viewModeTemplate>
+        <fieldset>
+        </fieldset>
+    </ng-template>
 </div>
 

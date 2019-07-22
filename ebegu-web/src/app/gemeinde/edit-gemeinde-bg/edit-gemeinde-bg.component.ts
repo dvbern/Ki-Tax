@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {Observable} from 'rxjs';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
@@ -25,10 +25,10 @@ import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
     selector: 'dv-edit-gemeinde-bg',
     templateUrl: './edit-gemeinde-bg.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
 export class EditGemeindeComponentBG implements OnInit {
 
-    @Input() public form: NgForm;
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() public beguStartStr: string;
     @Input() private gemeindeId: string;

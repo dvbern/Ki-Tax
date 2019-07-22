@@ -18,17 +18,17 @@
 <div class="dv-content"
      *ngIf="stammdaten$ | async as stammdaten">
     <div *ngIf="editMode; else viewModeTemplate">
-        <fieldset>
+        <fieldset ngModelGroup="dv-edit-gemeinde-stammdaten">
             <div class="row marginTop20">
                 <!-- Anschrift -->
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="required" translate for="anschrift_id">ADRESSE_ANSCHRIFT</label>
-                        <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
+                        <input id="anschrift_id" type="text" name="anschrift_id" #nameAnschrift="ngModel"
                                [(ngModel)]="stammdaten.adresse.organisation"
-                               [maxlength]="255" class="form-control" required
+                               [maxlength]="255" class="form-control" required ng-required="true"
                                placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
-                        <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors"
+                        <dv-error-messages [errorObject]="nameAnschrift.errors"
                                            inputId="anschrift_id"></dv-error-messages>
                     </div>
                 </div>
@@ -36,10 +36,10 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="required" translate for="e_mail_id">EMAIL</label>
-                        <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
+                        <input id="e_mail_id" type="email" name="e_mail_id" #nameEmail="ngModel"
                                [(ngModel)]="stammdaten.mail"
                                [maxlength]="255" class="form-control" required>
-                        <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors"
+                        <dv-error-messages [errorObject]="nameEmail.errors"
                                            inputId="e_mail_id"></dv-error-messages>
                     </div>
                 </div>
@@ -49,10 +49,10 @@
                 <div class="col-sm-5">
                     <div class="form-group">
                         <label class="required" translate for="strasse_id">ADRESSE_STRASSE</label>
-                        <input id="strasse_id" type="text" name="strasse_id" #name="ngModel"
+                        <input id="strasse_id" type="text" name="strasse_id" #nameStrasse="ngModel"
                                [(ngModel)]="stammdaten.adresse.strasse"
                                [maxlength]="255" class="form-control" required>
-                        <dv-error-messages [errorObject]="form.controls.strasse_id?.errors"
+                        <dv-error-messages [errorObject]="nameStrasse.errors"
                                            inputId="strasse_id"></dv-error-messages>
                     </div>
                 </div>
@@ -60,10 +60,10 @@
                 <div class="col-sm-1">
                     <div class="form-group">
                         <label translate for="hausnummer_id">ADRESSE_NUMMER</label>
-                        <input id="hausnummer_id" type="text" name="hausnummer_id" #name="ngModel"
+                        <input id="hausnummer_id" type="text" name="hausnummer_id" #nameHausnummer="ngModel"
                                [(ngModel)]="stammdaten.adresse.hausnummer"
                                [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="form.controls.hausnummer_id?.errors"
+                        <dv-error-messages [errorObject]="nameHausnummer.errors"
                                            inputId="hausnummer_id"></dv-error-messages>
                     </div>
                 </div>
@@ -71,11 +71,11 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="required" translate for="telefon_id">TELEFON</label>
-                        <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
+                        <input id="telefon_id" type="text" name="telefon_id" #nameTelefon="ngModel"
                                [(ngModel)]="stammdaten.telefon"
                                [maxlength]="255" class="form-control"
                                required>
-                        <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
+                        <dv-error-messages [errorObject]="nameTelefon.errors"
                                            inputId="telefon_id"></dv-error-messages>
                     </div>
                 </div>
@@ -85,10 +85,10 @@
                 <div class="col-sm-1">
                     <div class="form-group">
                         <label class="required" translate for="plz_id">ADRESSE_PLZ</label>
-                        <input id="plz_id" type="text" name="plz_id" #name="ngModel"
+                        <input id="plz_id" type="text" name="plz_id" #namePLZ="ngModel"
                                [(ngModel)]="stammdaten.adresse.plz"
                                [maxlength]="255" class="form-control" required>
-                        <dv-error-messages [errorObject]="form.controls.plz_id?.errors"
+                        <dv-error-messages [errorObject]="namePLZ.errors"
                                            inputId="plz_id"></dv-error-messages>
                     </div>
                 </div>
@@ -96,10 +96,10 @@
                 <div class="col-sm-5">
                     <div class="form-group">
                         <label class="required" translate for="ort_id">ADRESSE_ORT</label>
-                        <input id="ort_id" type="text" name="ort_id" #name="ngModel"
+                        <input id="ort_id" type="text" name="ort_id" #nameOrt="ngModel"
                                [(ngModel)]="stammdaten.adresse.ort"
                                [maxlength]="255" class="form-control" required>
-                        <dv-error-messages [errorObject]="form.controls.ort_id?.errors"
+                        <dv-error-messages [errorObject]="nameOrt.errors"
                                            inputId="ort_id"></dv-error-messages>
                     </div>
                 </div>
@@ -107,10 +107,10 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label translate for="webseite_id">WEBSEITE</label>
-                        <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
+                        <input id="webseite_id" type="text" name="webseite_id" #nameWebsite="ngModel"
                                [(ngModel)]="stammdaten.webseite"
                                [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
+                        <dv-error-messages [errorObject]="nameWebsite.errors"
                                            inputId="webseite_id"></dv-error-messages>
                     </div>
                 </div>
@@ -146,33 +146,33 @@
                     <div class="form-group">
                         <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
                         <input id="kontoinhaber_id" type="text"
-                               name="kontoinhaber_id" #name="ngModel"
+                               name="kontoinhaber_id" #nameKontoinhaber="ngModel"
                                required
                                [(ngModel)]="stammdaten.kontoinhaber"
                                [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors"
+                        <dv-error-messages [errorObject]="nameKontoinhaber.errors"
                                            inputId="kontoinhaber_id"></dv-error-messages>
                     </div>
                     <!-- BIC/SWIFT-Nummer -->
                     <div class="form-group">
                         <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
                         <input id="bic_id" type="text"
-                               name="bic_id" #name="ngModel"
+                               name="bic_id" #nameBIC="ngModel"
                                required
                                [(ngModel)]="stammdaten.bic"
                                [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="form.controls.bic_id?.errors"
+                        <dv-error-messages [errorObject]="nameBIC.errors"
                                            inputId="bic_id"></dv-error-messages>
                     </div>
                     <!-- IBAN-Nummer -->
                     <div class="form-group">
                         <label class="required" translate for="iban_id">IBAN_NUMMER</label>
                         <input id="iban_id" type="text"
-                               name="iban_id" #name="ngModel"
+                               name="iban_id" #nameIBAN="ngModel"
                                required
                                [(ngModel)]="stammdaten.iban"
                                [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="form.controls.iban_id?.errors"
+                        <dv-error-messages [errorObject]="nameIBAN.errors"
                                            inputId="iban_id"></dv-error-messages>
                     </div>
                 </div>
@@ -201,10 +201,11 @@
                                           required
                                           maxlength="4000"
                                           id="rechtsmittelbelehrung_deutsch_textarea"
+                                          #nameRechtmittelDE="ngModel"
                                           name="rechtsmittelbelehrung_deutsch_textarea"
                                           [(ngModel)]="stammdaten.rechtsmittelbelehrung.textDeutsch">
                                                 </textarea>
-                                <dv-error-messages [errorObject]="form.controls.rechtsmittelbelehrung_deutsch_textarea?.errors"
+                                <dv-error-messages [errorObject]="nameRechtmittelDE.errors"
                                                    inputId="rechtsmittelbelehrung_deutsch_textarea"></dv-error-messages>
 
                             </div>
@@ -220,10 +221,11 @@
                                           required
                                           maxlength="4000"
                                           id="rechtsmittelbelehrung_franzoesisch_textarea"
+                                          #nameRechtmittelFR="ngModel"
                                           name="rechtsmittelbelehrung_franzoesisch_textarea"
                                           [(ngModel)]="stammdaten.rechtsmittelbelehrung.textFranzoesisch">
                                                 </textarea>
-                                <dv-error-messages [errorObject]="form.controls.rechtsmittelbelehrung_franzoesisch_textarea?.errors"
+                                <dv-error-messages [errorObject]="nameRechtmittelFR.errors"
                                                    inputId="rechtsmittelbelehrung_franzoesisch_textarea"></dv-error-messages>
                             </div>
                         </div>
@@ -245,13 +247,13 @@
                                         <input id="anschrift_ba_id"
                                                type="text"
                                                name="anschrift_ba_id"
-                                               #name="ngModel"
+                                               #nameAnschriftBA="ngModel"
                                                [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
                                                [maxlength]="255"
                                                class="form-control"
                                                required
                                                placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
-                                        <dv-error-messages [errorObject]="form.controls.anschrift_ba_id?.errors"
+                                        <dv-error-messages [errorObject]="nameAnschriftBA.errors"
                                                            inputId="anschrift_ba_id"></dv-error-messages>
                                     </div>
                                 </div>
@@ -264,10 +266,10 @@
                                     <label class="required"
                                            translate
                                            for="strasse_ba_id">ADRESSE_STRASSE</label>
-                                    <input id="strasse_ba_id" type="text" name="strasse_ba_id" #name="ngModel"
+                                    <input id="strasse_ba_id" type="text" name="strasse_ba_id" #nameStrasseBA="ngModel"
                                            [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
                                            [maxlength]="255" class="form-control" required>
-                                    <dv-error-messages [errorObject]="form.controls.strasse_ba_id?.errors"
+                                    <dv-error-messages [errorObject]="nameStrasseBA.errors"
                                                        inputId="strasse_ba_id"></dv-error-messages>
                                 </div>
                             </div>
@@ -278,11 +280,11 @@
                                     <input id="hausnummer_ba_id"
                                            type="text"
                                            name="hausnummer_ba_id"
-                                           #name="ngModel"
+                                           #nameHausnummerBA="ngModel"
                                            [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
                                            [maxlength]="255"
                                            class="form-control">
-                                    <dv-error-messages [errorObject]="form.controls.hausnummer_ba_id?.errors"
+                                    <dv-error-messages [errorObject]="nameHausnummerBA.errors"
                                                        inputId="hausnummer_ba_id"></dv-error-messages>
                                 </div>
                             </div>
@@ -292,10 +294,10 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label class="required" translate for="plz_ba_id">ADRESSE_PLZ</label>
-                                    <input id="plz_ba_id" type="text" name="plz_ba_id" #name="ngModel"
+                                    <input id="plz_ba_id" type="text" name="plz_ba_id" #namePLZBA="ngModel"
                                            [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
                                            [maxlength]="255" class="form-control" required>
-                                    <dv-error-messages [errorObject]="form.controls.plz_ba_id?.errors"
+                                    <dv-error-messages [errorObject]="namePLZBA.errors"
                                                        inputId="plz_ba_id"></dv-error-messages>
                                 </div>
                             </div>
@@ -303,10 +305,10 @@
                             <div class="col-sm-10">
                                 <div class="form-group">
                                     <label class="required" translate for="ort_ba_id">ADRESSE_ORT</label>
-                                    <input id="ort_ba_id" type="text" name="ort_ba_id" #name="ngModel"
+                                    <input id="ort_ba_id" type="text" name="ort_ba_id" #nameOrtBA="ngModel"
                                            [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
                                            [maxlength]="255" class="form-control" required>
-                                    <dv-error-messages [errorObject]="form.controls.ort_ba_id?.errors"
+                                    <dv-error-messages [errorObject]="nameOrtBA.errors"
                                                        inputId="ort_ba_id"></dv-error-messages>
                                 </div>
                             </div>

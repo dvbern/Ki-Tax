@@ -18,7 +18,7 @@
 <div class="dv-content"
      *ngIf="stammdaten$ | async as stammdaten">
     <div *ngIf="editMode; else viewModeTemplate">
-        <fieldset>
+        <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
                 <!-- Betreuungsgutscheine anbieten ab -->
                 <div class="col-sm-6">
@@ -37,13 +37,14 @@
                                     id="verantwortliche_bg_id"
                                     name="verantwortliche_bg_id"
                                     class="form-control"
+                                    #nameVerantwortlicheBG='ngModel'
                                     [compareWith]="compareBenutzer"
                                     required>
                             <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
                                 {{vbg.vorname}} {{vbg.nachname}}
                             </mat-option>
                         </mat-select>
-                        <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
+                        <dv-error-messages [errorObject]="nameVerantwortlicheBG.errors"
                                            inputId="verantwortliche_bg_id"></dv-error-messages>
                     </div>
                 </div>

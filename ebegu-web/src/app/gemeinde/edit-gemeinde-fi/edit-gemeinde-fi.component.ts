@@ -16,16 +16,16 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ControlContainer, NgForm} from '@angular/forms';
 
 @Component({
     selector: 'dv-edit-gemeinde-fi',
     templateUrl: './edit-gemeinde-fi.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
 export class EditGemeindeComponentFI implements OnInit {
 
-    @Input() public form: NgForm;
     @Input() private gemeindeId: string;
     @Input() public editMode: boolean;
 

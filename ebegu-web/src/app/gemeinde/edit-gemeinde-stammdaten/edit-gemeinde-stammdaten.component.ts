@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -29,10 +29,10 @@ const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
     selector: 'dv-edit-gemeinde-stammdaten',
     templateUrl: './edit-gemeinde-stammdaten.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
 export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
-    @Input() public form: NgForm;
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private gemeindeId: string;
     @Input() public keineBeschwerdeAdresse: boolean;
