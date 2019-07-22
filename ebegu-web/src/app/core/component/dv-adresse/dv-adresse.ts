@@ -103,6 +103,7 @@ export class DvAdresseController {
 
     public enableNichtInGemeinde(): boolean {
         return !this.isGesuchReadonly()
+            && this.gesuchModelManager.getGesuch()
             && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
