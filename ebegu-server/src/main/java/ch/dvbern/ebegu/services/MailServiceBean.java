@@ -504,7 +504,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	private void sendMail(
 		@Nonnull Gesuch gesuch,
-		@Nonnull String logId,
+		@Nonnull String mailTemplate,
 		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider,
 		@Nonnull AntragStatus... statusInWhichToSendMail
 	) throws MailException {
@@ -523,15 +523,15 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			String message = messageProvider.apply(gesuchsteller.get(), emailAddress.get());
 			sendMessageWithTemplate(message, emailAddress.get());
 
-			LOG.info("Sent Email for {} to {}", logId, emailAddress.get());
+			LOG.info("Sent Email {} to {}", mailTemplate, emailAddress.get());
 
 			return;
 		}
 
 		if (gesuch.getEingangsart().isOnlineGesuch()) {
 			LOG.warn(
-				"Not sending Email to {} because Gesuchsteller or Email Address is NULL: {}, {}",
-				logId,
+				"Not sending Email {} because Gesuchsteller or Email Address is NULL: {}, {}",
+				mailTemplate,
 				gesuchsteller,
 				emailAddress);
 		}

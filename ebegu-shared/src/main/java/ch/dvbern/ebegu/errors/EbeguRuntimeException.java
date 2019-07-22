@@ -216,4 +216,8 @@ public class EbeguRuntimeException extends RuntimeException {
 	public KibonLogLevel getLogLevel() {
 		return logLevel;
 	}
+
+	public void setLogLevel(KibonLogLevel logLevel) {
+		this.logLevel = logLevel;
+	}
 }
