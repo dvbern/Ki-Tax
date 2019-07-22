@@ -51,13 +51,13 @@
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"
-                     *ngIf="hasTS$ | async">
+                     *ngIf="tageschuleEnabledForMandant && hasTS$ | async">
                 <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}"
-                     *ngIf="hasFI$ | async">
+                     *ngIf="tageschuleEnabledForMandant && hasFI$ | async">
                 <dv-edit-gemeinde-fi [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-fi>

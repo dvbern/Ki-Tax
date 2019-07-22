@@ -101,7 +101,8 @@ export class AddGemeindeComponent implements OnInit, OnDestroy {
             .subscribe(tsEnabledForMandantEinstellung => {
                     this.tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
                 },
-                err => LOG.error(err));
+                err => LOG.error(err)
+            );
         if (!this.tageschuleEnabledForMandant) {
             this.gemeindeHasBetreuungsgutscheine = true;
         }

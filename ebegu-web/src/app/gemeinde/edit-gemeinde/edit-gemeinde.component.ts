@@ -15,13 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
-import {from, Observable} from 'rxjs';
+import {from, Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -34,6 +35,9 @@ import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('EditGemeindeComponent');
 
 @Component({
     selector: 'dv-edit-gemeinde',
@@ -41,7 +45,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./edit-gemeinde.component.less'],
 })
-export class EditGemeindeComponent implements OnInit {
+export class EditGemeindeComponent implements OnInit, OnDestroy {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
@@ -56,6 +60,8 @@ export class EditGemeindeComponent implements OnInit {
     private hasFI$: Observable<boolean>;
     private hasBG$: Observable<boolean>;
     public editMode: boolean = false;
+    public tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $transition$: Transition,
@@ -82,6 +88,23 @@ export class EditGemeindeComponent implements OnInit {
 
         this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
 
+        this.einstellungRS.tageschuleEnabledForMandant$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this.tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err)
+            );
+
+        this.loadStammdaten();
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    private loadStammdaten(): void {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
