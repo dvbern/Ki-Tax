@@ -103,30 +103,29 @@ public class BatchResource {
 	@PermitAll
 	public Response getBatchJobsOfUser() {
 
-		Set<BatchJobStatus> all = Arrays.stream(BatchJobStatus.values()).collect(Collectors.toSet());
-
 		// Fuer Gesuchsteller gibt es keine BatchJobs
 		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
-
-			final List<Workjob> jobs = workjobService.findWorkjobs(principalBean.getPrincipal().getName(), all);
-
-			final JobOperator jobOperator = BatchRuntime.getJobOperator();
-
-			final List<JaxWorkJob> jobList = jobs.stream()
-				.map(job -> converter.toBatchJobInformation(job))
-				.peek((jaxWorkJob) -> {
-					JobExecution jobExecution = null;
-					try {
-						jobExecution = jobOperator.getJobExecution(jaxWorkJob.getExecutionId());
-						jaxWorkJob.setExecution(converter.toBatchJobInformation(jobExecution));
-					} catch (NoSuchJobExecutionException ex) {
-						//ignroe, not a problem
-					}
-				})
-				.collect(Collectors.toList());
-
-			return Response.ok(new JaxBatchJobList(jobList)).build();
+			return Response.ok().build();
 		}
-		return Response.ok().build();
+
+		Set<BatchJobStatus> all = Arrays.stream(BatchJobStatus.values()).collect(Collectors.toSet());
+		final List<Workjob> jobs = workjobService.findWorkjobs(principalBean.getPrincipal().getName(), all);
+
+		final JobOperator jobOperator = BatchRuntime.getJobOperator();
+
+		final List<JaxWorkJob> jobList = jobs.stream()
+			.map(job -> converter.toBatchJobInformation(job))
+			.peek((jaxWorkJob) -> {
+				JobExecution jobExecution = null;
+				try {
+					jobExecution = jobOperator.getJobExecution(jaxWorkJob.getExecutionId());
+					jaxWorkJob.setExecution(converter.toBatchJobInformation(jobExecution));
+				} catch (NoSuchJobExecutionException ex) {
+					//ignroe, not a problem
+				}
+			})
+			.collect(Collectors.toList());
+
+		return Response.ok(new JaxBatchJobList(jobList)).build();
 	}
 }
