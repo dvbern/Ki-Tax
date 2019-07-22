@@ -34,7 +34,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
-    @Input() private gemeindeId: string;
+    @Input() private readonly gemeindeId: string;
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
     public korrespondenzsprache: string;

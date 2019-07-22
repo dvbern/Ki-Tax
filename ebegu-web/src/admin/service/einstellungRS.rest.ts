@@ -21,8 +21,6 @@ import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import TSEinstellung from '../../models/TSEinstellung';
-import TSGemeinde from '../../models/TSGemeinde';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export class EinstellungRS {

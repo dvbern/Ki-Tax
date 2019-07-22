@@ -26,7 +26,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 })
 export class EditGemeindeComponentFI implements OnInit {
 
-    @Input() private gemeindeId: string;
+    @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
 
     public constructor(

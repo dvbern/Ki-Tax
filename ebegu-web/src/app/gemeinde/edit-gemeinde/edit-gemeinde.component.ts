@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
@@ -31,6 +32,7 @@ import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -50,9 +52,9 @@ export class EditGemeindeComponent implements OnInit {
     private fileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;
-    private hasTS: Observable<boolean>;
-    private hasFI: Observable<boolean>;
-    private hasBG: Observable<boolean>;
+    private hasTS$: Observable<boolean>;
+    private hasFI$: Observable<boolean>;
+    private hasBG$: Observable<boolean>;
     public editMode: boolean = false;
 
     public constructor(
@@ -63,6 +65,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly einstellungRS: EinstellungRS,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -123,6 +126,7 @@ export class EditGemeindeComponent implements OnInit {
 
     public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
         if (!this.validateData(stammdaten)) {
+            this.showSaveWarningDialog();
             return;
         }
         this.setViewMode();
@@ -193,15 +197,15 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private getEinstellungenFromGemeinde(): void {
-        this.hasTS = from(this.einstellungRS.hasTagesschuleInAnyGesuchsperiode(
+        this.hasTS$ = from(this.einstellungRS.hasTagesschuleInAnyGesuchsperiode(
             this.gemeindeId,
         ).then(response => response));
 
-        this.hasFI = from(this.einstellungRS.hasFerieninselInAnyGesuchsperiode(
+        this.hasFI$ = from(this.einstellungRS.hasFerieninselInAnyGesuchsperiode(
             this.gemeindeId,
         ).then(response => response));
 
-        this.hasBG = from(this.einstellungRS.hasBetreuungsgutscheineInAnyGesuchsperiode(
+        this.hasBG$ = from(this.einstellungRS.hasBetreuungsgutscheineInAnyGesuchsperiode(
             this.gemeindeId,
         ).then(response => response));
     }
@@ -226,5 +230,19 @@ export class EditGemeindeComponent implements OnInit {
            return this.editMode;
         }
         return false;
+    }
+
+    /**
+     * Because we only have one button to save the complete formular (i.e. all tabs) we show a dialog indicating that
+     * the form contains errors. This is useful in case the user has a correct tab open but the error is in another
+     * tab that she doesn't see.
+     */
+    private showSaveWarningDialog(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
+        };
+
+        this.dialog.open(DvNgOkDialogComponent, dialogConfig).afterClosed();
     }
 }

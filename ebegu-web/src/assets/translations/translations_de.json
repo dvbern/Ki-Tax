@@ -1610,5 +1610,6 @@
     "GEMEINDE_TAB_STAMMDATEN": "Stammdaten",
     "GEMEINDE_TAB_BG": "Betreuungsgutscheine",
     "GEMEINDE_TAB_TS": "Tagesschule",
-    "GEMEINDE_TAB_FI": "Ferieninsel"
+    "GEMEINDE_TAB_FI": "Ferieninsel",
+    "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Reiter."
 }

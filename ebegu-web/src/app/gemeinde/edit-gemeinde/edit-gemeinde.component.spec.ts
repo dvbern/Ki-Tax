@@ -21,6 +21,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -51,6 +52,9 @@ describe('EditGemeindeComponent', () => {
     ]);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
+        isOneOfRoles: true,
+    });
 
     beforeEach(async(() => {
 
@@ -69,6 +73,7 @@ describe('EditGemeindeComponent', () => {
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
             ],
