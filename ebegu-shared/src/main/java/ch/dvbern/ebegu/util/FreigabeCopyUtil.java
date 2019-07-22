@@ -153,6 +153,7 @@ public final class FreigabeCopyUtil {
 	) {
 		erweiterteBetreuungGS.setErweiterteBeduerfnisse(erweiterteBetreuungJA.getErweiterteBeduerfnisse());
 		erweiterteBetreuungGS.setFachstelle(erweiterteBetreuungJA.getFachstelle());
+		erweiterteBetreuungGS.setKeineKesbPlatzierung(erweiterteBetreuungJA.getKeineKesbPlatzierung());
 	}
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {

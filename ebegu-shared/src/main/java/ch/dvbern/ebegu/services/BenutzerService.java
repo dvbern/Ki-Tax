@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.UserRole;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -57,13 +58,12 @@ public interface BenutzerService {
 	Benutzer saveBenutzer(@Nonnull Benutzer benutzer);
 
 	/**
-	 * Creates a new user of Role ADMIN_GEMEINDE with the given adminMail as email and as username and the given
-	 * Gemeinde as the only
-	 * Gemeinde in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to
-	 * "UNKNOWN"
+	 * Creates a new user of Role userRole with the given adminMail as email and as username and the given
+	 * Gemeinde as the only Gemeinde in the current Berechtigung, which will be valid from today on. Name
+	 * and Vorname will be set to "UNKNOWN"
 	 */
 	@Nonnull
-	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde);
+	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull UserRole userRole, @Nonnull Gemeinde gemeinde);
 
 	/**
 	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given
