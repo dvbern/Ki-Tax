@@ -175,8 +175,10 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		List<Betreuung> allBetreuungenFromGesuch = this.betreuungService.findAllBetreuungenFromGesuch(mutation.getId());
 		Optional<Betreuung> optFolgeBetreeung = allBetreuungenFromGesuch.stream()
-			.filter(b -> b.getBetreuungNummer().equals(betreuungNummer)).findAny();
+			.filter(b -> b.getBetreuungNummer().equals(betreuungNummer))
+			.findAny();
 		Assert.assertTrue(optFolgeBetreeung.isPresent());
+		this.verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 		Optional<Verfuegung> optVorherigeVerfuegungBetreuung = this.verfuegungService.findVorgaengerVerfuegung(optFolgeBetreeung.get());
 		Assert.assertTrue(optVorherigeVerfuegungBetreuung.isPresent());
 		Assert.assertEquals(optVorherigeVerfuegungBetreuung.get(), verfuegung1);

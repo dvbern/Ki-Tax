@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -326,10 +327,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
-		gesuch.getKindContainers()
-			.stream()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.forEach(this::setVorgaengerVerfuegungen);
+		initializeVorgaengerVerfuegungen(gesuch);
 
 		bgEvaluator.evaluate(gesuch, this, calculatorParameters, sprache.getLocale());
 		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen reicht hier glaub
@@ -435,16 +433,16 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<LocalDate> findVorgaengerVerfuegungDate(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-		Optional<Verfuegung> vorgaengerVerfuegungOpt = findVorgaengerVerfuegung(betreuung);
-		LocalDate letztesVerfDatum = null;
-		if (vorgaengerVerfuegungOpt.isPresent()) {
-			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOpt.get();
-			authorizer.checkReadAuthorization(vorgaengerVerfuegung);
-			if (vorgaengerVerfuegung.getTimestampErstellt() != null) {
-				letztesVerfDatum = vorgaengerVerfuegung.getTimestampErstellt().toLocalDate();
-			}
-		}
-		return Optional.ofNullable(letztesVerfDatum);
+
+		Optional<LocalDate> letztesVerfDatum = findVorgaengerVerfuegung(betreuung)
+			.flatMap(vorgaengerVerfuegung -> {
+				authorizer.checkReadAuthorization(vorgaengerVerfuegung);
+
+				return Optional.ofNullable(vorgaengerVerfuegung.getTimestampErstellt())
+					.map(LocalDateTime::toLocalDate);
+			});
+
+		return letztesVerfDatum;
 	}
 
 	@Override

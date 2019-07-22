@@ -112,7 +112,9 @@ public interface VerfuegungService {
 	 * kann null sein
 	 *
 	 * @return Verfuegung oder null falls nicht vorhanden
+	 * @deprecated wird nur noch in Unit Test benötigt
 	 */
+	@Deprecated
 	@Nonnull
 	Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull Betreuung betreuung);
 
@@ -121,7 +123,9 @@ public interface VerfuegungService {
 	 * kann null sein
 	 *
 	 * @return Verfuegung oder null falls nicht vorhanden
+	 * @deprecated  wird praktisch nur noch in Unit Test benötigt (BetreuungsgutscheinEvaluator macht etwas seltsames)
 	 */
+	@Deprecated
 	@Nonnull
 	Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung);
 

@@ -224,6 +224,13 @@ public class BetreuungsgutscheinEvaluator {
 		}
 	}
 
+	// TODO warum braucht es den VerfuegungService? Diese methode wird nur via
+	//  VerfuegungServiceBean#calculateVerfuegung aufgerufen, und da werden die Vorgänger Verfügungen bereits
+	//  initialisiert. Ich schlage die Vorgänger Verfügung direkt aus der Betreuung zu lesen.
+	//  Bei der Betreuung würde ich noch ein boolean vorgaengerInitialized hinzufügen, und im getter per
+	//  checkState(vorgaengerInitialized, "must initialize transient fields via
+	//  VerfuegungService#initializeVorgaengerVerfuegungen") sicher stellen, dass die Initialisierung immer gemacht
+	//  wurde, wenn man auf die Daten zugreift.
 	private void setZahlungRelevanteDaten(VerfuegungService verfuegungService, @Nonnull Betreuung betreuung) {
 		if (verfuegungService != null) {
 			final Optional<Verfuegung> ausbezahlteVorgaenger = verfuegungService.
