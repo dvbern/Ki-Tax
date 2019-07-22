@@ -36,7 +36,6 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchEntityType;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchFilter;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.SearchResultEntryDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.lucene.analysis.Analyzer;
@@ -59,9 +58,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
@@ -94,11 +93,12 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	@Override
 	public void rebuildSearchIndex() {
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(persistence.getEntityManager());
-		try {
-			fullTextEntityManager.createIndexer().startAndWait();
-		} catch (InterruptedException e) {
-			throw new EbeguRuntimeException("rebuildSearchIndex", "Index konnte nicht erstellt werden", e, e.getMessage());
-		}
+		fullTextEntityManager.createIndexer().start();
+//		try {
+//			fullTextEntityManager.createIndexer().startAndWait();
+//		} catch (InterruptedException e) {
+//			throw new EbeguRuntimeException("rebuildSearchIndex", "Index konnte nicht erstellt werden", e, e.getMessage());
+//		}
 	}
 
 	@Nonnull
