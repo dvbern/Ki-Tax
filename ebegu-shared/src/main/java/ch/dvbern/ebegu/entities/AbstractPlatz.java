@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -174,6 +175,19 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Transient
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return getInstitutionStammdaten().getBetreuungsangebotTyp();
+	}
+
+	@Transient
+	public Gesuchsperiode extractGesuchsperiode() {
+		Objects.requireNonNull(this.getKind(), "Can not extract Gesuchsperiode because Kind is null");
+		Objects.requireNonNull(this.getKind().getGesuch(), "Can not extract Gesuchsperiode because Gesuch is null");
+		return this.getKind().getGesuch().getGesuchsperiode();
+	}
+
+	@Transient
+	public Gesuch extractGesuch() {
+		Objects.requireNonNull(this.getKind(), "Can not extract Gesuch because Kind is null");
+		return this.getKind().getGesuch();
 	}
 
 	@Nonnull

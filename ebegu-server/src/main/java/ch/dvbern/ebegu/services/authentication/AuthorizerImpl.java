@@ -33,6 +33,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -442,13 +443,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorization(@Nullable Betreuung betr) {
-		if (betr == null) {
+	public void checkReadAuthorization(@Nullable AbstractPlatz platz) {
+		if (platz == null) {
 			return;
 		}
-		boolean allowed = isReadAuthorized(betr);
+		boolean allowed = isReadAuthorized(platz);
 		if (!allowed) {
-			throwViolation(betr);
+			throwViolation(platz);
 		}
 	}
 
@@ -669,7 +670,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		);
 	}
 
-	private boolean isReadAuthorized(final Betreuung betreuung) {
+	private boolean isReadAuthorized(final AbstractPlatz betreuung) {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
@@ -699,7 +700,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
-				&& betreuung.getBetreuungsangebotTyp() != null
 				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
 		}
 		return false;

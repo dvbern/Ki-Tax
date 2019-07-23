@@ -693,6 +693,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const found = instStamList.find(i => i.id === this.instStammId);
         if (found) {
             this.model.institutionStammdaten = found;
+        } else {
+            console.error('tagesschule not found!', this.instStammId);
         }
     }
 
@@ -1137,6 +1139,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStammId = this.CONSTANTS.INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE;
+            this.getBetreuungModel().vertrag = true;
         } else {
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;

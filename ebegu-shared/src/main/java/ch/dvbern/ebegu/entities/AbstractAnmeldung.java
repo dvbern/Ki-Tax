@@ -74,7 +74,6 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 		this.anmeldungMutationZustand = anmeldungMutationZustand;
 	}
 
-
 	public AbstractAnmeldung copyAbstractAnmeldung(
 		@Nonnull AbstractAnmeldung target,
 		@Nonnull AntragCopyType copyType,
@@ -99,5 +98,12 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 			break;
 		}
 		return target;
+	}
+
+	public void copyAnmeldung(@Nonnull AbstractAnmeldung betreuung) {
+		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus()) {
+			this.setAnmeldestatus(betreuung.getAnmeldestatus());
+			this.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
+		}
 	}
 }

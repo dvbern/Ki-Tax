@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -364,19 +363,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 			getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
 
 		return pensenSame && abwesenheitenSame && statusSame && sameErweiterteBeduerfnisse;
-	}
-
-	@Transient
-	public Gesuchsperiode extractGesuchsperiode() {
-		Objects.requireNonNull(this.getKind(), "Can not extract Gesuchsperiode because Kind is null");
-		Objects.requireNonNull(this.getKind().getGesuch(), "Can not extract Gesuchsperiode because Gesuch is null");
-		return this.getKind().getGesuch().getGesuchsperiode();
-	}
-
-	@Transient
-	public Gesuch extractGesuch() {
-		Objects.requireNonNull(this.getKind(), "Can not extract Gesuch because Kind is null");
-		return this.getKind().getGesuch();
 	}
 
 	@Transient

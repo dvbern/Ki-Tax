@@ -119,9 +119,12 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
@@ -188,10 +191,12 @@ import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.enums.Anmeldestatus;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
@@ -1741,7 +1746,13 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedKind.getKindJA() != null) {
 			jaxKindContainer.setKindJA(kindToJAX(persistedKind.getKindJA()));
 		}
-		jaxKindContainer.setBetreuungen(betreuungListToJax(persistedKind.getBetreuungen()));
+		jaxKindContainer.setBetreuungen(new TreeSet<>());
+		Set<JaxBetreuung> betreuungen = betreuungListToJax(persistedKind.getBetreuungen());
+		jaxKindContainer.getBetreuungen().addAll(betreuungen);
+		Set<JaxBetreuung> anmeldungenTagesschule = anmeldungTagesschuleListToJax(persistedKind.getAnmeldungenTagesschule());
+		jaxKindContainer.getBetreuungen().addAll(anmeldungenTagesschule);
+		Set<JaxBetreuung> anmeldungenFerieninsel = anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
+		jaxKindContainer.getBetreuungen().addAll(anmeldungenFerieninsel);
 		jaxKindContainer.setKindNummer(persistedKind.getKindNummer());
 		jaxKindContainer.setNextNumberBetreuung(persistedKind.getNextNumberBetreuung());
 		return jaxKindContainer;
@@ -2129,6 +2140,116 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxUrlaub;
 	}
 
+	@Nonnull
+	public <T extends AbstractPlatz> T abstractPlatzToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final T betreuung) {
+		requireNonNull(betreuung);
+		requireNonNull(betreuungJAXP);
+
+		convertAbstractVorgaengerFieldsToEntity(betreuungJAXP, betreuung);
+
+		// InstitutionStammdaten muessen bereits existieren
+		if (betreuungJAXP.getInstitutionStammdaten() != null) {
+			final String instStammdatenID = betreuungJAXP.getInstitutionStammdaten().getId();
+			requireNonNull(instStammdatenID, "Die Institutionsstammdaten muessen gesetzt sein");
+			final Optional<InstitutionStammdaten> optInstStammdaten =
+				institutionStammdatenService.findInstitutionStammdaten(instStammdatenID);
+			final InstitutionStammdaten instStammdatenToMerge =
+				optInstStammdaten.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"betreuungToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					instStammdatenID));
+			// InstitutionsStammdaten darf nicht vom Client ueberschrieben werden
+			betreuung.setInstitutionStammdaten(instStammdatenToMerge);
+		}
+		betreuung.setBetreuungNummer(betreuungJAXP.getBetreuungNummer());
+		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
+		return betreuung;
+	}
+
+	@Nonnull
+	private Anmeldestatus betreuungsstatusToAnmeldestatus(@Nonnull Betreuungsstatus betreuungsstatus) {
+		switch (betreuungsstatus) {
+		case SCHULAMT_ANMELDUNG_ERFASST:
+			return Anmeldestatus.SCHULAMT_ANMELDUNG_ERFASST;
+		case SCHULAMT_ANMELDUNG_UEBERNOMMEN:
+			return Anmeldestatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+		case SCHULAMT_ANMELDUNG_AUSGELOEST:
+			return Anmeldestatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
+		case SCHULAMT_ANMELDUNG_ABGELEHNT:
+			return Anmeldestatus.SCHULAMT_ANMELDUNG_ABGELEHNT;
+		case SCHULAMT_FALSCHE_INSTITUTION:
+			return Anmeldestatus.SCHULAMT_FALSCHE_INSTITUTION;
+		default:
+			throw new IllegalArgumentException("Unbekannter Status für Anmeldungen");
+		}
+	}
+
+	@Nonnull
+	private Betreuungsstatus anmeldestatusToBetreuungsstatus(@Nonnull Anmeldestatus betreuungsstatus) {
+		switch (betreuungsstatus) {
+		case SCHULAMT_ANMELDUNG_ERFASST:
+			return Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
+		case SCHULAMT_ANMELDUNG_UEBERNOMMEN:
+			return Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+		case SCHULAMT_ANMELDUNG_AUSGELOEST:
+			return Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
+		case SCHULAMT_ANMELDUNG_ABGELEHNT:
+			return Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT;
+		case SCHULAMT_FALSCHE_INSTITUTION:
+			return Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
+		default:
+			throw new IllegalArgumentException("Unbekannter Status für Anmeldungen");
+		}
+	}
+
+	@Nonnull
+	public AnmeldungTagesschule anmeldungTagesschuleToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
+		AnmeldungTagesschule betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungTagesschule);
+		betreuung.setAnmeldestatus(betreuungsstatusToAnmeldestatus(betreuungJAXP.getBetreuungsstatus()));
+		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
+		betreuung.setKeineDetailinformationen(betreuungJAXP.isKeineDetailinformationen());
+		if (betreuungJAXP.getBelegungTagesschule() != null) {
+			requireNonNull(
+				betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule(),
+				"InstitutionsStammdatenTagesschule muessen gesetzt sein");
+			if (betreuung.getBelegungTagesschule() != null) {
+				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+					betreuungJAXP.getBelegungTagesschule(),
+					betreuung.getBelegungTagesschule(),
+					betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule()));
+			} else {
+				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+					betreuungJAXP.getBelegungTagesschule(),
+					new BelegungTagesschule(),
+					betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule()));
+			}
+		} else {
+			betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+				betreuungJAXP.getBelegungTagesschule(),
+				new BelegungTagesschule(),
+				null));
+		}
+		return betreuung;
+	}
+
+	@Nonnull
+	public AnmeldungFerieninsel anmeldungFerieninselToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
+		AnmeldungFerieninsel betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungFerieninsel);
+		betreuung.setAnmeldestatus(betreuungsstatusToAnmeldestatus(betreuungJAXP.getBetreuungsstatus()));
+		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
+		if (betreuung.getBelegungFerieninsel() != null) {
+			betreuung.setBelegungFerieninsel(belegungFerieninselToEntity(
+				betreuungJAXP.getBelegungFerieninsel(),
+				betreuung.getBelegungFerieninsel()));
+		} else {
+			betreuung.setBelegungFerieninsel(belegungFerieninselToEntity(
+				betreuungJAXP.getBelegungFerieninsel(),
+				new BelegungFerieninsel()));
+		}
+		return betreuung;
+	}
+
+	@Nonnull
 	public Betreuung betreuungToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final Betreuung betreuung) {
 		requireNonNull(betreuung);
 		requireNonNull(betreuungJAXP);
@@ -2156,55 +2277,9 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setVertrag(betreuungJAXP.getVertrag());
 
-		// InstitutionStammdaten muessen bereits existieren
-		if (betreuungJAXP.getInstitutionStammdaten() != null) {
-			final String instStammdatenID = betreuungJAXP.getInstitutionStammdaten().getId();
-			requireNonNull(instStammdatenID, "Die Institutionsstammdaten muessen gesetzt sein");
-			final Optional<InstitutionStammdaten> optInstStammdaten =
-				institutionStammdatenService.findInstitutionStammdaten(instStammdatenID);
-			final InstitutionStammdaten instStammdatenToMerge =
-				optInstStammdaten.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"betreuungToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					instStammdatenID));
-			// InstitutionsStammdaten darf nicht vom Client ueberschrieben werden
-			betreuung.setInstitutionStammdaten(instStammdatenToMerge);
-		}
-		betreuung.setBetreuungNummer(betreuungJAXP.getBetreuungNummer());
+
 		betreuung.setBetreuungMutiert(betreuungJAXP.getBetreuungMutiert());
 		betreuung.setAbwesenheitMutiert(betreuungJAXP.getAbwesenheitMutiert());
-		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
-		betreuung.setKeineDetailinformationen(betreuungJAXP.isKeineDetailinformationen());
-		if (betreuungJAXP.getBelegungTagesschule() != null) {
-			requireNonNull(
-				betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule(),
-				"InstitutionsStammdatenTagesschule muessen gesetzt sein");
-			if (betreuung.getBelegungTagesschule() != null) {
-				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-					betreuungJAXP.getBelegungTagesschule(),
-					betreuung.getBelegungTagesschule(),
-					betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule()));
-			} else {
-				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-					betreuungJAXP.getBelegungTagesschule(),
-					new BelegungTagesschule(),
-					betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule()));
-			}
-		} else {
-			betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-				betreuungJAXP.getBelegungTagesschule(),
-				new BelegungTagesschule(),
-				null));
-		}
-		if (betreuung.getBelegungFerieninsel() != null) {
-			betreuung.setBelegungFerieninsel(belegungFerieninselToEntity(
-				betreuungJAXP.getBelegungFerieninsel(),
-				betreuung.getBelegungFerieninsel()));
-		} else {
-			betreuung.setBelegungFerieninsel(belegungFerieninselToEntity(
-				betreuungJAXP.getBelegungFerieninsel(),
-				new BelegungFerieninsel()));
-		}
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
@@ -2271,6 +2346,28 @@ public class JaxBConverter extends AbstractConverter {
 			return belegungTagesschule;
 		}
 		return null;
+	}
+
+	@Nonnull
+	public AnmeldungTagesschule anmeldungTagesschuleToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
+		requireNonNull(betreuungJAXP);
+		AnmeldungTagesschule betreuungToMergeWith = new AnmeldungTagesschule();
+		if (betreuungJAXP.getId() != null) {
+			final Optional<AnmeldungTagesschule> optionalBetreuung = betreuungService.findAnmeldungTagesschule(betreuungJAXP.getId());
+			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungTagesschule());
+		}
+		return this.anmeldungTagesschuleToEntity(betreuungJAXP, betreuungToMergeWith);
+	}
+
+	@Nonnull
+	public AnmeldungFerieninsel anmeldungFerieninselToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
+		requireNonNull(betreuungJAXP);
+		AnmeldungFerieninsel betreuungToMergeWith = new AnmeldungFerieninsel();
+		if (betreuungJAXP.getId() != null) {
+			final Optional<AnmeldungFerieninsel> optionalBetreuung = betreuungService.findAnmeldungFerieninsel(betreuungJAXP.getId());
+			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungFerieninsel());
+		}
+		return this.anmeldungFerieninselToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
 	public Betreuung betreuungToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
@@ -2455,6 +2552,28 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toCollection(TreeSet::new));
 	}
 
+	@Nonnull
+	private Set<JaxBetreuung> anmeldungTagesschuleListToJax(@Nullable final Set<AnmeldungTagesschule> betreuungen) {
+		if (betreuungen == null) {
+			return Collections.emptySet();
+		}
+
+		return betreuungen.stream()
+			.map(this::anmeldungTagesschuleToJAX)
+			.collect(Collectors.toCollection(TreeSet::new));
+	}
+
+	@Nonnull
+	private Set<JaxBetreuung> anmeldungFerieninselListToJax(@Nullable final Set<AnmeldungFerieninsel> betreuungen) {
+		if (betreuungen == null) {
+			return Collections.emptySet();
+		}
+
+		return betreuungen.stream()
+			.map(this::anmeldungFerieninselToJAX)
+			.collect(Collectors.toCollection(TreeSet::new));
+	}
+
 	private BetreuungsmitteilungPensum betreuungsmitteilungpensumToEntity(
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum,
 		final BetreuungsmitteilungPensum betreuungspensum) {
@@ -2485,9 +2604,48 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toList());
 	}
 
-	public JaxBetreuung betreuungToJAX(final Betreuung betreuungFromServer) {
+	@Nonnull
+	public JaxBetreuung platzToJAX(@Nonnull final AbstractPlatz betreuungFromServer) {
 		final JaxBetreuung jaxBetreuung = new JaxBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(betreuungFromServer, jaxBetreuung);
+		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
+			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
+		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
+		jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
+		jaxBetreuung.setKindNummer(betreuungFromServer.getKind().getKindNummer());
+		if (betreuungFromServer.getKind().getGesuch() != null) {
+			jaxBetreuung.setGesuchId(betreuungFromServer.getKind().getGesuch().getId());
+			jaxBetreuung.setGesuchsperiode(gesuchsperiodeToJAX(betreuungFromServer.getKind()
+				.getGesuch()
+				.getGesuchsperiode()));
+		}
+		jaxBetreuung.setGueltig(betreuungFromServer.isGueltig());
+		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
+		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public JaxBetreuung anmeldungTagesschuleToJAX(@Nonnull final AnmeldungTagesschule betreuungFromServer) {
+		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		jaxBetreuung.setBetreuungsstatus(anmeldestatusToBetreuungsstatus(betreuungFromServer.getAnmeldestatus()));
+		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
+		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
+		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
+		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public JaxBetreuung anmeldungFerieninselToJAX(@Nonnull final AnmeldungFerieninsel betreuungFromServer) {
+		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		jaxBetreuung.setBetreuungsstatus(anmeldestatusToBetreuungsstatus(betreuungFromServer.getAnmeldestatus()));
+		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
+		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
+		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public JaxBetreuung betreuungToJAX(@Nonnull final Betreuung betreuungFromServer) {
+		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
 		jaxBetreuung.setGrundAblehnung(betreuungFromServer.getGrundAblehnung());
 		jaxBetreuung.setDatumAblehnung(betreuungFromServer.getDatumAblehnung());
 		jaxBetreuung.setDatumBestaetigung(betreuungFromServer.getDatumBestaetigung());
@@ -2496,31 +2654,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
-		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
-			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
-		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
-		if (betreuungFromServer.getKind() != null) {
-			jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
-			jaxBetreuung.setKindNummer(betreuungFromServer.getKind().getKindNummer());
-			if (betreuungFromServer.getKind().getGesuch() != null) {
-				jaxBetreuung.setGesuchId(betreuungFromServer.getKind().getGesuch().getId());
-				jaxBetreuung.setGesuchsperiode(gesuchsperiodeToJAX(betreuungFromServer.getKind()
-					.getGesuch()
-					.getGesuchsperiode()));
-			}
-		}
 		if (betreuungFromServer.getVerfuegung() != null) {
 			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegung()));
 		}
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
-		jaxBetreuung.setGueltig(betreuungFromServer.isGueltig());
-		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
-		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
-		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
-		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
-		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
-
 		return jaxBetreuung;
 	}
 

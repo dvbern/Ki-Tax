@@ -45,11 +45,16 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer_;
 import ch.dvbern.ebegu.entities.Abwesenheit_;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -70,6 +75,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.Anmeldestatus;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -157,24 +163,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Objects.requireNonNull(betreuung);
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
-		if (betreuung.getBetreuungsstatus().isSchulamt()) {
-			// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-			betreuung.setGueltig(true);
-			if (betreuung.getVorgaengerId() != null) {
-				Optional<Betreuung> vorgaengerBetreuungOptional = findBetreuung(betreuung.getVorgaengerId());
-				vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-			}
-		}
 		final Betreuung mergedBetreuung = persistence.merge(betreuung);
-
-		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
-		final List<Betreuung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
-		betreuungByBGNummer.stream()
-			.filter(b -> b.isAngebotSchulamt() && !Objects.equals(betreuung.getId(), b.getId()))
-			.forEach(b -> {
-				b.copyAnmeldung(betreuung);
-				persistence.merge(b);
-			});
 
 		// we need to manually add this new Betreuung to the Kind
 		final Set<Betreuung> betreuungen = mergedBetreuung.getKind().getBetreuungen();
@@ -182,6 +171,96 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		mergedBetreuung.getKind().setBetreuungen(betreuungen);
 
 		//jetzt noch wizard step updaten
+		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+
+		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
+
+		updateVerantwortliche(mergedGesuch, mergedBetreuung, false, isNew);
+
+		return mergedBetreuung;
+	}
+
+	@Nonnull
+	@Override
+	public AnmeldungTagesschule saveAnmeldungTagesschule(@Nonnull AnmeldungTagesschule betreuung, @Nonnull Boolean isAbwesenheit) {
+		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+
+		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
+		betreuung.setGueltig(true);
+		if (betreuung.getVorgaengerId() != null) {
+			Optional<AnmeldungTagesschule> vorgaengerBetreuungOptional = findAnmeldungTagesschule(betreuung.getVorgaengerId());
+			vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
+		}
+		final AnmeldungTagesschule mergedBetreuung = persistence.merge(betreuung);
+
+
+		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
+		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
+		betreuungByBGNummer.stream()
+			.filter(b -> b.getBetreuungsangebotTyp().isTagesschule() && !Objects.equals(betreuung.getId(), b.getId()))
+			.forEach(b -> {
+				b.copyAnmeldung(betreuung);
+				persistence.merge(b);
+			});
+
+
+		// we need to manually add this new AnmeldungTagesschule to the Kind
+		final Set<AnmeldungTagesschule> betreuungen = mergedBetreuung.getKind().getAnmeldungenTagesschule();
+		betreuungen.add(mergedBetreuung);
+		mergedBetreuung.getKind().setAnmeldungenTagesschule(betreuungen);
+
+		//jetzt noch wizard step updaten
+		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+
+		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
+
+		boolean isAnmeldungSchulamtAusgeloest = Anmeldestatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getAnmeldestatus();
+		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
+
+		return mergedBetreuung;
+	}
+
+	@Nonnull
+	@Override
+	public AnmeldungFerieninsel saveAnmeldungFerieninsel(@Nonnull AnmeldungFerieninsel betreuung, @Nonnull Boolean isAbwesenheit) {
+		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+
+		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
+		betreuung.setGueltig(true);
+		if (betreuung.getVorgaengerId() != null) {
+			Optional<AnmeldungFerieninsel> vorgaengerBetreuungOptional = findAnmeldungFerieninsel(betreuung.getVorgaengerId());
+			vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
+		}
+		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(betreuung);
+
+
+		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
+		final List<AbstractAnmeldung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
+		betreuungByBGNummer.stream()
+			.filter(b -> b.getBetreuungsangebotTyp().isFerieninsel() && !Objects.equals(betreuung.getId(), b.getId()))
+			.forEach(b -> {
+				b.copyAnmeldung(betreuung);
+				persistence.merge(b);
+			});
+
+
+		// we need to manually add this new AnmeldungFerieninsel to the Kind
+		final Set<AnmeldungFerieninsel> betreuungen = mergedBetreuung.getKind().getAnmeldungenFerieninsel();
+		betreuungen.add(mergedBetreuung);
+		mergedBetreuung.getKind().setAnmeldungenFerieninsel(betreuungen);
+
+		//jetzt noch wizard step updaten
+		updateWizardSteps(mergedBetreuung, isAbwesenheit);
+
+		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
+
+		boolean isAnmeldungSchulamtAusgeloest = Anmeldestatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getAnmeldestatus();
+		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
+
+		return mergedBetreuung;
+	}
+
+	private void updateWizardSteps(@Nonnull AbstractPlatz mergedBetreuung, @Nonnull Boolean isAbwesenheit) {
 		if (isAbwesenheit) {
 			wizardStepService.updateSteps(
 				mergedBetreuung.getKind().getGesuch().getId(),
@@ -195,10 +274,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				null,
 				WizardStepName.BETREUUNG);
 		}
+	}
 
-		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
-
-		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), mergedBetreuung.getBetreuungsstatus(), isNew)) {
+	private void updateVerantwortliche(@Nonnull Gesuch mergedGesuch, @Nonnull AbstractPlatz mergedBetreuung, boolean isAnmeldungSchulamtAusgeloest, boolean isNew) {
+		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), isAnmeldungSchulamtAusgeloest, isNew)) {
 			Optional<GemeindeStammdaten> gemeindeStammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(mergedGesuch
 					.getDossier()
@@ -210,13 +289,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 			gesuchService.setVerantwortliche(benutzerBG, benutzerTS, mergedBetreuung.extractGesuch(), true, true);
 		}
-
-		return mergedBetreuung;
 	}
 
 	private boolean updateVerantwortlicheNeeded(
 		Eingangsart eingangsart,
-		Betreuungsstatus betreuungsstatus,
+		boolean isSchulamtAnmeldungAusgeloest,
 		boolean isNew) {
 		if (!isNew) {
 			// nur neue Betreuungen duerfen den Verantwortlichen setzen
@@ -225,7 +302,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (eingangsart == Eingangsart.PAPIER) {
 			// immer bei eingangsart Papier
 			return true;
-		} else if (betreuungsstatus == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+		} else if (isSchulamtAnmeldungAusgeloest) {
 			// bei eingangsart Online nur wenn die Anmeldung direkt ausgelöst wurde (über TS oder FI hinzufügen Knöpfe)
 			return true;
 		}
@@ -345,6 +422,34 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Optional<AnmeldungTagesschule> findAnmeldungTagesschule(@Nonnull String id) {
+		Objects.requireNonNull(id, "id muss gesetzt sein");
+		AnmeldungTagesschule betr = persistence.find(AnmeldungTagesschule.class, id);
+		if (betr != null) {
+			authorizer.checkReadAuthorization(betr);
+		}
+		return Optional.ofNullable(betr);
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Optional<AnmeldungFerieninsel> findAnmeldungFerieninsel(@Nonnull String id) {
+		Objects.requireNonNull(id, "id muss gesetzt sein");
+		AnmeldungFerieninsel betr = persistence.find(AnmeldungFerieninsel.class, id);
+		if (betr != null) {
+			authorizer.checkReadAuthorization(betr);
+		}
+		return Optional.ofNullable(betr);
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuung(@Nonnull String key, boolean doAuthCheck) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		Betreuung betr = persistence.find(Betreuung.class, key);
@@ -356,17 +461,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer) {
+	public List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer) {
 		return findAnmeldungenByBGNummer(bgNummer, false);
 	}
 
 	@Override
-	public List<Betreuung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
+	public List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
 		return findAnmeldungenByBGNummer(bgNummer, true);
 	}
 
 	@Nonnull
-	private List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer, boolean getOnlyAktuelle) {
+	private List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer, boolean getOnlyAktuelle) {
 		final int betreuungNummer = getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
@@ -382,10 +487,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final long fallnummer = getFallnummerFromBGNummer(bgNummer);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
+		final CriteriaQuery<AbstractAnmeldung> query = cb.createQuery(AbstractAnmeldung.class);
 
-		Root<Betreuung> root = query.from(Betreuung.class);
-		final Join<Betreuung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
+		Root<AbstractAnmeldung> root = query.from(AbstractAnmeldung.class);
+		final Join<AbstractAnmeldung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
 		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
 			KindContainer_.gesuch,
 			JoinType.LEFT);
@@ -394,7 +499,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
-			root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
+			root.get(AbstractAnmeldung_.anmeldestatus).in(Anmeldestatus.anmeldungsstatusAusgeloest);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -408,8 +513,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (getOnlyAktuelle) {
 			Predicate predAktuelleBetreuung =
-				cb.equal(root.get(Betreuung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-			Predicate predNormaleBetreuung = cb.isNull(root.get(Betreuung_.anmeldungMutationZustand));
+				cb.equal(root.get(AbstractAnmeldung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+			Predicate predNormaleBetreuung = cb.isNull(root.get(AbstractAnmeldung_.anmeldungMutationZustand));
 			predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
 		}
 

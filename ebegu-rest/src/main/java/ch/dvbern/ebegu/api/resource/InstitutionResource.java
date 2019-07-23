@@ -244,22 +244,6 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(
-		value = "Find and return a list of all active Institutionen. An active Institution is a Institution where the "
-			+ "active flag is true",
-		responseContainer = "List",
-		response = JaxInstitution.class)
-	@Nonnull
-	@GET
-	@Path("/active")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitution> getAllActiveInstitutionen() {
-		return institutionService.getAllActiveInstitutionen().stream()
-			.map(inst -> converter.institutionToJAX(inst))
-			.collect(Collectors.toList());
-	}
-
 	@ApiOperation(value = "Find and return a list of all Institutionen of the currently logged in Benutzer. Retruns " +
 		"all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull

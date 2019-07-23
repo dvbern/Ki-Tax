@@ -81,12 +81,6 @@ export class InstitutionRS {
         });
     }
 
-    public getAllActiveInstitutionen(): IPromise<TSInstitution[]> {
-        return this.$http.get(`${this.serviceURL}/active`).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionen(response.data);
-        });
-    }
-
     public getInstitutionenForCurrentBenutzer(): IPromise<TSInstitution[]> {
         return this.$http.get(`${this.serviceURL}/currentuser`).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionen(response.data);

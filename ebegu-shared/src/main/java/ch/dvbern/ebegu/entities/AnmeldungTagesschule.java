@@ -126,13 +126,13 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		return target;
 	}
 
-	// Funktion zum Kopieren von Tagesschule und Ferieninsel Angebote
-	public void copyAnmeldung(@Nonnull AnmeldungTagesschule betreuung) {
+	@Override
+	public void copyAnmeldung(@Nonnull AbstractAnmeldung betreuung) {
+		super.copyAnmeldung(betreuung);
 		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus()) {
-			this.setAnmeldestatus(betreuung.getAnmeldestatus());
-			this.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
-			if (betreuung.getBelegungTagesschule() != null) {
-				this.setBelegungTagesschule(betreuung.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
+			AnmeldungTagesschule that = (AnmeldungTagesschule) betreuung;
+			if (that.getBelegungTagesschule() != null) {
+				this.setBelegungTagesschule(that.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
 			}
 		}
 	}

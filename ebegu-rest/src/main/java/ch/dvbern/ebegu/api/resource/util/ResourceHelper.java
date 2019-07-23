@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -106,7 +107,7 @@ public class ResourceHelper {
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	public void assertGesuchStatusForBenutzerRole(@Nonnull Gesuch gesuch, @Nonnull Betreuung betreuung) {
+	public void assertGesuchStatusForBenutzerRole(@Nonnull Gesuch gesuch, @Nonnull AbstractPlatz betreuung) {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		if (userRole == UserRole.SUPER_ADMIN) {
 			// Superadmin darf alles

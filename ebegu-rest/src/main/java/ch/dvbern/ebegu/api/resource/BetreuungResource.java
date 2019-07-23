@@ -48,10 +48,13 @@ import ch.dvbern.ebegu.api.dtos.JaxAnmeldungDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.enums.Anmeldestatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -104,25 +107,55 @@ public class BetreuungResource {
 
 		Optional<KindContainer> kind = kindService.findKind(kindId.getId());
 		if (kind.isPresent()) {
-			if (hasDuplicate(betreuungJAXP, kind.get().getBetreuungen())) {
+			KindContainer kindContainer = kind.get();
+			if (hasDuplicate(betreuungJAXP, kindContainer.getBetreuungen())) {
 				throw new EbeguRuntimeException(KibonLogLevel.NONE, "saveBetreuung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 			}
-			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
-			resourceHelper.assertGesuchStatusForBenutzerRole(kind.get().getGesuch(), convertedBetreuung);
-
-			convertedBetreuung.setKind(kind.get());
-			if (convertedBetreuung.isKeineDetailinformationen()) {
-				// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
-				convertedBetreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+			BetreuungsangebotTyp betreuungsangebotTyp = betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp();
+			if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
+				return savePlatzAnmeldungTagesschule(betreuungJAXP, kindContainer, abwesenheit);
+			} else if (BetreuungsangebotTyp.FERIENINSEL == betreuungsangebotTyp) {
+				return savePlatzAnmeldungFerieninsel(betreuungJAXP, kindContainer, abwesenheit);
+			} else {
+				return savePlatzBetreuung(betreuungJAXP, kindContainer, abwesenheit);
 			}
-
-			Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit);
-
-			return converter.betreuungToJAX(persistedBetreuung);
 		}
 		throw new EbeguEntityNotFoundException("saveBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, KIND_CONTAINER_ID_INVALID + kindId.getId());
 	}
 
+	private JaxBetreuung savePlatzBetreuung(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer, Boolean abwesenheit) {
+		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
+		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedBetreuung);
+
+		convertedBetreuung.setKind(kindContainer);
+
+		Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit);
+		return converter.betreuungToJAX(persistedBetreuung);
+	}
+
+	private JaxBetreuung savePlatzAnmeldungTagesschule(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer, Boolean abwesenheit) {
+		AnmeldungTagesschule convertedAnmeldungTagesschule = converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
+		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedAnmeldungTagesschule);
+
+		convertedAnmeldungTagesschule.setKind(kindContainer);
+		if (convertedAnmeldungTagesschule.isKeineDetailinformationen()) {
+			// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
+			convertedAnmeldungTagesschule.setAnmeldestatus(Anmeldestatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		}
+
+		AnmeldungTagesschule persistedAnmeldungTagesschule = this.betreuungService.saveAnmeldungTagesschule(convertedAnmeldungTagesschule, abwesenheit);
+		return converter.anmeldungTagesschuleToJAX(persistedAnmeldungTagesschule);
+	}
+
+	private JaxBetreuung savePlatzAnmeldungFerieninsel(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer, Boolean abwesenheit) {
+		AnmeldungFerieninsel convertedAnmeldungFerieninsel = converter.anmeldungFerieninselToStoreableEntity(betreuungJAXP);
+		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedAnmeldungFerieninsel);
+
+		convertedAnmeldungFerieninsel.setKind(kindContainer);
+
+		AnmeldungFerieninsel persistedAnmeldungFerieninsel = this.betreuungService.saveAnmeldungFerieninsel(convertedAnmeldungFerieninsel, abwesenheit);
+		return converter.anmeldungFerieninselToJAX(persistedAnmeldungFerieninsel);
+	}
 
 	@ApiOperation(value = "Speichert eine Abwesenheit in der Datenbank.", responseContainer = "List", response = JaxBetreuung.class)
 	@Nonnull

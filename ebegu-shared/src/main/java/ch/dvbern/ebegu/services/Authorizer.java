@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -113,7 +114,7 @@ public interface Authorizer {
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer die betreuung lesen darf
 	 */
-	void checkReadAuthorization(@Nullable Betreuung betr);
+	void checkReadAuthorization(@Nullable AbstractPlatz platz);
 
 	/**
 	 * Prueft, ob der aktuell eingeloggte Benutzer den uebergebenen Benutzer lesen darf
