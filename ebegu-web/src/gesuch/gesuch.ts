@@ -22,11 +22,7 @@ import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
 import EwkRS from '../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import {
-    IN_BEARBEITUNG_BASE_NAME,
-    isAnyStatusOfVerfuegt,
-    TSAntragStatus,
-} from '../models/enums/TSAntragStatus';
+import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
@@ -98,8 +94,8 @@ export class GesuchRouteController implements IController {
             });
 
         // tslint:disable-next-line
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles())
-            && this.gesuchModelManager.getDossier() && this.gesuchModelManager.getDossier().gemeinde
+        if (this.gesuchModelManager.getDossier()
+            && this.gesuchModelManager.getDossier().gemeinde
             && this.gesuchModelManager.getGesuchsperiode()
         ) {
             this.einstellungRS.findEinstellung(
@@ -460,7 +456,6 @@ export class GesuchRouteController implements IController {
     }
 
     public gemeindeHasKontingent(): boolean {
-        return this.kontingentierungEnabled
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
+        return this.kontingentierungEnabled;
     }
 }
