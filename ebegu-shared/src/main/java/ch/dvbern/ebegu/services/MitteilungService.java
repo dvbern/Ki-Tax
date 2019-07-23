@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -156,7 +157,7 @@ public interface MitteilungService {
 	 * Sendet die uebergebene Betreuungsmitteilung. Der Empfaenger wird automatisch gesetzt
 	 */
 	@Nonnull
-	Betreuungsmitteilung sendBetreuungsmitteilung(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
+	Betreuungsmitteilung sendBetreuungsmitteilung(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung);
 
 	/**
 	 * Applies all passed Betreuungspensen from the Betreuungsmitteilung to the existing Betreuung with the same
