@@ -250,6 +250,7 @@ public class AbstractConverter {
 		JaxBetreuungsmitteilungPensum jaxPensum) {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+
 		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());

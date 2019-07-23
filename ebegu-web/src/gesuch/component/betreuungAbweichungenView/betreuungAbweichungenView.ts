@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {DatePipe} from '@angular/common';
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -23,16 +22,13 @@ import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/const
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
-import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
-import TSExceptionReport from '../../../models/TSExceptionReport';
 import TSKindContainer from '../../../models/TSKindContainer';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -76,7 +72,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public kindModel: TSKindContainer;
     public isNewestGesuch: boolean;
-    public displayedCollection: TSBetreuungspensumAbweichung[];
     public isSavingData: boolean; // Semaphore
 
     public constructor(
@@ -105,8 +100,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public $onInit(): void {
         super.$onInit();
 
-        this.kindModel = this.gesuchModelManager.getKindToWorkWith();
-
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
         if (kindIndex >= 0) {
@@ -127,9 +120,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
-        this.displayedCollection = this.model.betreuungspensumAbweichungen;
-
-        this.displayedCollection.forEach(element => {
+        this.model.betreuungspensumAbweichungen.forEach(element => {
             this.percentageToEffective(element);
         });
     }
@@ -139,9 +130,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getAbweichung(index: number): TSBetreuungspensumAbweichung {
-        if (this.displayedCollection && index >= 0
-            && index < this.displayedCollection.length) {
-            return this.displayedCollection[index];
+        if (this.model.betreuungspensumAbweichungen && index >= 0
+            && index < this.model.betreuungspensumAbweichungen.length) {
+            return this.model.betreuungspensumAbweichungen[index];
         }
 
         return undefined;
@@ -156,20 +147,65 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             ? MULTIPLIER_KITA
             : MULTIPLIER_TAGESFAMILIEN;
         if (abweichung.pensum) {
-            abweichung.pensum = Math.round(((abweichung.pensum * multiplier)*100 / 100));
+            abweichung.pensum = Number((abweichung.pensum * multiplier).toFixed(2));
         }
         if (abweichung.originalPensumMerged) {
-            abweichung.originalPensumMerged = Math.round(((abweichung.originalPensumMerged * multiplier)*100 / 100));
+            abweichung.originalPensumMerged =  Number((abweichung.originalPensumMerged * multiplier).toFixed(2));
         }
     }
 
-    public saveAbweichungen(): void {
-        // if (!this.isGesuchValid()) {
-        //     return;
-        // }
+    private effectiveToPercentage(abweichung: TSBetreuungspensumAbweichung) {
+        const multiplier = abweichung.unitForDisplay === TSPensumUnits.DAYS
+            ? MULTIPLIER_KITA
+            : MULTIPLIER_TAGESFAMILIEN;
+        if (abweichung.pensum) {
+            abweichung.pensum = Number((abweichung.pensum / multiplier));
+        }
+        if (abweichung.originalPensumMerged) {
+            abweichung.originalPensumMerged =  Number((abweichung.originalPensumMerged / multiplier));
+        }
+    }
 
-        this.model.betreuungspensumAbweichungen = this.displayedCollection;
+    public updateStatus (index: number): void {
+        const abweichung = this.getAbweichung(index);
+        abweichung.status = TSBetreuungspensumAbweichungStatus.NONE;
 
-        this.gesuchModelManager.saveAbweichungen(this.model);
+        if (abweichung.pensum && abweichung.monatlicheBetreuungskosten) {
+            abweichung.status = TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN;
+        }
+    }
+
+    public getIcon (index: number): string {
+        const abweichung = this.getAbweichung(index);
+
+        switch (abweichung.status) {
+            case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
+                return 'fa-pencil black';
+            case TSBetreuungspensumAbweichungStatus.VERRECHNET:
+                return 'fa-hourglass orange';
+            case TSBetreuungspensumAbweichungStatus.VERFUEGT:
+                return 'fa-check green';
+            default:
+                return '';
+        }
+    }
+
+    public save(): void {
+        if (!this.isGesuchValid()) {
+            return;
+        }
+
+        // TODO KIBON-621: Umrechnung sollte auf Server stattfinden um Datenkonistenz zu gewährleisten
+        this.model.betreuungspensumAbweichungen.forEach(element => {
+            this.effectiveToPercentage(element);
+        });
+
+        this.gesuchModelManager.saveAbweichungen(this.model).then((result) => {
+            this.gesuchModelManager.setBetreuungToWorkWith(result); // setze model
+            this.model = result;
+            this.model.betreuungspensumAbweichungen.forEach(element => {
+                this.percentageToEffective(element);
+            });
+        });
     }
 }

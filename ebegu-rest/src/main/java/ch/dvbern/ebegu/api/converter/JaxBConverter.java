@@ -265,6 +265,7 @@ import static java.util.Objects.requireNonNull;
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
+	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 	@Inject
@@ -2162,7 +2163,7 @@ public class JaxBConverter extends AbstractConverter {
 			betreuungJAXP.getBetreuungspensumAbweichungen(),
 			betreuung.getBetreuungspensumAbweichungen()
 		));
-//		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
+		setBetreuungInbetreuungsAbweichungen(betreuung.getBetreuungspensumAbweichungen(), betreuung);
 
 
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
@@ -2246,7 +2247,7 @@ public class JaxBConverter extends AbstractConverter {
 				betreuungspensumAbweichungToEntity(jaxAbweichung, abweichungToMergeWith);
 			final boolean added = transformedAbweichungen.add(abweichungToAdd);
 			if (!added) {
-				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", abweichungToAdd);
+				LOGGER.warn(DROPPED_DUPLICATE_ABWEICHUNG + "{}", abweichungToAdd);
 			}
 		}
 
@@ -2347,6 +2348,13 @@ public class JaxBConverter extends AbstractConverter {
 		final Betreuung betreuung) {
 
 		betreuungspensumContainers.forEach(c -> c.setBetreuung(betreuung));
+	}
+
+	private void setBetreuungInbetreuungsAbweichungen(
+		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
+		final Betreuung betreuung) {
+
+		betreuungspensumAbweichungen.forEach(c -> c.setBetreuung(betreuung));
 	}
 
 	private void setBetreuungInAbwesenheiten(

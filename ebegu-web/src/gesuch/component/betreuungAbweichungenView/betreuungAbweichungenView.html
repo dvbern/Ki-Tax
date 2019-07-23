@@ -47,56 +47,66 @@
         </div>
     </div>
 
+    <form role="form" name="vm.form" class="" novalidate
+          unsaved-warning-form>
 
-    <div class="row marginTop40">
-        <div class="col-md-12 table-responsive">
+        <div class="row marginTop40">
+            <div class="col-md-12 table-responsive">
 
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th data-translate="MONTH"></th>
-                    <th data-translate="DAYS"></th>
-                    <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
-                    <th data-translate="STATUS"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="betreuung in vm.displayedCollection"
-                    st-select-mode="single" role="row" tabindex="-1">
-                    <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
-                    <td>
-                        <input aria-describedby="pensum-error"
-                               id="pensum" type="number"
-                               name="pensum"
-                               ng-model="vm.getAbweichung($index).pensum"
-                               class="form-control"
-                               ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                               ng-required="true"
-                               ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
-                    </td>
-                    <td>
-                        <input aria-describedby="kosten-error"
-                               id="kosten" type="number"
-                               name="kosten"
-
-                               ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
-                               dv-max-length class="form-control"
-                               ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                               ng-required="true"
-                               ng-attr-placeholder="{{vm.getAbweichung($index).originalKostenMerged}}">
-                    </td>
-                    <td>{{vm.getAbweichung($index).status}}</td>
-                </tbody>
-            </table>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th data-translate="MONTH"></th>
+                        <th data-translate="DAYS"></th>
+                        <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
+                        <th data-translate="STATUS"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
+                        st-select-mode="single" role="row" tabindex="-1">
+                        <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
+                        <td>
+                            <input aria-describedby="pensum-{{$index}}"
+                                   id="pensum-{{$index}}" type="number"
+                                   name="pensum-{{$index}}"
+                                   ng-change="vm.updateStatus({{$index}})"
+                                   ng-model="vm.getAbweichung($index).pensum"
+                                   class="form-control"
+                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                   step="0.25"
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
+                        </td>
+                        <td>
+                            <input aria-describedby="kosten-error"
+                                   id="kosten" type="number"
+                                   name="kosten"
+                                   ng-change="vm.updateStatus({{$index}})"
+                                   ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
+                                   dv-max-length class="form-control"
+                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).originalKostenMerged}}">
+                        </td>
+                        <td><span class="fa {{vm.getIcon($index)}}" aria-hidden="true"></span></td>
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </form>
+    <div class="dv-navigation dv-navigation-flex">
+        <span dv-show-element
+              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+              dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+            <dv-loading-button button-click="vm.freigeben()" type="submit">
+                <span class="uppercase" data-translate="FREIGEBEN"></span>
+            </dv-loading-button>
+        </span>
+        <span dv-show-element
+              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+              dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+            <dv-loading-button button-click="vm.save()" type="submit">
+                <span class="uppercase" data-translate="SPEICHERN"></span>
+            </dv-loading-button>
+        </span>
     </div>
-    <!-- Save -->
-    <span dv-show-element
-          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
-          dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
-                        <dv-loading-button button-click="vm.saveAbweichungen()" type="submit">
-                            <span class="uppercase" data-translate="SPEICHERN"></span>
-                        </dv-loading-button>
-                    </span>
-
 </div>

@@ -33,7 +33,7 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
+public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements Comparable<BetreuungspensumAbweichung>  {
 
 	private static final long serialVersionUID = -8308660793880620086L;
 
@@ -100,5 +100,10 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum {
 
 	public void setBetreuung(Betreuung betreuung) {
 		this.betreuung = betreuung;
+	}
+
+	@Override
+	public int compareTo(BetreuungspensumAbweichung o) {
+		return 0;
 	}
 }

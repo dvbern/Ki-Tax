@@ -1655,10 +1655,11 @@ export default class EbeguRestUtil {
         if (betreuung.betreuungspensumAbweichungen) {
             restBetreuung.betreuungspensumAbweichungen = [];
             // only send Abweichungen with actual Abweichungen
-            betreuung.betreuungspensumAbweichungen.filter(element => {
-                return element.originalPensumMerged && element.originalKostenMerged;
+            const filteredAbweichungen = betreuung.betreuungspensumAbweichungen.filter(element => {
+                return element.pensum != null && element.monatlicheBetreuungskosten != null;
             })
-            betreuung.betreuungspensumAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
+
+            filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
                 restBetreuung.betreuungspensumAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
                     abweichung));
             });
