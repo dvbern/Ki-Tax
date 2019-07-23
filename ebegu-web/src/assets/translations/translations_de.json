@@ -947,6 +947,7 @@
     "PDF_BEGLEITSCHREIBEN_ANZEIGEN": "Deckblatt als PDF anzeigen",
     "PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN": "Komplette Korrespondenz als PDF anzeigen",
     "ZULETZT_BEARBEITER": "zuletzt {{username}}",
+    "BESTEHT_KONTINGENTIERUNG": "Es bestehen Kontingente für Betreuungsgutscheine",
     "GUELTIGES_GESUCH": "dies ist das aktuell gültige Gesuch",
     "GUELTIGE_BETREUUNG": "Aktuell gültige Betreuung",
     "TOOLBAR_ERSTGESUCH": "Erstgesuch",

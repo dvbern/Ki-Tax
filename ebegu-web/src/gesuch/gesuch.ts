@@ -16,6 +16,7 @@
 import {IController, IRootScopeService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../admin/service/einstellungRS.rest';
 import ErrorService from '../app/core/errors/service/ErrorService';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
@@ -27,6 +28,7 @@ import {
     TSAntragStatus,
 } from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
+import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
 import {TSGesuchEvent} from '../models/enums/TSGesuchEvent';
 import {TSRole} from '../models/enums/TSRole';
@@ -61,12 +63,14 @@ export class GesuchRouteController implements IController {
         '$mdSidenav',
         'EwkRS',
         '$rootScope',
+        'EinstellungRS',
     ];
 
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
     public openEwkSidenav: boolean;
     private readonly unsubscribe$ = new Subject<void>();
+    private kontingentierungEnabled: boolean = false;
 
     public userFullName = '';
 
@@ -81,6 +85,7 @@ export class GesuchRouteController implements IController {
         private readonly $mdSidenav: ISidenavService,
         private readonly ewkRS: EwkRS,
         private readonly $rootScope: IRootScopeService,
+        private readonly einstellungRS: EinstellungRS,
     ) {
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch())
             .then(() => {
@@ -91,6 +96,21 @@ export class GesuchRouteController implements IController {
                     },
                     err => LOG.error(err));
             });
+
+        // tslint:disable-next-line
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles())
+            && this.gesuchModelManager.getDossier() && this.gesuchModelManager.getDossier().gemeinde
+            && this.gesuchModelManager.getGesuchsperiode()
+        ) {
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                this.gesuchModelManager.getDossier().gemeinde,
+                this.gesuchModelManager.getGesuchsperiode(),
+            )
+                .then(response => {
+                    this.kontingentierungEnabled = JSON.parse(response.value);
+                });
+        }
 
     }
 
@@ -437,5 +457,10 @@ export class GesuchRouteController implements IController {
                 break;
         }
 
+    }
+
+    public gemeindeHasKontingent(): boolean {
+        return this.kontingentierungEnabled
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
     }
 }

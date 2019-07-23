@@ -35,7 +35,8 @@ describe('gesuch', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        gesuchRouteController = new GesuchRouteController(gesuchModelManager,
+        gesuchRouteController = new GesuchRouteController(
+            gesuchModelManager,
             $injector.get('WizardStepManager'),
             $injector.get('EbeguUtil'),
             $injector.get('ErrorService'),
@@ -45,7 +46,9 @@ describe('gesuch', () => {
             $injector.get('AuthServiceRS'),
             $injector.get('$mdSidenav'),
             undefined,
-            undefined);
+            undefined,
+            $injector.get('EinstellungRS'),
+        );
         gesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;
     }));

@@ -947,6 +947,7 @@
     "PDF_BEGLEITSCHREIBEN_ANZEIGEN": "Afficher le courrier d'accompagnement au format PDF",
     "PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN": "Afficher la totalité de la correspondance au format PDF",
     "ZULETZT_BEARBEITER": "Traité en dernier par {{username}}",
+    "BESTEHT_KONTINGENTIERUNG": "",
     "GUELTIGES_GESUCH": "Ceci est la demande en vigueur.",
     "GUELTIGE_BETREUUNG": "Prise en charge actuelle",
     "TOOLBAR_ERSTGESUCH": "1re demande",
