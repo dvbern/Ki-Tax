@@ -59,7 +59,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -101,7 +101,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -143,7 +143,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {

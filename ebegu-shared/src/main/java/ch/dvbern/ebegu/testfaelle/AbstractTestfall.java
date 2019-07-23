@@ -97,19 +97,24 @@ public abstract class AbstractTestfall {
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
 
-	public AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+	public AbstractTestfall(
+		Gesuchsperiode gesuchsperiode,
+		Collection<InstitutionStammdaten> institutionStammdatenList,
 		boolean betreuungenBestaetigt) {
+
 		this.gesuchsperiode = gesuchsperiode;
 		this.institutionStammdatenList = institutionStammdatenList;
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
 	}
 
-	public AbstractTestfall(Gesuchsperiode gesuchsperiode, Collection<InstitutionStammdaten> institutionStammdatenList,
+	public AbstractTestfall(
+		Gesuchsperiode gesuchsperiode,
+		Collection<InstitutionStammdaten> institutionStammdatenList,
 		boolean betreuungenBestaetigt, Gemeinde gemeinde) {
+
 		this(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
 		this.gemeinde = gemeinde;
 	}
-
 
 	public abstract Gesuch fillInGesuch();
 
@@ -269,7 +274,14 @@ public abstract class AbstractTestfall {
 		return erwerbspensumContainer;
 	}
 
-	protected KindContainer createKind(Geschlecht geschlecht, String name, String vorname, LocalDate geburtsdatum, Kinderabzug kinderabzug, boolean betreuung) {
+	protected KindContainer createKind(
+		Geschlecht geschlecht,
+		String name,
+		String vorname,
+		LocalDate geburtsdatum,
+		Kinderabzug kinderabzug,
+		boolean betreuung) {
+
 		Kind kind = new Kind();
 		kind.setGeschlecht(geschlecht);
 		kind.setNachname(name);
@@ -307,6 +319,11 @@ public abstract class AbstractTestfall {
 		erwBedContainer.setErweiterteBetreuungJA(erwBed);
 		betreuung.setErweiterteBetreuungContainer(erwBedContainer);
 
+		// normalerweise kümmern uns die Vorgänger in den Tests nicht. Rufe init hier auf, damit man in tests ohne
+		// exception auf die Vorgänger zugreifen kann. Benötigt man Vorgänger kann man die init Methode nochmals
+		// ausfüühren.
+		betreuung.initVorgaengerVerfuegungen(null, null);
+
 		return betreuung;
 	}
 
@@ -336,17 +353,25 @@ public abstract class AbstractTestfall {
 	}
 
 	@Deprecated
-	protected BetreuungspensumContainer createBetreuungspensum(Integer pensum, LocalDate datumVon, LocalDate datumBis) {
+	protected BetreuungspensumContainer createBetreuungspensum(
+		Integer pensum, LocalDate datumVon,
+		LocalDate datumBis) {
+
 		return createBetreuungspensum(BigDecimal.valueOf(pensum), datumVon, datumBis);
 	}
 
-	protected BetreuungspensumContainer createBetreuungspensum(BigDecimal pensum, LocalDate datumVon, LocalDate datumBis) {
+	protected BetreuungspensumContainer createBetreuungspensum(
+		BigDecimal pensum,
+		LocalDate datumVon,
+		LocalDate datumBis) {
+
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
 		betreuungspensum.setGueltigkeit(new DateRange(datumVon, datumBis));
 		betreuungspensum.setPensum(pensum);
 		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
+
 		return betreuungspensumContainer;
 	}
 
@@ -357,28 +382,41 @@ public abstract class AbstractTestfall {
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
 		finanzielleSituationContainer.setJahr(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() - 1);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
+
 		return finanzielleSituationContainer;
 	}
 
-	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(Gesuch gesuch, boolean hasEKV1, boolean hasEKV2) {
+	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(
+		Gesuch gesuch,
+		boolean hasEKV1,
+		boolean hasEKV2) {
+
 		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(hasEKV1, hasEKV2);
-		EinkommensverschlechterungInfoContainer infoContainer = createEinkommensverschlechterungInfoContainer(hasEKV1, hasEKV2);
+		EinkommensverschlechterungInfoContainer infoContainer =
+			createEinkommensverschlechterungInfoContainer(hasEKV1, hasEKV2);
 		gesuch.setEinkommensverschlechterungInfoContainer(infoContainer);
 		infoContainer.setGesuch(gesuch);
+
 		return ekvContainer;
 	}
 
 	@Nonnull
-	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(boolean erstesJahr, boolean zweitesJahr) {
+	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(
+		boolean erstesJahr,
+		boolean zweitesJahr) {
+
 		EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
+
 		if (erstesJahr) {
 			Einkommensverschlechterung ekv1 = new Einkommensverschlechterung();
 			ekvContainer.setEkvJABasisJahrPlus1(ekv1);
 		}
+
 		if (zweitesJahr) {
 			Einkommensverschlechterung ekv2 = new Einkommensverschlechterung();
 			ekvContainer.setEkvJABasisJahrPlus2(ekv2);
 		}
+
 		return ekvContainer;
 	}
 
@@ -393,13 +431,17 @@ public abstract class AbstractTestfall {
 		ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfoJA);
 	}
 
-	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(boolean ekv1, boolean ekv2) {
+	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(
+		boolean ekv1,
+		boolean ekv2) {
+
 		EinkommensverschlechterungInfoContainer infoContainer = new EinkommensverschlechterungInfoContainer();
 		EinkommensverschlechterungInfo info = new EinkommensverschlechterungInfo();
 		info.setEkvFuerBasisJahrPlus1(ekv1);
 		info.setEkvFuerBasisJahrPlus2(ekv2);
 		info.setEinkommensverschlechterung(info.getEkvFuerBasisJahrPlus1() || info.getEkvFuerBasisJahrPlus2());
 		infoContainer.setEinkommensverschlechterungInfoJA(info);
+
 		return infoContainer;
 	}
 

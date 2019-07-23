@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +37,6 @@ import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
-import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.BetreuungComparator;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -119,7 +117,6 @@ public class BetreuungsgutscheinEvaluator {
 	@SuppressWarnings({ "OverlyComplexMethod", "OverlyNestedMethod", "PMD.NcssMethodCount" })
 	public void evaluate(
 		@Nonnull Gesuch gesuch,
-		VerfuegungService verfuegungService,
 		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
 		@Nonnull Locale locale) {
 
@@ -218,32 +215,23 @@ public class BetreuungsgutscheinEvaluator {
 					String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
 					betreuung.getVerfuegung().setGeneratedBemerkungen(bemerkungenToShow);
 
-					setZahlungRelevanteDaten(verfuegungService, betreuung);
+					setZahlungRelevanteDaten(betreuung);
 				}
 			}
 		}
 	}
 
-	// TODO warum braucht es den VerfuegungService? Diese methode wird nur via
-	//  VerfuegungServiceBean#calculateVerfuegung aufgerufen, und da werden die Vorgänger Verfügungen bereits
-	//  initialisiert. Ich schlage die Vorgänger Verfügung direkt aus der Betreuung zu lesen.
-	//  Bei der Betreuung würde ich noch ein boolean vorgaengerInitialized hinzufügen, und im getter per
-	//  checkState(vorgaengerInitialized, "must initialize transient fields via
-	//  VerfuegungService#initializeVorgaengerVerfuegungen") sicher stellen, dass die Initialisierung immer gemacht
-	//  wurde, wenn man auf die Daten zugreift.
-	private void setZahlungRelevanteDaten(VerfuegungService verfuegungService, @Nonnull Betreuung betreuung) {
-		if (verfuegungService != null) {
-			final Optional<Verfuegung> ausbezahlteVorgaenger = verfuegungService.
-				findVorgaengerAusbezahlteVerfuegung(betreuung);
-
-			if (ausbezahlteVorgaenger.isPresent() && betreuung.getVerfuegung() != null) {
-				// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
-				VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
-
-				// Zahlungsstatus aus vorgaenger uebernehmen
-				VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
-			}
+	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
+		Verfuegung ausbezahlteVorgaenger = betreuung.getVorgaengerAusbezahlteVerfuegung();
+		if (ausbezahlteVorgaenger == null || betreuung.getVerfuegung() == null) {
+			return;
 		}
+
+		// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
+		VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
+
+		// Zahlungsstatus aus vorgaenger uebernehmen
+		VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
 	}
 
 	/**

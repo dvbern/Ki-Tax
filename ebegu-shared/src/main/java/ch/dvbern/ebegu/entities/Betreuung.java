@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.validators.CheckBetreuungZeitraumInstitutionsStammdatenZe
 import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
+import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -107,6 +108,9 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Transient
 	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
+
+	@Transient
+	private boolean vorgaengerInitialized = false;
 
 	@NotNull
 	@ManyToOne(optional = false)
@@ -485,20 +489,30 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@Nullable
 	public Verfuegung getVorgaengerAusbezahlteVerfuegung() {
+		checkVorgaengerInitialized();
 		return vorgaengerAusbezahlteVerfuegung;
-	}
-
-	public void setVorgaengerAusbezahlteVerfuegung(@Nullable Verfuegung vorgaengerAusbezahlteVerfuegung) {
-		this.vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlteVerfuegung;
 	}
 
 	@Nullable
 	public Verfuegung getVorgaengerVerfuegung() {
+		checkVorgaengerInitialized();
 		return vorgaengerVerfuegung;
 	}
 
-	public void setVorgaengerVerfuegung(@Nullable Verfuegung vorgaengerVerfuegung) {
-		this.vorgaengerVerfuegung = vorgaengerVerfuegung;
+	public void initVorgaengerVerfuegungen(
+		@Nullable Verfuegung vorgaenger,
+		@Nullable  Verfuegung vorgaengerAusbezahlt) {
+		this.vorgaengerVerfuegung = vorgaenger;
+		this.vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlt;
+		this.vorgaengerInitialized = true;
+	}
+
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	private void checkVorgaengerInitialized() {
+		Preconditions.checkState(
+			vorgaengerInitialized,
+			"must initialize transient fields of %s via VerfuegungService#initializeVorgaengerVerfuegungen",
+			this);
 	}
 
 	@Nonnull

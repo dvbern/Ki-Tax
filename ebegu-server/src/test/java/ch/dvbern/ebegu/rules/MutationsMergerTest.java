@@ -56,7 +56,7 @@ public class MutationsMergerTest {
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMutation);
 		List<VerfuegungZeitabschnitt> zaBetrMutiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteMutiert = MonatsRule.execute(zaBetrMutiert);
@@ -89,7 +89,7 @@ public class MutationsMergerTest {
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		List<VerfuegungZeitabschnitt> zabetrMutiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteMutiert = MonatsRule.execute(zabetrMutiert);
@@ -123,7 +123,7 @@ public class MutationsMergerTest {
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
 		List<VerfuegungZeitabschnitt> zabetrMutiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteMutiert = MonatsRule.execute(zabetrMutiert);
@@ -164,7 +164,7 @@ public class MutationsMergerTest {
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
 		erstgesuchBetreuung.extractGesuch();
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
 		List<VerfuegungZeitabschnitt> zeitabschnitte = MutationsMerger
@@ -200,7 +200,7 @@ public class MutationsMergerTest {
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
 		List<VerfuegungZeitabschnitt> zeitabschnitte = MutationsMerger
@@ -236,7 +236,7 @@ public class MutationsMergerTest {
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
 		List<VerfuegungZeitabschnitt> zeitabschnitte = MutationsMerger
@@ -274,7 +274,7 @@ public class MutationsMergerTest {
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
 		List<VerfuegungZeitabschnitt> zeitabschnitte = MutationsMerger
@@ -313,7 +313,7 @@ public class MutationsMergerTest {
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
-		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
 		List<VerfuegungZeitabschnitt> zeitabschnitte = MutationsMerger

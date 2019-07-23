@@ -92,7 +92,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setEingangsdatum(LocalDate.of(2016, 7, 1));
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(testgesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
@@ -107,7 +107,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(new BigDecimal("500000")); //zu hoch -> Comment wird erzeugt
 
-		evaluator.evaluate(testgesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {

@@ -329,7 +329,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		bgEvaluator.evaluate(gesuch, this, calculatorParameters, sprache.getLocale());
+		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
 		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen reicht hier glaub
 		return gesuch;
 	}
@@ -362,11 +362,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVorgaengerVerfuegungen(@Nonnull Betreuung betreuung) {
 		Verfuegung vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuung)
 			.orElse(null);
-		betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung);
 
 		Verfuegung vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung)
 			.orElse(null);
-		betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung);
+
+		betreuung.initVorgaengerVerfuegungen(vorgaengerVerfuegung, vorgaengerAusbezahlteVerfuegung);
 	}
 
 	@Override
