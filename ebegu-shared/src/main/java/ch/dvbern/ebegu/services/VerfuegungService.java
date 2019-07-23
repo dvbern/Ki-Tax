@@ -108,28 +108,6 @@ public interface VerfuegungService {
 	void initializeVorgaengerVerfuegungen(@Nonnull Gesuch gesuch);
 
 	/**
-	 * gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
-	 * kann null sein
-	 *
-	 * @return Verfuegung oder null falls nicht vorhanden
-	 * @deprecated wird nur noch in Unit Test benötigt
-	 */
-	@Deprecated
-	@Nonnull
-	Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull Betreuung betreuung);
-
-	/**
-	 * gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck, die ausbezahlt ist.
-	 * kann null sein
-	 *
-	 * @return Verfuegung oder null falls nicht vorhanden
-	 * @deprecated  wird praktisch nur noch in Unit Test benötigt (BetreuungsgutscheinEvaluator macht etwas seltsames)
-	 */
-	@Deprecated
-	@Nonnull
-	Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung);
-
-	/**
 	 * genau wie findVorgaengerVerfuegung gibt aber nur deren TimestampErstellt zurueck wenn vorhanden
 	 */
 	Optional<LocalDate> findVorgaengerVerfuegungDate(@Nonnull Betreuung betreuung);
