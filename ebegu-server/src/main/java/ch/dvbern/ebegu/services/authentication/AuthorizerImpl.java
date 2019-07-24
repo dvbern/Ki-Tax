@@ -320,8 +320,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
-			SACHBEARBEITER_TS, STEUERAMT, JURIST,
-			REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
+			SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -349,7 +348,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	private void validateMandantMatches(@Nullable HasMandant mandantEntity) {
-		//noinspection ConstantConditions
 		if (mandantEntity == null || mandantEntity.getMandant() == null) {
 			return;
 		}
