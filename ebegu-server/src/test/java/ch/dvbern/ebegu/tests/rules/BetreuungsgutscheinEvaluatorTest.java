@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdaten;
+import static ch.dvbern.ebegu.test.TestDataUtil.initVorgaengerVerfuegungenWithNULL;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -174,6 +175,9 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
 		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		TestDataUtil.calculateFinanzDaten(gesuch);
+
+		initVorgaengerVerfuegungenWithNULL(gesuch);
+
 		return gesuch;
 	}
 

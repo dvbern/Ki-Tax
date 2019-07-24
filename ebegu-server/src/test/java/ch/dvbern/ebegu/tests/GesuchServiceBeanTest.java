@@ -39,12 +39,12 @@ import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
-import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.annotation.InjectIntoMany;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleRule;
 
 @SuppressWarnings("unused")
 public class GesuchServiceBeanTest {

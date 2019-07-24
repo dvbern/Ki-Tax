@@ -109,6 +109,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.test.TestDataUtil.initVorgaengerVerfuegungenWithNULL;
 
 /**
  * Arquillian Tests fuer die Klasse GesuchService
@@ -277,6 +278,9 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, mutation.getStatus());
 		Assert.assertEquals(gesuchVerfuegt.getDossier(), mutation.getDossier());
 
+		initVorgaengerVerfuegungenWithNULL(gesuchVerfuegt);
+		initVorgaengerVerfuegungenWithNULL(mutation);
+
 		// Sicherstellen, dass alle Objekte kopiert und nicht referenziert sind.
 		// Anzahl erstellte Objekte zaehlen, es muessen im Gesuch und in der Mutation
 		// gleich viele sein
@@ -314,6 +318,9 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertEquals(AntragTyp.ERNEUERUNGSGESUCH, erneuerungPersisted.getTyp());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, erneuerungPersisted.getStatus());
 		Assert.assertEquals(erstgesuch.getDossier(), erneuerungPersisted.getDossier());
+
+		initVorgaengerVerfuegungenWithNULL(erstgesuch);
+		initVorgaengerVerfuegungenWithNULL(erneuerungPersisted);
 
 		// Sicherstellen, dass alle Objekte kopiert und nicht referenziert sind.
 		// Anzahl erstellte Objekte zaehlen, es muessen im Gesuch und in der Mutation
@@ -1031,17 +1038,20 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Nonnull
 	private String constructMapKey(AbstractEntity entity, String id) {
-		return entity.getClass().getSimpleName() + ":" + id;
+		return entity.getClass().getSimpleName() + ':' + id;
 	}
 
 	private boolean isCorrectlyIgnored(AbstractEntity property) {
 		// Diese Entitaeten wurden korrekterweise nur umgehaengt und nicht kopiert.
-		if (property instanceof Fall || property instanceof Mandant || property instanceof Gesuchsperiode
-			|| property instanceof Institution || property instanceof InstitutionStammdaten || property instanceof Benutzer
-			|| property instanceof Traegerschaft || property instanceof Gemeinde|| property instanceof Dossier) {
-			return true;
-		}
-		return false;
+		return property instanceof Fall
+			|| property instanceof Mandant
+			|| property instanceof Gesuchsperiode
+			|| property instanceof Institution
+			|| property instanceof InstitutionStammdaten
+			|| property instanceof Benutzer
+			|| property instanceof Traegerschaft
+			|| property instanceof Gemeinde
+			|| property instanceof Dossier;
 	}
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {

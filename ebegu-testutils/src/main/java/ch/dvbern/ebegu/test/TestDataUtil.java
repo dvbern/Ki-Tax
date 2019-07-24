@@ -970,6 +970,7 @@ public final class TestDataUtil {
 		InstitutionService instService,
 		Persistence persistence,
 		@Nullable LocalDate eingangsdatum) {
+
 		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, null);
 	}
 
@@ -1727,5 +1728,11 @@ public final class TestDataUtil {
 	public static Gesuch correctTimestampVerfuegt(Gesuch gesuch, LocalDateTime date, Persistence persistence) {
 		gesuch.setTimestampVerfuegt(date.minusDays(1));
 		return persistence.merge(gesuch);
+	}
+
+	public static void initVorgaengerVerfuegungenWithNULL(@Nonnull Gesuch gesuch) {
+		gesuch.getKindContainers().stream()
+			.flatMap(k -> k.getBetreuungen().stream())
+			.forEach(b -> b.initVorgaengerVerfuegungen(null, null));
 	}
 }

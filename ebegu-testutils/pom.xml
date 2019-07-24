@@ -26,6 +26,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>ch.dvbern.ebegu</groupId>
             <artifactId>ebegu-shared</artifactId>
         </dependency>
@@ -38,16 +44,6 @@
             <artifactId>wildfly-arquillian-common</artifactId>
             <version>${version.wildfly-arquillian-containers}</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
