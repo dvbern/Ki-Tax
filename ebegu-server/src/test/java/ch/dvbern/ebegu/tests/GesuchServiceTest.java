@@ -980,7 +980,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.IN_BEARBEITUNG_GS);
 		gesuch.setTimestampErstellt(timestampErstellt);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
 		return persistence.merge(gesuch);
@@ -990,7 +990,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, AntragStatus.FREIGABEQUITTUNG);
 		gesuch.setFreigabeDatum(datumFreigabe);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
 		return persistence.merge(gesuch);

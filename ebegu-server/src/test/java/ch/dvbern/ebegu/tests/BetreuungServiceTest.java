@@ -132,7 +132,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		assertNotNull(erweiterteBetreuungCont);
 
 		Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		persistence.merge(gesuch);
 
 		final String gesuchId = betreuung.extractGesuch().getId();

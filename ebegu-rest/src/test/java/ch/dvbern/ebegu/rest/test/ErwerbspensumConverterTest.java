@@ -78,9 +78,8 @@ public class ErwerbspensumConverterTest extends AbstractEbeguRestLoginTest {
 	}
 
 	private ErwerbspensumContainer insertNewEntity() {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		ErwerbspensumContainer ewpContainer = TestDataUtil.createErwerbspensumContainer();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		ewpContainer.setGesuchsteller(persistence.persist(gesuchsteller));
 		return persistence.persist(ewpContainer);
 	}

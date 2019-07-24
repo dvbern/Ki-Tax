@@ -55,7 +55,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createGesuchsteller() {
 		Assert.assertNotNull(gesuchstellerService);
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 
 		gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1, false);
 		Collection<GesuchstellerContainer> allGesuchsteller = gesuchstellerService.getAllGesuchsteller();
@@ -126,7 +126,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.setTyp(AntragTyp.MUTATION);
 
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(TestDataUtil.createDefaultEinkommensverschlechterungsContainer());
 
@@ -149,7 +149,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private GesuchstellerContainer insertNewEntity() {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		persistence.persist(gesuchsteller);
 		return gesuchsteller;
 	}

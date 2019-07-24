@@ -66,7 +66,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 
 	private EinkommensverschlechterungContainer getEinkommensverschlechterungContainer() {
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller = persistence.persist(gesuchsteller);
 
 		final Einkommensverschlechterung einkommensverschlechterung = TestDataUtil.createDefaultEinkommensverschlechterung();

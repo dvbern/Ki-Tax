@@ -75,7 +75,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		Erwerbspensum erwerbspensumData = TestDataUtil.createErwerbspensumData();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller = persistence.persist(gesuchsteller);
 
 		ErwerbspensumContainer ewpCont = TestDataUtil.createErwerbspensumContainer();
@@ -120,7 +120,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 
 		//Creates another Erwerbspensum that won't be loaded since it doesn't belong to the gesuch
 		Erwerbspensum erwerbspensumData = TestDataUtil.createErwerbspensumData();
-		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		gesuchsteller1 = persistence.persist(gesuchsteller1);
 		persistence.merge(gesuch);
@@ -277,7 +277,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private ErwerbspensumContainer insertNewEntity() {
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		ErwerbspensumContainer container = TestDataUtil.createErwerbspensumContainer();
 		gesuchsteller.addErwerbspensumContainer(container);
 		gesuchsteller = persistence.persist(gesuchsteller);
