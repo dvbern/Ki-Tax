@@ -118,9 +118,9 @@ public interface EinstellungService {
 	/**
 	 * Returns true when the Einstellung was found for the given Gemeinde with the given value in any Gesuchsperiode
 	 */
-	boolean findEinstellungInAnyGesuchsperiode(
+	boolean hasEinstellungWithGivenValueInAnyGesuchsperiode(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull EinstellungKey einstellungKey,
-		@Nonnull String value
+		@Nonnull String valueToFind
 	);
 }

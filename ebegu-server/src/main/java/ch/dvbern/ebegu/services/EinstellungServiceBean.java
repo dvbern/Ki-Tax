@@ -327,14 +327,14 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public boolean findEinstellungInAnyGesuchsperiode(
+	public boolean hasEinstellungWithGivenValueInAnyGesuchsperiode(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull EinstellungKey einstellungKey,
-		@Nonnull String value
+		@Nonnull String valueToFind
 	) {
 		return gesuchsperiodeService.getAllGesuchsperioden().stream()
 			.anyMatch(gesuchsperiode ->
-				findEinstellung(einstellungKey, gemeinde, gesuchsperiode).getValue().equals(value)
+				findEinstellung(einstellungKey, gemeinde, gesuchsperiode).getValue().equals(valueToFind)
 			);
 	}
 }

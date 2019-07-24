@@ -177,13 +177,13 @@ public class EinstellungResource {
 	private Response hasEinstellungWithGivenValueInAnyGesuchsperiode(
 		@Nonnull String gemeindeId,
 		@Nonnull EinstellungKey key,
-		@SuppressWarnings("SameParameterValue") @Nonnull String value
+		@SuppressWarnings("SameParameterValue") @Nonnull String valueToFind
 	) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("findEinstellung",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 
 		return Response.ok(
-			einstellungService.findEinstellungInAnyGesuchsperiode(gemeinde, key, value)
+			einstellungService.hasEinstellungWithGivenValueInAnyGesuchsperiode(gemeinde, key, valueToFind)
 		).build();
 	}
 

@@ -124,10 +124,10 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	public boolean findEinstellungInAnyGesuchsperiode(
+	public boolean hasEinstellungWithGivenValueInAnyGesuchsperiode(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull EinstellungKey einstellungKey,
-		@Nonnull String value
+		@Nonnull String valueToFind
 	) {
 		return true;
 	}
