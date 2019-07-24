@@ -21,18 +21,17 @@
 		<cpe>cpe:/a:date_project:date:1.0.4</cpe>
 	</suppress>
 	<suppress>
-		<notes>Only used in module TestDataUtil, not in productive code</notes>
-		<gav regex="true">org.wildfly.openssl:wildfly-openssl-java:.*</gav>
-		<cpe regex="true">.*</cpe>
+		<notes><![CDATA[This is the latest version. Check again when a new version comes
+   file name: cdi-api-2.0.jar
+   ]]></notes>
+		<sha1>a9326c97797842f4689a50711dc8c028656d1196</sha1>
+		<cve>CVE-2014-8122</cve>
 	</suppress>
 	<suppress>
-		<notes>
-			<![CDATA[
-              Suppress a vulnerabilty of the unused Class EventData from SLF4j
-              https://nvd.nist.gov/vuln/detail/CVE-2018-8088
-              ]]>
-		</notes>
-		<gav regex="true">^org\.slf4j:.*$</gav>
-		<cve>CVE-2018-8088</cve>
+		<notes><![CDATA[This is the latest version. Check again when a new version comes
+   file name: undertow-server-2.0.0.Alpha1.jar
+   ]]></notes>
+		<sha1>82381e8848a18ea4b67fcd88f324567e3e25f01e</sha1>
+		<cve>CVE-2017-7559</cve>
 	</suppress>
 </suppressions>
