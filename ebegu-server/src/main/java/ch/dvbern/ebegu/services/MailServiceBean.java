@@ -305,10 +305,12 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 					LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", adr);
 					return true;
-				} else {
-					LOG.warn("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 is null");
-					return false;
 				}
+
+				LOG.info("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 or email address are null: {} : {}",
+					gesuchsteller,
+					emailAddress);
+				return false;
 			}
 		} catch (Exception e) {
 			logExceptionAccordingToEnvironment(
@@ -529,7 +531,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		}
 
 		if (gesuch.getEingangsart().isOnlineGesuch()) {
-			LOG.warn(
+			LOG.info(
 				"Not sending Email {} because Gesuchsteller or Email Address is NULL: {}, {}",
 				mailTemplate,
 				gesuchsteller,
