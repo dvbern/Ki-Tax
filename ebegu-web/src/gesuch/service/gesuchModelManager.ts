@@ -65,6 +65,7 @@ import TSFall from '../../models/TSFall';
 import TSFamiliensituation from '../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
 import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
+import TSGemeinde from '../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
@@ -704,7 +705,13 @@ export default class GesuchModelManager {
         if (this.gesuch) {
             return this.gesuch.gesuchsperiode;
         }
+        return undefined;
+    }
 
+    public getGemeinde(): TSGemeinde | undefined {
+        if (this.gesuch && this.gesuch.dossier) {
+            return this.gesuch.dossier.gemeinde;
+        }
         return undefined;
     }
 

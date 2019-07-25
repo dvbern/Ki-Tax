@@ -43,7 +43,7 @@
                 </dv-edit-gemeinde-stammdaten>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_BG' | translate}}"
-                     *ngIf="hasBG$ | async">
+                     *ngIf="stammdaten.gemeinde.angebotBG">
                 <dv-edit-gemeinde-bg [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
                                      [beguStartStr]="beguStartStr"
@@ -51,13 +51,13 @@
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"
-                     *ngIf="tageschuleEnabledForMandant && stammdaten.angebotTS">
+                     *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
                 <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}"
-                     *ngIf="tageschuleEnabledForMandant && stammdaten.angebotFI">
+                     *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotFI">
                 <dv-edit-gemeinde-fi [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-fi>

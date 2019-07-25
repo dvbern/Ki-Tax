@@ -576,7 +576,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const tsConfigured = gesuchsperiode && gesuchsperiode.hasTagesschulenAnmeldung();
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-                this.gesuchModelManager.isTagesschulangebotEnabled(), tsConfigured);
+                this.gesuchModelManager.isTagesschulangebotEnabled(),
+                tsConfigured,
+                this.gesuchModelManager.getGemeinde());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
     }
