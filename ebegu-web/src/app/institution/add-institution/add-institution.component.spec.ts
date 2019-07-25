@@ -44,7 +44,7 @@ describe('AddInstitutionComponent', () => {
         ['getAllTraegerschaften', 'getAllActiveTraegerschaften']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, []);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
 
     beforeEach(async(() => {
 
