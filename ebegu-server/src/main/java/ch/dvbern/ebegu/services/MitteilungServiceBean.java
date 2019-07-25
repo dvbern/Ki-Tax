@@ -85,6 +85,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
 import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
@@ -734,7 +735,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
+				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
+					LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
@@ -1126,9 +1128,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Expression<Boolean> isActiveJA = cb.and(predicateActive, predicateJA);
 				Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
 				String sJugendamt =
-					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.JUGENDAMT.name(), browserSprache);
+					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.JUGENDAMT.name(),
+						browserSprache);
 				String sSchulamt =
-					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.SCHULAMT.name(), browserSprache);
+					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.SCHULAMT.name(),
+						browserSprache);
 				expression = cb.selectCase().when(isActiveJA, sJugendamt).otherwise(sSchulamt);
 				break;
 			case "mitteilungStatus":
@@ -1188,6 +1192,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				//gs container muss nicht mikopiert werden
 				betPenCont.setBetreuungspensumJA(betPensumJA);
 				existingBetreuung.getBetreuungspensumContainers().add(betPenCont);
+
+				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {
+					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.VERFUEGT);
+				}
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT
 			existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);

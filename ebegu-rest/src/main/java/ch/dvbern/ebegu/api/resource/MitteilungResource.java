@@ -15,12 +15,14 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -44,6 +46,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -53,9 +56,13 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -487,4 +494,84 @@ public class MitteilungResource {
 			return Response.ok(resultDTO).build();
 		});
 	}
+
+	@ApiOperation(value = "Wandelt BetreuungspensumAbweichungen in eine Mutationsmeldung um und sendet diese an die "
+		+ "Gemeinde",
+		response = JaxBetreuung.class)
+	@Nullable
+	@PUT
+	@Path("/betreuung/abweichungenfreigeben/{betreuungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createMutationsmeldungFromBetreuungspensumAbweichungen(
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId jaxBetreuungId,
+		@Nonnull @NotNull @Valid JaxBetreuungsmitteilung mitteilungJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(mitteilungJAXP);
+		Objects.requireNonNull(mitteilungJAXP);
+
+		Optional<Betreuung> betreuungOpt = betreuungService.findBetreuung(converter.toEntityId(jaxBetreuungId));
+
+		if (!betreuungOpt.isPresent()) {
+			return null;
+		}
+
+		Betreuung betreuung = betreuungOpt.get();
+
+		if (betreuung.getBetreuungspensumAbweichungen() == null) {
+			return null;
+		}
+		Betreuungsmitteilung mitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP,
+			new Betreuungsmitteilung());
+
+		createMutationsmeldung(mitteilung, betreuung);
+
+		mitteilungService.sendBetreuungsmitteilung(mitteilung);
+		betreuungService.saveBetreuung(betreuung, false);
+
+		return Response.ok().build();
+	}
+
+	private void createMutationsmeldung(@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Betreuung betreuung) {
+
+		// convert BetreuungspensumAbweichung to MitteilungPensum
+		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
+		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
+			.stream()
+			.filter(abweichung -> (abweichung.getPensum() != null || abweichung.getOriginalPensumMerged() != null)
+				&& (abweichung.getMonatlicheBetreuungskosten() != null || abweichung.getOriginalKostenMerged() != null) )
+			.map(abweichung -> convertAbweichungToMitteilungPensum(mitteilung, abweichung))
+			.collect(Collectors.toSet());
+
+		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
+	}
+
+	private BetreuungsmitteilungPensum convertAbweichungToMitteilungPensum(@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull BetreuungspensumAbweichung abweichung) {
+		BetreuungsmitteilungPensum mitteilungPensum = new BetreuungsmitteilungPensum();
+		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
+		mitteilungPensum.setGueltigkeit(abweichung.getGueltigkeit());
+
+		BigDecimal pensum = abweichung.getPensum() == null ? abweichung.getOriginalPensumMerged() :
+			abweichung.getPensum();
+
+		BigDecimal kosten = abweichung.getMonatlicheBetreuungskosten() == null ? abweichung.getOriginalKostenMerged() :
+			abweichung.getMonatlicheBetreuungskosten();
+
+		mitteilungPensum.setPensum(pensum);
+		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
+
+		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
+		// attach it to the BetreuungsmitteilungPensum
+		if (!abweichung.isNew()) {
+			mitteilungPensum.setBetreuungspensumAbweichung(abweichung);
+			abweichung.setStatus(BetreuungspensumAbweichungStatus.VERRECHNET);
+		}
+
+		return mitteilungPensum;
+	}
+
 }

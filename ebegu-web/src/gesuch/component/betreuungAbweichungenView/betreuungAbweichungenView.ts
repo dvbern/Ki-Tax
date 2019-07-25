@@ -71,7 +71,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public $translate: ITranslateService;
 
     public kindModel: TSKindContainer;
-    public isNewestGesuch: boolean;
     public isSavingData: boolean; // Semaphore
 
     public constructor(
@@ -117,7 +116,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         } else {
             this.$log.error('There is no kind available with kind-number:' + this.$stateParams.kindNumber);
         }
-        this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
         this.model.betreuungspensumAbweichungen.forEach(element => {
@@ -150,7 +148,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             abweichung.pensum = Number((abweichung.pensum * multiplier).toFixed(2));
         }
         if (abweichung.originalPensumMerged) {
-            abweichung.originalPensumMerged =  Number((abweichung.originalPensumMerged * multiplier).toFixed(2));
+            abweichung.originalPensumMerged = Number((abweichung.originalPensumMerged * multiplier).toFixed(2));
         }
     }
 
@@ -162,20 +160,22 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             abweichung.pensum = Number((abweichung.pensum / multiplier));
         }
         if (abweichung.originalPensumMerged) {
-            abweichung.originalPensumMerged =  Number((abweichung.originalPensumMerged / multiplier));
+            abweichung.originalPensumMerged = Number((abweichung.originalPensumMerged / multiplier));
         }
     }
 
-    public updateStatus (index: number): void {
+    public updateStatus(index: number): void {
         const abweichung = this.getAbweichung(index);
         abweichung.status = TSBetreuungspensumAbweichungStatus.NONE;
 
-        if (abweichung.pensum && abweichung.monatlicheBetreuungskosten) {
+        if (abweichung.pensum != null && abweichung.pensum >= 0
+            && abweichung.monatlicheBetreuungskosten != null
+            && abweichung.monatlicheBetreuungskosten >= 0) {
             abweichung.status = TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN;
         }
     }
 
-    public getIcon (index: number): string {
+    public getIcon(index: number): string {
         const abweichung = this.getAbweichung(index);
 
         switch (abweichung.status) {
@@ -203,9 +203,33 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.gesuchModelManager.saveAbweichungen(this.model).then((result) => {
             this.gesuchModelManager.setBetreuungToWorkWith(result); // setze model
             this.model = result;
+
+            // TODO KIBON-621: Umrechnung sollte auf Server stattfinden um Datenkonistenz zu gewährleisten
             this.model.betreuungspensumAbweichungen.forEach(element => {
                 this.percentageToEffective(element);
             });
         });
+    }
+
+    public freigeben(): void {
+        if (this.form.$dirty) {
+            alert('ne lass ma');
+            return;
+        }
+        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier()).then(response => {
+            // TODO
+        });
+    }
+
+    public isDisabled(index: number): boolean {
+        const abweichung = this.getAbweichung(index);
+
+        return (abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
+                || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT
+            || !this.gesuchModelManager.isNeuestesGesuch());
+    }
+
+    public isAbweichungAllowed():boolean {
+        return super.isMutationsmeldungAllowed(this.model, this.gesuchModelManager.isNeuestesGesuch());
     }
 }

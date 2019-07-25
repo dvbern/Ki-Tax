@@ -15,3 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 @import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+.abweichungenView .table input[type=number] {
+    background: @contrast-lightest;
+
+    &[disabled], &:disabled {
+        .DisabledInput();
+        -webkit-text-fill-color: @contrast-darkest;
+        .ebeguDisabledPlaceholder();
+    }
+}

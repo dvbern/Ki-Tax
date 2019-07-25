@@ -16,10 +16,14 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -41,12 +45,27 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pens_betreuungsmitteilung_id"), nullable = false)
 	private Betreuungsmitteilung betreuungsmitteilung;
 
+	// TODO Reviewer KIBON-621: should we set orphanRemoval to false?
+	@Nullable
+	@Valid
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
+	private BetreuungspensumAbweichung betreuungspensumAbweichung;
+
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
 		return betreuungsmitteilung;
 	}
 
 	public void setBetreuungsmitteilung(Betreuungsmitteilung betreuungsmitteilung) {
 		this.betreuungsmitteilung = betreuungsmitteilung;
+	}
+
+	public BetreuungspensumAbweichung getBetreuungspensumAbweichung() {
+		return betreuungspensumAbweichung;
+	}
+
+	public void setBetreuungspensumAbweichung(BetreuungspensumAbweichung betreuungspensumAbweichung) {
+		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
 	}
 
 	@Override

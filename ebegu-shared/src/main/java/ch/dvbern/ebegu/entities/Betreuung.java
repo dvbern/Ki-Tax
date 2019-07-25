@@ -17,9 +17,12 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -50,9 +53,13 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -196,7 +203,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
 	@Nullable
-	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen;
+	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen = new TreeSet<>();
 
 	public Betreuung() {
 	}
@@ -539,6 +546,14 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 				target.getBetreuungspensumContainers().add(betreuungspensumContainer
 					.copyBetreuungspensumContainer(new BetreuungspensumContainer(), copyType, target));
 			}
+
+			if ( this.getBetreuungspensumAbweichungen() != null) {
+				for (BetreuungspensumAbweichung betreuungspensumAbweichung : this.getBetreuungspensumAbweichungen()) {
+					target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
+						.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
+				}
+			}
+
 			for (AbwesenheitContainer abwesenheitContainer : this.getAbwesenheitContainers()) {
 				target.getAbwesenheitContainers().add(abwesenheitContainer.copyAbwesenheitContainer(new AbwesenheitContainer(), copyType, target));
 			}
@@ -674,5 +689,92 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	public boolean isErweiterteBeduerfnisseBestaetigt() {
 		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
 			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt();
+	}
+
+
+	public List<BetreuungspensumAbweichung> fillAbweichungen() {
+		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen();
+
+		for (BetreuungspensumAbweichung abweichung : initialAbweichungen) {
+			extractOriginalPensum(this.getBetreuungspensumContainers(), abweichung);
+		}
+		return initialAbweichungen;
+	}
+
+	private BetreuungspensumAbweichung extractOriginalPensum(Set<BetreuungspensumContainer> pensen,
+		BetreuungspensumAbweichung abweichung) {
+
+		LocalDate abweichungVon = abweichung.getGueltigkeit().getGueltigAb();
+		LocalDate abweichungBis = abweichung.getGueltigkeit().getGueltigBis();
+
+		for (BetreuungspensumContainer container : pensen) {
+			Betreuungspensum pensum = container.getBetreuungspensumJA();
+			LocalDate von = pensum.getGueltigkeit().getGueltigAb();
+			LocalDate bis = pensum.getGueltigkeit().getGueltigBis();
+
+			if ((von.isBefore(abweichungVon) || von.getMonth().equals(abweichungVon.getMonth()))
+				&& (bis.isAfter(abweichungBis) || bis.getMonth().equals(abweichungBis.getMonth()))) {
+				//HIT!!
+				if (von.isBefore(abweichungVon)) {
+					von = abweichungVon;
+				}
+
+				if (bis.isAfter(abweichungBis)) {
+					bis = abweichungBis;
+				}
+				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
+				abweichung.addPensum(pensum.getPensum().multiply(anteil));
+				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
+			}
+		}
+		return abweichung;
+	}
+
+	// initiate an empty BetreuungspensumAbweichung for every month within the Gesuchsperiode
+	private List<BetreuungspensumAbweichung> initAbweichungen() {
+		Gesuchsperiode gp = this.extractGesuchsperiode();
+		LocalDate from = gp.getGueltigkeit().getGueltigAb();
+		LocalDate to = gp.getGueltigkeit().getGueltigBis();
+
+		List<BetreuungspensumAbweichung> abweichungen = new ArrayList<>();
+		Set<BetreuungspensumAbweichung> abweichungenFromDb = this.getBetreuungspensumAbweichungen();
+
+		while (from.isBefore(to)) {
+
+			// check if we already stored something in the database
+			if (abweichungenFromDb != null) {
+				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
+				abweichungen.add(existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien())));
+			} else {
+				abweichungen.add(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
+			}
+			from = from.plusMonths(1);
+		}
+
+		return abweichungen;
+	}
+
+	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien) {
+		BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
+		abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
+		YearMonth month = YearMonth.from(from);
+		abweichung.setGueltigkeit(new DateRange(month.atDay(1), month.atEndOfMonth()));
+
+		abweichung.setUnitForDisplay(PensumUnits.DAYS);
+		if (isTagesfamilien) {
+			abweichung.setUnitForDisplay(PensumUnits.HOURS);
+		}
+
+		// we want it to be null for validation reasons!
+		abweichung.setPensum(null);
+		abweichung.setMonatlicheBetreuungskosten(null);
+
+		return abweichung;
+	}
+
+	private Optional<BetreuungspensumAbweichung> searchExistingAbweichung(@Nonnull LocalDate from,
+		@Nonnull Set<BetreuungspensumAbweichung> abweichungenFromDb) {
+		return abweichungenFromDb.stream()
+			.filter(a -> a.getGueltigkeit().getGueltigAb().equals(from)).findFirst();
 	}
 }

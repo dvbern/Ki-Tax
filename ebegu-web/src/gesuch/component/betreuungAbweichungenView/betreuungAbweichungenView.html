@@ -15,7 +15,7 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="betreuungView gesuchModul">
+<div class="abweichungenView betreuungView gesuchModul">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
     <div class="row viewTitle">
@@ -53,7 +53,7 @@
         <div class="row marginTop40">
             <div class="col-md-12 table-responsive">
 
-                <table class="table table-hover">
+                <table class="table">
                     <thead>
                     <tr>
                         <th data-translate="MONTH"></th>
@@ -72,7 +72,8 @@
                                    name="pensum-{{$index}}"
                                    ng-change="vm.updateStatus({{$index}})"
                                    ng-model="vm.getAbweichung($index).pensum"
-                                   class="form-control"
+                                   class="form-control  dv-input-container-medium"
+                                   ng-disabled="{{vm.isDisabled($index)}}"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    step="0.25"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
@@ -83,7 +84,8 @@
                                    name="kosten"
                                    ng-change="vm.updateStatus({{$index}})"
                                    ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
-                                   dv-max-length class="form-control"
+                                   dv-max-length class="form-control dv-input-container-medium"
+                                   ng-disabled="{{vm.isDisabled($index)}}"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).originalKostenMerged}}">
                         </td>
@@ -95,15 +97,15 @@
     </form>
     <div class="dv-navigation dv-navigation-flex">
         <span dv-show-element
-              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
-              dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+              dv-show-expression="vm.isAbweichungAllowed()">
             <dv-loading-button button-click="vm.freigeben()" type="submit">
                 <span class="uppercase" data-translate="FREIGEBEN"></span>
             </dv-loading-button>
         </span>
         <span dv-show-element
-              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
-              dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+              dv-show-expression="vm.isAbweichungAllowed()">
             <dv-loading-button button-click="vm.save()" type="submit">
                 <span class="uppercase" data-translate="SPEICHERN"></span>
             </dv-loading-button>

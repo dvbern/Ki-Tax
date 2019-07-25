@@ -959,27 +959,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * verfuegt wurden bzw. ein vorgaengerId haben. Ausserdem muss es sich um das letzte bzw. neueste Gesuch handeln
      */
     public isMutationsmeldungAllowed(): boolean {
-        if (!this.gesuchModelManager.getGesuch()) {
-            return false;
-        }
-        return (
-                (
-                    this.isMutation()
-                    && (
-                        this.getBetreuungModel().vorgaengerId
-                        || this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-                    )
-                )
-                || (
-                    !this.isMutation()
-                    && isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
-                    && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-                )
-            )
-            && this.getBetreuungModel().betreuungsstatus !== TSBetreuungsstatus.WARTEN
-            && this.gesuchModelManager.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV
-            && this.isNewestGesuch
-            && !this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
+        return super.isMutationsmeldungAllowed(this.getBetreuungModel(), this.isNewestGesuch);
     }
 
     public mutationsmeldungSenden(): void {

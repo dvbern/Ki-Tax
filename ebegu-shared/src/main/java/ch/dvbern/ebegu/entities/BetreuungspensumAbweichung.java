@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,7 +30,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -49,9 +53,11 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 	// every Zeitabschnitt containing any date of this.gueltigkeit
 	// merged by its part of the current Gueltigkeit into one monthly (=this.gueltigkeit) Betreuungspensum.
 	@Transient
+	@Nullable
 	private BigDecimal originalPensumMerged = null;
 
 	@Transient
+	@Nullable
 	private BigDecimal originalKostenMerged = null;
 
 	public BetreuungspensumAbweichungStatus getStatus() {
@@ -103,7 +109,27 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 	}
 
 	@Override
-	public int compareTo(BetreuungspensumAbweichung o) {
-		return 0;
+	public int compareTo(@Nonnull BetreuungspensumAbweichung other) {
+		CompareToBuilder compareToBuilder = new CompareToBuilder();
+		compareToBuilder.append(this.getGueltigkeit(), other.getGueltigkeit());
+		compareToBuilder.append(this.getId(), other.getId());
+		return compareToBuilder.toComparison();
+	}
+
+	@Nonnull
+	public BetreuungspensumAbweichung copyBetreuungspensumAbweichung(
+		@Nonnull BetreuungspensumAbweichung target, @Nonnull AntragCopyType copyType, @Nonnull Betreuung targetBetreuung) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setBetreuung(targetBetreuung);
+			target.setStatus(this.getStatus());
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }
