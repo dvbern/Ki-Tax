@@ -20,7 +20,6 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -53,7 +52,6 @@ export class AddInstitutionComponent implements OnInit {
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
-        private readonly einstellungRS: EinstellungRS,
         private readonly authServiceRS: AuthServiceRS,
     ) {
     }

@@ -16,7 +16,6 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
-import {Observable, ReplaySubject} from 'rxjs';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
@@ -27,10 +26,6 @@ export class EinstellungRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
     public serviceURL: string;
-
-    private readonly tagesschuleEnabledSubject$ = new ReplaySubject<TSEinstellung | null>(1);
-    private readonly _tageschuleEnabledForMandant$: Observable<TSEinstellung | null>
-        = this.tagesschuleEnabledSubject$.asObservable();
 
     public constructor(
         public readonly http: IHttpService,

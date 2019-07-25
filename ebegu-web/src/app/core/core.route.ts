@@ -53,7 +53,6 @@ appRun.$inject = [
     'InstitutionStammdatenRS',
     'GlobalCacheService',
     'GemeindeRS',
-    'EinstellungRS',
     'LOCALE_ID',
 ];
 
