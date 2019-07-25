@@ -17,7 +17,6 @@ import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import * as moment from 'moment';
 import * as Raven from 'raven-js';
-import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {environment} from '../../environments/environment';
