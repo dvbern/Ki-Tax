@@ -74,7 +74,6 @@ export function appRun(
     institutionsStammdatenRS: InstitutionStammdatenRS,
     globalCacheService: GlobalCacheService,
     gemeindeRS: GemeindeRS,
-    einstellungRS: EinstellungRS,
     LOCALE_ID: string,
 ): void {
     const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');

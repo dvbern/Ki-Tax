@@ -15,7 +15,6 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../../gesuch/service/searchRS.rest';
