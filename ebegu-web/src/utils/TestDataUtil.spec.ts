@@ -99,7 +99,6 @@ export default class TestDataUtil {
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/einstellung/tagesschuleEnabledForMandant').respond({});
     }
 
     public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
