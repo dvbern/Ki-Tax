@@ -180,4 +180,10 @@ public class Dossier extends AbstractMutableEntity implements Searchable {
 		}
 		return hauptverantwortlicher;
 	}
+
+	@Override
+	public String getMessageForAccessException() {
+		return "gemeinde: " + this.getGemeinde().getName()
+			+ ", fallNummer: " + this.getFall().getPaddedFallnummer();
+	}
 }
