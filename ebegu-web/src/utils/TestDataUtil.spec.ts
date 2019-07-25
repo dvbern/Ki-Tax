@@ -210,6 +210,9 @@ export default class TestDataUtil {
         gemeinde.bfsNummer = 363;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.angebotBG = true;
+        gemeinde.angebotTS = false;
+        gemeinde.angebotFI = false;
         return gemeinde;
     }
 
