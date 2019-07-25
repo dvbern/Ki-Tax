@@ -2232,7 +2232,7 @@ public class JaxBConverter extends AbstractConverter {
 		return betreuung;
 	}
 
-	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungenToEntity (
+	public Set<BetreuungspensumAbweichung> betreuungspensumAbweichungenToEntity (
 		final @Nonnull List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
 		final @Nonnull Set<BetreuungspensumAbweichung> abweichungen) {
 
@@ -2594,7 +2594,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
+	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
 		return betreuung.fillAbweichungen().stream().map(this::betreuungspensumAbweichungToJax)
 			.collect(Collectors.toList());
 	}

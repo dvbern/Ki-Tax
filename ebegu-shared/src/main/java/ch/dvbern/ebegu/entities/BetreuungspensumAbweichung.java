@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -85,19 +86,12 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 	}
 
 	public void addPensum(BigDecimal pensum) {
-		if (originalPensumMerged == null) {
-			this.originalPensumMerged = pensum;
-		} else {
-			setOriginalPensumMerged(this.originalPensumMerged.add(pensum));
-		}
+		originalPensumMerged = MathUtil.DEFAULT.addNullSafe(pensum, originalPensumMerged);
 	}
 
 	public void addKosten(BigDecimal kosten) {
-		if (originalKostenMerged == null) {
-			this.originalKostenMerged = kosten;
-		} else {
-			setOriginalKostenMerged(this.originalKostenMerged.add(kosten));
-		}
+		originalKostenMerged = MathUtil.DEFAULT.addNullSafe(MathUtil.DEFAULT.roundToFrankenRappen(kosten),
+			originalKostenMerged);
 	}
 
 	public Betreuung getBetreuung() {
@@ -119,11 +113,11 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 	@Nonnull
 	public BetreuungspensumAbweichung copyBetreuungspensumAbweichung(
 		@Nonnull BetreuungspensumAbweichung target, @Nonnull AntragCopyType copyType, @Nonnull Betreuung targetBetreuung) {
-		super.copyAbstractEntity(target, copyType);
+		super.copyAbstractBetreuungspensumEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setBetreuung(targetBetreuung);
-			target.setStatus(this.getStatus());
+			target.setStatus(getStatus());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

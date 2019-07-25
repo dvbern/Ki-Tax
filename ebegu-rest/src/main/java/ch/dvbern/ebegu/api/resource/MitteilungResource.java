@@ -48,6 +48,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilungSearchresultDTO;
@@ -146,8 +147,8 @@ public class MitteilungResource {
 			throw new EbeguEntityNotFoundException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"BetreuungsmitteilungID invalid: " + betreuungsmitteilungId.getId());
 		}
-		final Gesuch mutierteGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
-		return converter.toJaxId(mutierteGesuch);
+		final Gesuch mutiertesGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
+		return converter.toJaxId(mutiertesGesuch);
 	}
 
 	@ApiOperation(value = "Speichert eine Mitteilung als Entwurf", response = JaxMitteilung.class)
@@ -503,7 +504,7 @@ public class MitteilungResource {
 	@Path("/betreuung/abweichungenfreigeben/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createMutationsmeldungFromBetreuungspensumAbweichungen(
+	public List<JaxBetreuungspensumAbweichung> createMutationsmeldungFromBetreuungspensumAbweichungen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId jaxBetreuungId,
 		@Nonnull @NotNull @Valid JaxBetreuungsmitteilung mitteilungJAXP,
 		@Context UriInfo uriInfo,
@@ -529,9 +530,9 @@ public class MitteilungResource {
 		createMutationsmeldung(mitteilung, betreuung);
 
 		mitteilungService.sendBetreuungsmitteilung(mitteilung);
-		betreuungService.saveBetreuung(betreuung, false);
+//		betreuungService.saveBetreuung(betreuung, false);
 
-		return Response.ok().build();
+		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 
 	private void createMutationsmeldung(@Nonnull Betreuungsmitteilung mitteilung,
@@ -541,6 +542,7 @@ public class MitteilungResource {
 		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
 			.stream()
+			// TODO KIBON-621 Reviewer: bessere Idee?
 			.filter(abweichung -> (abweichung.getPensum() != null || abweichung.getOriginalPensumMerged() != null)
 				&& (abweichung.getMonatlicheBetreuungskosten() != null || abweichung.getOriginalKostenMerged() != null) )
 			.map(abweichung -> convertAbweichungToMitteilungPensum(mitteilung, abweichung))
@@ -555,9 +557,11 @@ public class MitteilungResource {
 		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
 		mitteilungPensum.setGueltigkeit(abweichung.getGueltigkeit());
 
+		// TODO KIBON-621 Reviewer: bessere Idee?
 		BigDecimal pensum = abweichung.getPensum() == null ? abweichung.getOriginalPensumMerged() :
 			abweichung.getPensum();
 
+		// TODO KIBON-621 Reviewer: bessere Idee?
 		BigDecimal kosten = abweichung.getMonatlicheBetreuungskosten() == null ? abweichung.getOriginalKostenMerged() :
 			abweichung.getMonatlicheBetreuungskosten();
 

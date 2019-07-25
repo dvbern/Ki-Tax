@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -202,7 +203,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
-	@Nullable
 	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen = new TreeSet<>();
 
 	public Betreuung() {
@@ -370,12 +370,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.keineDetailinformationen = keineDetailinformationen;
 	}
 
-	@Nullable
 	public Set<BetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
 		return betreuungspensumAbweichungen;
 	}
 
-	public void setBetreuungspensumAbweichungen(@Nullable Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+	public void setBetreuungspensumAbweichungen(Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
@@ -549,8 +548,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 			if ( this.getBetreuungspensumAbweichungen() != null) {
 				for (BetreuungspensumAbweichung betreuungspensumAbweichung : this.getBetreuungspensumAbweichungen()) {
-					target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
-						.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
+					if (betreuungspensumAbweichung.getStatus() == BetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
+						target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
+							.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
+					}
 				}
 			}
 
@@ -712,8 +713,8 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			LocalDate von = pensum.getGueltigkeit().getGueltigAb();
 			LocalDate bis = pensum.getGueltigkeit().getGueltigBis();
 
-			if ((von.isBefore(abweichungVon) || von.getMonth().equals(abweichungVon.getMonth()))
-				&& (bis.isAfter(abweichungBis) || bis.getMonth().equals(abweichungBis.getMonth()))) {
+			if ((von.isBefore(abweichungVon) || von.getMonth() == abweichungVon.getMonth())
+				&& (bis.isAfter(abweichungBis) || bis.getMonth() == abweichungBis.getMonth())) {
 				//HIT!!
 				if (von.isBefore(abweichungVon)) {
 					von = abweichungVon;
@@ -765,7 +766,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			abweichung.setUnitForDisplay(PensumUnits.HOURS);
 		}
 
-		// we want it to be null for validation reasons!
+		// we want it to be null for validation and filtering reasons!
 		abweichung.setPensum(null);
 		abweichung.setMonatlicheBetreuungskosten(null);
 

@@ -116,7 +116,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         } else {
             this.$log.error('There is no kind available with kind-number:' + this.$stateParams.kindNumber);
         }
-
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
         this.model.betreuungspensumAbweichungen.forEach(element => {
             this.percentageToEffective(element);
@@ -201,10 +200,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         });
 
         this.gesuchModelManager.saveAbweichungen(this.model).then((result) => {
-            this.gesuchModelManager.setBetreuungToWorkWith(result); // setze model
-            this.model = result;
-
             // TODO KIBON-621: Umrechnung sollte auf Server stattfinden um Datenkonistenz zu gewährleisten
+            this.model = result;
             this.model.betreuungspensumAbweichungen.forEach(element => {
                 this.percentageToEffective(element);
             });
@@ -212,24 +209,44 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public freigeben(): void {
-        if (this.form.$dirty) {
-            alert('ne lass ma');
-            return;
-        }
-        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier()).then(response => {
-            // TODO
-        });
+        // if (this.form.$dirty) {
+        //     alert('ne lass ma');
+        //     return;
+        // }
+        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier())
+            .then(response => {
+                this.model.betreuungspensumAbweichungen = response;
+            });
     }
 
     public isDisabled(index: number): boolean {
         const abweichung = this.getAbweichung(index);
 
         return (abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
-                || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT
-            || !this.gesuchModelManager.isNeuestesGesuch());
+                || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT);
+            // || !this.gesuchModelManager.isNeuestesGesuch());
     }
 
-    public isAbweichungAllowed():boolean {
+    public isAbweichungAllowed(): boolean {
         return super.isMutationsmeldungAllowed(this.model, this.gesuchModelManager.isNeuestesGesuch());
+    }
+
+    public isFreigabeAllowed(): boolean {
+        return this.isAbweichungAllowed()
+            // && this.hasAbweichungInStatus(TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN);
+    }
+
+    public hasAbweichungInStatus(status: TSBetreuungspensumAbweichungStatus): boolean {
+        return angular.copy(this.model.betreuungspensumAbweichungen).filter(a => {
+            a.status === status
+        }).length > 0;
+    }
+
+    public getHelpText(): string {
+        return this.$translate.instant('ABWEICHUNGEN_HELP',
+            { vorname: this.kindModel.kindJA.vorname,
+                name: this.kindModel.kindJA.nachname,
+                institution: this.model.institutionStammdaten.institution.name
+        });
     }
 }

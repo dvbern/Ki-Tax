@@ -43,7 +43,7 @@
 
     <div class="row marginTop40">
         <div class="col-md-12">
-            <span data-translate="WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG"></span>
+            <span> {{vm.getHelpText()}}</span>
         </div>
     </div>
 
@@ -98,7 +98,7 @@
     <div class="dv-navigation dv-navigation-flex">
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-              dv-show-expression="vm.isAbweichungAllowed()">
+              dv-show-expression="vm.isFreigabeAllowed()">
             <dv-loading-button button-click="vm.freigeben()" type="submit">
                 <span class="uppercase" data-translate="FREIGEBEN"></span>
             </dv-loading-button>

@@ -17,6 +17,7 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
 import TSBetreuung from '../../../models/TSBetreuung';
+import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class BetreuungRS {
@@ -149,6 +150,17 @@ export default class BetreuungRS {
                     return convertedBetreuungen;
                 });
             });
+    }
+
+    public saveAbweichungen(
+        betreuung: TSBetreuung,
+        abweichungen: TSBetreuungspensumAbweichung[],
+    ): IPromise<Array<TSBetreuungspensumAbweichung>> {
+
+        const restAbweichungen = this.ebeguRestUtil.betreuungspensumAbweichungenToRestObject(abweichungen, {});
+        const url = `${this.serviceURL}/betreuung/abweichung/${encodeURIComponent(betreuung.id)}`;
+        return this.http.put(url, restAbweichungen)
+            .then(response => this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data));
     }
 
     public createAngebot(anmeldungDTO: TSAnmeldungDTO): IPromise<any> {

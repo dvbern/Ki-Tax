@@ -46,9 +46,11 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAnmeldungDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -430,6 +432,36 @@ public class BetreuungResource {
 		throw new EbeguEntityNotFoundException("createAnmeldung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			KIND_CONTAINER_ID_INVALID + jaxAnmeldungDTO
 				.getKindContainerId());
+	}
+
+	@ApiOperation(value = "Speichert die Abweichungen einer Betreuung in der Datenbank", response = List.class)
+	@PUT
+	@Path("/betreuung/abweichungen/{betreuungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxBetreuungspensumAbweichung> saveAbweichungen(
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
+		@Nonnull @NotNull @Valid List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(betreuungId.getId());
+		String id = converter.toEntityId(betreuungId);
+		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(id);
+
+		if (!betreuungOptional.isPresent()) {
+			return null;
+		}
+
+		Betreuung betreuung = betreuungOptional.get();
+		Set<BetreuungspensumAbweichung> toStore = converter.betreuungspensumAbweichungenToEntity(abweichungenJAXP,
+			betreuung.getBetreuungspensumAbweichungen());
+
+		betreuung.setBetreuungspensumAbweichungen(toStore);
+
+		betreuungService.saveBetreuung(betreuung, false);
+
+		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 
 	public boolean hasDuplicate(JaxBetreuung betreuungJAXP, @Nullable Set<Betreuung> betreuungen) {

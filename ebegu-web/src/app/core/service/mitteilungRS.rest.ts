@@ -300,7 +300,7 @@ export default class MitteilungRS {
         const url = `${this.serviceURL}/betreuung/abweichungenfreigeben/${encodeURIComponent(betreuung.id)}`;
         return this.$http.put(url, restMitteilung)
             .then(response => {
-                console.log(response);
+                return this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data);
             });
     }
 }

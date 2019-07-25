@@ -1652,18 +1652,6 @@ export default class EbeguRestUtil {
                     betPensCont));
             });
         }
-        if (betreuung.betreuungspensumAbweichungen) {
-            restBetreuung.betreuungspensumAbweichungen = [];
-            // only send Abweichungen with actual Abweichungen
-            const filteredAbweichungen = betreuung.betreuungspensumAbweichungen.filter(element => {
-                return element.pensum != null && element.monatlicheBetreuungskosten != null;
-            })
-
-            filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
-                restBetreuung.betreuungspensumAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
-                    abweichung));
-            });
-        }
 
         if (betreuung.abwesenheitContainers) {
             restBetreuung.abwesenheitContainers = [];
@@ -1688,6 +1676,23 @@ export default class EbeguRestUtil {
         restBetreuung.anmeldungMutationZustand = betreuung.anmeldungMutationZustand;
         restBetreuung.keineDetailinformationen = betreuung.keineDetailinformationen;
         return restBetreuung;
+    }
+
+    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[], restAbweichungen: any): TSBetreuungspensumAbweichung[] {
+        if (abweichungen) {
+            restAbweichungen = [];
+            // only send Abweichungen with actual Abweichungen
+            const filteredAbweichungen = abweichungen.filter(element => {
+                return element.pensum != null && element.monatlicheBetreuungskosten != null;
+            })
+
+            filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
+                restAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
+                    abweichung));
+            });
+        }
+
+        return restAbweichungen;
     }
 
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
@@ -1806,7 +1811,7 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseBetreuungspensumAbweichungen(data: Array<any>): TSBetreuungspensumAbweichung[] {
+    public parseBetreuungspensumAbweichungen(data: any): TSBetreuungspensumAbweichung[] {
         if (!data) {
             return [];
         }
