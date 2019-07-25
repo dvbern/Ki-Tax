@@ -17,7 +17,6 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -45,7 +44,6 @@ export class BenutzerRolleComponent implements OnInit {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         public readonly form: NgForm,
-        public readonly einstellungRS: EinstellungRS,
     ) {
     }
 

@@ -22,7 +22,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -61,7 +60,6 @@ export class EditGemeindeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
-        private readonly einstellungRS: EinstellungRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
     ) {
