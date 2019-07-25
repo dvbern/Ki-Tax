@@ -780,7 +780,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 
 		if (Betreuungsstatus.NICHT_EINGETRETEN != betreuung.getBetreuungsstatus() || persistedDokument == null) {
-
+			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 			// persistedDokument == null:  Wenn das Dokument nicht geladen werden konnte, heisst es dass es nicht
 			// existiert und wir muessen es trotzdem erstellen
 

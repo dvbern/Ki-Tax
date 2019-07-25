@@ -245,6 +245,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			zeitabschnitt.setAnspruchberechtigtesPensum(0);
 		}
 		verfuegung.setKategorieNichtEintreten(true);
+		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.NICHT_EINGETRETEN);
 		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen

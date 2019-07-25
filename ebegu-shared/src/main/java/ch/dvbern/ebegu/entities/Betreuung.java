@@ -501,7 +501,8 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	public void initVorgaengerVerfuegungen(
 		@Nullable Verfuegung vorgaenger,
-		@Nullable  Verfuegung vorgaengerAusbezahlt) {
+		@Nullable  Verfuegung vorgaengerAusbezahlt
+	) {
 		this.vorgaengerVerfuegung = vorgaenger;
 		this.vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlt;
 		this.vorgaengerInitialized = true;
