@@ -90,9 +90,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Inject
 	private BenutzerService benutzerService;
 
-	@Inject
-	private GesuchsperiodeService gesuchsperiodeService;
-
 
 	@Override
 	@Nonnull
@@ -300,41 +297,5 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			Einstellung_.gesuchsperiode);
 		einstellungenOfGP
 			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
-	}
-
-	@Nonnull
-	@Override
-	@PermitAll
-	public Einstellung findEinstellungTagesschuleEnabledForMandant() {
-
-		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
-			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Benutzer nicht eingeloggt"));
-
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() ->
-			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Keine Gesuchsperiode gefunden"));
-
-		Optional<Einstellung> einstellungOptional = findEinstellungByMandantOrSystem(
-			EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT,
-			benutzer.getMandant(),
-			gesuchsperiode,
-			persistence.getEntityManager());
-
-		Einstellung einstellung = einstellungOptional.orElseThrow(() ->
-			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Einstellung TAGESSCHULE_ENABLED_FOR_MANDANT nicht gfunden"));
-
-		return einstellung;
-	}
-
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public boolean hasEinstellungWithGivenValueInAnyGesuchsperiode(
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull EinstellungKey einstellungKey,
-		@Nonnull String valueToFind
-	) {
-		return gesuchsperiodeService.getAllGesuchsperioden().stream()
-			.anyMatch(gesuchsperiode ->
-				findEinstellung(einstellungKey, gemeinde, gesuchsperiode).getValue().equals(valueToFind)
-			);
 	}
 }

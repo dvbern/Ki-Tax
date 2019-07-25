@@ -252,7 +252,8 @@ export default class AuthServiceRS {
         return false;
     }
 
-    public getVisibleRolesForPrincipal(isTagesschuleEnabled: boolean): ReadonlyArray<TSRole> {
+    public getVisibleRolesForPrincipal(): ReadonlyArray<TSRole> {
+        const isTagesschuleEnabled = this.principal.mandant.angebotTS;
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:
                 return TSRoleUtil.getAllRolesButAnonymous();

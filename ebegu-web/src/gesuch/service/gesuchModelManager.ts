@@ -15,11 +15,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import ErrorService from '../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
 import ErwerbspensumRS from '../../app/core/service/erwerbspensumRS.rest';
@@ -88,8 +84,6 @@ import GesuchRS from './gesuchRS.rest';
 import GlobalCacheService from './globalCacheService';
 import WizardStepManager from './wizardStepManager';
 
-const LOG = LogFactory.createLog('GesuchModelManager');
-
 export default class GesuchModelManager {
 
     public static $inject = [
@@ -97,7 +91,7 @@ export default class GesuchModelManager {
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
-        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', 'EinstellungRS',
+        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS',
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -117,9 +111,6 @@ export default class GesuchModelManager {
 
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
-
-    private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -145,7 +136,6 @@ export default class GesuchModelManager {
         private readonly dossierRS: DossierRS,
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -157,17 +147,6 @@ export default class GesuchModelManager {
                 },
                 err => this.log.error(err),
             );
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err));
-    }
-
-    public $onDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     /**
@@ -1597,6 +1576,6 @@ export default class GesuchModelManager {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this._tageschuleEnabledForMandant;
+        return this.authServiceRS.getPrincipal().mandant.angebotTS;
     }
 }

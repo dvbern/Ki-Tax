@@ -15,17 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {LogFactory} from '../../../core/logging/LogFactory';
-
-const LOG = LogFactory.createLog('BenutzerRolleComponent');
 
 @Component({
     selector: 'dv-benutzer-rolle',
@@ -33,7 +28,7 @@ const LOG = LogFactory.createLog('BenutzerRolleComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
-export class BenutzerRolleComponent implements OnInit, OnDestroy {
+export class BenutzerRolleComponent implements OnInit {
 
     @Input() public name: string;
     @Input() public readonly inputId: string;
@@ -42,7 +37,6 @@ export class BenutzerRolleComponent implements OnInit, OnDestroy {
     @Input() public readonly excludedRoles: TSRole[] = [];
 
     @Output() public readonly benutzerRolleChange = new EventEmitter<TSRole>();
-    private readonly unsubscribe$ = new Subject<void>();
 
     public roles: Map<TSRole, string>;
 
@@ -56,25 +50,13 @@ export class BenutzerRolleComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(
-                einstellung => {
-                    this.roles = this.authServiceRS.getVisibleRolesForPrincipal(einstellung.getValueAsBoolean())
-                        .filter(rolle => !this.excludedRoles.includes(rolle))
-                        .reduce((rollenMap, rolle) => {
-                                return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
-                            },
-                            new Map<TSRole, string>(),
-                        );
+        this.roles = this.authServiceRS.getVisibleRolesForPrincipal()
+            .filter(rolle => !this.excludedRoles.includes(rolle))
+            .reduce((rollenMap, rolle) => {
+                    return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
                 },
-                err => LOG.error(err)
-        );
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
+                new Map<TSRole, string>(),
+            );
     }
 
     @Input()

@@ -15,8 +15,6 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
@@ -32,12 +30,9 @@ import DateUtil from '../../../../utils/DateUtil';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import ErrorService from '../../../core/errors/service/ErrorService';
-import {LogFactory} from '../../../core/logging/LogFactory';
 import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../core/service/mitteilungRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
-
-const LOG = LogFactory.createLog('GesuchstellerDashboardListViewConfig');
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     public transclude = false;
@@ -61,7 +56,6 @@ export class GesuchstellerDashboardViewController implements IController {
         'MitteilungRS',
         'GesuchRS',
         'ErrorService',
-        'EinstellungRS',
     ];
 
     private antragList: Array<TSAntragDTO> = [];
@@ -73,9 +67,6 @@ export class GesuchstellerDashboardViewController implements IController {
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
     public mapOfNewestAntraege: { [key: string]: string } = {};
 
-    private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribe$ = new Subject<void>();
-
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
@@ -86,7 +77,6 @@ export class GesuchstellerDashboardViewController implements IController {
         private readonly mitteilungRS: MitteilungRS,
         private readonly gesuchRS: GesuchRS,
         private readonly errorService: ErrorService,
-        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -100,18 +90,6 @@ export class GesuchstellerDashboardViewController implements IController {
             .calculatePeriodenStartdatumString(this.dossier.gemeinde.betreuungsgutscheineStartdatum);
 
         this.initViewModel();
-
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err));
-    }
-
-    public $onDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {
@@ -233,7 +211,8 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
-        return this._tageschuleEnabledForMandant && periode.hasTagesschulenAnmeldung() && !!antrag &&
+        const tsEnabledForMandant = this.authServiceRS.getPrincipal().mandant.angebotTS;
+        return tsEnabledForMandant && periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
             && this.isNeuestAntragOfGesuchsperiode(periode, antrag);

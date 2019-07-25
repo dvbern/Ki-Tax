@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {from, Observable, Subject} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
@@ -30,17 +30,14 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
-
-const LOG = LogFactory.createLog('AddGemeindeComponent');
 
 @Component({
     selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddGemeindeComponent implements OnInit, OnDestroy {
+export class AddGemeindeComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
@@ -53,12 +50,7 @@ export class AddGemeindeComponent implements OnInit, OnDestroy {
     public unregisteredGemeinden$: Observable<TSBfsGemeinde[]>;
     public selectedUnregisteredGemeinde: TSBfsGemeinde;
 
-    public gemeindeHasBetreuungsgutscheine: boolean = false;
-    public gemeindeHasTagesschule: boolean = false;
-    public gemeindeHasFerieninsel: boolean = false;
-
     public tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribe$ = new Subject<void>();
 
     public showMessageKeinAngebotSelected: boolean = false;
 
@@ -69,7 +61,7 @@ export class AddGemeindeComponent implements OnInit, OnDestroy {
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -96,21 +88,10 @@ export class AddGemeindeComponent implements OnInit, OnDestroy {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this.gesuchsperiodeList = response;
         });
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this.tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err)
-            );
+        this.tageschuleEnabledForMandant = this.authServiceRS.getPrincipal().mandant.angebotTS;
         if (!this.tageschuleEnabledForMandant) {
-            this.gemeindeHasBetreuungsgutscheine = true;
+            this.gemeinde.angebotBG = true;
         }
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     public cancel(): void {
@@ -140,13 +121,13 @@ export class AddGemeindeComponent implements OnInit, OnDestroy {
 
     private isAtLeastOneAngebotSelected(): boolean {
         const hasAngebot =
-            this.gemeindeHasBetreuungsgutscheine || this.gemeindeHasTagesschule || this.gemeindeHasFerieninsel;
+            this.gemeinde.angebotBG || this.gemeinde.angebotTS || this.gemeinde.angebotFI;
         this.showMessageKeinAngebotSelected = !hasAngebot;
         return hasAngebot;
     }
 
     private isStartDateValid(): boolean {
-        if (!this.gemeindeHasBetreuungsgutscheine) {
+        if (!this.gemeinde.angebotBG) {
             return true;
         }
         const day = this.gemeinde.betreuungsgutscheineStartdatum.format('D');
@@ -164,10 +145,7 @@ export class AddGemeindeComponent implements OnInit, OnDestroy {
     private persistGemeinde(): void {
         this.gemeindeRS.createGemeinde(
             this.gemeinde,
-            this.adminMail,
-            this.gemeindeHasBetreuungsgutscheine,
-            this.gemeindeHasTagesschule,
-            this.gemeindeHasFerieninsel
+            this.adminMail
         )
             .then(neueGemeinde => {
                 this.gemeinde = neueGemeinde;

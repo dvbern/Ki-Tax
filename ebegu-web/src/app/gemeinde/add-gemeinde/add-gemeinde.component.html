@@ -75,10 +75,10 @@
                             <label class="md-no-float" translate for="begu_start_ID"  *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
 
                             <mat-checkbox id="angebotBG" name="angebotBG"
-                                          [(ngModel)]="gemeindeHasBetreuungsgutscheine" *ngIf="tageschuleEnabledForMandant">
+                                          [(ngModel)]="gemeinde.angebotBG" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
-                            <div class="form-group" *ngIf="gemeindeHasBetreuungsgutscheine">
+                            <div class="form-group" *ngIf="gemeinde.angebotBG">
                                 <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
                                 <input class="dv-mat-datepicker" type="text"
                                        name="begu_start" id="begu_start_ID"
@@ -95,11 +95,11 @@
                             </div>
 
                             <mat-checkbox id="angebotTS" name="angebotTS"
-                                          [(ngModel)]="gemeindeHasTagesschule" *ngIf="tageschuleEnabledForMandant">
+                                          [(ngModel)]="gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
                             <mat-checkbox id="angebotFI" name="angebotFI"
-                                          [(ngModel)]="gemeindeHasFerieninsel" *ngIf="tageschuleEnabledForMandant">
+                                          [(ngModel)]="gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
                             <div class="dv-error-messages" *ngIf="showMessageKeinAngebotSelected">

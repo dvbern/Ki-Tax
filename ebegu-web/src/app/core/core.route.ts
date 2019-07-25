@@ -120,7 +120,6 @@ export function appRun(
             if (gesuchsperioden.length > 0) {
                 const newestGP = gesuchsperioden[0];
                 institutionsStammdatenRS.getAllActiveInstitutionStammdatenByGesuchsperiode(newestGP.id);
-                einstellungRS.findEinstellungTagesschuleEnabledForMandant();
             }
         });
         gemeindeRS.getAllGemeinden();

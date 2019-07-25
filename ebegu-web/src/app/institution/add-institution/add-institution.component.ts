@@ -20,26 +20,22 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-
-const LOG = LogFactory.createLog('AddInstitutionComponent');
 
 @Component({
     selector: 'dv-add-institution',
     templateUrl: './add-institution.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddInstitutionComponent implements OnInit, OnDestroy {
+export class AddInstitutionComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
@@ -51,9 +47,6 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
     public beguStartDatumMin: moment.Moment;
     public adminMail: string;
 
-    private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribe$ = new Subject<void>();
-
     public constructor(
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
@@ -61,6 +54,7 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -74,18 +68,8 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStart = futureMonthBegin;
         this.beguStartDatumMin = futureMonthBegin;
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err));
-        this.betreuungsangebote = getTSBetreuungsangebotTypValuesForMandant(this._tageschuleEnabledForMandant);
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
+        this.betreuungsangebote = getTSBetreuungsangebotTypValuesForMandant(
+            this.authServiceRS.getPrincipal().mandant.angebotTS);
     }
 
     public cancel(): void {

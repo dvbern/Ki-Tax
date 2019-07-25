@@ -20,7 +20,6 @@ import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
 import {from as fromPromise, Observable, of, Subject} from 'rxjs';
 import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -48,8 +47,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    private _tageschuleEnabledForMandant: boolean;
-
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -59,7 +56,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
-        private readonly einstellungRS: EinstellungRS,
 
     ) {
     }
@@ -84,13 +80,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
-
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err));
     }
 
     public ngOnDestroy(): void {
@@ -187,6 +176,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this._tageschuleEnabledForMandant;
+        return this.authServiceRS.getPrincipal().mandant.angebotTS;
     }
 }

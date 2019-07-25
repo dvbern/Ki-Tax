@@ -61,14 +61,6 @@ export class EinstellungRS {
             });
     }
 
-    public findEinstellungTagesschuleEnabledForMandant(): void {
-        this.http.get(`${this.serviceURL}/tagesschuleEnabledForMandant`)
-            .then((param: IHttpResponse<TSEinstellung>) => {
-                this.tagesschuleEnabledSubject$.next(
-                    this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), param.data));
-            });
-    }
-
     public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .then((response: any) => {
@@ -81,33 +73,6 @@ export class EinstellungRS {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`, {cache})
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
-            });
-    }
-
-    // Use the observable, when the state must be updated automatically, when the principal changes.
-    // e.g. printing the name of the current user
-    public tageschuleEnabledForMandant$(): Observable<TSEinstellung | null> {
-        return this._tageschuleEnabledForMandant$;
-    }
-
-    public hasTagesschuleInAnyGesuchsperiode(gemeindeId: string): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/hasTagesschule/gemeinde/${gemeindeId}`)
-            .then((param: any) => {
-                return param.data;
-            });
-    }
-
-    public hasFerieninselInAnyGesuchsperiode(gemeindeId: string): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/hasFerieninsel/gemeinde/${gemeindeId}`)
-            .then((param: any) => {
-                return param.data;
-            });
-    }
-
-    public hasBetreuungsgutscheineInAnyGesuchsperiode(gemeindeId: string): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/hasBetreuungsgutscheine/gemeinde/${gemeindeId}`)
-            .then((param: any) => {
-                return param.data;
             });
     }
 }

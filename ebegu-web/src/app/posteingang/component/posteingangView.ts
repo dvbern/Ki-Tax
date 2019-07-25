@@ -17,7 +17,6 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../../models/enums/TSAmt';
@@ -41,7 +40,7 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 
 export class PosteingangViewController implements IController {
 
-    public static $inject: string[] = ['MitteilungRS', '$state', 'AuthServiceRS', 'GemeindeRS', 'EinstellungRS'];
+    public static $inject: string[] = ['MitteilungRS', '$state', 'AuthServiceRS', 'GemeindeRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -59,26 +58,16 @@ export class PosteingangViewController implements IController {
     public includeClosed: boolean = false;
     public gemeindenList: Array<TSGemeinde> = [];
 
-    private _tageschuleEnabledForMandant: boolean;
-
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
     public $onInit(): void {
         this.updateGemeindenList();
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err)
-            );
     }
 
     public $onDestroy(): void {
@@ -146,6 +135,6 @@ export class PosteingangViewController implements IController {
     }
 
     public showBgOrTS(): boolean {
-        return this._tageschuleEnabledForMandant;
+        return this.authServiceRS.getPrincipal().mandant.angebotTS;
     }
 }
