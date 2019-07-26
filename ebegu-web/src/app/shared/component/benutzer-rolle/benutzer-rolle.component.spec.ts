@@ -18,10 +18,7 @@
 import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
-import {of} from 'rxjs';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import TSEinstellung from '../../../../models/TSEinstellung';
 import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared.module';
 
@@ -38,10 +35,6 @@ describe('BenutzerRolleComponent', () => {
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         const i18nServiceSpy = jasmine
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-        const einstellungServiceSpy = jasmine
-            .createSpyObj<EinstellungRS>(EinstellungRS.name, ['tageschuleEnabledForMandant$']);
-
-        einstellungServiceSpy.tageschuleEnabledForMandant$.and.returnValue(of(new TSEinstellung()) as any);
 
         TestBed.configureTestingModule({
             imports: [
@@ -52,7 +45,6 @@ describe('BenutzerRolleComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungServiceSpy},
             ],
         })
             .compileComponents();

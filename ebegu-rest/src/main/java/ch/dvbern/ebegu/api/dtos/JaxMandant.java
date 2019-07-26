@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,11 +33,31 @@ public class JaxMandant extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
+	private boolean angebotTS = false;
+	private boolean angebotFI = false;
+
+	@Nonnull
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(@Nonnull String name) {
 		this.name = name;
+	}
+
+	public boolean isAngebotTS() {
+		return angebotTS;
+	}
+
+	public void setAngebotTS(boolean angebotTS) {
+		this.angebotTS = angebotTS;
+	}
+
+	public boolean isAngebotFI() {
+		return angebotFI;
+	}
+
+	public void setAngebotFI(boolean angebotFI) {
+		this.angebotFI = angebotFI;
 	}
 }
