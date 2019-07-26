@@ -17,13 +17,20 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-.abweichungenView .table input[type=number] {
-    background: @contrast-lightest;
+.abweichungenView {
+    .table input[type=number] {
+        background: @contrast-lightest;
 
-    &[disabled], &:disabled {
-        .DisabledInput();
-        -webkit-text-fill-color: @contrast-darkest;
-        .ebeguDisabledPlaceholder();
+        &[disabled], &:disabled {
+            .DisabledInput();
+            -webkit-text-fill-color: @contrast-darkest;
+            .ebeguDisabledPlaceholder();
+        }
+    }
+
+    .table tr:hover,
+    .table tr:first-child:hover {
+        background-color: transparent;
     }
 }
 

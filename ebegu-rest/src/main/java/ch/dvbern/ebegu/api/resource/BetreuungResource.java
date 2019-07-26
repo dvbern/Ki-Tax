@@ -434,18 +434,19 @@ public class BetreuungResource {
 				.getKindContainerId());
 	}
 
-	@ApiOperation(value = "Speichert die Abweichungen einer Betreuung in der Datenbank", response = List.class)
+	@ApiOperation(value = "Speichert die Abweichungen einer Betreuung in der Datenbank", response = Collection.class)
 	@PUT
 	@Path("/betreuung/abweichungen/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxBetreuungspensumAbweichung> saveAbweichungen(
+	public Collection<JaxBetreuungspensumAbweichung> saveBetreuungspensumAbweichungen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
-		@Nonnull @NotNull @Valid List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
+		@Nonnull @NotNull @Valid JaxBetreuung betreuungJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(betreuungId.getId());
+		Objects.requireNonNull(betreuungJax);
+		Objects.requireNonNull(betreuungId);
 		String id = converter.toEntityId(betreuungId);
 		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(id);
 
@@ -454,13 +455,38 @@ public class BetreuungResource {
 		}
 
 		Betreuung betreuung = betreuungOptional.get();
-		Set<BetreuungspensumAbweichung> toStore = converter.betreuungspensumAbweichungenToEntity(abweichungenJAXP,
+		Set<BetreuungspensumAbweichung> toStore = converter.betreuungspensumAbweichungenToEntity(betreuungJax.getBetreuungspensumAbweichungen(),
 			betreuung.getBetreuungspensumAbweichungen());
+
+		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
 
 		betreuung.setBetreuungspensumAbweichungen(toStore);
 
 		betreuungService.saveBetreuung(betreuung, false);
 
+		return converter.betreuungspensumAbweichungenToJax(betreuung);
+	}
+
+	@ApiOperation(value = "Gibt für jeden Monat in einer Gesuchsperiode eine BetreuungspensumAbweichung zurück.",
+		response =
+		Collection.class)
+	@GET
+	@Path("/betreuung/abweichungen/{betreuungId}/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<JaxBetreuungspensumAbweichung> findBetreuungspensumAbweichungen(
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(betreuungId);
+		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(betreuungId.getId());
+
+		if (!betreuungOptional.isPresent()) {
+			return null;
+		}
+
+		Betreuung betreuung = betreuungOptional.get();
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 

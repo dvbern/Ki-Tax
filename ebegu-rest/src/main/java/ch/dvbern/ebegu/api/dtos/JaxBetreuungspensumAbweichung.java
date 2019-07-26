@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.PensumUnits;
 
 /**
  * DTO fuer Daten des Betreuungspensum

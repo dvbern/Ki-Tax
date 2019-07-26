@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -115,6 +116,9 @@ public final class Constants {
 	public static final int DAYS_BEFORE_INSTITUTION_CHECK = 100;
 
 	public static final String UNKNOWN_INSTITUTION_NAME = "";
+
+	public static final BigDecimal KITA_MULTIPLIER = new BigDecimal(0.2);
+	public static final BigDecimal TAGESELTERN_MULTIPLIER = new BigDecimal(2.2);
 
 	private Constants() {
 		//this prevents even the native class from

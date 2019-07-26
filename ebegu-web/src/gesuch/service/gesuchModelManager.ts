@@ -769,13 +769,6 @@ export default class GesuchModelManager {
         return listResult;
     }
 
-    public saveAbweichungen(
-        betreuungToSave: TSBetreuung,
-    ): IPromise<TSBetreuung> {
-        const kindId = this.getKindToWorkWith().id;
-        return this.doSaveBetreuung(betreuungToSave, null, kindId, false);
-    }
-
     public saveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,

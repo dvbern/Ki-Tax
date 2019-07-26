@@ -2159,13 +2159,6 @@ public class JaxBConverter extends AbstractConverter {
 		);
 		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
-		betreuung.setBetreuungspensumAbweichungen(betreuungspensumAbweichungenToEntity(
-			betreuungJAXP.getBetreuungspensumAbweichungen(),
-			betreuung.getBetreuungspensumAbweichungen()
-		));
-		setBetreuungInbetreuungsAbweichungen(betreuung.getBetreuungspensumAbweichungen(), betreuung);
-
-
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
 			betreuungJAXP.getErweiterteBetreuungContainer(),
 			betreuung.getErweiterteBetreuungContainer()
@@ -2343,6 +2336,13 @@ public class JaxBConverter extends AbstractConverter {
 		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
+	public void setBetreuungInbetreuungsAbweichungen(
+		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
+		final Betreuung betreuung) {
+
+		betreuungspensumAbweichungen.forEach(c -> c.setBetreuung(betreuung));
+	}
+
 	private void setBetreuungInbetreuungsPensumContainers(
 		final Set<BetreuungspensumContainer> betreuungspensumContainers,
 		final Betreuung betreuung) {
@@ -2350,12 +2350,6 @@ public class JaxBConverter extends AbstractConverter {
 		betreuungspensumContainers.forEach(c -> c.setBetreuung(betreuung));
 	}
 
-	private void setBetreuungInbetreuungsAbweichungen(
-		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
-		final Betreuung betreuung) {
-
-		betreuungspensumAbweichungen.forEach(c -> c.setBetreuung(betreuung));
-	}
 
 	private void setBetreuungInAbwesenheiten(
 		final Set<AbwesenheitContainer> abwesenheiten,
@@ -2587,8 +2581,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
 		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
 		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
-
-		jaxBetreuung.setBetreuungspensumAbweichungen(betreuungspensumAbweichungenToJax(betreuungFromServer));
 
 		return jaxBetreuung;
 	}

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.converter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -39,6 +40,7 @@ import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
@@ -212,9 +214,11 @@ public class AbstractConverter {
 		BetreuungspensumAbweichung pensumEntity) {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
-		pensumEntity.setPensum(jaxPensum.getPensum());
 		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+		BigDecimal p = jaxPensum.getPensum() == null ? null :
+			jaxPensum.getPensum().divide(pensumEntity.getPensumMultipier());
+		jaxPensum.setPensum(p);
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
@@ -271,7 +275,10 @@ public class AbstractConverter {
 		JaxBetreuungspensumAbweichung jaxPensum) {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-		jaxPensum.setPensum(pensum.getPensum());
+
+		BigDecimal p = pensum.getPensum() == null ? null : pensum.getPensum().multiply(pensum.getPensumMultipier());
+		jaxPensum.setPensum(p);
+
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}

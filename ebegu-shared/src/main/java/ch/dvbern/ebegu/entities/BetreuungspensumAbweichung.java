@@ -32,6 +32,8 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -125,5 +127,14 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 			break;
 		}
 		return target;
+	}
+
+
+
+	public BigDecimal getPensumMultipier() {
+		if(getUnitForDisplay() == PensumUnits.DAYS) {
+			return Constants.KITA_MULTIPLIER;
+		}
+		return Constants.TAGESELTERN_MULTIPLIER;
 	}
 }

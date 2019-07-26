@@ -1653,6 +1653,9 @@ export default class EbeguRestUtil {
             });
         }
 
+        restBetreuung.betreuungspensumAbweichungen =
+            this.betreuungspensumAbweichungenToRestObject(betreuung.betreuungspensumAbweichungen, {});
+
         if (betreuung.abwesenheitContainers) {
             restBetreuung.abwesenheitContainers = [];
             betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
@@ -1678,7 +1681,8 @@ export default class EbeguRestUtil {
         return restBetreuung;
     }
 
-    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[], restAbweichungen: any): TSBetreuungspensumAbweichung[] {
+    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[],
+                                                    restAbweichungen: any): TSBetreuungspensumAbweichung[] {
         if (abweichungen) {
             restAbweichungen = [];
             // only send Abweichungen with actual Abweichungen

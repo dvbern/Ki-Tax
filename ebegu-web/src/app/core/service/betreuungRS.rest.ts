@@ -154,12 +154,18 @@ export default class BetreuungRS {
 
     public saveAbweichungen(
         betreuung: TSBetreuung,
-        abweichungen: TSBetreuungspensumAbweichung[],
     ): IPromise<Array<TSBetreuungspensumAbweichung>> {
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        const url = `${this.serviceURL}/betreuung/abweichungen/${encodeURIComponent(betreuung.id)}/`;
+        return this.http.put(url, restBetreuung)
+            .then(response => this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data));
+    }
 
-        const restAbweichungen = this.ebeguRestUtil.betreuungspensumAbweichungenToRestObject(abweichungen, {});
-        const url = `${this.serviceURL}/betreuung/abweichung/${encodeURIComponent(betreuung.id)}`;
-        return this.http.put(url, restAbweichungen)
+    public loadAbweichungen(
+        betreuungId: string,
+    ): IPromise<Array<TSBetreuungspensumAbweichung>> {
+        const url = `${this.serviceURL}/betreuung/abweichungen/${encodeURIComponent(betreuungId)}/`;
+        return this.http.get(url)
             .then(response => this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data));
     }
 
