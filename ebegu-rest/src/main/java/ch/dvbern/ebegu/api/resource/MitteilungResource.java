@@ -564,6 +564,7 @@ public class MitteilungResource {
 		BigDecimal kosten = abweichung.getMonatlicheBetreuungskosten() == null ? abweichung.getOriginalKostenMerged() :
 			abweichung.getMonatlicheBetreuungskosten();
 
+		mitteilungPensum.setUnitForDisplay(abweichung.getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
 		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
 
@@ -571,7 +572,9 @@ public class MitteilungResource {
 		// attach it to the BetreuungsmitteilungPensum
 		if (!abweichung.isNew()) {
 			mitteilungPensum.setBetreuungspensumAbweichung(abweichung);
-			abweichung.setStatus(BetreuungspensumAbweichungStatus.VERRECHNET);
+			if (abweichung.getStatus() != BetreuungspensumAbweichungStatus.VERFUEGT) {
+				abweichung.setStatus(BetreuungspensumAbweichungStatus.VERRECHNET);
+			}
 		}
 
 		return mitteilungPensum;

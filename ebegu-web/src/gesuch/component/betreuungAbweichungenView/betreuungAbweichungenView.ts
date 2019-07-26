@@ -22,6 +22,7 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
@@ -31,7 +32,6 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ILogService = angular.ILogService;
@@ -136,7 +136,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getFormattedDate(abweichung: TSBetreuungspensumAbweichung) {
-        return `${abweichung.gueltigkeit.gueltigAb.month() + 1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
+        return `${abweichung.gueltigkeit.gueltigAb.month() +1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
     }
 
     public updateStatus(index: number): void {
@@ -236,5 +236,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public isPensumRequired(index: number) {
         const a = this.getAbweichung(index);
         return a.monatlicheBetreuungskosten && a.monatlicheBetreuungskosten >= 0 && !a.pensum;
+    }
+
+    public getInputFormatTitle(): string {
+        return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+            ? this.$translate.instant('DAYS')
+            : this.$translate.instant('HOURS');
     }
 }

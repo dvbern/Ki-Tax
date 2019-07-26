@@ -254,9 +254,11 @@ export default class MitteilungRS {
                 }
                 const multiplier = betreuungspensum.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
 
-                const pensumPercentage = betreuungspensum.pensum ? betreuungspensum.pensum / multiplier : undefined;
+                const pensumPercentage = betreuungspensum.pensum
+                    ? Number((betreuungspensum.pensum / multiplier).toFixed(2))
+                    : undefined;
                 const originalPensumPercentage = betreuungspensum.originalPensumMerged
-                    ? betreuungspensum.originalPensumMerged / multiplier
+                    ? Number((betreuungspensum.originalPensumMerged / multiplier).toFixed(2))
                     : undefined;
                 const defaultDateFormat = 'DD.MM.YYYY';
                 const datumAb = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigAb, defaultDateFormat);
