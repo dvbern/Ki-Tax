@@ -1609,6 +1609,6 @@
     "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
     "MANDANT_AMT": "Sozialamt",
     "ABWEICHUNGEN_MELDEN": "Abweichungen melden",
-    "ABWEICHUNGEN_HELP": "Auf dieser Eingabemaske können Sie für {{vorname}} {{name}} Abweichungen zum vertraglich definierten Betreuungspensum der Institution {{institution}} erfassen und freigeben. Die einmal erfassten Werte bleiben bis zur Freigabe zwischengespeichert. Erst durch die Freigabe, werden die Daten der Gemeinde gesendet. Die Gemeinde wird die Änderungen dann prüfen und einen angepassten Betreuungsgutschein ausstellen.",
+    "ABWEICHUNGEN_HELP": "Auf dieser Eingabemaske können Sie für {{vorname}} {{name}} Abweichungen zum vertraglich definierten Betreuungspensum der Institution {{institution}} erfassen und freigeben. Die einmal erfassten Werte bleiben bis zur Freigabe zwischengespeichert. Erst durch die Freigabe, werden die Daten an die Gemeinde gesendet. Die Gemeinde wird die Änderungen dann prüfen und einen angepassten Betreuungsgutschein ausstellen.",
     "MONTH": "Monat"
 }

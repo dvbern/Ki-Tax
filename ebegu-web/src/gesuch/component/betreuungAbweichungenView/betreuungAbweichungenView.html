@@ -74,6 +74,7 @@
                                    ng-model="vm.getAbweichung($index).pensum"
                                    class="form-control  dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
+                                   ng-required="{{vm.isPensumRequired($index)}}"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    step="0.25"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
@@ -86,6 +87,7 @@
                                    ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
                                    dv-max-length class="form-control dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
+                                   ng-required="{{vm.isKostenRequired($index)}}"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).originalKostenMerged}}">
                         </td>

@@ -117,9 +117,6 @@ public final class Constants {
 
 	public static final String UNKNOWN_INSTITUTION_NAME = "";
 
-	public static final BigDecimal KITA_MULTIPLIER = new BigDecimal(0.2);
-	public static final BigDecimal TAGESELTERN_MULTIPLIER = new BigDecimal(2.2);
-
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :

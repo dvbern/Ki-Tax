@@ -128,13 +128,4 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 		}
 		return target;
 	}
-
-
-
-	public BigDecimal getPensumMultipier() {
-		if(getUnitForDisplay() == PensumUnits.DAYS) {
-			return Constants.KITA_MULTIPLIER;
-		}
-		return Constants.TAGESELTERN_MULTIPLIER;
-	}
 }

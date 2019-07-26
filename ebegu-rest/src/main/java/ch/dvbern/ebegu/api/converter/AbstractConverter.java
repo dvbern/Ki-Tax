@@ -216,9 +216,7 @@ public class AbstractConverter {
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
-		BigDecimal p = jaxPensum.getPensum() == null ? null :
-			jaxPensum.getPensum().divide(pensumEntity.getPensumMultipier());
-		jaxPensum.setPensum(p);
+		pensumEntity.setPensum(jaxPensum.getPensum());
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
@@ -276,9 +274,7 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 
-		BigDecimal p = pensum.getPensum() == null ? null : pensum.getPensum().multiply(pensum.getPensumMultipier());
-		jaxPensum.setPensum(p);
-
+		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}

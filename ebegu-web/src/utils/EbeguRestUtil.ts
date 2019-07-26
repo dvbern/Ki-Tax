@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import TSDokumenteDTO from '../models/dto/TSDokumenteDTO';
 import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSituationResultateDTO';
 import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
@@ -116,7 +117,6 @@ import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import TSLand from '../models/types/TSLand';
 import DateUtil from './DateUtil';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 
 export default class EbeguRestUtil {
 
@@ -1714,6 +1714,16 @@ export default class EbeguRestUtil {
 
         restAbweichung.status = abweichung.status;
 
+        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+        const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
+        const originalPensum = restAbweichung.originalPensumMerged
+            ? restAbweichung.originalPensumMerged / multiplier
+            : undefined;
+
+        restAbweichung.originalPensumMerged = originalPensum;
+        restAbweichung.pensum = pensum;
+
         return restAbweichung;
     }
 
@@ -1831,8 +1841,18 @@ export default class EbeguRestUtil {
         this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.originalKostenMerged = abweichungFromServer.originalKostenMerged;
-        abweichungTS.originalPensumMerged = abweichungFromServer.originalPensumMerged;
-        abweichungTS.pensum = abweichungFromServer.pensum;
+
+        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+        const pensum = abweichungFromServer.pensum
+            ? Number((abweichungFromServer.pensum * multiplier).toFixed(2))
+            : undefined;
+        const originalPensum = abweichungFromServer.originalPensumMerged
+            ? Number((abweichungFromServer.originalPensumMerged * multiplier).toFixed(2))
+            : undefined;
+
+        abweichungTS.originalPensumMerged = originalPensum;
+        abweichungTS.pensum = pensum;
 
         return abweichungTS;
     }

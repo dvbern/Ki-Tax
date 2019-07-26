@@ -17,6 +17,7 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
@@ -25,6 +26,7 @@ import TSMitteilung from '../../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresultDTO';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../constants/CONSTANTS';
 import ITranslateService = angular.translate.ITranslateService;
 
 export default class MitteilungRS {
@@ -250,6 +252,12 @@ export default class MitteilungRS {
                 if (i > 1) {
                     message += '\n';
                 }
+                const multiplier = betreuungspensum.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+                const pensumPercentage = betreuungspensum.pensum ? betreuungspensum.pensum / multiplier : undefined;
+                const originalPensumPercentage = betreuungspensum.originalPensumMerged
+                    ? betreuungspensum.originalPensumMerged / multiplier
+                    : undefined;
                 const defaultDateFormat = 'DD.MM.YYYY';
                 const datumAb = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigAb, defaultDateFormat);
                 let datumBis = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigBis, defaultDateFormat);
@@ -259,9 +267,9 @@ export default class MitteilungRS {
                     datumBis :
                     DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
 
-                const pensum = betreuungspensum.pensum
-                    ? betreuungspensum.pensum
-                    : betreuungspensum.originalPensumMerged;
+                const pensum = pensumPercentage
+                    ? pensumPercentage
+                    : originalPensumPercentage;
                 const kosten = betreuungspensum.monatlicheBetreuungskosten
                     ? betreuungspensum.monatlicheBetreuungskosten
                     : betreuungspensum.originalKostenMerged;

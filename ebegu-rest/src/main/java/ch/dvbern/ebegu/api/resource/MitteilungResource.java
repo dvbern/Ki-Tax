@@ -530,7 +530,6 @@ public class MitteilungResource {
 		createMutationsmeldung(mitteilung, betreuung);
 
 		mitteilungService.sendBetreuungsmitteilung(mitteilung);
-//		betreuungService.saveBetreuung(betreuung, false);
 
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}

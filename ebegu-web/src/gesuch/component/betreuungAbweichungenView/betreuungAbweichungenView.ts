@@ -18,13 +18,11 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import BetreuungRS from '../../../app/core/service/betreuungRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
-import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
@@ -65,7 +63,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         'BetreuungRS',
         '$log',
         'EinstellungRS',
-        'GlobalCacheService',
         '$timeout',
         '$translate',
     ];
@@ -91,7 +88,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         private readonly betreuungRS: BetreuungRS,
         private readonly $log: ILogService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
     ) {
@@ -121,7 +117,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             this.$log.error('There is no kind available with kind-number:' + this.$stateParams.kindNumber);
         }
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
-        this.betreuungRS.loadAbweichungen(this.model.id).then( data => {
+        this.betreuungRS.loadAbweichungen(this.model.id).then(data => {
             this.model.betreuungspensumAbweichungen = data;
         })
     }
@@ -142,30 +138,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public getFormattedDate(abweichung: TSBetreuungspensumAbweichung) {
         return `${abweichung.gueltigkeit.gueltigAb.month() + 1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
     }
-
-    // private percentageToEffective(abweichung: TSBetreuungspensumAbweichung) {
-    //     const multiplier = abweichung.unitForDisplay === TSPensumUnits.DAYS
-    //         ? MULTIPLIER_KITA
-    //         : MULTIPLIER_TAGESFAMILIEN;
-    //     if (abweichung.pensum) {
-    //         abweichung.pensum = Number((abweichung.pensum * multiplier).toFixed(2));
-    //     }
-    //     if (abweichung.originalPensumMerged) {
-    //         abweichung.originalPensumMerged = Number((abweichung.originalPensumMerged * multiplier).toFixed(2));
-    //     }
-    // }
-    //
-    // private effectiveToPercentage(abweichung: TSBetreuungspensumAbweichung) {
-    //     const multiplier = abweichung.unitForDisplay === TSPensumUnits.DAYS
-    //         ? MULTIPLIER_KITA
-    //         : MULTIPLIER_TAGESFAMILIEN;
-    //     if (abweichung.pensum) {
-    //         abweichung.pensum = Number((abweichung.pensum / multiplier));
-    //     }
-    //     if (abweichung.originalPensumMerged) {
-    //         abweichung.originalPensumMerged = Number((abweichung.originalPensumMerged / multiplier));
-    //     }
-    // }
 
     public updateStatus(index: number): void {
         const abweichung = this.getAbweichung(index);
@@ -199,7 +171,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
 
         this.betreuungRS.saveAbweichungen(this.model).then((result) => {
-            // TODO KIBON-621: Umrechnung sollte auf Server stattfinden um Datenkonistenz zu gewährleisten
             this.model.betreuungspensumAbweichungen = result;
         });
     }
@@ -215,8 +186,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         const abweichung = this.getAbweichung(index);
 
         return (abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
-                || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT);
-            // || !this.gesuchModelManager.isNeuestesGesuch());
+            || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT);
+        // || !this.gesuchModelManager.isNeuestesGesuch());
     }
 
     public isAbweichungAllowed(): boolean {
@@ -225,20 +196,45 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public isFreigabeAllowed(): boolean {
         return this.isAbweichungAllowed()
-            // && this.hasAbweichungInStatus(TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN);
+            && this.hasAbweichungInStatus(TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN)
+            && !this.isDirty();
     }
 
     public hasAbweichungInStatus(status: TSBetreuungspensumAbweichungStatus): boolean {
-        return angular.copy(this.model.betreuungspensumAbweichungen).filter(a => {
-            a.status === status
-        }).length > 0;
+        for (let a of this.model.betreuungspensumAbweichungen) {
+            if (a.status === status) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public isDirty(): boolean {
+        for (let a of this.model.betreuungspensumAbweichungen) {
+            if (a.isNew() && a.status === TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public getHelpText(): string {
         return this.$translate.instant('ABWEICHUNGEN_HELP',
-            { vorname: this.kindModel.kindJA.vorname,
+            {
+                vorname: this.kindModel.kindJA.vorname,
                 name: this.kindModel.kindJA.nachname,
                 institution: this.institution
-        });
+            });
+    }
+
+    public isKostenRequired(index: number) {
+        const a = this.getAbweichung(index);
+        return a.pensum && a.pensum >= 0 && !a.monatlicheBetreuungskosten;
+    }
+
+
+    public isPensumRequired(index: number) {
+        const a = this.getAbweichung(index);
+        return a.monatlicheBetreuungskosten && a.monatlicheBetreuungskosten >= 0 && !a.pensum;
     }
 }
