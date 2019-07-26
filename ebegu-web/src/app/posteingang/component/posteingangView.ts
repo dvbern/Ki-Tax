@@ -135,6 +135,6 @@ export class PosteingangViewController implements IController {
     }
 
     public showBgOrTS(): boolean {
-        return this.authServiceRS.getPrincipal().mandant.angebotTS;
+        return this.authServiceRS.hasMandantAngebotTS();
     }
 }

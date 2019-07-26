@@ -210,7 +210,7 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
-        const tsEnabledForMandant = this.authServiceRS.getPrincipal().mandant.angebotTS;
+        const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
         return tsEnabledForMandant && periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG

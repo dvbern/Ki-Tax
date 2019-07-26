@@ -78,7 +78,7 @@ export class EditGemeindeComponent implements OnInit {
 
         this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
 
-        this.tageschuleEnabledForMandant = this.authServiceRS.getPrincipal().mandant.angebotTS;
+        this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
 
         this.loadStammdaten();
     }

@@ -88,9 +88,21 @@ export class AddGemeindeComponent implements OnInit {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this.gesuchsperiodeList = response;
         });
-        this.tageschuleEnabledForMandant = this.authServiceRS.getPrincipal().mandant.angebotTS;
+        this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+
+        this.initializeFlags();
+    }
+
+    /**
+     * Das Tagesschule-Flag des Mandanten ist noch nicht aktiv: Die Auswahl der Angebote für die neue Gemeinde
+     * erscheint nicht, wir setzen fix auf BG=true, den Rest false
+     */
+    private initializeFlags(): void {
+        // tslint:disable-next-line:early-exit
         if (!this.tageschuleEnabledForMandant) {
             this.gemeinde.angebotBG = true;
+            this.gemeinde.angebotTS = false;
+            this.gemeinde.angebotFI = false;
         }
     }
 

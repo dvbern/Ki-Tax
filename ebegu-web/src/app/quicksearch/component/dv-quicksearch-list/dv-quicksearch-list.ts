@@ -231,6 +231,6 @@ export class DVQuicksearchListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipal().mandant.angebotTS;
+        return this.authServiceRS.hasMandantAngebotTS();
     }
 }

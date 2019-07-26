@@ -176,6 +176,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipal().mandant.angebotTS;
+        return this.authServiceRS.hasMandantAngebotTS();
     }
 }

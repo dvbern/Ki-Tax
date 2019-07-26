@@ -316,6 +316,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipal().mandant.angebotTS;
+        return this.authServiceRS.hasMandantAngebotTS();
     }
 }
