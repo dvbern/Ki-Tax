@@ -17,7 +17,6 @@
 
 import {TSBetreuungspensumAbweichungStatus} from './enums/TSBetreuungspensumAbweichungStatus';
 import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
-import TSBetreuungspensum from './TSBetreuungspensum';
 
 export default class TSBetreuungspensumAbweichung extends TSAbstractDecimalPensumEntity {
 

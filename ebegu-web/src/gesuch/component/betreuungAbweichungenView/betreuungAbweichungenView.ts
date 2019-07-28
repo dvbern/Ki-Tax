@@ -119,7 +119,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
         this.betreuungRS.loadAbweichungen(this.model.id).then(data => {
             this.model.betreuungspensumAbweichungen = data;
-        })
+        });
     }
 
     public getKindModel(): TSKindContainer {
@@ -135,16 +135,16 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         return undefined;
     }
 
-    public getFormattedDate(abweichung: TSBetreuungspensumAbweichung) {
-        return `${abweichung.gueltigkeit.gueltigAb.month() +1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
+    public getFormattedDate(abweichung: TSBetreuungspensumAbweichung): string {
+        return `${abweichung.gueltigkeit.gueltigAb.month() + 1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
     }
 
     public updateStatus(index: number): void {
         const abweichung = this.getAbweichung(index);
         abweichung.status = TSBetreuungspensumAbweichungStatus.NONE;
 
-        if (abweichung.pensum != null && abweichung.pensum >= 0
-            && abweichung.monatlicheBetreuungskosten != null
+        if (abweichung.pensum !== null && abweichung.pensum >= 0
+            && abweichung.monatlicheBetreuungskosten !== null
             && abweichung.monatlicheBetreuungskosten >= 0) {
             abweichung.status = TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN;
         }
@@ -170,7 +170,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             return;
         }
 
-        this.betreuungRS.saveAbweichungen(this.model).then((result) => {
+        this.betreuungRS.saveAbweichungen(this.model).then(result => {
             this.model.betreuungspensumAbweichungen = result;
         });
     }
@@ -203,7 +203,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public hasAbweichungInStatus(status: TSBetreuungspensumAbweichungStatus): boolean {
-        for (let a of this.model.betreuungspensumAbweichungen) {
+        for (const a of this.model.betreuungspensumAbweichungen) {
             if (a.status === status) {
                 return true;
             }
@@ -212,7 +212,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public isDirty(): boolean {
-        for (let a of this.model.betreuungspensumAbweichungen) {
+        for (const a of this.model.betreuungspensumAbweichungen) {
             if (a.isNew() && a.status === TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
                 return true;
             }
@@ -229,9 +229,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             });
     }
 
-    public isRequired(index: number) {
+    public isRequired(index: number): boolean {
         const a = this.getAbweichung(index);
-        return a.monatlicheBetreuungskosten && a.monatlicheBetreuungskosten >= 0 || a.pensum && a.pensum >= 0;
+        return a.monatlicheBetreuungskosten !== null || a.pensum !== null;
     }
 
     public getInputFormatTitle(): string {

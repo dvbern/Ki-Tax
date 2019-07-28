@@ -265,7 +265,6 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
         gesuch: getGesuchModelManager,
     };
 
-
     public data = {
         roles: TSRoleUtil.getAllRolesButAnonymous(),
     };

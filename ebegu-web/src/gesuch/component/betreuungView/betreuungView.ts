@@ -27,7 +27,6 @@ import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragSta
 import {getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';

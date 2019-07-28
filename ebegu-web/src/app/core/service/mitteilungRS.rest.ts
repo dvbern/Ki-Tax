@@ -242,15 +242,16 @@ export default class MitteilungRS {
      * Erzeugt eine Nachricht mit einem Text mit allen Betreuungspensen inkl. BetreuungspensumAbweichungen der
      * Betreuung.
      */
+    // tslint:disable-next-line:cognitive-complexity
     private createNachrichtForMutationsmeldungFromAbweichung(betreuung: TSBetreuung): string {
         let message = '';
         let i = 1;
 
-        betreuung.betreuungspensumAbweichungen.filter(a => {
+        const abweichungen = betreuung.betreuungspensumAbweichungen.filter(a => {
             return !a.isNew();
         });
 
-        betreuung.betreuungspensumAbweichungen.forEach(betreuungspensum => {
+        abweichungen.forEach(betreuungspensum => {
             if (betreuungspensum) {
                 // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
                 if (i > 1) {
@@ -280,7 +281,6 @@ export default class MitteilungRS {
                     ? betreuungspensum.monatlicheBetreuungskosten
                     : betreuungspensum.originalKostenMerged;
 
-
                 message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
                     num: i,
                     von: datumAb,
@@ -307,7 +307,6 @@ export default class MitteilungRS {
         });
         return pensen;
     }
-
 
     public abweichungenFreigeben(betreuung: TSBetreuung, dossier: TSDossier): IPromise<any> {
         const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, true);
