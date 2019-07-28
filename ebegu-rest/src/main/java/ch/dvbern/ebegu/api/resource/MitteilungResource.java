@@ -527,57 +527,8 @@ public class MitteilungResource {
 		Betreuungsmitteilung mitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP,
 			new Betreuungsmitteilung());
 
-		createMutationsmeldung(mitteilung, betreuung);
-
-		mitteilungService.sendBetreuungsmitteilung(mitteilung);
+		mitteilungService.createMutationsmeldungAbweichungen(mitteilung, betreuung);
 
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
-
-	private void createMutationsmeldung(@Nonnull Betreuungsmitteilung mitteilung,
-		@Nonnull Betreuung betreuung) {
-
-		// convert BetreuungspensumAbweichung to MitteilungPensum
-		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
-		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
-			.stream()
-			// TODO KIBON-621 Reviewer: bessere Idee?
-			.filter(abweichung -> (abweichung.getPensum() != null || abweichung.getOriginalPensumMerged() != null)
-				&& (abweichung.getMonatlicheBetreuungskosten() != null || abweichung.getOriginalKostenMerged() != null) )
-			.map(abweichung -> convertAbweichungToMitteilungPensum(mitteilung, abweichung))
-			.collect(Collectors.toSet());
-
-		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
-	}
-
-	private BetreuungsmitteilungPensum convertAbweichungToMitteilungPensum(@Nonnull Betreuungsmitteilung mitteilung,
-		@Nonnull BetreuungspensumAbweichung abweichung) {
-		BetreuungsmitteilungPensum mitteilungPensum = new BetreuungsmitteilungPensum();
-		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
-		mitteilungPensum.setGueltigkeit(abweichung.getGueltigkeit());
-
-		// TODO KIBON-621 Reviewer: bessere Idee?
-		BigDecimal pensum = abweichung.getPensum() == null ? abweichung.getOriginalPensumMerged() :
-			abweichung.getPensum();
-
-		// TODO KIBON-621 Reviewer: bessere Idee?
-		BigDecimal kosten = abweichung.getMonatlicheBetreuungskosten() == null ? abweichung.getOriginalKostenMerged() :
-			abweichung.getMonatlicheBetreuungskosten();
-
-		mitteilungPensum.setUnitForDisplay(abweichung.getUnitForDisplay());
-		mitteilungPensum.setPensum(pensum);
-		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
-
-		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
-		// attach it to the BetreuungsmitteilungPensum
-		if (!abweichung.isNew()) {
-			mitteilungPensum.setBetreuungspensumAbweichung(abweichung);
-			if (abweichung.getStatus() != BetreuungspensumAbweichungStatus.VERFUEGT) {
-				abweichung.setStatus(BetreuungspensumAbweichungStatus.VERRECHNET);
-			}
-		}
-
-		return mitteilungPensum;
-	}
-
 }

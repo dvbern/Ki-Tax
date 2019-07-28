@@ -246,6 +246,10 @@ export default class MitteilungRS {
         let message = '';
         let i = 1;
 
+        betreuung.betreuungspensumAbweichungen.filter(a => {
+            return !a.isNew();
+        });
+
         betreuung.betreuungspensumAbweichungen.forEach(betreuungspensum => {
             if (betreuungspensum) {
                 // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
@@ -275,6 +279,7 @@ export default class MitteilungRS {
                 const kosten = betreuungspensum.monatlicheBetreuungskosten
                     ? betreuungspensum.monatlicheBetreuungskosten
                     : betreuungspensum.originalKostenMerged;
+
 
                 message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
                     num: i,

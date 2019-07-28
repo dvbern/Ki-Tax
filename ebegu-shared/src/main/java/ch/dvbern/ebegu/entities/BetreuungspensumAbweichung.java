@@ -128,4 +128,33 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 		}
 		return target;
 	}
+
+	public BetreuungsmitteilungPensum convertAbweichungToMitteilungPensum(@Nonnull Betreuungsmitteilung mitteilung) {
+		BetreuungsmitteilungPensum mitteilungPensum = new BetreuungsmitteilungPensum();
+		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
+		mitteilungPensum.setGueltigkeit(getGueltigkeit());
+
+		// TODO KIBON-621 Reviewer: bessere Idee?
+		BigDecimal pensum = getPensum() == null ? getOriginalPensumMerged() :
+			getPensum();
+
+		// TODO KIBON-621 Reviewer: bessere Idee?
+		BigDecimal kosten = getMonatlicheBetreuungskosten() == null ? getOriginalKostenMerged() :
+			getMonatlicheBetreuungskosten();
+
+		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
+		mitteilungPensum.setPensum(pensum);
+		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
+
+		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
+		// attach it to the BetreuungsmitteilungPensum
+		if (!isNew()) {
+			mitteilungPensum.setBetreuungspensumAbweichung(this);
+			if (getStatus() != BetreuungspensumAbweichungStatus.VERFUEGT) {
+				setStatus(BetreuungspensumAbweichungStatus.VERRECHNET);
+			}
+		}
+
+		return mitteilungPensum;
+	}
 }

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -28,6 +29,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -69,6 +71,7 @@ import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
@@ -851,6 +854,28 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 
 		return persistence.merge(mitteilung);
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
+	public void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Betreuung betreuung) {
+
+		// convert BetreuungspensumAbweichung to MitteilungPensum
+		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
+		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
+			.stream()
+			// TODO KIBON-621 Reviewer: bessere Idee?
+			.filter(abweichung -> (abweichung.getPensum() != null || abweichung.getOriginalPensumMerged() != null)
+				&& (abweichung.getMonatlicheBetreuungskosten() != null || abweichung.getOriginalKostenMerged() != null) )
+			.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
+			.collect(Collectors.toSet());
+
+		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
+
+		sendBetreuungsmitteilung(mitteilung);
 	}
 
 	@Nonnull

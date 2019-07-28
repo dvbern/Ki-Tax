@@ -176,9 +176,12 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public freigeben(): void {
+        if (!this.isGesuchValid()) {
+            return;
+        }
         this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier())
-            .then(response => {
-                this.model.betreuungspensumAbweichungen = response;
+            .then(result => {
+                this.model.betreuungspensumAbweichungen = result;
             });
     }
 
@@ -187,7 +190,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         return (abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
             || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT);
-        // || !this.gesuchModelManager.isNeuestesGesuch());
     }
 
     public isAbweichungAllowed(): boolean {
@@ -227,15 +229,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             });
     }
 
-    public isKostenRequired(index: number) {
+    public isRequired(index: number) {
         const a = this.getAbweichung(index);
-        return a.pensum && a.pensum >= 0 && !a.monatlicheBetreuungskosten;
-    }
-
-
-    public isPensumRequired(index: number) {
-        const a = this.getAbweichung(index);
-        return a.monatlicheBetreuungskosten && a.monatlicheBetreuungskosten >= 0 && !a.pensum;
+        return a.monatlicheBetreuungskosten && a.monatlicheBetreuungskosten >= 0 || a.pensum && a.pensum >= 0;
     }
 
     public getInputFormatTitle(): string {
