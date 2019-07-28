@@ -17,12 +17,9 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
 import * as moment from 'moment';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
@@ -66,7 +63,6 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
-const LOG = LogFactory.createLog('BetreuungViewController');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -129,10 +125,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
-    public provPensum: number;
-
-    private _tageschuleEnabledForMandant: boolean;
-    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly $state: StateService,
@@ -239,18 +231,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 });
         });
 
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err)
-            );
-    }
-
-    public $onDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     /**
@@ -596,7 +576,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const tsConfigured = gesuchsperiode && gesuchsperiode.hasTagesschulenAnmeldung();
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-                this._tageschuleEnabledForMandant, tsConfigured);
+                this.gesuchModelManager.isTagesschulangebotEnabled(),
+                tsConfigured,
+                this.gesuchModelManager.getGemeinde());
+
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
     }
 

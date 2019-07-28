@@ -692,6 +692,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt();
 	}
 
+	@Override
+	public String getMessageForAccessException() {
+		return "bgNummer: " + this.getBGNummer()
+			+ ", gesuchInfo: " + this.extractGesuch().getMessageForAccessException();
+	}
+
 
 	public List<BetreuungspensumAbweichung> fillAbweichungen() {
 		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen();

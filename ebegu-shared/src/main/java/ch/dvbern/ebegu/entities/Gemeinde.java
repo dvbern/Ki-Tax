@@ -90,6 +90,15 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Nonnull
 	private LocalDate betreuungsgutscheineStartdatum;
 
+	@Column(nullable = false)
+	private boolean angebotBG = false;
+
+	@Column(nullable = false)
+	private boolean angebotTS = false;
+
+	@Column(nullable = false)
+	private boolean angebotFI = false;
+
 
 	public Mandant getMandant() {
 		return mandant;
@@ -141,6 +150,30 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	public void setBetreuungsgutscheineStartdatum(@Nonnull LocalDate betreuungsgutscheineStartdatum) {
 		this.betreuungsgutscheineStartdatum = betreuungsgutscheineStartdatum;
+	}
+
+	public boolean isAngebotBG() {
+		return angebotBG;
+	}
+
+	public void setAngebotBG(boolean angebotBG) {
+		this.angebotBG = angebotBG;
+	}
+
+	public boolean isAngebotTS() {
+		return angebotTS;
+	}
+
+	public void setAngebotTS(boolean angebotTS) {
+		this.angebotTS = angebotTS;
+	}
+
+	public boolean isAngebotFI() {
+		return angebotFI;
+	}
+
+	public void setAngebotFI(boolean angebotFI) {
+		this.angebotFI = angebotFI;
 	}
 
 	@Override

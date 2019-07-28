@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import TSGemeinde from '../TSGemeinde';
+
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
     TAGESFAMILIEN = 'TAGESFAMILIEN',
@@ -23,20 +25,30 @@ export enum TSBetreuungsangebotTyp {
 export function getTSBetreuungsangebotTypValuesForMandant(
     tagesschuleEnabledForMandant: boolean
 ): Array<TSBetreuungsangebotTyp> {
-    return getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-        tagesschuleEnabledForMandant, true);
-}
-
-export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-    tagesschuleEnabledForMandant: boolean, tagesschuleAnmeldungenConfigured: boolean
-): Array<TSBetreuungsangebotTyp> {
     const angebote: Array<TSBetreuungsangebotTyp> = [];
     angebote.push(TSBetreuungsangebotTyp.KITA);
     angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
-    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured) {
+    if (tagesschuleEnabledForMandant) {
+        angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
+        angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
+    }
+    return angebote;
+}
+
+export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+    tagesschuleEnabledForMandant: boolean,
+    tagesschuleAnmeldungenConfigured: boolean,
+    gemeinde: TSGemeinde
+): Array<TSBetreuungsangebotTyp> {
+    const angebote: Array<TSBetreuungsangebotTyp> = [];
+    if (gemeinde.angebotBG) {
+        angebote.push(TSBetreuungsangebotTyp.KITA);
+        angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+    }
+    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-    if (tagesschuleEnabledForMandant) {
+    if (tagesschuleEnabledForMandant && gemeinde.angebotFI) {
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
     }
     return angebote;

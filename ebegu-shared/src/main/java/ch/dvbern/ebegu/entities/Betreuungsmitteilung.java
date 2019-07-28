@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 
 import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilung;
 import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilungDatesOverlapping;
@@ -37,6 +38,7 @@ public class Betreuungsmitteilung extends Mitteilung {
 
 	private static final long serialVersionUID = 489324250868016126L;
 
+	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuungsmitteilung")
 	private Set<BetreuungsmitteilungPensum> betreuungspensen = new TreeSet<>();
 
