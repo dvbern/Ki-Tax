@@ -452,7 +452,6 @@ export class GesuchRouteController implements IController {
             default:
                 break;
         }
-
     }
 
     public gemeindeHasKontingent(): boolean {
