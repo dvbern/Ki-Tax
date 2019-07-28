@@ -23,7 +23,6 @@ import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddGemeindeComponent} from '../add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponent} from '../edit-gemeinde/edit-gemeinde.component';
 import {GemeindeListComponent} from '../gemeinde-list/gemeinde-list.component';
-import {ViewGemeindeComponent} from '../view-gemeinde/view-gemeinde.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -62,14 +61,6 @@ const states: Ng2StateDeclaration[] = [
                 // this parameter is optional: specify a default value
                 value: false,
             },
-        },
-    },
-    {
-        name: 'gemeinde.view',
-        url: '/view/:gemeindeId',
-        component: ViewGemeindeComponent,
-        data: {
-            roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
         },
     },
 ];

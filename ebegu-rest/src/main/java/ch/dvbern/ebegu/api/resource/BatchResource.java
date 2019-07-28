@@ -104,7 +104,7 @@ public class BatchResource {
 	public Response getBatchJobsOfUser() {
 
 		// Fuer Gesuchsteller gibt es keine BatchJobs
-		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			return Response.ok().build();
 		}
 

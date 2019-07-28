@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -95,6 +96,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -700,7 +702,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
 		} catch (EJBTransactionRolledbackException exception) {
-			//Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
+			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
 				throw new EbeguExistingAntragException(
@@ -718,13 +720,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
 				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
 					"applyBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT);
+					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT,
+					neustesGesuch.getId());
 			}
 			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
 				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
 					"applyBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN);
+					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
+					neustesGesuch.getId());
 			}
 			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())
 				&& neustesGesuch.isMutation()) {
@@ -739,11 +745,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				mutation = gesuchService.createGesuch(mutation);
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
-			} else {
-				throw new EbeguRuntimeException(
-					"applyBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN);
 			}
+
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				"applyBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN,
+				neustesGesuch.getId());
 		}
 		return gesuch;
 	}
@@ -751,10 +759,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_TS,
-		SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuungsmitteilung> findNewestBetreuungsmitteilung(@Nonnull String betreuungId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -1282,7 +1288,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			cb.equal(joinEmpfaenger, benutzer)
 		);
 
-		query.select(cb.countDistinct(root.get(Gesuch_.id)))
+		query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
 			.where(predicate);
 
 		Long count = (Long) persistence.getCriteriaSingleResult(query);

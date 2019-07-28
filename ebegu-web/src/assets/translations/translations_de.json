@@ -710,10 +710,6 @@
     "FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION": "Maximales Pensum für Fachstelle sprachliche Integration",
     "FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION": "Minimales Pensum für Fachstelle soziale Integration",
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Minimales Pensum für Fachstelle sprachliche Integration",
-    "TAGESSCHULE_ENABLED_FOR_MANDANT": "Tagesschule aktiviert für Mandant",
-    "BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE": "Betreuungsgutscheine aktiviert für Gemeinde",
-    "TAGESSCHULE_ENABLED_FOR_GEMEINDE": "Tagesschule aktiviert für Gemeinde",
-    "FERIENINSEL_ENABLED_FOR_GEMEINDE": "Ferieninsel aktiviert für Gemeinde",
     "PLATZBESTAETIGUNG": "Platzbestätigung",
     "PLATZBESTAETIGUNG_MUTATION": "Platz mutieren",
     "QUICKSEARCH_ALL_RESULTS": "Alle Resultate (bis zu {{totalNum}} weitere)",
@@ -1431,7 +1427,6 @@
     "HOURS": "Stunden",
     "PER_MONTH": "pro Monat",
     "OR": "oder",
-    "GEMEINDE_STAMMDATEN": "Gemeinde Stammdaten",
     "TRAEGERSCHAFT_STAMMDATEN": "Trägerschaft Stammdaten",
     "KONTAKTADRESSE": "Kontaktadresse",
     "ADRESSE_ANSCHRIFT": "Anschrift",
@@ -1608,5 +1603,10 @@
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
     "FILTER": "Filter",
     "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
-    "MANDANT_AMT": "Sozialamt"
+    "MANDANT_AMT": "Sozialamt",
+    "GEMEINDE_TAB_STAMMDATEN": "Stammdaten",
+    "GEMEINDE_TAB_BG": "Betreuungsgutscheine",
+    "GEMEINDE_TAB_TS": "Tagesschule",
+    "GEMEINDE_TAB_FI": "Ferieninsel",
+    "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Reiter."
 }
