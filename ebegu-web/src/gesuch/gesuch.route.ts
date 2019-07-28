@@ -297,7 +297,6 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
     };
 }
 
-// TODO KIBON-621 only pass necessary arguments in the url
 export class EbeguBetreuungAbweichungenState implements Ng1StateDeclaration {
     public name = 'gesuch.abweichungen';
     public url = '/betreuungen/betreuung/abweichungen/:gesuchId/:kindNumber/:betreuungNumber';

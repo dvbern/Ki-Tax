@@ -20,6 +20,6 @@ package ch.dvbern.ebegu.enums;
 public enum BetreuungspensumAbweichungStatus {
 	NONE, // No BetreuungspensumAbweichung was submitted (yet)
 	NICHT_FREIGEGEBEN, // Mutationsmeldung has not been submitted yet
-	VERRECHNET, // TODO KIBON-621 ????
-	VERFUEGT // Mutationsmeldung is Verfuegt
+	VERRECHNET, // Mutationsmeldung has been submitted
+	VERFUEGT // Mutationsmeldung has been applied
 }

@@ -35,8 +35,6 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	private BetreuungspensumAbweichungStatus status;
 
-	private JaxBetreuung betreuung; // TODO KIBON-621 is this an overkill?
-
 	private BigDecimal originalPensumMerged;
 
 	private BigDecimal originalKostenMerged ;
@@ -47,14 +45,6 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	public void setStatus(BetreuungspensumAbweichungStatus status) {
 		this.status = status;
-	}
-
-	public JaxBetreuung getBetreuung() {
-		return betreuung;
-	}
-
-	public void setBetreuung(JaxBetreuung betreuung) {
-		this.betreuung = betreuung;
 	}
 
 	public BigDecimal getOriginalPensumMerged() {
