@@ -91,8 +91,6 @@ public class BetreuungResource {
 	private ResourceHelper resourceHelper;
 	@Inject
 	private GesuchService gesuchService;
-	@Inject
-	private MitteilungService mitteilungService;
 
 	@ApiOperation(value = "Speichert eine Betreuung in der Datenbank", response = JaxBetreuung.class)
 	@Nonnull

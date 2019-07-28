@@ -522,6 +522,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Betreuung copyBetreuung(@Nonnull Betreuung target, @Nonnull AntragCopyType copyType, @Nonnull KindContainer targetKindContainer, @Nonnull Eingangsart targetEingangsart) {
 		super.copyAbstractEntity(target, copyType);
 
