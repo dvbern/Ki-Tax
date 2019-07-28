@@ -35,7 +35,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.kibon.exchange.commons.ObjectMapperUtil;
+import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spotify.hamcrest.jackson.IsJsonObject;
 import org.junit.Test;

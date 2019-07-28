@@ -38,8 +38,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
-import static ch.dvbern.kibon.exchange.commons.ObjectMapperUtil.MESSAGE_HEADER_EVENT_ID;
-import static ch.dvbern.kibon.exchange.commons.ObjectMapperUtil.MESSAGE_HEADER_EVENT_TYPE;
+import static ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil.MESSAGE_HEADER_EVENT_ID;
+import static ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil.MESSAGE_HEADER_EVENT_TYPE;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Stateless
