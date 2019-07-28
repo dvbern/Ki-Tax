@@ -108,12 +108,11 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		this.pensum = pensum;
 	}
 
-	@Nonnull
 	public BigDecimal getMonatlicheBetreuungskosten() {
 		return monatlicheBetreuungskosten;
 	}
 
-	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
+	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
