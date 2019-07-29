@@ -231,7 +231,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public isRequired(index: number): boolean {
         const a = this.getAbweichung(index);
-        return a.monatlicheBetreuungskosten !== null || a.pensum !== null;
+        return (a.monatlicheBetreuungskosten !== null && a.monatlicheBetreuungskosten  >= 0)
+            || (a.pensum !== null && a.pensum >= 0);
     }
 
     public getInputFormatTitle(): string {

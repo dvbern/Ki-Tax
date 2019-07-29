@@ -1694,6 +1694,7 @@ export default class EbeguRestUtil {
     public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[],
                                                     restAbweichungen: any): TSBetreuungspensumAbweichung[] {
         if (abweichungen) {
+            restAbweichungen = [];
             // only send Abweichungen with actual Abweichungen
             const filteredAbweichungen = abweichungen.filter(element => {
                 return element.pensum !== null && element.monatlicheBetreuungskosten !== null;
