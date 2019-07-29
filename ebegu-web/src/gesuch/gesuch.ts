@@ -100,8 +100,8 @@ export class GesuchRouteController implements IController {
         ) {
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-                this.gesuchModelManager.getDossier().gemeinde,
-                this.gesuchModelManager.getGesuchsperiode(),
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id,
             )
                 .then(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
