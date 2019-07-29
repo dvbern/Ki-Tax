@@ -168,7 +168,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
@@ -667,7 +666,6 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		betreuung.setKeineKesbPlatzierung(true);
 		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		erweiterteBetreuungContainer.setBetreuung(betreuung);
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
@@ -680,7 +678,6 @@ public final class TestDataUtil {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
-		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
 		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		erweitContainer.setBetreuung(betreuung);
@@ -828,9 +825,8 @@ public final class TestDataUtil {
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
 		gesuch.getKindContainers().add(betreuung.getKind());
-		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
+		betreuung.setErweiterteBetreuungContainer(TestDataUtil.createDefaultErweiterteBetreuungContainer());
 		return betreuung;
 	}
 
@@ -1218,6 +1214,7 @@ public final class TestDataUtil {
 		return jaxWizardStep;
 	}
 
+	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
@@ -1268,7 +1265,6 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION, "60", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
-		saveEinstellung(TAGESSCHULE_ENABLED_FOR_MANDANT, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -1712,6 +1708,7 @@ public final class TestDataUtil {
 		ErweiterteBetreuungContainer erwBetContainer = new ErweiterteBetreuungContainer();
 		ErweiterteBetreuung erwBet = new ErweiterteBetreuung();
 		erwBet.setErweiterteBeduerfnisse(false);
+		erwBet.setKeineKesbPlatzierung(true);
 		erwBetContainer.setErweiterteBetreuungJA(erwBet);
 		return erwBetContainer;
 	}

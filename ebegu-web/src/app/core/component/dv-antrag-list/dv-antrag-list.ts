@@ -105,7 +105,6 @@ export class DVAntragListController implements IController {
     public onAdd: () => void;
     public readonly TSRoleUtil = TSRoleUtil;
 
-    private _tageschuleEnabledForMandant: boolean;
     private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
@@ -134,13 +133,6 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err)
-            );
     }
 
     public $onDestroy(): void {
@@ -269,6 +261,6 @@ export class DVAntragListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this._tageschuleEnabledForMandant;
+        return this.authServiceRS.hasMandantAngebotTS();
     }
 }

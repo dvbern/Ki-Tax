@@ -22,6 +22,7 @@ import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
@@ -49,6 +50,10 @@ export class AddGemeindeComponent implements OnInit {
     public unregisteredGemeinden$: Observable<TSBfsGemeinde[]>;
     public selectedUnregisteredGemeinde: TSBfsGemeinde;
 
+    public tageschuleEnabledForMandant: boolean;
+
+    public showMessageKeinAngebotSelected: boolean = false;
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
@@ -56,6 +61,7 @@ export class AddGemeindeComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -82,6 +88,22 @@ export class AddGemeindeComponent implements OnInit {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this.gesuchsperiodeList = response;
         });
+        this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+
+        this.initializeFlags();
+    }
+
+    /**
+     * Das Tagesschule-Flag des Mandanten ist noch nicht aktiv: Die Auswahl der Angebote für die neue Gemeinde
+     * erscheint nicht, wir setzen fix auf BG=true, den Rest false
+     */
+    private initializeFlags(): void {
+        // tslint:disable-next-line:early-exit
+        if (!this.tageschuleEnabledForMandant) {
+            this.gemeinde.angebotBG = true;
+            this.gemeinde.angebotTS = false;
+            this.gemeinde.angebotFI = false;
+        }
     }
 
     public cancel(): void {
@@ -94,7 +116,7 @@ export class AddGemeindeComponent implements OnInit {
         }
 
         this.errorService.clearAll();
-        if (this.isStartDateValid()) {
+        if (this.isAtLeastOneAngebotSelected() && this.isStartDateValid()) {
             this.persistGemeinde();
         }
     }
@@ -109,7 +131,17 @@ export class AddGemeindeComponent implements OnInit {
         }
     }
 
+    private isAtLeastOneAngebotSelected(): boolean {
+        const hasAngebot =
+            this.gemeinde.angebotBG || this.gemeinde.angebotTS || this.gemeinde.angebotFI;
+        this.showMessageKeinAngebotSelected = !hasAngebot;
+        return hasAngebot;
+    }
+
     private isStartDateValid(): boolean {
+        if (!this.gemeinde.angebotBG) {
+            return true;
+        }
         const day = this.gemeinde.betreuungsgutscheineStartdatum.format('D');
         if ('1' !== day) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
@@ -123,7 +155,10 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.gemeinde.betreuungsgutscheineStartdatum, this.adminMail)
+        this.gemeindeRS.createGemeinde(
+            this.gemeinde,
+            this.adminMail
+        )
             .then(neueGemeinde => {
                 this.gemeinde = neueGemeinde;
                 this.navigateBack();

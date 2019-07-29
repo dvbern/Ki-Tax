@@ -107,7 +107,6 @@
     "sass-loader": "^7.0.3",
     "source-map-loader": "~0.2.3",
     "style-loader": "^0.21.0",
-    "swagger-ui": "~2.2.3",
     "thread-loader": "~1.1.2",
     "ts-loader": "~3.0.5",
     "ts-node": "~3.3.0",

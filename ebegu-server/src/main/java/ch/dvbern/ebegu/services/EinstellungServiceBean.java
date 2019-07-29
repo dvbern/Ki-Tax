@@ -78,7 +78,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(EinstellungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class EinstellungServiceBean extends AbstractBaseService implements EinstellungService {
 
 	@Inject
@@ -89,9 +89,6 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Inject
 	private BenutzerService benutzerService;
-
-	@Inject
-	private GesuchsperiodeService gesuchsperiodeService;
 
 
 	@Override
@@ -300,28 +297,5 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			Einstellung_.gesuchsperiode);
 		einstellungenOfGP
 			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
-	}
-
-	@Nonnull
-	@Override
-	@PermitAll
-	public Einstellung findEinstellungTagesschuleEnabledForMandant() {
-
-		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
-			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Benutzer nicht eingeloggt"));
-
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() ->
-			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Keine Gesuchsperiode gefunden"));
-
-		Optional<Einstellung> einstellungOptional = findEinstellungByMandantOrSystem(
-			EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT,
-			benutzer.getMandant(),
-			gesuchsperiode,
-			persistence.getEntityManager());
-
-		Einstellung einstellung = einstellungOptional.orElseThrow(() ->
-			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Einstellung TAGESSCHULE_ENABLED_FOR_MANDANT nicht gfunden"));
-
-		return einstellung;
 	}
 }

@@ -36,6 +36,7 @@ export class GemeindeKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
+    @Input() public editMode: boolean = false;
 
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
     private navigationDest: StateDeclaration;
@@ -75,6 +76,7 @@ export class GemeindeKonfigComponent implements OnInit {
 
     public isKonfigurationEditable(gk: TSGemeindeKonfiguration): boolean {
         return 'gemeinde.edit' === this.navigationDest.name
+            && this.editMode
             && (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus
                 || (gk.gesuchsperiodeStatus &&
                     TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiodeStatus));
@@ -94,5 +96,4 @@ export class GemeindeKonfigComponent implements OnInit {
             });
         });
     }
-
 }

@@ -113,7 +113,6 @@ public class GemeindeResource {
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
-		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguBietenAb,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -121,14 +120,28 @@ public class GemeindeResource {
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
 
+		// Aufgrund der Flags entscheiden, in welcher Rolle der Admin eingeladen werden soll
+		UserRole roleOfAdmin = getUserRoleForGemeindeAdmin(persistedGemeinde);
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
-			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde));
+			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, roleOfAdmin, persistedGemeinde));
 
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 
 		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde));
 
 		return converter.gemeindeToJAX(persistedGemeinde);
+	}
+
+	private UserRole getUserRoleForGemeindeAdmin(@Nonnull Gemeinde gemeinde) {
+		boolean hasBG = gemeinde.isAngebotBG();
+		boolean hasTS = gemeinde.isAngebotTS() || gemeinde.isAngebotFI();
+		if (!hasBG) {
+			return UserRole.ADMIN_TS;
+		}
+		if (!hasTS) {
+			return UserRole.ADMIN_BG;
+		}
+		return UserRole.ADMIN_GEMEINDE;
 	}
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxGemeinde.class)

@@ -166,10 +166,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Column(nullable = false)
 	private Boolean vertrag = false;
 
-	@NotNull
-	@Column(nullable = false)
-	private Boolean keineKesbPlatzierung = false;
-
 	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumAblehnung;
@@ -299,14 +295,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	public void setVertrag(Boolean vertrag) {
 		this.vertrag = vertrag;
-	}
-
-	public Boolean getKeineKesbPlatzierung() {
-		return keineKesbPlatzierung;
-	}
-
-	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
-		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
 	@Nullable
@@ -562,7 +550,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			target.setAbwesenheitMutiert(null);
 			target.setGueltig(false);
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
-			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 
 			// EBEGU-1559
 			// Beim Mutieren werden alle Betreuungen kopiert.
@@ -673,5 +660,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	public boolean isErweiterteBeduerfnisseBestaetigt() {
 		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
 			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt();
+	}
+
+	@Override
+	public String getMessageForAccessException() {
+		return "bgNummer: " + this.getBGNummer()
+			+ ", gesuchInfo: " + this.extractGesuch().getMessageForAccessException();
 	}
 }

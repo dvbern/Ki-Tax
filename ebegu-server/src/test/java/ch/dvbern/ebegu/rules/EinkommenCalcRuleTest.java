@@ -201,6 +201,7 @@ public class EinkommenCalcRuleTest {
 			erweiterteBetreuungJA.setErweiterteBeduerfnisse(true);
 			erweiterteBetreuungJA.setFachstelle(new Fachstelle());
 			erweiterteBetreuungJA.setErweiterteBeduerfnisseBestaetigt(true);
+			erweiterteBetreuungJA.setKeineKesbPlatzierung(true);
 			Objects.requireNonNull(gesuch.extractFamiliensituation()).setAntragNurFuerBehinderungszuschlag(true);
 		}
 		return betreuung;

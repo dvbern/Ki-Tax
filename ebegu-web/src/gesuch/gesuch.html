@@ -64,13 +64,24 @@
                    dv-show-expression="vm.isDocumentUploaded()"
                    title="{{'DOKUMENTE_HOCHGELADEN'|translate}}" aria-label="{{'DOKUMENTE_HOCHGELADEN'|translate}}"></i>
                 <br>
-                <span class="zuletzt" data-translate="ZULETZT_BEARBEITER"
+
+                <span class="gesuchZusatzInfo"
+                      data-translate="ZULETZT_BEARBEITER"
                       data-translate-value-username="{{vm.userFullName}}"></span>
                 <br>
-                <span class="zuletzt" ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
+
+                <span ng-if="vm.gemeindeHasKontingent()"
+                      class="gesuchZusatzInfo"
+                      data-translate="BESTEHT_KONTINGENTIERUNG"></span>
+                <br  ng-if="vm.gemeindeHasKontingent()">
+
+                <span ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig"
+                      class="gesuchZusatzInfo"
                       data-translate="GUELTIGES_GESUCH"></span>
-                <br>
-                <span class="gesperrt" ng-if="vm.isGesuchGesperrt()"
+                <br ng-show="vm.isSuperAdmin() && vm.getGesuch().gueltig">
+
+                <span class="gesperrt"
+                      ng-if="vm.isGesuchGesperrt()"
                       data-translate="GESPERRT_WEGEN_BESCHWERDE"></span>
             </div>
             <ul class="sidenav gesuchMenu">

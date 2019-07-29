@@ -8,6 +8,7 @@ import {
     MatSelectModule,
     MatSortModule,
     MatTableModule,
+    MatTabsModule,
 } from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
@@ -40,7 +41,7 @@ const MATERIAL_MODULES = [
     MatSortModule,
     // MatStepperModule,
     MatTableModule,
-    // MatTabsModule,
+    MatTabsModule,
     // MatToolbarModule,
     // MatTooltipModule,
     // MatBottomSheetModule

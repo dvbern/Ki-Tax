@@ -58,6 +58,11 @@ export default class FinanzielleSituationRS {
         const sentGesuch = this.ebeguRestUtil.gesuchToRestObject({}, gesuch);
         const url = `${this.serviceURL}/finanzielleSituationStart`;
 
+        if (!gesuch.gesuchsteller1.finanzielleSituationContainer) {
+            this.$log.error('This should never happen. If it happens check in sentry the breadcrums to try to reproduce it.'
+                + ' Service will be called anyway and it will throw a NPE');
+        }
+
         return this.$http.put(url, sentGesuch).then(response => {
             return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
                 return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);

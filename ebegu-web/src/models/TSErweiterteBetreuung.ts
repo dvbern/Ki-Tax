@@ -21,6 +21,7 @@ export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
     private _erweiterteBeduerfnisse: boolean = false;
     private _fachstelle: TSFachstelle;
     private _erweiterteBeduerfnisseBestaetigt: boolean = false;
+    private _keineKesbPlatzierung: boolean;
 
     public constructor() {
         super();
@@ -48,5 +49,13 @@ export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public set erweiterteBeduerfnisseBestaetigt(value: boolean) {
         this._erweiterteBeduerfnisseBestaetigt = value;
+    }
+
+    public get keineKesbPlatzierung(): boolean {
+        return this._keineKesbPlatzierung;
+    }
+
+    public set keineKesbPlatzierung(value: boolean) {
+        this._keineKesbPlatzierung = value;
     }
 }
