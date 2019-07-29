@@ -18,10 +18,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
-import {of} from 'rxjs';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import TSEinstellung from '../../../models/TSEinstellung';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -45,7 +44,7 @@ describe('AddInstitutionComponent', () => {
         ['getAllTraegerschaften', 'getAllActiveTraegerschaften']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const einstellungSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['tageschuleEnabledForMandant$']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
 
     beforeEach(async(() => {
 
@@ -62,7 +61,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
                 AddInstitutionComponent,
@@ -74,7 +73,7 @@ describe('AddInstitutionComponent', () => {
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionServiceSpy.params.and.returnValue({institutionId: undefined});
-        einstellungSpy.tageschuleEnabledForMandant$.and.returnValue(of(new TSEinstellung()) as any);
+        authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
     }));
 
     beforeEach(async(() => {
