@@ -81,8 +81,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	private SequenceService sequenceService;
 	@Inject
 	private Authorizer authorizer;
-	@Inject
-	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
