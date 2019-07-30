@@ -1,0 +1,81 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <dv-accordion class="konfigurationList" allow-multiple-sections="true">
+            <dv-accordion-tab
+                *ngFor="let konf of konfigurationsListe; let i = index"
+                [tabid]="i">
+                <tab-title>
+                    <div class="message-header">
+                        <p class="fa fa-angle-right"></p>{{konf.gesuchsperiodeName}}
+                    </div>
+                </tab-title>
+                <tab-body>
+                    <div class="row">
+                        <!-- readonly -->
+                        <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <div class="form-group">
+                                <!-- Titel -->
+                                <h3 translate>GEMEINDE_REGELN</h3>
+                                <!-- Datum Aktivierung Tagesschulen -->
+                                <label>{{'TAGESSCHULE_AKTIVIERUNGSDATUM'|translate}}&nbsp;
+                                    <strong>{{getTagesschuleAktivierungsdatumAsString(konfigurationsListe[i])}}</strong>
+                                </label>
+                                <!-- Erster Schultag -->
+                                <label>{{'TAGESSCHULE_ERSTER_SCHULTAG'|translate}}&nbsp;
+                                    <strong>{{getTagesschuleErsterSchultagAsString(konfigurationsListe[i])}}</strong></label>
+                            </div>
+                        </div>
+                        <!-- editable -->
+                        <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <!-- Titel -->
+							<div class="form-group">
+								<h3 translate>GEMEINDE_REGELN</h3>
+                            </div>
+                            <!-- Datum Aktivierung Tagesschulen -->
+                            <div class="form-group">
+                                <label class="required" translate for="tsAktivierungsdatum">TAGESSCHULE_AKTIVIERUNGSDATUM</label>
+                                <input class="dv-mat-datepicker" type="text"
+                                       name="tsAktivierungsdatum" id="tsAktivierungsdatum"
+                                       [(ngModel)]="konfigurationsListe[i].konfigTagesschuleAktivierungsdatum"
+                                       [matDatepicker]="tsAktivierungsdatum"
+                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                       required>
+                                <mat-datepicker-toggle matSuffix [for]="tsAktivierungsdatum"></mat-datepicker-toggle>
+                                <mat-datepicker #tsAktivierungsdatum></mat-datepicker>
+                            </div>
+                            <!-- Erster Schultag -->
+                            <div class="form-group">
+                                <label class="required" translate for="tsErsterSchultag">TAGESSCHULE_ERSTER_SCHULTAG</label>
+                                <input class="dv-mat-datepicker" type="text"
+                                       name="tsErsterSchultag" id="tsErsterSchultag"
+                                       [(ngModel)]="konfigurationsListe[i].konfigTagesschuleErsterSchultag"
+                                       [matDatepicker]="tsErsterSchultag"
+                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                       required>
+                                <mat-datepicker-toggle matSuffix [for]="tsErsterSchultag"></mat-datepicker-toggle>
+                                <mat-datepicker #tsErsterSchultag></mat-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </tab-body>
+            </dv-accordion-tab>
+        </dv-accordion>
+    </div>
+</div>

@@ -864,8 +864,7 @@ export default class EbeguRestUtil {
         konfiguration: TSGemeindeKonfiguration,
     ): TSGemeindeKonfiguration {
         if (konfiguration) {
-            restKonfiguration.gesuchsperiodeId = konfiguration.gesuchsperiodeId;
-            restKonfiguration.gesuchsperiodeStatus = konfiguration.gesuchsperiodeStatus;
+            restKonfiguration.gesuchsperiode = this.gesuchsperiodeToRestObject({}, konfiguration.gesuchsperiode);
             restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
             return restKonfiguration;
         }
@@ -887,8 +886,8 @@ export default class EbeguRestUtil {
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
-            konfigurationTS.gesuchsperiodeId = konfigurationFromServer.gesuchsperiodeId;
-            konfigurationTS.gesuchsperiodeStatus = konfigurationFromServer.gesuchsperiodeStatus;
+            konfigurationTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
             return konfigurationTS;
         }

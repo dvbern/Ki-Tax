@@ -23,15 +23,13 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 
 public class JaxGemeindeKonfiguration {
 	@NotNull
 	private String gesuchsperiodeName;
-	@NotNull
-	private String gesuchsperiodeId;
-	@NotNull
-	private GesuchsperiodeStatus gesuchsperiodeStatus;
+	@Nonnull
+	private Gesuchsperiode gesuchsperiode;
 	@NotNull
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
 
@@ -44,21 +42,13 @@ public class JaxGemeindeKonfiguration {
 		this.gesuchsperiodeName = gesuchsperiodeName;
 	}
 
-	public String getGesuchsperiodeId() {
-		return gesuchsperiodeId;
-	}
-
-	public void setGesuchsperiodeId(String gesuchsperiodeId) {
-		this.gesuchsperiodeId = gesuchsperiodeId;
-	}
-
 	@Nonnull
-	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
-		return gesuchsperiodeStatus;
+	public Gesuchsperiode getGesuchsperiode() {
+		return gesuchsperiode;
 	}
 
-	public void setGesuchsperiodeStatus(@Nonnull GesuchsperiodeStatus gesuchsperiodeStatus) {
-		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
+	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		this.gesuchsperiode = gesuchsperiode;
 	}
 
 	public List<JaxEinstellung> getKonfigurationen() {

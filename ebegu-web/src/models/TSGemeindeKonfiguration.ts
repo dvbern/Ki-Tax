@@ -15,16 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
-import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import TSEinstellung from './TSEinstellung';
+import TSGesuchsperiode from './TSGesuchsperiode';
 
 export default class TSGemeindeKonfiguration {
     public gesuchsperiodeName: string;
-    public gesuchsperiodeId: string;
-    public gesuchsperiodeStatus: TSGesuchsperiodeStatus;
+    public gesuchsperiode: TSGesuchsperiode;
     public konfigKontingentierung: boolean; // only on client
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
+    public konfigTagesschuleAktivierungsdatum: moment.Moment;
+    public konfigTagesschuleErsterSchultag: moment.Moment;
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
 

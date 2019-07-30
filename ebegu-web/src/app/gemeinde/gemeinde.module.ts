@@ -24,9 +24,11 @@ import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.compo
 import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
 import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
-import {GemeindeKonfigComponent} from './gemeinde-konfiguration/gemeinde-konfig.component';
+import {GemeindeBgKonfigComponent} from './gemeinde-bg-konfiguration/gemeinde-bg-konfig.component';
+import {GemeindeFiKonfigComponent} from './gemeinde-fi-konfiguration/gemeinde-fi-konfig.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
+import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts-konfig.component';
 
 @NgModule({
     imports: [
@@ -46,7 +48,9 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
         EditGemeindeComponentFI,
         EditGemeindeComponentStammdaten,
         EditGemeindeComponentTS,
-        GemeindeKonfigComponent,
+        GemeindeBgKonfigComponent,
+        GemeindeTsKonfigComponent,
+        GemeindeFiKonfigComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
@@ -56,7 +60,9 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
         EditGemeindeComponentFI,
         EditGemeindeComponentTS,
         EditGemeindeComponentStammdaten,
-        GemeindeKonfigComponent,
+        GemeindeBgKonfigComponent,
+        GemeindeTsKonfigComponent,
+        GemeindeFiKonfigComponent,
     ],
     providers: [],
 })
