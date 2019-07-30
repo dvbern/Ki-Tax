@@ -75,8 +75,7 @@ describe('DVQuicksearchList', () => {
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
-                    gemeindeRS,
-                    undefined);
+                    gemeindeRS);
                 const list: Array<TSBetreuungsangebotTyp> = [
                     TSBetreuungsangebotTyp.KITA,
                     TSBetreuungsangebotTyp.TAGESFAMILIEN,
@@ -90,8 +89,7 @@ describe('DVQuicksearchList', () => {
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
-                    gemeindeRS,
-                    undefined);
+                    gemeindeRS);
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
@@ -108,8 +106,7 @@ describe('DVQuicksearchList', () => {
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
-                    gemeindeRS,
-                    undefined);
+                    gemeindeRS);
 
                 const tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));

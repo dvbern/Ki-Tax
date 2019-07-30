@@ -1070,4 +1070,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		erneuerung.setEingangsdatum(eingangsdatum);
 		return erneuerung;
 	}
+
+	@Override
+	public String getMessageForAccessException() {
+		return "eingangsart: " + this.getEingangsart()
+			+ ", status: " + this.getStatus()
+			+ ", fallNummer: " + this.getJahrFallAndGemeindenummer();
+	}
 }

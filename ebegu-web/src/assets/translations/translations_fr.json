@@ -710,10 +710,6 @@
     "FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION": "Taux maximal pour le service spécialisé Intégration linguistique",
     "FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION": "Taux minimal pour le service spécialisé Intégration sociale",
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Taux minimal pour le service spécialisé Intégration linguistique",
-    "TAGESSCHULE_ENABLED_FOR_MANDANT": "Ecole à journée continue activèe pour le mandant",
-    "BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE": "Bons de garde activés pour la commune",
-    "TAGESSCHULE_ENABLED_FOR_GEMEINDE": "Ecole à journée continue activèe pour la commune",
-    "FERIENINSEL_ENABLED_FOR_GEMEINDE": "Ilots de vacances activés pour la commune",
     "PLATZBESTAETIGUNG": "Confirmation de place",
     "PLATZBESTAETIGUNG_MUTATION": "Changer la place",
     "QUICKSEARCH_ALL_RESULTS": "Tous les résultats (jusqu'à {{totalNum}} suivants)",
@@ -947,6 +943,7 @@
     "PDF_BEGLEITSCHREIBEN_ANZEIGEN": "Afficher le courrier d'accompagnement au format PDF",
     "PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN": "Afficher la totalité de la correspondance au format PDF",
     "ZULETZT_BEARBEITER": "Traité en dernier par {{username}}",
+    "BESTEHT_KONTINGENTIERUNG": "",
     "GUELTIGES_GESUCH": "Ceci est la demande en vigueur.",
     "GUELTIGE_BETREUUNG": "Prise en charge actuelle",
     "TOOLBAR_ERSTGESUCH": "1re demande",
@@ -1430,7 +1427,6 @@
     "HOURS": "heures",
     "PER_MONTH": "par mois",
     "OR": "ou",
-    "GEMEINDE_STAMMDATEN": "Données de base de la commune",
     "TRAEGERSCHAFT_STAMMDATEN": "Données de base de l'organisme responsable ",
     "KONTAKTADRESSE": "Adresse",
     "ADRESSE_ANSCHRIFT": "Adresse",
@@ -1607,5 +1603,10 @@
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Oui, rendre une décision",
     "FILTER": "Filtre",
     "MANDANT_DIREKTION": "Direction de la santé publique et de la prévoyance sociale",
-    "MANDANT_AMT": "Office des affaires sociales"
+    "MANDANT_AMT": "Office des affaires sociales",
+    "GEMEINDE_TAB_STAMMDATEN": "Données de base",
+    "GEMEINDE_TAB_BG": "Bons de garde",
+    "GEMEINDE_TAB_TS": "Ecole à journée continue",
+    "GEMEINDE_TAB_FI": "Ilots de vacances",
+    "GEMEINDE_TAB_SAVE_WARNING": ""
 }

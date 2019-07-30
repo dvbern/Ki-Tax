@@ -47,13 +47,10 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -74,8 +71,6 @@ import static java.util.Objects.requireNonNull;
 @PermitAll
 public class GemeindeServiceBean extends AbstractBaseService implements GemeindeService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(GemeindeServiceBean.class);
-
 	@Inject
 	private Persistence persistence;
 	@Inject
@@ -86,6 +81,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	private SequenceService sequenceService;
 	@Inject
 	private Authorizer authorizer;
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -104,7 +101,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
-		if (findGemeindeByName(gemeinde.getName()).isPresent()) {
+		Optional<Gemeinde> gemeindeOpt =
+			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, gemeinde.getName(), Gemeinde_.name);
+		if (gemeindeOpt.isPresent()) {
 			throw new EntityExistsException(
 				KibonLogLevel.INFO,
 				Gemeinde.class,
@@ -132,31 +131,10 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Nonnull
-	@Override
-	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
-		requireNonNull(name, "Gemeindename muss gesetzt sein");
-		Optional<Gemeinde> gemeindeOpt =
-			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
-		return gemeindeOpt;
-	}
-
-	@Nonnull
 	private Optional<Gemeinde> findGemeindeByBSF(@Nullable Long bsf) {
 		Optional<Gemeinde> gemeindeOpt =
 			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
 		return gemeindeOpt;
-	}
-
-	@Nonnull
-	@Override
-	public Gemeinde getFirst() {
-		Collection<Gemeinde> gemeinden = criteriaQueryHelper.getAll(Gemeinde.class);
-		if (gemeinden == null || gemeinden.isEmpty()) {
-			LOG.error("Wir erwarten, dass mindestens eine Gemeinde bereits in der DB existiert");
-			throw new EbeguRuntimeException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-		}
-		Gemeinde gemeinde = gemeinden.iterator().next();
-		return gemeinde;
 	}
 
 	@Nonnull
@@ -288,6 +266,14 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 			predicates.add(predicate);
 		}
 
+		// Wenn das Tagesschule-Flag nicht gesetzt ist, dürfen Verbunds-Gemeinden nicht ausgewählt werden können.
+		boolean tagesschuleEnabled = mandant.isAngebotTS();
+		if (!tagesschuleEnabled) {
+			List<Long> verbundsBfsNummern = getVerbundsBfsNummern(mandant);
+			Predicate predicateNoVerbund = root.get(BfsGemeinde_.bfsNummer).in(verbundsBfsNummern).not();
+			predicates.add(predicateNoVerbund);
+		}
+
 		Predicate predicateMandant = cb.equal(root.get(BfsGemeinde_.mandant), mandant);
 		predicates.add(predicateMandant);
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -304,6 +290,19 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		Predicate predicateMandant = cb.equal(root.get(Gemeinde_.mandant), mandant);
 		query.where(predicateMandant);
 		query.select(root.get(Gemeinde_.bfsNummer));
+		List<Long> registeredBfsNummern = persistence.getCriteriaResults(query);
+		return registeredBfsNummern;
+	}
+
+	@Nonnull
+	private List<Long> getVerbundsBfsNummern(@Nonnull Mandant mandant) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+
+		Predicate predicateMandant = cb.equal(root.get(BfsGemeinde_.mandant), mandant);
+		query.where(predicateMandant);
+		query.select(root.get(BfsGemeinde_.verbund).get(BfsGemeinde_.bfsNummer));
 		List<Long> registeredBfsNummern = persistence.getCriteriaResults(query);
 		return registeredBfsNummern;
 	}

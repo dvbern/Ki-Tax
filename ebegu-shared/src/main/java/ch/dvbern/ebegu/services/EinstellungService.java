@@ -112,6 +112,4 @@ public interface EinstellungService {
 	 */
 	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
-	@Nonnull
-	Einstellung findEinstellungTagesschuleEnabledForMandant();
 }
