@@ -267,7 +267,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		}
 
 		// Wenn das Tagesschule-Flag nicht gesetzt ist, dürfen Verbunds-Gemeinden nicht ausgewählt werden können.
-		boolean tagesschuleEnabled = einstellungService.findEinstellungTagesschuleEnabledForMandant().getValueAsBoolean();
+		boolean tagesschuleEnabled = mandant.isAngebotTS();
 		if (!tagesschuleEnabled) {
 			List<Long> verbundsBfsNummern = getVerbundsBfsNummern(mandant);
 			Predicate predicateNoVerbund = root.get(BfsGemeinde_.bfsNummer).in(verbundsBfsNummern).not();
