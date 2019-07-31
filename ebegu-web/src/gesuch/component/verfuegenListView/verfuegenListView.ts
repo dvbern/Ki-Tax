@@ -508,7 +508,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             this.mahnung.gesuch = this.getGesuch();
             this.mahnung.timestampAbgeschlossen = null;
             this.mahnung.bemerkungen = generatedBemerkungen.data;
-            if (this.getGesuchsperiode().hasTagesschulenAnmeldung()
+            if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
                 && this.getGesuch().areThereOnlySchulamtAngebote()) {
                 this.mahnung.datumFristablauf = moment(moment.now()).add(7, 'days');
             }

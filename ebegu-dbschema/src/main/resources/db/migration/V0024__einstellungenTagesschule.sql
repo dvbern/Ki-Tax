@@ -47,3 +47,10 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 gp.id                              as gesuchsperiode_id,
 			 NULL                               as mandant_id
 	  from gesuchsperiode as gp) as tmp;
+
+
+alter table gesuchsperiode
+	drop column datum_freischaltung_tagesschule;
+
+alter table gesuchsperiode
+	drop column datum_erster_schultag;

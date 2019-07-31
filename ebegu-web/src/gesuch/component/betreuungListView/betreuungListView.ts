@@ -260,7 +260,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
         const allowedRoles = TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles();
         const isRole = this.authServiceRS.isOneOfRoles(allowedRoles);
-        const isGesuchsperiode = this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung();
+        const isGesuchsperiode = this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
         const istNotStatusFreigabequittung = this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG;
         return isStatus && isRole && isGesuchsperiode && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
     }
@@ -269,7 +269,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
      * Betreuungen und auch anmeldungen duerfen in Status FREIGABEQUITTUNG nicht hinzugefuegt werden
      */
     public isBetreuungenHinzufuegenDisabled(): boolean {
-        return this.gesuchModelManager.getGesuch().gesuchsperiode.hasTagesschulenAnmeldung() &&
+        return this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
             this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG;
     }
 

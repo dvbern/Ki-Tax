@@ -96,6 +96,7 @@ describe('betreuungView', () => {
         });
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
         spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeBern());
+        gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
         $rootScope = $injector.get('$rootScope');
         authServiceRS = $injector.get('AuthServiceRS');
         spyOn(authServiceRS, 'isRole').and.returnValue(true);

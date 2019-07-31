@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../../gesuch/service/searchRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
@@ -24,6 +25,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../../../models/enums/TSGesuchBetreuungenStatus';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSDossier from '../../../../models/TSDossier';
+import TSGemeindeStammdaten from '../../../../models/TSGemeindeStammdaten';
 import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import DateUtil from '../../../../utils/DateUtil';
 import EbeguUtil from '../../../../utils/EbeguUtil';
@@ -55,11 +57,13 @@ export class GesuchstellerDashboardViewController implements IController {
         'MitteilungRS',
         'GesuchRS',
         'ErrorService',
+        'GemeindeRS',
     ];
 
     private antragList: Array<TSAntragDTO> = [];
     public activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     public dossier: TSDossier;
+    public gemeindeStammdaten: TSGemeindeStammdaten;
     public totalResultCount: string = '-';
     public amountNewMitteilungen: number;
     public periodYear: string;
@@ -76,6 +80,7 @@ export class GesuchstellerDashboardViewController implements IController {
         private readonly mitteilungRS: MitteilungRS,
         private readonly gesuchRS: GesuchRS,
         private readonly errorService: ErrorService,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -89,6 +94,7 @@ export class GesuchstellerDashboardViewController implements IController {
             .calculatePeriodenStartdatumString(this.dossier.gemeinde.betreuungsgutscheineStartdatum);
 
         this.initViewModel();
+        this.loadGemeindeStammdaten();
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {
@@ -98,6 +104,20 @@ export class GesuchstellerDashboardViewController implements IController {
             this.updateActiveGesuchsperiodenList();
             return this.antragList;
         });
+    }
+
+    /**
+     * Loads the Stammdaten of the gemiende of the current Dossier so we can access them
+     * while filling out the Gesuch, wihtout having to load it from server again and again
+     */
+    private loadGemeindeStammdaten(): void {
+        if (!(this.dossier && this.dossier.gemeinde)) {
+            return;
+        }
+        this.gemeindeRS.getGemeindeStammdaten(this.dossier.gemeinde.id)
+            .then(stammdaten => {
+                this.gemeindeStammdaten = stammdaten;
+            });
     }
 
     private getAmountNewMitteilungen(): void {
@@ -211,9 +231,11 @@ export class GesuchstellerDashboardViewController implements IController {
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
-        return tsEnabledForMandant && periode.hasTagesschulenAnmeldung() && !!antrag &&
-            antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
-            antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
+        return tsEnabledForMandant
+            && this.gemeindeStammdaten.getGemeindeKonfigurationForGesuchsperiode(periode).hasTagesschulenAnmeldung()
+            && !!antrag
+            && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
+            && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
             && this.isNeuestAntragOfGesuchsperiode(periode, antrag);
     }
 

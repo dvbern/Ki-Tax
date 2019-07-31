@@ -32,7 +32,6 @@
                             <th data-translate="GESUCHSPERIODE_GUELTIG_AB"></th>
                             <th data-translate="GESUCHSPERIODE_GUELTIG_BIS"></th>
                             <th data-translate="GESUCHSPERIODE_STATUS"></th>
-                            <th data-translate="GESUCHSPERIODE_STATUS_TAGESSCHULEANMELDUNG"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -41,7 +40,6 @@
                             <td ng-bind="row.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                             <td ng-bind="row.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                             <td ng-bind="row.status | translate"></td>
-                            <td ng-bind="vm.getStatusTagesschulenFreischaltung(row)"></td>
                         </tr>
                         </tbody>
                     </table>
