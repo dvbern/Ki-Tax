@@ -675,7 +675,6 @@
     "GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN": "Im Status GESCHLOSSEN können weder die Gemeinde noch die Gesuchsteller Anträge für diese Gesuchsperiode erfassen. Die Periode kann nur geschlossen werden, wenn keine Pendenzen (inkl. Beschwerden und Steuerverwaltung) mehr offen sind.",
     "PARAMETER_PRO_GESUCHSPERIODE": "kiBon Parameter für Gesuchsperiode",
     "PARAMETER_PRO_JAHR": "Jahresabhängige kiBon Parameter",
-    "BENUTZERHANDBUCH_LIST": "Benutzerhandbücher",
     "PARAMETER_JAHR": "Jahr",
     "PARAM_FIXBETRAG_STADT_PRO_TAG_KITA": "Fixbeitrag der Stadt pro Tag",
     "MIN_MASSGEBENDES_EINKOMMEN": "Minimal Massgebendes Einkommen",

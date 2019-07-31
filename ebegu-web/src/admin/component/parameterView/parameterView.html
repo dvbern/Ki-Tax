@@ -55,25 +55,6 @@
                     </dv-loading-button>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <form ng-submit="vm.form.$valid && vm.submit()" name="vm.form" role="form" novalidate>
-                        <fieldset ng-disabled="vm.isReadonly()">
-                            <!-- Vorlage-Liste fuer Gesuchsperiode -->
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <h1>
-                                        <span data-translate="BENUTZERHANDBUCH_LIST"></span>
-                                    </h1>
-                                </div>
-                            </div>
-                            <dv-vorlage-list is-readonly="vm.isReadonly">
-                            </dv-vorlage-list>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 </div>

@@ -24,6 +24,7 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-gemeinde-ts-konfiguration',
@@ -57,22 +58,44 @@ export class GemeindeTsKonfigComponent implements OnInit {
                     TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiode.status));
     }
 
-    public getTagesschuleAktivierungsdatumAsString(dateAndTime: string): string {
-        return moment(dateAndTime).format('DD.MM.YYYY');
+    public getTagesschuleAktivierungsdatumAsString(konfiguration: TSGemeindeKonfiguration): string {
+        const datum = konfiguration.konfigTagesschuleAktivierungsdatum;
+        if (datum && datum.isValid()) {
+            return datum.format(CONSTANTS.DATE_FORMAT);
+        }
+        return '';
     }
 
-    public getTagesschuleErsterSchultagAsString(dateAndTime: string): string {
-        return moment(dateAndTime).format('DD.MM.YYYY');
+    public tagesschuleAktivierungsdatumChanged(config: TSGemeindeKonfiguration): void {
+        config.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB === property.key)
+            .forEach(property => { property.value = this.getTagesschuleAktivierungsdatumAsString(config); });
+    }
+
+    public getTagesschuleErsterSchultagAsString(konfiguration: TSGemeindeKonfiguration): string {
+        const datum = konfiguration.konfigTagesschuleErsterSchultag;
+        if (datum && datum.isValid()) {
+            return datum.format(CONSTANTS.DATE_FORMAT);
+        }
+        return '';
+    }
+
+    public tagesschuleErsterSchultagChanged(config: TSGemeindeKonfiguration): void {
+        config.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG === property.key)
+            .forEach(property => { property.value = this.getTagesschuleErsterSchultagAsString(config); });
     }
 
     private initProperties(): void {
         this.konfigurationsListe.forEach(config => {
+            config.konfigTagesschuleAktivierungsdatum = config.gesuchsperiode.gueltigkeit.gueltigAb;
+            config.konfigTagesschuleErsterSchultag = config.gesuchsperiode.gueltigkeit.gueltigAb;
             config.konfigurationen.forEach(property => {
                 if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB === property.key) {
-                    config.konfigTagesschuleAktivierungsdatum = moment(property.value);
+                    config.konfigTagesschuleAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
                 }
                 if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG === property.key) {
-                    config.konfigTagesschuleErsterSchultag = moment(property.value);
+                    config.konfigTagesschuleErsterSchultag = moment(property.value, CONSTANTS.DATE_FORMAT);
                 }
             });
         });

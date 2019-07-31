@@ -55,7 +55,8 @@
                                        name="tsAktivierungsdatum" id="tsAktivierungsdatum"
                                        [(ngModel)]="konfigurationsListe[i].konfigTagesschuleAktivierungsdatum"
                                        [matDatepicker]="tsAktivierungsdatum"
-                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                       (dateChange)="tagesschuleAktivierungsdatumChanged(konfigurationsListe[i])"
+                                       placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        required>
                                 <mat-datepicker-toggle matSuffix [for]="tsAktivierungsdatum"></mat-datepicker-toggle>
                                 <mat-datepicker #tsAktivierungsdatum></mat-datepicker>
@@ -67,7 +68,8 @@
                                        name="tsErsterSchultag" id="tsErsterSchultag"
                                        [(ngModel)]="konfigurationsListe[i].konfigTagesschuleErsterSchultag"
                                        [matDatepicker]="tsErsterSchultag"
-                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                       (dateChange)="tagesschuleErsterSchultagChanged(konfigurationsListe[i])"
+                                       placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                        required>
                                 <mat-datepicker-toggle matSuffix [for]="tsErsterSchultag"></mat-datepicker-toggle>
                                 <mat-datepicker #tsErsterSchultag></mat-datepicker>
