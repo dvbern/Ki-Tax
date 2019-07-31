@@ -207,20 +207,6 @@ public class GemeindeResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Returns the Gemeinde with the given name.", response = JaxGemeinde.class)
-	@Nullable
-	@GET
-	@Path("/name/{gemeindeName}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxGemeinde findGemeindeByName(
-		@Nonnull @NotNull @PathParam("gemeindeName") String name) {
-
-		return gemeindeService.findGemeindeByName(name)
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
-			.orElse(null);
-	}
-
 	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.",
 		response = JaxGemeindeStammdaten.class)
 	@Nullable

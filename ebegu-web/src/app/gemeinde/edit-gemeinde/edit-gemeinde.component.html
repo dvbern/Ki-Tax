@@ -34,7 +34,7 @@
             [editMode]="true"> <!-- this is the edit view -->
         </dv-stammdaten-header>
 
-        <mat-tab-group>
+        <mat-tab-group dynamicHeight>
             <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}">
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
