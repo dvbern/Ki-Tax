@@ -16,8 +16,10 @@
  */
 
 import * as moment from 'moment';
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
+import {TSEinstellungKey} from './enums/TSEinstellungKey';
 import TSEinstellung from './TSEinstellung';
 import TSGesuchsperiode from './TSGesuchsperiode';
 
@@ -49,5 +51,27 @@ export default class TSGemeindeKonfiguration {
 
     public hasTagesschulenAnmeldung(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.konfigTagesschuleAktivierungsdatum);
+    }
+
+    public initProperties(): void {
+        this.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
+        this.konfigKontingentierung = false;
+        this.konfigTagesschuleAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
+        this.konfigTagesschuleErsterSchultag = this.gesuchsperiode.gueltigkeit.gueltigAb;
+
+        this.konfigurationen.forEach(property => {
+            if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
+                this.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
+            }
+            if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
+                this.konfigKontingentierung = (property.value === 'true');
+            }
+            if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB === property.key) {
+                this.konfigTagesschuleAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
+            }
+            if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG === property.key) {
+                this.konfigTagesschuleErsterSchultag = moment(property.value, CONSTANTS.DATE_FORMAT);
+            }
+        });
     }
 }

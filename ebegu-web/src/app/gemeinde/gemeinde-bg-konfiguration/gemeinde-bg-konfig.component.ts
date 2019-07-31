@@ -84,16 +84,7 @@ export class GemeindeBgKonfigComponent implements OnInit {
 
     private initProperties(): void {
         this.konfigurationsListe.forEach(config => {
-            config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-            config.konfigKontingentierung = false;
-            config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                    config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
-                }
-                if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                    config.konfigKontingentierung = (property.value === 'true');
-                }
-            });
+            config.initProperties();
         });
     }
 }

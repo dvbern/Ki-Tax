@@ -321,10 +321,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
                     && this.isTageschulenAnmeldungAktiv()) {
                     this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
-                    if (!this.getBetreuungModel().belegungTagesschule) {
-                        this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
-                        this.setErsterSchultag();
-                    }
+                    this.setErsterSchultag();
                 } else {
                     // "Alte" Tagesschule: Noch keine Modulanmeldung moeglich. Wir setzen Default-Institution
                     this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT;
@@ -349,6 +346,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
             && DateUtil.today().isBefore(ersterSchultag)
         ) {
+            if (!this.getBetreuungModel().belegungTagesschule) {
+                this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
+            }
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
     }

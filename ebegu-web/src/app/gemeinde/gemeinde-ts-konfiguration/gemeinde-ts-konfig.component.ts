@@ -88,16 +88,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
 
     private initProperties(): void {
         this.konfigurationsListe.forEach(config => {
-            config.konfigTagesschuleAktivierungsdatum = config.gesuchsperiode.gueltigkeit.gueltigAb;
-            config.konfigTagesschuleErsterSchultag = config.gesuchsperiode.gueltigkeit.gueltigAb;
-            config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB === property.key) {
-                    config.konfigTagesschuleAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
-                }
-                if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG === property.key) {
-                    config.konfigTagesschuleErsterSchultag = moment(property.value, CONSTANTS.DATE_FORMAT);
-                }
-            });
+            config.initProperties();
         });
     }
 }

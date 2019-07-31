@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -295,16 +296,29 @@ public class GemeindeResource {
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration
 	) {
+		Objects.requireNonNull(konfiguration);
+		Objects.requireNonNull(konfiguration.getGesuchsperiode());
+		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
 		for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
-			saveEinstellung(gemeinde, konfiguration.getGesuchsperiode(), jaxKonfig);
+			saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
 		}
 	}
 
 	private void saveAllFutureJaxGemeindeKonfiguration(
 		@Nonnull Gemeinde gemeinde,
-		@Nonnull JaxGemeindeKonfiguration konfiguration) {
+		@Nonnull JaxGemeindeKonfiguration konfiguration
+	) {
+		Objects.requireNonNull(konfiguration);
+		Objects.requireNonNull(konfiguration.getGesuchsperiode());
+		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+
 		Collection<Gesuchsperiode> gesuchsperioden =
 			gesuchsperiodeService.findThisAndFutureGesuchsperioden(konfiguration.getGesuchsperiode().getId());
+
 		if (gesuchsperioden != null && !gesuchsperioden.isEmpty()) {
 			for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
 				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {

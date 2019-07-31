@@ -273,6 +273,7 @@ export default class GesuchModelManager {
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
                 this.gemeindeKonfiguration = konfigurationsListeElement;
+                this.gemeindeKonfiguration.initProperties();
                 return;
             }
         }

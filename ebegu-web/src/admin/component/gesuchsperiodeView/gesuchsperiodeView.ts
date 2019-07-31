@@ -138,6 +138,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
+            this.doSave();
         });
         return;
     }
