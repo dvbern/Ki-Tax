@@ -56,6 +56,10 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate betreuungsgutscheineStartdatum;
 
+	private boolean angebotBG = false;
+	private boolean angebotTS = false;
+	private boolean angebotFI = false;
+
 
 	@Nonnull
 	public String getName() {
@@ -99,6 +103,30 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setBetreuungsgutscheineStartdatum(@Nonnull LocalDate betreuungsgutscheineStartdatum) {
 		this.betreuungsgutscheineStartdatum = betreuungsgutscheineStartdatum;
+	}
+
+	public boolean isAngebotBG() {
+		return angebotBG;
+	}
+
+	public void setAngebotBG(boolean angebotBG) {
+		this.angebotBG = angebotBG;
+	}
+
+	public boolean isAngebotTS() {
+		return angebotTS;
+	}
+
+	public void setAngebotTS(boolean angebotTS) {
+		this.angebotTS = angebotTS;
+	}
+
+	public boolean isAngebotFI() {
+		return angebotFI;
+	}
+
+	public void setAngebotFI(boolean angebotFI) {
+		this.angebotFI = angebotFI;
 	}
 
 	@Override

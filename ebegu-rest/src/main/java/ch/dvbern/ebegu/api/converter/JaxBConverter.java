@@ -1199,6 +1199,8 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
+		jaxMandant.setAngebotTS(persistedMandant.isAngebotTS());
+		jaxMandant.setAngebotFI(persistedMandant.isAngebotFI());
 		return jaxMandant;
 	}
 
@@ -1222,6 +1224,8 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(mandantJAXP);
 		convertAbstractVorgaengerFieldsToEntity(mandantJAXP, mandant);
 		mandant.setName(mandantJAXP.getName());
+		mandant.setAngebotTS(mandantJAXP.isAngebotTS());
+		mandant.setAngebotFI(mandantJAXP.isAngebotFI());
 		return mandant;
 	}
 
@@ -3930,7 +3934,9 @@ public class JaxBConverter extends AbstractConverter {
 		if (jaxGemeinde.getBetreuungsgutscheineStartdatum() != null) {
 			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
 		}
-
+		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
+		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
+		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
 		return gemeinde;
 	}
 
@@ -3942,7 +3948,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
 		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
-
+		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
+		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
+		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
 		return jaxGemeinde;
 	}
 

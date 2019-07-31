@@ -19,10 +19,8 @@ import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSEinstellung from '../../../models/TSEinstellung';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
@@ -46,8 +44,6 @@ describe('BenutzerEinladenComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const einstellungServiceSpy = jasmine
-        .createSpyObj<EinstellungRS>(EinstellungRS.name, ['tageschuleEnabledForMandant$']);
 
     beforeEach(async(() => {
         const superadmin = TestDataUtil.createSuperadmin();
@@ -56,7 +52,6 @@ describe('BenutzerEinladenComponent', () => {
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
-        einstellungServiceSpy.tageschuleEnabledForMandant$.and.returnValue(of(new TSEinstellung()) as any);
 
         TestBed.configureTestingModule({
             imports: [
@@ -73,7 +68,6 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungServiceSpy},
             ],
         })
             .compileComponents();

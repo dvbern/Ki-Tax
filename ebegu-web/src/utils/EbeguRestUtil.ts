@@ -740,6 +740,9 @@ export default class EbeguRestUtil {
             restGemeinde.bfsNummer = gemeinde.bfsNummer;
             restGemeinde.betreuungsgutscheineStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.betreuungsgutscheineStartdatum);
+            restGemeinde.angebotBG = gemeinde.angebotBG;
+            restGemeinde.angebotTS = gemeinde.angebotTS;
+            restGemeinde.angebotFI = gemeinde.angebotFI;
             return restGemeinde;
         }
         return undefined;
@@ -754,6 +757,9 @@ export default class EbeguRestUtil {
             gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
             gemeindeTS.betreuungsgutscheineStartdatum = DateUtil
                 .localDateToMoment(gemeindeFromServer.betreuungsgutscheineStartdatum);
+            gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
+            gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
+            gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
             return gemeindeTS;
         }
         return undefined;
@@ -1012,6 +1018,8 @@ export default class EbeguRestUtil {
         if (mandant) {
             this.abstractMutableEntityToRestObject(restMandant, mandant);
             restMandant.name = mandant.name;
+            restMandant.angebotTS = mandant.angebotTS;
+            restMandant.angebotFI = mandant.angebotFI;
             return restMandant;
         }
         return undefined;
@@ -1021,6 +1029,8 @@ export default class EbeguRestUtil {
         if (mandantFromServer) {
             this.parseAbstractMutableEntity(mandantTS, mandantFromServer);
             mandantTS.name = mandantFromServer.name;
+            mandantTS.angebotTS = mandantFromServer.angebotTS;
+            mandantTS.angebotFI = mandantFromServer.angebotFI;
             return mandantTS;
         }
         return undefined;

@@ -72,11 +72,6 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
     }
 
-    public findGemeindeByName(gemeindeName: string): IPromise<TSGemeinde> {
-        return this.$http.get(`${this.serviceURL}/name/${encodeURIComponent(gemeindeName)}`)
-            .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
-    }
-
     private initGemeindenForPrincipal(): void {
         this.authServiceRS.principal$
             .pipe(switchMap(user => this.toGemeindenForPrincipal$(user)))
@@ -104,18 +99,14 @@ export default class GemeindeRS implements IEntityRS {
      * It sends all required parameters (new Gemeinde, beguStartDatum and User) to the server so the server can create
      * all required objects within a single transaction.
      */
-    public createGemeinde(gemeinde: TSGemeinde, email: string,
-                          bgEnabled: boolean, tsEnabled: boolean, fiEnabled: boolean): IPromise<TSGemeinde> {
+    public createGemeinde(gemeinde: TSGemeinde, email: string): IPromise<TSGemeinde> {
 
         const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde);
 
         return this.$http.post(this.serviceURL, restGemeinde,
             {
                 params: {
-                    adminMail: email,
-                    hasBG: bgEnabled,
-                    hasTS: tsEnabled,
-                    hasFI: fiEnabled
+                    adminMail: email
                 },
             })
             .then(response => {

@@ -29,7 +29,6 @@ import javax.batch.runtime.JobExecution;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -45,6 +44,7 @@ import ch.dvbern.ebegu.api.dtos.batch.JaxBatchJobList;
 import ch.dvbern.ebegu.api.dtos.batch.JaxWorkJob;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Workjob;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -87,7 +87,7 @@ public class BatchResource {
 	@Path("/jobs/{executionId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getBatchJobInformation(@NotNull @Valid @PathParam("executionId") long idParam) {
+	public Response getBatchJobInformation(@Valid @PathParam("executionId") long idParam) {
 		try {
 			JobExecution information = BatchRuntime.getJobOperator().getJobExecution(idParam);
 			return Response.ok(converter.toBatchJobInformation(information)).build();
@@ -102,6 +102,11 @@ public class BatchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Response getBatchJobsOfUser() {
+
+		// Fuer Gesuchsteller gibt es keine BatchJobs
+		if (principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+			return Response.ok().build();
+		}
 
 		Set<BatchJobStatus> all = Arrays.stream(BatchJobStatus.values()).collect(Collectors.toSet());
 		final List<Workjob> jobs = workjobService.findWorkjobs(principalBean.getPrincipal().getName(), all);

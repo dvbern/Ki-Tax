@@ -74,7 +74,7 @@ export class RemoveDialogController {
     }
 
     public cancel(): void {
-        if (this.params.parentController) {
+        if (this.params.parentController && typeof this.params.parentController.setFocusBack === 'function') {
             this.params.parentController.setFocusBack(this.params.elementID);
         }
 

@@ -63,8 +63,7 @@ describe('posteingangView', () => {
                 posteingangViewController = new PosteingangViewController(mitteilungRS,
                     undefined,
                     authServiceRS,
-                    gemeindeRS,
-                    undefined);
+                    gemeindeRS);
                 $rootScope.$apply();
                 const tableFilterState: any = {};
                 posteingangViewController.passFilterToServer(tableFilterState).then(() => {
