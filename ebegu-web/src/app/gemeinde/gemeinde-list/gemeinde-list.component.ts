@@ -15,15 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
@@ -33,7 +25,6 @@ import {map, takeUntil} from 'rxjs/operators';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -107,13 +98,8 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
 
     public openGemeinde(selected: TSGemeinde): void {
         this.gemeinde = angular.copy(selected);
-        if (this.gemeinde.status !== TSGemeindeStatus.EINGELADEN) {
-            this.$state.go('gemeinde.view', {gemeindeId: this.gemeinde.id});
-            return;
-        }
-        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAdministratorBgTsGemeindeRole())) {
-            this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
-        }
+        this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
+        return;
     }
 
     public addGemeinde(): void {
@@ -122,14 +108,6 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
 
     public hatBerechtigungHinzufuegen(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
-    }
-
-    public hatBerechtigungBearbeiten(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
-    }
-
-    public hatBerechtigungAnsehen(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorMandantRevisorRole());
     }
 
     public showNoContentMessage(): boolean {

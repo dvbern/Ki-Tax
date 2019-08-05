@@ -17,18 +17,12 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSMandant extends TSAbstractMutableEntity {
 
-    private _name: string;
+    public name: string;
+    public angebotTS: boolean;
+    public angebotFI: boolean;
 
     public constructor(name?: string) {
         super();
-        this._name = name;
-    }
-
-    public get name(): string {
-        return this._name;
-    }
-
-    public set name(value: string) {
-        this._name = value;
+        this.name = name;
     }
 }

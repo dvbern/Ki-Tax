@@ -64,7 +64,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -114,9 +113,6 @@ public class GemeindeResource {
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
-		@Nonnull @NotNull @Valid @QueryParam("hasBG") String hasBetreuungsgutscheine,
-		@Nonnull @NotNull @Valid @QueryParam("hasTS") String hasTagesschule,
-		@Nonnull @NotNull @Valid @QueryParam("hasFI") String hasFerieninsel,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -124,11 +120,8 @@ public class GemeindeResource {
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
 
-		// Die Flags als Einstellungen für jede vorhandene Gesuchsperiode speichern
-		saveEinstellungenForGemeinde(persistedGemeinde, hasBetreuungsgutscheine, hasTagesschule, hasFerieninsel);
-
 		// Aufgrund der Flags entscheiden, in welcher Rolle der Admin eingeladen werden soll
-		UserRole roleOfAdmin = getUserRoleForGemeindeAdmin(hasBetreuungsgutscheine, hasTagesschule, hasFerieninsel);
+		UserRole roleOfAdmin = getUserRoleForGemeindeAdmin(persistedGemeinde);
 		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, roleOfAdmin, persistedGemeinde));
 
@@ -139,11 +132,9 @@ public class GemeindeResource {
 		return converter.gemeindeToJAX(persistedGemeinde);
 	}
 
-	private UserRole getUserRoleForGemeindeAdmin(
-		@Nonnull String hasBetreuungsgutscheine, @Nonnull String hasTagesschule, @Nonnull String hasFerieninsel
-	) {
-		boolean hasBG = Boolean.valueOf(hasBetreuungsgutscheine);
-		boolean hasTS = Boolean.valueOf(hasTagesschule) || Boolean.valueOf(hasFerieninsel);
+	private UserRole getUserRoleForGemeindeAdmin(@Nonnull Gemeinde gemeinde) {
+		boolean hasBG = gemeinde.isAngebotBG();
+		boolean hasTS = gemeinde.isAngebotTS() || gemeinde.isAngebotFI();
 		if (!hasBG) {
 			return UserRole.ADMIN_TS;
 		}
@@ -151,25 +142,6 @@ public class GemeindeResource {
 			return UserRole.ADMIN_BG;
 		}
 		return UserRole.ADMIN_GEMEINDE;
-	}
-
-	private void saveEinstellungenForGemeinde(
-		@Nonnull Gemeinde persistedGemeinde, @Nonnull String hasBetreuungsgutscheine, @Nonnull String hasTagesschule, @Nonnull String hasFerieninsel
-	) {
-		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllGesuchsperioden();
-		for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
-			Einstellung hasBG = new Einstellung(EinstellungKey.BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE, hasBetreuungsgutscheine, gesuchsperiode,
-				persistedGemeinde.getMandant(), persistedGemeinde);
-			einstellungService.saveEinstellung(hasBG);
-
-			Einstellung hasTS = new Einstellung(EinstellungKey.TAGESSCHULE_ENABLED_FOR_GEMEINDE, hasTagesschule, gesuchsperiode,
-				persistedGemeinde.getMandant(), persistedGemeinde);
-			einstellungService.saveEinstellung(hasTS);
-
-			Einstellung hasFI = new Einstellung(EinstellungKey.FERIENINSEL_ENABLED_FOR_GEMEINDE, hasFerieninsel, gesuchsperiode,
-				persistedGemeinde.getMandant(), persistedGemeinde);
-			einstellungService.saveEinstellung(hasFI);
-		}
 	}
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxGemeinde.class)
@@ -231,20 +203,6 @@ public class GemeindeResource {
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
 		return gemeindeService.findGemeinde(gemeindeId)
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
-			.orElse(null);
-	}
-
-	@ApiOperation(value = "Returns the Gemeinde with the given name.", response = JaxGemeinde.class)
-	@Nullable
-	@GET
-	@Path("/name/{gemeindeName}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxGemeinde findGemeindeByName(
-		@Nonnull @NotNull @PathParam("gemeindeName") String name) {
-
-		return gemeindeService.findGemeindeByName(name)
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.orElse(null);
 	}

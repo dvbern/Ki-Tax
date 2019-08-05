@@ -569,4 +569,10 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
 			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt();
 	}
+
+	@Override
+	public String getMessageForAccessException() {
+		return "bgNummer: " + this.getBGNummer()
+			+ ", gesuchInfo: " + this.extractGesuch().getMessageForAccessException();
+	}
 }
