@@ -37,6 +37,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() private readonly gemeindeId: string;
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
+    @Input() public tageschuleEnabledForMandant: boolean;
     public korrespondenzsprache: string;
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -72,5 +73,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             languages.push(this.translate.instant('FRANZOESISCH'));
         }
         this.korrespondenzsprache = languages.join(', ');
+    }
+
+    public isSuperadmin(): boolean {
+        return true;
     }
 }
