@@ -127,6 +127,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 public class BetreuungServiceBean extends AbstractBaseService implements BetreuungService {
 
 	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "betreuung darf nicht null sein";
+	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
+
 	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
 
 	@Inject
@@ -423,7 +425,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<AnmeldungTagesschule> findAnmeldungTagesschule(@Nonnull String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		Objects.requireNonNull(id, ID_MUSS_GESETZT_SEIN);
 		AnmeldungTagesschule betr = persistence.find(AnmeldungTagesschule.class, id);
 		if (betr != null) {
 			authorizer.checkReadAuthorization(betr);
@@ -437,7 +439,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<AnmeldungFerieninsel> findAnmeldungFerieninsel(@Nonnull String id) {
-		Objects.requireNonNull(id, "id muss gesetzt sein");
+		Objects.requireNonNull(id, ID_MUSS_GESETZT_SEIN);
 		AnmeldungFerieninsel betr = persistence.find(AnmeldungFerieninsel.class, id);
 		if (betr != null) {
 			authorizer.checkReadAuthorization(betr);
@@ -451,7 +453,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuung(@Nonnull String key, boolean doAuthCheck) {
-		Objects.requireNonNull(key, "id muss gesetzt sein");
+		Objects.requireNonNull(key, ID_MUSS_GESETZT_SEIN);
 		Betreuung betr = persistence.find(Betreuung.class, key);
 		if (doAuthCheck && betr != null) {
 			authorizer.checkReadAuthorization(betr);
@@ -604,7 +606,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuungWithBetreuungsPensen(@Nonnull String key) {
-		Objects.requireNonNull(key, "id muss gesetzt sein");
+		Objects.requireNonNull(key, ID_MUSS_GESETZT_SEIN);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 		Root<Betreuung> root = query.from(Betreuung.class);
