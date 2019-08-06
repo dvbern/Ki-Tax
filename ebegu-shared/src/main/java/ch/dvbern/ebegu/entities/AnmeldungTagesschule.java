@@ -129,12 +129,10 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@Override
 	public void copyAnmeldung(@Nonnull AbstractAnmeldung betreuung) {
 		super.copyAnmeldung(betreuung);
-		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus()) {
-			if (betreuung instanceof AnmeldungTagesschule) {
-				AnmeldungTagesschule that = (AnmeldungTagesschule) betreuung;
-				if (that.getBelegungTagesschule() != null) {
-					this.setBelegungTagesschule(that.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
-				}
+		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus() && betreuung instanceof AnmeldungTagesschule) {
+			AnmeldungTagesschule that = (AnmeldungTagesschule) betreuung;
+			if (that.getBelegungTagesschule() != null) {
+				this.setBelegungTagesschule(that.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
 			}
 		}
 	}

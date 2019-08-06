@@ -118,12 +118,10 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 	@Override
 	public void copyAnmeldung(@Nonnull AbstractAnmeldung betreuung) {
 		super.copyAnmeldung(betreuung);
-		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus()) {
-			if (betreuung instanceof AnmeldungFerieninsel) {
-				AnmeldungFerieninsel that = (AnmeldungFerieninsel) betreuung;
-				if (that.getBelegungFerieninsel() != null) {
-					this.setBelegungFerieninsel(that.getBelegungFerieninsel().copyBelegungFerieninsel(new BelegungFerieninsel(), AntragCopyType.MUTATION));
-				}
+		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus() && betreuung instanceof AnmeldungFerieninsel) {
+			AnmeldungFerieninsel that = (AnmeldungFerieninsel) betreuung;
+			if (that.getBelegungFerieninsel() != null) {
+				this.setBelegungFerieninsel(that.getBelegungFerieninsel().copyBelegungFerieninsel(new BelegungFerieninsel(), AntragCopyType.MUTATION));
 			}
 		}
 	}
