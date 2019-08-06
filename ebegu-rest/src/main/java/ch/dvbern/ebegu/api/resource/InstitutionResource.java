@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -148,11 +147,6 @@ public class InstitutionResource {
 		adresse.setOrt("");
 		institutionStammdaten.setAdresse(adresse);
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
-
-		if (institutionStammdaten.getBetreuungsangebotTyp() != BetreuungsangebotTyp.TAGESFAMILIEN) {
-			institutionStammdaten.setAnzahlPlaetze(BigDecimal.ZERO);
-		}
-
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
 		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);

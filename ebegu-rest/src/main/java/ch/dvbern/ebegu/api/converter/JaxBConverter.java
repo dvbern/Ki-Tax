@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
@@ -172,6 +173,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
@@ -1333,14 +1335,16 @@ public class JaxBConverter extends AbstractConverter {
 	) {
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
 
-		if (persistedInstStammdaten.getIban() != null) {
-			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
-		}
 		jaxInstStammdaten.setBetreuungsangebotTyp(persistedInstStammdaten.getBetreuungsangebotTyp());
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
 		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
+		if (persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheineToJAX(
+				persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()
+			));
+		}
 		if (persistedInstStammdaten.getInstitutionStammdatenTagesschule() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(
 				persistedInstStammdaten
@@ -1353,18 +1357,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxInstStammdaten.setInstitution(institutionToJAX(persistedInstStammdaten.getInstitution()));
 		jaxInstStammdaten.setAdresse(adresseToJAX(persistedInstStammdaten.getAdresse()));
-		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
-		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
-		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
-		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
-		jaxInstStammdaten.setAlterskategorieSchule(persistedInstStammdaten.getAlterskategorieSchule());
-		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
-		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
-		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
 		jaxInstStammdaten.setSendMailWennOffenePendenzen(persistedInstStammdaten.getSendMailWennOffenePendenzen());
-		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
-			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
-		}
 		return jaxInstStammdaten;
 	}
 
@@ -1397,14 +1390,25 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdaten.getAdresse());
 
 		convertAbstractDateRangedFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
-		if (institutionStammdatenJAXP.getIban() != null) {
-			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
-		}
+
 		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
 		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setWebseite(institutionStammdatenJAXP.getWebseite());
 		institutionStammdaten.setOeffnungszeiten(institutionStammdatenJAXP.getOeffnungszeiten());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
+		if (institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			// wenn InstitutionStammdatenBetreuungsgutscheine vorhanden ist es ein BG und Objekt muss, wenn noch
+			// nicht vorhanden, erzeugt werden
+			InstitutionStammdatenBetreuungsgutscheine isBG =
+				Optional.ofNullable(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine())
+					.orElseGet(InstitutionStammdatenBetreuungsgutscheine::new);
+
+			InstitutionStammdatenBetreuungsgutscheine convertedIsBG = institutionStammdatenBetreuungsgutscheineToEntity(
+				institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine(),
+				isBG
+			);
+			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(convertedIsBG);
+		}
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch
 			// nicht vorhanden, erzeugt werden
@@ -1429,22 +1433,7 @@ public class JaxBConverter extends AbstractConverter {
 			);
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(convertedIsFI);
 		}
-		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
-		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
-		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
-		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
-		institutionStammdaten.setAlterskategorieSchule(institutionStammdatenJAXP.isAlterskategorieSchule());
-		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
-		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
-		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 		institutionStammdaten.setSendMailWennOffenePendenzen(institutionStammdatenJAXP.isSendMailWennOffenePendenzen());
-
-		Adresse convertedAdresse = null;
-		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
-			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
-			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
-		}
-		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 
@@ -1461,6 +1450,59 @@ public class JaxBConverter extends AbstractConverter {
 		return institutionStammdaten;
 	}
 
+	@Nonnull
+	public JaxInstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheineToJAX(
+		@Nonnull final InstitutionStammdatenBetreuungsgutscheine persistedInstStammdaten
+	) {
+		final JaxInstitutionStammdatenBetreuungsgutscheine jaxInstStammdaten =
+			new JaxInstitutionStammdatenBetreuungsgutscheine();
+		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
+
+		if (persistedInstStammdaten.getIban() != null) {
+			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
+		}
+		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
+		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
+		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
+		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
+		jaxInstStammdaten.setAlterskategorieSchule(persistedInstStammdaten.getAlterskategorieSchule());
+		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
+		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
+		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
+		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
+			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
+		}
+		return jaxInstStammdaten;
+	}
+
+	@Nonnull
+	public InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheineToEntity(
+		@Nonnull final JaxInstitutionStammdatenBetreuungsgutscheine institutionStammdatenJAXP,
+		@Nonnull final InstitutionStammdatenBetreuungsgutscheine institutionStammdaten
+	) {
+		convertAbstractFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
+		if (institutionStammdatenJAXP.getIban() != null) {
+			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
+		}
+		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
+		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
+		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
+		institutionStammdaten.setAlterskategorieSchule(institutionStammdatenJAXP.isAlterskategorieSchule());
+		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
+		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
+		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
+
+		Adresse convertedAdresse = null;
+		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
+			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
+			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
+		}
+		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
+		return institutionStammdaten;
+	}
+
+	@Nonnull
 	public JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninselToJAX(
 		@Nonnull final InstitutionStammdatenFerieninsel persistedInstStammdatenFerieninsel) {
 

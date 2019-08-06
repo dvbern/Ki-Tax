@@ -85,6 +85,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -1982,17 +1983,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
-		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
-		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
-		row.setKindergarten(institutionStammdaten.getAlterskategorieKindergarten());
-		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
+			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
+		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
+		row.setKindergarten(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieKindergarten());
+		row.setSchulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieSchule());
 		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
-			row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
-			if (institutionStammdaten.getAnzahlPlaetze() != null) {
-				row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+			row.setSubventioniert(institutionStammdatenBG != null && institutionStammdatenBG.getSubventioniertePlaetze());
+			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetze() != null) {
+				row.setKapazitaet(institutionStammdatenBG.getAnzahlPlaetze());
 			}
-			if (institutionStammdaten.getAnzahlPlaetzeFirmen() != null) {
-				row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
+			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetzeFirmen() != null) {
+				row.setReserviertFuerFirmen(institutionStammdatenBG.getAnzahlPlaetzeFirmen());
 			}
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());

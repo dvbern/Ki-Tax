@@ -86,6 +86,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -491,14 +492,16 @@ public final class TestDataUtil {
 	private static InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull String name, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
-		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(angebotTyp);
 		instStammdaten.setInstitution(createDefaultInstitution());
 		instStammdaten.getInstitution().setName(name);
 		instStammdaten.setAdresse(createDefaultAdresse());
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
+		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN(iban));
+		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return instStammdaten;
 	}
 
