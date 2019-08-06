@@ -230,11 +230,14 @@ public class BetreuungsgutscheinEvaluator {
 				findVorgaengerAusbezahlteVerfuegung(betreuung);
 
 			if (ausbezahlteVorgaenger.isPresent() && betreuung.getVerfuegung() != null) {
-				// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
-				VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
-
 				// Zahlungsstatus aus vorgaenger uebernehmen
 				VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
+			}
+
+			Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
+			if (vorgaengerVerfuegung.isPresent() && betreuung.getVerfuegung() != null) {
+				// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
+				VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), vorgaengerVerfuegung.get());
 			}
 		}
 	}
