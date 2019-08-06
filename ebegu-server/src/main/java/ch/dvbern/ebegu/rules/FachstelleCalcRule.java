@@ -46,7 +46,8 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
-		if (betreuung.getBetreuungsangebotTyp() != null && betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		betreuung.getBetreuungsangebotTyp();
+		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int pensumFachstelle = verfuegungZeitabschnitt.getFachstellenpensum();
 			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet

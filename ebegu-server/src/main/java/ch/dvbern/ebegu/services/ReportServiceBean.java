@@ -504,9 +504,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 			row.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 			row.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
-			if (betreuung.getBetreuungsangebotTyp() != null) {
-				row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
-			}
+			betreuung.getBetreuungsangebotTyp();
+			row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
 			kantonDataRowList.add(row);
 		}
 		return kantonDataRowList;
