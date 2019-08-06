@@ -17,43 +17,27 @@
 
 package ch.dvbern.ebegu.mocks;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.services.MandantServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
 
-public class PrincipalBeanMock extends PrincipalBean {
+public class MandantServiceMock extends MandantServiceBean {
 
-	@Nullable
-	private Benutzer benutzer;
-
-	@InjectIntoMany
-	private MandantServiceMock mandantService = new MandantServiceMock();
-
+	private static final Mandant MANDANT = TestDataUtil.createDefaultMandant();
 
 	@Nonnull
 	@Override
-	public Benutzer getBenutzer() {
-		return benutzer != null ? benutzer : TestDataUtil.createDefaultBenutzer();
+	public Optional<Mandant> findMandant(@Nonnull String id) {
+		return Optional.of(MANDANT);
 	}
 
-	public void setBenutzer(Benutzer benutzer) {
-		this.benutzer = benutzer;
-	}
-
+	@Nonnull
 	@Override
-	public boolean isCallerInRole(@Nonnull UserRole role) {
-		return benutzer != null && benutzer.getRole() == role;
-	}
-
-	@Nullable
-	@Override
-	public Mandant getMandant() {
-		return mandantService.getFirst();
+	public Mandant getFirst() {
+		return MANDANT;
 	}
 }

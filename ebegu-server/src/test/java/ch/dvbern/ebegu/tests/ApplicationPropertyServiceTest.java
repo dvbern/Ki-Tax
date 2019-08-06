@@ -14,42 +14,45 @@
  */
 package ch.dvbern.ebegu.tests;
 
-import javax.inject.Inject;
+import java.util.Optional;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import ch.dvbern.ebegu.mocks.CriteriaQueryHelperMock;
+import ch.dvbern.ebegu.mocks.PersistenceMock;
+import ch.dvbern.ebegu.services.ApplicationPropertyServiceBean;
+import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
+import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
+import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-/**
- * Dies ist ein Beispiel einer Arquillian Test Klasse. Es wird vor jedem Test die Datenbank mit dem leeren Dataset
- * initialisiert.
- */
-@RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
-@Transactional(TransactionMode.DISABLED)
-public class ApplicationPropertyServiceTest extends AbstractEbeguLoginTest {
+@SuppressWarnings("unused")
+public class ApplicationPropertyServiceTest {
 
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
+	@Rule
+	public NeedleRule needleRule = new NeedleRule();
 
-	@Inject
-	private Persistence persistence;
+	@SuppressWarnings({ "unused", "InstanceVariableMayNotBeInitialized" })
+	@ObjectUnderTest
+	private ApplicationPropertyServiceBean applicationPropertyService;
+
+	@InjectIntoMany
+	private CriteriaQueryHelperMock criteriaQueryHelper = new CriteriaQueryHelperMock();
+
+	@InjectIntoMany
+	private PersistenceMock persistence = new PersistenceMock();
+
 
 	@Test
 	public void saveOrUpdateApplicationPropertyTest() {
 		Assert.assertNotNull(applicationPropertyService);
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue");
 		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties().size());
-		Assert.assertEquals("testValue", applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED).get().getValue());
-
+		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
+		Assert.assertTrue(propertyOptional.isPresent());
+		Assert.assertEquals("testValue", propertyOptional.get().getValue());
 	}
 
 	@Test
@@ -57,24 +60,23 @@ public class ApplicationPropertyServiceTest extends AbstractEbeguLoginTest {
 		insertNewEntity();
 		applicationPropertyService.removeApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
 		Assert.assertEquals(0, applicationPropertyService.getAllApplicationProperties().size());
-
 	}
 
 	@Test
 	public void updateApplicationPropertyTest() {
 		insertNewEntity();
 		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "changed");
-		Assert.assertEquals("changed", applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED).get().getValue());
-
+		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
+		Assert.assertTrue(propertyOptional.isPresent());
+		Assert.assertEquals("changed", propertyOptional.get().getValue());
 	}
-
-	// Help Methods
 
 	private void insertNewEntity() {
-		persistence.persist(new ApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue"));
+		applicationPropertyService.saveOrUpdateApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, "testValue");
 		Assert.assertEquals(1, applicationPropertyService.getAllApplicationProperties().size());
-		Assert.assertNotNull(applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED));
-		Assert.assertEquals("testValue", applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED).get().getValue());
+		Optional<ApplicationProperty> propertyOptional = applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED);
+		Assert.assertNotNull(propertyOptional);
+		Assert.assertTrue(propertyOptional.isPresent());
+		Assert.assertEquals("testValue", propertyOptional.get().getValue());
 	}
-
 }
