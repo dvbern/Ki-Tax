@@ -93,13 +93,12 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	 * marked yet as GESCHLOSSEN_OHNE_VERFUEGUNG
 	 */
 	private boolean isOrCanBeVerfuegt(@Nonnull Betreuung betreuung) {
-		return betreuung.getBetreuungsangebotTyp() != null
-			&& betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
+		return betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
 			&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG;
 	}
 
 	@Nonnull
 	private String getBeilagenText(@Nonnull Betreuung betreuung) {
-		return translate(BEILAGE_VERFUEGUNG, betreuung.getKind().getKindJA().getNachname() + " " + betreuung.getKind().getKindJA().getVorname(), betreuung.getBGNummer());
+		return translate(BEILAGE_VERFUEGUNG, betreuung.getKind().getKindJA().getNachname() + ' ' + betreuung.getKind().getKindJA().getVorname(), betreuung.getBGNummer());
 	}
 }

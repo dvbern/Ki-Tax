@@ -705,10 +705,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> {
-				if (betreuung.getBetreuungsangebotTyp() != null) {
-					return betreuung.getBetreuungsangebotTyp().isJugendamt();
-				}
-				return false;
+				return betreuung.getBetreuungsangebotTyp().isJugendamt();
 			});
 	}
 
@@ -717,10 +714,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> {
-				if (betreuung.getBetreuungsangebotTyp() != null) {
-					return betreuung.getBetreuungsangebotTyp().isSchulamt();
-				}
-				return false;
+				return betreuung.getBetreuungsangebotTyp().isSchulamt();
 			});
 	}
 
