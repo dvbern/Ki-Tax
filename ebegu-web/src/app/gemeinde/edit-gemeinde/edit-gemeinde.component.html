@@ -34,15 +34,15 @@
             [editMode]="true"> <!-- this is the edit view -->
         </dv-stammdaten-header>
 
-        <mat-tab-group dynamicHeight>
-            <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}">
+        <mat-tab-group dynamicHeight [(selectedIndex)]="currentTab">
+            <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}" ngForm="gemeinde_stammdaten">
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
                                              [keineBeschwerdeAdresse]="keineBeschwerdeAdresse"
                                              [editMode]="editMode">
                 </dv-edit-gemeinde-stammdaten>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_BG' | translate}}"
+            <mat-tab label="{{'GEMEINDE_TAB_BG' | translate}}" ngForm="gemeinde_bg"
                      *ngIf="stammdaten.gemeinde.angebotBG">
                 <dv-edit-gemeinde-bg [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
@@ -50,13 +50,13 @@
                                      [editMode]="editModeForBG()">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"
+            <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"  ngForm="gemeinde_ts"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
                 <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}"
+            <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotFI">
                 <dv-edit-gemeinde-fi [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">

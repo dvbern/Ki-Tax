@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
@@ -29,10 +29,14 @@ import TSAdresse from '../../../models/TSAdresse';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('EditGemeindeComponent');
 
 @Component({
     selector: 'dv-edit-gemeinde',
@@ -41,7 +45,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
     styleUrls: ['./edit-gemeinde.component.less'],
 })
 export class EditGemeindeComponent implements OnInit {
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChildren(NgForm) public forms: QueryList<NgForm>;
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
@@ -53,6 +57,7 @@ export class EditGemeindeComponent implements OnInit {
     private isRegisteringGemeinde: boolean = false;
     public editMode: boolean = false;
     public tageschuleEnabledForMandant: boolean;
+    public currentTab: number;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -81,6 +86,9 @@ export class EditGemeindeComponent implements OnInit {
         this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
 
         this.loadStammdaten();
+
+        // initially display the first tab
+        this.currentTab = 0;
     }
 
     private loadStammdaten(): void {
@@ -124,29 +132,33 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
-        if (!this.validateData(stammdaten)) {
-            this.showSaveWarningDialog();
-            return;
-        }
-        this.setViewMode();
-
-        this.errorService.clearAll();
-        if (this.keineBeschwerdeAdresse) {
-            // Reset Beschwerdeadresse if not used
-            stammdaten.beschwerdeAdresse = undefined;
-        }
-        if (stammdaten.standardRechtsmittelbelehrung) {
-            // reset custom Rechtsmittelbelehrung if checkbox not checked
-            stammdaten.rechtsmittelbelehrung = undefined;
-        }
-
-        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
-            if (this.fileToUpload) {
-                this.persistLogo(this.fileToUpload);
-            } else if (this.isRegisteringGemeinde) {
-                this.$state.go('welcome');
+        this.validateData(stammdaten).then(index => {
+            if (index !== undefined) {
+                this.currentTab = index;
+                this.showSaveWarningDialog();
                 return;
             }
+
+            this.setViewMode();
+
+            this.errorService.clearAll();
+            if (this.keineBeschwerdeAdresse) {
+                // Reset Beschwerdeadresse if not used
+                stammdaten.beschwerdeAdresse = undefined;
+            }
+            if (stammdaten.standardRechtsmittelbelehrung) {
+                // reset custom Rechtsmittelbelehrung if checkbox not checked
+                stammdaten.rechtsmittelbelehrung = undefined;
+            }
+
+            this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
+                if (this.fileToUpload) {
+                    this.persistLogo(this.fileToUpload);
+                } else if (this.isRegisteringGemeinde) {
+                    this.$state.go('welcome');
+                    return;
+                }
+            });
         });
     }
 
@@ -158,7 +170,7 @@ export class EditGemeindeComponent implements OnInit {
             () => {
                 this.errorService.clearAll();
                 this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
-        });
+            });
     }
 
     public collectLogoChange(file: File): void {
@@ -168,9 +180,21 @@ export class EditGemeindeComponent implements OnInit {
         this.fileToUpload = file;
     }
 
-    private validateData(stammdaten: TSGemeindeStammdaten): boolean {
-        return (stammdaten.korrespondenzspracheDe || stammdaten.korrespondenzspracheFr)
-            && this.form.valid;
+    private validateData(stammdaten: TSGemeindeStammdaten): Promise<number> {
+        let errorIndex: any;
+
+        if (!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr) {
+            errorIndex = 0;
+        }
+
+        this.forms.forEach((form, index) => {
+            // do not override the index of the first error found!
+            if (!form.valid && errorIndex === undefined) {
+                errorIndex = index - 1;
+            }
+        });
+
+        return Promise.resolve(errorIndex);
     }
 
     private navigateBack(): void {
@@ -205,14 +229,14 @@ export class EditGemeindeComponent implements OnInit {
 
     public editModeForBG(): boolean {
         if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
-           return this.editMode;
+            return this.editMode;
         }
         return false;
     }
 
     public editModeForTSFI(): boolean {
         if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
-           return this.editMode;
+            return this.editMode;
         }
         return false;
     }
@@ -227,7 +251,14 @@ export class EditGemeindeComponent implements OnInit {
         dialogConfig.data = {
             title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
         };
-
-        this.dialog.open(DvNgOkDialogComponent, dialogConfig).afterClosed();
+        this.dialog
+            .open(DvNgOkDialogComponent, dialogConfig)
+            .afterClosed().subscribe(
+            () => {
+                EbeguUtil.selectFirstInvalid();
+            },
+            err => {
+                LOG.error(err);
+            });
     }
 }
