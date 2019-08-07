@@ -134,7 +134,7 @@ public interface Authorizer {
 	/**
 	 * prueft ob der aktuell eingeloggte benutzer ALLE betreuung in der Liste lesen darf
 	 */
-	void checkReadAuthorizationForAllBetreuungen(@Nullable Collection<Betreuung> betreuungen);
+	<T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T> betreuungen);
 
 	/**
 	 * prueft ob der  eingeloggte benutzer EINE der  betreuung in der Liste lesen darf

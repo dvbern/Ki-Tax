@@ -2251,7 +2251,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public AnmeldungTagesschule anmeldungTagesschuleToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
 		AnmeldungTagesschule betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungTagesschule);
-		betreuung.setAnmeldestatus(betreuungsstatusToAnmeldestatus(betreuungJAXP.getBetreuungsstatus()));
+		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
 		betreuung.setKeineDetailinformationen(betreuungJAXP.isKeineDetailinformationen());
 		if (betreuungJAXP.getBelegungTagesschule() != null) {
@@ -2281,7 +2281,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public AnmeldungFerieninsel anmeldungFerieninselToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
 		AnmeldungFerieninsel betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungFerieninsel);
-		betreuung.setAnmeldestatus(betreuungsstatusToAnmeldestatus(betreuungJAXP.getBetreuungsstatus()));
+		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
 		if (betreuung.getBelegungFerieninsel() != null) {
 			betreuung.setBelegungFerieninsel(belegungFerieninselToEntity(
@@ -2673,7 +2673,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public JaxBetreuung anmeldungTagesschuleToJAX(@Nonnull final AnmeldungTagesschule betreuungFromServer) {
 		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
-		jaxBetreuung.setBetreuungsstatus(anmeldestatusToBetreuungsstatus(betreuungFromServer.getAnmeldestatus()));
+		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
@@ -2683,7 +2683,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public JaxBetreuung anmeldungFerieninselToJAX(@Nonnull final AnmeldungFerieninsel betreuungFromServer) {
 		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
-		jaxBetreuung.setBetreuungsstatus(anmeldestatusToBetreuungsstatus(betreuungFromServer.getAnmeldestatus()));
+		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
 		return jaxBetreuung;

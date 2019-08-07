@@ -33,7 +33,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -49,6 +48,7 @@ import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer_;
@@ -75,11 +75,9 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.Anmeldestatus;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -128,8 +126,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "betreuung darf nicht null sein";
 	public static final String ID_MUSS_GESETZT_SEIN = "id muss gesetzt sein";
+	public static final Institution[] INSTITUTIONS = new Institution[0];
 
 	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
+
 
 	@Inject
 	private Persistence persistence;
@@ -216,7 +216,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
-		boolean isAnmeldungSchulamtAusgeloest = Anmeldestatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getAnmeldestatus();
+		boolean isAnmeldungSchulamtAusgeloest = Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		return mergedBetreuung;
@@ -256,7 +256,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
-		boolean isAnmeldungSchulamtAusgeloest = Anmeldestatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getAnmeldestatus();
+		boolean isAnmeldungSchulamtAusgeloest = Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == mergedBetreuung.getBetreuungsstatus();
 		updateVerantwortliche(mergedGesuch, mergedBetreuung, isAnmeldungSchulamtAusgeloest, isNew);
 
 		return mergedBetreuung;
@@ -452,6 +452,20 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Optional<? extends AbstractAnmeldung> findAnmeldung(@Nonnull String id) {
+		Optional<AnmeldungTagesschule> anmeldungTagesschule = findAnmeldungTagesschule(id);
+		if (anmeldungTagesschule.isPresent()) {
+			return anmeldungTagesschule;
+		}
+		Optional<AnmeldungFerieninsel> anmeldungFerieninsel = findAnmeldungFerieninsel(id);
+		return anmeldungFerieninsel;
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuung(@Nonnull String key, boolean doAuthCheck) {
 		Objects.requireNonNull(key, ID_MUSS_GESETZT_SEIN);
 		Betreuung betr = persistence.find(Betreuung.class, key);
@@ -501,7 +515,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
-			root.get(AbstractAnmeldung_.anmeldestatus).in(Anmeldestatus.anmeldungsstatusAusgeloest);
+			root.get(AbstractPlatz_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -695,32 +709,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS })
-	public Collection<Betreuung> getPendenzenBetreuungen() {
+	public Collection<AbstractPlatz> getPendenzenBetreuungen() {
+		Collection<AbstractPlatz> pendenzen = new ArrayList<>();
 		Collection<Institution> instForCurrBenutzer =
 			institutionService.getAllowedInstitutionenForCurrentBenutzer(true);
 		if (!instForCurrBenutzer.isEmpty()) {
-			return getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(new Institution[instForCurrBenutzer
-				.size()]));
+			pendenzen.addAll(getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
+			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
+			pendenzen.addAll(getPendenzenAnmeldungFerieninselForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
+			return pendenzen;
 		}
 		return Collections.emptyList();
-	}
-
-	@Override
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<Betreuung> findAllBetreuungenFromGesuch(@Nonnull String gesuchId) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
-		Root<Betreuung> root = query.from(Betreuung.class);
-		// Betreuung from Gesuch
-		Predicate predicateInstitution =
-			root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(AbstractEntity_.id).in(gesuchId);
-
-		query.where(predicateInstitution);
-		authorizer.checkReadAuthorizationGesuchId(gesuchId);
-		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
@@ -774,6 +773,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
 
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
+		if (role.isRoleSchulamt()) {
+			return Collections.EMPTY_LIST;
+		}
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -789,12 +791,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
 		}
 
-		// nur Aktuelle Anmeldungen
-		Predicate predAktuelleBetreuung =
-			cb.equal(root.get(Betreuung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-		Predicate predNormaleBetreuung = cb.isNull(root.get(Betreuung_.anmeldungMutationZustand));
-		predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
-
 		// Institution
 		predicates.add(root.get(Betreuung_.institutionStammdaten)
 			.get(InstitutionStammdaten_.institution)
@@ -805,20 +801,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuch_.gesuchsperiode)
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
-
-		if (role.isRoleSchulamt()) {
-			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
-			predicates.add(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
-			// SCH darf nur Schulamt Betreuungen als PEndeny erhalten
-			Predicate predicateTagesschule = cb.equal(
-				root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp),
-				BetreuungsangebotTyp.TAGESSCHULE);
-			Predicate predicateFerieninsel = cb.equal(
-				root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp),
-				BetreuungsangebotTyp.FERIENINSEL);
-			predicates.add(cb.or(predicateTagesschule, predicateFerieninsel));
-		}
 
 		if (role.isRoleGemeindeabhaengig()) {
 			Benutzer benutzer = principalBean.getBenutzer();
@@ -831,7 +813,123 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		List<Betreuung> betreuungen = persistence.getCriteriaResults(query);
-		authorizer.checkReadAuthorizationForAllBetreuungen(betreuungen);
+		authorizer.checkReadAuthorizationForAllPlaetze(betreuungen);
+		return betreuungen;
+	}
+
+	@Nonnull
+	private Collection<AnmeldungTagesschule> getPendenzenAnmeldungTagesschuleForInstitution(@Nonnull Institution... institutionen) {
+		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
+
+		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		if (role.isRoleSchulamt()) {
+			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
+				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+		} else { // for Institution or Traegerschaft. by default
+			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
+				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+		}
+
+		// nur Aktuelle Anmeldungen
+		Predicate predAktuelleBetreuung =
+			cb.equal(root.get(AbstractAnmeldung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+		Predicate predNormaleBetreuung = cb.isNull(root.get(AbstractAnmeldung_.anmeldungMutationZustand));
+		predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
+
+		// Institution
+		predicates.add(root.get(AbstractPlatz_.institutionStammdaten)
+			.get(InstitutionStammdaten_.institution)
+			.in(Arrays.asList(institutionen)));
+		// Gesuchsperiode darf nicht geschlossen sein
+		predicates.add(root.get(AbstractPlatz_.kind)
+			.get(KindContainer_.gesuch)
+			.get(Gesuch_.gesuchsperiode)
+			.get(Gesuchsperiode_.status)
+			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
+
+		if (role.isRoleSchulamt()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.FOR_ADMIN_ROLE));
+		}
+
+		if (role.isRoleGemeindeabhaengig()) {
+			Benutzer benutzer = principalBean.getBenutzer();
+			final Join<Dossier, Gemeinde> gemeindeJoin =
+				root.join(AbstractPlatz_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
+					.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
+			FilterFunctions.setGemeindeFilterForCurrentUser(benutzer, gemeindeJoin, predicates);
+		}
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		List<AnmeldungTagesschule> betreuungen = persistence.getCriteriaResults(query);
+		authorizer.checkReadAuthorizationForAllPlaetze(betreuungen);
+		return betreuungen;
+	}
+
+	@Nonnull
+	private Collection<AnmeldungFerieninsel> getPendenzenAnmeldungFerieninselForInstitution(@Nonnull Institution... institutionen) {
+		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
+
+		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<AnmeldungFerieninsel> query = cb.createQuery(AnmeldungFerieninsel.class);
+		Root<AnmeldungFerieninsel> root = query.from(AnmeldungFerieninsel.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		if (role.isRoleSchulamt()) {
+			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
+				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+		} else { // for Institution or Traegerschaft. by default
+			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
+				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+		}
+
+		// nur Aktuelle Anmeldungen
+		Predicate predAktuelleBetreuung =
+			cb.equal(root.get(AbstractAnmeldung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+		Predicate predNormaleBetreuung = cb.isNull(root.get(AbstractAnmeldung_.anmeldungMutationZustand));
+		predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
+
+		// Institution
+		predicates.add(root.get(AbstractPlatz_.institutionStammdaten)
+			.get(InstitutionStammdaten_.institution)
+			.in(Arrays.asList(institutionen)));
+		// Gesuchsperiode darf nicht geschlossen sein
+		predicates.add(root.get(AbstractPlatz_.kind)
+			.get(KindContainer_.gesuch)
+			.get(Gesuch_.gesuchsperiode)
+			.get(Gesuchsperiode_.status)
+			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
+
+		if (role.isRoleSchulamt()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.FOR_ADMIN_ROLE));
+		}
+
+		if (role.isRoleGemeindeabhaengig()) {
+			Benutzer benutzer = principalBean.getBenutzer();
+			final Join<Dossier, Gemeinde> gemeindeJoin =
+				root.join(AbstractPlatz_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
+					.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
+			FilterFunctions.setGemeindeFilterForCurrentUser(benutzer, gemeindeJoin, predicates);
+		}
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		List<AnmeldungFerieninsel> betreuungen = persistence.getCriteriaResults(query);
+		authorizer.checkReadAuthorizationForAllPlaetze(betreuungen);
 		return betreuungen;
 	}
 
@@ -897,19 +995,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		query.where(predicateMutation, predicateFlag, predicateStatus);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
 		return persistence.getCriteriaResults(query);
-	}
-
-	@Override
-	public int changeAnmeldungMutationZustand(String betreuungsId, AnmeldungMutationZustand anmeldungMutationZustand) {
-		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaUpdate<Betreuung> update = cb.createCriteriaUpdate(Betreuung.class);
-		Root<Betreuung> root = update.from(Betreuung.class);
-		update.set(Betreuung_.anmeldungMutationZustand, anmeldungMutationZustand);
-
-		Predicate predBetreuung = cb.equal(root.get(AbstractEntity_.id), betreuungsId);
-		update.where(predBetreuung);
-
-		return persistence.getEntityManager().createQuery(update).executeUpdate();
 	}
 
 	@Override

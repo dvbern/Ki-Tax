@@ -34,16 +34,11 @@ public enum Betreuungsstatus {
 	UNBEKANNTE_INSTITUTION,
 	GESCHLOSSEN_OHNE_VERFUEGUNG,
 
-	// TODO (KIBON-616): Entfernen, bereits verschoben
 	// Ablauf beim Schulamt
 	SCHULAMT_ANMELDUNG_ERFASST,
-	// TODO (KIBON-616): Entfernen, bereits verschoben
 	SCHULAMT_ANMELDUNG_AUSGELOEST,
-	// TODO (KIBON-616): Entfernen, bereits verschoben
 	SCHULAMT_ANMELDUNG_UEBERNOMMEN,
-	// TODO (KIBON-616): Entfernen, bereits verschoben
 	SCHULAMT_ANMELDUNG_ABGELEHNT,
-	// TODO (KIBON-616): Entfernen, bereits verschoben
 	SCHULAMT_FALSCHE_INSTITUTION;
 
 	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);

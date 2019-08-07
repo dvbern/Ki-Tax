@@ -11,7 +11,7 @@ create table anmeldung_ferieninsel_aud (
 	vorgaenger_id              varchar(36),
 	betreuung_nummer           integer,
 	gueltig                    bit,
-	anmeldestatus              varchar(255),
+	betreuungsstatus              varchar(255),
 	anmeldung_mutation_zustand varchar(255),
 	kind_id                    binary(16),
 	belegung_ferieninsel_id    binary(16),
@@ -30,7 +30,7 @@ create table anmeldung_tagesschule_aud (
 	vorgaenger_id              varchar(36),
 	betreuung_nummer           integer,
 	gueltig                    bit,
-	anmeldestatus              varchar(255),
+	betreuungsstatus              varchar(255),
 	anmeldung_mutation_zustand varchar(255),
 	keine_detailinformationen  bit,
 	kind_id                    binary(16),
@@ -49,7 +49,7 @@ create table anmeldung_ferieninsel (
 	vorgaenger_id              varchar(36),
 	betreuung_nummer           integer      not null,
 	gueltig                    bit          not null,
-	anmeldestatus              varchar(255) not null,
+	betreuungsstatus              varchar(255) not null,
 	anmeldung_mutation_zustand varchar(255),
 	kind_id                    binary(16)   not null,
 	belegung_ferieninsel_id    binary(16),
@@ -67,7 +67,7 @@ create table anmeldung_tagesschule (
 	vorgaenger_id              varchar(36),
 	betreuung_nummer           integer      not null,
 	gueltig                    bit          not null,
-	anmeldestatus              varchar(255) not null,
+	betreuungsstatus              varchar(255) not null,
 	anmeldung_mutation_zustand varchar(255),
 	keine_detailinformationen  bit          not null,
 	kind_id                    binary(16)   not null,
@@ -258,6 +258,22 @@ alter table institution_stammdaten_aud drop iban;
 alter table institution_stammdaten_aud drop kontoinhaber;
 alter table institution_stammdaten_aud drop subventionierte_plaetze;
 alter table institution_stammdaten_aud drop adresse_kontoinhaber_id;
+
+alter table betreuung
+	drop foreign key FK_betreuung_belegung_ferieninsel_id;
+
+alter table betreuung
+	drop foreign key FK_betreuung_belegung_tagesschule_id;
+
+alter table betreuung drop anmeldung_mutation_zustand;
+alter table betreuung drop keine_detailinformationen;
+alter table betreuung drop belegung_ferieninsel_id;
+alter table betreuung drop belegung_tagesschule_id;
+
+alter table betreuung_aud drop anmeldung_mutation_zustand;
+alter table betreuung_aud drop keine_detailinformationen;
+alter table betreuung_aud drop belegung_ferieninsel_id;
+alter table betreuung_aud drop belegung_tagesschule_id;
 
 # Gemeinde auf InstitutionStammdaten TS und FI hinzufügen
 

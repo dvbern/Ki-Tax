@@ -25,9 +25,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.Anmeldestatus;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -43,27 +41,15 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 
 	private static final long serialVersionUID = -9037857320548372570L;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	@NotNull
-	private Anmeldestatus anmeldestatus;
-
 	@Nullable
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private AnmeldungMutationZustand anmeldungMutationZustand;
 
+
 	public AbstractAnmeldung() {
 	}
 
-	@NotNull
-	public Anmeldestatus getAnmeldestatus() {
-		return anmeldestatus;
-	}
-
-	public void setAnmeldestatus(@NotNull Anmeldestatus anmeldestatus) {
-		this.anmeldestatus = anmeldestatus;
-	}
 
 	@Nullable
 	public AnmeldungMutationZustand getAnmeldungMutationZustand() {
@@ -83,7 +69,6 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 		super.copyAbstractPlatz(target, copyType, targetKindContainer);
 		switch (copyType) {
 		case MUTATION:
-			target.setAnmeldestatus(this.getAnmeldestatus());
 			if (targetEingangsart == Eingangsart.ONLINE) {
 				target.setAnmeldungMutationZustand(AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN);
 				this.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
@@ -101,8 +86,8 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 	}
 
 	public void copyAnmeldung(@Nonnull AbstractAnmeldung betreuung) {
-		if (this.getAnmeldestatus() != betreuung.getAnmeldestatus()) {
-			this.setAnmeldestatus(betreuung.getAnmeldestatus());
+		if (this.getBetreuungsstatus() != betreuung.getBetreuungsstatus()) {
+			this.setBetreuungsstatus(betreuung.getBetreuungsstatus());
 			this.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
 		}
 	}

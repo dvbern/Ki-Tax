@@ -526,7 +526,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationForAllBetreuungen(@Nullable Collection<Betreuung> betreuungen) {
+	public <T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T>betreuungen) {
 		if (betreuungen != null) {
 			betreuungen.stream()
 				.filter(betreuung -> !isReadAuthorized(betreuung))

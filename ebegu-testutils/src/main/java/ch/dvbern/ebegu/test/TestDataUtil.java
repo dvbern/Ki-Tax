@@ -45,6 +45,8 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -528,32 +530,26 @@ public final class TestDataUtil {
 		return list;
 	}
 
-	@Nullable
-	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
-		if (institutionStammdaten != null) {
-			Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
-			InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
-			if (found == null && institution != null) {
-				institutionStammdaten.setInstitution(institution);
-				return persistence.merge(institutionStammdaten);
-			}
-			return found;
+	@Nonnull
+	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nonnull InstitutionStammdaten institutionStammdaten) {
+		Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
+		InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
+		if (found == null) {
+			institutionStammdaten.setInstitution(institution);
+			return persistence.merge(institutionStammdaten);
 		}
-		return null;
+		return found;
 	}
 
-	@Nullable
-	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nullable Institution institution) {
-		if (institution != null) {
-			saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
-			saveMandantIfNecessary(persistence, institution.getMandant());
-			Institution found = persistence.find(Institution.class, institution.getId());
-			if (found == null) {
-				found = persistEntity(persistence, institution);
-			}
-			return found;
+	@Nonnull
+	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nonnull Institution institution) {
+		saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
+		saveMandantIfNecessary(persistence, institution.getMandant());
+		Institution found = persistence.find(Institution.class, institution.getId());
+		if (found == null) {
+			found = persistEntity(persistence, institution);
 		}
-		return null;
+		return found;
 	}
 
 	private static void saveTraegerschaftIfNecessary(@Nonnull Persistence persistence, @Nullable Traegerschaft traegerschaft) {
@@ -661,17 +657,30 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
-	public static Betreuung createAnmeldungTagesschule(KindContainer kind) {
-		Betreuung betreuung = new Betreuung();
+	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind) {
+		AnmeldungTagesschule betreuung = new AnmeldungTagesschule();
 		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern());
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-		betreuung.setBetreuungspensumContainers(new TreeSet<>());
-		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
-		erweiterteBetreuungContainer.setBetreuung(betreuung);
-		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
+		return betreuung;
+	}
+
+	public static AnmeldungFerieninsel createAnmeldungFerieninsel(KindContainer kind) {
+		AnmeldungFerieninsel betreuung = new AnmeldungFerieninsel();
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenFerieninselGuarda());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		betreuung.setKind(kind);
+		betreuung.setBelegungFerieninsel(createDefaultBelegungFerieninsel());
+		return betreuung;
+	}
+
+	public static AnmeldungFerieninsel createDefaultAnmeldungFerieninsel() {
+		AnmeldungFerieninsel betreuung = new AnmeldungFerieninsel();
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenFerieninselGuarda());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		betreuung.setKind(createDefaultKindContainer());
+		betreuung.setBelegungFerieninsel(createDefaultBelegungFerieninsel());
 		return betreuung;
 	}
 

@@ -21,7 +21,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -34,8 +37,10 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -51,7 +56,7 @@ import org.hibernate.envers.Audited;
 	uniqueConstraints =
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_platz_kind_betreuung_nummer")
 )
-public abstract class AbstractPlatz extends AbstractMutableEntity implements Comparable<AbstractPlatz> {
+public abstract class AbstractPlatz extends AbstractMutableEntity implements Comparable<AbstractPlatz>, Searchable {
 
 	private static final long serialVersionUID = -9037857320548372570L;
 
@@ -64,6 +69,11 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_platz_institution_stammdaten_id"), nullable = false)
 	private InstitutionStammdaten institutionStammdaten;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@NotNull
+	private Betreuungsstatus betreuungsstatus;
 
 	@NotNull
 	@Min(1)
@@ -93,6 +103,15 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	public void setInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@NotNull
+	public Betreuungsstatus getBetreuungsstatus() {
+		return betreuungsstatus;
+	}
+
+	public void setBetreuungsstatus(@NotNull Betreuungsstatus betreuungsstatus) {
+		this.betreuungsstatus = betreuungsstatus;
 	}
 
 	@Nonnull
@@ -141,6 +160,18 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 		switch (copyType) {
 		case MUTATION:
+			// Bereits verfuegte Betreuungen werden als BESTAETIGT kopiert, alle anderen behalten ihren Status
+			if (this.getBetreuungsstatus().isGeschlossenJA()) {
+				// Falls sämtliche Betreuungspensum-Container dieser Betreuung ein effektives Pensum von 0 haben, handelt es sich um die
+				// Verfügung eines stornierten Platzes. Wir übernehmen diesen als "STORNIERT"
+				if (hasAnyNonZeroPensum()) {
+					target.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+				} else {
+					target.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
+				}
+			} else {
+				target.setBetreuungsstatus(this.getBetreuungsstatus());
+			}
 			target.setKind(targetKindContainer);
 			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			target.setBetreuungNummer(this.getBetreuungNummer());
@@ -154,6 +185,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 		return target;
 	}
 
+	protected boolean hasAnyNonZeroPensum() {
+		return true;
+	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -195,5 +229,39 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 		String angebot = ServerMessageUtil
 			.translateEnumValue(getBetreuungsangebotTyp(), locale);
 		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
+	}
+
+	@Nonnull
+	@Override
+	public String getSearchResultId() {
+		return getId();
+	}
+
+	@Nonnull
+	@Override
+	public String getSearchResultSummary() {
+		return getKind().getSearchResultSummary() + ' ' + getBGNummer();
+	}
+
+	@Nullable
+	@Override
+	public String getSearchResultAdditionalInformation() {
+		return toString();
+	}
+
+	@Override
+	public String getOwningGesuchId() {
+		return extractGesuch().getId();
+	}
+
+	@Override
+	public String getOwningFallId() {
+		return extractGesuch().getFall().getId();
+	}
+
+	@Nullable
+	@Override
+	public String getOwningDossierId() {
+		return extractGesuch().getDossier().getId();
 	}
 }

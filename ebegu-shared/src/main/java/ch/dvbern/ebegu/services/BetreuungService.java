@@ -23,12 +23,12 @@ import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 
 /**
  * Service zum Verwalten von Betreuungen
@@ -107,6 +107,12 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	Optional<AnmeldungFerieninsel> findAnmeldungFerieninsel(@Nonnull String id);
+
+	/**
+	 * Sucht die (Tageschule oder Ferieninsel-) Anmeldung mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<? extends AbstractAnmeldung> findAnmeldung(@Nonnull String id);
 
 	/**
 	 * @param key PK (id) der Betreuung
@@ -189,10 +195,7 @@ public interface BetreuungService {
 	 * und deren Status "WARTEN" ist.
 	 */
 	@Nonnull
-	Collection<Betreuung> getPendenzenBetreuungen();
-
-	@Nonnull
-	List<Betreuung> findAllBetreuungenFromGesuch(String gesuchId);
+	Collection<AbstractPlatz> getPendenzenBetreuungen();
 
 	/**
 	 * @param dossier Dossier, dessen verfuegte Betreuungen zurueckgegeben werden
@@ -221,9 +224,6 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics();
-
-
-	int changeAnmeldungMutationZustand(String betreuungsId, AnmeldungMutationZustand anmeldungMutationZustand);
 
 	/**
 	 * Sendet eine E-Mail an alle Institutionen die aktuell offene Pendenzen haben.

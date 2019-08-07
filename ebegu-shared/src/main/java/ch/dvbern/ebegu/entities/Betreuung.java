@@ -29,9 +29,6 @@ import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -46,10 +43,8 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
-import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -110,11 +105,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	@NotNull
-	private Betreuungsstatus betreuungsstatus;
-
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
@@ -134,23 +124,10 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String grundAblehnung;
 
-
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE,  orphanRemoval = true, mappedBy = "betreuung")
 	private Verfuegung verfuegung;
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_belegung_tagesschule_id"), nullable = true)
-	private BelegungTagesschule belegungTagesschule;
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_belegung_ferieninsel_id"), nullable = true)
-	private BelegungFerieninsel belegungFerieninsel;
 
 	@NotNull
 	@Column(nullable = false)
@@ -173,26 +150,7 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 	private Boolean abwesenheitMutiert;
 
 
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	@Nullable
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = true)
-	private AnmeldungMutationZustand anmeldungMutationZustand;
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	@Column(nullable = false)
-	private boolean keineDetailinformationen = false;
-
 	public Betreuung() {
-	}
-
-	@Nonnull
-	public Betreuungsstatus getBetreuungsstatus() {
-		return betreuungsstatus;
-	}
-
-	public void setBetreuungsstatus(@Nonnull Betreuungsstatus betreuungsstatus) {
-		this.betreuungsstatus = betreuungsstatus;
 	}
 
 	public Set<BetreuungspensumContainer> getBetreuungspensumContainers() {
@@ -238,28 +196,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		this.verfuegung = verfuegung;
 	}
 
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	@Nullable
-	public BelegungTagesschule getBelegungTagesschule() {
-		return belegungTagesschule;
-	}
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	public void setBelegungTagesschule(@Nullable BelegungTagesschule belegungTagesschule) {
-		this.belegungTagesschule = belegungTagesschule;
-	}
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	@Nullable
-	public BelegungFerieninsel getBelegungFerieninsel() {
-		return belegungFerieninsel;
-	}
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	public void setBelegungFerieninsel(@Nullable BelegungFerieninsel belegungFerieninsel) {
-		this.belegungFerieninsel = belegungFerieninsel;
-	}
-
 	@Nonnull
 	public Boolean getVertrag() {
 		return vertrag;
@@ -303,23 +239,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 
 	public void setAbwesenheitMutiert(@Nullable Boolean abwesenheitMutiert) {
 		this.abwesenheitMutiert = abwesenheitMutiert;
-	}
-
-	@Nullable
-	public AnmeldungMutationZustand getAnmeldungMutationZustand() {
-		return anmeldungMutationZustand;
-	}
-
-	public void setAnmeldungMutationZustand(@Nullable AnmeldungMutationZustand anmeldungMutationZustand) {
-		this.anmeldungMutationZustand = anmeldungMutationZustand;
-	}
-
-	public boolean isKeineDetailinformationen() {
-		return keineDetailinformationen;
-	}
-
-	public void setKeineDetailinformationen(boolean keineDetailinformationen) {
-		this.keineDetailinformationen = keineDetailinformationen;
 	}
 
 	@Override
@@ -427,18 +346,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		super.copyAbstractPlatz(target, copyType, targetKindContainer);
 		switch (copyType) {
 		case MUTATION:
-			// Bereits verfuegte Betreuungen werden als BESTAETIGT kopiert, alle anderen behalten ihren Status
-			if (this.getBetreuungsstatus().isGeschlossenJA()) {
-				// Falls sämtliche Betreuungspensum-Container dieser Betreuung ein effektives Pensum von 0 haben, handelt es sich um die
-				// Verfügung eines stornierten Platzes. Wir übernehmen diesen als "STORNIERT"
-				if (hasAnyNonZeroPensum()) {
-					target.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
-				} else {
-					target.setBetreuungsstatus(Betreuungsstatus.STORNIERT);
-				}
-			} else {
-				target.setBetreuungsstatus(this.getBetreuungsstatus());
-			}
 			for (BetreuungspensumContainer betreuungspensumContainer : this.getBetreuungspensumContainers()) {
 				target.getBetreuungspensumContainers().add(betreuungspensumContainer
 					.copyBetreuungspensumContainer(new BetreuungspensumContainer(), copyType, target));
@@ -450,12 +357,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 			target.setErweiterteBetreuungContainer(erweiterteBetreuungContainer
 				.copyErweiterteBetreuungContainer(new ErweiterteBetreuungContainer(), copyType, target));
 
-			if (belegungFerieninsel != null) {
-				target.setBelegungFerieninsel(belegungFerieninsel.copyBelegungFerieninsel(new BelegungFerieninsel(), copyType));
-			}
-			if (belegungTagesschule != null) {
-				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
-			}
 			target.setGrundAblehnung(this.getGrundAblehnung());
 			target.setVerfuegung(null);
 			target.setVertrag(this.getVertrag());
@@ -463,25 +364,6 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);
 			target.setAbwesenheitMutiert(null);
-			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
-
-			// EBEGU-1559
-			// Beim Mutieren werden alle Betreuungen kopiert.
-			// Bei Schulamtangebote Online Mutationen werden die kopierten Betreuungen mit dem Zustand NOCH_NICHT_FREIGEGEBEN gekennzeichnet und die
-			// Original-Betreuung als AKTUELLE_ANMELDUNG gekennzeichnet.
-			// Bei Schulamtangebote Papier Mutationen werden die kopierten Betreuungen mit dem Zustand AKTUELLE_ANMELDUNG gekennzeichnet und die
-			// Original-Betreuung als MUTIERT gekennzeichnet.
-			// Betreuungen mit dem Zustand MUTIERT und NOCH_NICHT_FREIGEGEBEN können nicht weiterverabeitet werden und werden mit einer
-			// Warnung im Gui als solche gezeigt
-			if (isAngebotSchulamt()) {
-				if (targetEingangsart == Eingangsart.ONLINE) {
-					target.setAnmeldungMutationZustand(AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN);
-					this.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				} else {
-					target.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-					this.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
-				}
-			}
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -491,62 +373,14 @@ public class Betreuung extends AbstractPlatz implements Searchable {
 		return target;
 	}
 
-	private boolean hasAnyNonZeroPensum() {
+	@Override
+	protected boolean hasAnyNonZeroPensum() {
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
 			if (MathUtil.isPositive(betreuungspensumContainer.getBetreuungspensumJA().getPensum())) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	@Nonnull
-	@Override
-	public String getSearchResultId() {
-		return getId();
-	}
-
-	@Nonnull
-	@Override
-	public String getSearchResultSummary() {
-		return getKind().getSearchResultSummary() + ' ' + getBGNummer();
-	}
-
-	@Nullable
-	@Override
-	public String getSearchResultAdditionalInformation() {
-		return toString();
-	}
-
-	@Override
-	public String getOwningGesuchId() {
-		return extractGesuch().getId();
-	}
-
-	@Override
-	public String getOwningFallId() {
-		return extractGesuch().getFall().getId();
-	}
-
-	@Nullable
-	@Override
-	public String getOwningDossierId() {
-		return extractGesuch().getDossier().getId();
-	}
-
-	// TODO (KIBON-616): Entfernen, bereits verschoben
-	// Funktion zum Kopieren von Tagesschule und Ferieninsel Angebote
-	public void copyAnmeldung(Betreuung betreuung) {
-		if (this.getBetreuungsstatus() != betreuung.getBetreuungsstatus()) {
-			this.setBetreuungsstatus(betreuung.getBetreuungsstatus());
-			this.setInstitutionStammdaten(betreuung.getInstitutionStammdaten());
-			if (betreuung.getBelegungFerieninsel() != null) {
-				this.setBelegungFerieninsel(betreuung.getBelegungFerieninsel().copyBelegungFerieninsel(new BelegungFerieninsel(), AntragCopyType.MUTATION));
-			}
-			if (betreuung.getBelegungTagesschule() != null) {
-				this.setBelegungTagesschule(betreuung.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
-			}
-		}
 	}
 
 	public boolean hasAnspruch() {

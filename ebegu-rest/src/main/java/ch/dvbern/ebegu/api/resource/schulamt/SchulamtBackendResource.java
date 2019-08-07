@@ -188,7 +188,7 @@ public class SchulamtBackendResource {
 			);
 		return new JaxExternalAnmeldungTagesschule(
 			betreuung.getBGNummer(),
-			JaxExternalBetreuungsstatus.valueOf(betreuung.getAnmeldestatus().name()),
+			JaxExternalBetreuungsstatus.valueOf(betreuung.getBetreuungsstatus().name()),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
 			anmeldungen,
 			betreuung.getKind().getKindJA().getVorname(),
@@ -211,7 +211,7 @@ public class SchulamtBackendResource {
 
 		return new JaxExternalAnmeldungFerieninsel(
 			betreuung.getBGNummer(),
-			JaxExternalBetreuungsstatus.valueOf(betreuung.getAnmeldestatus().name()),
+			JaxExternalBetreuungsstatus.valueOf(betreuung.getBetreuungsstatus().name()),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
 			ferieninsel,
 			betreuung.getKind().getKindJA().getVorname(),
