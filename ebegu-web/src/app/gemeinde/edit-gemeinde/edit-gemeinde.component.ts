@@ -138,7 +138,6 @@ export class EditGemeindeComponent implements OnInit {
                 this.showSaveWarningDialog();
                 return;
             }
-
             this.setViewMode();
 
             this.errorService.clearAll();

@@ -50,7 +50,7 @@
                                      [editMode]="editModeForBG()">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
-            <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}"  ngForm="gemeinde_ts"
+            <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
                 <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
