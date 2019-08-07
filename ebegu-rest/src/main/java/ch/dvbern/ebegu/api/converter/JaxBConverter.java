@@ -2300,7 +2300,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(betreuung);
 		requireNonNull(betreuungJAXP);
 
-		convertAbstractVorgaengerFieldsToEntity(betreuungJAXP, betreuung);
+		abstractPlatzToEntity(betreuungJAXP, betreuung);
 		betreuung.setGrundAblehnung(betreuungJAXP.getGrundAblehnung());
 		betreuung.setDatumAblehnung(betreuungJAXP.getDatumAblehnung());
 		betreuung.setDatumBestaetigung(betreuungJAXP.getDatumBestaetigung());
@@ -2677,6 +2677,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
+		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;
 	}
 
@@ -2686,7 +2687,16 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
+		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;
+	}
+
+	private void setMandatoryFieldsOnJaxBetreuungForAnmeldungen(@Nonnull JaxBetreuung jaxBetreuung) {
+		// Wir verwenden Client-seitig dasselbe Objekt für Betreuungen und Anmeldungen
+		// Auf JaxBetreuung sind einigeFelder zwingend, die für Anmeldungen nicht benötigt werden,
+		// diese müssen hier initialisiert werden
+		jaxBetreuung.setVertrag(Boolean.TRUE);
+		jaxBetreuung.setErweiterteBetreuungContainer(new JaxErweiterteBetreuungContainer());
 	}
 
 	@Nonnull

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,8 +46,8 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAnmeldungDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -121,7 +120,7 @@ public class BetreuungResource {
 	}
 
 	private JaxBetreuung savePlatzBetreuung(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer, Boolean abwesenheit) {
-		if (hasDuplicateBetreuung(betreuungJAXP, kindContainer.getBetreuungen())) {
+		if (BetreuungUtil.hasDuplicateBetreuung(betreuungJAXP, kindContainer.getBetreuungen())) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzBetreuung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 		}
 		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
@@ -134,7 +133,7 @@ public class BetreuungResource {
 	}
 
 	private JaxBetreuung savePlatzAnmeldungTagesschule(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer, Boolean abwesenheit) {
-		if (hasDuplicateAnmeldungTagesschule(betreuungJAXP, kindContainer.getAnmeldungenTagesschule())) {
+		if (BetreuungUtil.hasDuplicateAnmeldungTagesschule(betreuungJAXP, kindContainer.getAnmeldungenTagesschule())) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzAnmeldungTagesschule", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 		}
 		AnmeldungTagesschule convertedAnmeldungTagesschule = converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
@@ -151,7 +150,7 @@ public class BetreuungResource {
 	}
 
 	private JaxBetreuung savePlatzAnmeldungFerieninsel(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer, Boolean abwesenheit) {
-		if (hasDuplicateAnmeldungFerieninsel(betreuungJAXP, kindContainer.getAnmeldungenFerieninsel())) {
+		if (BetreuungUtil.hasDuplicateAnmeldungFerieninsel(betreuungJAXP, kindContainer.getAnmeldungenFerieninsel())) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzAnmeldungFerieninsel", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 		}
 		AnmeldungFerieninsel convertedAnmeldungFerieninsel = converter.anmeldungFerieninselToStoreableEntity(betreuungJAXP);
@@ -429,10 +428,10 @@ public class BetreuungResource {
 
 		Optional<KindContainer> kind = kindService.findKind(jaxAnmeldungDTO.getKindContainerId());
 		if (kind.isPresent()) {
-			if (hasDuplicateAnmeldungTagesschule(jaxAnmeldungDTO.getBetreuung(), kind.get().getAnmeldungenTagesschule())) {
+			if (BetreuungUtil.hasDuplicateAnmeldungTagesschule(jaxAnmeldungDTO.getBetreuung(), kind.get().getAnmeldungenTagesschule())) {
 				throw new EbeguRuntimeException("createAnmeldung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 			}
-			if (hasDuplicateAnmeldungFerieninsel(jaxAnmeldungDTO.getBetreuung(), kind.get().getAnmeldungenFerieninsel())) {
+			if (BetreuungUtil.hasDuplicateAnmeldungFerieninsel(jaxAnmeldungDTO.getBetreuung(), kind.get().getAnmeldungenFerieninsel())) {
 				throw new EbeguRuntimeException("createAnmeldung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 			}
 
@@ -452,56 +451,5 @@ public class BetreuungResource {
 		}
 		throw new EbeguEntityNotFoundException("createAnmeldung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, KIND_CONTAINER_ID_INVALID + jaxAnmeldungDTO
 			.getKindContainerId());
-	}
-
-	private boolean hasDuplicateBetreuung(JaxBetreuung betreuungJAXP, @Nullable Set<Betreuung> betreuungen) {
-		if (betreuungen != null) {
-			return betreuungen.stream().anyMatch(betreuung -> {
-				if (!Objects.equals(betreuung.getId(), betreuungJAXP.getId())) {
-					return !betreuung.getBetreuungsstatus().isStorniert() &&
-						isSameInstitution(betreuungJAXP, betreuung);
-				}
-				return false;
-			});
-		}
-		return false;
-	}
-
-	private boolean hasDuplicateAnmeldungTagesschule(JaxBetreuung betreuungJAXP, @Nullable Set<AnmeldungTagesschule> betreuungen) {
-		if (betreuungen != null) {
-			return betreuungen.stream().anyMatch(betreuung -> {
-				if (!Objects.equals(betreuung.getId(), betreuungJAXP.getId())) {
-					return !betreuung.getBetreuungsstatus().isStorniert() &&
-						isSameInstitution(betreuungJAXP, betreuung);
-				}
-				return false;
-			});
-		}
-		return false;
-	}
-
-	private boolean hasDuplicateAnmeldungFerieninsel(JaxBetreuung betreuungJAXP, @Nullable Set<AnmeldungFerieninsel> betreuungen) {
-		if (betreuungen != null) {
-			return betreuungen.stream().anyMatch(betreuung -> {
-				if (!Objects.equals(betreuung.getId(), betreuungJAXP.getId())) {
-					return !betreuung.getBetreuungsstatus().isStorniert() &&
-						isSameInstitution(betreuungJAXP, betreuung) &&
-						isSameFerien(betreuungJAXP, betreuung);
-				}
-				return false;
-			});
-		}
-		return false;
-	}
-
-	private boolean isSameFerien(JaxBetreuung betreuungJAXP, AnmeldungFerieninsel betreuung) {
-		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
-		Objects.requireNonNull(betreuungJAXP.getBelegungFerieninsel());
-		return betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.FERIENINSEL &&
-			Objects.equals(betreuung.getBelegungFerieninsel().getFerienname(), betreuungJAXP.getBelegungFerieninsel().getFerienname());
-	}
-
-	private boolean isSameInstitution(JaxBetreuung betreuungJAXP, AbstractPlatz betreuung) {
-		return betreuung.getInstitutionStammdaten().getId().equals(betreuungJAXP.getInstitutionStammdaten().getId());
 	}
 }
