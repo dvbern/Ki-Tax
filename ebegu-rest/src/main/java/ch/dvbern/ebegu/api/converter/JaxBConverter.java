@@ -3698,7 +3698,6 @@ public class JaxBConverter extends AbstractConverter {
 		return kindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(Betreuung::getInstitutionStammdaten)
-			.filter(is -> is != null && is.getInstitution() != null)
 			.map(is -> is.getInstitution().getName())
 			.collect(Collectors.toSet());
 	}
@@ -3708,7 +3707,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(JaxBetreuung::getInstitutionStammdaten)
-			.filter(is -> is != null && is.getInstitution() != null)
+			.filter(is -> is != null)
 			.map(is -> is.getInstitution().getName())
 			.collect(Collectors.toSet());
 	}
