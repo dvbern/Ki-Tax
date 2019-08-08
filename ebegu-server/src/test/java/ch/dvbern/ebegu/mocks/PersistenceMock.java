@@ -59,6 +59,8 @@ public class PersistenceMock extends PersistenceService {
 		if (ELEMENTS.containsKey(entity.getClass())) {
 			ELEMENTS.get(entity.getClass()).remove(entity);
 			ELEMENTS.get(entity.getClass()).add(entity);
+		} else {
+			persist(entity);
 		}
 		return entity;
 	}

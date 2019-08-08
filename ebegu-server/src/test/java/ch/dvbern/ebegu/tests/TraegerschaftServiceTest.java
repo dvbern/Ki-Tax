@@ -15,36 +15,38 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.util.Collection;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.services.TraegerschaftService;
+import ch.dvbern.ebegu.mocks.CriteriaQueryHelperMock;
+import ch.dvbern.ebegu.mocks.PersistenceMock;
+import ch.dvbern.ebegu.services.TraegerschaftServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
+import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
+import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Tests fuer die Klasse TraegerschaftService
  */
-@RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
-@Transactional(TransactionMode.DISABLED)
-public class TraegerschaftServiceTest extends AbstractEbeguLoginTest {
+public class TraegerschaftServiceTest {
 
-	@Inject
-	private TraegerschaftService traegerschaftService;
+	@Rule
+	public NeedleRule needleRule = new NeedleRule();
 
-	@Inject
-	private Persistence persistence;
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@ObjectUnderTest
+	private TraegerschaftServiceBean traegerschaftService;
+
+	@InjectIntoMany
+	private final PersistenceMock persistence = new PersistenceMock();
+
+	@InjectIntoMany
+	private final CriteriaQueryHelperMock criteriaQueryHelper = new CriteriaQueryHelperMock();
+
 
 	@Test
 	public void createTraegerschaft() {
@@ -63,11 +65,8 @@ public class TraegerschaftServiceTest extends AbstractEbeguLoginTest {
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
 
 		traegerschaftService.saveTraegerschaft(traegerschaft);
-		Collection<Traegerschaft> allTraegerschaften = traegerschaftService.getAllTraegerschaften();
-		Assert.assertEquals(1, allTraegerschaften.size());
-		traegerschaftService.removeTraegerschaft(allTraegerschaften.iterator().next().getId());
-		allTraegerschaften = traegerschaftService.getAllTraegerschaften();
-		Assert.assertEquals(0, allTraegerschaften.size());
+		Assert.assertTrue(traegerschaftService.findTraegerschaft(traegerschaft.getId()).isPresent());
+		traegerschaftService.removeTraegerschaft(traegerschaft.getId());
+		Assert.assertFalse(traegerschaftService.findTraegerschaft(traegerschaft.getId()).isPresent());
 	}
-
 }
