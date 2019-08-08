@@ -193,12 +193,10 @@ import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.enums.Anmeldestatus;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
@@ -2210,42 +2208,6 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setBetreuungNummer(betreuungJAXP.getBetreuungNummer());
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
-	}
-
-	@Nonnull
-	private Anmeldestatus betreuungsstatusToAnmeldestatus(@Nonnull Betreuungsstatus betreuungsstatus) {
-		switch (betreuungsstatus) {
-		case SCHULAMT_ANMELDUNG_ERFASST:
-			return Anmeldestatus.SCHULAMT_ANMELDUNG_ERFASST;
-		case SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-			return Anmeldestatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
-		case SCHULAMT_ANMELDUNG_AUSGELOEST:
-			return Anmeldestatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
-		case SCHULAMT_ANMELDUNG_ABGELEHNT:
-			return Anmeldestatus.SCHULAMT_ANMELDUNG_ABGELEHNT;
-		case SCHULAMT_FALSCHE_INSTITUTION:
-			return Anmeldestatus.SCHULAMT_FALSCHE_INSTITUTION;
-		default:
-			throw new IllegalArgumentException("Unbekannter Status für Anmeldungen");
-		}
-	}
-
-	@Nonnull
-	private Betreuungsstatus anmeldestatusToBetreuungsstatus(@Nonnull Anmeldestatus betreuungsstatus) {
-		switch (betreuungsstatus) {
-		case SCHULAMT_ANMELDUNG_ERFASST:
-			return Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
-		case SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-			return Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
-		case SCHULAMT_ANMELDUNG_AUSGELOEST:
-			return Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
-		case SCHULAMT_ANMELDUNG_ABGELEHNT:
-			return Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT;
-		case SCHULAMT_FALSCHE_INSTITUTION:
-			return Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION;
-		default:
-			throw new IllegalArgumentException("Unbekannter Status für Anmeldungen");
-		}
 	}
 
 	@Nonnull
