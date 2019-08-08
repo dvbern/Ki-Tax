@@ -84,8 +84,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	@Inject
 	private Persistence persistence;
 	@Inject
-	private BetreuungService betreuungService;
-	@Inject
 	private KindService kindService;
 	@Inject
 	private ErwerbspensumService erwerbspensumService;
