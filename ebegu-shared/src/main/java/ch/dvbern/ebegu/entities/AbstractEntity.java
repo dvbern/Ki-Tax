@@ -252,6 +252,6 @@ public abstract class AbstractEntity implements Serializable {
 	public abstract boolean isSame(AbstractEntity other);
 
 	public String getMessageForAccessException() {
-		return "No specific message set for this object type!";
+		return "No specific message set for this object type: " + this.getClass().getSimpleName();
 	}
 }
