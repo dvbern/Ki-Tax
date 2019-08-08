@@ -42,7 +42,6 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
-import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -87,7 +86,7 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-public class Betreuung extends AbstractPlatz implements Searchable {
+public class Betreuung extends AbstractPlatz {
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
