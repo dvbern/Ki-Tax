@@ -70,7 +70,6 @@
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_HINT1": "Es sind die Einkommens- und Vermögensverhältnisse des Jahres {{basisjahr}} massgebend.",
-    "FINANZIELLE_SITUATION_HINT2": "Alle Angaben können der Steuererklärung oder der Veranlagungsverfügung des Jahres {{basisjahr}} entnommen werden.",
     "FINANZIELLE_SITUATION_NETTOLOHN": "Nettolohn",
     "FINANZIELLE_SITUATION_NETTOLOHN_HELP": "Ziffer 2.21 der Steuererklärung (Formular 2) oder Lohnausweise Ziffer 11",
     "FINANZIELLE_SITUATION_FAMILIENZULAGE": "Familienzulagen, weitere steuerbare Einkünfte",

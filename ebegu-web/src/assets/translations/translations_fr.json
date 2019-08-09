@@ -70,7 +70,6 @@
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Avez-vous reçu votre avis de taxation fiscale pour l'année {{basisjahr}} ?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Avez-vous rempli votre déclaration d'impôt pour l'année {{basisjahr}} ?",
     "FINANZIELLE_SITUATION_HINT1": "Les revenus et la fortune de l'année {{basisjahr}} sont déterminants.",
-    "FINANZIELLE_SITUATION_HINT2": "Toutes les informations se trouvent dans la déclaration d'impôt ou l'avis de taxation fiscale de l'année {{basisjahr}}.",
     "FINANZIELLE_SITUATION_NETTOLOHN": "Salaire net",
     "FINANZIELLE_SITUATION_NETTOLOHN_HELP": "Point 2.21 de la déclaration d'impôt (formulaire 2) ou point 11 du certificat de salaire.",
     "FINANZIELLE_SITUATION_FAMILIENZULAGE": "Allocations familiales, autres revenus imposables",
