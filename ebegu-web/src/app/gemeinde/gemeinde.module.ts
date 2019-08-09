@@ -16,6 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {IbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
@@ -33,6 +34,7 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
         SharedModule,
         GemeindeRoutingModule,
         MaterialModule,
+        IbanModule,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).

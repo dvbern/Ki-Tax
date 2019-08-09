@@ -243,7 +243,7 @@
                             <label class="required" translate for="iban_nr_id">IBAN_NUMMER</label>
                             <input id="iban_nr_id" type="text" name="iban_nr_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.iban"
-                                   [maxlength]="26" class="form-control" required
+                                   [maxlength]="26" class="form-control" required ngxIban
                                    placeholder="CHXX XXXX XXXX XXXX XXXX X">
                             <dv-error-messages [errorObject]="form.controls.iban_nr_id?.errors"
                                                inputId="iban_nr_id"></dv-error-messages>
