@@ -909,6 +909,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setZahlungsempfaegerPlz(adresseKontoinhaber.getPlz());
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
+				if (institutionStammdaten.getIban() == null) {
+					LOGGER.warn("Keine IBAN fuer Institution {}", institutionStammdaten.getInstitution().getName());
+				}
 				auszahlungDTO.setZahlungsempfaegerIBAN(institutionStammdaten.getIban().toString());
 				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(institutionStammdaten.getIban()
 					.extractClearingNumberWithoutLeadingZeros());

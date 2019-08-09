@@ -93,6 +93,8 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
         if (!this.form.$dirty && !this.dirty) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
+            // Update wizardStepStatus also if the form is empty and not dirty
+            this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
             return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith());
         }
 

@@ -16,6 +16,7 @@
  */
 
 import {NgModule} from '@angular/core';
+import {IbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
@@ -28,6 +29,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         SharedModule,
         InstitutionRoutingModule,
         MaterialModule,
+        IbanModule,
     ],
     declarations: [
         InstitutionListComponent,
