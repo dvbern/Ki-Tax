@@ -195,6 +195,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				Optional<Betreuung> gueltigeBetreuungOptional = betreuungService.findGueltigeBetreuungByBGNummer(betreuung.getBGNummer());
 				if (gueltigeBetreuungOptional.isPresent()) {
 					betreuung = gueltigeBetreuungOptional.get();
+				} else {
+					potentielleFehlerList.add("Keine gueltige Betreuung gefunden fuer BG " + betreuung.getBGNummer());
 				}
 			}
 			// Jetzt kann es immer noch sein, dass es zwar die gueltige Verfuegung, aber mit NICHT_EINTRETEN ist
