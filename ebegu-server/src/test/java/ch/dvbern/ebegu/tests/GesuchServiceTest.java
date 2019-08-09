@@ -982,7 +982,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
+		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@mailbucket.dvbern.ch");
 		return persistence.merge(gesuch);
 	}
 
@@ -992,7 +992,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
+		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@mailbucket.dvbern.ch");
 		return persistence.merge(gesuch);
 	}
 

@@ -62,7 +62,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(1, allGesuchsteller.size());
 		GesuchstellerContainer nextGesuchsteller = allGesuchsteller.iterator().next();
 		Assert.assertEquals("Tester", nextGesuchsteller.extractNachname());
-		Assert.assertEquals("tim.tester@example.com", nextGesuchsteller.getGesuchstellerJA().getMail());
+		Assert.assertEquals("tim.tester@mailbucket.dvbern.ch", nextGesuchsteller.getGesuchstellerJA().getMail());
 	}
 
 	@Test
@@ -72,11 +72,11 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		Optional<GesuchstellerContainer> gesuchstellerOptional = gesuchstellerService.findGesuchsteller(insertedGesuchsteller.getId());
 		Assert.assertTrue(gesuchstellerOptional.isPresent());
 		GesuchstellerContainer gesuchsteller = gesuchstellerOptional.get();
-		Assert.assertEquals("tim.tester@example.com", gesuchsteller.getGesuchstellerJA().getMail());
+		Assert.assertEquals("tim.tester@mailbucket.dvbern.ch", gesuchsteller.getGesuchstellerJA().getMail());
 
-		gesuchsteller.getGesuchstellerJA().setMail("fritz.mueller@example.com");
+		gesuchsteller.getGesuchstellerJA().setMail("fritz.mueller@mailbucket.dvbern.ch");
 		GesuchstellerContainer updatedGesuchsteller = gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1, false);
-		Assert.assertEquals("fritz.mueller@example.com", updatedGesuchsteller.getGesuchstellerJA().getMail());
+		Assert.assertEquals("fritz.mueller@mailbucket.dvbern.ch", updatedGesuchsteller.getGesuchstellerJA().getMail());
 	}
 
 	@Test
