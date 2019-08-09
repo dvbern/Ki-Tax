@@ -1600,7 +1600,7 @@
     "KORREKTURZAHLUNG_DIALOG_IMMUTABLE": "Vous ne pourrez plus revenir en arrière.",
     "KORREKTURZAHLUNG_DIALOG_BACK": "Non, revenir en arrière",
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Oui, rendre une décision",
-    "FILTER": "Filtre",
+    "SUCHBEGRIFF_EINGEBEN": "",
     "MANDANT_DIREKTION": "Direction de la santé publique et de la prévoyance sociale",
     "MANDANT_AMT": "Office des affaires sociales",
     "GEMEINDE_TAB_STAMMDATEN": "Données de base",
