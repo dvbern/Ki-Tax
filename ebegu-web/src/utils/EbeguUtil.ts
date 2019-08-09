@@ -164,6 +164,7 @@ export default class EbeguUtil {
             + 'input.ng-invalid,'
             + 'textarea.ng-invalid,'
             + 'select.ng-invalid,'
+            + 'mat-select.ng-invalid,'
             + 'md-checkbox.ng-invalid').first();
         if (tmp) {
             tmp.focus();
