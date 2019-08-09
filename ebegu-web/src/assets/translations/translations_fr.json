@@ -1608,5 +1608,5 @@
     "GEMEINDE_TAB_TS": "Ecole à journée continue",
     "GEMEINDE_TAB_FI": "Ilots de vacances",
     "GEMEINDE_TAB_SAVE_WARNING": "Le formulaire ne semble pas avoir été rempli complètement. Veuillez vérifier tous les onglets.",
-    "ERROR_IBAN": "IBAN a un format invalide"
+    "ERROR_IBAN": "IBAN a un format invalid"
 }
