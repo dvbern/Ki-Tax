@@ -84,6 +84,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -367,9 +368,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	private List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer, boolean getOnlyAktuelle) {
-		final int betreuungNummer = getBetreuungNummerFromBGNummer(bgNummer);
-		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
-		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
+		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
+		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
+		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
@@ -379,7 +380,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		} else {
 			return new ArrayList<>();
 		}
-		final long fallnummer = getFallnummerFromBGNummer(bgNummer);
+		final long fallnummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -422,7 +423,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	@Nonnull
 	public Optional<Betreuung> findGueltigeBetreuungByBGNummer(@Nonnull String bgNummer) {
-		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
+		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
 			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
@@ -431,9 +432,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 
 		final Gesuchsperiode gesuchsperiode = gesuchsperiodeOptional.get();
-		final int betreuungNummer = getBetreuungNummerFromBGNummer(bgNummer);
-		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
-		final long fallnummer = getFallnummerFromBGNummer(bgNummer);
+		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
+		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
+		final long fallnummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -463,34 +464,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Betreuung resultOrNull = persistence.getCriteriaSingleResult(query);
 		return Optional.ofNullable(resultOrNull);
-	}
-
-	@Override
-	public Long getFallnummerFromBGNummer(String bgNummer) {
-		//17.000120.1.1 -> 120 (long)
-		return Long.valueOf(COMPILE.matcher(bgNummer.substring(3, 9)).replaceFirst(""));
-	}
-
-	@Override
-	public int getYearFromBGNummer(String bgNummer) {
-		//17.000120.1.1 -> 17 (int)
-		return Integer.valueOf(bgNummer.substring(0, 2)) + 2000;
-	}
-
-	@Override
-	public int getKindNummerFromBGNummer(String bgNummer) {
-		//17.000120.1.1 -> 1 (int) can have more than 9 Kind
-		return Integer.valueOf(bgNummer.split("\\.", -1)[2]);
-	}
-
-	@Override
-	public int getBetreuungNummerFromBGNummer(String bgNummer) {
-		return Integer.valueOf(bgNummer.split("\\.", -1)[3]);
-	}
-
-	@Override
-	public boolean validateBGNummer(String bgNummer) {
-		return bgNummer.matches("^\\d{2}\\.\\d{6}\\.\\d+\\.\\d+$");
 	}
 
 	@Override
