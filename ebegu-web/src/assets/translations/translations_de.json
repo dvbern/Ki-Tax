@@ -1600,7 +1600,7 @@
     "KORREKTURZAHLUNG_DIALOG_IMMUTABLE": "Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden!",
     "KORREKTURZAHLUNG_DIALOG_BACK": "Nein, zurück",
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
-    "FILTER": "Filter",
+    "SUCHBEGRIFF_EINGEBEN": "Suchbegriff eingeben",
     "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
     "MANDANT_AMT": "Sozialamt",
     "GEMEINDE_TAB_STAMMDATEN": "Stammdaten",
