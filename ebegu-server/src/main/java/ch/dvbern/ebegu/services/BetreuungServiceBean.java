@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
@@ -122,7 +121,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 public class BetreuungServiceBean extends AbstractBaseService implements BetreuungService {
 
 	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "betreuung darf nicht null sein";
-	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
 
 	@Inject
 	private Persistence persistence;
