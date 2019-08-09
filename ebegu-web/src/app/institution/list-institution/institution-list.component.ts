@@ -35,7 +35,6 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
     selector: 'dv-institution-list',
     templateUrl: './institution-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['./institution-list-component.less'],
 })
 export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
