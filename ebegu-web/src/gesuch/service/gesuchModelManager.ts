@@ -222,7 +222,7 @@ export default class GesuchModelManager {
     /**
      * Prueft ob der 2. Gesuchtsteller eingetragen werden muss je nach dem was in Familiensituation ausgewaehlt wurde.
      * Wenn es sich um eine Mutation handelt wird nur geschaut ob der 2GS bereits existiert. Wenn ja, dann wird er
-     * benoetigt, da bei Mutationen darf der 2GS nicht geloescht werden
+     * benoetigt, da bei Mutationen der 2GS nicht geloescht werden darf
      */
     public isGesuchsteller2Required(): boolean {
         if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus) {

@@ -267,43 +267,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		persistence.persist(sender);
 	}
 
-	@Test
-	public void getFallnummerFromBetreuungsIdTest() {
-		assertEquals(108L, betreuungService.getFallnummerFromBGNummer("18.000108.1.2").longValue());
-		assertEquals(123456L, betreuungService.getFallnummerFromBGNummer("18.123456.1.2").longValue());
-	}
-
-	@Test
-	public void getYearFromBetreuungsIdTest() {
-		assertEquals(2018, betreuungService.getYearFromBGNummer("18.000108.1.2"));
-	}
-
-	@Test
-	public void getKindNummerFromBetreuungsIdTest() {
-		assertEquals(1, betreuungService.getKindNummerFromBGNummer("18.000108.1.2"));
-		assertEquals(2, betreuungService.getKindNummerFromBGNummer("18.000108.2.2"));
-		assertEquals(88, betreuungService.getKindNummerFromBGNummer("18.000108.88.2"));
-	}
-
-	@Test
-	public void getBetreuungNummerFromBetreuungsId() {
-		assertEquals(2, betreuungService.getBetreuungNummerFromBGNummer("18.000108.1.2"));
-		assertEquals(1, betreuungService.getBetreuungNummerFromBGNummer("18.000108.2.1"));
-		assertEquals(99, betreuungService.getBetreuungNummerFromBGNummer("18.000108.88.99"));
-	}
-
-	@Test
-	public void validateBGNummer() {
-		assertTrue("18.000108.1.2", betreuungService.validateBGNummer("18.000108.1.2"));
-		assertTrue("88.999999.77.66", betreuungService.validateBGNummer("88.999999.77.66"));
-		assertTrue("88.999999.7.66", betreuungService.validateBGNummer("88.999999.7.66"));
-		assertTrue("88.999999.77.6", betreuungService.validateBGNummer("88.999999.77.6"));
-		assertFalse("1.000108.1.2", betreuungService.validateBGNummer("1.000108.1.2"));
-		assertFalse("88.99999.77.66", betreuungService.validateBGNummer("88.99999.77.66"));
-		assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
-		assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
-	}
-
 	/**
 	 * Kita-Zeitraum = Gesuchsperiode (mindestens)
 	 */

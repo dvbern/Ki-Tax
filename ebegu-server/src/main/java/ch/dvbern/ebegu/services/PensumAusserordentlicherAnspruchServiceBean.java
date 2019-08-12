@@ -93,12 +93,14 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 	}
 
 	private boolean isMinimalesErwerbspensumUnterschritten(@Nonnull Gesuch gesuch) {
+		// Wenn es nur Schulamt-Plaetze hat, spielt das Erwerbspensum keine Rolle
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			return false;
+		}
 		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
-
 		if (gesuchWithCalcVerfuegung.extractAllBetreuungen().isEmpty()) {
 			return false;
 		}
-
 		for (Betreuung betreuung : gesuchWithCalcVerfuegung.extractAllBetreuungen()) {
 			if (betreuung.getVerfuegung() != null) {
 				Objects.requireNonNull(betreuung.getVerfuegung());
