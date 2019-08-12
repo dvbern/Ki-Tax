@@ -913,7 +913,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
 				IBAN iban = institutionStammdaten.extractIban();
-				Objects.requireNonNull(iban, "Keine IBAN fuer Institution {}", institutionStammdaten.getInstitution().getName());
+				Objects.requireNonNull(iban, "Keine IBAN fuer Institution " + institutionStammdaten.getInstitution().getName());
 				auszahlungDTO.setZahlungsempfaegerIBAN(iban.toString());
 				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(iban.extractClearingNumberWithoutLeadingZeros());
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
