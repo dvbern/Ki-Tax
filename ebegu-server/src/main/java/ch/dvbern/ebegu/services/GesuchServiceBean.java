@@ -247,8 +247,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	private Gesuch createMutation(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart, @Nonnull StringBuilder logInfo) {
 		if (isThereAnyOpenMutation(gesuchToCreate.getDossier(), gesuchsperiode)) {
-			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-				gesuchToCreate.getDossier().getId(), gesuchsperiode.getId());
+			throw new EbeguExistingAntragException(
+				"antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
+				null, gesuchToCreate.getDossier().getId(), gesuchsperiode.getId());
 		}
 		Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, gesuchToCreate.getDossier(), true);
 		if (gesuchForMutationOpt.isPresent()) {

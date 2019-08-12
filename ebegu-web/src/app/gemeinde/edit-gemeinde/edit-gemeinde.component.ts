@@ -15,30 +15,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('EditGemeindeComponent');
 
 @Component({
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ['./edit-gemeinde.component.less'],
 })
 export class EditGemeindeComponent implements OnInit {
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChildren(NgForm) public forms: QueryList<NgForm>;
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
@@ -48,6 +55,9 @@ export class EditGemeindeComponent implements OnInit {
     private fileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;
+    public editMode: boolean = false;
+    public tageschuleEnabledForMandant: boolean;
+    public currentTab: number;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -55,6 +65,8 @@ export class EditGemeindeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -63,9 +75,23 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
+
         this.navigationSource = this.$transition$.from();
+        if (this.navigationSource.name === 'einladung.abschliessen') {
+            this.editMode = true;
+        }
+
         this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
 
+        this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+
+        this.loadStammdaten();
+
+        // initially display the first tab
+        this.currentTab = 0;
+    }
+
+    private loadStammdaten(): void {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
@@ -106,37 +132,44 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
-        if (!this.validateData(stammdaten)) {
-            return;
-        }
-        this.errorService.clearAll();
-        if (this.keineBeschwerdeAdresse) {
-            // Reset Beschwerdeadresse if not used
-            stammdaten.beschwerdeAdresse = undefined;
-        }
-        if (stammdaten.standardRechtsmittelbelehrung) {
-            // reset custom Rechtsmittelbelehrung if checkbox not checked
-            stammdaten.rechtsmittelbelehrung = undefined;
-        }
-
-        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
-            if (this.fileToUpload) {
-                this.persistLogo(this.fileToUpload, true);
-            } else {
-                this.navigateBack();
+        this.validateData(stammdaten).then(index => {
+            if (index !== undefined) {
+                this.currentTab = index;
+                this.showSaveWarningDialog();
+                return;
             }
+            this.setViewMode();
+
+            this.errorService.clearAll();
+            if (this.keineBeschwerdeAdresse) {
+                // Reset Beschwerdeadresse if not used
+                stammdaten.beschwerdeAdresse = undefined;
+            }
+            if (stammdaten.standardRechtsmittelbelehrung) {
+                // reset custom Rechtsmittelbelehrung if checkbox not checked
+                stammdaten.rechtsmittelbelehrung = undefined;
+            }
+
+            this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
+                if (this.fileToUpload) {
+                    this.persistLogo(this.fileToUpload);
+                } else if (this.isRegisteringGemeinde) {
+                    this.$state.go('welcome');
+                    return;
+                }
+            });
         });
     }
 
-    private persistLogo(file: File, navigateBack: boolean): void {
-        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(() => {
-            if (navigateBack) {
+    private persistLogo(file: File): void {
+        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(
+            () => {
                 this.navigateBack();
-            }
-        }, () => {
-            this.errorService.clearAll();
-            this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
-        });
+            },
+            () => {
+                this.errorService.clearAll();
+                this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+            });
     }
 
     public collectLogoChange(file: File): void {
@@ -146,13 +179,21 @@ export class EditGemeindeComponent implements OnInit {
         this.fileToUpload = file;
     }
 
-    private validateData(stammdaten: TSGemeindeStammdaten): boolean {
-        return (stammdaten.korrespondenzspracheDe || stammdaten.korrespondenzspracheFr)
-            && this.form.valid;
-    }
+    private validateData(stammdaten: TSGemeindeStammdaten): Promise<number> {
+        let errorIndex: any;
 
-    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
-        return b1 && b2 ? b1.username === b2.username : b1 === b2;
+        if (!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr) {
+            errorIndex = 0;
+        }
+
+        this.forms.forEach((form, index) => {
+            // do not override the index of the first error found!
+            if (!form.valid && errorIndex === undefined) {
+                errorIndex = index - 1;
+            }
+        });
+
+        return Promise.resolve(errorIndex);
     }
 
     private navigateBack(): void {
@@ -167,7 +208,7 @@ export class EditGemeindeComponent implements OnInit {
         }
 
         const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-            ? 'gemeinde.view'
+            ? 'gemeinde.edit'
             : this.navigationSource;
 
         this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
@@ -175,5 +216,48 @@ export class EditGemeindeComponent implements OnInit {
 
     public isRegistering(): boolean {
         return this.isRegisteringGemeinde;
+    }
+
+    public setEditMode(): void {
+        this.editMode = true;
+    }
+
+    private setViewMode(): void {
+        this.editMode = false;
+    }
+
+    public editModeForBG(): boolean {
+        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+            return this.editMode;
+        }
+        return false;
+    }
+
+    public editModeForTSFI(): boolean {
+        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+            return this.editMode;
+        }
+        return false;
+    }
+
+    /**
+     * Because we only have one button to save the complete formular (i.e. all tabs) we show a dialog indicating that
+     * the form contains errors. This is useful in case the user has a correct tab open but the error is in another
+     * tab that she doesn't see.
+     */
+    private showSaveWarningDialog(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
+        };
+        this.dialog
+            .open(DvNgOkDialogComponent, dialogConfig)
+            .afterClosed().subscribe(
+            () => {
+                EbeguUtil.selectFirstInvalid();
+            },
+            err => {
+                LOG.error(err);
+            });
     }
 }
