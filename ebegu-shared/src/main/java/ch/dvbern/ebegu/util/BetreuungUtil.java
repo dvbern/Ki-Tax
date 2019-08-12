@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,6 +33,8 @@ import ch.dvbern.ebegu.services.EinstellungService;
  * Allgemeine Utils fuer Betreuung
  */
 public final class BetreuungUtil {
+
+	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
 
 	private BetreuungUtil() {
 	}
@@ -64,5 +67,34 @@ public final class BetreuungUtil {
 			return parameter.getValueAsBigDecimal();
 		}
 		return BigDecimal.ZERO;
+	}
+
+	public static Long getFallnummerFromBGNummer(String bgNummer) {
+		// 17.000120.003.1.2 -> 120 (long)
+		return Long.valueOf(COMPILE.matcher(bgNummer.substring(3, 9)).replaceFirst(""));
+	}
+
+	public static int getYearFromBGNummer(String bgNummer) {
+		// 17.000120.003.1.2 -> 17 (int)
+		return Integer.valueOf(bgNummer.substring(0, 2)) + 2000;
+	}
+
+	public static int getGemeindeFromBGNummer(String bgNummer) {
+		// 17.000120.003.1.2 -> 3 (int)
+		return Integer.valueOf(bgNummer.split("\\.", -1)[2]);
+	}
+
+	public static int getKindNummerFromBGNummer(String bgNummer) {
+		// 17.000120.003.1.2 -> 1 (int) can have more than 9 Kind
+		return Integer.valueOf(bgNummer.split("\\.", -1)[3]);
+	}
+
+	public static int getBetreuungNummerFromBGNummer(String bgNummer) {
+		// 17.000120.003.1.2 -> 2 (int)
+		return Integer.valueOf(bgNummer.split("\\.", -1)[4]);
+	}
+
+	public static boolean validateBGNummer(String bgNummer) {
+		return bgNummer.matches("^\\d{2}\\.\\d{6}.\\d{3}\\.\\d+\\.\\d+$");
 	}
 }

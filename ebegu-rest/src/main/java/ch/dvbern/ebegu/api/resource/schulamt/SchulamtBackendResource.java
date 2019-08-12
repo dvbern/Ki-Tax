@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.VerfuegungService;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -137,7 +138,7 @@ public class SchulamtBackendResource {
 	public Response getAnmeldung(@Nonnull @PathParam("bgNummer") String bgNummer) {
 
 		try {
-			if (!betreuungService.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
 				return createBgNummerFormatError();
 			}
 
@@ -247,12 +248,12 @@ public class SchulamtBackendResource {
 			}
 
 			// Parse Fallnummer
-			if (!betreuungService.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
 				return createBgNummerFormatError();
 			}
 			long fallNummer;
 			try {
-				fallNummer = betreuungService.getFallnummerFromBGNummer(bgNummer);
+				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
 			} catch (Exception e) {
 				LOG.info("getFinanzielleSituation()", e);
 				return createBadParameterResponse("Can not parse bgNummer");
@@ -268,7 +269,7 @@ public class SchulamtBackendResource {
 			}
 
 			// Parse Gesuchsperiode
-			int yearFromBGNummer = betreuungService.getYearFromBGNummer(bgNummer);
+			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1))
 					.orElseThrow(() -> new EbeguEntityNotFoundException(

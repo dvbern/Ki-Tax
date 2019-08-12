@@ -26,8 +26,7 @@
         </div>
 
         <div class="filter">
-            <h3 class="uppercase" translate>FILTER</h3>
-            <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter">
+            <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
         </div>
 
         <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
