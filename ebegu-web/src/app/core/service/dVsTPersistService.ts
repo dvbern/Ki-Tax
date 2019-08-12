@@ -15,7 +15,6 @@
 
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import {TSSTPersistObject} from '../../../models/TSSTPersistObject';
 import {LogFactory} from '../logging/LogFactory';
 
 const LOG = LogFactory.createLog('DVsTPersistService');
@@ -29,7 +28,7 @@ export class DVsTPersistService {
 
     public static $inject: any = ['AuthLifeCycleService'];
 
-    public persistedData: TSSTPersistObject[];
+    public persistedData: Map<string, string> = new Map<string, string>();
 
     public constructor(private readonly authLifeCycleService: AuthLifeCycleService) {
         this.clearAll();
@@ -40,22 +39,16 @@ export class DVsTPersistService {
     }
 
     private clearAll(): void {
-        this.persistedData = [];
+        this.persistedData = new Map<string, string>();
     }
 
     public saveData(namespace: string, data: any): void {
-        const existingData = this.findNamespace(namespace);
-        if (existingData) {
-            existingData.data = JSON.stringify(data);
-        } else {
-            this.persistedData.push(new TSSTPersistObject(namespace, JSON.stringify(data)));
-        }
+        this.persistedData.set(namespace, JSON.stringify(data));
     }
 
     public loadData(namespace: string): any {
-        const existingData = this.findNamespace(namespace);
-        if (existingData) {
-            return JSON.parse(existingData.data);
+        if (this.persistedData.has(namespace)) {
+            return JSON.parse(this.persistedData.get(namespace));
         }
         return undefined;
     }
@@ -65,17 +58,11 @@ export class DVsTPersistService {
      * If it doesn't exist it returns false
      */
     public deleteData(namespace: string): boolean {
-        for (let i = 0; i < this.persistedData.length; i++) {
-            if (this.persistedData[i].namespace === namespace) {
-                this.persistedData.splice(i, 1);
-                return true;
-            }
+        if (this.persistedData.has(namespace)) {
+            this.persistedData.delete(namespace);
+            return true;
         }
         return false;
-    }
-
-    private findNamespace(namespace: string): TSSTPersistObject {
-        return this.persistedData.find(pd => pd.namespace === namespace);
     }
 
 }

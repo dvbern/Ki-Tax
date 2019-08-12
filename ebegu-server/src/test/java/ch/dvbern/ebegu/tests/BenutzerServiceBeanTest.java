@@ -161,7 +161,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createAdminTraegerschaftByEmail() {
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
 		persistence.persist(traegerschaft);
-		final String adminMail = "traegerschaft@example.com";
+		final String adminMail = "traegerschaft@mailbucket.dvbern.ch";
 		final Benutzer adminTraegerschaft = benutzerService.createAdminTraegerschaftByEmail(adminMail, traegerschaft);
 
 		assertCommonBenutzerFields(adminMail, adminTraegerschaft);
@@ -176,7 +176,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createAdminInstitutionByEmail() {
 		Institution institution = TestDataUtil.createAndPersistDefaultInstitution(persistence);
-		final String adminMail = "institution@example.com";
+		final String adminMail = "institution@mailbucket.dvbern.ch";
 		final Benutzer adminInstitution = benutzerService.createAdminInstitutionByEmail(adminMail, institution);
 
 		assertCommonBenutzerFields(adminMail, adminInstitution);
@@ -191,7 +191,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createAdminGemeindeByEmail() {
 		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
-		final String adminMail = "gemeinde@example.com";
+		final String adminMail = "gemeinde@mailbucket.dvbern.ch";
 		final Benutzer adminGemeinde = benutzerService.createAdminGemeindeByEmail(adminMail, UserRole.ADMIN_GEMEINDE, gemeinde);
 
 		assertCommonBenutzerFields(adminMail, adminGemeinde);
