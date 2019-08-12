@@ -478,16 +478,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@Nonnull
 	public List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer) {
-		return findAnmeldungenByBGNummer(bgNummer, false);
+		List<AbstractAnmeldung> result = new ArrayList<>();
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, false));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, false));
+		return result;
 	}
 
 	@Override
 	public List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
-		return findAnmeldungenByBGNummer(bgNummer, true);
+		List<AbstractAnmeldung> result = new ArrayList<>();
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungTagesschule.class, bgNummer, true));
+		result.addAll(findAnmeldungenByBGNummer(AnmeldungFerieninsel.class, bgNummer, true));
+		return result;
 	}
 
 	@Nonnull
-	private List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer, boolean getOnlyAktuelle) {
+	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByBGNummer(@Nonnull Class<T> clazz, @Nonnull String bgNummer, boolean getOnlyAktuelle) {
 		final int betreuungNummer = getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
@@ -503,10 +509,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final long fallnummer = getFallnummerFromBGNummer(bgNummer);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<AbstractAnmeldung> query = cb.createQuery(AbstractAnmeldung.class);
+		final CriteriaQuery<T> query = cb.createQuery(clazz);
 
-		Root<AbstractAnmeldung> root = query.from(AbstractAnmeldung.class);
-		final Join<AbstractAnmeldung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
+		Root<T> root = query.from(clazz);
+		final Join<T, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
 		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
 			KindContainer_.gesuch,
 			JoinType.LEFT);

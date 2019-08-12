@@ -219,6 +219,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void betreuungMitBelegungFerieninsel() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
+		TestDataUtil.saveInstitutionsstammdatenForTestfaelle(persistence);
 		kindContainer.getAnmeldungenFerieninsel().add(TestDataUtil.createAnmeldungFerieninsel(kindContainer));
 		final AnmeldungFerieninsel betreuungUnderTest = kindContainer.getAnmeldungenFerieninsel().iterator().next();
 
