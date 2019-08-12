@@ -167,6 +167,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public hasTagesschulenAnmeldung(): boolean {
+        if (!this.gesuchModelManager.gemeindeKonfiguration) {
+            return undefined;
+        }
         return this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
     }
 
