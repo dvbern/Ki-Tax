@@ -16,6 +16,7 @@
 <!--suppress XmlDuplicatedId -->
 <div class="dv-error-messages">
     <div ng-messages="vm.errorObject" class="error">
+        <div ng-message="iban" id="{{vm.inputid + '-error'}}" data-translate="ERROR_IBAN"></div>
         <div ng-message="required" id="{{vm.inputid + '-error'}}" data-translate="ERROR_REQUIRED"></div>
         <div ng-message="minlength" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MIN_LENG"></div>
         <div ng-message="maxlength" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MAX_LENG"></div>

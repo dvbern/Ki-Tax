@@ -52,18 +52,6 @@ public interface GemeindeService {
 	Optional<Gemeinde> findGemeinde(@Nonnull String id);
 
 	/**
-	 * Sucht eine Gemeinde anhand des Namens.
-	 */
-	@Nonnull
-	Optional<Gemeinde> findGemeindeByName(@Nonnull String name);
-
-	/**
-	 * Gibt die erste (und aktuell einzige) Gemeinde aus der DB zurueck
-	 */
-	@Nonnull
-	Gemeinde getFirst();
-
-	/**
 	 * Gibt alle Gemeinden zurück
 	 */
 	@Nonnull

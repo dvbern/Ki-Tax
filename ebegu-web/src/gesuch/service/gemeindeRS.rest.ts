@@ -72,11 +72,6 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
     }
 
-    public findGemeindeByName(gemeindeName: string): IPromise<TSGemeinde> {
-        return this.$http.get(`${this.serviceURL}/name/${encodeURIComponent(gemeindeName)}`)
-            .then(response => this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data));
-    }
-
     private initGemeindenForPrincipal(): void {
         this.authServiceRS.principal$
             .pipe(switchMap(user => this.toGemeindenForPrincipal$(user)))

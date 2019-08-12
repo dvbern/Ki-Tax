@@ -70,7 +70,6 @@
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_HINT1": "Es sind die Einkommens- und Vermögensverhältnisse des Jahres {{basisjahr}} massgebend.",
-    "FINANZIELLE_SITUATION_HINT2": "Alle Angaben können der Steuererklärung oder der Veranlagungsverfügung des Jahres {{basisjahr}} entnommen werden.",
     "FINANZIELLE_SITUATION_NETTOLOHN": "Nettolohn",
     "FINANZIELLE_SITUATION_NETTOLOHN_HELP": "Ziffer 2.21 der Steuererklärung (Formular 2) oder Lohnausweise Ziffer 11",
     "FINANZIELLE_SITUATION_FAMILIENZULAGE": "Familienzulagen, weitere steuerbare Einkünfte",
@@ -943,6 +942,7 @@
     "PDF_BEGLEITSCHREIBEN_ANZEIGEN": "Deckblatt als PDF anzeigen",
     "PDF_KOMPLETTE_KORRESPONDENZ_ANZEIGEN": "Komplette Korrespondenz als PDF anzeigen",
     "ZULETZT_BEARBEITER": "zuletzt {{username}}",
+    "BESTEHT_KONTINGENTIERUNG": "Es bestehen Kontingente für Betreuungsgutscheine",
     "GUELTIGES_GESUCH": "dies ist das aktuell gültige Gesuch",
     "GUELTIGE_BETREUUNG": "Aktuell gültige Betreuung",
     "TOOLBAR_ERSTGESUCH": "Erstgesuch",
@@ -1600,7 +1600,7 @@
     "KORREKTURZAHLUNG_DIALOG_IMMUTABLE": "Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden!",
     "KORREKTURZAHLUNG_DIALOG_BACK": "Nein, zurück",
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
-    "FILTER": "Filter",
+    "SUCHBEGRIFF_EINGEBEN": "Suchbegriff eingeben",
     "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
     "MANDANT_AMT": "Sozialamt",
     "GEMEINDE_TAB_STAMMDATEN": "Stammdaten",
@@ -1610,5 +1610,6 @@
     "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Reiter.",
     "ABWEICHUNGEN_MELDEN": "Abweichungen melden",
     "ABWEICHUNGEN_HELP": "Auf dieser Eingabemaske können Sie für {{vorname}} {{name}} Abweichungen zum vertraglich definierten Betreuungspensum der Institution {{institution}} erfassen und freigeben. Die einmal erfassten Werte bleiben bis zur Freigabe zwischengespeichert. Erst durch die Freigabe, werden die Daten an die Gemeinde gesendet. Die Gemeinde wird die Änderungen dann prüfen und einen angepassten Betreuungsgutschein ausstellen.",
-    "MONTH": "Monat"
+    "MONTH": "Monat",
+    "ERROR_IBAN": "IBAN hat ein ungültiges Format"
 }
