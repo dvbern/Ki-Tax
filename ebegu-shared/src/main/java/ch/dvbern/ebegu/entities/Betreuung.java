@@ -772,11 +772,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		if (isTagesfamilien) {
 			abweichung.setUnitForDisplay(PensumUnits.HOURS);
 		}
-
-		// we want it to be null for validation and filtering reasons!
-		abweichung.setPensum(null);
-		abweichung.setMonatlicheBetreuungskosten(null);
-
 		return abweichung;
 	}
 

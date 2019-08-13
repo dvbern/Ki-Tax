@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
-import ch.dvbern.ebegu.enums.PensumUnits;
 
 /**
  * DTO fuer Daten des Betreuungspensum
@@ -35,9 +34,9 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	private BetreuungspensumAbweichungStatus status;
 
-	private BigDecimal originalPensumMerged;
+	private BigDecimal vertraglichesPensum;
 
-	private BigDecimal originalKostenMerged ;
+	private BigDecimal vertraglicheKosten;
 
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
@@ -47,19 +46,19 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 		this.status = status;
 	}
 
-	public BigDecimal getOriginalPensumMerged() {
-		return originalPensumMerged;
+	public BigDecimal getVertraglichesPensum() {
+		return vertraglichesPensum;
 	}
 
-	public void setOriginalPensumMerged(BigDecimal originalPensumMerged) {
-		this.originalPensumMerged = originalPensumMerged;
+	public void setVertraglichesPensum(BigDecimal vertraglichesPensum) {
+		this.vertraglichesPensum = vertraglichesPensum;
 	}
 
-	public BigDecimal getOriginalKostenMerged() {
-		return originalKostenMerged;
+	public BigDecimal getVertraglicheKosten() {
+		return vertraglicheKosten;
 	}
 
-	public void setOriginalKostenMerged(BigDecimal originalKostenMerged) {
-		this.originalKostenMerged = originalKostenMerged;
+	public void setVertraglicheKosten(BigDecimal vertraglicheKosten) {
+		this.vertraglicheKosten = vertraglicheKosten;
 	}
 }

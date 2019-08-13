@@ -262,8 +262,8 @@ export default class MitteilungRS {
                 const pensumPercentage = betreuungspensum.pensum
                     ? Number((betreuungspensum.pensum / multiplier).toFixed(2))
                     : undefined;
-                const originalPensumPercentage = betreuungspensum.originalPensumMerged
-                    ? Number((betreuungspensum.originalPensumMerged / multiplier).toFixed(2))
+                const originalPensumPercentage = betreuungspensum.vertraglichesPensum
+                    ? Number((betreuungspensum.vertraglichesPensum / multiplier).toFixed(2))
                     : undefined;
                 const defaultDateFormat = 'DD.MM.YYYY';
                 const datumAb = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigAb, defaultDateFormat);
@@ -279,7 +279,7 @@ export default class MitteilungRS {
                     : originalPensumPercentage;
                 const kosten = betreuungspensum.monatlicheBetreuungskosten
                     ? betreuungspensum.monatlicheBetreuungskosten
-                    : betreuungspensum.originalKostenMerged;
+                    : betreuungspensum.vertraglicheKosten;
 
                 message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
                     num: i,

@@ -19,5 +19,5 @@ export enum TSBetreuungspensumAbweichungStatus {
     NONE = 'NONE',
     NICHT_FREIGEGEBEN = 'NICHT_FREIGEGEBEN',
     VERRECHNET = 'VERRECHNET',
-    VERFUEGT = 'VERFUEGT',
+    UEBERNOMMEN = 'UEBERNOMMEN',
 }

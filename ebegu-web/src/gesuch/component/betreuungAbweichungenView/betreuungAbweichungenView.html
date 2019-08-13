@@ -77,7 +77,7 @@
                                    ng-required="{{vm.isRequired($index)}}"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    step="0.25"
-                                   ng-attr-placeholder="{{vm.getAbweichung($index).originalPensumMerged}}">
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglichesPensum}}">
                         </td>
                         <td>
                             <input aria-describedby="kosten-error"
@@ -89,7 +89,7 @@
                                    ng-disabled="{{vm.isDisabled($index)}}"
                                    ng-required="{{vm.isRequired($index)}}"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   ng-attr-placeholder="{{vm.getAbweichung($index).originalKostenMerged}}">
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheKosten}}">
                         </td>
                         <td><span class="fa {{vm.getIcon($index)}}" aria-hidden="true"></span></td>
                     </tbody>

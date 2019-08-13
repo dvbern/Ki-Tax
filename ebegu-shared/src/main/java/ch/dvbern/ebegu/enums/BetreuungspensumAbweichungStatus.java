@@ -21,5 +21,5 @@ public enum BetreuungspensumAbweichungStatus {
 	NONE, // No BetreuungspensumAbweichung was submitted (yet)
 	NICHT_FREIGEGEBEN, // Mutationsmeldung has not been submitted yet
 	VERRECHNET, // Mutationsmeldung has been submitted
-	VERFUEGT // Mutationsmeldung has been applied
+	UEBERNOMMEN // Mutationsmeldung has been applied
 }

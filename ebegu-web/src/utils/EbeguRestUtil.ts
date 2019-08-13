@@ -19,6 +19,7 @@ import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSitua
 import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
@@ -1664,7 +1665,7 @@ export default class EbeguRestUtil {
         }
 
         restBetreuung.betreuungspensumAbweichungen =
-            this.betreuungspensumAbweichungenToRestObject(betreuung.betreuungspensumAbweichungen, {});
+            this.betreuungspensumAbweichungenToRestObject(betreuung.betreuungspensumAbweichungen);
 
         if (betreuung.abwesenheitContainers) {
             restBetreuung.abwesenheitContainers = [];
@@ -1691,13 +1692,13 @@ export default class EbeguRestUtil {
         return restBetreuung;
     }
 
-    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[],
-                                                    restAbweichungen: any): TSBetreuungspensumAbweichung[] {
+    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[]): any {
+        let restAbweichungen: any;
         if (abweichungen) {
             restAbweichungen = [];
             // only send Abweichungen with actual Abweichungen
             const filteredAbweichungen = abweichungen.filter(element => {
-                return element.pensum !== null && element.monatlicheBetreuungskosten !== null;
+                return element.status !== TSBetreuungspensumAbweichungStatus.NONE;
             });
 
             filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
@@ -1727,11 +1728,11 @@ export default class EbeguRestUtil {
         const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
 
         const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
-        const originalPensum = restAbweichung.originalPensumMerged
-            ? restAbweichung.originalPensumMerged / multiplier
+        const originalPensum = restAbweichung.vertraglichesPensum
+            ? restAbweichung.vertraglichesPensum / multiplier
             : undefined;
 
-        restAbweichung.originalPensumMerged = originalPensum;
+        restAbweichung.vertraglichesPensum = originalPensum;
         restAbweichung.pensum = pensum;
 
         return restAbweichung;
@@ -1850,18 +1851,18 @@ export default class EbeguRestUtil {
     ): TSBetreuungspensumAbweichung {
         this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
         abweichungTS.status = abweichungFromServer.status;
-        abweichungTS.originalKostenMerged = abweichungFromServer.originalKostenMerged;
+        abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
 
         const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
 
         const pensum = abweichungFromServer.pensum
             ? Number((abweichungFromServer.pensum * multiplier).toFixed(2))
             : undefined;
-        const originalPensum = abweichungFromServer.originalPensumMerged
-            ? Number((abweichungFromServer.originalPensumMerged * multiplier).toFixed(2))
+        const originalPensum = abweichungFromServer.vertraglichesPensum
+            ? Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2))
             : undefined;
 
-        abweichungTS.originalPensumMerged = originalPensum;
+        abweichungTS.vertraglichesPensum = originalPensum;
         abweichungTS.pensum = pensum;
 
         return abweichungTS;

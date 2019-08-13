@@ -44,6 +44,7 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	@Min(0)
 	@NotNull
+	@Nonnull
 	@Column(nullable = false, columnDefinition = "DECIMAL(19,10)")
 	private BigDecimal pensum = BigDecimal.ZERO;
 
@@ -100,19 +101,21 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		this.unitForDisplay = unitForDisplay;
 	}
 
+	@Nonnull
 	public BigDecimal getPensum() {
 		return pensum;
 	}
 
-	public void setPensum(BigDecimal pensum) {
+	public void setPensum(@Nonnull BigDecimal pensum) {
 		this.pensum = pensum;
 	}
 
+	@Nonnull
 	public BigDecimal getMonatlicheBetreuungskosten() {
 		return monatlicheBetreuungskosten;
 	}
 
-	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
+	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 

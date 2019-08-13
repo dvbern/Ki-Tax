@@ -45,10 +45,9 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pens_betreuungsmitteilung_id"), nullable = false)
 	private Betreuungsmitteilung betreuungsmitteilung;
 
-	// TODO Reviewer KIBON-621: should we set orphanRemoval to false?
 	@Nullable
 	@Valid
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
 

@@ -21,8 +21,8 @@ import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 export default class TSBetreuungspensumAbweichung extends TSAbstractDecimalPensumEntity {
 
     private _status: TSBetreuungspensumAbweichungStatus;
-    private _originalPensumMerged: number;
-    private _originalKostenMerged: number;
+    private _vertraglichesPensum: number;
+    private _vertraglicheKosten: number;
 
     public constructor() {
         super();
@@ -36,19 +36,19 @@ export default class TSBetreuungspensumAbweichung extends TSAbstractDecimalPensu
         this._status = value;
     }
 
-    public get originalPensumMerged(): number {
-        return this._originalPensumMerged;
+    public get vertraglichesPensum(): number {
+        return this._vertraglichesPensum;
     }
 
-    public set originalPensumMerged(value: number) {
-        this._originalPensumMerged = value;
+    public set vertraglichesPensum(value: number) {
+        this._vertraglichesPensum = value;
     }
 
-    public get originalKostenMerged(): number {
-        return this._originalKostenMerged;
+    public get vertraglicheKosten(): number {
+        return this._vertraglicheKosten;
     }
 
-    public set originalKostenMerged(value: number) {
-        this._originalKostenMerged = value;
+    public set vertraglicheKosten(value: number) {
+        this._vertraglicheKosten = value;
     }
 }

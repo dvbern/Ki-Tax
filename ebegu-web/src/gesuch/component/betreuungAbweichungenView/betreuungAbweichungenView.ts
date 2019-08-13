@@ -158,7 +158,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
                 return 'fa-pencil black';
             case TSBetreuungspensumAbweichungStatus.VERRECHNET:
                 return 'fa-hourglass orange';
-            case TSBetreuungspensumAbweichungStatus.VERFUEGT:
+            case TSBetreuungspensumAbweichungStatus.UEBERNOMMEN:
                 return 'fa-check green';
             default:
                 return '';
@@ -189,7 +189,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         const abweichung = this.getAbweichung(index);
 
         return (abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
-            || abweichung.status === TSBetreuungspensumAbweichungStatus.VERFUEGT);
+            || abweichung.status === TSBetreuungspensumAbweichungStatus.UEBERNOMMEN);
     }
 
     public isAbweichungAllowed(): boolean {

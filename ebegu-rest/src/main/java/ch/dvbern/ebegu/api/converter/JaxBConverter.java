@@ -2588,8 +2588,8 @@ public class JaxBConverter extends AbstractConverter {
 	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(@Nonnull BetreuungspensumAbweichung abweichung) {
 		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
 		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
-		jaxAbweichung.setOriginalKostenMerged(abweichung.getOriginalKostenMerged());
-		jaxAbweichung.setOriginalPensumMerged(abweichung.getOriginalPensumMerged());
+		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
+		jaxAbweichung.setVertraglichesPensum(abweichung.getVertraglichesPensum());
 		jaxAbweichung.setStatus(abweichung.getStatus());
 
 		return jaxAbweichung;

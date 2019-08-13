@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -871,12 +870,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		@Nonnull Betreuung betreuung) {
 
 		// convert BetreuungspensumAbweichung to MitteilungPensum
+		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
+		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
 		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
+		// (2) Die leere Abschnitte (weder Vertrag noch Abweichung eingegeben) werden entfernt
+		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
 			.stream()
-			// TODO KIBON-621 Reviewer: bessere Idee?
-			.filter(abweichung -> (abweichung.getPensum() != null || abweichung.getOriginalPensumMerged() != null)
-				&& (abweichung.getMonatlicheBetreuungskosten() != null || abweichung.getOriginalKostenMerged() != null) )
+			.filter(abweichung -> (abweichung.getStatus() != BetreuungspensumAbweichungStatus.NONE
+				|| abweichung.getVertraglichesPensum() != null))
 			.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
 			.collect(Collectors.toSet());
 
@@ -1226,7 +1228,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				existingBetreuung.getBetreuungspensumContainers().add(betPenCont);
 
 				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {
-					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.VERFUEGT);
+					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
 				}
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT

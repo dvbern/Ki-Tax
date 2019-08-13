@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,8 +33,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
-import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -44,11 +43,11 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 
 	private static final long serialVersionUID = -8308660793880620086L;
 
-	@NotNull
+	@NotNull @Nonnull
 	@Enumerated(EnumType.STRING)
 	private BetreuungspensumAbweichungStatus status = BetreuungspensumAbweichungStatus.NONE;
 
-	@NotNull
+	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_betreuung_id"), nullable = false)
 	private Betreuung betreuung;
@@ -57,50 +56,52 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 	// merged by its part of the current Gueltigkeit into one monthly (=this.gueltigkeit) Betreuungspensum.
 	@Transient
 	@Nullable
-	private BigDecimal originalPensumMerged = null;
+	private BigDecimal vertraglichesPensum = null;
 
 	@Transient
 	@Nullable
-	private BigDecimal originalKostenMerged = null;
+	private BigDecimal vertraglicheKosten = null;
 
+	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(BetreuungspensumAbweichungStatus status) {
+	public void setStatus(@Nonnull BetreuungspensumAbweichungStatus status) {
 		this.status = status;
 	}
 
-	public BigDecimal getOriginalPensumMerged() {
-		return originalPensumMerged;
+	public BigDecimal getVertraglichesPensum() {
+		return vertraglichesPensum;
 	}
 
-	public void setOriginalPensumMerged(BigDecimal originalPensumMerged) {
-		this.originalPensumMerged = originalPensumMerged;
+	public void setVertraglichesPensum(BigDecimal vertraglichesPensum) {
+		this.vertraglichesPensum = vertraglichesPensum;
 	}
 
-	public BigDecimal getOriginalKostenMerged() {
-		return originalKostenMerged;
+	public BigDecimal getVertraglicheKosten() {
+		return vertraglicheKosten;
 	}
 
-	public void setOriginalKostenMerged(BigDecimal originalKostenMerged) {
-		this.originalKostenMerged = originalKostenMerged;
+	public void setVertraglicheKosten(BigDecimal vertraglicheKosten) {
+		this.vertraglicheKosten = vertraglicheKosten;
 	}
 
 	public void addPensum(BigDecimal pensum) {
-		originalPensumMerged = MathUtil.DEFAULT.addNullSafe(pensum, originalPensumMerged);
+		vertraglichesPensum = MathUtil.DEFAULT.addNullSafe(pensum, vertraglichesPensum);
 	}
 
 	public void addKosten(BigDecimal kosten) {
-		originalKostenMerged = MathUtil.DEFAULT.addNullSafe(MathUtil.DEFAULT.roundToFrankenRappen(kosten),
-			originalKostenMerged);
+		vertraglicheKosten = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(kosten),
+			vertraglicheKosten);
 	}
 
+	@Nonnull
 	public Betreuung getBetreuung() {
 		return betreuung;
 	}
 
-	public void setBetreuung(Betreuung betreuung) {
+	public void setBetreuung(@Nonnull Betreuung betreuung) {
 		this.betreuung = betreuung;
 	}
 
@@ -134,13 +135,14 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
 		mitteilungPensum.setGueltigkeit(getGueltigkeit());
 
-		// TODO KIBON-621 Reviewer: bessere Idee?
-		BigDecimal pensum = getPensum() == null ? getOriginalPensumMerged() :
-			getPensum();
+		BigDecimal pensum = getStatus() == BetreuungspensumAbweichungStatus.NONE
+			? getVertraglichesPensum() : getPensum();
 
-		// TODO KIBON-621 Reviewer: bessere Idee?
-		BigDecimal kosten = getMonatlicheBetreuungskosten() == null ? getOriginalKostenMerged() :
-			getMonatlicheBetreuungskosten();
+		BigDecimal kosten = getStatus() == BetreuungspensumAbweichungStatus.NONE
+			? getVertraglicheKosten() : getMonatlicheBetreuungskosten();
+
+		Objects.requireNonNull(pensum);
+		Objects.requireNonNull(kosten);
 
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
@@ -150,7 +152,7 @@ public class BetreuungspensumAbweichung extends AbstractDecimalPensum implements
 		// attach it to the BetreuungsmitteilungPensum
 		if (!isNew()) {
 			mitteilungPensum.setBetreuungspensumAbweichung(this);
-			if (getStatus() != BetreuungspensumAbweichungStatus.VERFUEGT) {
+			if (getStatus() != BetreuungspensumAbweichungStatus.UEBERNOMMEN) {
 				setStatus(BetreuungspensumAbweichungStatus.VERRECHNET);
 			}
 		}
