@@ -99,6 +99,8 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private String getBeilagenText(@Nonnull Betreuung betreuung) {
-		return translate(BEILAGE_VERFUEGUNG, betreuung.getKind().getKindJA().getNachname() + ' ' + betreuung.getKind().getKindJA().getVorname(), betreuung.getBGNummer());
+		return translate(BEILAGE_VERFUEGUNG,
+			betreuung.getKind().getKindJA().getNachname() + ' ' + betreuung.getKind().getKindJA().getVorname(),
+			betreuung.getBGNummer());
 	}
 }

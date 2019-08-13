@@ -57,7 +57,6 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		// Die Regel gilt nur fuer Kita
-		betreuung.getBetreuungsangebotTyp();
 		if (betreuung.getBetreuungsangebotTyp().isKita()) {
 			if (betreuung.getKind().getKindJA() != null) {
 				final Kind kindJA = betreuung.getKind().getKindJA();

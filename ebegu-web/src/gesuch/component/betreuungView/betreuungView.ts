@@ -678,7 +678,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (found) {
             this.model.institutionStammdaten = found;
         } else {
-            console.error('tagesschule not found!', this.instStammId);
+            console.error('Institution not found!', this.instStammId);
         }
     }
 

@@ -48,7 +48,6 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 		@Nonnull Betreuung betreuung,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		betreuung.getBetreuungsangebotTyp();
 		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
 			if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {

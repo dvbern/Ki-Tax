@@ -40,9 +40,9 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
-  selector: 'dv-edit-institution',
-  templateUrl: './edit-institution.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-edit-institution',
+    templateUrl: './edit-institution.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class EditInstitutionComponent implements OnInit {
@@ -96,7 +96,8 @@ export class EditInstitutionComponent implements OnInit {
                         this.createInstitutionStammdaten(institution);
                     }
                     this.isCheckRequired = institution.stammdatenCheckRequired;
-                    this.abweichendeZahlungsAdresse = !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
+                    this.abweichendeZahlungsAdresse =
+                        !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
                     this.initName = this.stammdaten.institution.name;
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
@@ -109,7 +110,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles  =  PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
+        const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
     }
 
@@ -216,7 +217,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private navigateBack(): void {
-         this.$state.go('institution.list');
+        this.$state.go('institution.list');
     }
 
     private navigateToWelcomesite(): void {

@@ -2655,7 +2655,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	private void setMandatoryFieldsOnJaxBetreuungForAnmeldungen(@Nonnull JaxBetreuung jaxBetreuung) {
 		// Wir verwenden Client-seitig dasselbe Objekt für Betreuungen und Anmeldungen
-		// Auf JaxBetreuung sind einigeFelder zwingend, die für Anmeldungen nicht benötigt werden,
+		// Auf JaxBetreuung sind einige Felder zwingend, die für Anmeldungen nicht benötigt werden,
 		// diese müssen hier initialisiert werden
 		jaxBetreuung.setVertrag(Boolean.TRUE);
 		jaxBetreuung.setErweiterteBetreuungContainer(new JaxErweiterteBetreuungContainer());
