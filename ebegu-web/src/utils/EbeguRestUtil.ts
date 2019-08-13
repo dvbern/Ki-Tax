@@ -1855,15 +1855,18 @@ export default class EbeguRestUtil {
 
         const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
 
-        const pensum = abweichungFromServer.pensum
-            ? Number((abweichungFromServer.pensum * multiplier).toFixed(2))
-            : undefined;
-        const originalPensum = abweichungFromServer.vertraglichesPensum
-            ? Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2))
-            : undefined;
+
+        const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
+        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
 
         abweichungTS.vertraglichesPensum = originalPensum;
         abweichungTS.pensum = pensum;
+
+        // ugly hack to override @Nonnull Betreuungskostem
+        if (abweichungTS.isNew()) {
+            abweichungTS.pensum = null;
+            abweichungTS.monatlicheBetreuungskosten = null;
+        }
 
         return abweichungTS;
     }

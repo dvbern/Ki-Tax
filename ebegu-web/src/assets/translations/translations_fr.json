@@ -1611,5 +1611,7 @@
     "ERROR_IBAN": "IBAN a un format invalide",
     "ABWEICHUNGEN_MELDEN": "",
     "ABWEICHUNGEN_HELP": "",
-    "MONTH": ""
+    "MONTH": "",
+    "SPEICHERN_ERFOLGREICH": "",
+    "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": ""
 }

@@ -248,7 +248,7 @@ export default class MitteilungRS {
         let i = 1;
 
         const abweichungen = betreuung.betreuungspensumAbweichungen.filter(a => {
-            return !a.isNew();
+            return !a.isNew() || (a.vertraglichesPensum && a.vertraglicheKosten);
         });
 
         abweichungen.forEach(betreuungspensum => {

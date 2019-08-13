@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
@@ -28,7 +27,8 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
 import TSKindContainer from '../../../models/TSKindContainer';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -38,6 +38,8 @@ import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
 
 export class BetreuungAbweichungenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -63,6 +65,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         'EinstellungRS',
         '$timeout',
         '$translate',
+        'DvDialog',
     ];
 
     public $translate: ITranslateService;
@@ -70,6 +73,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public kindModel: TSKindContainer;
     public institution: string;
     public isSavingData: boolean; // Semaphore
+    public dvDialog: DvDialog;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -86,9 +90,11 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         private readonly einstellungRS: EinstellungRS,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        dvDialog: DvDialog,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.$translate = $translate;
+        this.dvDialog = dvDialog;
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -113,9 +119,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             this.$log.error('There is no kind available with kind-number:' + this.$stateParams.kindNumber);
         }
         this.model = angular.copy(this.gesuchModelManager.getBetreuungToWorkWith());
-        this.betreuungRS.loadAbweichungen(this.model.id).then(data => {
-            this.model.betreuungspensumAbweichungen = data;
-        });
+        this.loadAbweichungen();
     }
 
     public getKindModel(): TSKindContainer {
@@ -129,6 +133,12 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
 
         return undefined;
+    }
+
+    public loadAbweichungen(): void {
+        this.betreuungRS.loadAbweichungen(this.model.id).then(data => {
+            this.model.betreuungspensumAbweichungen = data;
+        });
     }
 
     public getFormattedDate(abweichung: TSBetreuungspensumAbweichung): string {
@@ -168,6 +178,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         this.betreuungRS.saveAbweichungen(this.model).then(result => {
             this.model.betreuungspensumAbweichungen = result;
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                title: 'SPEICHERN_ERFOLGREICH',
+            })
         });
     }
 
@@ -182,10 +195,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public isDisabled(index: number): boolean {
-        const abweichung = this.getAbweichung(index);
-
-        return (abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
-            || abweichung.status === TSBetreuungspensumAbweichungStatus.UEBERNOMMEN);
+        return this.getAbweichung(index).status === TSBetreuungspensumAbweichungStatus.VERRECHNET;
     }
 
     public isAbweichungAllowed(): boolean {
@@ -225,15 +235,13 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             });
     }
 
-    public isRequired(index: number): boolean {
-        const a = this.getAbweichung(index);
-        return (a.monatlicheBetreuungskosten !== null && a.monatlicheBetreuungskosten  >= 0)
-            || (a.pensum !== null && a.pensum >= 0);
-    }
-
     public getInputFormatTitle(): string {
         return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA
             ? this.$translate.instant('DAYS')
             : this.$translate.instant('HOURS');
+    }
+
+    public cancel(): void {
+        this.loadAbweichungen();
     }
 }

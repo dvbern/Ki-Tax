@@ -59,7 +59,10 @@
                         <th data-translate="MONTH"></th>
                         <th>{{vm.getInputFormatTitle()}}</th>
                         <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
-                        <th data-translate="STATUS"></th>
+                        <th>
+                            <span data-translate="STATUS"></span>
+                            <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,31 +70,33 @@
                         st-select-mode="single" role="row" tabindex="-1">
                         <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
                         <td>
-                            <input aria-describedby="pensum-{{$index}}"
+                            <input aria-describedby="pensum-{{$index}}-error"
                                    id="pensum-{{$index}}" type="number"
                                    name="pensum-{{$index}}"
                                    ng-change="vm.updateStatus({{$index}})"
                                    ng-model="vm.getAbweichung($index).pensum"
                                    class="form-control  dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="{{vm.isRequired($index)}}"
+                                   ng-required="vm.getAbweichung($index).monatlicheBetreuungskosten !== null && vm.getAbweichung($index).monatlicheBetreuungskosten >= 0"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    step="0.25"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglichesPensum}}">
                         </td>
                         <td>
-                            <input aria-describedby="kosten-error"
-                                   id="kosten" type="number"
-                                   name="kosten"
+                            <input aria-describedby="kosten-{{$index}}-error"
+                                   id="kosten-{{$index}}" type="number"
+                                   name="kosten-{{$index}}"
                                    ng-change="vm.updateStatus({{$index}})"
                                    ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
                                    dv-max-length class="form-control dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="{{vm.isRequired($index)}}"
+                                   ng-required="vm.getAbweichung($index).pensum !== null && vm.getAbweichung($index).pensum >= 0"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheKosten}}">
                         </td>
-                        <td><span class="fa {{vm.getIcon($index)}}" aria-hidden="true"></span></td>
+                        <td>
+                            <span class="fa {{vm.getIcon($index)}}" aria-hidden="true"></span>
+                        </td>
                     </tbody>
                 </table>
             </div>
@@ -112,5 +117,12 @@
                 <span class="uppercase" data-translate="SPEICHERN"></span>
             </dv-loading-button>
         </span>
+        <dv-loading-button class="dv-navigation-item"
+                           button-click="vm.cancel()"
+                           button-class="cancel-button uppercase"
+                           type="reset"
+                           aria-label="{{'CANCEL' | translate}}">
+            <span data-translate="ABBRECHEN"></span>
+        </dv-loading-button>
     </div>
 </div>
