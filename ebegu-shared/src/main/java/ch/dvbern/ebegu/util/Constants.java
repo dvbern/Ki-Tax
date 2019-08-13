@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;

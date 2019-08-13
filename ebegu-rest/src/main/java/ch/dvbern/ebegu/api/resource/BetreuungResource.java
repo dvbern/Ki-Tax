@@ -64,7 +64,6 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
-import ch.dvbern.ebegu.services.MitteilungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.Validate;
@@ -273,7 +272,7 @@ public class BetreuungResource {
 		Objects.requireNonNull(betreuungJAXP.getId());
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
-		//Anmeldungen ablehnen kann man entweder im Status SCHULAMT_ANMELDUNG_AUSGELOEST oder
+		// Anmeldungen ablehnen kann man entweder im Status SCHULAMT_ANMELDUNG_AUSGELOEST oder
 		// SCHULAMT_FALSCHE_INSTITUTION
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
@@ -457,11 +456,8 @@ public class BetreuungResource {
 			betreuung.getBetreuungspensumAbweichungen());
 
 		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
-
 		betreuung.setBetreuungspensumAbweichungen(toStore);
-
 		betreuungService.saveBetreuung(betreuung, false);
-
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 

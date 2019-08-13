@@ -317,6 +317,15 @@ public class JaxBetreuung extends JaxAbstractDTO {
 		this.keineDetailinformationen = keineDetailinformationen;
 	}
 
+	@Nonnull
+	public List<JaxBetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
+		return betreuungspensumAbweichungen;
+	}
+
+	public void setBetreuungspensumAbweichungen(@Nonnull List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
+	}
+
 	@Override
 	public int compareTo(@Nonnull JaxAbstractDTO o) {
 		if (o instanceof JaxBetreuung) {
@@ -324,13 +333,5 @@ public class JaxBetreuung extends JaxAbstractDTO {
 			return getBetreuungNummer().compareTo(other.getBetreuungNummer());
 		}
 		return super.compareTo(o);
-	}
-
-	public List<JaxBetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
-		return betreuungspensumAbweichungen;
-	}
-
-	public void setBetreuungspensumAbweichungen(List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungen) {
-		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 }

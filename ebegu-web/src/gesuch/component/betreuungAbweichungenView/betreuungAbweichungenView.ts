@@ -49,9 +49,7 @@ export class BetreuungAbweichungenViewComponentConfig implements IComponentOptio
 export class BetreuungAbweichungenViewController extends AbstractGesuchViewController<TSBetreuung> {
 
     public static $inject = [
-        '$state',
         'GesuchModelManager',
-        'EbeguUtil',
         'CONSTANTS',
         '$scope',
         'BerechnungsManager',
@@ -74,9 +72,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public isSavingData: boolean; // Semaphore
 
     public constructor(
-        private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
-        private readonly ebeguUtil: EbeguUtil,
         private readonly CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,

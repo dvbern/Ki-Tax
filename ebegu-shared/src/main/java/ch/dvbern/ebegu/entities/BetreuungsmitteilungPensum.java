@@ -41,7 +41,7 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 	private static final long serialVersionUID = -9032858720574672370L;
 
 	@ManyToOne(optional = false)
-	@NotNull
+	@NotNull @Nonnull
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pens_betreuungsmitteilung_id"), nullable = false)
 	private Betreuungsmitteilung betreuungsmitteilung;
 
@@ -51,11 +51,12 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
 
+	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
 		return betreuungsmitteilung;
 	}
 
-	public void setBetreuungsmitteilung(Betreuungsmitteilung betreuungsmitteilung) {
+	public void setBetreuungsmitteilung(@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		this.betreuungsmitteilung = betreuungsmitteilung;
 	}
 
