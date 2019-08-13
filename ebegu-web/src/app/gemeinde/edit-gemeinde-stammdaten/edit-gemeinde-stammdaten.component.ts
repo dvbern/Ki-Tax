@@ -20,6 +20,8 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -44,6 +46,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     public constructor(
         private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -76,6 +79,6 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     }
 
     public isSuperadmin(): boolean {
-        return true;
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

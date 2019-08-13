@@ -148,7 +148,7 @@
                         <mat-checkbox id="angebotBG" name="angebotBG"
                                       [(ngModel)]="stammdaten.gemeinde.angebotBG"
                                       *ngIf="tageschuleEnabledForMandant"
-                                      disabled="!isSuperadmin()">
+                                      [disabled]="!(isSuperadmin())">
                             {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
                         <div class="form-group" *ngIf="stammdaten.gemeinde.angebotBG">
@@ -158,9 +158,10 @@
                                    [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
                                    [min]="beguStartDatumMin"
                                    [matDatepicker]="begu_start"
+                                   [disabled]="!(isSuperadmin())"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
-                            <mat-datepicker-toggle matSuffix [for]="begu_start" readonly="!isSuperadmin()"></mat-datepicker-toggle>
-                            <mat-datepicker #begu_start [readonly]="!isSuperadmin()"></mat-datepicker>
+                            <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                            <mat-datepicker #begu_start></mat-datepicker>
                             <dv-error-messages inputid="begu_start_ID"
                                                [errorObject]="bgStartDate.errors">
                             </dv-error-messages>
