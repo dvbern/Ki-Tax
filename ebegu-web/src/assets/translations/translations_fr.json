@@ -486,7 +486,7 @@
     "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "",
     "INSTITUTION_ANZAHL_PLAETZE": "",
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN": "Dont places réservées pour les entreprises",
-    "INSTITUTION_ANZAHL_PLAETZE_PARAM": "Nombre de places : {{anzahlPlaetze}}",
+    "INSTITUTION_ANZAHL_PLAETZE_PARAM": "",
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM": "Dont {{anzahlPlaetzeFirmen}} places réservées pour les entreprises",
     "INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1": "",
     "INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2": "Heures",
