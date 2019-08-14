@@ -45,6 +45,8 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -86,6 +88,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -137,13 +140,11 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FERIENINSEL_ENABLED_FOR_GEMEINDE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
@@ -170,8 +171,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.TAGESSCHULE_ENABLED_FOR_GEMEINDE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
@@ -495,14 +494,16 @@ public final class TestDataUtil {
 	private static InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull String name, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
-		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(angebotTyp);
 		instStammdaten.setInstitution(createDefaultInstitution());
 		instStammdaten.getInstitution().setName(name);
 		instStammdaten.setAdresse(createDefaultAdresse());
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
+		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN(iban));
+		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return instStammdaten;
 	}
 
@@ -529,32 +530,26 @@ public final class TestDataUtil {
 		return list;
 	}
 
-	@Nullable
-	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
-		if (institutionStammdaten != null) {
-			Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
-			InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
-			if (found == null && institution != null) {
-				institutionStammdaten.setInstitution(institution);
-				return persistence.merge(institutionStammdaten);
-			}
-			return found;
+	@Nonnull
+	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nonnull InstitutionStammdaten institutionStammdaten) {
+		Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
+		InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
+		if (found == null) {
+			institutionStammdaten.setInstitution(institution);
+			return persistence.merge(institutionStammdaten);
 		}
-		return null;
+		return found;
 	}
 
-	@Nullable
-	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nullable Institution institution) {
-		if (institution != null) {
-			saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
-			saveMandantIfNecessary(persistence, institution.getMandant());
-			Institution found = persistence.find(Institution.class, institution.getId());
-			if (found == null) {
-				found = persistEntity(persistence, institution);
-			}
-			return found;
+	@Nonnull
+	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nonnull Institution institution) {
+		saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
+		saveMandantIfNecessary(persistence, institution.getMandant());
+		Institution found = persistence.find(Institution.class, institution.getId());
+		if (found == null) {
+			found = persistEntity(persistence, institution);
 		}
-		return null;
+		return found;
 	}
 
 	private static void saveTraegerschaftIfNecessary(@Nonnull Persistence persistence, @Nullable Traegerschaft traegerschaft) {
@@ -662,17 +657,30 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
-	public static Betreuung createAnmeldungTagesschule(KindContainer kind) {
-		Betreuung betreuung = new Betreuung();
+	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind) {
+		AnmeldungTagesschule betreuung = new AnmeldungTagesschule();
 		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern());
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-		betreuung.setBetreuungspensumContainers(new TreeSet<>());
-		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
-		erweiterteBetreuungContainer.setBetreuung(betreuung);
-		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
+		return betreuung;
+	}
+
+	public static AnmeldungFerieninsel createAnmeldungFerieninsel(KindContainer kind) {
+		AnmeldungFerieninsel betreuung = new AnmeldungFerieninsel();
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenFerieninselGuarda());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		betreuung.setKind(kind);
+		betreuung.setBelegungFerieninsel(createDefaultBelegungFerieninsel());
+		return betreuung;
+	}
+
+	public static AnmeldungFerieninsel createDefaultAnmeldungFerieninsel() {
+		AnmeldungFerieninsel betreuung = new AnmeldungFerieninsel();
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenFerieninselGuarda());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		betreuung.setKind(createDefaultKindContainer());
+		betreuung.setBelegungFerieninsel(createDefaultBelegungFerieninsel());
 		return betreuung;
 	}
 
@@ -1269,10 +1277,6 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION, "60", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
-		saveEinstellung(TAGESSCHULE_ENABLED_FOR_MANDANT, "false", gesuchsperiode, persistence);
-		saveEinstellung(BETREUUNGSGUTSCHEINE_ENABLED_FOR_GEMEINDE, "true", gesuchsperiode, persistence);
-		saveEinstellung(TAGESSCHULE_ENABLED_FOR_GEMEINDE, "false", gesuchsperiode, persistence);
-		saveEinstellung(FERIENINSEL_ENABLED_FOR_GEMEINDE, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

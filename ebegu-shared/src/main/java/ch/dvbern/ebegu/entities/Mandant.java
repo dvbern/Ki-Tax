@@ -42,9 +42,16 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 	@NotNull
 	private String name;
 
+	@Column(nullable = false)
+	private boolean angebotTS = false;
+
+	@Column(nullable = false)
+	private boolean angebotFI = false;
+
 	public Mandant() {
 	}
 
+	@Override
 	@Nonnull
 	public String getName() {
 		return name;
@@ -52,6 +59,22 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	public void setName(@Nonnull String name) {
 		this.name = name;
+	}
+
+	public boolean isAngebotTS() {
+		return angebotTS;
+	}
+
+	public void setAngebotTS(boolean angebotTS) {
+		this.angebotTS = angebotTS;
+	}
+
+	public boolean isAngebotFI() {
+		return angebotFI;
+	}
+
+	public void setAngebotFI(boolean angebotFI) {
+		this.angebotFI = angebotFI;
 	}
 
 	@Override

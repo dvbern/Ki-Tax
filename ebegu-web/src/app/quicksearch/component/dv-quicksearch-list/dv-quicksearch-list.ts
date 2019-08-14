@@ -17,7 +17,6 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IFilterService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
@@ -60,7 +59,7 @@ export class DVQuicksearchListController implements IController {
 
     public static $inject: string[] = [
         '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'AuthServiceRS', 'GemeindeRS', 'EinstellungRS',
+        '$state', 'AuthServiceRS', 'GemeindeRS'
     ];
 
     public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
@@ -92,8 +91,6 @@ export class DVQuicksearchListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    private _tageschuleEnabledForMandant: boolean;
-
     public constructor(
         private readonly $filter: IFilterService,
         private readonly institutionRS: InstitutionRS,
@@ -101,7 +98,6 @@ export class DVQuicksearchListController implements IController {
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -113,14 +109,6 @@ export class DVQuicksearchListController implements IController {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
-
-        this.einstellungRS.tageschuleEnabledForMandant$()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(tsEnabledForMandantEinstellung => {
-                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
-                },
-                err => LOG.error(err)
-            );
     }
 
     public $onDestroy(): void {
@@ -243,6 +231,6 @@ export class DVQuicksearchListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this._tageschuleEnabledForMandant;
+        return this.authServiceRS.hasMandantAngebotTS();
     }
 }

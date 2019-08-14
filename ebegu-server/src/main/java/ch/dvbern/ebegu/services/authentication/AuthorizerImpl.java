@@ -33,6 +33,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -320,8 +321,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		//berechtigte Rollen pruefen
 		UserRole[] allowedRoles = { SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 			ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
-			SACHBEARBEITER_TS, STEUERAMT, JURIST,
-			REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
+			SACHBEARBEITER_TS, STEUERAMT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT };
 		if (principalBean.isCallerInAnyOfRole(allowedRoles)) {
 			return true;
 		}
@@ -349,7 +349,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	private void validateMandantMatches(@Nullable HasMandant mandantEntity) {
-		//noinspection ConstantConditions
 		if (mandantEntity == null || mandantEntity.getMandant() == null) {
 			return;
 		}
@@ -442,13 +441,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorization(@Nullable Betreuung betr) {
-		if (betr == null) {
+	public void checkReadAuthorization(@Nullable AbstractPlatz platz) {
+		if (platz == null) {
 			return;
 		}
-		boolean allowed = isReadAuthorized(betr);
+		boolean allowed = isReadAuthorized(platz);
 		if (!allowed) {
-			throwViolation(betr);
+			throwViolation(platz);
 		}
 	}
 
@@ -527,7 +526,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationForAllBetreuungen(@Nullable Collection<Betreuung> betreuungen) {
+	public <T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T>betreuungen) {
 		if (betreuungen != null) {
 			betreuungen.stream()
 				.filter(betreuung -> !isReadAuthorized(betreuung))
@@ -669,7 +668,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		);
 	}
 
-	private boolean isReadAuthorized(final Betreuung betreuung) {
+	private boolean isReadAuthorized(final AbstractPlatz betreuung) {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
@@ -699,7 +698,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
-				&& betreuung.getBetreuungsangebotTyp() != null
 				&& betreuung.getBetreuungsangebotTyp().isSchulamt();
 		}
 		return false;
@@ -855,6 +853,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				+ " for Entity: " + abstractEntity.getClass().getSimpleName() + "(id=" + abstractEntity.getId() + "):"
 				+ " for current user: " + principalBean.getPrincipal()
 				+ " in role(s): " + principalBean.discoverRoles()
+				+ ", insertUser: " + abstractEntity.getUserErstellt()
+				+ '.' + abstractEntity.getMessageForAccessException()
 		);
 	}
 

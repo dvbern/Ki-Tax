@@ -50,6 +50,7 @@ import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
 import {gesuchRun} from './gesuch.route';
+import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
@@ -65,6 +66,7 @@ export const GESUCH_JS_MODULE =
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())
+        .component('betreuungAbweichungenView', new BetreuungAbweichungenViewComponentConfig())
         .component('betreuungTagesschuleView', new BetreuungTagesschuleViewComponentConfig())
         .component('abwesenheitView', new AbwesenheitViewComponentConfig())
         .component('erwerbspensumListView', new ErwerbspensumListViewComponentConfig())

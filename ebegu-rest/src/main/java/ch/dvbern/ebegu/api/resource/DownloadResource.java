@@ -149,6 +149,20 @@ public class DownloadResource {
 		if (!downloadFile.getIp().equals(ip)
 			|| principalBean.getPrincipal() == null
 			|| !principalBean.getPrincipal().getName().equals(downloadFile.getUserErstellt())) {
+			// Wir loggen noch ein bisschen, bis wir sicher sind, dass das Problem geloest ist
+			StringBuilder sb = new StringBuilder();
+			sb.append("Keine Berechtigung fuer Download");
+			if (!downloadFile.getIp().equals(ip)) {
+				sb.append("; downloadFile.getIp(): ").append(downloadFile.getIp());
+				sb.append("; ip").append(ip);
+			}
+			if (principalBean.getPrincipal() == null) {
+				sb.append("; principalBean.getPrincipal() is null");
+			} else if (!principalBean.getPrincipal().getName().equals(downloadFile.getUserErstellt())) {
+				sb.append("; principalBean.getPrincipal().getName()").append(principalBean.getPrincipal().getName());
+				sb.append("; downloadFile.getUserErstellt()").append(downloadFile.getUserErstellt());
+			}
+			LOG.error(sb.toString());
 			return Response.status(Response.Status.FORBIDDEN).entity("Keine Berechtigung f&uuml;r download").build();
 		}
 
@@ -505,6 +519,9 @@ public class DownloadResource {
 		if (ipAddress == null) {
 			ipAddress = request.getRemoteAddr();
 		}
-		return ipAddress;
+		if (ipAddress.contains(",")) {
+			ipAddress = ipAddress.split(",")[0];
+		}
+		return ipAddress.trim();
 	}
 }

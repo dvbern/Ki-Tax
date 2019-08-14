@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -217,11 +218,14 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void betreuungMitBelegungFerieninsel() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
-		final Betreuung betreuungUnderTest = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
+		TestDataUtil.saveInstitutionsstammdatenForTestfaelle(persistence);
+		kindContainer.getAnmeldungenFerieninsel().add(TestDataUtil.createAnmeldungFerieninsel(kindContainer));
+		final AnmeldungFerieninsel betreuungUnderTest = kindContainer.getAnmeldungenFerieninsel().iterator().next();
 
 		BelegungFerieninsel belegungFerieninsel = TestDataUtil.createDefaultBelegungFerieninsel();
 		betreuungUnderTest.setBelegungFerieninsel(belegungFerieninsel);
-		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuungUnderTest, false);
+		AnmeldungFerieninsel persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(betreuungUnderTest, false);
 
 		assertNotNull(persistedBetreuung);
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
@@ -232,7 +236,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		// Einen Tag hinzufügen
 		persistedBetreuung.getBelegungFerieninsel().getTage().add(TestDataUtil.createBelegungFerieninselTag(LocalDate.now().plusMonths(4)));
-		persistedBetreuung = betreuungService.saveBetreuung(persistedBetreuung, false);
+		persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(persistedBetreuung, false);
 		assertNotNull(persistedBetreuung);
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
@@ -242,7 +246,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		// Einen wieder loeschen
 		persistedBetreuung.getBelegungFerieninsel().getTage().remove(1);
-		persistedBetreuung = betreuungService.saveBetreuung(persistedBetreuung, false);
+		persistedBetreuung = betreuungService.saveAnmeldungFerieninsel(persistedBetreuung, false);
 		assertNotNull(persistedBetreuung);
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
 		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
@@ -265,43 +269,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, "gsst", null, null, mandant, persistence, null, null);
 		persistence.persist(sender);
-	}
-
-	@Test
-	public void getFallnummerFromBetreuungsIdTest() {
-		assertEquals(108L, betreuungService.getFallnummerFromBGNummer("18.000108.1.2").longValue());
-		assertEquals(123456L, betreuungService.getFallnummerFromBGNummer("18.123456.1.2").longValue());
-	}
-
-	@Test
-	public void getYearFromBetreuungsIdTest() {
-		assertEquals(2018, betreuungService.getYearFromBGNummer("18.000108.1.2"));
-	}
-
-	@Test
-	public void getKindNummerFromBetreuungsIdTest() {
-		assertEquals(1, betreuungService.getKindNummerFromBGNummer("18.000108.1.2"));
-		assertEquals(2, betreuungService.getKindNummerFromBGNummer("18.000108.2.2"));
-		assertEquals(88, betreuungService.getKindNummerFromBGNummer("18.000108.88.2"));
-	}
-
-	@Test
-	public void getBetreuungNummerFromBetreuungsId() {
-		assertEquals(2, betreuungService.getBetreuungNummerFromBGNummer("18.000108.1.2"));
-		assertEquals(1, betreuungService.getBetreuungNummerFromBGNummer("18.000108.2.1"));
-		assertEquals(99, betreuungService.getBetreuungNummerFromBGNummer("18.000108.88.99"));
-	}
-
-	@Test
-	public void validateBGNummer() {
-		assertTrue("18.000108.1.2", betreuungService.validateBGNummer("18.000108.1.2"));
-		assertTrue("88.999999.77.66", betreuungService.validateBGNummer("88.999999.77.66"));
-		assertTrue("88.999999.7.66", betreuungService.validateBGNummer("88.999999.7.66"));
-		assertTrue("88.999999.77.6", betreuungService.validateBGNummer("88.999999.77.6"));
-		assertFalse("1.000108.1.2", betreuungService.validateBGNummer("1.000108.1.2"));
-		assertFalse("88.99999.77.66", betreuungService.validateBGNummer("88.99999.77.66"));
-		assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
-		assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
 	}
 
 	/**

@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -60,6 +61,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -70,6 +72,7 @@ import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
@@ -86,6 +89,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
 import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
@@ -95,6 +99,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -700,7 +705,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
 		} catch (EJBTransactionRolledbackException exception) {
-			//Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
+			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
 				throw new EbeguExistingAntragException(
@@ -718,13 +723,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
 				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
 					"applyBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT);
+					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT,
+					neustesGesuch.getId());
 			}
 			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
 				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
 					"applyBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN);
+					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
+					neustesGesuch.getId());
 			}
 			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())
 				&& neustesGesuch.isMutation()) {
@@ -735,15 +744,18 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
+				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
+					LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
-			} else {
-				throw new EbeguRuntimeException(
-					"applyBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN);
 			}
+
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				"applyBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN,
+				neustesGesuch.getId());
 		}
 		return gesuch;
 	}
@@ -751,10 +763,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_TS,
-		SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuungsmitteilung> findNewestBetreuungsmitteilung(@Nonnull String betreuungId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -850,6 +860,31 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 
 		return persistence.merge(mitteilung);
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
+	public void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Betreuung betreuung) {
+
+		// convert BetreuungspensumAbweichung to MitteilungPensum
+		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
+		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
+		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
+		// (2) Die leere Abschnitte (weder Vertrag noch Abweichung eingegeben) werden entfernt
+		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
+		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
+			.stream()
+			.filter(abweichung -> (abweichung.getStatus() != BetreuungspensumAbweichungStatus.NONE
+				|| abweichung.getVertraglichesPensum() != null))
+			.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
+			.collect(Collectors.toSet());
+
+		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
+
+		sendBetreuungsmitteilung(mitteilung);
 	}
 
 	@Nonnull
@@ -1127,9 +1162,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Expression<Boolean> isActiveJA = cb.and(predicateActive, predicateJA);
 				Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
 				String sJugendamt =
-					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.JUGENDAMT.name(), browserSprache);
+					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.JUGENDAMT.name(),
+						browserSprache);
 				String sSchulamt =
-					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.SCHULAMT.name(), browserSprache);
+					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.SCHULAMT.name(),
+						browserSprache);
 				expression = cb.selectCase().when(isActiveJA, sJugendamt).otherwise(sSchulamt);
 				break;
 			case "mitteilungStatus":
@@ -1189,6 +1226,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				//gs container muss nicht mikopiert werden
 				betPenCont.setBetreuungspensumJA(betPensumJA);
 				existingBetreuung.getBetreuungspensumContainers().add(betPenCont);
+
+				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {
+					betPensumMitteilung.getBetreuungspensumAbweichung().setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
+				}
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT
 			existingBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
@@ -1282,7 +1323,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			cb.equal(joinEmpfaenger, benutzer)
 		);
 
-		query.select(cb.countDistinct(root.get(Gesuch_.id)))
+		query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
 			.where(predicate);
 
 		Long count = (Long) persistence.getCriteriaSingleResult(query);

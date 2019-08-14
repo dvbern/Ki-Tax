@@ -141,21 +141,19 @@ public class BetreuungsgutscheinEvaluator {
 
 				if (!requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt()) {
 					//initiale Restansprueche vorberechnen
-					if (betreuung.getBetreuungsstatus() != null) {
-						if ((betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-							&& betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
-							|| betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
-							// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen Vorgaenger und keine aktuelle
-							//verfuegung und wir muessen keinenr restanspruch berechnen (vergl EBEGU-890)
-							continue;
-						}
-						if (betreuung.getBetreuungsstatus().isGeschlossenJA()) {
-							// Verfuegte Betreuungen duerfen nicht neu berechnet werden
-							LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
-							// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
-							restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung(betreuung);
-							continue;
-						}
+					if ((betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+						&& betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
+						|| betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
+						// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen Vorgaenger und keine aktuelle
+						//verfuegung und wir muessen keinenr restanspruch berechnen (vergl EBEGU-890)
+						continue;
+					}
+					if (betreuung.getBetreuungsstatus().isGeschlossenJA()) {
+						// Verfuegte Betreuungen duerfen nicht neu berechnet werden
+						LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
+						// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
+						restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung(betreuung);
+						continue;
 					}
 
 					// Die Initialen Zeitabschnitte sind die "Restansprüche" aus der letzten Betreuung

@@ -15,15 +15,12 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -33,7 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -42,7 +38,6 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -55,7 +50,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_institution_stammdaten_adresse_id"),
-		@UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_adressekontoinhaber_id"),
 		@UniqueConstraint(columnNames = "institution_id", name= "UK_institution_stammdaten_institution_id")
 	},
 	indexes = {
@@ -67,10 +61,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -8403411439882700618L;
 
-	@Column(nullable = true)
-	@Embedded
-	@Valid
-	private IBAN iban;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
@@ -109,46 +99,13 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
 	private Adresse adresse;
 
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String kontoinhaber;
+	@Column(nullable = false)
+	private boolean sendMailWennOffenePendenzen = true;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adressekontoinhaber_id"), nullable = true)
-	private Adresse adresseKontoinhaber;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean alterskategorieBaby = false;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean alterskategorieVorschule = false;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean alterskategorieKindergarten = false;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean alterskategorieSchule = false;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean subventioniertePlaetze = false;
-
-	@Nullable
-	@Column(nullable = false)
-	private BigDecimal anzahlPlaetze;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal anzahlPlaetzeFirmen;
-
-	@Column(nullable = false)
-	private boolean sendMailWennOffenePendenzen = true;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_bg_id"), nullable = true)
+	private InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -163,14 +120,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	public InstitutionStammdaten() {
 	}
 
-	public IBAN getIban() {
-		return iban;
-	}
-
-	public void setIban(IBAN iban) {
-		this.iban = iban;
-	}
-
 	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
@@ -180,40 +129,31 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
+	@Nonnull
 	public Institution getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(Institution institution) {
+	public void setInstitution(@Nonnull Institution institution) {
 		this.institution = institution;
 	}
 
+	@Nonnull
 	public Adresse getAdresse() {
 		return adresse;
 	}
 
-	public void setAdresse(Adresse adresse) {
+	public void setAdresse(@Nonnull Adresse adresse) {
 		this.adresse = adresse;
 	}
 
-	@SuppressFBWarnings("NM_CONFUSING")
 	@Nullable
-	public String getKontoinhaber() {
-		return kontoinhaber;
+	public InstitutionStammdatenBetreuungsgutscheine getInstitutionStammdatenBetreuungsgutscheine() {
+		return institutionStammdatenBetreuungsgutscheine;
 	}
 
-	@SuppressFBWarnings("NM_CONFUSING")
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
-	}
-
-	@Nullable
-	public Adresse getAdresseKontoinhaber() {
-		return adresseKontoinhaber;
-	}
-
-	public void setAdresseKontoinhaber(@Nullable Adresse adresseKontoinhaber) {
-		this.adresseKontoinhaber = adresseKontoinhaber;
+	public void setInstitutionStammdatenBetreuungsgutscheine(@Nullable InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine) {
+		this.institutionStammdatenBetreuungsgutscheine = institutionStammdatenBetreuungsgutscheine;
 	}
 
 	@Nullable
@@ -234,11 +174,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
+	@Nonnull
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(String mail) {
+	public void setMail(@Nonnull String mail) {
 		this.mail = mail;
 	}
 
@@ -267,64 +208,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
 		this.oeffnungszeiten = oeffnungszeiten;
-	}
-
-	public boolean getAlterskategorieBaby() {
-		return alterskategorieBaby;
-	}
-
-	public void setAlterskategorieBaby(boolean alterskategorieBaby) {
-		this.alterskategorieBaby = alterskategorieBaby;
-	}
-
-	public boolean getAlterskategorieVorschule() {
-		return alterskategorieVorschule;
-	}
-
-	public void setAlterskategorieVorschule(boolean alterskategorieVorschule) {
-		this.alterskategorieVorschule = alterskategorieVorschule;
-	}
-
-	public boolean getAlterskategorieKindergarten() {
-		return alterskategorieKindergarten;
-	}
-
-	public void setAlterskategorieKindergarten(boolean alterskategorieKindergarten) {
-		this.alterskategorieKindergarten = alterskategorieKindergarten;
-	}
-
-	public boolean getAlterskategorieSchule() {
-		return alterskategorieSchule;
-	}
-
-	public void setAlterskategorieSchule(boolean alterskategorieSchule) {
-		this.alterskategorieSchule = alterskategorieSchule;
-	}
-
-	public boolean getSubventioniertePlaetze() {
-		return subventioniertePlaetze;
-	}
-
-	public void setSubventioniertePlaetze(boolean subventioniertePlaetze) {
-		this.subventioniertePlaetze = subventioniertePlaetze;
-	}
-
-	@Nullable
-	public BigDecimal getAnzahlPlaetze() {
-		return anzahlPlaetze;
-	}
-
-	public void setAnzahlPlaetze(@Nullable BigDecimal anzahlPlaetze) {
-		this.anzahlPlaetze = anzahlPlaetze;
-	}
-
-	@Nullable
-	public BigDecimal getAnzahlPlaetzeFirmen() {
-		return anzahlPlaetzeFirmen;
-	}
-
-	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
-		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
 	public boolean getSendMailWennOffenePendenzen() {
@@ -370,7 +253,33 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;
 		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
 			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
-			Objects.equals(getIban(), otherInstStammdaten.getIban()) &&
-			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse());
+			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse()) &&
+			EbeguUtil.isSameObject(getInstitutionStammdatenBetreuungsgutscheine(), otherInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()) &&
+			EbeguUtil.isSameObject(getInstitutionStammdatenTagesschule(), otherInstStammdaten.getInstitutionStammdatenTagesschule()) &&
+			EbeguUtil.isSameObject(getInstitutionStammdatenFerieninsel(), otherInstStammdaten.getInstitutionStammdatenFerieninsel());
+	}
+
+	@Nullable
+	public String extractKontoinhaber() {
+		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			return getInstitutionStammdatenBetreuungsgutscheine().getKontoinhaber();
+		}
+		return null;
+	}
+
+	@Nullable
+	public Adresse extractAdresseKontoinhaber() {
+		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			return getInstitutionStammdatenBetreuungsgutscheine().getAdresseKontoinhaber();
+		}
+		return null;
+	}
+
+	@Nullable
+	public IBAN extractIban() {
+		if (getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			return getInstitutionStammdatenBetreuungsgutscheine().getIban();
+		}
+		return null;
 	}
 }

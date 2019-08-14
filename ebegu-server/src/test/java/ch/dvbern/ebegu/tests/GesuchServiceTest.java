@@ -40,6 +40,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -780,18 +781,17 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch erstgesuch = createSimpleVerfuegtesGesuch();
 
 		//add Anmeldungen
-		Betreuung betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
+		AnmeldungTagesschule betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		betreuungService.saveBetreuung(betreuung, false);
+		betreuungService.saveAnmeldungTagesschule(betreuung, false);
 
 		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 		Assert.assertNotNull(mutation);
 
-		final List<Betreuung> allBetreuungenFromErstgesuch = betreuungService.findAllBetreuungenFromGesuch(erstgesuch.getId());
-		allBetreuungenFromErstgesuch.stream().filter(Betreuung::isAngebotSchulamt)
+		erstgesuch.extractAllAnmeldungen()
 			.forEach(bet -> Assert.assertEquals(AnmeldungMutationZustand.MUTIERT, bet.getAnmeldungMutationZustand()));
-		mutation.extractAllBetreuungen().stream().filter(Betreuung::isAngebotSchulamt)
+		mutation.extractAllAnmeldungen()
 			.forEach(bet -> Assert.assertEquals(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG, bet.getAnmeldungMutationZustand()));
 
 		gesuchService.removeGesuch(mutation.getId(), GesuchDeletionCause.UNBEKANNT);
@@ -799,8 +799,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final Optional<Gesuch> removedGesuchOpt = gesuchService.findGesuch(mutation.getId());
 		Assert.assertFalse(removedGesuchOpt.isPresent());
 
-		final List<Betreuung> allAktuelleBetreuungenFromErstgesuch = betreuungService.findAllBetreuungenFromGesuch(erstgesuch.getId());
-		allAktuelleBetreuungenFromErstgesuch.stream().filter(Betreuung::isAngebotSchulamt)
+		erstgesuch.extractAllAnmeldungen()
 			.forEach(bet -> Assert.assertEquals(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG, bet.getAnmeldungMutationZustand()));
 
 	}
@@ -989,7 +988,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
+		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@mailbucket.dvbern.ch");
 		return persistence.merge(gesuch);
 	}
 
@@ -999,7 +998,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@example.com");
+		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail("fanny.huber@mailbucket.dvbern.ch");
 		return persistence.merge(gesuch);
 	}
 

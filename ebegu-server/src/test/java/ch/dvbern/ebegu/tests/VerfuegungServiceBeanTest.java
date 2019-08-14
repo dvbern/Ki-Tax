@@ -126,7 +126,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			gesuchsperiode);
 		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		Assert.assertEquals(37, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
+		Assert.assertEquals(33, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);

@@ -16,20 +16,25 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {IbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
+import {EditGemeindeComponentBG} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
+import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.component';
+import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
+import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeKonfigComponent} from './gemeinde-konfiguration/gemeinde-konfig.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
-import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
 
 @NgModule({
     imports: [
         SharedModule,
         GemeindeRoutingModule,
         MaterialModule,
+        IbanModule,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -39,14 +44,20 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
-        ViewGemeindeComponent,
+        EditGemeindeComponentBG,
+        EditGemeindeComponentFI,
+        EditGemeindeComponentStammdaten,
+        EditGemeindeComponentTS,
         GemeindeKonfigComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
-        ViewGemeindeComponent,
+        EditGemeindeComponentBG,
+        EditGemeindeComponentFI,
+        EditGemeindeComponentTS,
+        EditGemeindeComponentStammdaten,
         GemeindeKonfigComponent,
     ],
     providers: [],

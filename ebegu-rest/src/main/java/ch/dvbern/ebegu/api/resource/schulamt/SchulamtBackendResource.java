@@ -51,7 +51,9 @@ import ch.dvbern.ebegu.api.enums.JaxExternalFerienName;
 import ch.dvbern.ebegu.api.enums.JaxExternalModulName;
 import ch.dvbern.ebegu.api.enums.JaxExternalTarifart;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -67,6 +69,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.VerfuegungService;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -135,11 +138,11 @@ public class SchulamtBackendResource {
 	public Response getAnmeldung(@Nonnull @PathParam("bgNummer") String bgNummer) {
 
 		try {
-			if (!betreuungService.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
 				return createBgNummerFormatError();
 			}
 
-			final List<Betreuung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(bgNummer);
+			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(bgNummer);
 
 			if (betreuungen == null || betreuungen.isEmpty()) {
 				// Betreuung not found
@@ -150,18 +153,21 @@ public class SchulamtBackendResource {
 				return createTooManyResultsResponse("More than one Betreuung with id " + bgNummer + " found");
 			}
 
-			final Betreuung betreuung = betreuungen.get(0);
-			// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
-			if (betreuung.isKeineDetailinformationen()) {
-				return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
-			}
+			final AbstractAnmeldung betreuung = betreuungen.get(0);
+
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
 				// Betreuung ist Tagesschule
-				return Response.ok(getAnmeldungTagesschule(betreuung)).build();
+				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
+				if (anmeldungTagesschule.isKeineDetailinformationen()) {
+					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
+					return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
+				}
+				return Response.ok(getAnmeldungTagesschule(anmeldungTagesschule)).build();
 			}
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.FERIENINSEL) {
 				// Betreuung ist Ferieninsel
-				return Response.ok(getAnmeldungFerieninsel(betreuung)).build();
+				AnmeldungFerieninsel anmeldungFerieninsel = (AnmeldungFerieninsel) betreuung;
+				return Response.ok(getAnmeldungFerieninsel(anmeldungFerieninsel)).build();
 			}
 			// Betreuung ist weder Tagesschule noch Ferieninsel
 			return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
@@ -172,7 +178,7 @@ public class SchulamtBackendResource {
 		}
 	}
 
-	private JaxExternalAnmeldungTagesschule getAnmeldungTagesschule(Betreuung betreuung) {
+	private JaxExternalAnmeldungTagesschule getAnmeldungTagesschule(AnmeldungTagesschule betreuung) {
 		Objects.requireNonNull(betreuung.getBelegungTagesschule());
 
 		List<JaxExternalModul> anmeldungen = new ArrayList<>();
@@ -190,7 +196,7 @@ public class SchulamtBackendResource {
 			betreuung.getKind().getKindJA().getNachname());
 	}
 
-	private JaxExternalAnmeldungFerieninsel getAnmeldungFerieninsel(Betreuung betreuung) {
+	private JaxExternalAnmeldungFerieninsel getAnmeldungFerieninsel(AnmeldungFerieninsel betreuung) {
 		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
 
 		List<LocalDate> datumList = new ArrayList<>();
@@ -242,12 +248,12 @@ public class SchulamtBackendResource {
 			}
 
 			// Parse Fallnummer
-			if (!betreuungService.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
 				return createBgNummerFormatError();
 			}
 			long fallNummer;
 			try {
-				fallNummer = betreuungService.getFallnummerFromBGNummer(bgNummer);
+				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
 			} catch (Exception e) {
 				LOG.info("getFinanzielleSituation()", e);
 				return createBadParameterResponse("Can not parse bgNummer");
@@ -263,7 +269,7 @@ public class SchulamtBackendResource {
 			}
 
 			// Parse Gesuchsperiode
-			int yearFromBGNummer = betreuungService.getYearFromBGNummer(bgNummer);
+			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1))
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -271,7 +277,7 @@ public class SchulamtBackendResource {
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						bgNummer));
 
-			rearrangeStichtag(stichtag, gesuchsperiodeFromBGNummer);
+			stichtag = rearrangeStichtag(stichtag, gesuchsperiodeFromBGNummer);
 
 			//Get "neustes" Gesuch on Stichtag an fallnummer
 			Optional<Gesuch> neustesGesuchOpt =

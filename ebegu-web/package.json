@@ -107,7 +107,6 @@
     "sass-loader": "^7.0.3",
     "source-map-loader": "~0.2.3",
     "style-loader": "^0.21.0",
-    "swagger-ui": "~2.2.3",
     "thread-loader": "~1.1.2",
     "ts-loader": "~3.0.5",
     "ts-node": "~3.3.0",
@@ -123,8 +122,8 @@
     "xml2js": "~0.4.17"
   },
   "engines": {
-    "node": "=10.13.0",
-    "npm": "=6.4.1"
+    "node": "=10.16.2",
+    "npm": "=6.9.0"
   },
   "dependencies": {
     "@angular/animations": "^7.2.15",
@@ -150,7 +149,9 @@
     "angular-utf8-base64": "0.0.5",
     "core-js": "~2.5.5",
     "detect-browser": "^3.0.1",
+    "iban": "0.0.12",
     "ngx-guided-tour": "=1.1.2",
+    "ngx-iban": "^2.3.0",
     "randomcolor": "^0.5.4",
     "raven-js": "~3.27.0",
     "rxjs": "^6.5.2",

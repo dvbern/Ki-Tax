@@ -16,23 +16,16 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
-import {Observable, ReplaySubject} from 'rxjs';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import TSEinstellung from '../../models/TSEinstellung';
-import TSGemeinde from '../../models/TSGemeinde';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export class EinstellungRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
     public serviceURL: string;
-
-    private readonly tagesschuleEnabledSubject$ = new ReplaySubject<TSEinstellung | null>(1);
-    private readonly _tageschuleEnabledForMandant$: Observable<TSEinstellung | null>
-        = this.tagesschuleEnabledSubject$.asObservable();
 
     public constructor(
         public readonly http: IHttpService,
@@ -54,20 +47,12 @@ export class EinstellungRS {
 
     public findEinstellung(
         key: TSEinstellungKey,
-        gemeinde: TSGemeinde,
-        gesuchsperiode: TSGesuchsperiode,
+        gemeindeId: string,
+        gesuchsperiodeId: string,
     ): IPromise<TSEinstellung> {
-        return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeinde.id}/gp/${gesuchsperiode.id}`)
+        return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`)
             .then((param: IHttpResponse<TSEinstellung>) => {
                 return param.data;
-            });
-    }
-
-    public findEinstellungTagesschuleEnabledForMandant(): void {
-        this.http.get(`${this.serviceURL}/tagesschuleEnabledForMandant`)
-            .then((param: IHttpResponse<TSEinstellung>) => {
-                this.tagesschuleEnabledSubject$.next(
-                    this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), param.data));
             });
     }
 
@@ -84,11 +69,5 @@ export class EinstellungRS {
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });
-    }
-
-    // Use the observable, when the state must be updated automatically, when the principal changes.
-    // e.g. printing the name of the current user
-    public tageschuleEnabledForMandant$(): Observable<TSEinstellung | null> {
-        return this._tageschuleEnabledForMandant$;
     }
 }

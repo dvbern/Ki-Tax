@@ -16,10 +16,14 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -37,16 +41,31 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 	private static final long serialVersionUID = -9032858720574672370L;
 
 	@ManyToOne(optional = false)
-	@NotNull
+	@NotNull @Nonnull
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pens_betreuungsmitteilung_id"), nullable = false)
 	private Betreuungsmitteilung betreuungsmitteilung;
 
+	@Nullable
+	@Valid
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
+	private BetreuungspensumAbweichung betreuungspensumAbweichung;
+
+	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
 		return betreuungsmitteilung;
 	}
 
-	public void setBetreuungsmitteilung(Betreuungsmitteilung betreuungsmitteilung) {
+	public void setBetreuungsmitteilung(@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		this.betreuungsmitteilung = betreuungsmitteilung;
+	}
+
+	public BetreuungspensumAbweichung getBetreuungspensumAbweichung() {
+		return betreuungspensumAbweichung;
+	}
+
+	public void setBetreuungspensumAbweichung(BetreuungspensumAbweichung betreuungspensumAbweichung) {
+		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
 	}
 
 	@Override

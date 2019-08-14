@@ -451,7 +451,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 
 					append(sb, stammdaten.getId());
 					append(sb, stammdaten.getBetreuungsangebotTyp().name());
-					String iban = stammdaten.getIban() != null ? stammdaten.getIban().getIban() : "";
+					String iban = stammdaten.extractIban() != null ? stammdaten.extractIban().getIban() : "";
 					append(sb, iban);
 
 					pw.println(sb);

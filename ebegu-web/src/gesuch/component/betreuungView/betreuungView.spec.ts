@@ -29,6 +29,7 @@ import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuun
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenBetreuungsgutscheine from '../../../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import TSKindContainer from '../../../models/TSKindContainer';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -95,10 +96,12 @@ describe('betreuungView', () => {
             return betreuungView ? betreuungView.model : betreuung;
         });
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
+        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeBern());
         $rootScope = $injector.get('$rootScope');
         authServiceRS = $injector.get('AuthServiceRS');
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+        spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(Promise.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
@@ -196,8 +199,8 @@ describe('betreuungView', () => {
                 const list = betreuungView.getInstitutionenSDList();
                 expect(list).toBeDefined();
                 expect(list.length).toBe(2);
-                expect(list[0].iban).toBe('1');
-                expect(list[1].iban).toBe('2');
+                expect(list[0].institutionStammdatenBetreuungsgutscheine.iban).toBe('1');
+                expect(list[1].institutionStammdatenBetreuungsgutscheine.iban).toBe('2');
             });
         });
 
@@ -406,7 +409,8 @@ describe('betreuungView', () => {
 
     function createInstitutionStammdaten(iban: string, betAngTyp: TSBetreuungsangebotTyp): TSInstitutionStammdaten {
         const instStam1 = new TSInstitutionStammdaten();
-        instStam1.iban = iban;
+        instStam1.institutionStammdatenBetreuungsgutscheine = new TSInstitutionStammdatenBetreuungsgutscheine();
+        instStam1.institutionStammdatenBetreuungsgutscheine.iban = iban;
         instStam1.betreuungsangebotTyp = betAngTyp;
         return instStam1;
     }

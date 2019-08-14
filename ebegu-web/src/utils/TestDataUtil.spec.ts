@@ -36,6 +36,7 @@ import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
+import {TSMandant} from '../models/TSMandant';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSWizardStep from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -98,7 +99,6 @@ export default class TestDataUtil {
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/einstellung/tagesschuleEnabledForMandant').respond({});
     }
 
     public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
@@ -210,6 +210,9 @@ export default class TestDataUtil {
         gemeinde.bfsNummer = 363;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.angebotBG = true;
+        gemeinde.angebotTS = false;
+        gemeinde.angebotFI = false;
         return gemeinde;
     }
 
@@ -222,6 +225,9 @@ export default class TestDataUtil {
         gemeinde.bfsNummer = 351;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.angebotBG = true;
+        gemeinde.angebotTS = false;
+        gemeinde.angebotFI = false;
         return gemeinde;
     }
 
@@ -233,6 +239,9 @@ export default class TestDataUtil {
         gemeinde.gemeindeNummer = 3;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.angebotBG = true;
+        gemeinde.angebotTS = false;
+        gemeinde.angebotFI = false;
         return gemeinde;
     }
 
@@ -265,7 +274,16 @@ export default class TestDataUtil {
         user.vorname = 'system';
         user.currentBerechtigung = new TSBerechtigung();
         user.currentBerechtigung.role = TSRole.SUPER_ADMIN;
+        user.mandant = this.createMandant();
         return user;
+    }
+
+    public static createMandant(): TSMandant {
+        const mandant = new TSMandant('myMandant');
+        TestDataUtil.setAbstractMutableFieldsUndefined(mandant);
+        mandant.angebotTS = false;
+        mandant.angebotFI = false;
+        return mandant;
     }
 
     /**
