@@ -228,12 +228,12 @@ public class BetreuungsgutscheinEvaluator {
 		if (verfuegungService != null) {
 			final Optional<Verfuegung> ausbezahlteVorgaenger = verfuegungService.
 				findVorgaengerAusbezahlteVerfuegung(betreuung);
-
+			// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
 			if (ausbezahlteVorgaenger.isPresent() && betreuung.getVerfuegung() != null) {
 				// Zahlungsstatus aus vorgaenger uebernehmen
 				VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
 			}
-
+			// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 			Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
 			if (vorgaengerVerfuegung.isPresent() && betreuung.getVerfuegung() != null) {
 				// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
