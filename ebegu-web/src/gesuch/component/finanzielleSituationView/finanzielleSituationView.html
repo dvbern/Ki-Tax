@@ -209,7 +209,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHR"
                                            for="geschaeftsgewinnBasisjahr"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahr()}}}"></label>
+                                           translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahr" name="geschaeftsgewinnBasisjahr"
                                                    ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
                                                    ng-required="vm.isGeschaeftsgewinnRequired()"
@@ -239,7 +239,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahr()-1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.getBasisjahrMinus1()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
@@ -273,7 +273,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
                                            for="geschaeftsgewinnBasisjahrMinus2"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahr()-2}}}"></label>
+                                           translate-values="{basisjahr: {{vm.getBasisjahrMinus2()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
                                                    name="geschaeftsgewinnBasisjahrMinus2"
                                                    ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"

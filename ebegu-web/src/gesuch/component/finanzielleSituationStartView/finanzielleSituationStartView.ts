@@ -238,11 +238,4 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     public is2GSRequired(): boolean {
         return this.gesuchModelManager.isGesuchsteller2Required();
     }
-
-    public getBasisjahr(): number | undefined {
-        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahr()) {
-            return this.gesuchModelManager.getBasisjahr();
-        }
-        return undefined;
-    }
 }
