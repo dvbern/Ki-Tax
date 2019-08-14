@@ -375,6 +375,7 @@
                             <input id="anzahlPlaetze_id" type="text" name="anzahlPlaetze_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze"
                                    [maxlength]="255" class="form-control"
+                                   pattern="{{CONSTANTS.PATTERN_GREATER_THAN_ZERO}}"
                                    placeholder="{{getPlaceholderForPlaetze()}}" required>
                             <dv-error-messages [errorObject]="form.controls.anzahlPlaetze_id?.errors"
                                                inputId="anzahlPlaetze_id"></dv-error-messages>
