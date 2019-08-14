@@ -271,6 +271,7 @@ export default class GesuchModelManager {
      */
     private loadGemeindeKonfiguration(): void {
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
+            // tslint:disable-next-line:early-exit
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
                 this.gemeindeKonfiguration = konfigurationsListeElement;
                 this.gemeindeKonfiguration.initProperties();
