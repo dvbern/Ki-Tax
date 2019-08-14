@@ -296,6 +296,29 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
     };
 }
 
+export class EbeguBetreuungAbweichungenState implements Ng1StateDeclaration {
+    public name = 'gesuch.abweichungen';
+    public url = '/betreuungen/betreuung/abweichungen/:gesuchId/:kindNumber/:betreuungNumber';
+    public params = {
+        betreuungsangebotTyp: '',
+        betreuungNumber: '',
+    };
+
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<betreuung-abweichungen-view>',
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getTraegerschaftInstitutionRoles(),
+    };
+}
+
 export class EbeguAbwesenheitState implements Ng1StateDeclaration {
     public name = 'gesuch.abwesenheit';
     public url = '/abwesenheit/:gesuchId';
@@ -638,6 +661,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguErwerbspensumState(),
     new EbeguBetreuungListState(),
     new EbeguBetreuungState(),
+    new EbeguBetreuungAbweichungenState(),
     new EbeguAbwesenheitState(),
     new EbeguNewFallState(),
     new EbeguMutationState(),

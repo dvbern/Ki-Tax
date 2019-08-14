@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import TSDokumenteDTO from '../models/dto/TSDokumenteDTO';
 import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSituationResultateDTO';
 import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -45,6 +48,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../models/TSBetreuungsmitteilung';
 import TSBetreuungsmitteilungPensum from '../models/TSBetreuungsmitteilungPensum';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
+import TSBetreuungspensumAbweichung from '../models/TSBetreuungspensumAbweichung';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
 import TSBfsGemeinde from '../models/TSBfsGemeinde';
 import TSDokument from '../models/TSDokument';
@@ -1689,6 +1693,10 @@ export default class EbeguRestUtil {
                     betPensCont));
             });
         }
+
+        restBetreuung.betreuungspensumAbweichungen =
+            this.betreuungspensumAbweichungenToRestObject(betreuung.betreuungspensumAbweichungen);
+
         if (betreuung.abwesenheitContainers) {
             restBetreuung.abwesenheitContainers = [];
             betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
@@ -1714,6 +1722,24 @@ export default class EbeguRestUtil {
         return restBetreuung;
     }
 
+    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[]): any {
+        let restAbweichungen: any;
+        if (abweichungen) {
+            restAbweichungen = [];
+            // only send Abweichungen with actual Abweichungen
+            const filteredAbweichungen = abweichungen.filter(element => {
+                return element.status !== TSBetreuungspensumAbweichungStatus.NONE;
+            });
+
+            filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
+                restAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
+                    abweichung));
+            });
+        }
+
+        return restAbweichungen;
+    }
+
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
@@ -1722,6 +1748,24 @@ export default class EbeguRestUtil {
         restAngebot.sprichtAmtssprache = angebotDTO.sprichtAmtssprache;
         return restAngebot;
 
+    }
+
+    public betreuungspensumAbweichungToRestObject(restAbweichung: any, abweichung: TSBetreuungspensumAbweichung): any {
+        this.abstractBetreuungspensumEntityToRestObject(restAbweichung, abweichung);
+
+        restAbweichung.status = abweichung.status;
+
+        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+        const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
+        const originalPensum = restAbweichung.vertraglichesPensum
+            ? restAbweichung.vertraglichesPensum / multiplier
+            : undefined;
+
+        restAbweichung.vertraglichesPensum = originalPensum;
+        restAbweichung.pensum = pensum;
+
+        return restAbweichung;
     }
 
     public betreuungspensumContainerToRestObject(restBetPensCont: any, betPensCont: TSBetreuungspensumContainer): any {
@@ -1815,9 +1859,45 @@ export default class EbeguRestUtil {
             betreuungTS.anmeldungMutationZustand = betreuungFromServer.anmeldungMutationZustand;
             betreuungTS.keineDetailinformationen = betreuungFromServer.keineDetailinformationen;
             betreuungTS.bgNummer = betreuungFromServer.bgNummer;
+            betreuungTS.betreuungspensumAbweichungen =
+                this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             return betreuungTS;
         }
         return undefined;
+    }
+
+    public parseBetreuungspensumAbweichungen(data: any): TSBetreuungspensumAbweichung[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBetreuungspensumAbweichung(new TSBetreuungspensumAbweichung(), item))
+            : [this.parseBetreuungspensumAbweichung(new TSBetreuungspensumAbweichung(), data)];
+    }
+
+    public parseBetreuungspensumAbweichung(
+        abweichungTS: TSBetreuungspensumAbweichung,
+        abweichungFromServer: any,
+    ): TSBetreuungspensumAbweichung {
+        this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
+        abweichungTS.status = abweichungFromServer.status;
+        abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
+
+        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+        const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
+        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
+
+        abweichungTS.vertraglichesPensum = originalPensum;
+        abweichungTS.pensum = pensum;
+
+        // ugly hack to override @Nonnull Betreuungskostem
+        if (abweichungTS.isNew()) {
+            abweichungTS.pensum = null;
+            abweichungTS.monatlicheBetreuungskosten = null;
+        }
+
+        return abweichungTS;
     }
 
     public parseBetreuungspensumContainers(data: Array<any>): TSBetreuungspensumContainer[] {

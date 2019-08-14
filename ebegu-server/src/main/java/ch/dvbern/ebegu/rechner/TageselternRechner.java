@@ -21,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -62,8 +63,8 @@ public class TageselternRechner extends AbstractBGRechner {
 		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
 		BigDecimal oeffnungsstunden = parameterDTO.getOeffnungsstundenTFO();
-		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
-		long nettoTageIntervall = daysBetween(von, bis);
+		long nettoTageMonat = DateUtil.daysBetween(monatsanfang, monatsende);
+		long nettoTageIntervall = DateUtil.daysBetween(von, bis);
 		long stundenMonat = nettoTageMonat * oeffnungsstunden.longValue();
 		long stundenIntervall = nettoTageIntervall * oeffnungsstunden.longValue();
 		return MathUtil.EXACT.divide(MathUtil.EXACT.from(stundenIntervall), MathUtil.EXACT.from(stundenMonat));
