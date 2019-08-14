@@ -60,6 +60,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -488,16 +489,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	 * @param currentGesuch das zurzeit neueste Gesuch
 	 */
 	private void resetMutierteAnmeldungen(@Nonnull Gesuch currentGesuch) {
-		currentGesuch.extractAllBetreuungen().stream()
-			.filter(betreuung -> betreuung.isAngebotSchulamt() && betreuung.getVorgaengerId() != null)
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(betreuung -> betreuung.getVorgaengerId() != null)
+			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
 			.forEach(betreuung -> {
-				Betreuung vorgaengerBetreuung = betreuungService.findBetreuung(betreuung.getVorgaengerId())
+				AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"resetMutierteAnmeldungen",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
-				vorgaengerBetreuung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				persistence.merge(vorgaengerBetreuung);
+				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				persistence.merge(vorgaenger);
 			});
 	}
 
@@ -817,19 +819,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			}
 
 			// Eventuelle Schulamt-Anmeldungen auf AUSGELOEST setzen
-			for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-				if (betreuung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
-					betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+			for (AbstractAnmeldung anmeldung : gesuch.extractAllAnmeldungen()) {
+				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
+					anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 				}
 				// Set noch nicht freigegebene Betreuungen to aktuelle Anmeldung bei Freigabe
-				if (betreuung.isAngebotSchulamt()) {
-					if (betreuung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-						betreuung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-						if (betreuung.getVorgaengerId() != null) {
-							betreuungService.changeAnmeldungMutationZustand(
-								betreuung.getVorgaengerId(),
-								AnmeldungMutationZustand.MUTIERT);
-						}
+				if (anmeldung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+					anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+					if (anmeldung.getVorgaengerId() != null) {
+						anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
 					}
 				}
 			}
