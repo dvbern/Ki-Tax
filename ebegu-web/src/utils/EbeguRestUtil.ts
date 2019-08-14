@@ -1855,7 +1855,6 @@ export default class EbeguRestUtil {
 
         const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
 
-
         const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
 

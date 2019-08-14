@@ -180,7 +180,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             this.model.betreuungspensumAbweichungen = result;
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
                 title: 'SPEICHERN_ERFOLGREICH',
-            })
+            });
         });
     }
 
