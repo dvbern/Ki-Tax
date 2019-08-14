@@ -27,7 +27,6 @@ import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragSta
 import {getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
@@ -677,6 +676,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const found = instStamList.find(i => i.id === this.instStammId);
         if (found) {
             this.model.institutionStammdaten = found;
+        } else {
+            console.error('Institution not found!', this.instStammId);
         }
     }
 
@@ -942,27 +943,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * verfuegt wurden bzw. ein vorgaengerId haben. Ausserdem muss es sich um das letzte bzw. neueste Gesuch handeln
      */
     public isMutationsmeldungAllowed(): boolean {
-        if (!this.gesuchModelManager.getGesuch()) {
-            return false;
-        }
-        return (
-                (
-                    this.isMutation()
-                    && (
-                        this.getBetreuungModel().vorgaengerId
-                        || this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-                    )
-                )
-                || (
-                    !this.isMutation()
-                    && isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
-                    && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.VERFUEGT
-                )
-            )
-            && this.getBetreuungModel().betreuungsstatus !== TSBetreuungsstatus.WARTEN
-            && this.gesuchModelManager.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV
-            && this.isNewestGesuch
-            && !this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
+        return super.isMutationsmeldungAllowed(this.getBetreuungModel(), this.isNewestGesuch);
     }
 
     public mutationsmeldungSenden(): void {
@@ -1121,6 +1102,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStammId = this.CONSTANTS.INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE;
+            this.getBetreuungModel().vertrag = true;
         } else {
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
@@ -1217,5 +1199,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT
             && erweiterteBetreuung.erweiterteBeduerfnisse
             && !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+    }
+
+    public gotoBetreuungAbweichungen(): void {
+        this.$state.go('gesuch.abweichungen', {
+            gesuchId: this.gesuchModelManager.getGesuch().id,
+            betreuungNumber: this.$stateParams.betreuungNumber,
+            kindNumber: this.$stateParams.kindNumber,
+        });
     }
 }

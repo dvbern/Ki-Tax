@@ -44,7 +44,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
@@ -147,9 +147,9 @@ public class SearchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/pendenzenBetreuungen")
 	public List<JaxPendenzBetreuungen> getAllPendenzenBetreuungen() {
-		Collection<Betreuung> betreuungenInStatus = betreuungService.getPendenzenBetreuungen();
+		Collection<AbstractPlatz> betreuungenInStatus = betreuungService.getPendenzenBetreuungen();
 		List<JaxPendenzBetreuungen> pendenzenList = new ArrayList<>();
-		for (Betreuung betreuung : betreuungenInStatus) {
+		for (AbstractPlatz betreuung : betreuungenInStatus) {
 			JaxPendenzBetreuungen pendenz = new JaxPendenzBetreuungen();
 			pendenz.setBetreuungsNummer(betreuung.getBGNummer());
 			pendenz.setGemeinde(betreuung.extractGesuch().getDossier().getGemeinde().getName());

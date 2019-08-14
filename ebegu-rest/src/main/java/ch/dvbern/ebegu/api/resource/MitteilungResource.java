@@ -44,7 +44,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilungSearchresultDTO;
@@ -139,8 +141,8 @@ public class MitteilungResource {
 			throw new EbeguEntityNotFoundException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"BetreuungsmitteilungID invalid: " + betreuungsmitteilungId.getId());
 		}
-		final Gesuch mutierteGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
-		return converter.toJaxId(mutierteGesuch);
+		final Gesuch mutiertesGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
+		return converter.toJaxId(mutiertesGesuch);
 	}
 
 	@ApiOperation(value = "Speichert eine Mitteilung als Entwurf", response = JaxMitteilung.class)
@@ -486,5 +488,41 @@ public class MitteilungResource {
 
 			return Response.ok(resultDTO).build();
 		});
+	}
+
+	@ApiOperation(value = "Wandelt BetreuungspensumAbweichungen in eine Mutationsmeldung um und sendet diese an die "
+		+ "Gemeinde",
+		response = JaxBetreuung.class)
+	@Nullable
+	@PUT
+	@Path("/betreuung/abweichungenfreigeben/{betreuungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxBetreuungspensumAbweichung> createMutationsmeldungFromBetreuungspensumAbweichungen(
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId jaxBetreuungId,
+		@Nonnull @NotNull @Valid JaxBetreuungsmitteilung mitteilungJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(mitteilungJAXP);
+		Objects.requireNonNull(mitteilungJAXP);
+
+		Optional<Betreuung> betreuungOpt = betreuungService.findBetreuung(converter.toEntityId(jaxBetreuungId));
+
+		if (!betreuungOpt.isPresent()) {
+			return null;
+		}
+
+		Betreuung betreuung = betreuungOpt.get();
+
+		if (betreuung.getBetreuungspensumAbweichungen() == null) {
+			return null;
+		}
+		Betreuungsmitteilung mitteilung = converter.betreuungsmitteilungToEntity(mitteilungJAXP,
+			new Betreuungsmitteilung());
+
+		mitteilungService.createMutationsmeldungAbweichungen(mitteilung, betreuung);
+
+		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 }

@@ -54,6 +54,7 @@ describe('betreuungRS', () => {
         mockBetreuung = new TSBetreuung();
         mockBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
         mockBetreuung.betreuungspensumContainers = [];
+        mockBetreuung.betreuungspensumAbweichungen = null;
         TestDataUtil.setAbstractMutableFieldsUndefined(mockBetreuung);
         mockBetreuungRest = ebeguRestUtil.betreuungToRestObject({}, mockBetreuung);
 

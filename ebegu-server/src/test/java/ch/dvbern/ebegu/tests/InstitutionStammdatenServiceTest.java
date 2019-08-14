@@ -62,7 +62,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		Collection<InstitutionStammdaten> allInstitutionStammdaten = institutionStammdatenService.getAllInstitutionStammdaten();
 		Assert.assertEquals(1, allInstitutionStammdaten.size());
 		InstitutionStammdaten nextInstitutionStammdaten = allInstitutionStammdaten.iterator().next();
-		Assert.assertEquals(insertedInstitutionStammdaten.getIban(), nextInstitutionStammdaten.getIban());
+		Assert.assertEquals(insertedInstitutionStammdaten.extractIban(), nextInstitutionStammdaten.extractIban());
 		Assert.assertEquals(insertedInstitutionStammdaten.getBetreuungsangebotTyp(), nextInstitutionStammdaten.getBetreuungsangebotTyp());
 	}
 
@@ -75,11 +75,11 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		Optional<InstitutionStammdaten> institutionStammdatenOptional = institutionStammdatenService.findInstitutionStammdaten(insertedInstitutionStammdaten.getId());
 		Assert.assertTrue(institutionStammdatenOptional.isPresent());
 		InstitutionStammdaten persistedInstStammdaten = institutionStammdatenOptional.get();
-		Assert.assertEquals(insertedInstitutionStammdaten.getIban(), persistedInstStammdaten.getIban());
+		Assert.assertEquals(insertedInstitutionStammdaten.extractIban(), persistedInstStammdaten.extractIban());
 
-		persistedInstStammdaten.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine().setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
 		InstitutionStammdaten updatedInstitutionStammdaten = institutionStammdatenService.saveInstitutionStammdaten(persistedInstStammdaten);
-		Assert.assertEquals(persistedInstStammdaten.getIban(), updatedInstitutionStammdaten.getIban());
+		Assert.assertEquals(persistedInstStammdaten.extractIban(), updatedInstitutionStammdaten.extractIban());
 	}
 
 	@Test

@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
@@ -95,6 +96,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
@@ -119,9 +121,12 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
@@ -134,6 +139,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Dokument;
@@ -169,6 +175,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
@@ -252,6 +259,7 @@ import static java.util.Objects.requireNonNull;
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
+	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 	@Inject
@@ -1210,7 +1218,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
 
-		Collection<Institution> institutionen = institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
+		Collection<Institution> institutionen =
+			institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
 		// its enough if we just pass the names here, we only want to display it later
 		jaxTraegerschaft.setInstitutionNames(institutionen.stream()
 			.map(Institution::getName)
@@ -1328,14 +1337,16 @@ public class JaxBConverter extends AbstractConverter {
 	) {
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
 
-		if (persistedInstStammdaten.getIban() != null) {
-			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
-		}
 		jaxInstStammdaten.setBetreuungsangebotTyp(persistedInstStammdaten.getBetreuungsangebotTyp());
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
 		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
+		if (persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheineToJAX(
+				persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()
+			));
+		}
 		if (persistedInstStammdaten.getInstitutionStammdatenTagesschule() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(
 				persistedInstStammdaten
@@ -1348,18 +1359,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxInstStammdaten.setInstitution(institutionToJAX(persistedInstStammdaten.getInstitution()));
 		jaxInstStammdaten.setAdresse(adresseToJAX(persistedInstStammdaten.getAdresse()));
-		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
-		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
-		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
-		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
-		jaxInstStammdaten.setAlterskategorieSchule(persistedInstStammdaten.getAlterskategorieSchule());
-		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
-		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
-		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
 		jaxInstStammdaten.setSendMailWennOffenePendenzen(persistedInstStammdaten.getSendMailWennOffenePendenzen());
-		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
-			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
-		}
 		return jaxInstStammdaten;
 	}
 
@@ -1392,14 +1392,25 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdaten.getAdresse());
 
 		convertAbstractDateRangedFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
-		if (institutionStammdatenJAXP.getIban() != null) {
-			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
-		}
+
 		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
 		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setWebseite(institutionStammdatenJAXP.getWebseite());
 		institutionStammdaten.setOeffnungszeiten(institutionStammdatenJAXP.getOeffnungszeiten());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
+		if (institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			// wenn InstitutionStammdatenBetreuungsgutscheine vorhanden ist es ein BG und Objekt muss, wenn noch
+			// nicht vorhanden, erzeugt werden
+			InstitutionStammdatenBetreuungsgutscheine isBG =
+				Optional.ofNullable(institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine())
+					.orElseGet(InstitutionStammdatenBetreuungsgutscheine::new);
+
+			InstitutionStammdatenBetreuungsgutscheine convertedIsBG = institutionStammdatenBetreuungsgutscheineToEntity(
+				institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine(),
+				isBG
+			);
+			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(convertedIsBG);
+		}
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch
 			// nicht vorhanden, erzeugt werden
@@ -1424,22 +1435,7 @@ public class JaxBConverter extends AbstractConverter {
 			);
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(convertedIsFI);
 		}
-		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
-		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
-		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
-		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
-		institutionStammdaten.setAlterskategorieSchule(institutionStammdatenJAXP.isAlterskategorieSchule());
-		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
-		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
-		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 		institutionStammdaten.setSendMailWennOffenePendenzen(institutionStammdatenJAXP.isSendMailWennOffenePendenzen());
-
-		Adresse convertedAdresse = null;
-		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
-			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
-			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
-		}
-		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 
@@ -1456,6 +1452,59 @@ public class JaxBConverter extends AbstractConverter {
 		return institutionStammdaten;
 	}
 
+	@Nonnull
+	public JaxInstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheineToJAX(
+		@Nonnull final InstitutionStammdatenBetreuungsgutscheine persistedInstStammdaten
+	) {
+		final JaxInstitutionStammdatenBetreuungsgutscheine jaxInstStammdaten =
+			new JaxInstitutionStammdatenBetreuungsgutscheine();
+		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
+
+		if (persistedInstStammdaten.getIban() != null) {
+			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
+		}
+		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
+		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
+		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
+		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
+		jaxInstStammdaten.setAlterskategorieSchule(persistedInstStammdaten.getAlterskategorieSchule());
+		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
+		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
+		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
+		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
+			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
+		}
+		return jaxInstStammdaten;
+	}
+
+	@Nonnull
+	public InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheineToEntity(
+		@Nonnull final JaxInstitutionStammdatenBetreuungsgutscheine institutionStammdatenJAXP,
+		@Nonnull final InstitutionStammdatenBetreuungsgutscheine institutionStammdaten
+	) {
+		convertAbstractFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
+		if (institutionStammdatenJAXP.getIban() != null) {
+			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
+		}
+		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
+		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
+		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
+		institutionStammdaten.setAlterskategorieSchule(institutionStammdatenJAXP.isAlterskategorieSchule());
+		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
+		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
+		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
+
+		Adresse convertedAdresse = null;
+		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
+			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
+			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
+		}
+		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
+		return institutionStammdaten;
+	}
+
+	@Nonnull
 	public JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninselToJAX(
 		@Nonnull final InstitutionStammdatenFerieninsel persistedInstStammdatenFerieninsel) {
 
@@ -1745,7 +1794,13 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedKind.getKindJA() != null) {
 			jaxKindContainer.setKindJA(kindToJAX(persistedKind.getKindJA()));
 		}
-		jaxKindContainer.setBetreuungen(betreuungListToJax(persistedKind.getBetreuungen()));
+		jaxKindContainer.setBetreuungen(new TreeSet<>());
+		Set<JaxBetreuung> betreuungen = betreuungListToJax(persistedKind.getBetreuungen());
+		jaxKindContainer.getBetreuungen().addAll(betreuungen);
+		Set<JaxBetreuung> anmeldungenTagesschule = anmeldungTagesschuleListToJax(persistedKind.getAnmeldungenTagesschule());
+		jaxKindContainer.getBetreuungen().addAll(anmeldungenTagesschule);
+		Set<JaxBetreuung> anmeldungenFerieninsel = anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
+		jaxKindContainer.getBetreuungen().addAll(anmeldungenFerieninsel);
 		jaxKindContainer.setKindNummer(persistedKind.getKindNummer());
 		jaxKindContainer.setNextNumberBetreuung(persistedKind.getNextNumberBetreuung());
 		return jaxKindContainer;
@@ -2133,32 +2188,12 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxUrlaub;
 	}
 
-	public Betreuung betreuungToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final Betreuung betreuung) {
+	@Nonnull
+	public <T extends AbstractPlatz> T abstractPlatzToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final T betreuung) {
 		requireNonNull(betreuung);
 		requireNonNull(betreuungJAXP);
 
 		convertAbstractVorgaengerFieldsToEntity(betreuungJAXP, betreuung);
-		betreuung.setGrundAblehnung(betreuungJAXP.getGrundAblehnung());
-		betreuung.setDatumAblehnung(betreuungJAXP.getDatumAblehnung());
-		betreuung.setDatumBestaetigung(betreuungJAXP.getDatumBestaetigung());
-
-		betreuungsPensumContainersToEntity(
-			betreuungJAXP.getBetreuungspensumContainers(),
-			betreuung.getBetreuungspensumContainers()
-		);
-		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
-
-		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
-			betreuungJAXP.getErweiterteBetreuungContainer(),
-			betreuung.getErweiterteBetreuungContainer()
-		));
-		betreuung.getErweiterteBetreuungContainer().setBetreuung(betreuung);
-
-		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
-		setBetreuungInAbwesenheiten(betreuung.getAbwesenheitContainers(), betreuung);
-
-		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
-		betreuung.setVertrag(betreuungJAXP.getVertrag());
 
 		// InstitutionStammdaten muessen bereits existieren
 		if (betreuungJAXP.getInstitutionStammdaten() != null) {
@@ -2175,8 +2210,14 @@ public class JaxBConverter extends AbstractConverter {
 			betreuung.setInstitutionStammdaten(instStammdatenToMerge);
 		}
 		betreuung.setBetreuungNummer(betreuungJAXP.getBetreuungNummer());
-		betreuung.setBetreuungMutiert(betreuungJAXP.getBetreuungMutiert());
-		betreuung.setAbwesenheitMutiert(betreuungJAXP.getAbwesenheitMutiert());
+		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
+		return betreuung;
+	}
+
+	@Nonnull
+	public AnmeldungTagesschule anmeldungTagesschuleToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
+		AnmeldungTagesschule betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungTagesschule);
+		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
 		betreuung.setKeineDetailinformationen(betreuungJAXP.isKeineDetailinformationen());
 		if (betreuungJAXP.getBelegungTagesschule() != null) {
@@ -2200,6 +2241,14 @@ public class JaxBConverter extends AbstractConverter {
 				new BelegungTagesschule(),
 				null));
 		}
+		return betreuung;
+	}
+
+	@Nonnull
+	public AnmeldungFerieninsel anmeldungFerieninselToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
+		AnmeldungFerieninsel betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungFerieninsel);
+		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
+		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
 		if (betreuung.getBelegungFerieninsel() != null) {
 			betreuung.setBelegungFerieninsel(belegungFerieninselToEntity(
 				betreuungJAXP.getBelegungFerieninsel(),
@@ -2209,9 +2258,81 @@ public class JaxBConverter extends AbstractConverter {
 				betreuungJAXP.getBelegungFerieninsel(),
 				new BelegungFerieninsel()));
 		}
+		return betreuung;
+	}
+
+	@Nonnull
+	public Betreuung betreuungToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final Betreuung betreuung) {
+		requireNonNull(betreuung);
+		requireNonNull(betreuungJAXP);
+
+		abstractPlatzToEntity(betreuungJAXP, betreuung);
+		betreuung.setGrundAblehnung(betreuungJAXP.getGrundAblehnung());
+		betreuung.setDatumAblehnung(betreuungJAXP.getDatumAblehnung());
+		betreuung.setDatumBestaetigung(betreuungJAXP.getDatumBestaetigung());
+
+		betreuungsPensumContainersToEntity(
+			betreuungJAXP.getBetreuungspensumContainers(),
+			betreuung.getBetreuungspensumContainers()
+		);
+		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
+
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
+			betreuungJAXP.getErweiterteBetreuungContainer(),
+			betreuung.getErweiterteBetreuungContainer()
+		));
+		betreuung.getErweiterteBetreuungContainer().setBetreuung(betreuung);
+
+		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
+		setBetreuungInAbwesenheiten(betreuung.getAbwesenheitContainers(), betreuung);
+
+		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
+		betreuung.setVertrag(betreuungJAXP.getVertrag());
+
+
+		betreuung.setBetreuungMutiert(betreuungJAXP.getBetreuungMutiert());
+		betreuung.setAbwesenheitMutiert(betreuungJAXP.getAbwesenheitMutiert());
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
+	}
+
+	public Set<BetreuungspensumAbweichung> betreuungspensumAbweichungenToEntity (
+		final @Nonnull List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
+		final @Nonnull Set<BetreuungspensumAbweichung> abweichungen) {
+
+		final Set<BetreuungspensumAbweichung> transformedAbweichungen = new TreeSet<>();
+		for (final JaxBetreuungspensumAbweichung jaxAbweichung : abweichungenJAXP) {
+			final BetreuungspensumAbweichung abweichungToMergeWith = abweichungen
+				.stream()
+				.filter(existingAbweichung -> existingAbweichung.getId().equals(jaxAbweichung.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElse(new BetreuungspensumAbweichung());
+			final BetreuungspensumAbweichung abweichungToAdd =
+				betreuungspensumAbweichungToEntity(jaxAbweichung, abweichungToMergeWith);
+			final boolean added = transformedAbweichungen.add(abweichungToAdd);
+			if (!added) {
+				LOGGER.warn(DROPPED_DUPLICATE_ABWEICHUNG + "{}", abweichungToAdd);
+			}
+		}
+
+		// change the existing collection to reflect changes
+		// Already tested: All existing Betreuungspensen of the list remain as they were, that means their data are
+		// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
+		abweichungen.clear();
+		abweichungen.addAll(transformedAbweichungen);
+
+		return abweichungen;
+	}
+
+	private BetreuungspensumAbweichung betreuungspensumAbweichungToEntity (
+		final @Nonnull JaxBetreuungspensumAbweichung jaxAbweichung,
+		final @Nonnull BetreuungspensumAbweichung abweichung
+	) {
+		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
+		abweichung.setStatus(jaxAbweichung.getStatus());
+
+		return abweichung;
 	}
 
 	private ErweiterteBetreuung erweiterteBetreuungToEntity(
@@ -2277,6 +2398,28 @@ public class JaxBConverter extends AbstractConverter {
 		return null;
 	}
 
+	@Nonnull
+	public AnmeldungTagesschule anmeldungTagesschuleToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
+		requireNonNull(betreuungJAXP);
+		AnmeldungTagesschule betreuungToMergeWith = new AnmeldungTagesschule();
+		if (betreuungJAXP.getId() != null) {
+			final Optional<AnmeldungTagesschule> optionalBetreuung = betreuungService.findAnmeldungTagesschule(betreuungJAXP.getId());
+			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungTagesschule());
+		}
+		return this.anmeldungTagesschuleToEntity(betreuungJAXP, betreuungToMergeWith);
+	}
+
+	@Nonnull
+	public AnmeldungFerieninsel anmeldungFerieninselToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
+		requireNonNull(betreuungJAXP);
+		AnmeldungFerieninsel betreuungToMergeWith = new AnmeldungFerieninsel();
+		if (betreuungJAXP.getId() != null) {
+			final Optional<AnmeldungFerieninsel> optionalBetreuung = betreuungService.findAnmeldungFerieninsel(betreuungJAXP.getId());
+			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungFerieninsel());
+		}
+		return this.anmeldungFerieninselToEntity(betreuungJAXP, betreuungToMergeWith);
+	}
+
 	public Betreuung betreuungToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
 		requireNonNull(betreuungJAXP);
 		Betreuung betreuungToMergeWith = new Betreuung();
@@ -2287,12 +2430,20 @@ public class JaxBConverter extends AbstractConverter {
 		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
+	public void setBetreuungInbetreuungsAbweichungen(
+		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
+		final Betreuung betreuung) {
+
+		betreuungspensumAbweichungen.forEach(c -> c.setBetreuung(betreuung));
+	}
+
 	private void setBetreuungInbetreuungsPensumContainers(
 		final Set<BetreuungspensumContainer> betreuungspensumContainers,
 		final Betreuung betreuung) {
 
 		betreuungspensumContainers.forEach(c -> c.setBetreuung(betreuung));
 	}
+
 
 	private void setBetreuungInAbwesenheiten(
 		final Set<AbwesenheitContainer> abwesenheiten,
@@ -2459,6 +2610,28 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toCollection(TreeSet::new));
 	}
 
+	@Nonnull
+	private Set<JaxBetreuung> anmeldungTagesschuleListToJax(@Nullable final Set<AnmeldungTagesschule> betreuungen) {
+		if (betreuungen == null) {
+			return Collections.emptySet();
+		}
+
+		return betreuungen.stream()
+			.map(this::anmeldungTagesschuleToJAX)
+			.collect(Collectors.toCollection(TreeSet::new));
+	}
+
+	@Nonnull
+	private Set<JaxBetreuung> anmeldungFerieninselListToJax(@Nullable final Set<AnmeldungFerieninsel> betreuungen) {
+		if (betreuungen == null) {
+			return Collections.emptySet();
+		}
+
+		return betreuungen.stream()
+			.map(this::anmeldungFerieninselToJAX)
+			.collect(Collectors.toCollection(TreeSet::new));
+	}
+
 	private BetreuungsmitteilungPensum betreuungsmitteilungpensumToEntity(
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum,
 		final BetreuungsmitteilungPensum betreuungspensum) {
@@ -2489,9 +2662,58 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toList());
 	}
 
-	public JaxBetreuung betreuungToJAX(final Betreuung betreuungFromServer) {
+	@Nonnull
+	public JaxBetreuung platzToJAX(@Nonnull final AbstractPlatz betreuungFromServer) {
 		final JaxBetreuung jaxBetreuung = new JaxBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(betreuungFromServer, jaxBetreuung);
+		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
+			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
+		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
+		jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
+		jaxBetreuung.setKindNummer(betreuungFromServer.getKind().getKindNummer());
+		if (betreuungFromServer.getKind().getGesuch() != null) {
+			jaxBetreuung.setGesuchId(betreuungFromServer.getKind().getGesuch().getId());
+			jaxBetreuung.setGesuchsperiode(gesuchsperiodeToJAX(betreuungFromServer.getKind()
+				.getGesuch()
+				.getGesuchsperiode()));
+		}
+		jaxBetreuung.setGueltig(betreuungFromServer.isGueltig());
+		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
+		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public JaxBetreuung anmeldungTagesschuleToJAX(@Nonnull final AnmeldungTagesschule betreuungFromServer) {
+		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
+		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
+		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
+		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
+		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
+		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public JaxBetreuung anmeldungFerieninselToJAX(@Nonnull final AnmeldungFerieninsel betreuungFromServer) {
+		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
+		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
+		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
+		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
+		return jaxBetreuung;
+	}
+
+	private void setMandatoryFieldsOnJaxBetreuungForAnmeldungen(@Nonnull JaxBetreuung jaxBetreuung) {
+		// Wir verwenden Client-seitig dasselbe Objekt für Betreuungen und Anmeldungen
+		// Auf JaxBetreuung sind einige Felder zwingend, die für Anmeldungen nicht benötigt werden,
+		// diese müssen hier initialisiert werden
+		jaxBetreuung.setVertrag(Boolean.TRUE);
+		jaxBetreuung.setErweiterteBetreuungContainer(new JaxErweiterteBetreuungContainer());
+	}
+
+	@Nonnull
+	public JaxBetreuung betreuungToJAX(@Nonnull final Betreuung betreuungFromServer) {
+		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
 		jaxBetreuung.setGrundAblehnung(betreuungFromServer.getGrundAblehnung());
 		jaxBetreuung.setDatumAblehnung(betreuungFromServer.getDatumAblehnung());
 		jaxBetreuung.setDatumBestaetigung(betreuungFromServer.getDatumBestaetigung());
@@ -2500,32 +2722,29 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
-		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
-			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
-		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
-		if (betreuungFromServer.getKind() != null) {
-			jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
-			jaxBetreuung.setKindNummer(betreuungFromServer.getKind().getKindNummer());
-			if (betreuungFromServer.getKind().getGesuch() != null) {
-				jaxBetreuung.setGesuchId(betreuungFromServer.getKind().getGesuch().getId());
-				jaxBetreuung.setGesuchsperiode(gesuchsperiodeToJAX(betreuungFromServer.getKind()
-					.getGesuch()
-					.getGesuchsperiode()));
-			}
-		}
 		if (betreuungFromServer.getVerfuegung() != null) {
 			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegung()));
 		}
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
-		jaxBetreuung.setGueltig(betreuungFromServer.isGueltig());
-		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
-		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
-		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
-		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
-		jaxBetreuung.setBgNummer(betreuungFromServer.getBGNummer());
-
 		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
+		return betreuung.fillAbweichungen().stream().map(this::betreuungspensumAbweichungToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(@Nonnull BetreuungspensumAbweichung abweichung) {
+		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
+		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
+		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
+		jaxAbweichung.setVertraglichesPensum(abweichung.getVertraglichesPensum());
+		jaxAbweichung.setStatus(abweichung.getStatus());
+
+		return jaxAbweichung;
 	}
 
 	@Nullable
@@ -2808,7 +3027,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
-		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
 	}
@@ -3518,7 +3736,6 @@ public class JaxBConverter extends AbstractConverter {
 		return kindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(Betreuung::getInstitutionStammdaten)
-			.filter(is -> is != null && is.getInstitution() != null)
 			.map(is -> is.getInstitution().getName())
 			.collect(Collectors.toSet());
 	}
@@ -3528,7 +3745,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(JaxBetreuung::getInstitutionStammdaten)
-			.filter(is -> is != null && is.getInstitution() != null)
+			.filter(is -> is != null)
 			.map(is -> is.getInstitution().getName())
 			.collect(Collectors.toSet());
 	}

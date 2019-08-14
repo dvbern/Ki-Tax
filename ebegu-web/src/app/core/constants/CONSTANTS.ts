@@ -32,6 +32,10 @@ export const CONSTANTS = {
     END_OF_TIME_STRING: '31.12.9999',
     DATE_FORMAT: 'DD.MM.YYYY',
 };
+// 100% = 20 days => 1% = 0.2 days
+export const MULTIPLIER_KITA = 0.2;
+// 100% = 220 hours => 1% = 2.2 hours
+export const MULTIPLIER_TAGESFAMILIEN = 2.2;
 
 export const DEFAULT_LOCALE = 'de-CH';
 export const LOCALSTORAGE_LANGUAGE_KEY = 'kibonLanguage';

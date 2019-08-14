@@ -21,6 +21,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSAbwesenheitContainer from './TSAbwesenheitContainer';
 import TSBelegungFerieninsel from './TSBelegungFerieninsel';
 import TSBelegungTagesschule from './TSBelegungTagesschule';
+import TSBetreuungspensumAbweichung from './TSBetreuungspensumAbweichung';
 import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
 import TSErweiterteBetreuungContainer from './TSErweiterteBetreuungContainer';
 import TSGesuchsperiode from './TSGesuchsperiode';
@@ -33,6 +34,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _betreuungsstatus: TSBetreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
     private _betreuungspensumContainers: Array<TSBetreuungspensumContainer> = [];
     private _abwesenheitContainers: Array<TSAbwesenheitContainer> = [];
+    private _betreuungspensumAbweichungen: Array<TSBetreuungspensumAbweichung> = [];
     private _erweiterteBetreuungContainer: TSErweiterteBetreuungContainer;
     private _grundAblehnung: string;
     private _betreuungNummer: number;
@@ -95,6 +97,14 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set erweiterteBetreuungContainer(value: TSErweiterteBetreuungContainer) {
         this._erweiterteBetreuungContainer = value;
+    }
+
+    public get betreuungspensumAbweichungen(): Array<TSBetreuungspensumAbweichung> {
+        return this._betreuungspensumAbweichungen;
+    }
+
+    public set betreuungspensumAbweichungen(value: Array<TSBetreuungspensumAbweichung>) {
+        this._betreuungspensumAbweichungen = value;
     }
 
     public get grundAblehnung(): string {

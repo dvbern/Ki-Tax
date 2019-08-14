@@ -18,11 +18,16 @@ package ch.dvbern.ebegu.entities;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -42,6 +47,11 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenTagesschule")
 	private Set<ModulTagesschule> moduleTagesschule = new TreeSet<>();
+
+	@NotNull @Nonnull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_ts_gemeinde_id"))
+	private Gemeinde gemeinde;
 
 	public InstitutionStammdatenTagesschule() {
 	}
@@ -75,5 +85,14 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 
 	public void setModuleTagesschule(@Nullable Set<ModulTagesschule> moduleTagesschule) {
 		this.moduleTagesschule = moduleTagesschule;
+	}
+
+	@Nonnull
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }
