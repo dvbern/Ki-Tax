@@ -17,6 +17,7 @@ import {IHttpService, ILogService, IPromise} from 'angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
@@ -25,6 +26,7 @@ import TSMitteilung from '../../../models/TSMitteilung';
 import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresultDTO';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../constants/CONSTANTS';
 import ITranslateService = angular.translate.ITranslateService;
 
 export default class MitteilungRS {
@@ -133,7 +135,7 @@ export default class MitteilungRS {
     }
 
     public sendbetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): IPromise<TSBetreuungsmitteilung> {
-        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung);
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, false);
         const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
         return this.$http.put(`${this.serviceURL}/sendbetreuungsmitteilung`, restMitteilung).then((response: any) => {
             this.$log.debug('PARSING Betreuungsmitteilung REST object ', response.data);
@@ -175,7 +177,7 @@ export default class MitteilungRS {
         });
     }
 
-    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung): TSBetreuungsmitteilung {
+    private createBetreuungsmitteilung(dossier: TSDossier, betreuung: TSBetreuung, fromAbweichung: boolean): TSBetreuungsmitteilung {
         const mutationsmeldung = new TSBetreuungsmitteilung();
         mutationsmeldung.dossier = dossier;
         mutationsmeldung.betreuung = betreuung;
@@ -184,7 +186,9 @@ export default class MitteilungRS {
         mutationsmeldung.sender = this.authServiceRS.getPrincipal();
         mutationsmeldung.empfaenger = dossier.fall.besitzer ? dossier.fall.besitzer : undefined;
         mutationsmeldung.subject = this.$translate.instant('MUTATIONSMELDUNG_BETREFF');
-        mutationsmeldung.message = this.createNachrichtForMutationsmeldung(betreuung);
+        mutationsmeldung.message = fromAbweichung
+            ? this.createNachrichtForMutationsmeldungFromAbweichung(betreuung)
+            : this.createNachrichtForMutationsmeldung(betreuung);
         mutationsmeldung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
         mutationsmeldung.betreuungspensen = this.extractPensenFromBetreuung(betreuung);
         return mutationsmeldung;
@@ -235,6 +239,62 @@ export default class MitteilungRS {
     }
 
     /**
+     * Erzeugt eine Nachricht mit einem Text mit allen Betreuungspensen inkl. BetreuungspensumAbweichungen der
+     * Betreuung.
+     */
+    // tslint:disable-next-line:cognitive-complexity
+    private createNachrichtForMutationsmeldungFromAbweichung(betreuung: TSBetreuung): string {
+        let message = '';
+        let i = 1;
+
+        const abweichungen = betreuung.betreuungspensumAbweichungen.filter(a => {
+            return !a.isNew() || (a.vertraglichesPensum && a.vertraglicheKosten);
+        });
+
+        abweichungen.forEach(betreuungspensum => {
+            if (betreuungspensum) {
+                // z.B. -> Pensum 1 vom 1.8.2017 bis 31.07.2018: 80%
+                if (i > 1) {
+                    message += '\n';
+                }
+                const multiplier = betreuungspensum.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+                const pensumPercentage = betreuungspensum.pensum
+                    ? Number((betreuungspensum.pensum / multiplier).toFixed(2))
+                    : undefined;
+                const originalPensumPercentage = betreuungspensum.vertraglichesPensum
+                    ? Number((betreuungspensum.vertraglichesPensum / multiplier).toFixed(2))
+                    : undefined;
+                const defaultDateFormat = 'DD.MM.YYYY';
+                const datumAb = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigAb, defaultDateFormat);
+                let datumBis = DateUtil.momentToLocalDateFormat(betreuungspensum.gueltigkeit.gueltigBis, defaultDateFormat);
+                // by default Ende der Periode
+                const maxDate = betreuung.gesuchsperiode.gueltigkeit.gueltigBis;
+                datumBis = datumBis ?
+                    datumBis :
+                    DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
+
+                const pensum = pensumPercentage
+                    ? pensumPercentage
+                    : originalPensumPercentage;
+                const kosten = betreuungspensum.monatlicheBetreuungskosten
+                    ? betreuungspensum.monatlicheBetreuungskosten
+                    : betreuungspensum.vertraglicheKosten;
+
+                message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
+                    num: i,
+                    von: datumAb,
+                    bis: datumBis,
+                    pensum,
+                    kosten
+                });
+            }
+            i++;
+        });
+        return message;
+    }
+
+    /**
      * Kopiert alle Betreuungspensen der gegebenen Betreuung in einer neuen Liste und
      * gibt diese zurueck. By default wird eine leere Liste zurueckgegeben
      */
@@ -246,5 +306,15 @@ export default class MitteilungRS {
             pensen.push(pensumJA);
         });
         return pensen;
+    }
+
+    public abweichungenFreigeben(betreuung: TSBetreuung, dossier: TSDossier): IPromise<any> {
+        const mutationsmeldung = this.createBetreuungsmitteilung(dossier, betreuung, true);
+        const restMitteilung = this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mutationsmeldung);
+        const url = `${this.serviceURL}/betreuung/abweichungenfreigeben/${encodeURIComponent(betreuung.id)}`;
+        return this.$http.put(url, restMitteilung)
+            .then(response => {
+                return this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data);
+            });
     }
 }
