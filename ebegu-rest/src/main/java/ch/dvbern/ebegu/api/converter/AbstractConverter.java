@@ -236,6 +236,16 @@ public class AbstractConverter {
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
+		final BetreuungsmitteilungPensum pensum,
+		final JaxBetreuungspensum jaxPensum) {
+
+		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setPensum(pensum.getPensum());
+		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
+		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
+	}
+
+	protected void convertAbstractPensumFieldsToJAX(
 		BetreuungsmitteilungPensum pensum,
 		JaxBetreuungsmitteilungPensum jaxPensum) {
 

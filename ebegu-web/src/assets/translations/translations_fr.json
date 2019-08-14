@@ -1613,5 +1613,8 @@
     "ABWEICHUNGEN_HELP": "",
     "MONTH": "",
     "SPEICHERN_ERFOLGREICH": "",
-    "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": ""
+    "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "",
+    "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "",
+    "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
+    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": ""
 }
