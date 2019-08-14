@@ -104,10 +104,11 @@ public class CriteriaQueryHelper implements Serializable {
 	}
 
 	@Nonnull
-	public <A, E> Collection<E> getEntitiesByAttribute(@Nonnull final Class<E> entityClass, @Nullable final A attributeValue, @Nonnull final Attribute<E, A> attribute) {
+	public <A, E,  E1 extends E> Collection<E1> getEntitiesByAttribute(@Nonnull final Class<E1> entityClass, @Nullable final A attributeValue,
+		@Nonnull final Attribute<E, A> attribute) {
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
-		final CriteriaQuery<E> query = builder.createQuery(entityClass);
-		final Root<E> root = query.from(entityClass);
+		final CriteriaQuery<E1> query = builder.createQuery(entityClass);
+		final Root<E1> root = query.from(entityClass);
 		final Expression<E> expression;
 		if (attribute instanceof SingularAttribute) {
 			expression = root.get((SingularAttribute) attribute);

@@ -40,9 +40,9 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
-  selector: 'dv-edit-institution',
-  templateUrl: './edit-institution.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-edit-institution',
+    templateUrl: './edit-institution.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class EditInstitutionComponent implements OnInit {
@@ -96,7 +96,8 @@ export class EditInstitutionComponent implements OnInit {
                         this.createInstitutionStammdaten(institution);
                     }
                     this.isCheckRequired = institution.stammdatenCheckRequired;
-                    this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
+                    this.abweichendeZahlungsAdresse =
+                        !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
                     this.initName = this.stammdaten.institution.name;
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
@@ -109,7 +110,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles  =  PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
+        const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
     }
 
@@ -162,8 +163,8 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public onAbweichendeZahlungsAdresseClick(): void {
-        if (!this.stammdaten.adresseKontoinhaber) {
-            this.stammdaten.adresseKontoinhaber = new TSAdresse();
+        if (!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber) {
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = new TSAdresse();
         }
     }
 
@@ -173,7 +174,7 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.errorService.clearAll();
         if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
-            this.stammdaten.adresseKontoinhaber = undefined;
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = undefined;
         }
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
@@ -216,7 +217,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private navigateBack(): void {
-         this.$state.go('institution.list');
+        this.$state.go('institution.list');
     }
 
     private navigateToWelcomesite(): void {
@@ -246,16 +247,16 @@ export class EditInstitutionComponent implements OnInit {
 
     public getAlterskategorien(): string {
         const alterskategorien: string[] = [];
-        if (this.stammdaten.alterskategorieBaby) {
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
         }
-        if (this.stammdaten.alterskategorieVorschule) {
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
         }
-        if (this.stammdaten.alterskategorieKindergarten) {
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
         }
-        if (this.stammdaten.alterskategorieSchule) {
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
         }
         return alterskategorien.join(', ');

@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -179,6 +180,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 	private Betreuung createBetreuungWithPensum(Gesuch gesuch, DateRange gueltigkeit) {
 		Betreuung betreuung = new Betreuung();
+		betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
 
 		KindContainer kindContainer = new KindContainer();
 		betreuung.setKind(kindContainer);

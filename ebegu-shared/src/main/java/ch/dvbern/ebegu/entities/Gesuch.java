@@ -602,6 +602,29 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	@Nonnull
+	public List<AbstractAnmeldung> extractAllAnmeldungen() {
+		final List<AbstractAnmeldung> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			list.addAll(kind.getAnmeldungenTagesschule());
+			list.addAll(kind.getAnmeldungenFerieninsel());
+		}
+		return list;
+	}
+
+	@Transient
+	@Nonnull
+	public List<AbstractPlatz> extractAllPlaetze() {
+		final List<AbstractPlatz> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			list.addAll(kind.getBetreuungen());
+			list.addAll(kind.getAnmeldungenTagesschule());
+			list.addAll(kind.getAnmeldungenFerieninsel());
+		}
+		return list;
+	}
+
+	@Transient
+	@Nonnull
 	public List<Kind> extractAllKinderWithAngebot() {
 		final List<Kind> list = new ArrayList<>();
 		for (final KindContainer kind : getKindContainers()) {
@@ -705,10 +728,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> {
-				if (betreuung.getBetreuungsangebotTyp() != null) {
-					return betreuung.getBetreuungsangebotTyp().isJugendamt();
-				}
-				return false;
+				return betreuung.getBetreuungsangebotTyp().isJugendamt();
 			});
 	}
 
@@ -717,10 +737,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> {
-				if (betreuung.getBetreuungsangebotTyp() != null) {
-					return betreuung.getBetreuungsangebotTyp().isSchulamt();
-				}
-				return false;
+				return betreuung.getBetreuungsangebotTyp().isSchulamt();
 			});
 	}
 

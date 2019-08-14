@@ -84,6 +84,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.AuszahlungDTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001DTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001Service;
@@ -899,22 +900,22 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
 				AuszahlungDTO auszahlungDTO = new AuszahlungDTO();
 				auszahlungDTO.setBetragTotalZahlung(zahlung.getBetragTotalZahlung());
-				String kontoinhaber = StringUtils.isNotEmpty(institutionStammdaten.getKontoinhaber())
-					? institutionStammdaten.getKontoinhaber() : institutionStammdaten.getInstitution().getName();
-				Adresse adresseKontoinhaber = institutionStammdaten.getAdresseKontoinhaber() != null
-					? institutionStammdaten.getAdresseKontoinhaber() : institutionStammdaten.getAdresse();
+				String kontoinhaber = StringUtils.isNotEmpty(institutionStammdaten.extractKontoinhaber())
+					? institutionStammdaten.extractKontoinhaber() : institutionStammdaten.getInstitution().getName();
+
+				Adresse adresseKontoinhaber = institutionStammdaten.extractAdresseKontoinhaber() != null
+					? institutionStammdaten.extractAdresseKontoinhaber() : institutionStammdaten.getAdresse();
+				Objects.requireNonNull(adresseKontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerName(kontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerStrasse(adresseKontoinhaber.getStrasse());
 				auszahlungDTO.setZahlungsempfaegerHausnummer(adresseKontoinhaber.getHausnummer());
 				auszahlungDTO.setZahlungsempfaegerPlz(adresseKontoinhaber.getPlz());
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
-				if (institutionStammdaten.getIban() == null) {
-					LOGGER.warn("Keine IBAN fuer Institution {}", institutionStammdaten.getInstitution().getName());
-				}
-				auszahlungDTO.setZahlungsempfaegerIBAN(institutionStammdaten.getIban().toString());
-				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(institutionStammdaten.getIban()
-					.extractClearingNumberWithoutLeadingZeros());
+				IBAN iban = institutionStammdaten.extractIban();
+				Objects.requireNonNull(iban, "Keine IBAN fuer Institution " + institutionStammdaten.getInstitution().getName());
+				auszahlungDTO.setZahlungsempfaegerIBAN(iban.toString());
+				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(iban.extractClearingNumberWithoutLeadingZeros());
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
 				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
 					gemeindeStammdaten.getGemeinde().getName(),

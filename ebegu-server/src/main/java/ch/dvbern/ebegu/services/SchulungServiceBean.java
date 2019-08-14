@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -404,17 +405,18 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull String email
 	) {
-
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
-		instStammdaten.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
-		instStammdaten.setKontoinhaber("DvBern");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		instStammdaten.setAdresse(createAdresse(id));
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setMail(email);
-		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
+		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		institutionStammdatenBetreuungsgutscheine.setKontoinhaber("DvBern");
+		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return institutionStammdatenService.saveInstitutionStammdaten(instStammdaten);
 	}
 

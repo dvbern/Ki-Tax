@@ -86,6 +86,7 @@ import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSInstitution from '../models/TSInstitution';
 import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
@@ -1116,18 +1117,11 @@ export default class EbeguRestUtil {
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
             restInstitutionStammdaten.oeffnungszeiten = institutionStammdaten.oeffnungszeiten;
-            restInstitutionStammdaten.iban = institutionStammdaten.iban;
-            restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
-            restInstitutionStammdaten.alterskategorieBaby = institutionStammdaten.alterskategorieBaby;
-            restInstitutionStammdaten.alterskategorieVorschule = institutionStammdaten.alterskategorieVorschule;
-            restInstitutionStammdaten.alterskategorieKindergarten = institutionStammdaten.alterskategorieKindergarten;
-            restInstitutionStammdaten.alterskategorieSchule = institutionStammdaten.alterskategorieSchule;
-            restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
-            restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
-            restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
-            restInstitutionStammdaten.adresseKontoinhaber =
-                this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
+
+            restInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine =
+                this.institutionStammdatenBetreuungsgutscheineToRestObject({},
+                    institutionStammdaten.institutionStammdatenBetreuungsgutscheine);
             restInstitutionStammdaten.institutionStammdatenTagesschule =
                 this.institutionStammdatenTagesschuleToRestObject({},
                     institutionStammdaten.institutionStammdatenTagesschule);
@@ -1139,7 +1133,7 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitutionStammdatenSummary(
+    private parseInstitutionStammdatenSummary(
         institutionStammdatenTS: TSInstitutionStammdatenSummary,
         institutionStammdatenFromServer: any,
     ): TSInstitutionStammdatenSummary {
@@ -1154,20 +1148,12 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
             institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
             institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
-            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
-            institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
-            institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
-            institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
-            institutionStammdatenTS.alterskategorieKindergarten =
-                institutionStammdatenFromServer.alterskategorieKindergarten;
-            institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
-            institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
-            institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
-            institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
             institutionStammdatenTS.sendMailWennOffenePendenzen =
                 institutionStammdatenFromServer.sendMailWennOffenePendenzen;
-            institutionStammdatenTS.adresseKontoinhaber =
-                this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
+
+            institutionStammdatenTS.institutionStammdatenBetreuungsgutscheine =
+                this.parseInstitutionStammdatenBetreuungsgutscheine(new TSInstitutionStammdatenBetreuungsgutscheine(),
+                    institutionStammdatenFromServer.institutionStammdatenBetreuungsgutscheine);
             institutionStammdatenTS.institutionStammdatenTagesschule =
                 this.parseInstitutionStammdatenTagesschule(new TSInstitutionStammdatenTagesschule(),
                     institutionStammdatenFromServer.institutionStammdatenTagesschule);
@@ -1199,6 +1185,51 @@ export default class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), item))
             : [this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data)];
+    }
+
+    private institutionStammdatenBetreuungsgutscheineToRestObject(
+        restInstitutionStammdaten: any,
+        institutionStammdaten: TSInstitutionStammdatenBetreuungsgutscheine,
+    ): any {
+        if (institutionStammdaten) {
+            this.abstractEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
+            restInstitutionStammdaten.iban = institutionStammdaten.iban;
+            restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
+            restInstitutionStammdaten.alterskategorieBaby = institutionStammdaten.alterskategorieBaby;
+            restInstitutionStammdaten.alterskategorieVorschule = institutionStammdaten.alterskategorieVorschule;
+            restInstitutionStammdaten.alterskategorieKindergarten = institutionStammdaten.alterskategorieKindergarten;
+            restInstitutionStammdaten.alterskategorieSchule = institutionStammdaten.alterskategorieSchule;
+            restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
+            restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
+            restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
+            restInstitutionStammdaten.adresseKontoinhaber =
+                this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
+            return restInstitutionStammdaten;
+        }
+        return undefined;
+    }
+
+    private parseInstitutionStammdatenBetreuungsgutscheine(
+        institutionStammdatenTS: TSInstitutionStammdatenBetreuungsgutscheine,
+        institutionStammdatenFromServer: any,
+    ): TSInstitutionStammdatenBetreuungsgutscheine {
+        if (institutionStammdatenFromServer) {
+            this.parseAbstractEntity(institutionStammdatenTS, institutionStammdatenFromServer);
+            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
+            institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
+            institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
+            institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
+            institutionStammdatenTS.alterskategorieKindergarten =
+                institutionStammdatenFromServer.alterskategorieKindergarten;
+            institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
+            institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
+            institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
+            institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
+            institutionStammdatenTS.adresseKontoinhaber =
+                this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
+            return institutionStammdatenTS;
+        }
+        return undefined;
     }
 
     public institutionStammdatenFerieninselToRestObject(
