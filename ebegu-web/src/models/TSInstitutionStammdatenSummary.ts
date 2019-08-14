@@ -19,6 +19,7 @@ import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSAdresse from './TSAdresse';
 import TSInstitution from './TSInstitution';
+import TSInstitutionStammdatenBetreuungsgutscheine from './TSInstitutionStammdatenBetreuungsgutscheine';
 import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
 
@@ -31,16 +32,7 @@ export default class TSInstitutionStammdatenSummary extends TSAbstractDateRanged
     public telefon: string = undefined;
     public webseite: string = undefined;
     public oeffnungszeiten: string = undefined;
-    public iban: string = undefined;
-    public kontoinhaber: string = undefined;
-    public adresseKontoinhaber: TSAdresse = undefined;
-    public alterskategorieBaby: boolean = undefined;
-    public alterskategorieVorschule: boolean = undefined;
-    public alterskategorieKindergarten: boolean = undefined;
-    public alterskategorieSchule: boolean = undefined;
-    public subventioniertePlaetze: boolean = undefined;
-    public anzahlPlaetze: number = undefined;
-    public anzahlPlaetzeFirmen: number = undefined;
+    public institutionStammdatenBetreuungsgutscheine: TSInstitutionStammdatenBetreuungsgutscheine = undefined;
     public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule = undefined;
     public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel = undefined;
     public sendMailWennOffenePendenzen: boolean = true;

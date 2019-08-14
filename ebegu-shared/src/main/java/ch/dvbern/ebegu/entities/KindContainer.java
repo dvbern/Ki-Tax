@@ -104,6 +104,18 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "kind")
 	private Set<Betreuung> betreuungen = new TreeSet<>();
 
+	@Nonnull
+	@Valid
+	@SortNatural
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "kind")
+	private Set<AnmeldungTagesschule> anmeldungenTagesschule = new TreeSet<>();
+
+	@Nonnull
+	@Valid
+	@SortNatural
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "kind")
+	private Set<AnmeldungFerieninsel> anmeldungenFerieninsel = new TreeSet<>();
+
 	@Column(nullable = true)
 	@Nullable
 	private Boolean kindMutiert;
@@ -169,6 +181,24 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 
 	public void setKindMutiert(@Nullable Boolean kindMutiert) {
 		this.kindMutiert = kindMutiert;
+	}
+
+	@Nonnull
+	public Set<AnmeldungTagesschule> getAnmeldungenTagesschule() {
+		return anmeldungenTagesschule;
+	}
+
+	public void setAnmeldungenTagesschule(@Nonnull Set<AnmeldungTagesschule> anmeldungenTagesschule) {
+		this.anmeldungenTagesschule = anmeldungenTagesschule;
+	}
+
+	@Nonnull
+	public Set<AnmeldungFerieninsel> getAnmeldungenFerieninsel() {
+		return anmeldungenFerieninsel;
+	}
+
+	public void setAnmeldungenFerieninsel(@Nonnull Set<AnmeldungFerieninsel> anmeldungenFerieninsel) {
+		this.anmeldungenFerieninsel = anmeldungenFerieninsel;
 	}
 
 	@Override

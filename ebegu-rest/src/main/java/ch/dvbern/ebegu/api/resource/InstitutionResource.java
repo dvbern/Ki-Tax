@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -148,11 +147,6 @@ public class InstitutionResource {
 		adresse.setOrt("");
 		institutionStammdaten.setAdresse(adresse);
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
-
-		if (institutionStammdaten.getBetreuungsangebotTyp() != BetreuungsangebotTyp.TAGESFAMILIEN) {
-			institutionStammdaten.setAnzahlPlaetze(BigDecimal.ZERO);
-		}
-
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
 		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
@@ -240,22 +234,6 @@ public class InstitutionResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxInstitution> getAllInstitutionen() {
 		return institutionService.getAllInstitutionen().stream()
-			.map(inst -> converter.institutionToJAX(inst))
-			.collect(Collectors.toList());
-	}
-
-	@ApiOperation(
-		value = "Find and return a list of all active Institutionen. An active Institution is a Institution where the "
-			+ "active flag is true",
-		responseContainer = "List",
-		response = JaxInstitution.class)
-	@Nonnull
-	@GET
-	@Path("/active")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitution> getAllActiveInstitutionen() {
-		return institutionService.getAllActiveInstitutionen().stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}

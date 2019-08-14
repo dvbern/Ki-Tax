@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -106,7 +107,7 @@ public class ResourceHelper {
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	public void assertGesuchStatusForBenutzerRole(@Nonnull Gesuch gesuch, @Nonnull Betreuung betreuung) {
+	public void assertGesuchStatusForBenutzerRole(@Nonnull Gesuch gesuch, @Nonnull AbstractPlatz betreuung) {
 		UserRole userRole = principalBean.discoverMostPrivilegedRole();
 		if (userRole == UserRole.SUPER_ADMIN) {
 			// Superadmin darf alles
@@ -115,13 +116,13 @@ public class ResourceHelper {
 		String msg = "Cannot update entity containing Gesuch " + gesuch.getId() + " in Status " + gesuch.getStatus() + " in UserRole " + userRole;
 		if (userRole == UserRole.GESUCHSTELLER && gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
 			// Schulamt-Anmeldungen duerfen auch nach der Freigabe hinzugefügt werden!
-			if (betreuung.getBetreuungsangebotTyp() == null || !betreuung.getBetreuungsangebotTyp().isSchulamt()) {
+			if (!betreuung.getBetreuungsangebotTyp().isSchulamt()) {
 				throw new EbeguRuntimeException("assertGesuchStatusForBenutzerRole", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
 			}
 		}
 		if (gesuch.getStatus().ordinal() >= AntragStatus.VERFUEGEN.ordinal()) {
 			// Schulamt-Anmeldungen duerfen auch nach der Freigabe hinzugefügt werden!
-			if (betreuung.getBetreuungsangebotTyp() == null || !betreuung.getBetreuungsangebotTyp().isSchulamt()) {
+			if (!betreuung.getBetreuungsangebotTyp().isSchulamt()) {
 				throw new EbeguRuntimeException("assertGesuchStatusForBenutzerRole", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
 			}
 		}
