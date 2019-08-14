@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
@@ -36,14 +35,6 @@ import ch.dvbern.lib.date.feiertage.FeiertageHelper;
 public final class DateUtil {
 
 	private DateUtil() {
-	}
-
-	/**
-	 * Parses the given LocalDate to a String with the SQL_DATE_FORMAT
-	 */
-	@Nonnull
-	public static String parseDateToSqlString(@Nonnull LocalDate date) {
-		return date.format(Constants.SQL_DATE_FORMAT);
 	}
 
 	/**
@@ -76,19 +67,6 @@ public final class DateUtil {
 		return date;
 	}
 
-	/**
-	 * Parset den gegebenen String als LocalDateTime mit dem Format "yyyy-MM-dd HH:mm:ss"
-	 * Sollte der gegebene String null oder leer sein, wird now() zurueckgegeben
-	 */
-	@Nonnull
-	public static LocalDateTime parseStringToDateTimeOrReturnNow(@Nonnull String stringDateTime) {
-		LocalDateTime date = LocalDateTime.now();
-		if (!stringDateTime.isEmpty()) {
-			date = LocalDateTime.parse(stringDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		}
-		return date;
-	}
-
 	public static boolean isWeekend(@Nonnull LocalDate date) {
 		return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
 	}
@@ -116,7 +94,6 @@ public final class DateUtil {
 		long nettoTageIntervall = daysBetween(von, bis);
 		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall), MathUtil.EXACT.from(nettoTageMonat));
 	}
-
 
 	/**
 	 * Berechnet die Anzahl Tage zwischen zwei Daten

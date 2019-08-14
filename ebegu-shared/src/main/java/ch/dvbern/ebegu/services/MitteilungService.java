@@ -216,6 +216,5 @@ public interface MitteilungService {
 	/**
 	 * Erstellt und sendet eine Mutationsmeldung aus den bestehenden Betreuungspensen und BetreuungspensumAbweichungen
 	 */
-	void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung,
-		@Nonnull Betreuung betreuung);
+	void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung);
 }

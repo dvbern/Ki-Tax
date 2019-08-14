@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -536,35 +537,5 @@ public class BetreuungResource {
 
 		Betreuung betreuung = betreuungOptional.get();
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
-	}
-
-	public boolean hasDuplicate(JaxBetreuung betreuungJAXP, @Nullable Set<Betreuung> betreuungen) {
-		if (betreuungen != null) {
-			return betreuungen.stream().anyMatch(betreuung -> {
-				if (!Objects.equals(betreuung.getId(), betreuungJAXP.getId())) {
-					if (betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp() != BetreuungsangebotTyp.FERIENINSEL) {
-						return !betreuung.getBetreuungsstatus().isStorniert() &&
-							isSameInstitution(betreuungJAXP, betreuung);
-					}
-					return !betreuung.getBetreuungsstatus().isStorniert() &&
-						isSameInstitution(betreuungJAXP, betreuung) &&
-						isSameFerien(betreuungJAXP, betreuung);
-				}
-				return false;
-			});
-		}
-		return false;
-	}
-
-	private boolean isSameFerien(JaxBetreuung betreuungJAXP, Betreuung betreuung) {
-		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
-		Objects.requireNonNull(betreuungJAXP.getBelegungFerieninsel());
-		return betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.FERIENINSEL &&
-			Objects.equals(betreuung.getBelegungFerieninsel().getFerienname(),
-				betreuungJAXP.getBelegungFerieninsel().getFerienname());
-	}
-
-	private boolean isSameInstitution(JaxBetreuung betreuungJAXP, Betreuung betreuung) {
-		return betreuung.getInstitutionStammdaten().getId().equals(betreuungJAXP.getInstitutionStammdaten().getId());
 	}
 }

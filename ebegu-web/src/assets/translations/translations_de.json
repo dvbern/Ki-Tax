@@ -1608,10 +1608,10 @@
     "GEMEINDE_TAB_TS": "Tagesschule",
     "GEMEINDE_TAB_FI": "Ferieninsel",
     "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Reiter.",
+    "ERROR_IBAN": "IBAN hat ein ungültiges Format",
     "ABWEICHUNGEN_MELDEN": "Abweichungen melden",
     "ABWEICHUNGEN_HELP": "Auf dieser Eingabemaske können Sie für {{vorname}} {{name}} Abweichungen zum vertraglich definierten Betreuungspensum der Institution {{institution}} erfassen und freigeben. Die einmal erfassten Werte bleiben bis zur Freigabe zwischengespeichert. Erst durch die Freigabe, werden die Daten an die Gemeinde gesendet. Die Gemeinde wird die Änderungen dann prüfen und einen angepassten Betreuungsgutschein ausstellen.",
     "MONTH": "Monat",
-    "ERROR_IBAN": "IBAN hat ein ungültiges Format",
     "SPEICHERN_ERFOLGREICH": "Ihre Eingaben wurden erfolgreich gespeichert",
     "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "<i class='fa fa-pencil black'></i> : Die Abweichung befindet sich in Bearbeitung.<br><i class='fa fa-hourglass orange'></i> : Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet.<br><i class='fa fa-check green'></i> : Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt."
 }

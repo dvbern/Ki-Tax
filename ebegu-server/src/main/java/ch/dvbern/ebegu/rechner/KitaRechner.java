@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
 
@@ -57,7 +56,7 @@ public class KitaRechner extends AbstractBGRechner {
 		@Nonnull LocalDate von,
 		@Nonnull LocalDate bis) {
 
-		return calculateAnteilMonatInklWeekend(von, bis);
+		return DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 	}
 
 	@Nonnull
@@ -82,14 +81,5 @@ public class KitaRechner extends AbstractBGRechner {
 		@Nonnull Boolean besonderebeduerfnisse) {
 
 		return besonderebeduerfnisse ? parameterDTO.getZuschlagBehinderungProTg() : BigDecimal.ZERO;
-	}
-
-	/**
-	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
-	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
-	 */
-	@Nonnull
-	private BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
-		return DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 	}
 }

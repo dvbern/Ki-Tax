@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -40,7 +39,6 @@ import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
-import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
@@ -235,16 +233,6 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
-	}
-
-	protected void convertAbstractPensumFieldsToJAX(
-		final BetreuungsmitteilungPensum pensum,
-		final JaxBetreuungspensum jaxPensum) {
-
-		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-		jaxPensum.setPensum(pensum.getPensum());
-		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
-		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
