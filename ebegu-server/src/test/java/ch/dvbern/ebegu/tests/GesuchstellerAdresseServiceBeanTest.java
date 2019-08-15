@@ -66,8 +66,9 @@ public class GesuchstellerAdresseServiceBeanTest extends AbstractEbeguLoginTest 
 		Optional<GesuchstellerAdresseContainer> adresse = adresseService.findAdresse(insertedAdresses.getId());
 		Assert.assertTrue(adresse.isPresent());
 		Assert.assertEquals("21", adresse.get().extractHausnummer());
-
-		adresse.get().getGesuchstellerAdresseJA().setHausnummer("99");
+		GesuchstellerAdresse gesuchstellerAdresseJA = adresse.get().getGesuchstellerAdresseJA();
+		Assert.assertNotNull(gesuchstellerAdresseJA);
+		gesuchstellerAdresseJA.setHausnummer("99");
 		GesuchstellerAdresseContainer updatedAdr = adresseService.updateAdresse(adresse.get());
 		Assert.assertEquals("99", updatedAdr.extractHausnummer());
 		Assert.assertEquals("99", adresseService.findAdresse(updatedAdr.getId()).get().extractHausnummer());
@@ -107,16 +108,20 @@ public class GesuchstellerAdresseServiceBeanTest extends AbstractEbeguLoginTest 
 		GesuchstellerContainer storedPers = persistence.persist(pers);
 
 		GesuchstellerAdresseContainer korrAddr = TestDataUtil.createDefaultGesuchstellerAdresseContainer(storedPers);
-		korrAddr.getGesuchstellerAdresseJA().setAdresseTyp(AdresseTyp.KORRESPONDENZADRESSE);
+		GesuchstellerAdresse gesuchstellerAdresseJA = korrAddr.getGesuchstellerAdresseJA();
+		Assert.assertNotNull(gesuchstellerAdresseJA);
+		gesuchstellerAdresseJA.setAdresseTyp(AdresseTyp.KORRESPONDENZADRESSE);
 		storedPers.addAdresse(korrAddr);
-		GesuchstellerAdresse gsKorrAddresse = korrAddr.getGesuchstellerAdresseJA().copyGesuchstellerAdresse(new GesuchstellerAdresse(), AntragCopyType.MUTATION);
+		GesuchstellerAdresse gsKorrAddresse = gesuchstellerAdresseJA.copyGesuchstellerAdresse(new GesuchstellerAdresse(), AntragCopyType.MUTATION);
 		korrAddr.setGesuchstellerAdresseGS(gsKorrAddresse);
 		korrAddr.setGesuchstellerAdresseJA(null);
 
 		GesuchstellerAdresseContainer rechnungsAddr = TestDataUtil.createDefaultGesuchstellerAdresseContainer(storedPers);
-		rechnungsAddr.getGesuchstellerAdresseJA().setAdresseTyp(AdresseTyp.RECHNUNGSADRESSE);
+		GesuchstellerAdresse rechnungsAdresseJA = rechnungsAddr.getGesuchstellerAdresseJA();
+		Assert.assertNotNull(rechnungsAdresseJA);
+		rechnungsAdresseJA.setAdresseTyp(AdresseTyp.RECHNUNGSADRESSE);
 		storedPers.addAdresse(rechnungsAddr);
-		GesuchstellerAdresse gsRechnungsAddresse = rechnungsAddr.getGesuchstellerAdresseJA().copyGesuchstellerAdresse(new GesuchstellerAdresse(), AntragCopyType.MUTATION);
+		GesuchstellerAdresse gsRechnungsAddresse = rechnungsAdresseJA.copyGesuchstellerAdresse(new GesuchstellerAdresse(), AntragCopyType.MUTATION);
 		rechnungsAddr.setGesuchstellerAdresseGS(gsRechnungsAddresse);
 		rechnungsAddr.setGesuchstellerAdresseJA(null);
 
