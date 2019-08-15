@@ -70,14 +70,4 @@ export class ParameterViewController extends AbstractAdminViewController {
             gesuchsperiodeId: undefined,
         });
     }
-
-    public getStatusTagesschulenFreischaltung(gp: TSGesuchsperiode): string {
-        if (gp.hasTagesschulenAnmeldung()) {
-            return gp.isTagesschulenAnmeldungKonfiguriert() ?
-                this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_KONFIGURIERT') :
-                this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NOT_YET');
-        }
-
-        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_NONE');
-    }
 }

@@ -60,14 +60,6 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	private LocalDate datumAktiviert;
 
 	@Nullable
-	@Column(nullable = true)
-	private LocalDate datumFreischaltungTagesschule;
-
-	@Nullable
-	@Column(nullable = true)
-	private LocalDate datumErsterSchultag;
-
-	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
@@ -107,24 +99,6 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	public void setDatumAktiviert(LocalDate datumAktiviert) {
 		this.datumAktiviert = datumAktiviert;
-	}
-
-	@Nullable
-	public LocalDate getDatumFreischaltungTagesschule() {
-		return datumFreischaltungTagesschule;
-	}
-
-	public void setDatumFreischaltungTagesschule(@Nullable LocalDate datumFreischaltungTagesschule) {
-		this.datumFreischaltungTagesschule = datumFreischaltungTagesschule;
-	}
-
-	@Nullable
-	public LocalDate getDatumErsterSchultag() {
-		return datumErsterSchultag;
-	}
-
-	public void setDatumErsterSchultag(@Nullable LocalDate datumErsterSchultag) {
-		this.datumErsterSchultag = datumErsterSchultag;
 	}
 
 	@Nonnull
@@ -217,9 +191,5 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis())
 			+ ' ' + ServerMessageUtil.getMessage("Gesuchsperiode_KONFIGURATION", locale)
 			+ " (" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
-	}
-
-	public boolean hasTagesschulenAnmeldung() {
-		return getDatumFreischaltungTagesschule() != null;
 	}
 }

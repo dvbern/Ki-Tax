@@ -95,69 +95,6 @@
                             </div>
                         </div>
 
-                        <div class="row" ng-show="!vm.gesuchsperiode.isEntwurf()">
-                            <div class="col-md-6 form-group">
-                                <div class="row col-md-12" ng-show="!vm.isTagesschulangebotEnabled()">
-                                    <label data-translate="FREISCHALTUNG_TAGESSCHULE_NONE"/>
-                                </div>
-                                <div class="row" ng-show="vm.isTagesschulangebotEnabled()">
-                                    <div class="col-md-4">
-                                        <label data-translate="FREISCHALTUNG_TAGESSCHULE"
-                                               for="datumFreischaltungTagesschule_ID"/>
-                                    </div>
-                                    <div class="col-md-8 ">
-                                        <div ng-if="!vm.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert()">
-                                            <dv-datepicker input-id="datumFreischaltungTagesschule_ID"
-                                                           name="datumFreischaltungTagesschule"
-                                                           ng-model="vm.datumFreischaltungTagesschule"
-                                                           dv-max-date="vm.datumFreischaltungMax"
-                                                           class="input-element contrast">
-                                            </dv-datepicker>
-                                        </div>
-                                        <div ng-if="vm.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert()">
-                                            <dv-datepicker input-id="datumFreischaltungTagesschule_ID"
-                                                           name="datumFreischaltungTagesschule"
-                                                           ng-model="vm.gesuchsperiode.datumFreischaltungTagesschule"
-                                                           dv-max-date="vm.datumFreischaltungMax"
-                                                           class="input-element contrast"
-                                                           ng-disabled="true">
-                                            </dv-datepicker>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-8 col-md-offset-4">
-                                        <dv-error-messages
-                                            for="vm.form.datumFreischaltungTagesschule.$error"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <div class="row col-md-12" ng-show="!vm.isTagesschulangebotEnabled()">
-                                </div>
-                                <div class="row" ng-show="vm.isTagesschulangebotEnabled()">
-                                    <div class="col-md-4">
-                                        <label data-translate="ERSTER_SCHULTAG_TAGESSCHULE"
-                                               for="datumErsterSchultag_ID"/>
-                                    </div>
-                                    <div class="col-md-8 ">
-                                        <div>
-                                            <dv-datepicker input-id="datumErsterSchultag_ID" name="datumErsterSchultag"
-                                                           ng-model="vm.gesuchsperiode.datumErsterSchultag"
-                                                           class="input-element contrast"
-                                                           ng-disabled="vm.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert()"
-                                                           ng-required="vm.ersterSchultagRequired()">
-                                            </dv-datepicker>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-8 col-md-offset-4">
-                                        <dv-error-messages for="vm.form.datumErsterSchultag.$error"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Gesuchsperiode Buttons -->
