@@ -31,7 +31,6 @@ import {TSSprache} from '../../../models/enums/TSSprache';
 import TSEinstellung from '../../../models/TSEinstellung';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
 import {EinstellungRS} from '../../service/einstellungRS.rest';
@@ -69,7 +68,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     public initialStatus: TSGesuchsperiodeStatus;
     public datumFreischaltungTagesschule: moment.Moment;
-    public datumFreischaltungMax: moment.Moment;
 
     public isErlaeuterungDE: boolean = false;
     public isErlaeuterungFR: boolean = false;
@@ -112,8 +110,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     private setSelectedGesuchsperiode(gesuchsperiode: any): void {
         this.gesuchsperiode = gesuchsperiode;
         this.readEinstellungenByGesuchsperiode();
-        this.datumFreischaltungTagesschule = undefined;
-        this.datumFreischaltungMax = this.getDatumFreischaltungMax();
     }
 
     private readEinstellungenByGesuchsperiode(): void {
@@ -130,53 +126,26 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         if (!this.form.$valid || !this.statusHaveChanged()) {
             return;
         }
-
-        if (this.gesuchsperiode.isNew()
+        if (!(this.gesuchsperiode.isNew()
             || this.initialStatus !== this.gesuchsperiode.status
-            || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV) {
-            const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'GESUCHSPERIODE_DIALOG_TITLE',
-                deleteText: dialogText,
-                parentController: undefined,
-                elementID: undefined,
-            }).then(() => {
-                this.saveGesuchsperiodeFreischaltungTagesschule();
-            });
+            || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV)) {
             return;
         }
-
-        this.saveGesuchsperiodeFreischaltungTagesschule();
-    }
-
-    public saveGesuchsperiodeFreischaltungTagesschule(): void {
-        // Zweite Rückfrage falls neu ein Datum für die Freischaltung der Tagesschulen gesetzt wurde
-        if (this.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert() || !this.isDatumFreischaltungTagesschuleValid()) {
-            this.doSave();
-
-            return;
-        }
-
+        const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TITLE',
-            deleteText: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TEXT',
+            title: 'GESUCHSPERIODE_DIALOG_TITLE',
+            deleteText: dialogText,
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            this.gesuchsperiode.datumFreischaltungTagesschule = this.datumFreischaltungTagesschule;
             this.doSave();
         });
-    }
-
-    private isDatumFreischaltungTagesschuleValid(): boolean {
-        return this.datumFreischaltungTagesschule
-            && this.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);
+        return;
     }
 
     private doSave(): void {
         this.gesuchsperiodeRS.updateGesuchsperiode(this.gesuchsperiode).then((response: TSGesuchsperiode) => {
             this.gesuchsperiode = response;
-            this.datumFreischaltungTagesschule = undefined;
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
             // Die E-BEGU-Parameter für die neue Periode lesen bzw. erstellen, wenn noch nicht vorhanden
             this.readEinstellungenByGesuchsperiode();
@@ -190,13 +159,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.getNewestGesuchsperiode().then(newestGesuchsperiode => {
             this.gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.ENTWURF, new TSDateRange());
             this.initialStatus = undefined; // initialStatus ist undefined for new created Gesuchsperioden
-            this.datumFreischaltungTagesschule = undefined;
             this.gesuchsperiode.gueltigkeit.gueltigAb =
                 newestGesuchsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
             this.gesuchsperiode.gueltigkeit.gueltigBis =
                 newestGesuchsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
-            this.gesuchsperiode.datumFreischaltungTagesschule = this.gesuchsperiode.gueltigkeit.gueltigAb;
-            this.datumFreischaltungMax = this.getDatumFreischaltungMax();
 
             // we need to check for erlaeuterung already here, because the server wont send any information back and we
             // do not want to reloade the page
@@ -232,13 +198,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.$log.warn('Achtung, Status unbekannt: ', this.gesuchsperiode.status);
 
         return null;
-    }
-
-    public ersterSchultagRequired(): boolean {
-        return (EbeguUtil.isNotNullOrUndefined(this.gesuchsperiode.datumFreischaltungTagesschule)
-            && this.gesuchsperiode.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb))
-            || (EbeguUtil.isNotNullOrUndefined(this.datumFreischaltungTagesschule)
-                && this.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb));
     }
 
     public periodenParamsEditable(): boolean {
@@ -313,9 +272,5 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
             this.isErlaeuterungFR = !!result;
         });
-    }
-
-    public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
     }
 }

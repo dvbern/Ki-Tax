@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -275,7 +276,7 @@ public class GemeindeResource {
 			if (eingeladen) {
 				// KIBON-360: die Konfiguration in der aktuellen und in allen zukünftigen Gesuchsperioden speichern
 				saveAllFutureJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
-			} else if (GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiodeStatus()) {
+			} else if (GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiode().getStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			}
 		});
@@ -293,29 +294,35 @@ public class GemeindeResource {
 
 	private void saveJaxGemeindeKonfiguration(
 		@Nonnull Gemeinde gemeinde,
-		@Nonnull JaxGemeindeKonfiguration konfiguration) {
-		if (konfiguration.getGesuchsperiodeId() != null) {
-			Optional<Gesuchsperiode> gesuchsperiode =
-				gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
-			if (gesuchsperiode.isPresent()) {
-				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
-					saveEinstellung(gemeinde, gesuchsperiode.get(), jaxKonfig);
-				}
-			}
+		@Nonnull JaxGemeindeKonfiguration konfiguration
+	) {
+		Objects.requireNonNull(konfiguration);
+		Objects.requireNonNull(konfiguration.getGesuchsperiode());
+		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
+			saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
 		}
 	}
 
 	private void saveAllFutureJaxGemeindeKonfiguration(
 		@Nonnull Gemeinde gemeinde,
-		@Nonnull JaxGemeindeKonfiguration konfiguration) {
-		if (konfiguration.getGesuchsperiodeId() != null) {
-			Collection<Gesuchsperiode> gesuchsperioden =
-				gesuchsperiodeService.findThisAndFutureGesuchsperioden(konfiguration.getGesuchsperiodeId());
-			if (gesuchsperioden != null && !gesuchsperioden.isEmpty()) {
-				for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
-					for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
-						saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
-					}
+		@Nonnull JaxGemeindeKonfiguration konfiguration
+	) {
+		Objects.requireNonNull(konfiguration);
+		Objects.requireNonNull(konfiguration.getGesuchsperiode());
+		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+
+		Collection<Gesuchsperiode> gesuchsperioden =
+			gesuchsperiodeService.findThisAndFutureGesuchsperioden(konfiguration.getGesuchsperiode().getId());
+
+		if (gesuchsperioden != null && !gesuchsperioden.isEmpty()) {
+			for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
+				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
+					saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
 				}
 			}
 		}

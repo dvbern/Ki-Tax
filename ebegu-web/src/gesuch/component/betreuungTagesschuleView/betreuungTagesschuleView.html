@@ -19,7 +19,8 @@
     <fieldset ng-disabled="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
 
         <div
-            ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.hasTagesschulenAnmeldung() && !vm.getBetreuungModel().keineDetailinformationen">
+            ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
+            	&& !vm.getBetreuungModel().keineDetailinformationen">
 
             <!-- Modulauswahl Tagesschule -->
             <div
@@ -83,10 +84,10 @@
             </div>
         </div>
 
-        <div ng-if="vm.gesuchModelManager.gesuch.gesuchsperiode.hasTagesschulenAnmeldung()">
+        <div ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()">
 
             <!-- Hinweis, dass Tageschulanmeldung noch nicht freigeschaltet -->
-            <div class="marginTop30" ng-if="!vm.gesuchModelManager.gesuch.gesuchsperiode.isTageschulenAnmeldungAktiv()">
+            <div class="marginTop30" ng-if="!vm.isTageschulenAnmeldungAktiv()">
                 <div class="well well-status-warten">
                     <i class="fa fa-exclamation " aria-hidden="true"></i>
                     <span>{{vm.getTagesschuleAnmeldungNotYetReadyText()}}</span>

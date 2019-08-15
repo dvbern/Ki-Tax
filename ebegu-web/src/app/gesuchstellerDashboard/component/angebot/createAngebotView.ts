@@ -136,13 +136,14 @@ export class CreateAngebotListViewController implements IController {
 
         if (this.ts) {
             // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
-            if (this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung()
+            if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
                 && this.isTageschulenAnmeldungAktiv()) {
                 this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
                 if (!this.anmeldungDTO.betreuung.belegungTagesschule) {
                     this.anmeldungDTO.betreuung.belegungTagesschule = new TSBelegungTagesschule();
                     // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-                    const ersterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+                    const ersterSchultag =
+                        this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
                     if (DateUtil.today().isBefore(ersterSchultag)) {
                         this.anmeldungDTO.betreuung.belegungTagesschule.eintrittsdatum = ersterSchultag;
                     }
@@ -162,8 +163,7 @@ export class CreateAngebotListViewController implements IController {
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.getGesuchsperiode()
-            && this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
+        return this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
     }
 
     public selectedKindChanged(): void {
