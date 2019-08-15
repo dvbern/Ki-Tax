@@ -1608,5 +1608,13 @@
     "GEMEINDE_TAB_TS": "Ecole à journée continue",
     "GEMEINDE_TAB_FI": "Ilots de vacances",
     "GEMEINDE_TAB_SAVE_WARNING": "Le formulaire ne semble pas avoir été rempli complètement. Veuillez vérifier tous les onglets.",
-    "ERROR_IBAN": "IBAN a un format invalide"
+    "ERROR_IBAN": "IBAN a un format invalide",
+    "ABWEICHUNGEN_MELDEN": "",
+    "ABWEICHUNGEN_HELP": "",
+    "MONTH": "",
+    "SPEICHERN_ERFOLGREICH": "",
+    "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "",
+    "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "",
+    "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
+    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": ""
 }

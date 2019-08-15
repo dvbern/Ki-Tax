@@ -110,6 +110,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@Nullable
 	private AnmeldungMutationZustand anmeldungMutationZustand;
 
+	@NotNull
+	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungen = new ArrayList<>();
+
 	private boolean keineDetailinformationen = false;
 
 	// transient (Not stored on server, just an information for client)
@@ -312,6 +315,15 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setKeineDetailinformationen(boolean keineDetailinformationen) {
 		this.keineDetailinformationen = keineDetailinformationen;
+	}
+
+	@Nonnull
+	public List<JaxBetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
+		return betreuungspensumAbweichungen;
+	}
+
+	public void setBetreuungspensumAbweichungen(@Nonnull List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
 	@Override

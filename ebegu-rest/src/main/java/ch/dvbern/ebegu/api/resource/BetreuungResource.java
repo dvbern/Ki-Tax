@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,12 +46,14 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAnmeldungDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -480,6 +483,59 @@ public class BetreuungResource {
 		}
 		throw new EbeguEntityNotFoundException("createAnmeldung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			KIND_CONTAINER_ID_INVALID + jaxAnmeldungDTO
-			.getKindContainerId());
+				.getKindContainerId());
+	}
+
+	@ApiOperation(value = "Speichert die Abweichungen einer Betreuung in der Datenbank", response = Collection.class)
+	@PUT
+	@Path("/betreuung/abweichungen/{betreuungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<JaxBetreuungspensumAbweichung> saveBetreuungspensumAbweichungen(
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
+		@Nonnull @NotNull @Valid JaxBetreuung betreuungJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(betreuungJax);
+		Objects.requireNonNull(betreuungId);
+		String id = converter.toEntityId(betreuungId);
+		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(id);
+
+		if (!betreuungOptional.isPresent()) {
+			return null;
+		}
+
+		Betreuung betreuung = betreuungOptional.get();
+		Set<BetreuungspensumAbweichung> toStore = converter.betreuungspensumAbweichungenToEntity(betreuungJax.getBetreuungspensumAbweichungen(),
+			betreuung.getBetreuungspensumAbweichungen());
+
+		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
+		betreuung.setBetreuungspensumAbweichungen(toStore);
+		betreuungService.saveBetreuung(betreuung, false);
+		return converter.betreuungspensumAbweichungenToJax(betreuung);
+	}
+
+	@ApiOperation(value = "Gibt für jeden Monat in einer Gesuchsperiode eine BetreuungspensumAbweichung zurück.",
+		response =
+		Collection.class)
+	@GET
+	@Path("/betreuung/abweichungen/{betreuungId}/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<JaxBetreuungspensumAbweichung> findBetreuungspensumAbweichungen(
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(betreuungId);
+		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(betreuungId.getId());
+
+		if (!betreuungOptional.isPresent()) {
+			return null;
+		}
+
+		Betreuung betreuung = betreuungOptional.get();
+		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 }

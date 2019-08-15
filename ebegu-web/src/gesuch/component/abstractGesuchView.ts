@@ -14,11 +14,13 @@
  */
 
 import {IController} from 'angular';
-import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
+import {isVerfuegtOrSTV, TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
+import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
+import TSBetreuung from '../../models/TSBetreuung';
 import TSExceptionReport from '../../models/TSExceptionReport';
 import TSGesuch from '../../models/TSGesuch';
 import EbeguUtil from '../../utils/EbeguUtil';
@@ -164,5 +166,29 @@ export default class AbstractGesuchViewController<T> implements IController {
 
     public isNotNullOrUndefined(value: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(value);
+    }
+
+    public isMutationsmeldungAllowed(betreuung: TSBetreuung, isNewestGesuch: boolean): boolean {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return false;
+        }
+        return (
+                (
+                    this.isMutation()
+                    && (
+                        betreuung.vorgaengerId
+                        || betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT
+                    )
+                )
+                || (
+                    !this.isMutation()
+                    && isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
+                    && betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT
+                )
+            )
+            && betreuung.betreuungsstatus !== TSBetreuungsstatus.WARTEN
+            && this.gesuchModelManager.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV
+            && isNewestGesuch
+            && !this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
     }
 }

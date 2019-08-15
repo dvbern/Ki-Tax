@@ -37,4 +37,6 @@ public final class RuleUtil {
 	public static LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
 		return ereignisdatum.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
 	}
+
+
 }

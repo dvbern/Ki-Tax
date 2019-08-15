@@ -212,4 +212,9 @@ public interface MitteilungService {
 	 * Es wird keine Berechtigungsprüfung durchgeführt, da nur ja/nein zurückgeben wird.
 	 */
 	boolean hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(@Nonnull Benutzer benutzer);
+
+	/**
+	 * Erstellt und sendet eine Mutationsmeldung aus den bestehenden Betreuungspensen und BetreuungspensumAbweichungen
+	 */
+	void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung);
 }

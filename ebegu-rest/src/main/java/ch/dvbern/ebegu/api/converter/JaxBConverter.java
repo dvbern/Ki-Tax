@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
@@ -138,6 +139,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Dokument;
@@ -257,6 +259,7 @@ import static java.util.Objects.requireNonNull;
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
+	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 	@Inject
@@ -1215,7 +1218,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
 
-		Collection<Institution> institutionen = institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
+		Collection<Institution> institutionen =
+			institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
 		// its enough if we just pass the names here, we only want to display it later
 		jaxTraegerschaft.setInstitutionNames(institutionen.stream()
 			.map(Institution::getName)
@@ -2293,6 +2297,44 @@ public class JaxBConverter extends AbstractConverter {
 		return betreuung;
 	}
 
+	public Set<BetreuungspensumAbweichung> betreuungspensumAbweichungenToEntity (
+		final @Nonnull List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
+		final @Nonnull Set<BetreuungspensumAbweichung> abweichungen) {
+
+		final Set<BetreuungspensumAbweichung> transformedAbweichungen = new TreeSet<>();
+		for (final JaxBetreuungspensumAbweichung jaxAbweichung : abweichungenJAXP) {
+			final BetreuungspensumAbweichung abweichungToMergeWith = abweichungen
+				.stream()
+				.filter(existingAbweichung -> existingAbweichung.getId().equals(jaxAbweichung.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElse(new BetreuungspensumAbweichung());
+			final BetreuungspensumAbweichung abweichungToAdd =
+				betreuungspensumAbweichungToEntity(jaxAbweichung, abweichungToMergeWith);
+			final boolean added = transformedAbweichungen.add(abweichungToAdd);
+			if (!added) {
+				LOGGER.warn(DROPPED_DUPLICATE_ABWEICHUNG + "{}", abweichungToAdd);
+			}
+		}
+
+		// change the existing collection to reflect changes
+		// Already tested: All existing Betreuungspensen of the list remain as they were, that means their data are
+		// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
+		abweichungen.clear();
+		abweichungen.addAll(transformedAbweichungen);
+
+		return abweichungen;
+	}
+
+	private BetreuungspensumAbweichung betreuungspensumAbweichungToEntity (
+		final @Nonnull JaxBetreuungspensumAbweichung jaxAbweichung,
+		final @Nonnull BetreuungspensumAbweichung abweichung
+	) {
+		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
+		abweichung.setStatus(jaxAbweichung.getStatus());
+
+		return abweichung;
+	}
+
 	private ErweiterteBetreuung erweiterteBetreuungToEntity(
 		@Nonnull final JaxErweiterteBetreuung erweiterteBetreuungJAXP,
 		@Nonnull final ErweiterteBetreuung erweiterteBetreuung) {
@@ -2388,12 +2430,20 @@ public class JaxBConverter extends AbstractConverter {
 		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
+	public void setBetreuungInbetreuungsAbweichungen(
+		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
+		final Betreuung betreuung) {
+
+		betreuungspensumAbweichungen.forEach(c -> c.setBetreuung(betreuung));
+	}
+
 	private void setBetreuungInbetreuungsPensumContainers(
 		final Set<BetreuungspensumContainer> betreuungspensumContainers,
 		final Betreuung betreuung) {
 
 		betreuungspensumContainers.forEach(c -> c.setBetreuung(betreuung));
 	}
+
 
 	private void setBetreuungInAbwesenheiten(
 		final Set<AbwesenheitContainer> abwesenheiten,
@@ -2680,6 +2730,23 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxBetreuung;
 	}
 
+	@Nonnull
+	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
+		return betreuung.fillAbweichungen().stream().map(this::betreuungspensumAbweichungToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(@Nonnull BetreuungspensumAbweichung abweichung) {
+		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
+		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
+		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
+		jaxAbweichung.setVertraglichesPensum(abweichung.getVertraglichesPensum());
+		jaxAbweichung.setStatus(abweichung.getStatus());
+
+		return jaxAbweichung;
+	}
+
 	@Nullable
 	private JaxBelegungTagesschule belegungTagesschuleToJax(@Nullable BelegungTagesschule belegungFromServer) {
 		if (belegungFromServer == null) {
@@ -2960,7 +3027,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
-		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
 	}
