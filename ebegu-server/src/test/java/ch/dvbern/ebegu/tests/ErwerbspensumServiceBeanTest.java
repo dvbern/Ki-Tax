@@ -276,12 +276,10 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private ErwerbspensumContainer insertNewEntity() {
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		ErwerbspensumContainer container = TestDataUtil.createErwerbspensumContainer();
 		gesuchsteller.addErwerbspensumContainer(container);
 		gesuchsteller = persistence.persist(gesuchsteller);
 		return gesuchsteller.getErwerbspensenContainers().iterator().next();
 	}
-
 }

@@ -79,7 +79,6 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	public Verfuegung() {
 		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
-
 	}
 
 	public Verfuegung(Betreuung betreuung) {
@@ -117,11 +116,12 @@ public class Verfuegung extends AbstractMutableEntity {
 		}
 	}
 
+	@Nonnull
 	public Betreuung getBetreuung() {
 		return betreuung;
 	}
 
-	public void setBetreuung(Betreuung betreuung) {
+	public void setBetreuung(@Nonnull Betreuung betreuung) {
 		this.betreuung = betreuung;
 	}
 
@@ -157,25 +157,11 @@ public class Verfuegung extends AbstractMutableEntity {
 		this.kategorieNichtEintreten = kategorieNichtEintreten;
 	}
 
-	public boolean addZeitabschnitt(@NotNull final VerfuegungZeitabschnitt zeitabschnitt) {
-		zeitabschnitt.setVerfuegung(this);
-		return !this.zeitabschnitte.add(zeitabschnitt);
-	}
-
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Verfuegung");
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			sb.append('\n');
 			sb.append(zeitabschnitt);
-		}
-		return sb.toString();
-	}
-
-	public String toStringFinanzielleSituation() {
-		StringBuilder sb = new StringBuilder("Verfuegung");
-		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			sb.append('\n');
-			sb.append(zeitabschnitt.toStringFinanzielleSituation());
 		}
 		return sb.toString();
 	}

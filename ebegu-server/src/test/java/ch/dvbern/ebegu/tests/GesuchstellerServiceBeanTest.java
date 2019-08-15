@@ -54,7 +54,6 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createGesuchsteller() {
 		Assert.assertNotNull(gesuchstellerService);
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 
 		gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1, false);
@@ -148,7 +147,6 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 	// Helper Methods
 
 	private GesuchstellerContainer insertNewEntity() {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		persistence.persist(gesuchsteller);
 		return gesuchsteller;

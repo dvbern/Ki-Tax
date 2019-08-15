@@ -64,8 +64,6 @@ import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
 import com.google.common.base.Preconditions;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -117,33 +115,26 @@ public class Betreuung extends AbstractPlatz {
 	@Transient
 	private boolean vorgaengerInitialized = false;
 
-	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
-	private Set<BetreuungspensumContainer> betreuungspensumContainers = new TreeSet<>();
+	private @Valid Set<BetreuungspensumContainer> betreuungspensumContainers = new TreeSet<>();
 
-	@NotNull
-	@Valid
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
-	private ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer(this);
+	private @NotNull @Valid ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer(this);
 
-	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
-	private Set<AbwesenheitContainer> abwesenheitContainers = new TreeSet<>();
+	private @Valid Set<AbwesenheitContainer> abwesenheitContainers = new TreeSet<>();
 
-	@Size(max = Constants.DB_TEXTAREA_LENGTH)
-	@Nullable
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
-	private String grundAblehnung;
-
 	@Nullable
-	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.REMOVE,  orphanRemoval = true, mappedBy = "betreuung")
-	private Verfuegung verfuegung;
+	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String grundAblehnung;
 
-	@NotNull
+	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "betreuung")
+	@Nullable
+	private @Valid Verfuegung verfuegung;
+
 	@Column(nullable = false)
-	private Boolean vertrag = false;
+	private @NotNull Boolean vertrag = false;
 
 	@Nullable
 	@Column(nullable = true)

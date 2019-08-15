@@ -97,21 +97,21 @@ public abstract class AbstractTestfall {
 	protected Gesuch gesuch = null;
 	protected final boolean betreuungenBestaetigt;
 
-	public AbstractTestfall(
+	protected AbstractTestfall(
 		Gesuchsperiode gesuchsperiode,
 		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt) {
-
+		boolean betreuungenBestaetigt
+	) {
 		this.gesuchsperiode = gesuchsperiode;
 		this.institutionStammdatenList = institutionStammdatenList;
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
 	}
 
-	public AbstractTestfall(
+	protected AbstractTestfall(
 		Gesuchsperiode gesuchsperiode,
 		Collection<InstitutionStammdaten> institutionStammdatenList,
-		boolean betreuungenBestaetigt, Gemeinde gemeinde) {
-
+		boolean betreuungenBestaetigt, Gemeinde gemeinde
+	) {
 		this(gesuchsperiode, institutionStammdatenList, betreuungenBestaetigt);
 		this.gemeinde = gemeinde;
 	}
@@ -135,11 +135,10 @@ public abstract class AbstractTestfall {
 		return fall;
 	}
 
-	private Dossier createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
+	private void createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
 		dossier = createDossier(fallParam);
 		dossier.setVerantwortlicherBG(verantwortlicher);
 		dossier.setTimestampErstellt(LocalDateTime.now().minusDays(7));
-		return dossier;
 	}
 
 	private Dossier createDossier(@Nonnull Fall fallParam) {

@@ -56,18 +56,12 @@ public class PrincipalBean {
 	private Benutzer benutzer = null;
 	private Mandant mandant = null;
 
-	//	@PostConstruct
-	//	private  void init(){
-	//		loadNormalUser();
-	//
-	//	}
 
 	private void loadNormalUser() {
 		String name = principal.getName();
 		benutzer = benutzerService.findBenutzer(name)
 			.orElseThrow(() -> new IllegalStateException("Could not find Benutzer with username " + name));
 		mandant = benutzer.getMandant();
-
 	}
 
 	@Nonnull
@@ -93,7 +87,6 @@ public class PrincipalBean {
 				roleNames.add(roleName);
 			}
 		});
-
 		return roleNames;
 	}
 
@@ -109,7 +102,6 @@ public class PrincipalBean {
 				return userRole;
 			}
 		}
-
 		return null;
 	}
 
