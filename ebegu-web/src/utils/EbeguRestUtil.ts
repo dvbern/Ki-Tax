@@ -13,11 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import TSDokumenteDTO from '../models/dto/TSDokumenteDTO';
 import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSituationResultateDTO';
 import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -45,6 +48,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../models/TSBetreuungsmitteilung';
 import TSBetreuungsmitteilungPensum from '../models/TSBetreuungsmitteilungPensum';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
+import TSBetreuungspensumAbweichung from '../models/TSBetreuungspensumAbweichung';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
 import TSBfsGemeinde from '../models/TSBfsGemeinde';
 import TSDokument from '../models/TSDokument';
@@ -86,6 +90,7 @@ import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSInstitution from '../models/TSInstitution';
 import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
@@ -864,8 +869,7 @@ export default class EbeguRestUtil {
         konfiguration: TSGemeindeKonfiguration,
     ): TSGemeindeKonfiguration {
         if (konfiguration) {
-            restKonfiguration.gesuchsperiodeId = konfiguration.gesuchsperiodeId;
-            restKonfiguration.gesuchsperiodeStatus = konfiguration.gesuchsperiodeStatus;
+            restKonfiguration.gesuchsperiode = this.gesuchsperiodeToRestObject({}, konfiguration.gesuchsperiode);
             restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
             return restKonfiguration;
         }
@@ -887,8 +891,8 @@ export default class EbeguRestUtil {
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
-            konfigurationTS.gesuchsperiodeId = konfigurationFromServer.gesuchsperiodeId;
-            konfigurationTS.gesuchsperiodeStatus = konfigurationFromServer.gesuchsperiodeStatus;
+            konfigurationTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
             return konfigurationTS;
         }
@@ -1116,18 +1120,11 @@ export default class EbeguRestUtil {
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
             restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
             restInstitutionStammdaten.oeffnungszeiten = institutionStammdaten.oeffnungszeiten;
-            restInstitutionStammdaten.iban = institutionStammdaten.iban;
-            restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
-            restInstitutionStammdaten.alterskategorieBaby = institutionStammdaten.alterskategorieBaby;
-            restInstitutionStammdaten.alterskategorieVorschule = institutionStammdaten.alterskategorieVorschule;
-            restInstitutionStammdaten.alterskategorieKindergarten = institutionStammdaten.alterskategorieKindergarten;
-            restInstitutionStammdaten.alterskategorieSchule = institutionStammdaten.alterskategorieSchule;
-            restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
-            restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
-            restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
             restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
-            restInstitutionStammdaten.adresseKontoinhaber =
-                this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
+
+            restInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine =
+                this.institutionStammdatenBetreuungsgutscheineToRestObject({},
+                    institutionStammdaten.institutionStammdatenBetreuungsgutscheine);
             restInstitutionStammdaten.institutionStammdatenTagesschule =
                 this.institutionStammdatenTagesschuleToRestObject({},
                     institutionStammdaten.institutionStammdatenTagesschule);
@@ -1139,7 +1136,7 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitutionStammdatenSummary(
+    private parseInstitutionStammdatenSummary(
         institutionStammdatenTS: TSInstitutionStammdatenSummary,
         institutionStammdatenFromServer: any,
     ): TSInstitutionStammdatenSummary {
@@ -1154,20 +1151,12 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
             institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
             institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
-            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
-            institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
-            institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
-            institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
-            institutionStammdatenTS.alterskategorieKindergarten =
-                institutionStammdatenFromServer.alterskategorieKindergarten;
-            institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
-            institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
-            institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
-            institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
             institutionStammdatenTS.sendMailWennOffenePendenzen =
                 institutionStammdatenFromServer.sendMailWennOffenePendenzen;
-            institutionStammdatenTS.adresseKontoinhaber =
-                this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
+
+            institutionStammdatenTS.institutionStammdatenBetreuungsgutscheine =
+                this.parseInstitutionStammdatenBetreuungsgutscheine(new TSInstitutionStammdatenBetreuungsgutscheine(),
+                    institutionStammdatenFromServer.institutionStammdatenBetreuungsgutscheine);
             institutionStammdatenTS.institutionStammdatenTagesschule =
                 this.parseInstitutionStammdatenTagesschule(new TSInstitutionStammdatenTagesschule(),
                     institutionStammdatenFromServer.institutionStammdatenTagesschule);
@@ -1199,6 +1188,51 @@ export default class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), item))
             : [this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data)];
+    }
+
+    private institutionStammdatenBetreuungsgutscheineToRestObject(
+        restInstitutionStammdaten: any,
+        institutionStammdaten: TSInstitutionStammdatenBetreuungsgutscheine,
+    ): any {
+        if (institutionStammdaten) {
+            this.abstractEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
+            restInstitutionStammdaten.iban = institutionStammdaten.iban;
+            restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
+            restInstitutionStammdaten.alterskategorieBaby = institutionStammdaten.alterskategorieBaby;
+            restInstitutionStammdaten.alterskategorieVorschule = institutionStammdaten.alterskategorieVorschule;
+            restInstitutionStammdaten.alterskategorieKindergarten = institutionStammdaten.alterskategorieKindergarten;
+            restInstitutionStammdaten.alterskategorieSchule = institutionStammdaten.alterskategorieSchule;
+            restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
+            restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
+            restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
+            restInstitutionStammdaten.adresseKontoinhaber =
+                this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
+            return restInstitutionStammdaten;
+        }
+        return undefined;
+    }
+
+    private parseInstitutionStammdatenBetreuungsgutscheine(
+        institutionStammdatenTS: TSInstitutionStammdatenBetreuungsgutscheine,
+        institutionStammdatenFromServer: any,
+    ): TSInstitutionStammdatenBetreuungsgutscheine {
+        if (institutionStammdatenFromServer) {
+            this.parseAbstractEntity(institutionStammdatenTS, institutionStammdatenFromServer);
+            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
+            institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
+            institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
+            institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
+            institutionStammdatenTS.alterskategorieKindergarten =
+                institutionStammdatenFromServer.alterskategorieKindergarten;
+            institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
+            institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
+            institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
+            institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
+            institutionStammdatenTS.adresseKontoinhaber =
+                this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
+            return institutionStammdatenTS;
+        }
+        return undefined;
     }
 
     public institutionStammdatenFerieninselToRestObject(
@@ -1659,6 +1693,10 @@ export default class EbeguRestUtil {
                     betPensCont));
             });
         }
+
+        restBetreuung.betreuungspensumAbweichungen =
+            this.betreuungspensumAbweichungenToRestObject(betreuung.betreuungspensumAbweichungen);
+
         if (betreuung.abwesenheitContainers) {
             restBetreuung.abwesenheitContainers = [];
             betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
@@ -1684,6 +1722,24 @@ export default class EbeguRestUtil {
         return restBetreuung;
     }
 
+    public betreuungspensumAbweichungenToRestObject(abweichungen: TSBetreuungspensumAbweichung[]): any {
+        let restAbweichungen: any;
+        if (abweichungen) {
+            restAbweichungen = [];
+            // only send Abweichungen with actual Abweichungen
+            const filteredAbweichungen = abweichungen.filter(element => {
+                return element.status !== TSBetreuungspensumAbweichungStatus.NONE;
+            });
+
+            filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
+                restAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
+                    abweichung));
+            });
+        }
+
+        return restAbweichungen;
+    }
+
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
@@ -1692,6 +1748,24 @@ export default class EbeguRestUtil {
         restAngebot.sprichtAmtssprache = angebotDTO.sprichtAmtssprache;
         return restAngebot;
 
+    }
+
+    public betreuungspensumAbweichungToRestObject(restAbweichung: any, abweichung: TSBetreuungspensumAbweichung): any {
+        this.abstractBetreuungspensumEntityToRestObject(restAbweichung, abweichung);
+
+        restAbweichung.status = abweichung.status;
+
+        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+        const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
+        const originalPensum = restAbweichung.vertraglichesPensum
+            ? restAbweichung.vertraglichesPensum / multiplier
+            : undefined;
+
+        restAbweichung.vertraglichesPensum = originalPensum;
+        restAbweichung.pensum = pensum;
+
+        return restAbweichung;
     }
 
     public betreuungspensumContainerToRestObject(restBetPensCont: any, betPensCont: TSBetreuungspensumContainer): any {
@@ -1785,9 +1859,45 @@ export default class EbeguRestUtil {
             betreuungTS.anmeldungMutationZustand = betreuungFromServer.anmeldungMutationZustand;
             betreuungTS.keineDetailinformationen = betreuungFromServer.keineDetailinformationen;
             betreuungTS.bgNummer = betreuungFromServer.bgNummer;
+            betreuungTS.betreuungspensumAbweichungen =
+                this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
             return betreuungTS;
         }
         return undefined;
+    }
+
+    public parseBetreuungspensumAbweichungen(data: any): TSBetreuungspensumAbweichung[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBetreuungspensumAbweichung(new TSBetreuungspensumAbweichung(), item))
+            : [this.parseBetreuungspensumAbweichung(new TSBetreuungspensumAbweichung(), data)];
+    }
+
+    public parseBetreuungspensumAbweichung(
+        abweichungTS: TSBetreuungspensumAbweichung,
+        abweichungFromServer: any,
+    ): TSBetreuungspensumAbweichung {
+        this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
+        abweichungTS.status = abweichungFromServer.status;
+        abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
+
+        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+
+        const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
+        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
+
+        abweichungTS.vertraglichesPensum = originalPensum;
+        abweichungTS.pensum = pensum;
+
+        // ugly hack to override @Nonnull Betreuungskostem
+        if (abweichungTS.isNew()) {
+            abweichungTS.pensum = null;
+            abweichungTS.monatlicheBetreuungskosten = null;
+        }
+
+        return abweichungTS;
     }
 
     public parseBetreuungspensumContainers(data: Array<any>): TSBetreuungspensumContainer[] {
@@ -1960,9 +2070,6 @@ export default class EbeguRestUtil {
         if (gesuchsperiode) {
             this.abstractDateRangeEntityToRestObject(restGesuchsperiode, gesuchsperiode);
             restGesuchsperiode.status = gesuchsperiode.status;
-            restGesuchsperiode.datumFreischaltungTagesschule =
-                DateUtil.momentToLocalDate(gesuchsperiode.datumFreischaltungTagesschule);
-            restGesuchsperiode.datumErsterSchultag = DateUtil.momentToLocalDate(gesuchsperiode.datumErsterSchultag);
             return restGesuchsperiode;
         }
         return undefined;
@@ -1972,10 +2079,6 @@ export default class EbeguRestUtil {
         if (gesuchsperiodeFromServer) {
             this.parseDateRangeEntity(gesuchsperiodeTS, gesuchsperiodeFromServer);
             gesuchsperiodeTS.status = gesuchsperiodeFromServer.status;
-            gesuchsperiodeTS.datumFreischaltungTagesschule =
-                DateUtil.localDateToMoment(gesuchsperiodeFromServer.datumFreischaltungTagesschule);
-            gesuchsperiodeTS.datumErsterSchultag =
-                DateUtil.localDateToMoment(gesuchsperiodeFromServer.datumErsterSchultag);
             return gesuchsperiodeTS;
         }
         return undefined;

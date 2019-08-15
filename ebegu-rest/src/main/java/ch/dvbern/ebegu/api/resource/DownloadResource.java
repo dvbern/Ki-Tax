@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
+import ch.dvbern.ebegu.api.resource.auth.LocalhostChecker;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -127,6 +128,9 @@ public class DownloadResource {
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private LocalhostChecker localhostChecker;
+
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 	@ApiOperation("L&auml;dt das Dokument herunter, auf welches das &uuml;bergebene accessToken verweist")
@@ -149,6 +153,20 @@ public class DownloadResource {
 		if (!downloadFile.getIp().equals(ip)
 			|| principalBean.getPrincipal() == null
 			|| !principalBean.getPrincipal().getName().equals(downloadFile.getUserErstellt())) {
+			// Wir loggen noch ein bisschen, bis wir sicher sind, dass das Problem geloest ist
+			StringBuilder sb = new StringBuilder();
+			sb.append("Keine Berechtigung fuer Download");
+			if (!downloadFile.getIp().equals(ip)) {
+				sb.append("; downloadFile.getIp(): ").append(downloadFile.getIp());
+				sb.append("; ip").append(ip);
+			}
+			if (principalBean.getPrincipal() == null) {
+				sb.append("; principalBean.getPrincipal() is null");
+			} else if (!principalBean.getPrincipal().getName().equals(downloadFile.getUserErstellt())) {
+				sb.append("; principalBean.getPrincipal().getName()").append(principalBean.getPrincipal().getName());
+				sb.append("; downloadFile.getUserErstellt()").append(downloadFile.getUserErstellt());
+			}
+			LOG.error(sb.toString());
 			return Response.status(Response.Status.FORBIDDEN).entity("Keine Berechtigung f&uuml;r download").build();
 		}
 
@@ -501,10 +519,38 @@ public class DownloadResource {
 	}
 
 	public String getIP(HttpServletRequest request) {
+		StringBuilder sb = new StringBuilder();
+		String localIp = null;
+		String remoteIp = null;
+		sb.append("ermittle LocalIp: ");
+		try {
+			localIp = localhostChecker.findLocalIp();
+			sb.append(localIp);
+		} catch (Exception e) {
+			sb.append(e.getStackTrace());
+		}
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
+		sb.append(" X-FORWARDED-FOR=").append(ipAddress);
 		if (ipAddress == null) {
 			ipAddress = request.getRemoteAddr();
+			sb.append(" getRemoteAddr=").append(ipAddress);
 		}
-		return ipAddress;
+
+		if (ipAddress.contains(",")) {
+			String[] adresses = ipAddress.split(",");
+			for (String adress : adresses) {
+				if (!adress.equals(localIp)) {
+					sb.append(" RESULT=").append(adress);
+					remoteIp = adress;
+				} else {
+					sb.append(" UEBERSPRINGE=").append(adress);
+				}
+			}
+		} else {
+			sb.append(" EINZIGES RESULT=").append(ipAddress);
+			remoteIp = ipAddress;
+		}
+		LOG.warn("IP_ZEUGS: " + sb.toString());
+		return remoteIp;
 	}
 }

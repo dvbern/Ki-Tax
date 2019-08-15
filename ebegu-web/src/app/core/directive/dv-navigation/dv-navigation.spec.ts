@@ -544,7 +544,6 @@ describe('dvNavigation', () => {
         gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger = false;
         gesuch.familiensituationContainer.familiensituationJA.antragNurFuerBehinderungszuschlag = false;
-        spyOn(gesuch.gesuchsperiode, 'hasTagesschulenAnmeldung').and.returnValue(true);
         spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuch.gesuchsperiode);
         return gesuch;

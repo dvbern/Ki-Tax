@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -34,15 +32,17 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 
 	private static final long serialVersionUID = -1893677808322218626L;
 
-	@Nonnull
+	@NotNull @Nonnull
 	private BetreuungsangebotTyp betreuungsangebotTyp;
-	@NotNull
+	@NotNull @Nonnull
 	private JaxInstitution institution;
+	@Nullable
+	private JaxInstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine;
 	@Nullable
 	private JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 	@Nullable
 	private JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninsel;
-	@NotNull
+	@NotNull @Nonnull
 	private String mail;
 	@Nullable
 	private String telefon;
@@ -50,36 +50,11 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	private String webseite;
 	@Nullable
 	private String oeffnungszeiten;
-	@NotNull
+	@NotNull @Nonnull
 	private JaxAdresse adresse;
-	@Nullable
-	private String iban;
-	@Nullable
-	private String kontoinhaber;
-	@Nullable
-	private JaxAdresse adresseKontoinhaber;
-	private boolean alterskategorieBaby;
-	private boolean alterskategorieVorschule;
-	private boolean alterskategorieKindergarten;
-	private boolean alterskategorieSchule;
-	private boolean subventioniertePlaetze;
-
-	@Nullable
-	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
-	@Nullable
-	private BigDecimal anzahlPlaetzeFirmen;
 
 	private boolean sendMailWennOffenePendenzen = true;
 
-
-	@Nullable
-	public String getIban() {
-		return iban;
-	}
-
-	public void setIban(@Nullable String iban) {
-		this.iban = iban;
-	}
 
 	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
@@ -90,38 +65,31 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
+	@Nonnull
 	public JaxInstitution getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(JaxInstitution institution) {
+	public void setInstitution(@Nonnull JaxInstitution institution) {
 		this.institution = institution;
 	}
 
+	@Nonnull
 	public JaxAdresse getAdresse() {
 		return adresse;
 	}
 
-	public void setAdresse(JaxAdresse adresse) {
+	public void setAdresse(@Nonnull JaxAdresse adresse) {
 		this.adresse = adresse;
 	}
 
 	@Nullable
-	public String getKontoinhaber() {
-		return kontoinhaber;
+	public JaxInstitutionStammdatenBetreuungsgutscheine getInstitutionStammdatenBetreuungsgutscheine() {
+		return institutionStammdatenBetreuungsgutscheine;
 	}
 
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
-	}
-
-	@Nullable
-	public JaxAdresse getAdresseKontoinhaber() {
-		return adresseKontoinhaber;
-	}
-
-	public void setAdresseKontoinhaber(@Nullable JaxAdresse adresseKontoinhaber) {
-		this.adresseKontoinhaber = adresseKontoinhaber;
+	public void setInstitutionStammdatenBetreuungsgutscheine(@Nullable JaxInstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine) {
+		this.institutionStammdatenBetreuungsgutscheine = institutionStammdatenBetreuungsgutscheine;
 	}
 
 	@Nullable
@@ -142,11 +110,12 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
+	@Nonnull
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(String mail) {
+	public void setMail(@Nonnull String mail) {
 		this.mail = mail;
 	}
 
@@ -175,64 +144,6 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 
 	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
 		this.oeffnungszeiten = oeffnungszeiten;
-	}
-
-	public boolean isAlterskategorieBaby() {
-		return alterskategorieBaby;
-	}
-
-	public void setAlterskategorieBaby(boolean alterskategorieBaby) {
-		this.alterskategorieBaby = alterskategorieBaby;
-	}
-
-	public boolean isAlterskategorieVorschule() {
-		return alterskategorieVorschule;
-	}
-
-	public void setAlterskategorieVorschule(boolean alterskategorieVorschule) {
-		this.alterskategorieVorschule = alterskategorieVorschule;
-	}
-
-	public boolean isAlterskategorieKindergarten() {
-		return alterskategorieKindergarten;
-	}
-
-	public void setAlterskategorieKindergarten(boolean alterskategorieKindergarten) {
-		this.alterskategorieKindergarten = alterskategorieKindergarten;
-	}
-
-	public boolean isAlterskategorieSchule() {
-		return alterskategorieSchule;
-	}
-
-	public void setAlterskategorieSchule(boolean alterskategorieSchule) {
-		this.alterskategorieSchule = alterskategorieSchule;
-	}
-
-	public boolean isSubventioniertePlaetze() {
-		return subventioniertePlaetze;
-	}
-
-	public void setSubventioniertePlaetze(boolean subventioniertePlaetze) {
-		this.subventioniertePlaetze = subventioniertePlaetze;
-	}
-
-	@Nullable
-	public BigDecimal getAnzahlPlaetze() {
-		return anzahlPlaetze;
-	}
-
-	public void setAnzahlPlaetze(@Nullable BigDecimal anzahlPlaetze) {
-		this.anzahlPlaetze = anzahlPlaetze;
-	}
-
-	@Nullable
-	public BigDecimal getAnzahlPlaetzeFirmen() {
-		return anzahlPlaetzeFirmen;
-	}
-
-	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
-		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
 	public boolean isSendMailWennOffenePendenzen() {

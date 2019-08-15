@@ -28,8 +28,8 @@ import javax.persistence.PreUpdate;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
@@ -91,9 +91,9 @@ public class AbstractEntityListener {
 				kind.setKindNummer(fall.getNextNumberKind());
 				fall.setNextNumberKind(fall.getNextNumberKind() + 1);
 			}
-		} else if (entity instanceof Betreuung && !((Betreuung) entity).hasVorgaenger()) {
+		} else if (entity instanceof AbstractPlatz && !((AbstractPlatz) entity).hasVorgaenger()) {
 			// Neue Betreuungs-Nummer: nur setzen, wenn es nicht eine "kopierte" Betreuung ist
-			Betreuung betreuung = (Betreuung) entity;
+			AbstractPlatz betreuung = (AbstractPlatz) entity;
 			Optional<KindContainer> optKind = getKindService().findKind(betreuung.getKind().getId());
 			if (optKind.isPresent()) {
 				KindContainer kindContainer = optKind.get();

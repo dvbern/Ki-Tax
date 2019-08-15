@@ -15,9 +15,14 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -55,6 +60,11 @@ public class InstitutionStammdatenFerieninsel extends AbstractDateRangedEntity i
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	private String ausweichstandortFruehlingsferien;
+
+	@NotNull @Nonnull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_fi_gemeinde_id"))
+	private Gemeinde gemeinde;
 
 
 	public InstitutionStammdatenFerieninsel() {
@@ -118,4 +128,12 @@ public class InstitutionStammdatenFerieninsel extends AbstractDateRangedEntity i
 		this.ausweichstandortFruehlingsferien = ausweichstandortFruehlingsferien;
 	}
 
+	@Nonnull
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
+	}
 }

@@ -1,0 +1,7 @@
+ALTER TABLE betreuungsmitteilung_pensum ADD betreuungspensum_abweichung_id BINARY(16);
+ALTER TABLE betreuungsmitteilung_pensum_aud ADD betreuungspensum_abweichung_id BINARY(16);
+
+ALTER TABLE betreuungsmitteilung_pensum
+	ADD CONSTRAINT FK_betreuungspensum_mitteilung_betreuungspensum_abweichung
+FOREIGN KEY (betreuungspensum_abweichung_id)
+REFERENCES betreuungspensum_abweichung(id);

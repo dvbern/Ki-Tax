@@ -47,47 +47,38 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6682874795746487562L;
 
-	@Size(max = Constants.DB_TEXTAREA_LENGTH)
-	@Nullable
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
-	private String generatedBemerkungen;
-
-	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
-	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
-	private String manuelleBemerkungen;
+	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String generatedBemerkungen;
 
-	@NotNull
-	@OneToOne(optional = false, fetch = FetchType.EAGER)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String manuelleBemerkungen;
+
+	@MapsId
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_betreuung_id"), nullable = false)
-	@MapsId()
-	private Betreuung betreuung;
+	@OneToOne(optional = false, fetch = FetchType.EAGER)
+	private @NotNull Betreuung betreuung;
 
-	@Nonnull
-	@Valid
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "verfuegung")
 	@OrderBy("gueltigkeit ASC")
-	private List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "verfuegung")
+	@Nonnull
+	private @Valid List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
 
-	@NotNull
 	@Column(nullable = false)
-	private boolean kategorieNormal = false;
+	private @NotNull boolean kategorieNormal = false;
 
-	@NotNull
 	@Column(nullable = false)
-	private boolean kategorieMaxEinkommen = false;
+	private @NotNull boolean kategorieMaxEinkommen = false;
 
-	@NotNull
 	@Column(nullable = false)
-	private boolean kategorieKeinPensum = false;
+	private @NotNull boolean kategorieKeinPensum = false;
 
-	@NotNull
 	@Column(nullable = false)
-	private boolean kategorieNichtEintreten = false;
+	private @NotNull boolean kategorieNichtEintreten = false;
 
 	public Verfuegung() {
 		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
-
 	}
 
 	public Verfuegung(Betreuung betreuung) {
@@ -125,11 +116,12 @@ public class Verfuegung extends AbstractMutableEntity {
 		}
 	}
 
+	@Nonnull
 	public Betreuung getBetreuung() {
 		return betreuung;
 	}
 
-	public void setBetreuung(Betreuung betreuung) {
+	public void setBetreuung(@Nonnull Betreuung betreuung) {
 		this.betreuung = betreuung;
 	}
 
@@ -165,25 +157,11 @@ public class Verfuegung extends AbstractMutableEntity {
 		this.kategorieNichtEintreten = kategorieNichtEintreten;
 	}
 
-	public boolean addZeitabschnitt(@NotNull final VerfuegungZeitabschnitt zeitabschnitt) {
-		zeitabschnitt.setVerfuegung(this);
-		return !this.zeitabschnitte.add(zeitabschnitt);
-	}
-
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Verfuegung");
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			sb.append('\n');
 			sb.append(zeitabschnitt);
-		}
-		return sb.toString();
-	}
-
-	public String toStringFinanzielleSituation() {
-		StringBuilder sb = new StringBuilder("Verfuegung");
-		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			sb.append('\n');
-			sb.append(zeitabschnitt.toStringFinanzielleSituation());
 		}
 		return sb.toString();
 	}

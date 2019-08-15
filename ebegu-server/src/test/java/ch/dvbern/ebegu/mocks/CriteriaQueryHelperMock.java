@@ -39,7 +39,7 @@ public class CriteriaQueryHelperMock extends CriteriaQueryHelper {
 
 	@Nonnull
 	@Override
-	public <A, E> Collection<E> getEntitiesByAttribute(@Nonnull Class<E> entityClass, @Nullable A attributeValue, @Nonnull Attribute<E, A> attribute) {
+	public <A, E, E1 extends E> Collection<E1> getEntitiesByAttribute(@Nonnull Class<E1> entityClass, @Nullable A attributeValue, @Nonnull Attribute<E, A> attribute) {
 		// Wir geben der Einfachheit halber einfach alle dieses Typs zurueck
 		return getAll(entityClass);
 	}

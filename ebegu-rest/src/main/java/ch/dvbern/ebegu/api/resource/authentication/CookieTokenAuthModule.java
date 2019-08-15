@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.security.auth.message.AuthStatus;
 import javax.servlet.http.Cookie;
@@ -211,37 +212,40 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			return setResponseUnauthorised(httpMsgContext);
 		}
 
-		String header = request.getHeader("Authorization");
-		final String[] strings = BasicAuthHelper.parseHeader(header);
-		if (strings != null && strings.length == 2) {
-			final String username = strings[0];
-			final String password = strings[1];
-			boolean validLogin = username.equals(this.internalApiUser) && password.equals(this.internalApiPassword);
-			return getAuthStatus(httpMsgContext, validLogin);
-		}
-
-		LOG.error("Call to connector api without BasicAuth header credentials");
-		return setResponseUnauthorised(httpMsgContext);
+		return checkAuthorizationViaBasicAuth(request, httpMsgContext, this.internalApiUser, this.internalApiPassword);
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private AuthStatus checkAuthorizationForSchulamtApiAccess(HttpServletRequest request, HttpMsgContext httpMsgContext) {
 		if (!isSchulamtApiActive()) {
-			LOG.error("Call to connector API even though the properties for username and password were not defined "
+			LOG.error("Call to Schulamt API even though the properties for username and password were not defined "
 				+ " in ebegu. Please check that the system properties for username/password for the schulamt api are set");
 			return setResponseUnauthorised(httpMsgContext);
 		}
 
+		return checkAuthorizationViaBasicAuth(request, httpMsgContext, this.schulamtApiUser, this.schulamtApiPassword);
+	}
+
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	@Nonnull
+	private AuthStatus checkAuthorizationViaBasicAuth(
+		@Nonnull HttpServletRequest request,
+		@Nonnull HttpMsgContext httpMsgContext,
+		@Nonnull String expectedUser,
+		@Nonnull String expectedPassword) {
+
 		String header = request.getHeader("Authorization");
 		final String[] strings = BasicAuthHelper.parseHeader(header);
+
 		if (strings != null && strings.length == 2) {
 			final String username = strings[0];
 			final String password = strings[1];
-			boolean validLogin = username.equals(this.schulamtApiUser) && password.equals(this.schulamtApiPassword);
+
+			boolean validLogin = username.equals(expectedUser) && password.equals(expectedPassword);
 			return getAuthStatus(httpMsgContext, validLogin);
 		}
 
-		LOG.error("Call to connector api without BasicAuth header credentials");
+		LOG.error("Call to {} without BasicAuth header credentials", request.getRequestURI());
 		return setResponseUnauthorised(httpMsgContext);
 	}
 

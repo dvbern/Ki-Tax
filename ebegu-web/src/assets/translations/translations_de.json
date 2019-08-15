@@ -674,7 +674,6 @@
     "GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN": "Im Status GESCHLOSSEN können weder die Gemeinde noch die Gesuchsteller Anträge für diese Gesuchsperiode erfassen. Die Periode kann nur geschlossen werden, wenn keine Pendenzen (inkl. Beschwerden und Steuerverwaltung) mehr offen sind.",
     "PARAMETER_PRO_GESUCHSPERIODE": "kiBon Parameter für Gesuchsperiode",
     "PARAMETER_PRO_JAHR": "Jahresabhängige kiBon Parameter",
-    "BENUTZERHANDBUCH_LIST": "Benutzerhandbücher",
     "PARAMETER_JAHR": "Jahr",
     "PARAM_FIXBETRAG_STADT_PRO_TAG_KITA": "Fixbeitrag der Stadt pro Tag",
     "MIN_MASSGEBENDES_EINKOMMEN": "Minimal Massgebendes Einkommen",
@@ -689,6 +688,8 @@
     "PARAM_MAX_TAGE_ABWESENHEIT": "Max Abwesenheit",
     "GEMEINDE_KONTINGENTIERUNG_ENABLED": "Kontingentierung aktiviert",
     "GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE": "Betreuungsgutscheine bis und mit Schulstufe",
+    "GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB": "Anmeldungen für Tagesschulen aktiv ab",
+    "GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG": "Erster Schultag Tagesschule",
     "MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG": "Maximale Vergünstigung für Vorschulkinder unter 12 Monaten (pro Tag)",
     "MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG": "Maximale Vergünstigung für Vorschulkinder ab 12 Monaten (pro Tag)",
     "MAX_VERGUENSTIGUNG_SCHULE_PRO_TG": "Maximale Vergünstigung bei Eintritt des Kindergartens",
@@ -1608,5 +1609,15 @@
     "GEMEINDE_TAB_TS": "Tagesschule",
     "GEMEINDE_TAB_FI": "Ferieninsel",
     "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Reiter.",
-    "ERROR_IBAN": "IBAN hat ein ungültiges Format"
+    "ERROR_IBAN": "IBAN hat ein ungültiges Format",
+    "TAGESSCHULE_AKTIVIERUNGSDATUM": "Anmeldungen für Tagesschule akzeptieren ab",
+    "TAGESSCHULE_ERSTER_SCHULTAG": "Erster Schultag",
+    "ABWEICHUNGEN_MELDEN": "Abweichungen melden",
+    "ABWEICHUNGEN_HELP": "Auf dieser Eingabemaske können Sie für {{vorname}} {{name}} Abweichungen zum vertraglich definierten Betreuungspensum der Institution {{institution}} erfassen und freigeben. Die einmal erfassten Werte bleiben bis zur Freigabe zwischengespeichert. Erst durch die Freigabe, werden die Daten an die Gemeinde gesendet. Die Gemeinde wird die Änderungen dann prüfen und einen angepassten Betreuungsgutschein ausstellen.",
+    "MONTH": "Monat",
+    "SPEICHERN_ERFOLGREICH": "Ihre Eingaben wurden erfolgreich gespeichert",
+    "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "<i class='fa fa-pencil black'></i> : Die Abweichung befindet sich in Bearbeitung.<br><i class='fa fa-hourglass orange'></i> : Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet.<br><i class='fa fa-check green'></i> : Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt.",
+    "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "Die Abweichung befindet sich in Bearbeitung",
+    "TSBetreuungspensumAbweichungStatus_VERRECHNET": "Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet",
+    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt."
 }

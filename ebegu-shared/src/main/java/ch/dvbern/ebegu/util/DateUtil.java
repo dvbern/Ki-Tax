@@ -15,11 +15,14 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,14 +35,6 @@ import ch.dvbern.lib.date.feiertage.FeiertageHelper;
 public final class DateUtil {
 
 	private DateUtil() {
-	}
-
-	/**
-	 * Parses the given LocalDate to a String with the SQL_DATE_FORMAT
-	 */
-	@Nonnull
-	public static String parseDateToSqlString(@Nonnull LocalDate date) {
-		return date.format(Constants.SQL_DATE_FORMAT);
 	}
 
 	/**
@@ -72,19 +67,6 @@ public final class DateUtil {
 		return date;
 	}
 
-	/**
-	 * Parset den gegebenen String als LocalDateTime mit dem Format "yyyy-MM-dd HH:mm:ss"
-	 * Sollte der gegebene String null oder leer sein, wird now() zurueckgegeben
-	 */
-	@Nonnull
-	public static LocalDateTime parseStringToDateTimeOrReturnNow(@Nonnull String stringDateTime) {
-		LocalDateTime date = LocalDateTime.now();
-		if (!stringDateTime.isEmpty()) {
-			date = LocalDateTime.parse(stringDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		}
-		return date;
-	}
-
 	public static boolean isWeekend(@Nonnull LocalDate date) {
 		return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
 	}
@@ -99,5 +81,26 @@ public final class DateUtil {
 
 	public static LocalDate getMin(@Nonnull LocalDate date1, @Nonnull LocalDate date2) {
 		return date1.isBefore(date2) ? date1 : date2;
+	}
+
+	/**
+	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
+	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
+	 */
+	public static BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
+		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
+		long nettoTageIntervall = daysBetween(von, bis);
+		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall), MathUtil.EXACT.from(nettoTageMonat));
+	}
+
+	/**
+	 * Berechnet die Anzahl Tage zwischen zwei Daten
+	 */
+	public static long daysBetween(@Nonnull LocalDate start, @Nonnull LocalDate end) {
+		return Stream.iterate(start, d -> d.plusDays(1))
+			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
+			.count();
 	}
 }

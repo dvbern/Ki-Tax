@@ -39,7 +39,8 @@
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
                                              [keineBeschwerdeAdresse]="keineBeschwerdeAdresse"
-                                             [editMode]="editMode">
+                                             [editMode]="editMode"
+                                             [tageschuleEnabledForMandant]="tageschuleEnabledForMandant">
                 </dv-edit-gemeinde-stammdaten>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_BG' | translate}}" ngForm="gemeinde_bg"
@@ -52,13 +53,15 @@
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
-                <dv-edit-gemeinde-ts [gemeindeId]="gemeindeId"
+                <dv-edit-gemeinde-ts [stammdaten$]="stammdaten$"
+                                     [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotFI">
-                <dv-edit-gemeinde-fi [gemeindeId]="gemeindeId"
+                <dv-edit-gemeinde-fi [stammdaten$]="stammdaten$"
+                                     [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()">
                 </dv-edit-gemeinde-fi>
             </mat-tab>

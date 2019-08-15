@@ -354,7 +354,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(calculate);
 		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
-		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutation.extractAllBetreuungen().get(0).initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 		mutation.setRegelnGueltigAb(eingangsdatum);
 		return mutation.extractAllBetreuungen().get(0);
 	}

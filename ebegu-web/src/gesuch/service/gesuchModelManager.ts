@@ -66,6 +66,7 @@ import TSFamiliensituation from '../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
 import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
 import TSGemeinde from '../../models/TSGemeinde';
+import TSGemeindeKonfiguration from '../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
@@ -104,6 +105,7 @@ export default class GesuchModelManager {
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenList: Array<TSInstitutionStammdaten>;
     public gemeindeStammdaten: TSGemeindeStammdaten;
+    public gemeindeKonfiguration: TSGemeindeKonfiguration;
 
     public ewkResultatGS1: TSEWKResultat;
     public ewkResultatGS2: TSEWKResultat;
@@ -260,7 +262,22 @@ export default class GesuchModelManager {
         this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id)
             .then(stammdaten => {
                 this.gemeindeStammdaten = stammdaten;
+                this.loadGemeindeKonfiguration();
             });
+    }
+
+    /**
+     * Loads the GemeindeKonfiguration for the current Gesuch, i.e. the current Gemeinde and Gesuchsperiode
+     */
+    private loadGemeindeKonfiguration(): void {
+        for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
+            // tslint:disable-next-line:early-exit
+            if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
+                this.gemeindeKonfiguration = konfigurationsListeElement;
+                this.gemeindeKonfiguration.initProperties();
+                return;
+            }
+        }
     }
 
     public updateFachstellenAnspruchList(): void {
@@ -1569,9 +1586,8 @@ export default class GesuchModelManager {
      */
     public isDefaultTagesschuleAllowed(instStamm: TSInstitutionStammdaten): boolean {
         if (instStamm.id === '199ac4a1-448f-4d4c-b3a6-5aee21f89613') {
-            return !(this.getGesuchsperiode() && this.getGesuchsperiode().hasTagesschulenAnmeldung());
+            return !(this.gemeindeKonfiguration.hasTagesschulenAnmeldung());
         }
-
         return true;
     }
 

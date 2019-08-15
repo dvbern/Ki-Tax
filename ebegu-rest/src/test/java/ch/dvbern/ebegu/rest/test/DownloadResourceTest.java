@@ -29,7 +29,9 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.resource.DownloadResource;
+import ch.dvbern.ebegu.api.resource.VerfuegungResource;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
@@ -67,6 +69,8 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Inject
 	private DownloadResource downloadResource;
+	@Inject
+	private VerfuegungResource verfuegungResource;
 	@Inject
 	private InstitutionService instService;
 	@Inject
@@ -156,13 +160,19 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
-		String betreuungID = gesuch.extractAllBetreuungen().get(0).getId();
+		JaxId betreuungID = new JaxId(gesuch.extractAllBetreuungen().get(0).getId());
+
+		final JaxVerfuegung verfuegungJax = new JaxVerfuegung();
+		verfuegungJax.setGeneratedBemerkungen("genBemerkung");
+		verfuegungJax.setManuelleBemerkungen("manBemerkung");
+
+		verfuegungResource.schliessenNichtEintreten(betreuungID, verfuegungJax);
 
 		HttpServletRequest request = mockRequest();
 		UriInfo uri = new ResteasyUriInfo("uri", "query", "path");
 
 		final Response dokumentResponse = downloadResource
-			.getNichteintretenDokumentAccessTokenGeneratedDokument(new JaxId(betreuungID), true, request, uri);
+			.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuungID, true, request, uri);
 
 		assertResults(gesuch, dokumentResponse.getEntity(), GeneratedDokumentTyp.NICHTEINTRETEN);
 	}

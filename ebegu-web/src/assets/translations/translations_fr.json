@@ -674,7 +674,6 @@
     "GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN": "Statut ACHEVÉ:  ni la commune ni les personnes requérantes ne peut saisir de demande pour cette période. La période ne peut être achevée que si tous les cas en suspens ont été réglés (recours, impôts)",
     "PARAMETER_PRO_GESUCHSPERIODE": "Paramètre kiBon pour la période couverte par la demande",
     "PARAMETER_PRO_JAHR": "Paramètre kiBon selon les années",
-    "BENUTZERHANDBUCH_LIST": "Manuels utilisateur",
     "PARAMETER_JAHR": "Année",
     "PARAM_FIXBETRAG_STADT_PRO_TAG_KITA": "Suvention fixe de la ville par jour",
     "MIN_MASSGEBENDES_EINKOMMEN": "Revenu déterminant minimal",
@@ -1608,5 +1607,13 @@
     "GEMEINDE_TAB_TS": "Ecole à journée continue",
     "GEMEINDE_TAB_FI": "Ilots de vacances",
     "GEMEINDE_TAB_SAVE_WARNING": "Le formulaire ne semble pas avoir été rempli complètement. Veuillez vérifier tous les onglets.",
-    "ERROR_IBAN": "IBAN a un format invalide"
+    "ERROR_IBAN": "IBAN a un format invalide",
+    "ABWEICHUNGEN_MELDEN": "",
+    "ABWEICHUNGEN_HELP": "",
+    "MONTH": "",
+    "SPEICHERN_ERFOLGREICH": "",
+    "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "",
+    "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "",
+    "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
+    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": ""
 }
