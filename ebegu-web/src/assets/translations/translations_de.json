@@ -50,6 +50,8 @@
     "TAETIGKEIT_PLACEHOLDER": "z.B. Arbeitgeber",
     "ERROR_MIN": "Minimalwer Wert {{value}} unterschritten",
     "ERROR_MAX": "Maximaler Wert {{value}} überschritten",
+    "ERROR_MIN_SIMPLE": "Minimalwer Wert unterschritten",
+    "ERROR_MAX_SIMPLE": "Maximaler Wert überschritten",
     "ERROR_STEP": "Nur {{value}} Schritte erlaubt",
     "ERROR_NUMBER": "Falsches Zahlenformat",
     "ERROR_VALUE": "Wert zu gross oder falsch formatiert",

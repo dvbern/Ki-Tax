@@ -45,6 +45,7 @@ import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdate
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
+import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
@@ -74,6 +75,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     declarations: [
         AccordionDirective,
         AccordionTabDirective,
+        NumbersMinMaxDirective,
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
@@ -119,6 +121,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
 
         AccordionDirective,
         AccordionTabDirective,
+        NumbersMinMaxDirective,
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,

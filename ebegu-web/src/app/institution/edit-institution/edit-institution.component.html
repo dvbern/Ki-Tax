@@ -366,10 +366,10 @@
                     <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
                         <div class="form-group">
                             <label class="required" translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
-                            <input id="anzahlPlaetze_id" type="text" name="anzahlPlaetze_id" #name="ngModel"
+                            <input id="anzahlPlaetze_id" type="number" name="anzahlPlaetze_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze"
-                                   [maxlength]="255" class="form-control"
-                                   pattern="{{CONSTANTS.PATTERN_GREATER_THAN_ZERO}}"
+                                   class="form-control"
+                                   customMinMax [minValue]="0.1"
                                    placeholder="{{getPlaceholderForPlaetze()}}" required>
                             <dv-error-messages [errorObject]="form.controls.anzahlPlaetze_id?.errors"
                                                inputId="anzahlPlaetze_id"></dv-error-messages>
@@ -379,9 +379,10 @@
                     <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
                         <div class="form-group">
                             <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
-                            <input id="anzahlPlaetzeFirmen_id" type="text" name="anzahlPlaetzeFirmen_id" #name="ngModel"
+                            <input id="anzahlPlaetzeFirmen_id" type="number" name="anzahlPlaetzeFirmen_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
-                                   [maxlength]="255" class="form-control"
+                                   class="form-control"
+                                   customMinMax [minValue]="0.1"
                                    placeholder="{{getPlaceholderForPlaetze()}}">
                             <dv-error-messages [errorObject]="form.controls.anzahlPlaetzeFirmen_id?.errors"
                                                inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>

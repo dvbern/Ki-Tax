@@ -50,6 +50,8 @@
     "TAETIGKEIT_PLACEHOLDER": "P. ex. employeur",
     "ERROR_MIN": "La valeur minimale {{value}} n'est pas atteinte.",
     "ERROR_MAX": "La valeur maximale {{value}} est dépassée.",
+    "ERROR_MIN_SIMPLE": "La valeur minimale n'est pas atteinte.",
+    "ERROR_MAX_SIMPLE": "La valeur maximale est dépassée.",
     "ERROR_STEP": "Uniquement {{value}} étapes permises",
     "ERROR_NUMBER": "Format des chiffres erroné",
     "ERROR_VALUE": "La valeur est trop élevée ou mal formatée. ",

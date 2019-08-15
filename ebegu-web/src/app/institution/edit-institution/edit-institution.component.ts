@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {FormControl, NgForm, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -58,6 +58,7 @@ export class EditInstitutionComponent implements OnInit {
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
     private initName: string;
+    private anzahlPlaetzeControl: FormControl;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -84,6 +85,7 @@ export class EditInstitutionComponent implements OnInit {
         });
 
         this.fetchInstitution(institutionId);
+        this.anzahlPlaetzeControl = new FormControl("", Validators.min(10))
     }
 
     private fetchInstitution(institutionId: string): void {
