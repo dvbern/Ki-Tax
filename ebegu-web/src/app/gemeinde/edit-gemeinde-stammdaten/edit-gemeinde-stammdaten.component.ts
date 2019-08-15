@@ -20,6 +20,8 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -37,12 +39,14 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() private readonly gemeindeId: string;
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
+    @Input() public tageschuleEnabledForMandant: boolean;
     public korrespondenzsprache: string;
 
     private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -72,5 +76,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             languages.push(this.translate.instant('FRANZOESISCH'));
         }
         this.korrespondenzsprache = languages.join(', ');
+    }
+
+    public isSuperadmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

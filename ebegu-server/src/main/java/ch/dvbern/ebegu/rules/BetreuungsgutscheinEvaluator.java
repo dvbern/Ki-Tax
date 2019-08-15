@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +37,6 @@ import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
-import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.BetreuungComparator;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -119,7 +117,6 @@ public class BetreuungsgutscheinEvaluator {
 	@SuppressWarnings({ "OverlyComplexMethod", "OverlyNestedMethod", "PMD.NcssMethodCount" })
 	public void evaluate(
 		@Nonnull Gesuch gesuch,
-		VerfuegungService verfuegungService,
 		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
 		@Nonnull Locale locale) {
 
@@ -216,27 +213,28 @@ public class BetreuungsgutscheinEvaluator {
 					String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
 					betreuung.getVerfuegung().setGeneratedBemerkungen(bemerkungenToShow);
 
-					setZahlungRelevanteDaten(verfuegungService, betreuung);
+					setZahlungRelevanteDaten(betreuung);
 				}
 			}
 		}
 	}
 
-	private void setZahlungRelevanteDaten(VerfuegungService verfuegungService, @Nonnull Betreuung betreuung) {
-		if (verfuegungService != null) {
-			final Optional<Verfuegung> ausbezahlteVorgaenger = verfuegungService.
-				findVorgaengerAusbezahlteVerfuegung(betreuung);
-			// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
-			if (ausbezahlteVorgaenger.isPresent() && betreuung.getVerfuegung() != null) {
-				// Zahlungsstatus aus vorgaenger uebernehmen
-				VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
-			}
-			// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
-			Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
-			if (vorgaengerVerfuegung.isPresent() && betreuung.getVerfuegung() != null) {
-				// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
-				VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), vorgaengerVerfuegung.get());
-			}
+	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
+		if (betreuung.getVerfuegung() == null) {
+			return;
+		}
+		Verfuegung ausbezahlteVorgaenger = betreuung.getVorgaengerAusbezahlteVerfuegung();
+		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
+
+		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
+		if (ausbezahlteVorgaenger != null) {
+			// Zahlungsstatus aus vorgaenger uebernehmen
+			VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
+		}
+		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
+		if (vorgaengerVerfuegung != null) {
+			// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
+			VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), vorgaengerVerfuegung);
 		}
 	}
 

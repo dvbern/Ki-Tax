@@ -58,14 +58,14 @@ import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.util.Constants;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
-import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.annotation.InjectIntoMany;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -412,7 +412,7 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller2(), new BigDecimal("30000"), false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
-		evaluator.evaluate(gesuch, null, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, familiensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
@@ -438,7 +438,7 @@ public class PDFServiceBeanTest {
 
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
-		evaluator.evaluate(gesuch, null, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF, Constants.DEFAULT_LOCALE);
 
@@ -448,7 +448,7 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testPrintBegleitschreiben() throws Exception {
 
-		evaluator.evaluate(gesuch_1GS, null, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_1GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_1GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "BegleitschreibenWaelti.pdf");
@@ -462,7 +462,7 @@ public class PDFServiceBeanTest {
 			Assert.assertNotNull(gesuchstellerAdresse.getGesuchstellerAdresseJA());
 			gesuchstellerAdresse.getGesuchstellerAdresseJA().setZusatzzeile("Test zusatztzeile");
 		});
-		evaluator.evaluate(gesuch_2GS, null, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_2GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "BegleitschreibenFeutz.pdf");
@@ -473,7 +473,7 @@ public class PDFServiceBeanTest {
 
 		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		evaluator.evaluate(gesuch_2GS, null, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		Assert.assertNotNull(testBetreuung.getVerfuegung());
@@ -490,7 +490,7 @@ public class PDFServiceBeanTest {
 
 		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 
-		evaluator.evaluate(gesuch_2GS, null, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		Assert.assertNotNull(testBetreuung.getVerfuegung());

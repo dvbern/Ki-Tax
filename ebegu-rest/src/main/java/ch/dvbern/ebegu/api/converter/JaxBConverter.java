@@ -3105,8 +3105,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxGesuchsperiode jaxGesuchsperiode = new JaxGesuchsperiode();
 		convertAbstractDateRangedFieldsToJAX(persistedGesuchsperiode, jaxGesuchsperiode);
 		jaxGesuchsperiode.setStatus(persistedGesuchsperiode.getStatus());
-		jaxGesuchsperiode.setDatumFreischaltungTagesschule(persistedGesuchsperiode.getDatumFreischaltungTagesschule());
-		jaxGesuchsperiode.setDatumErsterSchultag(persistedGesuchsperiode.getDatumErsterSchultag());
 
 		return jaxGesuchsperiode;
 	}
@@ -3118,8 +3116,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractDateRangedFieldsToEntity(jaxGesuchsperiode, gesuchsperiode);
 		gesuchsperiode.setStatus(jaxGesuchsperiode.getStatus());
-		gesuchsperiode.setDatumFreischaltungTagesschule(jaxGesuchsperiode.getDatumFreischaltungTagesschule());
-		gesuchsperiode.setDatumErsterSchultag(jaxGesuchsperiode.getDatumErsterSchultag());
 
 		return gesuchsperiode;
 	}
@@ -4387,8 +4383,7 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
-		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
-		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
+		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
 		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
 			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()

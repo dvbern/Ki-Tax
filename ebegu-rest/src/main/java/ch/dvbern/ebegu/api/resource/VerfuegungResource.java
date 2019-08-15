@@ -87,7 +87,6 @@ public class VerfuegungResource {
 	@Inject
 	private InstitutionService institutionService;
 
-	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
 	private JaxBConverter converter;
 
@@ -209,8 +208,8 @@ public class VerfuegungResource {
 		if (betreuung.isPresent()) {
 			Verfuegung verfuegungToMerge = new Verfuegung(betreuung.get());
 			if (verfuegungJAXP.getId() != null) {
-				Optional<Verfuegung> optional = verfuegungService.findVerfuegung(verfuegungJAXP.getId());
-				verfuegungToMerge = optional.orElse(new Verfuegung(betreuung.get()));
+				verfuegungToMerge = verfuegungService.findVerfuegung(verfuegungJAXP.getId())
+					.orElse(new Verfuegung(betreuung.get()));
 			}
 			Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
 			Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(convertedVerfuegung, betreuung.get().getId());

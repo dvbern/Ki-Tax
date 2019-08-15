@@ -158,7 +158,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public getIcon(index: number): string {
         const abweichung = this.getAbweichung(index);
-
         switch (abweichung.status) {
             case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
                 return 'fa-pencil black';
@@ -173,14 +172,16 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
     public getIconTooltip(index: number): string {
         const abweichung = this.getAbweichung(index);
-
         switch (abweichung.status) {
             case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
-                return this.$translate.instant('TSBetreuungspensumAbweichungStatus_' + TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN);
+                return this.$translate.instant('TSBetreuungspensumAbweichungStatus_'
+                    + TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN);
             case TSBetreuungspensumAbweichungStatus.VERRECHNET:
-                return this.$translate.instant('TSBetreuungspensumAbweichungStatus_' + TSBetreuungspensumAbweichungStatus.VERRECHNET);
+                return this.$translate.instant('TSBetreuungspensumAbweichungStatus_'
+                    + TSBetreuungspensumAbweichungStatus.VERRECHNET);
             case TSBetreuungspensumAbweichungStatus.UEBERNOMMEN:
-                return this.$translate.instant('TSBetreuungspensumAbweichungStatus_' + TSBetreuungspensumAbweichungStatus.UEBERNOMMEN);
+                return this.$translate.instant('TSBetreuungspensumAbweichungStatus_'
+                    + TSBetreuungspensumAbweichungStatus.UEBERNOMMEN);
             default:
                 return '';
         }

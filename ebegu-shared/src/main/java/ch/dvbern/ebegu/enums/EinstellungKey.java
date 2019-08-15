@@ -28,6 +28,12 @@ public enum EinstellungKey {
 	// Bis zu welcher Schulstufe sollen Gutscheine ausgestellt werden?
 	GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE(EinstellungTyp.GEMEINDE),
 
+	// Ab welchem Datum können Anmeldungen für die Tagesschule erfasst werden
+	GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
+
+	// Erster Schultag der Tagesschule
+	GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG(EinstellungTyp.GEMEINDE),
+
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 

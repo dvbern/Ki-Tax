@@ -14,9 +14,9 @@
  */
 package ch.dvbern.ebegu.api.resource.authentication;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -27,8 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.dtos.JaxAuthAccessElementCookieData;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,14 +52,12 @@ public final class AuthDataUtil {
 			return Optional.empty();
 		}
 		try {
-			Gson gson = new Gson();
-			encodedPrincipalJson =  URLDecoder.decode(encodedPrincipalJson, "UTF-8");
-			return Optional.of(gson.fromJson(
-				new String(
-					Base64.getDecoder().decode(encodedPrincipalJson), Charset.forName("UTF-8")
-				),
-				JaxAuthAccessElementCookieData.class));
-		} catch (JsonSyntaxException | IllegalArgumentException | UnsupportedEncodingException e) {
+			encodedPrincipalJson =  URLDecoder.decode(encodedPrincipalJson, StandardCharsets.UTF_8.name());
+			String decoded = new String(Base64.getDecoder().decode(encodedPrincipalJson), StandardCharsets.UTF_8);
+			ObjectMapper mapper = new ObjectMapper();
+
+			return Optional.of(mapper.readValue(decoded, JaxAuthAccessElementCookieData.class));
+		} catch (IOException | IllegalArgumentException e) {
 			LOG.warn("Failed to get the AuthAccessElement from the principal Cookie", e);
 			return Optional.empty();
 		}

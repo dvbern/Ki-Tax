@@ -869,8 +869,7 @@ export default class EbeguRestUtil {
         konfiguration: TSGemeindeKonfiguration,
     ): TSGemeindeKonfiguration {
         if (konfiguration) {
-            restKonfiguration.gesuchsperiodeId = konfiguration.gesuchsperiodeId;
-            restKonfiguration.gesuchsperiodeStatus = konfiguration.gesuchsperiodeStatus;
+            restKonfiguration.gesuchsperiode = this.gesuchsperiodeToRestObject({}, konfiguration.gesuchsperiode);
             restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
             return restKonfiguration;
         }
@@ -892,8 +891,8 @@ export default class EbeguRestUtil {
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
-            konfigurationTS.gesuchsperiodeId = konfigurationFromServer.gesuchsperiodeId;
-            konfigurationTS.gesuchsperiodeStatus = konfigurationFromServer.gesuchsperiodeStatus;
+            konfigurationTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
             return konfigurationTS;
         }
@@ -2071,9 +2070,6 @@ export default class EbeguRestUtil {
         if (gesuchsperiode) {
             this.abstractDateRangeEntityToRestObject(restGesuchsperiode, gesuchsperiode);
             restGesuchsperiode.status = gesuchsperiode.status;
-            restGesuchsperiode.datumFreischaltungTagesschule =
-                DateUtil.momentToLocalDate(gesuchsperiode.datumFreischaltungTagesschule);
-            restGesuchsperiode.datumErsterSchultag = DateUtil.momentToLocalDate(gesuchsperiode.datumErsterSchultag);
             return restGesuchsperiode;
         }
         return undefined;
@@ -2083,10 +2079,6 @@ export default class EbeguRestUtil {
         if (gesuchsperiodeFromServer) {
             this.parseDateRangeEntity(gesuchsperiodeTS, gesuchsperiodeFromServer);
             gesuchsperiodeTS.status = gesuchsperiodeFromServer.status;
-            gesuchsperiodeTS.datumFreischaltungTagesschule =
-                DateUtil.localDateToMoment(gesuchsperiodeFromServer.datumFreischaltungTagesschule);
-            gesuchsperiodeTS.datumErsterSchultag =
-                DateUtil.localDateToMoment(gesuchsperiodeFromServer.datumErsterSchultag);
             return gesuchsperiodeTS;
         }
         return undefined;
