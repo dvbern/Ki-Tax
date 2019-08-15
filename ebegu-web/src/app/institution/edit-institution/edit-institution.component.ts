@@ -49,7 +49,6 @@ export class EditInstitutionComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
     public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
-    public readonly CONSTANTS = CONSTANTS;
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
