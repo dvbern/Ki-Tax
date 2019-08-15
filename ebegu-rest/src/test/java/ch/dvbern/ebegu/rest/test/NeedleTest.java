@@ -30,13 +30,13 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimaps;
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
-import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.annotation.InjectIntoMany;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleRule;
 
 @Ignore //im moment haben wir glaube ich noch keinen schlauen use case fuer needle tests. Kitadmin benutzt das so,
 // dass die businessmethoden innerhalb eines services damit gestestet werden

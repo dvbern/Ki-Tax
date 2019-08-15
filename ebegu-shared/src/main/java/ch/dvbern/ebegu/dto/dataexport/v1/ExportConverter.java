@@ -17,10 +17,16 @@ package ch.dvbern.ebegu.dto.dataexport.v1;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -32,76 +38,82 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Converter to change to create the ExportDTO of a given Verfuegung
  */
+@ApplicationScoped
 public class ExportConverter {
 
-	public VerfuegungenExportDTO createVerfuegungenExportDTO(List<Verfuegung> verfuegungenToConvert) {
-		List<VerfuegungExportDTO> verfuegungExportDTOS = verfuegungenToConvert
-			.stream()
+	private static final Comparator<ZeitabschnittExportDTO> ZEITABSCHNITT_COMPARATOR = Comparator
+		.comparing(ZeitabschnittExportDTO::getVon)
+		.thenComparing(ZeitabschnittExportDTO::getBis);
+
+	@Inject
+	private VerfuegungService verfuegungService;
+
+	@Nonnull
+	public VerfuegungenExportDTO createVerfuegungenExportDTO(@Nonnull Collection<Verfuegung> verfuegungenToConvert) {
+		List<VerfuegungExportDTO> verfuegungExportDTOS = verfuegungenToConvert.stream()
 			.map(this::createVerfuegungExportDTOFromVerfuegung)
 			.collect(Collectors.toList());
+
 		VerfuegungenExportDTO exportDTO = new VerfuegungenExportDTO();
 		exportDTO.setVerfuegungen(verfuegungExportDTOS);
+
 		return exportDTO;
 	}
 
-	public List<ZeitabschnittExportDTO> createZeitabschnittExportDTOFromZeitabschnitte(List<VerfuegungZeitabschnitt> gueltigeZeitabschnitte) {
-		List<ZeitabschnittExportDTO> zeitabschnitte = gueltigeZeitabschnitte.stream()
-			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
-			.collect(Collectors.toList());
-		return zeitabschnitte;
-	}
-
+	@Nonnull
 	private VerfuegungExportDTO createVerfuegungExportDTOFromVerfuegung(@Nonnull Verfuegung verfuegung) {
-		requireNonNull(verfuegung, "verfuegung must be set");
+		Betreuung betreuung = verfuegung.getBetreuung();
 
 		VerfuegungExportDTO verfuegungDTO = new VerfuegungExportDTO();
-		verfuegungDTO.setRefnr(verfuegung.getBetreuung().getBGNummer());
-		DateRange periode = verfuegung.getBetreuung().extractGesuchsperiode().getGueltigkeit();
+		verfuegungDTO.setRefnr(betreuung.getBGNummer());
+		DateRange periode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		verfuegungDTO.setVon(periode.getGueltigAb());
 		verfuegungDTO.setBis(periode.getGueltigBis());
-		verfuegungDTO.setVersion(verfuegung.getBetreuung().extractGesuch().getLaufnummer());
+		verfuegungDTO.setVersion(betreuung.extractGesuch().getLaufnummer());
 		verfuegungDTO.setVerfuegtAm(verfuegung.getTimestampErstellt());
-		verfuegungDTO.setKind(createKindExportDTOFromKind(verfuegung.getBetreuung().getKind()));
-		GesuchstellerContainer gs1 = verfuegung.getBetreuung().extractGesuch().getGesuchsteller1();
+
+		verfuegungDTO.setKind(createKindExportDTOFromKind(betreuung.getKind()));
+
+		GesuchstellerContainer gs1 = betreuung.extractGesuch().getGesuchsteller1();
 		requireNonNull(gs1);
 		verfuegungDTO.setGesuchsteller(createGesuchstellerExportDTOFromGesuchsteller(gs1));
-		verfuegungDTO.setBetreuung(createBetreuungExportDTOFromBetreuung(verfuegung.getBetreuung()));
-		// Verrechnete Zeitabschnitte
-		List<ZeitabschnittExportDTO> zeitabschnitte = verfuegung.getZeitabschnitte().stream()
-			.filter(abschnitt -> !abschnitt.getZahlungsstatus().isIgnoriertIgnorierend())
-			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
-			.collect(Collectors.toList());
-		verfuegungDTO.setZeitabschnitte(zeitabschnitte);
-		// Ignorierte Zeitabschnitte
-		List<ZeitabschnittExportDTO> zeitabschnitteIgnoriert = verfuegung.getZeitabschnitte().stream()
-			.filter(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend())
-			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
-			.collect(Collectors.toList());
-		verfuegungDTO.setIgnorierteZeitabschnitte(zeitabschnitteIgnoriert);
+
+		verfuegungDTO.setBetreuung(createBetreuungExportDTOFromBetreuung(betreuung));
+
+		addZeitabschnitte(verfuegung, verfuegungDTO);
+
 		return verfuegungDTO;
 	}
 
 	private KindExportDTO createKindExportDTOFromKind(KindContainer kindCont) {
 		Kind kindJA = kindCont.getKindJA();
+
 		return new KindExportDTO(kindJA.getVorname(), kindJA.getNachname(), kindJA.getGeburtsdatum());
 	}
 
 	private GesuchstellerExportDTO createGesuchstellerExportDTOFromGesuchsteller(GesuchstellerContainer gesuchstellerContainer) {
 		Gesuchsteller gesuchstellerJA = gesuchstellerContainer.getGesuchstellerJA();
-		return new GesuchstellerExportDTO(gesuchstellerJA.getVorname(), gesuchstellerJA.getNachname(), gesuchstellerJA.getMail());
+
+		return new GesuchstellerExportDTO(
+			gesuchstellerJA.getVorname(),
+			gesuchstellerJA.getNachname(),
+			gesuchstellerJA.getMail());
 	}
 
 	private BetreuungExportDTO createBetreuungExportDTOFromBetreuung(Betreuung betreuung) {
 		BetreuungExportDTO betreuungExportDto = new BetreuungExportDTO();
 		betreuungExportDto.setBetreuungsArt(betreuung.getBetreuungsangebotTyp());
 		betreuungExportDto.setInstitution(createInstitutionExportDTOFromInstStammdaten(betreuung.getInstitutionStammdaten()));
+
 		return betreuungExportDto;
 	}
 
@@ -109,16 +121,72 @@ public class ExportConverter {
 		Institution institution = institutionStammdaten.getInstitution();
 		String instID = institution.getId();
 		String name = institution.getName();
-		String traegerschaft = institution.getTraegerschaft() != null ? institution.getTraegerschaft().getName() : null;
+		String traegerschaft = institution.getTraegerschaft() != null ?
+			institution.getTraegerschaft().getName() :
+			null;
+
 		AdresseExportDTO adresse = createAdresseExportDTOFromAdresse(institutionStammdaten.getAdresse());
+
 		return new InstitutionExportDTO(instID, name, traegerschaft, adresse);
 	}
 
 	private AdresseExportDTO createAdresseExportDTOFromAdresse(Adresse adresse) {
-		return new AdresseExportDTO(adresse.getStrasse(), adresse.getHausnummer(), adresse.getZusatzzeile(), adresse.getOrt(), adresse.getPlz(), adresse.getLand());
+		return new AdresseExportDTO(
+			adresse.getStrasse(),
+			adresse.getHausnummer(),
+			adresse.getZusatzzeile(),
+			adresse.getOrt(),
+			adresse.getPlz(),
+			adresse.getLand());
 	}
 
-	private ZeitabschnittExportDTO createZeitabschnittExportDTOFromZeitabschnitt(VerfuegungZeitabschnitt zeitabschnitt) {
+	private void addZeitabschnitte(
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull VerfuegungExportDTO verfuegungDTO) {
+
+		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
+			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend()));
+
+		List<VerfuegungZeitabschnitt> ignoredAbschnitte = abschnitteByIgnored.getOrDefault(true, emptyList());
+		List<VerfuegungZeitabschnitt> verrechnetAbschnitte = abschnitteByIgnored.getOrDefault(false, emptyList());
+
+		// Verrechnete Zeitabschnitte
+		Betreuung betreuung = verfuegung.getBetreuung();
+		List<VerfuegungZeitabschnitt> allVerrechnet = findVorgaengerZeitabschnitte(betreuung, ignoredAbschnitte);
+		allVerrechnet.addAll(verrechnetAbschnitte);
+
+		verfuegungDTO.setZeitabschnitte(convertZeitabschnitte(allVerrechnet));
+
+		// Ignorierte Zeitabschnitte
+		verfuegungDTO.setIgnorierteZeitabschnitte(convertZeitabschnitte(ignoredAbschnitte));
+	}
+
+	@Nonnull
+	private List<VerfuegungZeitabschnitt> findVorgaengerZeitabschnitte(
+		@Nonnull Betreuung betreuung,
+		@Nonnull List<VerfuegungZeitabschnitt> ignoredAbschnitte) {
+		// Zusätzlich zu den Abschnitten der aktuellen Verfuegung müssen auch eventuell noch gueltige Abschnitte
+		// von frueheren Verfuegungen exportiert werden: immer dann, wenn in der aktuellen Verfuegung ignoriert wurde!
+		List<VerfuegungZeitabschnitt> nochGueltigeZeitabschnitte = new ArrayList<>();
+
+		ignoredAbschnitte.forEach(z -> verfuegungService
+			.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(z, betreuung, nochGueltigeZeitabschnitte));
+
+		return nochGueltigeZeitabschnitte;
+	}
+
+	@Nonnull
+	private List<ZeitabschnittExportDTO> convertZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> abschnitte) {
+		return abschnitte.stream()
+			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
+			.sorted(ZEITABSCHNITT_COMPARATOR)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private ZeitabschnittExportDTO createZeitabschnittExportDTOFromZeitabschnitt(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+
 		LocalDate von = zeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = zeitabschnitt.getGueltigkeit().getGueltigBis();
 		int verfuegungNr = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer();
@@ -129,7 +197,17 @@ public class ExportConverter {
 		BigDecimal betreuungsgutschein = zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
 		BigDecimal minimalerElternbeitrag = zeitabschnitt.getMinimalerElternbeitragGekuerzt();
 		BigDecimal verguenstigung = zeitabschnitt.getVerguenstigung();
-		return new ZeitabschnittExportDTO(von, bis, verfuegungNr, effektiveBetr, anspruchPct, vergPct, vollkosten, betreuungsgutschein,
-			minimalerElternbeitrag, verguenstigung);
+
+		return new ZeitabschnittExportDTO(
+			von,
+			bis,
+			verfuegungNr,
+			effektiveBetr,
+			anspruchPct,
+			vergPct,
+			vollkosten,
+			betreuungsgutschein,
+			minimalerElternbeitrag,
+			verguenstigung);
 	}
 }

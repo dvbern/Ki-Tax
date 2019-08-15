@@ -33,6 +33,7 @@ import TSErwerbspensum from '../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeKonfiguration from '../models/TSGemeindeKonfiguration';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
@@ -243,6 +244,14 @@ export default class TestDataUtil {
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
         return gemeinde;
+    }
+
+    public static createGemeindeKonfiguration(): TSGemeindeKonfiguration {
+        const konfiguration = new TSGemeindeKonfiguration();
+        konfiguration.gesuchsperiode = this.createGesuchsperiode20162017();
+        konfiguration.konfigTagesschuleAktivierungsdatum = undefined;
+        konfiguration.konfigTagesschuleErsterSchultag = undefined;
+        return konfiguration;
     }
 
     public static createBerechtigung(role: TSRole, createGemeinde: boolean): TSBerechtigung {

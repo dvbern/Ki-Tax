@@ -27,12 +27,12 @@ import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStat
 import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 
 @Component({
-    selector: 'dv-gemeinde-konfiguration',
-    templateUrl: './gemeinde-konfig.component.html',
-    styleUrls: ['./gemeinde-konfig.component.less'],
+    selector: 'dv-gemeinde-bg-konfiguration',
+    templateUrl: './gemeinde-bg-konfig.component.html',
+    styleUrls: ['./gemeinde-bg-konfig.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GemeindeKonfigComponent implements OnInit {
+export class GemeindeBgKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
@@ -78,22 +78,13 @@ export class GemeindeKonfigComponent implements OnInit {
         return 'gemeinde.edit' === this.navigationDest.name
             && this.editMode
             && (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus
-                || (gk.gesuchsperiodeStatus &&
-                    TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiodeStatus));
+                || (gk.gesuchsperiode && gk.gesuchsperiode.status &&
+                    TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiode.status));
     }
 
     private initProperties(): void {
         this.konfigurationsListe.forEach(config => {
-            config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-            config.konfigKontingentierung = false;
-            config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                    config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
-                }
-                if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                    config.konfigKontingentierung = (property.value === 'true');
-                }
-            });
+            config.initProperties();
         });
     }
 }

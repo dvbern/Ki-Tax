@@ -20,6 +20,7 @@ import TSAdresse from './TSAdresse';
 import TSBenutzer from './TSBenutzer';
 import TSGemeinde from './TSGemeinde';
 import TSGemeindeKonfiguration from './TSGemeindeKonfiguration';
+import TSGesuchsperiode from './TSGesuchsperiode';
 import TSTextRessource from './TSTextRessource';
 
 export default class TSGemeindeStammdaten extends TSAbstractEntity {
@@ -44,4 +45,13 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public rechtsmittelbelehrung: TSTextRessource;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
+
+    public getGemeindeKonfigurationForGesuchsperiode(gesuchsperiode: TSGesuchsperiode): TSGemeindeKonfiguration {
+        for (const konfigurationsListeElement of this.konfigurationsListe) {
+            if (konfigurationsListeElement.gesuchsperiode.id === gesuchsperiode.id) {
+                return konfigurationsListeElement;
+            }
+        }
+        return undefined;
+    }
 }

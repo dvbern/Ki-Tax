@@ -21,7 +21,6 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -78,9 +77,8 @@ public class ErwerbspensumConverterTest extends AbstractEbeguRestLoginTest {
 	}
 
 	private ErwerbspensumContainer insertNewEntity() {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		ErwerbspensumContainer ewpContainer = TestDataUtil.createErwerbspensumContainer();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		ewpContainer.setGesuchsteller(persistence.persist(gesuchsteller));
 		return persistence.persist(ewpContainer);
 	}
