@@ -87,7 +87,7 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	private boolean subventioniertePlaetze = false;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private BigDecimal anzahlPlaetze;
 
 	@Nullable

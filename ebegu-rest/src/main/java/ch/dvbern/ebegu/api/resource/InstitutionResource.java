@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
@@ -96,7 +97,7 @@ public class InstitutionResource {
 	public Response createInstitution(
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
-		@Nonnull @NotNull @Valid @QueryParam("betreuung") String betreuungsangebot,
+		@Nonnull @NotNull @Valid @QueryParam("betreuung") BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
@@ -136,17 +137,33 @@ public class InstitutionResource {
 
 	private void initInstitutionStammdaten(
 		@Nonnull String stringDateBeguStart,
-		@Nonnull String betreuungsangebot,
+		@Nonnull BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull Institution persistedInstitution,
 		@Nonnull String adminMail
 	) {
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
+		switch (betreuungsangebot) {
+		case KITA:
+		case TAGESFAMILIEN:
+			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(new InstitutionStammdatenBetreuungsgutscheine());
+			break;
+		case TAGESSCHULE:
+			// TODO uncomment as soon as we know the Gemeinde
+			// institutionStammdaten.setInstitutionStammdatenTagesschule(new InstitutionStammdatenTagesschule());
+			break;
+
+		case FERIENINSEL:
+			// TODO uncomment as soon as we know the Gemeinde
+			// institutionStammdaten.setInstitutionStammdatenFerieninsel(new InstitutionStammdatenFerieninsel());
+			break;
+		}
+
 		Adresse adresse = new Adresse();
 		adresse.setStrasse("");
 		adresse.setPlz("");
 		adresse.setOrt("");
 		institutionStammdaten.setAdresse(adresse);
-		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
+		institutionStammdaten.setBetreuungsangebotTyp(betreuungsangebot);
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
 		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
@@ -251,7 +268,8 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Institutionen in Status EINGELADEN", response = Boolean.class)
+	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Institutionen in Status "
+		+ "EINGELADEN", response = Boolean.class)
 	@Nonnull
 	@GET
 	@Path("/hasEinladungen/currentuser")
@@ -265,7 +283,8 @@ public class InstitutionResource {
 	}
 
 	@ApiOperation(
-		value = "Returns true, if the currently logged in Benutzer has any Institutionen which Stammdaten haven't been checked in the last 100 days",
+		value = "Returns true, if the currently logged in Benutzer has any Institutionen which Stammdaten haven't been"
+			+ " checked in the last 100 days",
 		response = Boolean.class)
 	@Nonnull
 	@GET
