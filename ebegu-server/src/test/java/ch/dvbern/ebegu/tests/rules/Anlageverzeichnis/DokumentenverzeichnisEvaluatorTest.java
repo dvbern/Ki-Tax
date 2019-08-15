@@ -113,7 +113,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		}
 		erwerbspensumJA.getGueltigkeit().setGueltigAb(LocalDate.of(1980, 1, 1));
 
-		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller.getGesuchstellerJA().setNachname("Chavez");
 		gesuchsteller.getGesuchstellerJA().setVorname(vorname);
 
@@ -130,7 +130,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		finanzielleSituation.setSteuerveranlagungErhalten(steuerveranlagungErhalten);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
 
-		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller.getGesuchstellerJA().setNachname("Chavez");
 		gesuchsteller.getGesuchstellerJA().setVorname(vorname);
 
@@ -150,7 +150,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		einkommensverschlechterungsContainer.setEkvJABasisJahrPlus1(einkommensverschlechterung1);
 		einkommensverschlechterungsContainer.setEkvJABasisJahrPlus2(einkommensverschlechterung2);
 
-		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller.getGesuchstellerJA().setNachname("Chavez");
 		gesuchsteller.getGesuchstellerJA().setVorname(vorname);
 

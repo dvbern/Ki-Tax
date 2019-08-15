@@ -121,8 +121,7 @@ public class GesuchstellerAndAdresseConverterTest extends AbstractEbeguRestLogin
 	}
 
 	private GesuchstellerContainer insertNewEntity() {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		persistence.persist(gesuchsteller);
 		return gesuchsteller;
 	}

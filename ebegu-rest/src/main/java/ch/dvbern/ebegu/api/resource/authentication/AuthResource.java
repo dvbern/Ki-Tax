@@ -55,7 +55,8 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -283,13 +284,13 @@ public class AuthResource {
 	 * @return Base64 encoded JSON representation
 	 */
 	private String encodeAuthAccessElement(JaxAuthAccessElementCookieData element) {
-		Gson gson = new Gson();
-		String s = Base64.getEncoder().encodeToString(gson.toJson(element).getBytes(StandardCharsets.UTF_8));
+		ObjectMapper mapper = new ObjectMapper();
+
 		try {
-			s = URLEncoder.encode(s, StandardCharsets.UTF_8.displayName());
-		} catch (UnsupportedEncodingException e) {
+			String s = Base64.getEncoder().encodeToString(mapper.writeValueAsBytes(element));
+			return URLEncoder.encode(s, StandardCharsets.UTF_8.displayName());
+		} catch (UnsupportedEncodingException | JsonProcessingException e) {
 			throw new IllegalStateException("UTF-8 encoding must be available", e);
 		}
-		return s;
 	}
 }

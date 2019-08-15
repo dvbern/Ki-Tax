@@ -16,27 +16,18 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
-import java.util.Objects;
 
-import javax.annotation.Nonnull;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.EbeguSchemaOutputResolver;
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungenExportDTO;
-import ch.dvbern.ebegu.services.ExportService;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -50,29 +41,9 @@ import io.swagger.annotations.ApiOperation;
  */
 @Path("export")
 @Stateless
-@Api(description = "This service provides methods to download verfuegungen in an export format for use by external applications")
+@Api(description = "This service provides methods to download verfuegungen in an export format for use by external "
+	+ "applications")
 public class ExportResource {
-
-	@Inject
-	private ExportService exportServiceBean;
-
-	@Inject
-	private JaxBConverter converter;
-
-	@ApiOperation(value = "Export all existing Verfuegungen of a relevant Antrag",
-		response = VerfuegungenExportDTO.class)
-	@Nonnull
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/gesuch/{id}")
-	public VerfuegungenExportDTO exportVerfuegungenOfAntrag(
-		@Nonnull @NotNull @PathParam("id") JaxId id) {
-
-		Objects.requireNonNull(id.getId(), "id muss gesetzt sein");
-		String antragID = converter.toEntityId(id);
-		return this.exportServiceBean.exportAllVerfuegungenOfAntrag(antragID);
-	}
 
 	@ApiOperation("Exports a json Schema of the ExportDTOs")
 	@Path("/meta/jsonschema")

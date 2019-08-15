@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,11 +48,9 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -240,12 +239,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId) {
-		// Bei Nich-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
+		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
 			zeitabschnitt.setAnspruchberechtigtesPensum(0);
 		}
 		verfuegung.setKategorieNichtEintreten(true);
+		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.NICHT_EINGETRETEN);
 		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen
@@ -309,20 +309,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return verfuegungen;
 	}
 
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public void removeVerfuegung(@Nonnull Verfuegung verfuegung) {
-		Objects.requireNonNull(verfuegung);
-		Optional<Verfuegung> entityToRemove = this.findVerfuegung(verfuegung.getId());
-		Verfuegung loadedVerf = entityToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			verfuegung));
-		authorizer.checkWriteAuthorization(loadedVerf);
-		loadedVerf.getZeitabschnitte().forEach(verfuegungZeitabschnitt ->
-			persistence.remove(verfuegungZeitabschnitt)
-		);
-		persistence.remove(loadedVerf);
-	}
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
@@ -342,12 +328,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
-		gesuch.getKindContainers()
-			.stream()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.forEach(this::setVorgaengerVerfuegungen);
+		initializeVorgaengerVerfuegungen(gesuch);
 
-		bgEvaluator.evaluate(gesuch, this, calculatorParameters, sprache.getLocale());
+		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
 		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen reicht hier glaub
 		return gesuch;
 	}
@@ -364,26 +347,34 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
+		initializeVorgaengerVerfuegungen(gesuch);
+
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+	}
+
+	@Override
+	public void initializeVorgaengerVerfuegungen(@Nonnull Gesuch gesuch) {
 		gesuch.getKindContainers()
 			.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.forEach(this::setVorgaengerVerfuegungen);
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
-	private void setVorgaengerVerfuegungen(Betreuung betreuung) {
-		Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuung);
-		betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung.orElse(null));
-		Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
-		betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
+	private void setVorgaengerVerfuegungen(@Nonnull Betreuung betreuung) {
+		Verfuegung vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuung)
+			.orElse(null);
+
+		Verfuegung vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung)
+			.orElse(null);
+
+		betreuung.initVorgaengerVerfuegungen(vorgaengerVerfuegung, vorgaengerAusbezahlteVerfuegung);
 	}
 
-	@Override
+	/**
+	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
+	 */
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull Betreuung betreuung) {
+	private Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
 		if (betreuung.getVorgaengerId() == null) {
 			return Optional.empty();
@@ -402,12 +393,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return Optional.empty();
 	}
 
-	@Override
+	/**
+	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck, die ausbezahlt ist.
+	 */
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung) {
+	private Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
 		if (betreuung.getVorgaengerId() == null) {
 			return Optional.empty();
@@ -442,39 +432,45 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<LocalDate> findVorgaengerVerfuegungDate(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-		Optional<Verfuegung> vorgaengerVerfuegungOpt = findVorgaengerVerfuegung(betreuung);
-		LocalDate letztesVerfDatum = null;
-		if (vorgaengerVerfuegungOpt.isPresent()) {
-			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOpt.get();
-			authorizer.checkReadAuthorization(vorgaengerVerfuegung);
-			if (vorgaengerVerfuegung.getTimestampErstellt() != null) {
-				letztesVerfDatum = vorgaengerVerfuegung.getTimestampErstellt().toLocalDate();
-			}
-		}
-		return Optional.ofNullable(letztesVerfDatum);
+
+		Optional<LocalDate> letztesVerfDatum = findVorgaengerVerfuegung(betreuung)
+			.flatMap(vorgaengerVerfuegung -> {
+				authorizer.checkReadAuthorization(vorgaengerVerfuegung);
+
+				return Optional.ofNullable(vorgaengerVerfuegung.getTimestampErstellt())
+					.map(LocalDateTime::toLocalDate);
+			});
+
+		return letztesVerfDatum;
 	}
 
 	@Override
-	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
-		@Nonnull Betreuung betreuungNeu, @Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
-		Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuungNeu);
-		if (vorgaengerAusbezahlteVerfuegung.isPresent()) {
-			List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerAusbezahlteVerfuegung = findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(),
-				vorgaengerAusbezahlteVerfuegung.get());
-			for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitteOnVorgaengerAusbezahlteVerfuegung) {
-				final Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-				if ((zeitabschnitt.getZahlungsstatus().isVerrechnet() || zeitabschnitt.getZahlungsstatus().isIgnoriert()) && isNotInZeitabschnitteList
-					(zeitabschnitt, vorgaengerZeitabschnitte)) {
-					// Diesen ins Result, for weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder kein Vorgaenger
+	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Betreuung betreuungNeu,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
+
+		findVorgaengerAusbezahlteVerfuegung(betreuungNeu)
+			.map(verfuegung -> findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(), verfuegung))
+			.ifPresent(zeitabschnitte -> zeitabschnitte.forEach(zeitabschnitt -> {
+
+				VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = zeitabschnitt.getZahlungsstatus();
+
+				if ((zahlungsstatus.isVerrechnet() || zahlungsstatus.isIgnoriert())
+					&& isNotInZeitabschnitteList(zeitabschnitt, vorgaengerZeitabschnitte)) {
+					// Diesen ins Result, iteration weiterführen und von allen den Vorgänger suchen bis VERRECHNET oder
+					// kein Vorgaenger
 					vorgaengerZeitabschnitte.add(zeitabschnitt);
 				} else {
-					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter zurueckgehen
-					findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnittNeu, vorgaengerBetreuung, vorgaengerZeitabschnitte);
+					Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter
+					// zurueckgehen
+					findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+						zeitabschnittNeu,
+						vorgaengerBetreuung,
+						vorgaengerZeitabschnitte);
 				}
-			}
-		}
-		//noinspection UnnecessaryReturnStatement: Abbruchbedingung: Es gibt keinen Vorgaenger mehr
-		return;
+			}));
 	}
 
 	@Nonnull

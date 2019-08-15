@@ -131,8 +131,19 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);
 		Assert.assertNotNull((berechnetesGesuch.getKindContainers().iterator().next()));
-		Assert.assertNotNull((berechnetesGesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next()));
-		Assert.assertNotNull(berechnetesGesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next().getVerfuegung());
+		Assert.assertNotNull((berechnetesGesuch.getKindContainers()
+			.iterator()
+			.next()
+			.getBetreuungen()
+			.iterator()
+			.next()));
+		Assert.assertNotNull(berechnetesGesuch.getKindContainers()
+			.iterator()
+			.next()
+			.getBetreuungen()
+			.iterator()
+			.next()
+			.getVerfuegung());
 		checkTestfall01WaeltiDagmar(gesuch);
 	}
 
@@ -149,7 +160,9 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		KindContainer kind = kindContainers.iterator().next();
 		Assert.assertEquals(1, kindContainers.size());
 		Set<Betreuung> betreuungen = kind.getBetreuungen();
-		Set<Betreuung> verfuegteBetr = betreuungen.stream().map(this::createAndPersistVerfuegteVerfuegung).collect(Collectors.toSet());
+		Set<Betreuung> verfuegteBetr = betreuungen.stream()
+			.map(this::createAndPersistVerfuegteVerfuegung)
+			.collect(Collectors.toSet());
 		kind.setBetreuungen(verfuegteBetr);
 		Betreuung betreuung = verfuegteBetr.iterator().next();
 		Integer betreuungNummer = betreuung.getBetreuungNummer();
@@ -173,13 +186,16 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch mutation = this.testfaelleService.antragMutieren(gesuch, LocalDate.now());
 		Assert.assertNotNull(mutation);
 
-		List<Betreuung> allPlaetze = mutation.extractAllBetreuungen();
-		Optional<Betreuung> optFolgeBetreeung = allPlaetze.stream()
-			.filter(b -> b.getBetreuungNummer().equals(betreuungNummer)).findAny();
+		this.verfuegungService.initializeVorgaengerVerfuegungen(mutation);
+
+		Optional<Betreuung> optFolgeBetreeung = mutation.getKindContainers().stream()
+			.flatMap(k -> k.getBetreuungen().stream())
+			.filter(b -> b.getBetreuungNummer().equals(betreuungNummer))
+			.findAny();
+
 		Assert.assertTrue(optFolgeBetreeung.isPresent());
-		Optional<Verfuegung> optVorherigeVerfuegungBetreuung = this.verfuegungService.findVorgaengerVerfuegung(optFolgeBetreeung.get());
-		Assert.assertTrue(optVorherigeVerfuegungBetreuung.isPresent());
-		Assert.assertEquals(optVorherigeVerfuegungBetreuung.get(), verfuegung1);
+		Assert.assertNotNull(optFolgeBetreeung.get().getVorgaengerVerfuegung());
+		Assert.assertEquals(verfuegung1, optFolgeBetreeung.get().getVorgaengerVerfuegung());
 	}
 
 	@Test
@@ -189,13 +205,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Collection<Verfuegung> allVerfuegungen = this.verfuegungService.getAllVerfuegungen();
 		Assert.assertEquals(2, allVerfuegungen.size());
 		Assert.assertTrue(allVerfuegungen.stream()
-			.allMatch(currentVerfuegung -> currentVerfuegung.equals(verfuegung) || currentVerfuegung.equals(verfuegung2)));
-	}
-
-	@Test
-	public void removeVerfuegung() {
-		Verfuegung verfuegung = insertVerfuegung();
-		this.verfuegungService.removeVerfuegung(verfuegung);
+			.allMatch(currentVerfuegung -> currentVerfuegung.equals(verfuegung)
+				|| currentVerfuegung.equals(verfuegung2)));
 	}
 
 	@Test
@@ -241,7 +252,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Betreuung storedBetr = persistence.merge(betreuung);
 		Assert.assertNull(storedBetr.getVerfuegung());
 		Verfuegung verfuegung = new Verfuegung(storedBetr);
-		final Verfuegung createdVerf = verfuegungService.persistVerfuegung(verfuegung, storedBetr.getId(), Betreuungsstatus.VERFUEGT);
+		final Verfuegung createdVerf =
+			verfuegungService.persistVerfuegung(verfuegung, storedBetr.getId(), Betreuungsstatus.VERFUEGT);
 		return createdVerf.getBetreuung();
 	}
 

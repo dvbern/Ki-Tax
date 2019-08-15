@@ -88,13 +88,6 @@ public interface VerfuegungService {
 	Collection<Verfuegung> getAllVerfuegungen();
 
 	/**
-	 * entfernt eine Verfuegung aus der Databse
-	 *
-	 * @param verfuegung Verfuegung zu entfernen
-	 */
-	void removeVerfuegung(@Nonnull Verfuegung verfuegung);
-
-	/**
 	 * Berechnet die Verfuegung fuer ein Gesuch
 	 *
 	 * @return gibt die Betreuung mit der berechneten angehangten Verfuegung zurueck
@@ -109,22 +102,10 @@ public interface VerfuegungService {
 	Verfuegung getEvaluateFamiliensituationVerfuegung(@Nonnull Gesuch gesuch);
 
 	/**
-	 * gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
-	 * kann null sein
-	 *
-	 * @return Verfuegung oder null falls nicht vorhanden
+	 * Initialises für jede Betreuung die transienten Felder hinter
+	 * {@link Betreuung#getVorgaengerAusbezahlteVerfuegung()} und {@link Betreuung#getVorgaengerVerfuegung()}
 	 */
-	@Nonnull
-	Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull Betreuung betreuung);
-
-	/**
-	 * gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck, die ausbezahlt ist.
-	 * kann null sein
-	 *
-	 * @return Verfuegung oder null falls nicht vorhanden
-	 */
-	@Nonnull
-	Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung);
+	void initializeVorgaengerVerfuegungen(@Nonnull Gesuch gesuch);
 
 	/**
 	 * genau wie findVorgaengerVerfuegung gibt aber nur deren TimestampErstellt zurueck wenn vorhanden

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpService, IPromise} from 'angular';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 
 export default class ExportRS {
@@ -25,16 +25,8 @@ export default class ExportRS {
         public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        private readonly $log: ILogService,
     ) {
         this.serviceURL = `${REST_API}export`;
-    }
-
-    public exportVerfuegungenOfAntrag(gesuchID: string): IPromise<any> {
-        return this.$http.get(`${this.serviceURL}/gesuch/${encodeURIComponent(gesuchID)}`, {}).then((response: any) => {
-            this.$log.debug('PARSING fall REST object ', response.data);
-            return response.data;
-        });
     }
 
     public getJsonSchemaString(): IPromise<any> {

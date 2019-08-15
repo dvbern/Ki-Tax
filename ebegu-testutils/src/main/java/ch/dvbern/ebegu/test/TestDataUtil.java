@@ -245,7 +245,7 @@ public final class TestDataUtil {
 		return adresse;
 	}
 
-	public static GesuchstellerContainer createDefaultGesuchstellerContainer(Gesuch gesuch) {
+	public static GesuchstellerContainer createDefaultGesuchstellerContainer() {
 		final GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
 		gesuchstellerContainer.addAdresse(createDefaultGesuchstellerAdresseContainer(gesuchstellerContainer));
 		gesuchstellerContainer.setGesuchstellerJA(createDefaultGesuchsteller());
@@ -783,8 +783,7 @@ public final class TestDataUtil {
 	}
 
 	public static GesuchstellerContainer createDefaultGesuchstellerWithEinkommensverschlechterung() {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		final GesuchstellerContainer gesuchsteller = createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = createDefaultGesuchstellerContainer();
 		gesuchsteller.setEinkommensverschlechterungContainer(createDefaultEinkommensverschlechterungsContainer());
 		return gesuchsteller;
 	}
@@ -981,6 +980,7 @@ public final class TestDataUtil {
 		InstitutionService instService,
 		Persistence persistence,
 		@Nullable LocalDate eingangsdatum) {
+
 		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, null);
 	}
 
@@ -1109,7 +1109,7 @@ public final class TestDataUtil {
 		gesuch.getDossier().setVerantwortlicherBG(verantwortlicher);
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		persistence.persist(gesuch.getGesuchsperiode());
 
 		Set<KindContainer> kindContainers = new TreeSet<>();
@@ -1162,7 +1162,7 @@ public final class TestDataUtil {
 			persistence.merge(gesuch.getGesuchsperiode());
 		}
 		persistence.persist(gesuch);
-		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		return gesuch;
 	}
@@ -1177,7 +1177,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
-		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		return gesuch;
 	}
@@ -1192,7 +1192,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
-		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		return gesuch;
 	}
@@ -1483,7 +1483,7 @@ public final class TestDataUtil {
 		for (int i = 0; i < numberOfDocuments; i++) {
 			bemerkungen.add("Test Dokument " + (i + 1));
 		}
-		mahnung.setBemerkungen(bemerkungen.stream().collect(Collectors.joining("\n")));
+		mahnung.setBemerkungen(String.join("\n", bemerkungen));
 		mahnung.setDatumFristablauf(firstAblauf);
 		mahnung.setTimestampErstellt(LocalDateTime.now());
 		mahnung.setUserMutiert("Hans Muster");
@@ -1631,7 +1631,7 @@ public final class TestDataUtil {
 		gesuch.setGesuchsperiode(persistEntity(persistence, gesuchsperiode));
 		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
@@ -1655,7 +1655,7 @@ public final class TestDataUtil {
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
 		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
@@ -1738,5 +1738,11 @@ public final class TestDataUtil {
 	public static Gesuch correctTimestampVerfuegt(Gesuch gesuch, LocalDateTime date, Persistence persistence) {
 		gesuch.setTimestampVerfuegt(date.minusDays(1));
 		return persistence.merge(gesuch);
+	}
+
+	public static void initVorgaengerVerfuegungenWithNULL(@Nonnull Gesuch gesuch) {
+		gesuch.getKindContainers().stream()
+			.flatMap(k -> k.getBetreuungen().stream())
+			.forEach(b -> b.initVorgaengerVerfuegungen(null, null));
 	}
 }
