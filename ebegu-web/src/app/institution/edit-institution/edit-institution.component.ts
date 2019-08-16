@@ -157,6 +157,7 @@ export class EditInstitutionComponent implements OnInit {
     public cancel(): void {
         if (this.editMode) {
             this.editMode = false;
+            this.ngOnInit();
         } else {
             this.navigateBack();
         }
