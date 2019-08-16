@@ -50,7 +50,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.BooleanAuthorizer;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
@@ -87,7 +87,7 @@ public class SearchIndexResource {
 	private JaxBConverter converter;
 
 	@Inject
-	private BooleanAuthorizer authorizer;
+	private Authorizer authorizer;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -153,8 +153,8 @@ public class SearchIndexResource {
 	 * original QuckSearchResultDTO will be rturned
 	 */
 	private QuickSearchResultDTO convertQuicksearchResultToDTO(QuickSearchResultDTO quickSearch) {
-		final QuickSearchResultDTO faelleWithMitteilungResults = getFaelleWithMitteilungResults(quickSearch); // muss gemacht werden bevor wir unerlaubte rausfiltern
 		List<Gesuch> allowedGesuche = filterUnreadableGesuche(quickSearch); //nur erlaubte Gesuche
+		final QuickSearchResultDTO faelleWithMitteilungResults = getFaelleWithMitteilungResults(quickSearch); // muss gemacht werden bevor wir unerlaubte rausfiltern
 		Map<String, Gesuch> gesucheToShow = EbeguUtil.groupByFallAndSelectNewestAntrag(allowedGesuche); //nur neustes gesuch
 		QuickSearchResultDTO filteredQuickSearch = mergeAllowedGesucheWithQuickSearchResult(quickSearch, gesucheToShow);//search result anpassen so dass nur noch sichtbare Antrage drin sind und Antragdtos gesetzt sind
 
@@ -189,9 +189,17 @@ public class SearchIndexResource {
 			//we remeber the results that we only found in the fall index and that had a mitteilung
 			QuickSearchResultDTO result = new QuickSearchResultDTO();
 			for (SearchResultEntryDTO searchResult : quickSearch.getResultEntities()) {
-				if (SearchEntityType.DOSSIER == searchResult.getEntity() && searchResult.getGesuchID() == null
-					&& searchResult.getDossierId() != null && dossierService.hasDossierAnyMitteilung(searchResult.getDossierId())) {
-					result.addResult(searchResult);
+				if (SearchEntityType.DOSSIER == searchResult.getEntity()
+					&& searchResult.getGesuchID() == null
+					&& searchResult.getDossierId() != null
+				) {
+					Dossier dossier = dossierService.findDossier(searchResult.getDossierId(), false)
+						.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, searchResult.getDossierId()));
+
+					if (authorizer.isReadAuthorizedDossier(dossier) && dossierService.hasDossierAnyMitteilung(dossier)) {
+						result.addResult(searchResult);
+					}
 				}
 			}
 			return result;
@@ -213,7 +221,7 @@ public class SearchIndexResource {
 				searchResultEntryDTO.setGesuchID(foundGesuch != null ? foundGesuch.getId() : null);
 				return foundGesuch;
 			})
-			.filter(gesuch -> this.authorizer.hasReadAuthorization(gesuch))
+			.filter(gesuch -> this.authorizer.isReadAuthorized(gesuch))
 			.collect(Collectors.toList());
 
 		List<Gesuch> allGesuche = new ArrayList<>(readableGesuche);

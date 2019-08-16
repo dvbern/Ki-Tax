@@ -718,7 +718,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 	}
 
-	private boolean isReadAuthorized(Gesuch gesuch) {
+	@Override
+	public boolean isReadAuthorized(Gesuch gesuch) {
 		if (isAllowedAdminOrSachbearbeiter(gesuch)) {
 			return true;
 		}
