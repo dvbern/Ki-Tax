@@ -1709,6 +1709,7 @@ export default class EbeguRestUtil {
         }
         restBetreuung.kindFullname = betreuung.kindFullname;
         restBetreuung.kindNummer = betreuung.kindNummer;
+        restBetreuung.kindId = betreuung.kindId;
         restBetreuung.gesuchId = betreuung.gesuchId;
         restBetreuung.gesuchsperiode = this.gesuchsperiodeToRestObject({}, betreuung.gesuchsperiode);
         restBetreuung.betreuungNummer = betreuung.betreuungNummer;
@@ -1846,6 +1847,7 @@ export default class EbeguRestUtil {
             betreuungTS.verfuegung = this.parseVerfuegung(new TSVerfuegung(), betreuungFromServer.verfuegung);
             betreuungTS.kindFullname = betreuungFromServer.kindFullname;
             betreuungTS.kindNummer = betreuungFromServer.kindNummer;
+            betreuungTS.kindId = betreuungFromServer.kindId;
             betreuungTS.gesuchId = betreuungFromServer.gesuchId;
             betreuungTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), betreuungFromServer.gesuchsperiode);

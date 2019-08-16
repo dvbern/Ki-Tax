@@ -226,6 +226,7 @@ import ch.dvbern.ebegu.services.GesuchstellerAdresseService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
@@ -306,6 +307,8 @@ public class JaxBConverter extends AbstractConverter {
 	private AdresseService adresseService;
 	@Inject
 	private EinstellungService einstellungService;
+	@Inject
+	private KindService kindService;
 	@Inject
 	private Persistence persistence;
 	@Inject
@@ -2210,6 +2213,12 @@ public class JaxBConverter extends AbstractConverter {
 			betreuung.setInstitutionStammdaten(instStammdatenToMerge);
 		}
 		betreuung.setBetreuungNummer(betreuungJAXP.getBetreuungNummer());
+
+		// if there is no Kind we try to load it from the ID given by BetreuungJax
+		if (betreuungJAXP.getKindId() != null) {
+			KindContainer kindContainer = kindService.findKind(betreuungJAXP.getKindId()).orElse(null);
+			betreuung.setKind(kindContainer);
+		}
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
 	}
@@ -2671,6 +2680,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
 		jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
 		jaxBetreuung.setKindNummer(betreuungFromServer.getKind().getKindNummer());
+		jaxBetreuung.setKindId(betreuungFromServer.getKind().getId());
 		if (betreuungFromServer.getKind().getGesuch() != null) {
 			jaxBetreuung.setGesuchId(betreuungFromServer.getKind().getGesuch().getId());
 			jaxBetreuung.setGesuchsperiode(gesuchsperiodeToJAX(betreuungFromServer.getKind()
