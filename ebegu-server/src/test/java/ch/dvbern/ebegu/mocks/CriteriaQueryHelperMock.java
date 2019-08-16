@@ -27,7 +27,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
+import org.needle4j.annotation.InjectIntoMany;
 
 public class CriteriaQueryHelperMock extends CriteriaQueryHelper {
 

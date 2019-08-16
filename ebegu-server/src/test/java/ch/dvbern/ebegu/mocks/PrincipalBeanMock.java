@@ -25,7 +25,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
+import org.needle4j.annotation.InjectIntoMany;
 
 public class PrincipalBeanMock extends PrincipalBean {
 
