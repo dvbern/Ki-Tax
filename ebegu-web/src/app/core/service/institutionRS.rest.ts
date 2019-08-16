@@ -62,7 +62,7 @@ export class InstitutionRS {
             {
                 params: {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
-                    betreuung: betreuungsangebot.toString(),
+                    betreuung: betreuungsangebot,
                     adminMail,
                 },
             })
