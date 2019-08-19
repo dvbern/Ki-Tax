@@ -1146,7 +1146,7 @@ export default class GesuchModelManager {
      * Sets the current user as VerantwortlicherBG and saves it in the DB
      */
     public setUserAsFallVerantwortlicherBG(user: TSBenutzer): void {
-        if (!this.gesuch || !this.gesuch.dossier) {
+        if (!this.gesuch || !this.gesuch.dossier || !this.gesuch.dossier.id) {
             return;
         }
         this.dossierRS.setVerantwortlicherBG(this.gesuch.dossier.id, user ? user.username : null)

@@ -32,6 +32,7 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSBetreuung from '../../models/TSBetreuung';
+import TSDossier from '../../models/TSDossier';
 import TSGesuch from '../../models/TSGesuch';
 import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
 import TSKind from '../../models/TSKind';
@@ -165,13 +166,15 @@ describe('gesuchModelManager', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-                    spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                    const user = new TSBenutzer('Emilianito', 'Camacho');
-                    gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
-                    scope.$apply();
-                    expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
+                    undefined).then((gesuch) => {
+                        gesuch.dossier = new TSDossier();
+                        gesuch.dossier.id = 'myId';
+                        spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
+                        spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
+                        const user = new TSBenutzer('Emilianito', 'Camacho');
+                        gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
+                        scope.$apply();
+                        expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
                 });
             }));
         });

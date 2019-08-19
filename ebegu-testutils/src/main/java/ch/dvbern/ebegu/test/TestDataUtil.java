@@ -338,6 +338,7 @@ public final class TestDataUtil {
 
 	public static Mandant createDefaultMandant() {
 		Mandant mandant = new Mandant();
+		mandant.setId(UUID.randomUUID().toString());
 		mandant.setName("Mandant1");
 		return mandant;
 	}

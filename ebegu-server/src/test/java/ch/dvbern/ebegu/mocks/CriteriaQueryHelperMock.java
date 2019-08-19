@@ -18,19 +18,46 @@
 package ch.dvbern.ebegu.mocks;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.SingularAttribute;
 
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import org.needle4j.annotation.InjectIntoMany;
 
 public class CriteriaQueryHelperMock extends CriteriaQueryHelper {
+
+	private static final long serialVersionUID = 8699860745231110631L;
+
+	@InjectIntoMany
+	private final PersistenceMock persistence = new PersistenceMock();
+
 
 	@Nonnull
 	@Override
 	public <A, E, E1 extends E> Collection<E1> getEntitiesByAttribute(@Nonnull Class<E1> entityClass, @Nullable A attributeValue, @Nonnull Attribute<E, A> attribute) {
-		return Collections.EMPTY_LIST;
+		// Wir geben der Einfachheit halber einfach alle dieses Typs zurueck
+		return getAll(entityClass);
+	}
+
+	@Override
+	public <T> Collection<T> getAll(Class<T> clazz) {
+		//noinspection unchecked
+		return persistence.getElementsOfClass(clazz);
+	}
+
+	@Nonnull
+	@Override
+	public <A, E extends AbstractEntity> Optional<E> getEntityByUniqueAttribute(@Nonnull Class<E> entityClazz, @Nullable A attributeValue, @Nonnull SingularAttribute<E, A> attribute) {
+		// Wir geben der Einfachheit halber einfach das erste Element zurueck
+		return getFirst(entityClazz);
+	}
+
+	private <E extends AbstractEntity> Optional<E> getFirst(@Nonnull Class<E> entityClazz) {
+		return getAll(entityClazz).stream().findFirst();
 	}
 }
