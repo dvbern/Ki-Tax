@@ -166,7 +166,7 @@ describe('gesuchModelManager', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then((gesuch) => {
+                    undefined).then(gesuch => {
                         gesuch.dossier = new TSDossier();
                         gesuch.dossier.id = 'myId';
                         spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
