@@ -777,15 +777,13 @@ export default class GesuchModelManager {
         betreuungsstatusNeu: TSBetreuungsstatus,
         abwesenheit: boolean,
     ): IPromise<TSBetreuung> {
-        const kindId = this.getKindToWorkWith().id;
-
         const handleStatus = (betreuungenStatus: TSGesuchBetreuungenStatus, storedBetreuung: TSBetreuung) => {
             this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
 
             return this.handleSavedBetreuung(storedBetreuung);
         };
 
-        return this.doSaveBetreuung(betreuungToSave, betreuungsstatusNeu, kindId, abwesenheit)
+        return this.doSaveBetreuung(betreuungToSave, betreuungsstatusNeu, abwesenheit)
             .then(storedBetreuung => this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id)
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
@@ -815,26 +813,25 @@ export default class GesuchModelManager {
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
-        kindId: string,
         abwesenheit: boolean,
     ): IPromise<TSBetreuung> {
 
         switch (betreuungsstatusNeu) {
             case TSBetreuungsstatus.ABGEWIESEN:
-                return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.BESTAETIGT:
-                return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
-                return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
-                return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, this.gesuch.id);
             case null:
-                return this.betreuungRS.saveBetreuung(betreuungToSave, kindId, this.gesuch.id, abwesenheit);
+                return this.betreuungRS.saveBetreuung(betreuungToSave, this.gesuch.id, abwesenheit);
             default:
                 betreuungToSave.betreuungsstatus = betreuungsstatusNeu;
-                return this.betreuungRS.saveBetreuung(betreuungToSave, kindId, this.gesuch.id, abwesenheit);
+                return this.betreuungRS.saveBetreuung(betreuungToSave, this.gesuch.id, abwesenheit);
         }
     }
 

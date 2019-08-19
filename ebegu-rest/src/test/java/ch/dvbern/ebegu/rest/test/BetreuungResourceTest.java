@@ -106,13 +106,11 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void createBetreuung() {
-		KindContainer returnedKind = persistKindAndDependingObjects();
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
 		JaxBetreuung testJaxBetreuung = converter.betreuungToJAX(testBetreuung);
 
-		JaxBetreuung jaxBetreuung = betreuungResource.saveBetreuung(converter.toJaxId(returnedKind),
-			testJaxBetreuung,
+		JaxBetreuung jaxBetreuung = betreuungResource.saveBetreuung(testJaxBetreuung,
 			false,
 			DUMMY_URIINFO,
 			DUMMY_RESPONSE);
@@ -143,8 +141,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 			TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().getYear());
 
 		betreuung.getBetreuungspensumContainers().add(containerToAdd);
-		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()),
-			betreuung,
+		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(betreuung,
 			false,
 			DUMMY_URIINFO,
 			DUMMY_RESPONSE);
@@ -174,7 +171,6 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuung.getBetreuungspensumContainers()
 			.add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().plusYears(1).getYear()));
 		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(
-			converter.toJaxId(initialBetr.getKind()),
 			betreuung,
 			false,
 			DUMMY_URIINFO,
@@ -192,7 +188,6 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 				.getYear())); //einen neuen einfuegen
 
 		updatedBetr = betreuungResource.saveBetreuung(
-			converter.toJaxId(initialBetr.getKind()),
 			updatedBetr,
 			false,
 			DUMMY_URIINFO,

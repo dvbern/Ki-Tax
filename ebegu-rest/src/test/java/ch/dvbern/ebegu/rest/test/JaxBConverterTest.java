@@ -203,7 +203,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
 		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenSummaryToJAX(kitaBruennen, new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.getInstitutionStammdaten().setGueltigAb(LocalDate.now());
-		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
+		betreuungResource.saveBetreuung(jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		InstitutionStammdaten loadedKitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
 		assertEquals(Constants.START_OF_TIME, loadedKitaBruennen.getGueltigkeit().getGueltigAb());
