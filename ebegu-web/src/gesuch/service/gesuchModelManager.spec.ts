@@ -121,7 +121,6 @@ describe('gesuchModelManager', () => {
 
                     // tslint:disable-next-line:no-unbound-method
                     expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(),
-                        '2afc9d9a-957e-4550-9a22-97624a000feb',
                         undefined,
                         false);
                     // tslint:disable-next-line:no-unbound-method
@@ -488,6 +487,7 @@ describe('gesuchModelManager', () => {
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
         tsBetreuung.betreuungNummer = 1;
         tsBetreuung.id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+        tsBetreuung.kindId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         gesuchModelManager.getKindToWorkWith().betreuungen.push(tsBetreuung);
         gesuchModelManager.setBetreuungIndex(gesuchModelManager.getKindToWorkWith().betreuungen.length - 1);
         return tsBetreuung;

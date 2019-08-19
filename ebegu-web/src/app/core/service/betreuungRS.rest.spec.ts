@@ -88,10 +88,10 @@ describe('betreuungRS', () => {
         describe('createBetreuung', () => {
             it('should create a Betreuung', () => {
                 let createdBetreuung: TSBetreuung;
-                $httpBackend.expectPUT(`${betreuungRS.serviceURL}/betreuung/${kindId}/false`,
+                $httpBackend.expectPUT(`${betreuungRS.serviceURL}/betreuung/false`,
                     mockBetreuungRest).respond(mockBetreuungRest);
 
-                betreuungRS.saveBetreuung(mockBetreuung, kindId, gesuchId, false)
+                betreuungRS.saveBetreuung(mockBetreuung, gesuchId, false)
                     .then(result => {
                         createdBetreuung = result;
                     });
