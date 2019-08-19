@@ -21,7 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
@@ -53,7 +53,6 @@ export class EditInstitutionComponent implements OnInit {
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
     public isCheckRequired: boolean = false;
-    public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
     private initName: string;
@@ -96,8 +95,6 @@ export class EditInstitutionComponent implements OnInit {
                         this.createInstitutionStammdaten(institution);
                     }
                     this.isCheckRequired = institution.stammdatenCheckRequired;
-                    this.abweichendeZahlungsAdresse =
-                        !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
                     this.initName = this.stammdaten.institution.name;
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
@@ -159,20 +156,11 @@ export class EditInstitutionComponent implements OnInit {
         }
     }
 
-    public onAbweichendeZahlungsAdresseClick(): void {
-        if (!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber) {
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = new TSAdresse();
-        }
-    }
-
     private persistStammdaten(): void {
         if (!this.form.valid) {
             return;
         }
         this.errorService.clearAll();
-        if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = undefined;
-        }
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
         }
@@ -242,33 +230,6 @@ export class EditInstitutionComponent implements OnInit {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
     }
 
-    public getAlterskategorien(): string {
-        const alterskategorien: string[] = [];
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
-        }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
-        }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
-        }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
-        }
-        return alterskategorien.join(', ');
-    }
-
-    public getPlaceholderForPlaetze(): string {
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
-            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1');
-        }
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
-        }
-        return '';
-    }
-
     public getPlaceholderForOeffnungszeiten(): string {
         return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
     }
@@ -276,10 +237,13 @@ export class EditInstitutionComponent implements OnInit {
     public deactivateStammdatenCheckRequired(): void {
         this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
             .then(() => this.navigateBack());
-
     }
 
     public isCheckRequiredEnabled(): boolean {
         return this.isCheckRequired && !this.editMode;
+    }
+
+    public isBetreuungsgutschein(): boolean {
+        return isJugendamt(this.stammdaten.betreuungsangebotTyp);
     }
 }
