@@ -28,7 +28,6 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 export class ViewInstitutionBetreuungsgutscheineComponent {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
-    @Input() public editMode: boolean;
 
     public constructor(
         private readonly translate: TranslateService,

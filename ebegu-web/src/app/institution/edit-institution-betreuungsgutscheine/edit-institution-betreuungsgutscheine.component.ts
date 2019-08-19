@@ -33,7 +33,6 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
     @Input() public stammdaten: TSInstitutionStammdaten;
-    @Input() public editMode: boolean;
 
     public abweichendeZahlungsAdresse: boolean;
 

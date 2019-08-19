@@ -21,10 +21,14 @@ import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
 import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
+import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
+import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
 import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
+import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
+import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
 
 @NgModule({
     imports: [
@@ -39,6 +43,10 @@ import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-b
         AddInstitutionComponent,
         EditInstitutionBetreuungsgutscheineComponent,
         ViewInstitutionBetreuungsgutscheineComponent,
+        EditInstitutionTagesschuleComponent,
+        ViewInstitutionTagesschuleComponent,
+        EditInstitutionFerieninselComponent,
+        ViewInstitutionFerieninselComponent,
     ],
     entryComponents: [
         InstitutionListComponent,
@@ -46,6 +54,10 @@ import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-b
         AddInstitutionComponent,
         EditInstitutionBetreuungsgutscheineComponent,
         ViewInstitutionBetreuungsgutscheineComponent,
+        EditInstitutionTagesschuleComponent,
+        ViewInstitutionTagesschuleComponent,
+        EditInstitutionFerieninselComponent,
+        ViewInstitutionFerieninselComponent,
     ],
     providers: [],
 })

@@ -246,4 +246,12 @@ export class EditInstitutionComponent implements OnInit {
     public isBetreuungsgutschein(): boolean {
         return isJugendamt(this.stammdaten.betreuungsangebotTyp);
     }
+
+    public isTagesschule(): boolean {
+        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE;
+    }
+
+    public isFerieninsel(): boolean {
+        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL;
+    }
 }

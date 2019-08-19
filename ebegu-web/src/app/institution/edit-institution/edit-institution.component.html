@@ -235,12 +235,21 @@
 
                 <div *ngIf="isBetreuungsgutschein()">
 					<dv-edit-institution-betreuungsgutscheine
-						[stammdaten]="stammdaten"
-						[editMode]="true">
+						[stammdaten]="stammdaten">
 					</dv-edit-institution-betreuungsgutscheine>
                 </div>
 
-                gugus
+                <div *ngIf="isTagesschule()">
+                    <dv-edit-institution-tagesschule
+                        [stammdaten]="stammdaten">
+                    </dv-edit-institution-tagesschule>
+                </div>
+
+                <div *ngIf="isFerieninsel()">
+                    <dv-edit-institution-ferieninsel
+                        [stammdaten]="stammdaten">
+                    </dv-edit-institution-ferieninsel>
+                </div>
 
             </fieldset>
 
@@ -293,9 +302,20 @@
 
                 <div *ngIf="isBetreuungsgutschein()">
                     <dv-view-institution-betreuungsgutscheine
-                        [stammdaten]="stammdaten"
-                        [editMode]="false">
+                        [stammdaten]="stammdaten">
                     </dv-view-institution-betreuungsgutscheine>
+                </div>
+
+                <div *ngIf="isTagesschule()">
+                    <dv-view-institution-tagesschule
+                        [stammdaten]="stammdaten">
+                    </dv-view-institution-tagesschule>
+                </div>
+
+                <div *ngIf="isFerieninsel()">
+                    <dv-view-institution-ferieninsel
+                        [stammdaten]="stammdaten">
+                    </dv-view-institution-ferieninsel>
                 </div>
 
             </ng-template>
