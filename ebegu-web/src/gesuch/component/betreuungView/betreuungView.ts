@@ -1072,6 +1072,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
+        if (this.isDuplicated) {
+            return true;
+        }
         if (!this.gesuchModelManager.getGesuch() || this.isGesuchReadonly()) {
             return false;
         }
