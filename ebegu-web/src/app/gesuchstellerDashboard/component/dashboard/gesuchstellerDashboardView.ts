@@ -232,6 +232,7 @@ export class GesuchstellerDashboardViewController implements IController {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
         return tsEnabledForMandant
+            && this.gemeindeStammdaten
             && this.gemeindeStammdaten.getGemeindeKonfigurationForGesuchsperiode(periode).hasTagesschulenAnmeldung()
             && !!antrag
             && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
