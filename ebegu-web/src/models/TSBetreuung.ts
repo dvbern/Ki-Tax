@@ -44,6 +44,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _datumBestaetigung: moment.Moment;
     private _kindFullname: string;
     private _kindNummer: number;
+    private _kindId: string;
     private _gesuchId: string;
     private _gesuchsperiode: TSGesuchsperiode;
     private _betreuungMutiert: boolean;
@@ -169,6 +170,14 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set kindNummer(value: number) {
         this._kindNummer = value;
+    }
+
+    public get kindId(): string {
+        return this._kindId;
+    }
+
+    public set kindId(value: string) {
+        this._kindId = value;
     }
 
     public get gesuchId(): string {

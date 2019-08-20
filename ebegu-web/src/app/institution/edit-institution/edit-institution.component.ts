@@ -105,10 +105,6 @@ export class EditInstitutionComponent implements OnInit {
         });
     }
 
-    public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
-    }
-
     public getMitarbeiterVisibleRoles(): TSRole[] {
         const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
