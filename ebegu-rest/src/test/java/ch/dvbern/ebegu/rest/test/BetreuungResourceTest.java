@@ -107,8 +107,12 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void createBetreuung() {
 		Betreuung testBetreuung = TestDataUtil.createDefaultBetreuung();
+		Assert.assertNotNull(testBetreuung);
+		Assert.assertNotNull(testBetreuung.getKind());
+		Assert.assertNotNull(testBetreuung.getKind().getId());
 		persistStammdaten(testBetreuung.getInstitutionStammdaten());
 		JaxBetreuung testJaxBetreuung = converter.betreuungToJAX(testBetreuung);
+		Assert.assertNotNull(testJaxBetreuung.getKindId());
 
 		JaxBetreuung jaxBetreuung = betreuungResource.saveBetreuung(testJaxBetreuung,
 			false,
