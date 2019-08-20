@@ -15,11 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-view-institution-ferieninsel',
@@ -29,12 +26,9 @@ import ErrorService from '../../core/errors/service/ErrorService';
 
 export class ViewInstitutionFerieninselComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
     @Input() public stammdaten: TSInstitutionStammdaten;
 
     public constructor(
-        private readonly translate: TranslateService,
-        private readonly errorService: ErrorService,
     ) {
     }
 }

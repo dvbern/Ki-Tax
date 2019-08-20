@@ -15,11 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import ErrorService from '../../core/errors/service/ErrorService';
+import TSModulTagesschule from '../../../models/TSModulTagesschule';
 
 @Component({
     selector: 'dv-view-institution-tagesschule',
@@ -29,12 +27,16 @@ import ErrorService from '../../core/errors/service/ErrorService';
 
 export class ViewInstitutionTagesschuleComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
     @Input() public stammdaten: TSInstitutionStammdaten;
 
     public constructor(
-        private readonly translate: TranslateService,
-        private readonly errorService: ErrorService,
     ) {
+    }
+
+    public getModule(): TSModulTagesschule[] {
+        if (this.stammdaten && this.stammdaten.institutionStammdatenTagesschule) {
+            return this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
+        }
+        return [];
     }
 }

@@ -46,6 +46,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
             this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = [];
         }
+        this.loadModuleTagesschule();
     }
 
     // TODO (hefr) das muss dann irgendwie vom äusseren aufgerufen werden!
