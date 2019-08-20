@@ -251,6 +251,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = false;
+        tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
 
         return tsBetreuung;
     }
@@ -1072,6 +1073,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
+        if (this.isDuplicated) {
+            return true;
+        }
         if (!this.gesuchModelManager.getGesuch() || this.isGesuchReadonly()) {
             return false;
         }

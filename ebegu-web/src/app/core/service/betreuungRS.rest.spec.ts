@@ -31,7 +31,6 @@ describe('betreuungRS', () => {
     let mockBetreuung: TSBetreuung;
     let wizardStepManager: WizardStepManager;
     let mockBetreuungRest: any;
-    let kindId: string;
     let gesuchId: string;
     let $q: IQService;
 
@@ -49,7 +48,6 @@ describe('betreuungRS', () => {
     }));
 
     beforeEach(() => {
-        kindId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000a12';
         mockBetreuung = new TSBetreuung();
         mockBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
@@ -88,10 +86,10 @@ describe('betreuungRS', () => {
         describe('createBetreuung', () => {
             it('should create a Betreuung', () => {
                 let createdBetreuung: TSBetreuung;
-                $httpBackend.expectPUT(`${betreuungRS.serviceURL}/betreuung/${kindId}/false`,
+                $httpBackend.expectPUT(`${betreuungRS.serviceURL}/betreuung/false`,
                     mockBetreuungRest).respond(mockBetreuungRest);
 
-                betreuungRS.saveBetreuung(mockBetreuung, kindId, gesuchId, false)
+                betreuungRS.saveBetreuung(mockBetreuung, gesuchId, false)
                     .then(result => {
                         createdBetreuung = result;
                     });
