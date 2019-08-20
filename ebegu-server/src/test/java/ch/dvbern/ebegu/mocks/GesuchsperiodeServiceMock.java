@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.mocks;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -29,5 +30,13 @@ public class GesuchsperiodeServiceMock extends GesuchsperiodeServiceBean {
 	@Override
 	public Optional<Gesuchsperiode> findGesuchsperiode(@Nonnull String key) {
 		return Optional.of(TestDataUtil.createGesuchsperiode1718());
+	}
+
+	@Nonnull
+	@Override
+	public Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		gesuchsperiode.setTimestampErstellt(LocalDateTime.now());
+		gesuchsperiode.setUserErstellt("GesuchsperiodeServiceMock");
+		return gesuchsperiode;
 	}
 }

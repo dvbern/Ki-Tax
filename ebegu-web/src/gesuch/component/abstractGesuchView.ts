@@ -191,4 +191,41 @@ export default class AbstractGesuchViewController<T> implements IController {
             && isNewestGesuch
             && !this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde;
     }
+
+    public getBasisjahr(): number | undefined {
+        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahr()) {
+            return this.gesuchModelManager.getBasisjahr();
+        }
+        return undefined;
+    }
+
+    public getBasisjahrMinus1(): number | undefined {
+        return this.getBasisjahrMinus(1);
+    }
+
+    public getBasisjahrMinus2(): number | undefined {
+        return this.getBasisjahrMinus(2);
+    }
+
+    private getBasisjahrMinus(nbr: number): number | undefined {
+        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahr()) {
+            return this.gesuchModelManager.getBasisjahr() - nbr;
+        }
+        return undefined;
+    }
+
+    public getBasisjahrPlus1(): number | undefined {
+        return this.getBasisjahrPlus(1);
+    }
+
+    public getBasisjahrPlus2(): number | undefined {
+        return this.getBasisjahrPlus(2);
+    }
+
+    private getBasisjahrPlus(nbr: number): number | undefined {
+        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahrPlus(nbr)) {
+            return this.gesuchModelManager.getBasisjahrPlus(nbr);
+        }
+        return undefined;
+    }
 }

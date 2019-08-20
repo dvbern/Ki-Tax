@@ -32,6 +32,7 @@ import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSBetreuung from '../../models/TSBetreuung';
+import TSDossier from '../../models/TSDossier';
 import TSGesuch from '../../models/TSGesuch';
 import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
 import TSKind from '../../models/TSKind';
@@ -121,7 +122,6 @@ describe('gesuchModelManager', () => {
 
                     // tslint:disable-next-line:no-unbound-method
                     expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(),
-                        '2afc9d9a-957e-4550-9a22-97624a000feb',
                         undefined,
                         false);
                     // tslint:disable-next-line:no-unbound-method
@@ -166,13 +166,15 @@ describe('gesuchModelManager', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
-                    undefined).then(() => {
-                    spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
-                    spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
-                    const user = new TSBenutzer('Emilianito', 'Camacho');
-                    gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
-                    scope.$apply();
-                    expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
+                    undefined).then(gesuch => {
+                        gesuch.dossier = new TSDossier();
+                        gesuch.dossier.id = 'myId';
+                        spyOn(authServiceRS, 'getPrincipal').and.returnValue(undefined);
+                        spyOn(dossierRS, 'setVerantwortlicherBG').and.returnValue($q.when({}));
+                        const user = new TSBenutzer('Emilianito', 'Camacho');
+                        gesuchModelManager.setUserAsFallVerantwortlicherBG(user);
+                        scope.$apply();
+                        expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
                 });
             }));
         });
@@ -488,6 +490,7 @@ describe('gesuchModelManager', () => {
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
         tsBetreuung.betreuungNummer = 1;
         tsBetreuung.id = '2afc9d9a-957e-4550-9a22-97624a000feb';
+        tsBetreuung.kindId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         gesuchModelManager.getKindToWorkWith().betreuungen.push(tsBetreuung);
         gesuchModelManager.setBetreuungIndex(gesuchModelManager.getKindToWorkWith().betreuungen.length - 1);
         return tsBetreuung;

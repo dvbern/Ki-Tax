@@ -68,9 +68,9 @@ export class EinkommensverschlechterungInfoViewController
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
     public allowedRoles: ReadonlyArray<TSRole>;
     public basisJahrUndPeriode = {
-        jahr1periode: this.gesuchModelManager.getBasisjahrPlus(1),
-        jahr2periode: this.gesuchModelManager.getBasisjahrPlus(2),
-        basisjahr: this.gesuchModelManager.getBasisjahr(),
+        jahr1periode: this.getBasisjahrPlus1(),
+        jahr2periode: this.getBasisjahrPlus2(),
+        basisjahr: this.getBasisjahr(),
     };
 
     public constructor(
@@ -139,10 +139,6 @@ export class EinkommensverschlechterungInfoViewController
 
     public showJahrPlus2(): boolean {
         return this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
-    }
-
-    public getBasisJahrPlusAsString(jahr: number): string {
-        return this.ebeguUtil.getBasisJahrPlusAsString(this.gesuchModelManager.getGesuch().gesuchsperiode, jahr);
     }
 
     public confirmAndSave(): IPromise<TSEinkommensverschlechterungInfoContainer> {
