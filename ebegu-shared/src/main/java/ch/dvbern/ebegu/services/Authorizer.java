@@ -69,6 +69,11 @@ public interface Authorizer {
 	boolean isReadAuthorizedDossier(@Nullable Dossier dossier);
 
 	/**
+	 * Returns true when the user is authorized to read the gesuch.
+	 */
+	boolean isReadAuthorized(@Nullable Gesuch gesuch);
+
+	/**
 	 * Returns true when the user is authorized to read the dossier and all subobjects it contains. This is method is useful for some cases
 	 * like when an Institution must get a dossier since it is only allowed when some gesuch of the dossier has a Betreuung of the
 	 * given institution

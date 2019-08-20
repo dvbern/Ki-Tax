@@ -93,6 +93,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	private Integer kindNummer;
 
 	@Nullable
+	private String kindId;
+
+	@Nullable
 	private String gesuchId;
 
 	@Nullable
@@ -228,6 +231,15 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setKindNummer(@Nullable Integer kindNummer) {
 		this.kindNummer = kindNummer;
+	}
+
+	@Nullable
+	public String getKindId() {
+		return kindId;
+	}
+
+	public void setKindId(@Nullable String kindId) {
+		this.kindId = kindId;
 	}
 
 	@Nullable
