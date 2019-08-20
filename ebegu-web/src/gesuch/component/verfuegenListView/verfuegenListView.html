@@ -232,7 +232,7 @@
                   dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button type="button" button-click="vm.setGesuchStatusGeprueft()"
                                    aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
-                                   button-disabled="!vm.isFinSitChoosen()">
+                                   button-disabled="vm.isFinanzielleSituationRequired() && !vm.isFinSitChoosen()">
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
                 <dv-loading-button button-click="vm.setGesuchStatusVerfuegen()"

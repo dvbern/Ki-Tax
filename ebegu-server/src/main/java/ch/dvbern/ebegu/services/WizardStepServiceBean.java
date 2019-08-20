@@ -631,6 +631,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.FINANZIELLE_SITUATION == wizardStepName) {
 			if (gesuch.getGesuchsteller1() != null) {
 				relatedObjects.add(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+				relatedObjects.add(gesuch.extractFamiliensituation());
 			}
 			if (gesuch.getGesuchsteller2() != null) {
 				relatedObjects.add(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());

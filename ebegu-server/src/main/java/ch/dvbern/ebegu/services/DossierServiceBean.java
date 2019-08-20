@@ -99,9 +99,15 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public Optional<Dossier> findDossier(@Nonnull String id) {
+		return findDossier(id, true);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Dossier> findDossier(@Nonnull String id, boolean doAuthCheck) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Dossier dossier = persistence.find(Dossier.class, id);
-		if (dossier != null) {
+		if (doAuthCheck && dossier != null) {
 			authorizer.checkReadAuthorizationDossier(dossier);
 		}
 		return Optional.ofNullable(dossier);
@@ -215,11 +221,7 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	}
 
 	@Override
-	public boolean hasDossierAnyMitteilung(@Nonnull String dossierId) {
-		final Optional<Dossier> dossierOptional = findDossier(dossierId);
-		final Dossier dossier =
-			dossierOptional.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+	public boolean hasDossierAnyMitteilung(@Nonnull Dossier dossier) {
 		final Collection<Mitteilung> mitteilungenForCurrentRolle =
 			mitteilungService.getMitteilungenForCurrentRolle(dossier);
 		return !mitteilungenForCurrentRolle.isEmpty();
