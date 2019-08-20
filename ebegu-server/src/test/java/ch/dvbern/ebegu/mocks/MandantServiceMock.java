@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,25 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.mocks;
 
-import org.junit.Test;
+import java.util.Optional;
 
-public class GemeindeServiceBeanTest {
+import javax.annotation.Nonnull;
 
-	@Test
-	public void findGemeinde() {
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.services.MandantServiceBean;
+import ch.dvbern.ebegu.test.TestDataUtil;
+
+public class MandantServiceMock extends MandantServiceBean {
+
+	private static final Mandant MANDANT = TestDataUtil.createDefaultMandant();
+
+	@Nonnull
+	@Override
+	public Optional<Mandant> findMandant(@Nonnull String id) {
+		return Optional.of(MANDANT);
 	}
 
-	@Test
-	public void getFirst() {
-	}
-
-	@Test
-	public void getAllGemeinden() {
-	}
-
-	@Test
-	public void getStammdatenByGemeinde() {
+	@Nonnull
+	@Override
+	public Mandant getFirst() {
+		return MANDANT;
 	}
 }

@@ -67,11 +67,11 @@
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus1"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1"
-                                                 aria-label="{vm.getBasisJahrPlusAsString(0)}"
+                                                 aria-label="{{vm.getBasisjahrPlus1()}}"
                                                  ng-required="vm.isRequired(1)" class="input-element"
                                                  ng-disabled="vm.isGesuchReadonly() || vm.isKorrekturModusJugendamt()">
                                    <span data-translate="EKVI_FUER_JAHR"
-                                         translate-values="{basisjahr: vm.getBasisJahrPlusAsString(0)}"></span>
+                                         data-translate-value-basisjahr="{{vm.getBasisjahrPlus1()}}"></span>
                                     </md-checkbox>
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
@@ -109,11 +109,11 @@
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus2"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2"
-                                                 aria-label="{vm.getBasisJahrPlusAsString(1)}"
+                                                 aria-label="{vm.getBasisjahrPlus2()}"
                                                  ng-required="vm.isRequired(2)" class="input-element"
                                                  ng-disabled="vm.isGesuchReadonly() || vm.isKorrekturModusJugendamt()">
                                     <span data-translate="EKVI_FUER_JAHR"
-                                          translate-values="{basisjahr: vm.getBasisJahrPlusAsString(1)}"></span>
+                                          data-translate-value-basisjahr="{{vm.getBasisjahrPlus2()}}"></span>
                                     </md-checkbox>
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert"
