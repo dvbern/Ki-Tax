@@ -15,34 +15,94 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
+import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import ErrorService from '../../core/errors/service/ErrorService';
+import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionStammdatenTagesschule';
+import TSModulTagesschule from '../../../models/TSModulTagesschule';
+import EbeguUtil from '../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
     templateUrl: './edit-institution-tagesschule.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
 
-export class EditInstitutionTagesschuleComponent {
+export class EditInstitutionTagesschuleComponent implements OnInit {
 
-    @ViewChild(NgForm) public form: NgForm;
     @Input() public stammdaten: TSInstitutionStammdaten;
 
+    modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
+
     public constructor(
-        private readonly translate: TranslateService,
-        private readonly errorService: ErrorService,
     ) {
+    }
+
+    public ngOnInit(): void {
+        if (EbeguUtil.isNullOrUndefined(this.stammdaten.institutionStammdatenTagesschule)) {
+            this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
+            this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = [];
+        }
     }
 
     // TODO (hefr) das muss dann irgendwie vom äusseren aufgerufen werden!
     private persistStammdaten(): void {
-        if (!this.form.valid) {
-            return;
+        this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
+    }
+
+    public getModulTagesschuleNamen(): TSModulTagesschuleName[] {
+        return getTSModulTagesschuleNameValues();
+    }
+
+    public getModulTagesschule(modulname: TSModulTagesschuleName): TSModulTagesschule {
+        let modul: TSModulTagesschule = this.modulTageschuleMap[modulname];
+        if (!modul) {
+            modul = new TSModulTagesschule();
+            modul.wochentag = TSDayOfWeek.MONDAY; // als Vertreter der ganzen Woche
+            modul.modulTagesschuleName = modulname;
+            this.modulTageschuleMap[modulname] = modul;
         }
-        this.errorService.clearAll();
+        return modul;
+    }
+
+    private loadModuleTagesschule(): void {
+        this.modulTageschuleMap = {};
+        if (this.stammdaten && this.stammdaten.id) {
+            if (this.stammdaten.institutionStammdatenTagesschule && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule) {
+                this.fillModulTagesschuleMap(this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
+            }
+        } else {
+            this.fillModulTagesschuleMap([]);
+        }
+    }
+
+    private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]) {
+        getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
+            let foundmodul = modulListFromServer.filter(modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
+            if (foundmodul) {
+                this.modulTageschuleMap[modulname] = foundmodul;
+            } else {
+                this.modulTageschuleMap[modulname] = this.getModulTagesschule(modulname);
+            }
+        });
+    }
+
+    private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
+		let definedModulTagesschule = [];
+		for (let modulname in this.modulTageschuleMap) {
+			let tempModul: TSModulTagesschule = this.modulTageschuleMap[modulname];
+			if (tempModul.zeitVon && tempModul.zeitBis) {
+				definedModulTagesschule.push(tempModul);
+			}
+		}
+		if (definedModulTagesschule.length > 0) {
+			if (!this.stammdaten.institutionStammdatenTagesschule) {
+				this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
+			}
+			this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = definedModulTagesschule;
+		}
     }
 }

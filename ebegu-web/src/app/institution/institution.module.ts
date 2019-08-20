@@ -29,6 +29,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
 import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
 import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
 import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschul
         InstitutionRoutingModule,
         MaterialModule,
         IbanModule,
+        NgxMaterialTimepickerModule,
     ],
     declarations: [
         InstitutionListComponent,

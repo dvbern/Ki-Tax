@@ -233,19 +233,19 @@
                     </div>
                 </div>
 
-                <div *ngIf="isBetreuungsgutschein()">
+                <div *ngIf="isBetreuungsgutschein()" ngForm="institution_betreuungsgutscheine">
 					<dv-edit-institution-betreuungsgutscheine
 						[stammdaten]="stammdaten">
 					</dv-edit-institution-betreuungsgutscheine>
                 </div>
 
-                <div *ngIf="isTagesschule()">
+                <div *ngIf="isTagesschule()" ngForm="institution_tagesschule">
                     <dv-edit-institution-tagesschule
                         [stammdaten]="stammdaten">
                     </dv-edit-institution-tagesschule>
                 </div>
 
-                <div *ngIf="isFerieninsel()">
+                <div *ngIf="isFerieninsel()" ngForm="institution_ferieninsel">
                     <dv-edit-institution-ferieninsel
                         [stammdaten]="stammdaten">
                     </dv-edit-institution-ferieninsel>

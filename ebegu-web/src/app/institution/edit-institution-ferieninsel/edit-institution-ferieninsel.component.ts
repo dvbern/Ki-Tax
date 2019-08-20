@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -24,12 +24,12 @@ import ErrorService from '../../core/errors/service/ErrorService';
 @Component({
     selector: 'dv-edit-institution-ferieninsel',
     templateUrl: './edit-institution-ferieninsel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
 
 export class EditInstitutionFerieninselComponent {
 
-    @ViewChild(NgForm) public form: NgForm;
     @Input() public stammdaten: TSInstitutionStammdaten;
 
     public constructor(
@@ -40,9 +40,5 @@ export class EditInstitutionFerieninselComponent {
 
     // TODO (hefr) das muss dann irgendwie vom äusseren aufgerufen werden!
     private persistStammdaten(): void {
-        if (!this.form.valid) {
-            return;
-        }
-        this.errorService.clearAll();
     }
 }

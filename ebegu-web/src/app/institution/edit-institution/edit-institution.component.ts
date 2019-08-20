@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -47,7 +47,7 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 export class EditInstitutionComponent implements OnInit {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChildren(NgForm) public forms: QueryList<NgForm>;
     public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
     public traegerschaftenList: TSTraegerschaft[];
@@ -157,9 +157,16 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private persistStammdaten(): void {
-        if (!this.form.valid) {
-            return;
-        }
+        console.log('validating forms...');
+        this.forms.forEach((form, index) => {
+            console.log('validating ', form);
+            if (!form.valid) {
+                console.log('... not valid!');
+                return;
+            } else {
+                console.log('... valid!');
+            }
+        });
         this.errorService.clearAll();
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
