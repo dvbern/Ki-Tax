@@ -40,6 +40,14 @@ public interface DossierService {
 	Optional<Dossier> findDossier(@Nonnull String id);
 
 	/**
+	 * Gibt das Dossier mit der uebergebenen ID zurueck.
+	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) für dieses Gesuch geprüft werden muessen.
+	 */
+	@Nonnull
+	Optional<Dossier> findDossier(@Nonnull String id, boolean doAuthCheck);
+
+
+	/**
 	 * Gibt eine Liste aller Dossiers des uebergebenen Falls zurück.
 	 */
 	@Nonnull
@@ -88,7 +96,7 @@ public interface DossierService {
 	 * Checks whether the given Dossier has at least one Mitteilung or not. Will throw an exception if the dossier is
 	 * not found.
 	 */
-	boolean hasDossierAnyMitteilung(@NotNull String dossierId);
+	boolean hasDossierAnyMitteilung(@NotNull Dossier dossier);
 
 	/**
 	 * Logik fuer die Ermittlung des Hauptverantwortlichen:

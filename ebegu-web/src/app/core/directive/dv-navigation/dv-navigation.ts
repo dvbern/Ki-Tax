@@ -493,6 +493,10 @@ export class NavigatorController implements IController {
      * Checks whether the button should be disable for the current conditions. By default (auch fuer Mutaionen) enabled
      */
     public isNextButtonDisabled(): boolean {
+        // Wenn das Gesuch disabled ist (z.B. in Rolle Mandant), darf man nur soweit navigieren, wie die Steps besucht sind
+        if (this.gesuchModelManager.isGesuchReadonly()) {
+            return !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
+        }
         // if step is disabled in manager we can stop here
         if (!this.wizardStepManager.isNextStepEnabled(this.gesuchModelManager.getGesuch())) {
             return true;
