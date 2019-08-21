@@ -76,7 +76,8 @@ export class BetreuungInputComponent implements IController {
     }
 
     public getPlaceholder(): string {
-        if (this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
+        if (this.pensumContainer
+                && this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
             if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
                 return this.translate.instant('STUNDEN_PLACEHOLDER');
             }
