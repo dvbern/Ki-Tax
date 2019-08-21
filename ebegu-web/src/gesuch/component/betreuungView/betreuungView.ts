@@ -518,7 +518,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
+        return this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
     }
 
     public isFalscheInstitutionAndUserInRole(): boolean {
