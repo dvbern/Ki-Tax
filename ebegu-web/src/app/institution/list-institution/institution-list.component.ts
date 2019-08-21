@@ -159,8 +159,16 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 && currentBerechtigung.institution.id === institution.id);
     }
 
-    public isCreateAllowed(): boolean {
+    public isCreateBGAllowed(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public isCreateTSAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.authServiceRS.getPrincipal().mandant.angebotTS;
+    }
+
+    public isCreateFIAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.authServiceRS.getPrincipal().mandant.angebotFI;
     }
 
     public isDeleteAllowed(): boolean {

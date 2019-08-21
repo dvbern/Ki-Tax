@@ -61,7 +61,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" *ngIf="isBGAngebot()">
                         <div class="form-group">
                             <label class="required" class="md-no-float" translate for="begu_start_ID">INSTITUTION_BEGU_START</label>
                             <input class="dv-mat-datepicker" type="text"

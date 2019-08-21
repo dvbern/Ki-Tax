@@ -519,7 +519,19 @@ _:-ms-fullscreen, .mat-cell {
     display: none;
     // IE11 needs z-index
     z-index: 999;
+}
 
+// this class can be used to align items horizontally. do NOT use it for mobile screens
+.dv-navigation-mobileless {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: auto;
+
+    span {
+        margin: 1rem;
+        width: auto;
+    }
 }
 
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and

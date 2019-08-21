@@ -21,7 +21,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp
+} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -45,6 +48,7 @@ export class AddInstitutionComponent implements OnInit {
     public beguStart: moment.Moment;
     public beguStartDatumMin: moment.Moment;
     public adminMail: string;
+    public gemeindeId: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -117,5 +121,15 @@ export class AddInstitutionComponent implements OnInit {
 
     private navigateBack(): void {
         this.$state.go('institution.list');
+    }
+
+    public isBGAngebot(): boolean {
+        return this.betreuungsangebot === TSBetreuungsangebotTyp.KITA
+            || this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+    }
+
+    public isTSorFIAngebot(): boolean {
+        return this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE
+            || this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL;
     }
 }

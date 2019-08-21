@@ -1617,5 +1617,7 @@
     "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "",
     "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "",
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
-    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": ""
+    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "",
+    "TAGESSCHULE_HINZUFUEGEN": "",
+    "FERIENINSEL_HINZUFUEGEN": ""
 }

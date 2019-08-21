@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import TSGemeinde from '../TSGemeinde';
+import {TSRole} from './TSRole';
 
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
