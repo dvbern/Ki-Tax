@@ -17,12 +17,31 @@
 
 <div class="institutionTagesschule row">
 
+    <!-- Gemeinde -->
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate for="gemeinde">GEMEINDE</h3>
+                <mat-select [(ngModel)]="stammdaten.institutionStammdatenTagesschule.gemeinde"
+                            [compareWith]="compareGemeinde"
+                            id="gemeinde" name="gemeinde"
+                            class="form-control">
+                    <mat-option *ngFor="let gmde of gemeindeList; trackBy:gmde?.id"
+                                [value]="gmde">
+                        {{gmde.name}}
+                    </mat-option>
+                </mat-select>
+                <dv-error-messages [errorObject]="gemeinde?.errors" inputId="gemeinde"></dv-error-messages>
+            </div>
+        </div>
+    </div>
+
+	<!-- Module -->
     <div class="row">
         <div class="col-md-6">
             <h1 translate>INSTITUTION_ST_MODULE</h1>
         </div>
     </div>
-
     <!-- Titelzeile -->
     <div class="row">
         <div class="col-md-2">
@@ -35,7 +54,6 @@
             <span translate>BIS</span>
         </div>
     </div>
-
     <div *ngFor="let modul of getModulTagesschuleNamen()">
         <div class="row">
             <div class="col-md-2">

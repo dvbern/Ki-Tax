@@ -17,8 +17,10 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionStammdatenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
@@ -36,13 +38,18 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
 
-    modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
+    public gemeindeList: TSGemeinde[];
+    public modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
 
     public constructor(
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
     public ngOnInit(): void {
+        this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
+            this.gemeindeList = allGemeinden;
+        });
         if (EbeguUtil.isNullOrUndefined(this.stammdaten.institutionStammdatenTagesschule)) {
             this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
             this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = [];
@@ -107,5 +114,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 			}
 			this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = definedModulTagesschule;
 		}
+    }
+
+    public compareGemeinde(b1: TSGemeinde, b2: TSGemeinde): boolean {
+        return b1 && b2 ? b1.id === b2.id : b1 === b2;
     }
 }
