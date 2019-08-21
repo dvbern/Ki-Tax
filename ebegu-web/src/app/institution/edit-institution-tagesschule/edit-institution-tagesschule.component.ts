@@ -22,6 +22,7 @@ import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionStammdatenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
+import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
 @Component({
@@ -49,8 +50,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.loadModuleTagesschule();
     }
 
-    // TODO (hefr) das muss dann irgendwie vom äusseren aufgerufen werden!
-    private persistStammdaten(): void {
+    public onPrePersist(): void {
         this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
     }
 
@@ -92,10 +92,12 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
-		let definedModulTagesschule = [];
+		let definedModulTagesschule: TSModulTagesschule[] = [];
 		for (let modulname in this.modulTageschuleMap) {
 			let tempModul: TSModulTagesschule = this.modulTageschuleMap[modulname];
 			if (tempModul.zeitVon && tempModul.zeitBis) {
+			    tempModul.zeitVon = DateUtil.hoursAndMinutesToMoment(tempModul.zeitVon);
+                tempModul.zeitBis = DateUtil.hoursAndMinutesToMoment(tempModul.zeitBis);
 				definedModulTagesschule.push(tempModul);
 			}
 		}

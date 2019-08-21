@@ -45,18 +45,22 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <ngx-timepicker-field #pickerVon [format]="24" id="pickerVon" name="pickerVon"
-                                      [(ngModel)]="getModulTagesschule(modul).zeitVon"
-                                      [required]="getModulTagesschule(modul).zeitBis"></ngx-timepicker-field>
-                    <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon"></dv-error-messages>
+                    <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerVon"
+                           [format]="24" name="pickerVon{{modul}}" readonly
+                           [(ngModel)]="getModulTagesschule(modul).zeitVon"
+                           [required]="getModulTagesschule(modul).zeitBis">
+                    <ngx-material-timepicker #pickerVon></ngx-material-timepicker>
+                    <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <ngx-timepicker-field #pickerBis [format]="24" id="pickerBis" name="pickerBis"
-                                      [(ngModel)]="getModulTagesschule(modul).zeitBis"
-                                      [required]="getModulTagesschule(modul).zeitVon"></ngx-timepicker-field>
-                    <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis"></dv-error-messages>
+                    <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerBis"
+                           [format]="24" name="pickerBis{{modul}}" readonly
+                           [(ngModel)]="getModulTagesschule(modul).zeitBis"
+                           [required]="getModulTagesschule(modul).zeitVon">
+                    <ngx-material-timepicker #pickerBis></ngx-material-timepicker>
+                    <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -38,6 +38,8 @@ import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
+import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
 
 @Component({
     selector: 'dv-edit-institution',
@@ -56,6 +58,13 @@ export class EditInstitutionComponent implements OnInit {
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
     private initName: string;
+
+    @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
+    private componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
+
+    @ViewChild(EditInstitutionTagesschuleComponent)
+    private componentTagesschule: EditInstitutionTagesschuleComponent;
+
 
     public constructor(
         private readonly $transition$: Transition,
@@ -170,6 +179,14 @@ export class EditInstitutionComponent implements OnInit {
         this.errorService.clearAll();
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
+        }
+
+        // PrePersist auch auf den Child-Komponenten aufrufen
+        if (this.componentBetreuungsgutscheine) {
+            this.componentBetreuungsgutscheine.onPrePersist();
+        }
+        if (this.componentTagesschule) {
+            this.componentTagesschule.onPrePersist();
         }
 
         // tslint:disable-next-line:early-exit

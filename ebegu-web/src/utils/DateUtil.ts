@@ -121,4 +121,20 @@ export default class DateUtil {
 
         return `${year} / ${year + 1}`;
     }
+
+    public static hoursAndMinutesToMoment(hoursAndMinutes: any): Moment {
+        return DateUtil.add(DateUtil.now().startOf('day'), hoursAndMinutes);
+    }
+
+    public static add(date: Moment, add: any): Moment {
+        if (!add || add.indexOf(':') === -1) {
+            return undefined;
+        }
+        let split = add.split(':');
+        var hours = split[0];
+        var minutes = split[1];
+        date.add(hours, 'hours');
+        date.add(minutes, 'minutes');
+        return date;
+    }
 }

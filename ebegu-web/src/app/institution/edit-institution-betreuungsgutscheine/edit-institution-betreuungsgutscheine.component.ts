@@ -45,8 +45,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
             !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
     }
 
-    // TODO (hefr) das muss dann irgendwie vom äusseren aufgerufen werden!
-    private persistStammdaten(): void {
+    public onPrePersist(): void {
         if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = undefined;
         }
