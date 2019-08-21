@@ -33,15 +33,14 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.outbox.EventConverterUtil;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
 import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -59,14 +58,9 @@ public class VerfuegungEventConverter {
 	@Nonnull
 	public VerfuegungVerfuegtEvent of(@Nonnull Verfuegung verfuegung) {
 		VerfuegungEventDTO dto = toVerfuegungEventDTO(verfuegung);
+		byte[] payload = EventConverterUtil.toJsonB(dto);
 
-		try {
-			byte[] bytes = ObjectMapperUtil.MAPPER.writeValueAsBytes(dto);
-
-			return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), bytes);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("failed converting to jsonb", e);
-		}
+		return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload);
 	}
 
 	@Nonnull
