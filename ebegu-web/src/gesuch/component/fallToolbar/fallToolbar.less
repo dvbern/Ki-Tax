@@ -34,6 +34,13 @@
     }
 
     .dossier-list {
+        button.dossier-element {
+            padding: 0 2rem;
+            width: auto;
+        }
+        div.dossier-element {
+            padding: 0;
+        }
         margin-left: auto;
         padding: 0 !important;
         max-height: 30px !important;
@@ -41,11 +48,9 @@
             background-color: @grey;
             color: @contrast-lightest;
             font-weight: bold;
-            width: 20rem;
             min-height: @toolbar-height;
             line-height: @toolbar-height;
             text-align: center;
-            padding: 0;
 
             &.fall-nummer {
                 color: @toolbar-color;
