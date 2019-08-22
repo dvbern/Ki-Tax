@@ -31,6 +31,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -57,6 +58,8 @@ import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -92,6 +95,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	private BenutzerService benutzerService;
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+	@Inject
+	private Event<ExportedEvent> event;
+	@Inject
+	private InstitutionEventConverter institutionEventConverter;
 
 	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
@@ -103,7 +110,16 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
-		return persistence.merge(institution);
+		Institution updated = persistence.merge(institution);
+
+		String id = updated.getId();
+		InstitutionStammdaten stammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id);
+		if (stammdaten != null) {
+			// no need to notify before stammdaten are known.
+			event.fire(institutionEventConverter.of(stammdaten));
+		}
+
+		return updated;
 	}
 
 	@Nonnull
