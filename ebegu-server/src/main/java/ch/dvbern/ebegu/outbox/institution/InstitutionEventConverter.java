@@ -54,8 +54,8 @@ public class InstitutionEventConverter {
 			adr.getStrasse(),
 			adr.getHausnummer(),
 			adr.getZusatzzeile(),
-			adr.getOrt(),
 			adr.getPlz(),
+			adr.getOrt(),
 			adr.getLand().name()
 		);
 

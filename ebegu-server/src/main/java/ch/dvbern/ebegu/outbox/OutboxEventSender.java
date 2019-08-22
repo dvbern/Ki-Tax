@@ -48,7 +48,4 @@ public class OutboxEventSender {
 
 		entityManager.persist(outboxEvent);
 	}
-
-	// TODO Migration: bestehende Verfuegungen aus DB laden mit @Schedule methode und in VerfuegungVefuegtEvent konvertieren
-	// Verfuegungen mit Flag erweitern (event_published)
 }

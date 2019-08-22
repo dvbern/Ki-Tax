@@ -46,30 +46,27 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	private static final long serialVersionUID = -8706487439884760618L;
 
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
-	@NotNull
-	private String name;
+	private @Size(min = 1, max = DB_DEFAULT_MAX_LENGTH) @NotNull String name;
 
 	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_traegerschaft_id"))
 	private Traegerschaft traegerschaft;
 
-	@NotNull
-	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_mandant_id"))
-	private Mandant mandant;
+	@ManyToOne(optional = false)
+	private @NotNull Mandant mandant;
 
-	@NotNull
-	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
-
-	@NotNull
 	@Column(nullable = false)
-	private boolean stammdatenCheckRequired = false;
+	private @NotNull InstitutionStatus status = InstitutionStatus.EINGELADEN;
 
+	@Column(nullable = false)
+	private @NotNull boolean stammdatenCheckRequired = false;
+
+	@Column(nullable = false)
+	private @NotNull boolean eventPublished = true;
 
 	public Institution() {
 	}
@@ -94,8 +91,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	}
 
 	@Override
-	@NotNull
-	public Mandant getMandant() {
+	public @NotNull Mandant getMandant() {
 		return mandant;
 	}
 
@@ -117,6 +113,14 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	public void setStammdatenCheckRequired(boolean stammdatenCheckRequired) {
 		this.stammdatenCheckRequired = stammdatenCheckRequired;
+	}
+
+	public boolean isEventPublished() {
+		return eventPublished;
+	}
+
+	public void setEventPublished(boolean eventPublished) {
+		this.eventPublished = eventPublished;
 	}
 
 	public boolean isUnknownInstitution() {
