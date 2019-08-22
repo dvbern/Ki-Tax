@@ -81,8 +81,11 @@ export class CreateAngebotListViewController implements IController {
         }
     }
 
-    public getGesuchsperiodeString(): string {
-        return this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString;
+    public getGesuchsperiodeString(): string | undefined {
+        if (this.gesuchModelManager.getGesuchsperiode()) {
+            return this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString;
+        }
+        return undefined;
     }
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
@@ -109,9 +112,10 @@ export class CreateAngebotListViewController implements IController {
     }
 
     public getKindContainerList(): Array<TSKindContainer> {
-
-        return this.gesuchModelManager.getGesuch().kindContainers;
-
+        if (this.gesuchModelManager.getGesuch()) {
+            return this.gesuchModelManager.getGesuch().kindContainers;
+        }
+        return [];
     }
 
     public showInstitutionSelect(): boolean {
