@@ -122,6 +122,12 @@ export default class DateUtil {
         return `${year} / ${year + 1}`;
     }
 
+    public static momentToHoursAndMinutes(date: Moment) {
+        var hours = date.get('hours');
+        var minutes = date.get('minutes');
+        return hours + ':' + minutes;
+    }
+
     public static hoursAndMinutesToMoment(hoursAndMinutes: any): Moment {
         return DateUtil.add(DateUtil.now().startOf('day'), hoursAndMinutes);
     }

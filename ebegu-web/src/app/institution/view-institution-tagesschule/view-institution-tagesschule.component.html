@@ -45,7 +45,7 @@
             <span translate>BIS</span>
         </div>
     </div>
-    <div *ngFor="let modul of getModule()">
+    <div *ngFor="let modul of module">
         <div class="row">
             <div class="col-md-2">
                 <div class="form-group">
@@ -54,12 +54,12 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label>{{modul.zeitVon}}</label>
+                    <label>{{modul.zeitVon.format('HH:mm')}}</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label>{{modul.zeitBis}}</label>
+                    <label>{{modul.zeitBis.format('HH:mm')}}</label>
                 </div>
             </div>
         </div>

@@ -68,8 +68,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     public getModulTagesschule(modulname: TSModulTagesschuleName): TSModulTagesschule {
         let modul: TSModulTagesschule = this.modulTageschuleMap[modulname];
         if (!modul) {
+            // Gespeichert wird das Modul dann fuer jeden Wochentag. Als Vertreter wird der Montag ausgefüllt
             modul = new TSModulTagesschule();
-            modul.wochentag = TSDayOfWeek.MONDAY; // als Vertreter der ganzen Woche
+            modul.wochentag = TSDayOfWeek.MONDAY;
             modul.modulTagesschuleName = modulname;
             this.modulTageschuleMap[modulname] = modul;
         }
@@ -91,6 +92,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
             let foundmodul = modulListFromServer.filter(modul => (modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY))[0];
             if (foundmodul) {
+                (foundmodul as any).zeitVon = DateUtil.momentToHoursAndMinutes(foundmodul.zeitVon);
+                (foundmodul as any).zeitBis = DateUtil.momentToHoursAndMinutes(foundmodul.zeitBis);
                 this.modulTageschuleMap[modulname] = foundmodul;
             } else {
                 this.modulTageschuleMap[modulname] = this.getModulTagesschule(modulname);

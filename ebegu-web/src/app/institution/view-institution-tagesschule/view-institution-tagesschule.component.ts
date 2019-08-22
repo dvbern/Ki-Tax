@@ -15,7 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 
@@ -25,18 +26,26 @@ import TSModulTagesschule from '../../../models/TSModulTagesschule';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class ViewInstitutionTagesschuleComponent {
+export class ViewInstitutionTagesschuleComponent implements OnInit {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
+
+    public module: TSModulTagesschule[] = [];
 
     public constructor(
     ) {
     }
 
-    public getModule(): TSModulTagesschule[] {
+    public ngOnInit(): void {
+        // Die Module werden pro Wochentag gespeichert. Wir zeigen hier nur den Montag an
+        // als Vertreter der ganzen Woche
         if (this.stammdaten && this.stammdaten.institutionStammdatenTagesschule) {
-            return this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
+            let moduleTagesschule = this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
+            for (const tsModulTagesschule of moduleTagesschule) {
+                if (tsModulTagesschule.wochentag === TSDayOfWeek.MONDAY) {
+                    this.module.push(tsModulTagesschule);
+                }
+            }
         }
-        return [];
     }
 }
