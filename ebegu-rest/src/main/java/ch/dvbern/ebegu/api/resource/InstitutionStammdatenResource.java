@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -55,7 +54,6 @@ import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
-import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -155,41 +153,6 @@ public class InstitutionStammdatenResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Gibt alle vorhandenen Institutionsstammdaten zurueck",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
-		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
-			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten, new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Sucht in der DB alle InstitutionStammdaten, bei welchen das gegebene Datum zwischen DatumVon und DatumBis liegt
-	 * Wenn das Datum null ist, wird dieses automatisch als heutiges Datum gesetzt.
-	 *
-	 * @param stringDate Date als String mit Format "yyyy-MM-dd". Wenn null, heutiges Datum gesetzt
-	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
-	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Path("/date")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdatenByDate(
-		@Nullable @QueryParam("date") String stringDate) {
-
-		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stringDate);
-		return institutionStammdatenService.getAllInstitutionStammdatenByDate(date).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten, new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
-	}
-
 	/**
 	 * Sucht in der DB alle aktiven InstitutionStammdaten, deren Gueltigkeit zwischen DatumVon und DatumBis
 	 * der Gesuchsperiode liegt
@@ -246,30 +209,6 @@ public class InstitutionStammdatenResource {
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeindeId).stream()
 			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Sucht in der DB alle InstitutionStammdaten, bei welchen die Institutions-id dem übergabeparameter entspricht.
-	 * Falls die Institution keine Stammdaten hat, wird die Ausnahme EbeguEntityNotFoundException geworfen.
-	 *
-	 * @param institutionJAXPId ID der gesuchten Institution
-	 * @return Die InstitutionStammdaten dieser Institution
-	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck, EbeguEntityNotFoundException falls keine vorhanden.",
-		response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Path("/institution/{institutionId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxInstitutionStammdaten getInstitutionStammdatenByInstitution(
-		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
-
-		Objects.requireNonNull(institutionJAXPId.getId());
-		String institutionID = converter.toEntityId(institutionJAXPId);
-		InstitutionStammdaten stammdaten =
-			institutionStammdatenService.getInstitutionStammdatenByInstitution(institutionID);
-		return converter.institutionStammdatenToJAX(stammdaten);
 	}
 
 	/**

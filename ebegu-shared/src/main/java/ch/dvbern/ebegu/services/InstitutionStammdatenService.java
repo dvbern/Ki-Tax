@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -54,12 +53,6 @@ public interface InstitutionStammdatenService {
 	void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId);
 
 	/**
-	 * @param date Das Datum fuer welches die InstitutionStammdaten gesucht werden muessen
-	 * @return Alle InstitutionStammdaten, bei denen das gegebene Datum zwischen datumVon und datumBis liegt
-	 */
-	Collection<InstitutionStammdaten> getAllInstitutionStammdatenByDate(LocalDate date);
-
-	/**
 	 * @param gesuchsperiodeId Id der gewuenschten Gesuchsperiode
 	 * @return Alle aktiven InstitutionStammdaten bei denen eine Ueberschneidung der Gueltigkeit zwischen datumVon und datumBis liegt
 	 */
@@ -74,12 +67,6 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull String gemeindeId);
-
-	/**
-	 * Gibt die Stammdaten dieser Institution zurueck.
-	 * Falls die Institution keine Stammdaten hat, wird die Ausnahme EbeguEntityNotFoundException geworfen.
-	 */
-	InstitutionStammdaten getInstitutionStammdatenByInstitution(String institutionId);
 
 	/**
 	 * Gibt die Stammdaten dieser Institution zurueck.

@@ -974,12 +974,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	public void sendInfoOffenePendenzenInstitution() {
-		Collection<Institution> activeInstitutionen = institutionService.getAllActiveInstitutionen();
-		for (Institution institution : activeInstitutionen) {
-			Collection<Betreuung> pendenzen = getPendenzenForInstitution(institution);
+		Collection<InstitutionStammdaten> activeInstitutionen = institutionStammdatenService.getAllInstitutionStammdaten();
+		for (InstitutionStammdaten stammdaten : activeInstitutionen) {
+			Collection<Betreuung> pendenzen = getPendenzenForInstitution(stammdaten.getInstitution());
 			if (CollectionUtils.isNotEmpty(pendenzen)) {
-				InstitutionStammdaten stammdaten =
-					institutionStammdatenService.getInstitutionStammdatenByInstitution(institution.getId());
 				if (stammdaten.getSendMailWennOffenePendenzen()) {
 					mailService.sendInfoOffenePendenzenInstitution(stammdaten);
 				}
