@@ -37,6 +37,8 @@ export default class GemeindeRS implements IEntityRS {
     public serviceURL: string;
 
     private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubjectTS$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubjectFI$ = new BehaviorSubject<TSGemeinde[]>([]);
 
     public constructor(
         public $http: IHttpService,
@@ -63,9 +65,22 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
+    public getGemeindenForTSByPrincipal(): Observable<TSGemeinde[]> {
+        // return this.$http.get(`${this.serviceURL}/tagesschule`)
+        //     .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        return this.principalGemeindenSubjectTS$.asObservable();
+    }
+
+    public getGemeindenForFIByPrincipal(): Observable<TSGemeinde[]> {
+        // return this.$http.get(`${this.serviceURL}/ferieninsel`)
+        //     .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+        return this.principalGemeindenSubjectFI$.asObservable();
+    }
+
     public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubject$.asObservable();
     }
+
 
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
         return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(gemeindeId)}`)
@@ -78,6 +93,16 @@ export default class GemeindeRS implements IEntityRS {
             .subscribe(
                 gemeinden => {
                     this.principalGemeindenSubject$.next(gemeinden);
+
+                    const gemeindenTS = angular.copy(gemeinden.filter(g => {
+                        return g.angebotTS === true;
+                    }));
+                    const gemeindenFI = angular.copy(gemeinden.filter(g => {
+                        return g.angebotFI === true;
+                    }));
+
+                    this.principalGemeindenSubjectTS$.next(gemeindenTS);
+                    this.principalGemeindenSubjectFI$.next(gemeindenFI);
                 },
                 err => this.$log.error(err),
             );

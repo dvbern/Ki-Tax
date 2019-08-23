@@ -1623,5 +1623,7 @@
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet",
     "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt.",
     "TAGESSCHULE_HINZUFUEGEN": "Tagesschule hinzufügen",
-    "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen"
+    "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen",
+    "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
+    "INSTITUTION_ERSTELLEN": "Institution erstellen"
 }

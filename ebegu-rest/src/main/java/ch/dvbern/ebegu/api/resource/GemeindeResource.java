@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -105,6 +106,9 @@ public class GemeindeResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
@@ -188,6 +192,39 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxGemeinde> getAktiveGemeinden() {
 		return gemeindeService.getAktiveGemeinden().stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns all Gemeinden for the current User with Tagesschule enabled",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/tagesschule")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeinde> getGemeindenForTSByPrincipal() {
+		Benutzer currentUser = principalBean.getBenutzer();
+		List<JaxGemeinde> gemeinden = currentUser.extractGemeindenForUser().stream()
+			.filter(Gemeinde::isAngebotTS)
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+		return gemeinden;
+	}
+
+	@ApiOperation(value = "Returns all Gemeinden with for the current User with Tagesschule enabled",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/ferieninsel")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeinde> getGemeindenForFIByPrincipal() {
+		Benutzer currentUser = principalBean.getBenutzer();
+		return currentUser.extractGemeindenForUser().stream()
+			.filter(Gemeinde::isAngebotFI)
 			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}

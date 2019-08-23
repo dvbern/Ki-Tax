@@ -22,6 +22,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
@@ -112,8 +113,27 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             );
     }
 
-    public createInstitution(): void {
-        this.$state.go('institution.add');
+    public createInstitutionBG(): void {
+
+        this.goToAddInstitution({undefined });
+    }
+
+    public createInstitutionTS(): void {
+        this.goToAddInstitution({
+            betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
+            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE]
+        });
+    }
+
+    public createInstitutionFI(): void {
+        this.goToAddInstitution({
+            betreuungsangebot: TSBetreuungsangebotTyp.FERIENINSEL,
+            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL]
+        });
+    }
+
+    private goToAddInstitution(params: any): void {
+        this.$state.go('institution.add', params);
     }
 
     /**

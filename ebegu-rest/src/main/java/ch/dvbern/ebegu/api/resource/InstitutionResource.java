@@ -49,17 +49,22 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -87,6 +92,9 @@ public class InstitutionResource {
 	private BenutzerService benutzerService;
 
 	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
@@ -99,6 +107,7 @@ public class InstitutionResource {
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
 		@Nonnull @NotNull @Valid @QueryParam("betreuung") BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
+		@Nullable @Valid @QueryParam("gemeindeId") String gemeindeId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -106,25 +115,27 @@ public class InstitutionResource {
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail);
+		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail, gemeindeId);
 
-		Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
-			.map(b -> {
-				if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
-					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
-					// an existing user cannot be used to create a new Institution
-					throw new EbeguRuntimeException(
-						KibonLogLevel.INFO,
-						"createInstitution",
-						ErrorCodeEnum.EXISTING_USER_MAIL,
-						adminMail);
-				}
+		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
+			Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+				.map(b -> {
+					if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
+						!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
+						// an existing user cannot be used to create a new Institution
+						throw new EbeguRuntimeException(
+							KibonLogLevel.INFO,
+							"createInstitution",
+							ErrorCodeEnum.EXISTING_USER_MAIL,
+							adminMail);
+					}
 
-				return b;
-			})
-			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
+					return b;
+				})
+				.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
-		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
+			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
+		}
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(InstitutionResource.class)
@@ -139,22 +150,45 @@ public class InstitutionResource {
 		@Nonnull String stringDateBeguStart,
 		@Nonnull BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull Institution persistedInstitution,
-		@Nonnull String adminMail
+		@Nonnull String adminMail,
+		@Nullable String gemeindeId
 	) {
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
+		Gemeinde gemeinde;
 		switch (betreuungsangebot) {
 		case KITA:
 		case TAGESFAMILIEN:
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(new InstitutionStammdatenBetreuungsgutscheine());
+			LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
+			DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
+			institutionStammdaten.setGueltigkeit(gueltigkeit);
 			break;
 		case TAGESSCHULE:
-			// TODO uncomment as soon as we know the Gemeinde
-			// institutionStammdaten.setInstitutionStammdatenTagesschule(new InstitutionStammdatenTagesschule());
+			if (gemeindeId == null) {
+				// TODO throw exception
+			}
+			gemeinde =
+				gemeindeService.findGemeinde(gemeindeId)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
+			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
+			stammdatenTS.setGemeinde(gemeinde);
+			institutionStammdaten.setInstitutionStammdatenTagesschule(stammdatenTS);
 			break;
 
 		case FERIENINSEL:
-			// TODO uncomment as soon as we know the Gemeinde
-			// institutionStammdaten.setInstitutionStammdatenFerieninsel(new InstitutionStammdatenFerieninsel());
+			if (gemeindeId == null) {
+			// TODO throw exception
+			}
+			gemeinde =
+				gemeindeService.findGemeinde(gemeindeId)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
+			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
+			stammdatenFI.setGemeinde(gemeinde);
+			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
+
+
 			break;
 		}
 
@@ -166,9 +200,6 @@ public class InstitutionResource {
 		institutionStammdaten.setBetreuungsangebotTyp(betreuungsangebot);
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
-		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
-		DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
-		institutionStammdaten.setGueltigkeit(gueltigkeit);
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 	}
 

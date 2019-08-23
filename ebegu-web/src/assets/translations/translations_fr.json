@@ -1619,5 +1619,7 @@
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
     "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "",
     "TAGESSCHULE_HINZUFUEGEN": "",
-    "FERIENINSEL_HINZUFUEGEN": ""
+    "FERIENINSEL_HINZUFUEGEN": "",
+    "KEINE_GEMEINDE_KONFIGURATION": "",
+    "INSTITUTION_ERSTELLEN": ""
 }
