@@ -1101,7 +1101,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public keineDetailAnmeldungClicked(): void {
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
-            this.instStammId = this.CONSTANTS.INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE;
+            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
             this.getBetreuungModel().vertrag = true;
         } else {
             this.instStammId = undefined;

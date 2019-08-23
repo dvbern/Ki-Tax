@@ -15,6 +15,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import ErrorService from '../../app/core/errors/service/ErrorService';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
@@ -1608,7 +1609,7 @@ export default class GesuchModelManager {
      * erkannt.
      */
     public isDefaultTagesschuleAllowed(instStamm: TSInstitutionStammdaten): boolean {
-        if (instStamm.id === '199ac4a1-448f-4d4c-b3a6-5aee21f89613') {
+        if (instStamm.id === CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE) {
             return !(this.gemeindeKonfiguration.hasTagesschulenAnmeldung());
         }
         return true;

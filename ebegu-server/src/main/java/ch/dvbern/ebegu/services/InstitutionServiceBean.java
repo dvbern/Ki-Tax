@@ -93,11 +93,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
 
-	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
-	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	private static final String ID_UNKNOWN_INSTITUTION_KITA = "00000000-0000-0000-0000-000000000000";
-	private static final String ID_UNKNOWN_INSTITUTION_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
@@ -391,7 +386,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	private Predicate excludeUnknownInstitutionPredicate(Root root) {
 		return root.get(AbstractEntity_.id)
-			.in(Arrays.asList(ID_UNKNOWN_INSTITUTION_KITA, ID_UNKNOWN_INSTITUTION_TAGESFAMILIE))
+			.in(Arrays.asList(
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA,
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE,
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE))
 			.not();
 	}
 }

@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
@@ -78,11 +79,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	private static final String GP_START = "gpStart";
 	private static final String GP_END = "gpEnd";
 	private static final String GEMEINDEN = "gemeinden";
-
-	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
-	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
-	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
 
 	@Inject
 	private Persistence persistence;
@@ -326,7 +322,10 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	private Predicate excludeUnknownInstitutionStammdatenPredicate(Root root) {
 		return root.get(AbstractEntity_.id)
-			.in(Arrays.asList(ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA, ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE))
+			.in(Arrays.asList(
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA,
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE,
+				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE))
 			.not();
 	}
 
