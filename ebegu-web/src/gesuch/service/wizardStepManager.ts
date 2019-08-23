@@ -191,13 +191,15 @@ export default class WizardStepManager {
      */
     public updateWizardStepStatus(stepName: TSWizardStepName, newStepStatus: TSWizardStepStatus): IPromise<void> {
         const step = this.getStepByName(stepName);
-        step.verfuegbar = true;
-        if (this.needNewStatusSave(step.wizardStepStatus, newStepStatus)) {
-            // nur wenn der Status sich geaendert hat updaten und steps laden
-            step.wizardStepStatus = newStepStatus;
-            return this.wizardStepRS.updateWizardStep(step).then((response: TSWizardStep) => {
-                return this.findStepsFromGesuch(response.gesuchId);
-            });
+        if (step) {
+            step.verfuegbar = true;
+            if (this.needNewStatusSave(step.wizardStepStatus, newStepStatus)) {
+                // nur wenn der Status sich geaendert hat updaten und steps laden
+                step.wizardStepStatus = newStepStatus;
+                return this.wizardStepRS.updateWizardStep(step).then((response: TSWizardStep) => {
+                    return this.findStepsFromGesuch(response.gesuchId);
+                });
+            }
         }
         return this.$q.when();
     }

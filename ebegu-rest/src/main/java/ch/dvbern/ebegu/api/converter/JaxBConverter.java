@@ -1550,6 +1550,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionStammdatenTagesschule jaxInstStammdatenTagesschule =
 			new JaxInstitutionStammdatenTagesschule();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
+		jaxInstStammdatenTagesschule.setGemeinde(gemeindeToJAX(persistedInstStammdatenTagesschule.getGemeinde()));
 		jaxInstStammdatenTagesschule.setModuleTagesschule(moduleTagesschuleListToJax(persistedInstStammdatenTagesschule.getModuleTagesschule()));
 
 		return jaxInstStammdatenTagesschule;
@@ -1566,6 +1567,16 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToEntity(
 			institutionStammdatenTagesschuleJAXP,
 			institutionStammdatenTagesschule);
+
+		// Die Gemeinde muss neu von der DB gelesen werden
+		String gemeindeID = institutionStammdatenTagesschuleJAXP.getGemeinde().getId();
+		Objects.requireNonNull(gemeindeID);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeID)
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"findGemeinde",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeID));
+		institutionStammdatenTagesschule.setGemeinde(gemeinde);
 
 		final Set<ModulTagesschule> convertedModuleTagesschule =
 			moduleTagesschuleListToEntity(institutionStammdatenTagesschuleJAXP.getModuleTagesschule(),

@@ -1,0 +1,86 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="institutionBetreuungsgutscheine row">
+
+
+    <div class="row">
+        <!-- Zahlungsangaben -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.iban}}</p>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber}}</p>
+            </div>
+        </div>
+        <!-- Abweichende Zahlungsadresse -->
+        <div *ngIf="abweichendeZahlungsAdresse; else showSameZahlugnsadresse" class="col-sm-3">
+            <div class="form-group">
+                <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.organisation}}</p>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse}} {{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer}}</p>
+                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz}} {{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort}}</p>
+            </div>
+        </div>
+        <ng-template #showSameZahlugnsadresse>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
+                    <p translate>INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE</p>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+
+    <div class="row">
+        <!-- Subventionierte Plätze -->
+        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
+            <div class="form-group">
+                <h3 translate>INSTITUTION_PLAETZE</h3>
+                <p translate
+                   [translateParams]="{anzahlPlaetze: stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze
+                                   ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze : 0}">
+                    INSTITUTION_ANZAHL_PLAETZE_PARAM
+                </p>
+                <p translate
+                   [translateParams]="{anzahlPlaetzeFirmen: stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen
+                                   ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen : 0}">
+                    INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM
+                </p>
+                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze"
+                   translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
+            </div>
+        </div>
+
+        <!-- Benachrichtugnseinstellungen -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
+                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
+            </div>
+        </div>
+
+        <!-- Alterskategorie -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate>INSTITUTION_ALTERSKATEGORIE</h3>
+                <p>{{getAlterskategorien()}}</p>
+            </div>
+        </div>
+    </div>
+</div>

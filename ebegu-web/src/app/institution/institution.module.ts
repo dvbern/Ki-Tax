@@ -20,9 +20,16 @@ import {IbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
+import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
+import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
+import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
+import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
+import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
+import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
     imports: [
@@ -30,16 +37,29 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         InstitutionRoutingModule,
         MaterialModule,
         IbanModule,
+        NgxMaterialTimepickerModule,
     ],
     declarations: [
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
+        EditInstitutionBetreuungsgutscheineComponent,
+        ViewInstitutionBetreuungsgutscheineComponent,
+        EditInstitutionTagesschuleComponent,
+        ViewInstitutionTagesschuleComponent,
+        EditInstitutionFerieninselComponent,
+        ViewInstitutionFerieninselComponent,
     ],
     entryComponents: [
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
+        EditInstitutionBetreuungsgutscheineComponent,
+        ViewInstitutionBetreuungsgutscheineComponent,
+        EditInstitutionTagesschuleComponent,
+        ViewInstitutionTagesschuleComponent,
+        EditInstitutionFerieninselComponent,
+        ViewInstitutionFerieninselComponent,
     ],
     providers: [],
 })
