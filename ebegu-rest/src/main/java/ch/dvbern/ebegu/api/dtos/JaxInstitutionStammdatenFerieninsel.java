@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,6 +34,10 @@ public class JaxInstitutionStammdatenFerieninsel extends JaxAbstractDateRangedDT
 
 	private static final long serialVersionUID = 6958218086966611467L;
 
+	@NotNull
+	@Nonnull
+	private JaxGemeinde gemeinde;
+
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String ausweichstandortSommerferien;
@@ -47,6 +53,15 @@ public class JaxInstitutionStammdatenFerieninsel extends JaxAbstractDateRangedDT
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String ausweichstandortFruehlingsferien;
+
+	@Nonnull
+	public JaxGemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nonnull JaxGemeinde gemeinde) {
+		this.gemeinde = gemeinde;
+	}
 
 	@Nullable
 	public String getAusweichstandortSommerferien() {

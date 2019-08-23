@@ -54,4 +54,8 @@ public enum BetreuungsangebotTyp {
 	public static List<BetreuungsangebotTyp> getSchulamtTypes() {
 		return Arrays.asList(TAGESSCHULE, FERIENINSEL);
 	}
+
+	public static List<BetreuungsangebotTyp> getBetreuungsgutscheinTypes() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
+	}
 }

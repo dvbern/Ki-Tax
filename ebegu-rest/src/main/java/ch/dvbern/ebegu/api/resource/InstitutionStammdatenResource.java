@@ -217,6 +217,38 @@ public class InstitutionStammdatenResource {
 	}
 
 	/**
+	 * Sucht in der DB alle aktiven InstitutionStammdaten, deren Gueltigkeit zwischen DatumVon und DatumBis
+	 * der Gesuchsperiode liegt
+	 *
+	 * @param gesuchsperiodeJaxId id der Gesuchsperiode fuer die Stammdaten gesucht werden sollen
+	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
+	 */
+	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren und aktiv "
+		+ "sind und welche (falls TS oder FI) zur angegebenen Gemeinde gehören",
+		responseContainer = "List", response = JaxInstitutionStammdaten.class)
+	@Nonnull
+	@GET
+	@Path("/gesuchsperiode/gemeinde/active")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitutionStammdatenSummary> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
+		@Nonnull @NotNull @QueryParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
+		@Nonnull @NotNull @QueryParam("gemeindeId") JaxId gemeindeJaxId) {
+
+		Objects.requireNonNull(gesuchsperiodeJaxId);
+		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
+		Objects.requireNonNull(gemeindeJaxId);
+		Objects.requireNonNull(gemeindeJaxId.getId());
+
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
+		String gemeindeId = converter.toEntityId(gemeindeJaxId);
+
+		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeindeId).stream()
+			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten, new JaxInstitutionStammdatenSummary()))
+			.collect(Collectors.toList());
+	}
+
+	/**
 	 * Sucht in der DB alle InstitutionStammdaten, bei welchen die Institutions-id dem übergabeparameter entspricht.
 	 * Falls die Institution keine Stammdaten hat, wird die Ausnahme EbeguEntityNotFoundException geworfen.
 	 *

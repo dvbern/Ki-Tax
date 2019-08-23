@@ -1515,6 +1515,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionStammdatenFerieninsel jaxInstStammdatenFerieninsel =
 			new JaxInstitutionStammdatenFerieninsel();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
+		jaxInstStammdatenFerieninsel.setGemeinde(gemeindeToJAX(persistedInstStammdatenFerieninsel.getGemeinde()));
 		jaxInstStammdatenFerieninsel.setAusweichstandortFruehlingsferien(persistedInstStammdatenFerieninsel.getAusweichstandortFruehlingsferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortHerbstferien(persistedInstStammdatenFerieninsel.getAusweichstandortHerbstferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortSommerferien(persistedInstStammdatenFerieninsel.getAusweichstandortSommerferien());
@@ -1535,6 +1536,16 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdatenFerieninselJAXP,
 			institutionStammdatenFerieninsel
 		);
+
+		// Die Gemeinde muss neu von der DB gelesen werden
+		String gemeindeID = institutionStammdatenFerieninselJAXP.getGemeinde().getId();
+		Objects.requireNonNull(gemeindeID);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeID)
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"findGemeinde",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeID));
+		institutionStammdatenFerieninsel.setGemeinde(gemeinde);
 
 		institutionStammdatenFerieninsel.setAusweichstandortFruehlingsferien(institutionStammdatenFerieninselJAXP.getAusweichstandortFruehlingsferien());
 		institutionStammdatenFerieninsel.setAusweichstandortHerbstferien(institutionStammdatenFerieninselJAXP.getAusweichstandortHerbstferien());

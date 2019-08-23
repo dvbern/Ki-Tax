@@ -265,9 +265,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.startEmptyListOfBetreuungspensen();
         // institutionen lazy laden
-        if (!this.gesuchModelManager.getActiveInstitutionenList()
-            || this.gesuchModelManager.getActiveInstitutionenList().length <= 0) {
-            this.gesuchModelManager.updateActiveInstitutionenList();
+        if (!this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
+            || this.gesuchModelManager.getActiveInstitutionenForGemeindeList().length <= 0) {
+            this.gesuchModelManager.updateActiveInstitutionenForGemeindeList();
         }
         if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
             this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
@@ -325,12 +325,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     && this.isTageschulenAnmeldungAktiv()) {
                     this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
                     this.setErsterSchultag();
-                } else {
-                    // "Alte" Tagesschule: Noch keine Modulanmeldung moeglich. Wir setzen Default-Institution
-                    this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT;
-                    // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
-                    this.instStammId = this.CONSTANTS.INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE;
-                    this.setSelectedInstitutionStammdaten();
                 }
             }
         } else {
@@ -608,7 +602,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return [];
         }
 
-        return this.gesuchModelManager.getActiveInstitutionenList()
+        return this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key
                 && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm));
     }
@@ -676,7 +670,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public setSelectedInstitutionStammdaten(): void {
-        const instStamList = this.gesuchModelManager.getActiveInstitutionenList();
+        const instStamList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList();
         const found = instStamList.find(i => i.id === this.instStammId);
         if (found) {
             this.model.institutionStammdaten = found;

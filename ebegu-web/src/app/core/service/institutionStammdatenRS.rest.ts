@@ -86,6 +86,14 @@ export class InstitutionStammdatenRS {
             });
     }
 
+    public getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId: string, gemeindeId: string): IPromise<TSInstitutionStammdaten[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE);
+        return this.$http.get(`${this.serviceURL}/gesuchsperiode/gemeinde/active`, {params: {gesuchsperiodeId, gemeindeId}, cache})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
+            });
+    }
+
     public getInstitutionStammdatenByInstitution(institutionID: string): IPromise<TSInstitutionStammdaten> {
         return this.$http.get(`${this.serviceURL}/institution/${encodeURIComponent(institutionID)}`)
             .then((response: any) => {

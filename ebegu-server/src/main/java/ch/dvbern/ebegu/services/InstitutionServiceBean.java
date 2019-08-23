@@ -272,6 +272,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			if (restrictedForSCH && benutzer.getRole().isRoleSchulamt()) {
 				return getAllInstitutionenForSchulamt();
 			}
+			//TODO (hefr) das stimmt so auch nicht mehr... gemeindeabhängig!
+			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
+
+			}
 			return getAllInstitutionen();
 		}
 		return Collections.emptyList();

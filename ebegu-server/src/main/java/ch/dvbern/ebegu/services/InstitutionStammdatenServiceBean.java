@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,6 +34,8 @@ import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -40,9 +43,15 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel_;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -68,6 +77,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	private static final String GP_START = "gpStart";
 	private static final String GP_END = "gpEnd";
+	private static final String GEMEINDEN = "gemeinden";
 
 	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
@@ -82,6 +92,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -152,26 +165,97 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Override
 	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(@Nonnull String gesuchsperiodeId) {
 
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, currentBenutzer.extractGemeindenForUser());
+		}
+
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root);
+		List<Predicate> predicates = new ArrayList<>();
 
 		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
 		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
 
 		// InstStammdaten Ende muss NACH GP Start sein
 		// InstStammdaten Start muss VOR GP Ende sein
-		Predicate startPredicate = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam);
-		Predicate endPredicate = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
+		predicates.add(cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam));
+		predicates.add(cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam));
 
-		query.where(startPredicate, endPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
+		predicates.add(excludeUnknownInstitutionStammdatenPredicate(root));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
+		return typedQuery.getResultList();
+	}
+
+	@Override
+	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(@Nonnull String gesuchsperiodeId,
+		@Nonnull String gemeindeId) {
+
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		List<Gemeinde> gemeinden = Collections.singletonList(gemeinde );
+		return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeinden);
+	}
+
+	private Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Collection<Gemeinde> gemeinden
+	) {
+
+		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root);
+		List<Predicate> predicates = new ArrayList<>();
+
+		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
+		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
+		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+
+		// InstStammdaten Ende muss NACH GP Start sein
+		// InstStammdaten Start muss VOR GP Ende sein
+		predicates.add(cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam));
+		predicates.add(cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam));
+
+		// Falls es sich um ein Tagesschule- oder Ferieninselangebot handelt, muss ich für die Gemeinde berechtigt sein
+		Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> joinTagesschule = root.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.LEFT);
+		Join<InstitutionStammdaten, InstitutionStammdatenFerieninsel> joinFerieninsel = root.join(InstitutionStammdaten_.institutionStammdatenFerieninsel, JoinType.LEFT);
+
+		Predicate predicateBetreuungsgutschein =
+			root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
+		Predicate predicateTypTagesschule = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+		Predicate predicateTypFerieninsel = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
+
+		Predicate predicateGemeindeTagesschule = joinTagesschule.get(InstitutionStammdatenTagesschule_.gemeinde).in(gemeindeParam);
+		Predicate predicateGemeindeFerieninsel = joinFerieninsel.get(InstitutionStammdatenFerieninsel_.gemeinde).in(gemeindeParam);
+
+		// TS und FI sind okay, wenn es der jeweilige Typ ist UND ich für die Gemeinde berechtigt bin
+		Predicate predicateTagesschule = cb.and(predicateTypTagesschule, predicateGemeindeTagesschule);
+		Predicate predicateFerieninsel = cb.and(predicateTypFerieninsel, predicateGemeindeFerieninsel);
+
+		// Die Institution insgesamt ist okay, wenn es ein BG ist ODER eine berechtigte TS oder FI
+		Predicate predicateBerechtigteInstitution = cb.or(predicateBetreuungsgutschein, predicateTagesschule, predicateFerieninsel);
+		predicates.add(predicateBerechtigteInstitution);
+
+		predicates.add(excludeUnknownInstitutionStammdatenPredicate(root));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
+		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
+		typedQuery.setParameter(GEMEINDEN, gemeinden);
 		return typedQuery.getResultList();
 	}
 
