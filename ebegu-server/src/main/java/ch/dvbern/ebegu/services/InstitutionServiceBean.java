@@ -186,16 +186,22 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		query.distinct(true);
 		List<Predicate> predicates = new ArrayList<>();
 
-		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
-
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
-		predicates.addAll(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, principalBean.getBenutzer(), gemeindeParam));
+
+		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
+		if (roleGemeindeabhaengig) {
+			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		TypedQuery<Institution> typedQuery = persistence.getEntityManager().createQuery(query);
-		typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
+		if (roleGemeindeabhaengig) {
+			typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
+		}
+
 		return typedQuery.getResultList();
 	}
 

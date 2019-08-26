@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -35,7 +34,6 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel_;
@@ -95,15 +93,11 @@ public final class PredicateHelper<V> {
 			.not();
 	}
 
-	public static Collection<Predicate> getPredicateBerechtigteInstitutionStammdaten(
+	public static Predicate getPredicateBerechtigteInstitutionStammdaten(
 		@Nonnull CriteriaBuilder cb,
 		@Nonnull Root<InstitutionStammdaten> root,
-		@Nonnull Benutzer benutzer,
 		@Nonnull ParameterExpression<Collection> gemeindeParam
 	) {
-		if (!benutzer.getRole().isRoleGemeindeabhaengig()) {
-			return Collections.emptyList();
-		}
 		// Falls es sich um ein Tagesschule- oder Ferieninselangebot handelt, muss ich für die Gemeinde berechtigt sein
 		Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> joinTagesschule = root.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.LEFT);
 		Join<InstitutionStammdaten, InstitutionStammdatenFerieninsel> joinFerieninsel = root.join(InstitutionStammdaten_.institutionStammdatenFerieninsel, JoinType.LEFT);
@@ -122,7 +116,7 @@ public final class PredicateHelper<V> {
 
 		// Die Institution insgesamt ist okay, wenn es ein BG ist ODER eine berechtigte TS oder FI
 		Predicate predicateBerechtigteInstitution = cb.or(predicateBetreuungsgutschein, predicateTagesschule, predicateFerieninsel);
-		return Arrays.asList(predicateBerechtigteInstitution);
+		return predicateBerechtigteInstitution;
 
 	}
 }

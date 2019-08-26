@@ -115,16 +115,21 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		List<Predicate> predicates = new ArrayList<>();
 
-		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
-
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
-		predicates.addAll(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, principalBean.getBenutzer(), gemeindeParam));
+
+		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
+		if (roleGemeindeabhaengig) {
+			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
-		typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
+		if (roleGemeindeabhaengig) {
+			typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
+		}
 		return typedQuery.getResultList();
 	}
 
@@ -196,19 +201,26 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
 		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
-		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
 
 		// InstStammdaten Ende muss NACH GP Start sein
 		// InstStammdaten Start muss VOR GP Ende sein
 		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
-		predicates.addAll(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, principalBean.getBenutzer(), gemeindeParam));
+
+		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
+		if (roleGemeindeabhaengig) {
+			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+		}
+
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
-		typedQuery.setParameter(GEMEINDEN, gemeinden);
+		if (roleGemeindeabhaengig) {
+			typedQuery.setParameter(GEMEINDEN, gemeinden);
+		}
 		return typedQuery.getResultList();
 	}
 
