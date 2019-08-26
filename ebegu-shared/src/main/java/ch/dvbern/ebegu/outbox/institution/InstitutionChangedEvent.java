@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
+import java.util.Arrays;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.outbox.ExportedEvent;
@@ -24,14 +26,14 @@ import ch.dvbern.ebegu.outbox.ExportedEvent;
 public class InstitutionChangedEvent implements ExportedEvent {
 
 	@Nonnull
-	final String institutionId;
+	private final String institutionId;
 
 	@Nonnull
-	final byte[] institution;
+	private final byte[] institution;
 
 	public InstitutionChangedEvent(@Nonnull String institutionId, @Nonnull byte[] institution) {
 		this.institutionId = institutionId;
-		this.institution = institution;
+		this.institution = Arrays.copyOf(institution, institution.length);
 	}
 
 	@Nonnull
@@ -55,6 +57,6 @@ public class InstitutionChangedEvent implements ExportedEvent {
 	@Nonnull
 	@Override
 	public byte[] getPayload() {
-		return institution;
+		return Arrays.copyOf(institution, institution.length);
 	}
 }

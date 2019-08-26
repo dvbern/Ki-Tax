@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.outbox;
 
+import java.util.Arrays;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -71,7 +73,7 @@ public class OutboxEvent extends AbstractEntity {
 		this.aggregateType = aggregateType;
 		this.aggregateId = aggregateId;
 		this.type = type;
-		this.payload = jsonPayload;
+		this.payload = Arrays.copyOf(jsonPayload, jsonPayload.length);
 	}
 
 	@Override
@@ -97,8 +99,7 @@ public class OutboxEvent extends AbstractEntity {
 
 		return Objects.equal(getAggregateType(), that.getAggregateType()) &&
 			Objects.equal(getAggregateId(), that.getAggregateId()) &&
-			Objects.equal(getType(), that.getType()) &&
-			Objects.equal(getPayload(), that.getPayload());
+			Objects.equal(getType(), that.getType());
 	}
 
 	@Override
@@ -123,6 +124,6 @@ public class OutboxEvent extends AbstractEntity {
 
 	@Nonnull
 	public byte[] getPayload() {
-		return payload;
+		return Arrays.copyOf(payload, payload.length);
 	}
 }

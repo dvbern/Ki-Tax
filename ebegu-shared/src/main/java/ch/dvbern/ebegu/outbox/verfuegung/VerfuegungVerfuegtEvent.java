@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.outbox.verfuegung;
 
+import java.util.Arrays;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.outbox.ExportedEvent;
@@ -35,7 +37,7 @@ public class VerfuegungVerfuegtEvent implements ExportedEvent {
 
 	public VerfuegungVerfuegtEvent(@Nonnull String bgNummer, @Nonnull byte[] verfuegung) {
 		this.bgNummer = bgNummer;
-		this.verfuegung = verfuegung;
+		this.verfuegung = Arrays.copyOf(verfuegung, verfuegung.length);
 	}
 
 	@Nonnull
@@ -59,6 +61,6 @@ public class VerfuegungVerfuegtEvent implements ExportedEvent {
 	@Nonnull
 	@Override
 	public byte[] getPayload() {
-		return verfuegung;
+		return Arrays.copyOf(verfuegung, verfuegung.length);
 	}
 }
