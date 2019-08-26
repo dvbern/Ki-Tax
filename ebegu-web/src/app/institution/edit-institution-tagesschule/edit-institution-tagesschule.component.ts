@@ -77,9 +77,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return modul;
     }
 
-    // tslint:disable:eary-exit
     private loadModuleTagesschule(): void {
         this.modulTageschuleMap = {};
+        // tslint:disable-next-line:early-exit
         if (this.stammdaten && this.stammdaten.id) {
             if (this.stammdaten.institutionStammdatenTagesschule
                 && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule) {
@@ -95,6 +95,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             const foundmodul = modulListFromServer.filter(modul => (
                 modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY
             ))[0];
+            // tslint:disable-next-line:early-exit
             if (foundmodul) {
                 (foundmodul as any).zeitVon = DateUtil.momentToHoursAndMinutes(foundmodul.zeitVon);
                 (foundmodul as any).zeitBis = DateUtil.momentToHoursAndMinutes(foundmodul.zeitBis);
@@ -106,15 +107,19 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
-        let definedModulTagesschule: TSModulTagesschule[] = [];
-        for (let modulname in this.modulTageschuleMap) {
-            const tempModul: TSModulTagesschule = this.modulTageschuleMap[modulname];
+        const definedModulTagesschule: TSModulTagesschule[] = [];
+        // tslint:disable-next-line:forin
+        for (const modulname in this.modulTageschuleMap) {
+            const tempModul = this.modulTageschuleMap[modulname];
+            // tslint:disable-next-line:early-exit
             if (tempModul.zeitVon && tempModul.zeitBis) {
                 tempModul.zeitVon = DateUtil.hoursAndMinutesToMoment(tempModul.zeitVon);
                 tempModul.zeitBis = DateUtil.hoursAndMinutesToMoment(tempModul.zeitBis);
                 definedModulTagesschule.push(tempModul);
             }
         }
+
+        // tslint:disable-next-line:early-exit
         if (definedModulTagesschule.length > 0) {
             if (!this.stammdaten.institutionStammdatenTagesschule) {
                 this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();

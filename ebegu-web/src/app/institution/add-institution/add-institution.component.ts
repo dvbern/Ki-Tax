@@ -152,7 +152,7 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public loadGemeindenList(): void {
-        // tslint:disable:eary-exit
+        // tslint:disable-next-line:early-exit
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE) {
             this.gemeindeRS.getGemeindenForTSByPrincipal$()
                 .pipe(take(1))
@@ -163,7 +163,7 @@ export class AddInstitutionComponent implements OnInit {
                     err => LOG.error(err),
                 );
         }
-        // tslint:disable:eary-exit
+        // tslint:disable-next-line:early-exit
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
             this.gemeindeRS.getGemeindenForFIByPrincipal$()
                 .pipe(take(1))
