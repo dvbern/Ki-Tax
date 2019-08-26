@@ -26,7 +26,7 @@ pipeline {
 				lock('ebegu-tests') {
 					withMaven(options: [
 							junitPublisher(healthScaleFactor: 1.0),
-							findbugsPublisher(),
+							spotbugsPublisher(),
 							artifactsPublisher(disabled: true)
 					]) {
 						sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean install'
@@ -36,6 +36,8 @@ pipeline {
 
 			post {
 				always {
+					recordIssues(tools: [pmdParser(), checkStyle(), spotBugs(useRankAsPriority: true), tsLint()])
+					junit 'target/surefire-reports/*.xml'
 					cleanWs notFailBuild: true
 				}
 			}
