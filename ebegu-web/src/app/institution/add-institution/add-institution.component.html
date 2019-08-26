@@ -135,11 +135,11 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <button *ngIf="isBGInstitution" (click)="institutionEinladen()">
+            <button *ngIf="isBGInstitution" (click)="institutionEinladen()" class="dv-btn next-button">
                 <span translate>EINLADUNG_SENDEN</span>
             </button>
 
-            <button *ngIf="!isBGInstitution" (click)="institutionErstellen()">
+            <button *ngIf="!isBGInstitution" (click)="institutionErstellen()" class="dv-btn next-button">
                 <span translate>INSTITUTION_ERSTELLEN</span>
             </button>
 

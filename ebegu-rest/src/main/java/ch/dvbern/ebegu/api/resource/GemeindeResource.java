@@ -213,7 +213,7 @@ public class GemeindeResource {
 		return gemeinden;
 	}
 
-	@ApiOperation(value = "Returns all Gemeinden with for the current User with Tagesschule enabled",
+	@ApiOperation(value = "Returns all Gemeinden for the current User with Tagesschule enabled",
 		responseContainer = "Collection",
 		response = JaxGemeinde.class)
 	@Nullable

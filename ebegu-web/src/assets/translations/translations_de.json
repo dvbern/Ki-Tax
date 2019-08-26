@@ -1625,5 +1625,6 @@
     "TAGESSCHULE_HINZUFUEGEN": "Tagesschule hinzufügen",
     "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen",
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
-    "INSTITUTION_ERSTELLEN": "Institution erstellen"
+    "INSTITUTION_ERSTELLEN": "Institution erstellen",
+    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration"
 }

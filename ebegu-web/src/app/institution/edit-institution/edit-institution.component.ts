@@ -30,6 +30,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
@@ -166,16 +167,18 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private persistStammdaten(): void {
-        console.log('validating forms...');
-        this.forms.forEach((form, index) => {
-            console.log('validating ', form);
+        let valid = true;
+        this.forms.forEach((form) => {
             if (!form.valid) {
-                console.log('... not valid!');
-                return;
-            } else {
-                console.log('... valid!');
+                valid = false;
             }
         });
+
+        if (!valid) {
+            EbeguUtil.selectFirstInvalid();
+            return;
+        }
+
         this.errorService.clearAll();
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;

@@ -133,7 +133,7 @@ export class AddInstitutionComponent implements OnInit {
             this.beguStart,
             this.betreuungsangebot,
             this.adminMail,
-            this.selectedGemeinde.id,
+            this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
         ).then(neueinstitution => {
             this.institution = neueinstitution;
             this.navigateBack();

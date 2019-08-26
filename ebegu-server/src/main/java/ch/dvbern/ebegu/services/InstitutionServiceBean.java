@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,7 +71,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
@@ -108,7 +111,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_GEMEINDE, ADMIN_BG
+		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution createInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
 		if (institution.getMandant() == null) {
@@ -129,16 +133,19 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution activateInstitution(@Nonnull String institutionId) {
-		Institution institution = findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException("activateInstitution",
+		Institution institution = findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"activateInstitution",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 		institution.setStatus(InstitutionStatus.AKTIV);
 		return updateInstitution(institution);
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_GEMEINDE, ADMIN_BG,
+		ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution setInstitutionInactive(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
 
@@ -251,6 +258,23 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Override
 	@Nonnull
 	@PermitAll
+	public Collection<Institution> getAllInstitutionenForGemeindeBenutzer() {
+		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
+		if (benutzerOptional.isPresent()) {
+			Benutzer benutzer = benutzerOptional.get();
+			return institutionStammdatenService.getAllInstitutionStammdaten()
+				.stream()
+				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer))
+				.map(stammdaten -> stammdaten.getInstitution())
+				.collect(Collectors.toList());
+		}
+
+		return new ArrayList<>();
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
 	public Collection<Institution> getAllowedInstitutionenForCurrentBenutzer(boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
@@ -272,6 +296,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			if (restrictedForSCH && benutzer.getRole().isRoleSchulamt()) {
 				return getAllInstitutionenForSchulamt();
 			}
+			if (benutzer.getRole().isRoleJugendamt() || benutzer.getRole().isRoleSchulamt()) {
+				return getAllInstitutionenForGemeindeBenutzer();
+			}
 			return getAllInstitutionen();
 		}
 		return Collections.emptyList();
@@ -287,12 +314,15 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
+		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void calculateStammdatenCheckRequired() {
 		final Collection<Institution> allInstitutionen = this.getAllInstitutionen();
 
-		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired(). This is better than only
-		// setting it to true because it helps set the flag back to false even when it is incorrectly true or hasn't been updated properly
+		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired().
+		// This is better than only
+		// setting it to true because it helps set the flag back to false even when it is incorrectly true or hasn't
+		// been updated properly
 		allInstitutionen
 			.forEach(institution -> {
 				final boolean isCheckRequired = calculateStammdatenCheckRequiredForInstitution(institution.getId());
@@ -302,12 +332,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
+		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
 		InstitutionStammdaten stammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
 		if (stammdaten != null) {
-			// save stammdaten to update its timestamp_mutiert, since this field will be used to set the Flag stammdatenCheckRequired
+			// save stammdaten to update its timestamp_mutiert, since this field will be used to set the Flag
+			// stammdatenCheckRequired
 			stammdaten.setTimestampMutiert(LocalDateTime.now());
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
 		}
@@ -317,7 +349,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_GEMEINDE, ADMIN_BG
+		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
 		final Optional<Institution> institutionOpt = findInstitution(institutionId);
 
@@ -353,7 +387,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {
 		final Collection<Berechtigung> linkedBerechtigungen = findBerechtigungByInstitution(institution);
 		if (!linkedBerechtigungen.isEmpty()) {
-			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, institution.getId());
+			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN,
+				institution.getId());
 		}
 	}
 
@@ -374,7 +409,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	/**
-	 * Checks if the Stammdaten of the given Institution need to be checked by the user. This happens when the stammdaten haven't
+	 * Checks if the Stammdaten of the given Institution need to be checked by the user. This happens when the
+	 * stammdaten haven't
 	 * been saved for a long time (usually 100 days)
 	 */
 	private boolean calculateStammdatenCheckRequiredForInstitution(@Nonnull String institutionId) {

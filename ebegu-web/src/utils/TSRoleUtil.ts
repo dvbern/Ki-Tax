@@ -128,6 +128,12 @@ export class TSRoleUtil {
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
         ];
     }
 
