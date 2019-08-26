@@ -91,7 +91,6 @@
             <artifactId>ebegu-ws</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <!-- endregion -->
 
         <!-- region DV Bern libs -->

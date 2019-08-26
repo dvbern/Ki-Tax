@@ -26,10 +26,12 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -58,11 +60,12 @@ public class VerfuegungEventGenerator {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Verfuegung> query = cb.createQuery(Verfuegung.class);
 		Root<Verfuegung> root = query.from(Verfuegung.class);
+		Path<Betreuung> betreuungPath = root.get(Verfuegung_.betreuung);
 
 		ParameterExpression<Betreuungsstatus> statusParam = cb.parameter(Betreuungsstatus.class);
-		Predicate isVerfuegt = cb.equal(root.get(Verfuegung_.betreuung).get(Betreuung_.betreuungsstatus), statusParam);
+		Predicate isVerfuegt = cb.equal(betreuungPath.get(AbstractPlatz_.betreuungsstatus), statusParam);
 
-		Predicate isGueltig = cb.isTrue(root.get(Verfuegung_.betreuung).get(Betreuung_.gueltig));
+		Predicate isGueltig = cb.isTrue(betreuungPath.get(AbstractPlatz_.gueltig));
 
 		Predicate isNotPublished = cb.isFalse(root.get(Verfuegung_.eventPublished));
 

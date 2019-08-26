@@ -26,12 +26,14 @@ import java.util.Properties;
 import javax.annotation.Nonnull;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -48,12 +50,18 @@ public class OutboxEventKafkaProducer {
 	@PersistenceContext(unitName = "ebeguPersistenceUnit")
 	private EntityManager entityManager;
 
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 	/**
 	 * Uses polling to detect new OutboxEvents, fetches them from the database and transmits them to Kafka.
 	 * If everything succeds, the OutboxEvents are deleted from the database.
 	 */
 	@Schedule(info = "publish outbox events", minute = "*", hour = "*", persistent = true)
 	public void publishEvents() {
+		if (!ebeguConfiguration.getKafkaURL().isPresent()) {
+			return;
+		}
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<OutboxEvent> query = cb.createQuery(OutboxEvent.class);
@@ -68,9 +76,8 @@ public class OutboxEventKafkaProducer {
 			return;
 		}
 
-		// todo make configurable
 		Properties props = new Properties();
-		props.setProperty("bootstrap.servers", "localhost:9092");
+		props.setProperty("bootstrap.servers", ebeguConfiguration.getKafkaURL().get());
 		props.setProperty("acks", "all");
 		props.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		props.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
