@@ -39,8 +39,8 @@ pipeline {
 
 			post {
 				always {
-					recordIssues(tools: [pmdParser(), checkStyle(), spotBugs(useRankAsPriority: true), tsLint()])
-					junit 'target/surefire-reports/*.xml'
+					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs(useRankAsPriority: true), tsLint()])
+					junit allowEmptyResults: true, 'target/surefire-reports/*.xml'
 					cleanWs notFailBuild: true
 				}
 			}
