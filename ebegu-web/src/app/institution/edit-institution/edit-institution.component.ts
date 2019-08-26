@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -61,11 +69,10 @@ export class EditInstitutionComponent implements OnInit {
     private initName: string;
 
     @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
-    private componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
+    private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
 
     @ViewChild(EditInstitutionTagesschuleComponent)
-    private componentTagesschule: EditInstitutionTagesschuleComponent;
-
+    private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -168,7 +175,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private persistStammdaten(): void {
         let valid = true;
-        this.forms.forEach((form) => {
+        this.forms.forEach(form => {
             if (!form.valid) {
                 valid = false;
             }

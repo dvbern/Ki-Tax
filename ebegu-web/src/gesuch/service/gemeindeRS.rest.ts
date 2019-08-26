@@ -65,22 +65,17 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
-    public getGemeindenForTSByPrincipal(): Observable<TSGemeinde[]> {
-        // return this.$http.get(`${this.serviceURL}/tagesschule`)
-        //     .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    public getGemeindenForTSByPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubjectTS$.asObservable();
     }
 
-    public getGemeindenForFIByPrincipal(): Observable<TSGemeinde[]> {
-        // return this.$http.get(`${this.serviceURL}/ferieninsel`)
-        //     .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    public getGemeindenForFIByPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubjectFI$.asObservable();
     }
 
     public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubject$.asObservable();
     }
-
 
     public findGemeinde(gemeindeId: string): IPromise<TSGemeinde> {
         return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(gemeindeId)}`)
@@ -95,10 +90,10 @@ export default class GemeindeRS implements IEntityRS {
                     this.principalGemeindenSubject$.next(gemeinden);
 
                     const gemeindenTS = angular.copy(gemeinden.filter(g => {
-                        return g.angebotTS === true;
+                        return g.angebotTS;
                     }));
                     const gemeindenFI = angular.copy(gemeinden.filter(g => {
-                        return g.angebotFI === true;
+                        return g.angebotFI;
                     }));
 
                     this.principalGemeindenSubjectTS$.next(gemeindenTS);

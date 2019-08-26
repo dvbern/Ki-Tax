@@ -142,11 +142,9 @@ export class AddInstitutionComponent implements OnInit {
 
     private initInstitution(): void {
         this.institution = new TSInstitution();
-        if (this.isBGInstitution) {
-            this.institution.status = TSInstitutionStatus.EINGELADEN;
-        } else {
-            this.institution.status = TSInstitutionStatus.KONFIGURATION;
-        }
+        this.institution.status = this.isBGInstitution ?
+            TSInstitutionStatus.EINGELADEN :
+            TSInstitutionStatus.KONFIGURATION;
     }
 
     private navigateBack(): void {
@@ -154,8 +152,9 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public loadGemeindenList(): void {
+        // tslint:disable:eary-exit
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.gemeindeRS.getGemeindenForTSByPrincipal()
+            this.gemeindeRS.getGemeindenForTSByPrincipal$()
                 .pipe(take(1))
                 .subscribe(
                     gemeinden => {
@@ -164,8 +163,9 @@ export class AddInstitutionComponent implements OnInit {
                     err => LOG.error(err),
                 );
         }
+        // tslint:disable:eary-exit
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
-            this.gemeindeRS.getGemeindenForFIByPrincipal()
+            this.gemeindeRS.getGemeindenForFIByPrincipal$()
                 .pipe(take(1))
                 .subscribe(
                     gemeinden => {

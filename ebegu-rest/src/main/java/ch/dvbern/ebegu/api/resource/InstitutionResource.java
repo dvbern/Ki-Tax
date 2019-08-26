@@ -165,7 +165,7 @@ public class InstitutionResource {
 			break;
 		case TAGESSCHULE:
 			if (gemeindeId == null) {
-				// TODO throw exception
+				throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
 			}
 			gemeinde =
 				gemeindeService.findGemeinde(gemeindeId)
@@ -178,7 +178,7 @@ public class InstitutionResource {
 
 		case FERIENINSEL:
 			if (gemeindeId == null) {
-			// TODO throw exception
+				throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
 			}
 			gemeinde =
 				gemeindeService.findGemeinde(gemeindeId)
@@ -187,8 +187,6 @@ public class InstitutionResource {
 			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
 			stammdatenFI.setGemeinde(gemeinde);
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
-
-
 			break;
 		}
 

@@ -184,11 +184,13 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isCreateTSAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.authServiceRS.getPrincipal().mandant.angebotTS;
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
+            && this.authServiceRS.getPrincipal().mandant.angebotTS;
     }
 
     public isCreateFIAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.authServiceRS.getPrincipal().mandant.angebotFI;
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
+            && this.authServiceRS.getPrincipal().mandant.angebotFI;
     }
 
     public isDeleteAllowed(): boolean {
