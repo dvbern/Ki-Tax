@@ -40,7 +40,7 @@ pipeline {
 			post {
 				always {
 					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs(useRankAsPriority: true), tsLint()])
-					junit allowEmptyResults: true, 'target/surefire-reports/*.xml'
+					junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
 					cleanWs notFailBuild: true
 				}
 			}
