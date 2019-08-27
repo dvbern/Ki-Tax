@@ -361,4 +361,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungFerieninsel"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungTagesschule"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine"/>
+	<entity class="ch.dvbern.ebegu.outbox.OutboxEvent"/>
 </entity-mappings>
