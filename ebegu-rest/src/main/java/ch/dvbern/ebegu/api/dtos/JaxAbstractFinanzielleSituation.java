@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.api.dtos;
 import java.math.BigDecimal;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 

@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -106,9 +105,6 @@ public class GemeindeResource {
 
 	@Inject
 	private JaxBConverter converter;
-
-	@Inject
-	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
