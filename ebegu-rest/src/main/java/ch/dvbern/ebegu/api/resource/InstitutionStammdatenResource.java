@@ -170,30 +170,6 @@ public class InstitutionStammdatenResource {
 	}
 
 	/**
-	 * Sucht in der DB alle InstitutionStammdaten, bei welchen das gegebene Datum zwischen DatumVon und DatumBis liegt
-	 * Wenn das Datum null ist, wird dieses automatisch als heutiges Datum gesetzt.
-	 *
-	 * @param stringDate Date als String mit Format "yyyy-MM-dd". Wenn null, heutiges Datum gesetzt
-	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
-	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Path("/date")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdatenByDate(
-		@Nullable @QueryParam("date") String stringDate) {
-
-		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stringDate);
-		return institutionStammdatenService.getAllInstitutionStammdatenByDate(date).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
-				new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
-	}
-
-	/**
 	 * Sucht in der DB alle aktiven InstitutionStammdaten, deren Gueltigkeit zwischen DatumVon und DatumBis
 	 * der Gesuchsperiode liegt
 	 *
