@@ -40,7 +40,7 @@ pipeline {
 			post {
 				always {
 					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
-							(useRankAsPriority: true), tsLint(pattern: 'build/tslint-checkstyle-report.xml')])
+							(useRankAsPriority: true), tsLint(pattern: 'ebegu-web/build/tslint-checkstyle-report.xml')])
 					junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
 					cleanWs notFailBuild: true
 				}
