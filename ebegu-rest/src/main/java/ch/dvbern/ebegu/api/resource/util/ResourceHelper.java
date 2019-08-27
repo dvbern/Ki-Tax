@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
@@ -130,13 +129,13 @@ public class ResourceHelper {
 
 	public void assertBetreuungStatusEqual(@Nonnull String betreuungId, @Nonnull Betreuungsstatus... betreuungsstatusFromClient) {
 		requireNonNull(betreuungId);
-		Optional<Betreuung> optBetreuung = betreuungService.findBetreuung(betreuungId);
-		Betreuung betreuungFromDB = optBetreuung.orElseThrow(() ->
+		Optional<? extends AbstractPlatz> platzOptional = betreuungService.findPlatz(betreuungId);
+		AbstractPlatz platzFromDB = platzOptional.orElseThrow(() ->
 			new EbeguEntityNotFoundException(ASSERT_BETREUUNG_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, betreuungId));
 		// Der Status des Client-Objektes darf nicht weniger weit sein als der des Server-Objektes
-		if (Arrays.stream(betreuungsstatusFromClient).noneMatch(status -> betreuungFromDB.getBetreuungsstatus() == status)) {
+		if (Arrays.stream(betreuungsstatusFromClient).noneMatch(status -> platzFromDB.getBetreuungsstatus() == status)) {
 			String msg = "Expected BetreuungStatus to be " + Arrays.toString(betreuungsstatusFromClient)
-				+ " but was " + betreuungFromDB.getBetreuungsstatus();
+				+ " but was " + platzFromDB.getBetreuungsstatus();
 			throw new EbeguRuntimeException(ASSERT_BETREUUNG_STATUS_EQUAL, msg, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, betreuungId);
 		}
 	}

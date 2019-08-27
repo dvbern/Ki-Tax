@@ -170,7 +170,7 @@
 
                     <!--provisorische Betreuung-->
                     <fieldset>
-                        <div ng-if="vm.isProvisorischeBetreuung()">
+                        <div ng-if="vm.isProvisorischeBetreuung() && !vm.getBetreuungModel().keineDetailinformationen">
 
                             <dv-betreuung-input pensum-container="vm.getBetreuungspensum(0)"
                                                 input-id="provPensum"

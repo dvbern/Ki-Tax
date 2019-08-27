@@ -106,13 +106,13 @@ public class MailTemplateConfiguration {
 	}
 
 	public String getInfoSchulamtAnmeldungUebernommen(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractAnmeldung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
 
-		return processTemplateBetreuung(
+		return processTemplateAnmeldung(
 			MailTemplate.InfoSchulamtAnmeldungUebernommen,
 			betreuung,
 			gesuchsteller,
@@ -121,12 +121,12 @@ public class MailTemplateConfiguration {
 	}
 
 	public String getInfoSchulamtAnmeldungAbgelehnt(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractAnmeldung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache) {
 
-		return processTemplateBetreuung(
+		return processTemplateAnmeldung(
 			MailTemplate.InfoSchulamtAnmeldungAbgelehnt,
 			betreuung,
 			gesuchsteller,
@@ -411,6 +411,20 @@ public class MailTemplateConfiguration {
 	private String processTemplateBetreuung(
 		@Nonnull MailTemplate nameOfTemplate,
 		@Nonnull Betreuung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
+
+		paramMap.put("betreuung", betreuung);
+		paramMap.put(GESUCHSTELLER, gesuchsteller);
+
+		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+	}
+
+	private String processTemplateAnmeldung(
+		@Nonnull MailTemplate nameOfTemplate,
+		@Nonnull AbstractAnmeldung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
