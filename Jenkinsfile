@@ -41,7 +41,7 @@ pipeline {
 				always {
 					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
 							(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
-					junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+					junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
 					cleanWs notFailBuild: true
 				}
 			}
