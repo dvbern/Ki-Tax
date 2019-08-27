@@ -246,6 +246,18 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         angular.element(`#${elementID}`).first().focus();
     }
 
+    public showButtonAnmeldungTagesschule(): boolean {
+        return this.gesuchModelManager.getGemeinde()
+            && this.gesuchModelManager.getGemeinde().angebotTS
+            && this.showButtonAnmeldungSchulamt();
+    }
+
+    public showButtonAnmeldungFerieninsel(): boolean {
+        return this.gesuchModelManager.getGemeinde()
+            && this.gesuchModelManager.getGemeinde().angebotFI
+            && this.showButtonAnmeldungSchulamt();
+    }
+
     public showButtonAnmeldungSchulamt(): boolean {
         // Anmeldung Schulamt: Solange das Gesuch noch "normal" editiert werden kann, soll der Weg ueber "Betreuung
         // hinzufuegen" verwendet werden Nachdem readonly: nur fuer Jugendamt, Schulamt und Gesuchsteller verfuegbar

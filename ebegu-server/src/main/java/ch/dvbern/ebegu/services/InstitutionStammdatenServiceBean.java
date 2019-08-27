@@ -212,11 +212,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		// InstStammdaten Start muss VOR GP Ende sein
 		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
 
-		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
-		if (roleGemeindeabhaengig) {
-			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
-			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
-		}
+		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+		predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -224,9 +221,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
-		if (roleGemeindeabhaengig) {
-			typedQuery.setParameter(GEMEINDEN, gemeinden);
-		}
+		typedQuery.setParameter(GEMEINDEN, gemeinden);
 		return typedQuery.getResultList();
 	}
 

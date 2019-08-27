@@ -25,7 +25,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
-    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
+    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, isJugendamt,
     TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -604,8 +604,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
-            .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key
-                && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm));
+            .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
     }
 
     public getInstitutionSD(): TSInstitutionStammdatenSummary {
@@ -1010,16 +1009,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (!(!this.getBetreuungModel().isNew() &&
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
-
-            return;
+        if (isJugendamt(this.getBetreuungModel().getAngebotTyp())) {
+            if (!(!this.getBetreuungModel().isNew() &&
+                this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+                return;
+            }
+            this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
+                .then((response: TSBetreuungsmitteilung) => {
+                    this.existingMutationsMeldung = response;
+                });
         }
-
-        this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
-            .then((response: TSBetreuungsmitteilung) => {
-                this.existingMutationsMeldung = response;
-            });
     }
 
     public tageschuleSaveDisabled(): boolean {
@@ -1100,15 +1099,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public keineDetailAnmeldungClicked(): void {
+        // clear
+        this.getBetreuungModel().betreuungspensumContainers = [];
+        this.cleanInstitutionStammdaten();
+        this.instStammId = null;
+        this.provisorischeBetreuung = false;
+
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
-            this.getBetreuungModel().vertrag = true;
+            this.getBetreuungModel().vertrag  = false;
+            this.provisorischeBetreuung = true;
+            this.createProvisorischeBetreuung();
         } else {
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }
-        this.setSelectedInstitutionStammdaten();
     }
 
     public isFachstelleRequired(): boolean {
@@ -1138,22 +1144,30 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private createProvisorischeBetreuung(): void {
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
-        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
-
-        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
-        }
-
+		// Die unbekannte Institution ermitteln und lesen
+        this.setUnbekannteInstitutionAccordingToAngebot();
         this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStammId)
             .then((stammdaten: TSInstitutionStammdaten) => {
                 this.getBetreuungModel().institutionStammdaten = stammdaten;
             });
-
-        this.createBetreuungspensum();
+        // Gegebenenfalls ein Pensum zur freien Eingabe inititalisieren
+        if (!this.getBetreuungModel().keineDetailinformationen) {
+            this.createBetreuungspensum();
+        }
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.provisorischeBetreuung;
+        return this.provisorischeBetreuung || this.getBetreuungModel().keineDetailinformationen;
+    }
+
+    private setUnbekannteInstitutionAccordingToAngebot(): void {
+        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
+        } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
+            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+        } else {
+            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
+        }
     }
 
     public onChangeVertrag(): void {
