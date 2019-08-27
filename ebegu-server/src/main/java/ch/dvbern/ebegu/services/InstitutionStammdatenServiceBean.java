@@ -78,8 +78,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	// generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
 	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
-	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000"
-		+ "-000000000001";
+	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE =
+		"00000000-0000-0000-0000-000000000001";
 
 	@Inject
 	private Persistence persistence;

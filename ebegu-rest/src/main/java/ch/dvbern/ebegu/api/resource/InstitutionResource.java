@@ -60,7 +60,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -164,26 +163,14 @@ public class InstitutionResource {
 			institutionStammdaten.setGueltigkeit(gueltigkeit);
 			break;
 		case TAGESSCHULE:
-			if (gemeindeId == null) {
-				throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
-			}
-			gemeinde =
-				gemeindeService.findGemeinde(gemeindeId)
-					.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
+			gemeinde = getGemeindeOrThrowException(gemeindeId);
 			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
 			stammdatenTS.setGemeinde(gemeinde);
 			institutionStammdaten.setInstitutionStammdatenTagesschule(stammdatenTS);
 			break;
 
 		case FERIENINSEL:
-			if (gemeindeId == null) {
-				throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
-			}
-			gemeinde =
-				gemeindeService.findGemeinde(gemeindeId)
-					.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
+			gemeinde = getGemeindeOrThrowException(gemeindeId);
 			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
 			stammdatenFI.setGemeinde(gemeinde);
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
@@ -199,6 +186,18 @@ public class InstitutionResource {
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
+	}
+
+	@Nonnull
+	private Gemeinde getGemeindeOrThrowException(@Nullable String gemeindeId) {
+		if (gemeindeId == null) {
+			throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
+		}
+		Gemeinde gemeinde =
+			gemeindeService.findGemeinde(gemeindeId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
+		return gemeinde;
 	}
 
 	@ApiOperation(value = "Update a Institution in the database.", response = JaxInstitution.class)

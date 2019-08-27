@@ -196,39 +196,6 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns all Gemeinden for the current User with Tagesschule enabled",
-		responseContainer = "Collection",
-		response = JaxGemeinde.class)
-	@Nullable
-	@GET
-	@Path("/tagesschule")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGemeinde> getGemeindenForTSByPrincipal() {
-		Benutzer currentUser = principalBean.getBenutzer();
-		List<JaxGemeinde> gemeinden = currentUser.extractGemeindenForUser().stream()
-			.filter(Gemeinde::isAngebotTS)
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
-			.collect(Collectors.toList());
-		return gemeinden;
-	}
-
-	@ApiOperation(value = "Returns all Gemeinden for the current User with Tagesschule enabled",
-		responseContainer = "Collection",
-		response = JaxGemeinde.class)
-	@Nullable
-	@GET
-	@Path("/ferieninsel")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGemeinde> getGemeindenForFIByPrincipal() {
-		Benutzer currentUser = principalBean.getBenutzer();
-		return currentUser.extractGemeindenForUser().stream()
-			.filter(Gemeinde::isAngebotFI)
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
-			.collect(Collectors.toList());
-	}
-
 	@ApiOperation(value = "Returns the Gemeinde with the given Id.", response = JaxGemeinde.class)
 	@Nullable
 	@GET

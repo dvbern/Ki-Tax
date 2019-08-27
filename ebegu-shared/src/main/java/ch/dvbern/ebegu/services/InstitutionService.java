@@ -83,13 +83,6 @@ public interface InstitutionService {
 	Collection<Institution> getAllInstitutionen();
 
 	/**
-	 * @return Alle Institutionen in der DB, für welche der aktuell eingeloggte Benutzer berechtigt ist
-	 */
-	@Nonnull
-	Collection<Institution> getAllInstitutionenForGemeindeBenutzer();
-
-
-	/**
 	 * @return Gibt alle aktive Institutionen zurück
 	 */
 	Collection<Institution> getAllActiveInstitutionen();

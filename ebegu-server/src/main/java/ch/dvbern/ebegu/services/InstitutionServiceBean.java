@@ -255,10 +255,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return persistence.getCriteriaResults(query);
 	}
 
-	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Institution> getAllInstitutionenForGemeindeBenutzer() {
+	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer() {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
@@ -296,7 +295,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			if (restrictedForSCH && benutzer.getRole().isRoleSchulamt()) {
 				return getAllInstitutionenForSchulamt();
 			}
-			if (benutzer.getRole().isRoleJugendamt() || benutzer.getRole().isRoleSchulamt()) {
+			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
 				return getAllInstitutionenForGemeindeBenutzer();
 			}
 			return getAllInstitutionen();

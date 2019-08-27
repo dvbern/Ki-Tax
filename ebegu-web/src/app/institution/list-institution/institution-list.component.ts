@@ -114,7 +114,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public createInstitutionBG(): void {
-
         this.goToAddInstitution({undefined });
     }
 
