@@ -152,6 +152,7 @@
     "iban": "0.0.12",
     "ngx-guided-tour": "=1.1.2",
     "ngx-iban": "^2.3.0",
+    "ngx-material-timepicker": "^3.2.2",
     "randomcolor": "^0.5.4",
     "raven-js": "~3.27.0",
     "rxjs": "^6.5.2",

@@ -19,7 +19,6 @@
     <form role="form"
           #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
-          (ngSubmit)="institutionEinladen()"
           novalidate>
 
         <div class="dv-content">
@@ -29,9 +28,12 @@
                 <h2 translate>NEUE_INSTITUTION</h2>
                 <hr class="header">
             </div>
-
             <fieldset>
                 <!-- Betreuungsangebot -->
+
+                <div class="row" *ngIf="!isBGInstitution && gemeinden.length == 0" translate>
+                    <div class="col-sm-12 well well-status-abgewiesen" translate>KEINE_GEMEINDE_KONFIGURATION</div>
+                </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -61,7 +63,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" *ngIf="isBGInstitution">
                         <div class="form-group">
                             <label class="required" class="md-no-float" translate for="begu_start_ID">INSTITUTION_BEGU_START</label>
                             <input class="dv-mat-datepicker" type="text"
@@ -75,6 +77,25 @@
                             <mat-datepicker #begu_start></mat-datepicker>
                             <dv-error-messages inputid="begu_start_ID"
                                                [errorObject]="form.controls.begu_start?.errors">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" *ngIf="!isBGInstitution">
+                        <div class="form-group">
+                            <label class="required" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
+                            <select [(ngModel)]="selectedGemeinde"
+                                    name="gemeinde"
+                                    class="form-control"
+                                    id="gemeinde"
+                                    [required]="true">
+                                <option *ngFor="let gemeinde of (gemeinden)"
+                                        [ngValue]="gemeinde">
+                                    {{gemeinde.name}}
+                                </option>
+                            </select>
+                            <dv-error-messages [errorObject]="form.controls.gemeindeId?.errors"
+                                               inputId="gemeinde"
+                                               class="input-error">
                             </dv-error-messages>
                         </div>
                     </div>
@@ -93,7 +114,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" *ngIf="isBGInstitution">
                         <div class="form-group">
                             <label translate for="traegerschaft_id">TRAEGERSCHAFT</label>
                             <mat-select [(ngModel)]="institution.traegerschaft" id="traegerschaft_id"
@@ -114,9 +135,13 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
+            <button *ngIf="isBGInstitution" (click)="institutionEinladen()" class="dv-btn next-button">
                 <span translate>EINLADUNG_SENDEN</span>
-            </dv-loading-button>
+            </button>
+
+            <button *ngIf="!isBGInstitution" (click)="institutionErstellen()" class="dv-btn next-button">
+                <span translate>INSTITUTION_ERSTELLEN</span>
+            </button>
 
             <button type="button" class="dv-btn cancel-button"
                     (click)="cancel()"

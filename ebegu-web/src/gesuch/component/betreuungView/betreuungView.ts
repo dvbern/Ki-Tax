@@ -1154,12 +1154,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.getBetreuungModel().institutionStammdaten = stammdaten;
             });
 
-        const tsBetreuungspensum = new TSBetreuungspensum();
-        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
-        tsBetreuungspensum.nichtEingetreten = false;
-        tsBetreuungspensum.gueltigkeit = this.gesuchModelManager.getGesuchsperiode().gueltigkeit;
-        this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            tsBetreuungspensum));
+        this.createBetreuungspensum();
     }
 
     public isProvisorischeBetreuung(): boolean {
@@ -1185,7 +1180,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {
-        if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+        if (this.getBetreuungModel()
+            && this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
                 {betrag: this.zuschlagBehinderungProStd, einheit: this.$translate.instant('STUNDE')});
         }
