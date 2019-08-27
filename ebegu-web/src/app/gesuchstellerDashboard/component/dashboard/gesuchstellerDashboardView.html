@@ -57,7 +57,7 @@
 
 
             <dv-loading-button type="button"
-                               ng-if="vm.showAnmeldungCreate(periode)"
+                               ng-if="vm.showAnmeldungFerieninselCreate(periode)"
                                button-click="vm.createFerieninsel(periode)"
                                button-class="dvb-loading-button gdashboard-panel__button">
 
@@ -65,7 +65,7 @@
             </dv-loading-button>
 
             <dv-loading-button type="button"
-                               ng-if="vm.showAnmeldungCreate(periode) && !vm.hasOnlyFerieninsel(periode)"
+                               ng-if="vm.showAnmeldungTagesschuleCreate(periode) && !vm.hasOnlyFerieninsel(periode)"
                                button-click="vm.createTagesschule(periode)"
                                button-class="dvb-loading-button gdashboard-panel__button">
                 {{'TAGESSCHULE_ANMELDEN' | translate}}

@@ -1751,6 +1751,8 @@ export default class EbeguRestUtil {
 
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
+        restAngebot.betreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+        restAngebot.betreuung.vertrag = true;
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;

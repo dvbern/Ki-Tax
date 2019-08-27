@@ -968,6 +968,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
 		anmeldung.setId(firstBetreuung.getId());
 		anmeldung.setInstitutionStammdaten(firstBetreuung.getInstitutionStammdaten());
+		anmeldung.setKind(firstBetreuung.getKind());
 
 		mailService.sendInfoSchulamtAnmeldungUebernommen(anmeldung);
 		mailService.sendInfoSchulamtAnmeldungAbgelehnt(anmeldung);

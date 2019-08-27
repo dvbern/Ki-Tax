@@ -1459,7 +1459,7 @@ export default class GesuchModelManager {
 
         if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
-            const gesuchReadonly = isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
+            const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             return gesuchReadonly || periodeReadonly;
         }
 
