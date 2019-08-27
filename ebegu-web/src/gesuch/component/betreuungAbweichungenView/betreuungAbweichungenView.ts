@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
@@ -40,6 +41,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
+const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 
 export class BetreuungAbweichungenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -51,6 +53,7 @@ export class BetreuungAbweichungenViewComponentConfig implements IComponentOptio
 export class BetreuungAbweichungenViewController extends AbstractGesuchViewController<TSBetreuung> {
 
     public static $inject = [
+        '$state',
         'GesuchModelManager',
         'CONSTANTS',
         '$scope',
@@ -76,6 +79,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public dvDialog: DvDialog;
 
     public constructor(
+        private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
         private readonly CONSTANTS: any,
         $scope: IScope,
@@ -258,6 +262,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public cancel(): void {
-        this.loadAbweichungen();
+        this.form.$setPristine();
+        this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
     }
 }
