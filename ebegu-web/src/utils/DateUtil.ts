@@ -121,4 +121,26 @@ export default class DateUtil {
 
         return `${year} / ${year + 1}`;
     }
+
+    public static momentToHoursAndMinutes(date: Moment): string {
+        const hours = date.get('hours');
+        const minutes = date.get('minutes');
+        return `${hours}':'${minutes}`;
+    }
+
+    public static hoursAndMinutesToMoment(hoursAndMinutes: any): Moment {
+        return DateUtil.add(DateUtil.now().startOf('day'), hoursAndMinutes);
+    }
+
+    public static add(date: Moment, add: any): Moment {
+        if (!add || add.indexOf(':') === -1) {
+            return undefined;
+        }
+        const split = add.split(':');
+        const hours = split[0];
+        const minutes = split[1];
+        date.add(hours, 'hours');
+        date.add(minutes, 'minutes');
+        return date;
+    }
 }
