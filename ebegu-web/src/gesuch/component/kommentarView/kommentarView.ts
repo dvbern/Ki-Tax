@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService, IPromise} from 'angular';
+import {IComponentOptions, IFormController, ILogService, IPromise, IQService} from 'angular';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -67,6 +67,7 @@ export class KommentarViewController {
         '$translate',
         '$state',
         '$mdSidenav',
+        '$q',
     ];
 
     public form: IFormController;
@@ -86,6 +87,7 @@ export class KommentarViewController {
         private readonly $translate: ITranslateService,
         private readonly $state: StateService,
         private readonly $mdSidenav: ISidenavService,
+        private readonly $q: IQService,
     ) {
 
         if (!this.isGesuchUnsaved()) {
@@ -94,7 +96,9 @@ export class KommentarViewController {
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
-
+        if (!this.getGesuch()) {
+            return this.$q.resolve(undefined);
+        }
         return this.dokumenteRS.getDokumenteByTypeCached(
             this.getGesuch(),
             TSDokumentGrundTyp.PAPIERGESUCH,
