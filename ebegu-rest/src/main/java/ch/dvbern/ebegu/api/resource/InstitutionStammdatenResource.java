@@ -103,12 +103,15 @@ public class InstitutionStammdatenResource {
 
 		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(stammdaten, instDaten);
 
-		// converting InstitutionStammdaten from JAX to Entity will discard any change in the Institution object. It will load
+		// converting InstitutionStammdaten from JAX to Entity will discard any change in the Institution object. It
+		// will load
 		// the institution from the DB. For this reason we need to change any field of the institution manually
 
 		// Statuswechsel eingeladen -> aktiv
 		Institution convertedInstitution = convertedInstData.getInstitution();
-		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN) {
+		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN ||
+			(convertedInstitution.getStatus() == InstitutionStatus.KONFIGURATION
+				&& convertedInstData.isTagesschuleActivatable())) {
 			institutionService.activateInstitution(convertedInstData.getInstitution().getId());
 		}
 
@@ -153,6 +156,43 @@ public class InstitutionStammdatenResource {
 			.orElse(null);
 	}
 
+	@ApiOperation(value = "Gibt alle vorhandenen Institutionsstammdaten zurueck",
+		responseContainer = "List", response = JaxInstitutionStammdaten.class)
+	@Nonnull
+	@GET
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
+		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
+			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten,
+				new JaxInstitutionStammdatenSummary()))
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Sucht in der DB alle InstitutionStammdaten, bei welchen das gegebene Datum zwischen DatumVon und DatumBis liegt
+	 * Wenn das Datum null ist, wird dieses automatisch als heutiges Datum gesetzt.
+	 *
+	 * @param stringDate Date als String mit Format "yyyy-MM-dd". Wenn null, heutiges Datum gesetzt
+	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
+	 */
+	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren",
+		responseContainer = "List", response = JaxInstitutionStammdaten.class)
+	@Nonnull
+	@GET
+	@Path("/date")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdatenByDate(
+		@Nullable @QueryParam("date") String stringDate) {
+
+		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stringDate);
+		return institutionStammdatenService.getAllInstitutionStammdatenByDate(date).stream()
+			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
+				new JaxInstitutionStammdatenSummary()))
+			.collect(Collectors.toList());
+	}
+
 	/**
 	 * Sucht in der DB alle aktiven InstitutionStammdaten, deren Gueltigkeit zwischen DatumVon und DatumBis
 	 * der Gesuchsperiode liegt
@@ -175,7 +215,8 @@ public class InstitutionStammdatenResource {
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten, new JaxInstitutionStammdatenSummary()))
+			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
+				new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 
@@ -218,7 +259,8 @@ public class InstitutionStammdatenResource {
 	 * @param institutionJAXPId ID der gesuchten Institution
 	 * @return Die InstitutionStammdaten dieser Institution
 	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck, null falls keine vorhanden.",
+	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck, null falls keine "
+		+ "vorhanden.",
 		response = JaxInstitutionStammdaten.class)
 	@Nullable
 	@GET

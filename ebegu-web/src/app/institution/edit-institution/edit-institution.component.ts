@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
@@ -30,6 +38,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
@@ -60,11 +69,10 @@ export class EditInstitutionComponent implements OnInit {
     private initName: string;
 
     @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
-    private componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
+    private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
 
     @ViewChild(EditInstitutionTagesschuleComponent)
-    private componentTagesschule: EditInstitutionTagesschuleComponent;
-
+    private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -166,16 +174,18 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private persistStammdaten(): void {
-        console.log('validating forms...');
-        this.forms.forEach((form, index) => {
-            console.log('validating ', form);
+        let valid = true;
+        this.forms.forEach(form => {
             if (!form.valid) {
-                console.log('... not valid!');
-                return;
-            } else {
-                console.log('... valid!');
+                valid = false;
             }
         });
+
+        if (!valid) {
+            EbeguUtil.selectFirstInvalid();
+            return;
+        }
+
         this.errorService.clearAll();
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;

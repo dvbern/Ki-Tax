@@ -52,10 +52,15 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -87,7 +92,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
 
@@ -224,11 +230,33 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		return typedQuery.getResultList();
 	}
 
+	@Override
+	@Nonnull
+	@PermitAll
+	public InstitutionStammdaten getInstitutionStammdatenByInstitution(String institutionId) {
+		Institution institution = institutionService.findInstitution(institutionId)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException(
+					"getInstitutionStammdatenByInstitution_institution",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					institutionId)
+			);
+
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+			InstitutionStammdaten.class,
+			institution,
+			InstitutionStammdaten_.institution
+		).orElseThrow(() -> new EbeguEntityNotFoundException
+			("getInstitutionStammdatenByInstitution_institutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				institutionId));
+	}
+
 	@Nullable
 	@Override
 	@PermitAll
 	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution = institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
+		Institution institution =
+			institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
 			("fetchInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
@@ -245,7 +273,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		if (role.isRoleSchulamt()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
 			return BetreuungsangebotTyp.getSchulamtTypes();
 		}
-		Collection<Institution> institutionenForCurrentBenutzer = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+		Collection<Institution> institutionenForCurrentBenutzer =
+			institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 		if (institutionenForCurrentBenutzer.isEmpty()) {
 			return new ArrayList<>();
 		}

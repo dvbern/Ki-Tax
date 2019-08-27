@@ -169,7 +169,7 @@ export default class AbstractGesuchViewController<T> implements IController {
     }
 
     public isMutationsmeldungAllowed(betreuung: TSBetreuung, isNewestGesuch: boolean): boolean {
-        if (!this.gesuchModelManager.getGesuch()) {
+        if (!betreuung || !this.gesuchModelManager.getGesuch()) {
             return false;
         }
         return (

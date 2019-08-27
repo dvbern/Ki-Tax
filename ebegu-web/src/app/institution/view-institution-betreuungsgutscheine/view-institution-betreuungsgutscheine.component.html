@@ -15,72 +15,68 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="institutionBetreuungsgutscheine row">
-
-
-    <div class="row">
-        <!-- Zahlungsangaben -->
-        <div class="col-sm-6">
-            <div class="form-group">
-                <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
-                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.iban}}</p>
-                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber}}</p>
-            </div>
+<div class="row">
+    <!-- Zahlungsangaben -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.iban}}</p>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber}}</p>
         </div>
-        <!-- Abweichende Zahlungsadresse -->
-        <div *ngIf="abweichendeZahlungsAdresse; else showSameZahlugnsadresse" class="col-sm-3">
+    </div>
+    <!-- Abweichende Zahlungsadresse -->
+    <div *ngIf="abweichendeZahlungsAdresse; else showSameZahlugnsadresse" class="col-sm-3">
+        <div class="form-group">
+            <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.organisation}}</p>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse}} {{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer}}</p>
+            <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz}} {{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort}}</p>
+        </div>
+    </div>
+    <ng-template #showSameZahlugnsadresse>
+        <div class="col-sm-3">
             <div class="form-group">
                 <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
-                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.organisation}}</p>
-                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse}} {{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer}}</p>
-                <p>{{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz}} {{stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort}}</p>
+                <p translate>INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE</p>
             </div>
         </div>
-        <ng-template #showSameZahlugnsadresse>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
-                    <p translate>INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE</p>
-                </div>
-            </div>
-        </ng-template>
+    </ng-template>
+</div>
+
+<div class="row">
+    <!-- Subventionierte Plätze -->
+    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
+        <div class="form-group">
+            <h3 translate>INSTITUTION_PLAETZE</h3>
+            <p translate
+               [translateParams]="{anzahlPlaetze: stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze
+                                   ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze : 0}">
+                INSTITUTION_ANZAHL_PLAETZE_PARAM
+            </p>
+            <p translate
+               [translateParams]="{anzahlPlaetzeFirmen: stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen
+                                   ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen : 0}">
+                INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM
+            </p>
+            <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze"
+               translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
+        </div>
     </div>
 
-    <div class="row">
-        <!-- Subventionierte Plätze -->
-        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
-            <div class="form-group">
-                <h3 translate>INSTITUTION_PLAETZE</h3>
-                <p translate
-                   [translateParams]="{anzahlPlaetze: stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze
-                                   ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze : 0}">
-                    INSTITUTION_ANZAHL_PLAETZE_PARAM
-                </p>
-                <p translate
-                   [translateParams]="{anzahlPlaetzeFirmen: stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen
-                                   ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen : 0}">
-                    INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM
-                </p>
-                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze"
-                   translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
-            </div>
+    <!-- Benachrichtugnseinstellungen -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+            <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
+               translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
         </div>
+    </div>
 
-        <!-- Benachrichtugnseinstellungen -->
-        <div class="col-sm-6">
-            <div class="form-group">
-                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
-                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
-                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
-            </div>
-        </div>
-
-        <!-- Alterskategorie -->
-        <div class="col-sm-6">
-            <div class="form-group">
-                <h3 translate>INSTITUTION_ALTERSKATEGORIE</h3>
-                <p>{{getAlterskategorien()}}</p>
-            </div>
+    <!-- Alterskategorie -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <h3 translate>INSTITUTION_ALTERSKATEGORIE</h3>
+            <p>{{getAlterskategorien()}}</p>
         </div>
     </div>
 </div>

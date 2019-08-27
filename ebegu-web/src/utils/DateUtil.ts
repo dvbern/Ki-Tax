@@ -122,10 +122,10 @@ export default class DateUtil {
         return `${year} / ${year + 1}`;
     }
 
-    public static momentToHoursAndMinutes(date: Moment) {
-        var hours = date.get('hours');
-        var minutes = date.get('minutes');
-        return hours + ':' + minutes;
+    public static momentToHoursAndMinutes(date: Moment): string {
+        const hours = date.get('hours');
+        const minutes = date.get('minutes');
+        return `${hours}':'${minutes}`;
     }
 
     public static hoursAndMinutesToMoment(hoursAndMinutes: any): Moment {
@@ -136,9 +136,9 @@ export default class DateUtil {
         if (!add || add.indexOf(':') === -1) {
             return undefined;
         }
-        let split = add.split(':');
-        var hours = split[0];
-        var minutes = split[1];
+        const split = add.split(':');
+        const hours = split[0];
+        const minutes = split[1];
         date.add(hours, 'hours');
         date.add(minutes, 'minutes');
         return date;

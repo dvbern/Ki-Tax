@@ -1600,12 +1600,7 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdatenTagesschule.getModuleTagesschule().addAll(convertedModuleTagesschule);
 		}
 
-		if (institutionStammdatenTagesschule.getModuleTagesschule() != null
-			&& !institutionStammdatenTagesschule.getModuleTagesschule().isEmpty()) {
-			return institutionStammdatenTagesschule;
-		}
-
-		return null;
+		return institutionStammdatenTagesschule;
 	}
 
 	@Nullable

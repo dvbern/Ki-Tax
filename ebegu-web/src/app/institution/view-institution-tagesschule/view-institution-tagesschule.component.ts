@@ -39,12 +39,13 @@ export class ViewInstitutionTagesschuleComponent implements OnInit {
     public ngOnInit(): void {
         // Die Module werden pro Wochentag gespeichert. Wir zeigen hier nur den Montag an
         // als Vertreter der ganzen Woche
-        if (this.stammdaten && this.stammdaten.institutionStammdatenTagesschule) {
-            let moduleTagesschule = this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
-            for (const tsModulTagesschule of moduleTagesschule) {
-                if (tsModulTagesschule.wochentag === TSDayOfWeek.MONDAY) {
-                    this.module.push(tsModulTagesschule);
-                }
+        if (!this.stammdaten || !this.stammdaten.institutionStammdatenTagesschule) {
+            return;
+        }
+        const moduleTagesschule = this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
+        for (const tsModulTagesschule of moduleTagesschule) {
+            if (tsModulTagesschule.wochentag === TSDayOfWeek.MONDAY) {
+                this.module.push(tsModulTagesschule);
             }
         }
     }

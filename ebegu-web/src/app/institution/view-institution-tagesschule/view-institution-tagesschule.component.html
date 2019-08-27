@@ -15,54 +15,50 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="institutionTagesschule row">
-
-    <!-- Gemeinde -->
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <h3 translate for="gemeinde">GEMEINDE</h3>
-                <label>{{stammdaten.institutionStammdatenTagesschule?.gemeinde?.name}}</label>
-            </div>
+<!-- Gemeinde -->
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <h3 translate for="gemeinde">GEMEINDE</h3>
+            <label>{{stammdaten.institutionStammdatenTagesschule?.gemeinde?.name}}</label>
         </div>
     </div>
+</div>
 
-    <!-- Module -->
-    <div class="row">
-        <div class="col-md-6">
-            <h1 translate>INSTITUTION_ST_MODULE</h1>
-        </div>
+<!-- Module -->
+<div class="row">
+    <div class="col-md-6">
+        <h1 translate>INSTITUTION_ST_MODULE</h1>
     </div>
-    <!-- Titelzeile -->
+</div>
+<!-- Titelzeile -->
+<div class="row">
+    <div class="col-md-2">
+        <span translate>INSTITUTION_ST_MODULNAME</span>
+    </div>
+    <div class="col-md-3">
+        <span translate>VON</span>
+    </div>
+    <div class="col-md-3">
+        <span translate>BIS</span>
+    </div>
+</div>
+<div *ngFor="let modul of module">
     <div class="row">
         <div class="col-md-2">
-            <span translate>INSTITUTION_ST_MODULNAME</span>
+            <div class="form-group">
+                <label translate>{{modul.modulTagesschuleName}}</label>
+            </div>
         </div>
         <div class="col-md-3">
-            <span translate>VON</span>
+            <div class="form-group">
+                <label>{{modul.zeitVon.format('HH:mm')}}</label>
+            </div>
         </div>
         <div class="col-md-3">
-            <span translate>BIS</span>
-        </div>
-    </div>
-    <div *ngFor="let modul of module">
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label translate>{{modul.modulTagesschuleName}}</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label>{{modul.zeitVon.format('HH:mm')}}</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label>{{modul.zeitBis.format('HH:mm')}}</label>
-                </div>
+            <div class="form-group">
+                <label>{{modul.zeitBis.format('HH:mm')}}</label>
             </div>
         </div>
     </div>
-
 </div>
