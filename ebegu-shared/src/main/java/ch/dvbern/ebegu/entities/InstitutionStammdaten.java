@@ -285,10 +285,11 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	}
 
 	public boolean isTagesschuleActivatable() {
-		final InstitutionStammdatenTagesschule institutionStammdatenTagesschule = this.getInstitutionStammdatenTagesschule();
-		return institutionStammdatenTagesschule != null
-			&& institutionStammdatenTagesschule.getModuleTagesschule() != null
-			&& !institutionStammdatenTagesschule.getModuleTagesschule().isEmpty();
+		final InstitutionStammdatenTagesschule stammdaten = this.getInstitutionStammdatenTagesschule();
+
+		return stammdaten != null
+			&& stammdaten.getModuleTagesschule() != null
+			&& !stammdaten.getModuleTagesschule().isEmpty();
 	}
 
 	public boolean isVisibleForGemeindeUser(Benutzer benutzer) {
