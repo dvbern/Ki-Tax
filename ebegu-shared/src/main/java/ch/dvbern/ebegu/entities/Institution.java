@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,8 +28,12 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -68,6 +74,23 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@Deprecated
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
+
+	/**
+	 * The data of this institution can be accessed by any ExternalClient in this set. E.g. via the exchange service
+	 */
+	@Nonnull
+	@ManyToMany
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "institution_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "external_client_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_institution_external_clients_institution_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_institution_external_clients_external_client_id"),
+		indexes = {
+			@Index(name = "IX_institution_external_clients_institution_id", columnList = "institution_id"),
+			@Index(name = "IX_institution_external_clients_external_client_id", columnList = "external_client_id"),
+		}
+	)
+	private @Valid @NotNull Set<ExternalClient> externalClients = new HashSet<>();
 
 	public Institution() {
 	}
@@ -122,6 +145,15 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	public void setEventPublished(boolean eventPublished) {
 		this.eventPublished = eventPublished;
+	}
+
+	@Nonnull
+	public Set<ExternalClient> getExternalClients() {
+		return externalClients;
+	}
+
+	public void setExternalClients(@Nonnull Set<ExternalClient> externalClients) {
+		this.externalClients = externalClients;
 	}
 
 	public boolean isUnknownInstitution() {
