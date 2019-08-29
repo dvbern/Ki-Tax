@@ -1633,6 +1633,15 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		convertAbstractVorgaengerFieldsToEntity(jaxModulTagesschule, modulTagesschule);
+		final Optional<Gesuchsperiode> gesuchsperiode =
+			gesuchsperiodeService.findGesuchsperiode(jaxModulTagesschule.getGesuchsperiodeId());
+		if (!gesuchsperiode.isPresent()) {
+			throw new EbeguEntityNotFoundException(
+				"modulTagesschuleToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jaxModulTagesschule.getGesuchsperiodeId());
+		}
+		modulTagesschule.setGesuchsperiode(gesuchsperiode.get());
 		modulTagesschule.setModulTagesschuleName(jaxModulTagesschule.getModulTagesschuleName());
 		modulTagesschule.setWochentag(jaxModulTagesschule.getWochentag());
 		modulTagesschule.setZeitVon(jaxModulTagesschule.getZeitVon().toLocalTime());
@@ -2806,6 +2815,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxModulTagesschule jaxModulTagesschule = new JaxModulTagesschule();
 		convertAbstractVorgaengerFieldsToJAX(modulTagesschule, jaxModulTagesschule);
+		jaxModulTagesschule.setGesuchsperiodeId(modulTagesschule.getGesuchsperiode().getId());
 		jaxModulTagesschule.setModulTagesschuleName(modulTagesschule.getModulTagesschuleName());
 		jaxModulTagesschule.setWochentag(modulTagesschule.getWochentag());
 		jaxModulTagesschule.setZeitVon(LocalDateTime.of(LocalDate.now(), modulTagesschule.getZeitVon()));

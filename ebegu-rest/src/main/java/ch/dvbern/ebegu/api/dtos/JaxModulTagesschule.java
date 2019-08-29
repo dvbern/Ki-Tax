@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,50 +37,65 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1893537808325618626L;
 
-	@NotNull
+	@NotNull @Nonnull
+	private String gesuchsperiodeId;
+
+	@NotNull @Nonnull
 	private DayOfWeek wochentag;
 
-	@NotNull
+	@NotNull @Nonnull
 	private ModulTagesschuleName modulTagesschuleName;
 
-	@NotNull
+	@NotNull @Nonnull
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime zeitVon = null;
+	private LocalDateTime zeitVon;
 
-	@NotNull
+	@NotNull @Nonnull
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime zeitBis = null;
+	private LocalDateTime zeitBis;
 
+	@Nonnull
+	public String getGesuchsperiodeId() {
+		return gesuchsperiodeId;
+	}
 
+	public void setGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
+		this.gesuchsperiodeId = gesuchsperiodeId;
+	}
+
+	@Nonnull
 	public DayOfWeek getWochentag() {
 		return wochentag;
 	}
 
-	public void setWochentag(DayOfWeek wochentag) {
+	public void setWochentag(@Nonnull DayOfWeek wochentag) {
 		this.wochentag = wochentag;
 	}
 
+	@Nonnull
 	public ModulTagesschuleName getModulTagesschuleName() {
 		return modulTagesschuleName;
 	}
 
-	public void setModulTagesschuleName(ModulTagesschuleName modulTagesschuleName) {
+	public void setModulTagesschuleName(@Nonnull ModulTagesschuleName modulTagesschuleName) {
 		this.modulTagesschuleName = modulTagesschuleName;
 	}
 
+	@Nonnull
 	public LocalDateTime getZeitVon() {
 		return zeitVon;
 	}
 
-	public void setZeitVon(LocalDateTime zeitVon) {
+	public void setZeitVon(@Nonnull LocalDateTime zeitVon) {
 		this.zeitVon = zeitVon;
 	}
 
+	@Nonnull
 	public LocalDateTime getZeitBis() {
 		return zeitBis;
 	}
 
-	public void setZeitBis(LocalDateTime zeitBis) {
+	public void setZeitBis(@Nonnull LocalDateTime zeitBis) {
 		this.zeitBis = zeitBis;
 	}
 }

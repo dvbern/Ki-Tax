@@ -20,12 +20,13 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
-    private _wochentag: TSDayOfWeek;
-    private _modulTagesschuleName: TSModulTagesschuleName;
-    private _zeitVon: moment.Moment;
-    private _zeitBis: moment.Moment;
+    public gesuchsperiodeId: string;
+    public wochentag: TSDayOfWeek;
+    public modulTagesschuleName: TSModulTagesschuleName;
+    public zeitVon: moment.Moment;
+    public zeitBis: moment.Moment;
 
-    private _angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
+    public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
 
     public constructor(
         wochentag?: TSDayOfWeek,
@@ -34,60 +35,22 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
         zeitBis?: moment.Moment,
     ) {
         super();
-        this._wochentag = wochentag;
-        this._modulTagesschuleName = modulTagesschuleName;
-        this._zeitVon = zeitVon;
-        this._zeitBis = zeitBis;
+        this.wochentag = wochentag;
+        this.modulTagesschuleName = modulTagesschuleName;
+        this.zeitVon = zeitVon;
+        this.zeitBis = zeitBis;
     }
 
-    public get wochentag(): TSDayOfWeek {
-        return this._wochentag;
-    }
-
-    public set wochentag(value: TSDayOfWeek) {
-        this._wochentag = value;
-    }
-
-    public get modulTagesschuleName(): TSModulTagesschuleName {
-        return this._modulTagesschuleName;
-    }
-
-    public set modulTagesschuleName(value: TSModulTagesschuleName) {
-        this._modulTagesschuleName = value;
-    }
-
-    public get zeitVon(): moment.Moment {
-        return this._zeitVon;
-    }
-
-    public set zeitVon(value: moment.Moment) {
-        this._zeitVon = value;
-    }
-
-    public get zeitBis(): moment.Moment {
-        return this._zeitBis;
-    }
-
-    public set zeitBis(value: moment.Moment) {
-        this._zeitBis = value;
-    }
-
-    public get angemeldet(): boolean {
-        return this._angemeldet;
-    }
-
-    public set angemeldet(value: boolean) {
-        this._angemeldet = value;
-    }
 
     /**
      * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
      * Die ZeitVon und ZeitBis spielt keine Rolle in diesem Fall, da so Module unterschiedlichen Institutionen
      * verglichen werden koennen.
      */
-    public isSameModul(instModul: TSModulTagesschule): boolean {
-        return instModul
-            && this.wochentag === instModul.wochentag
-            && this.modulTagesschuleName === instModul.modulTagesschuleName;
+    public isSameModul(modulTagesschule: TSModulTagesschule): boolean {
+        return modulTagesschule
+            && this.wochentag === modulTagesschule.wochentag
+            && this.modulTagesschuleName === modulTagesschule.modulTagesschuleName
+            && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId
     }
 }

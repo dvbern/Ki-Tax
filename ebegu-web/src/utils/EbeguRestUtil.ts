@@ -3129,6 +3129,7 @@ export default class EbeguRestUtil {
     private parseModulTagesschule(modulTagesschuleTS: TSModulTagesschule, modulFromServer: any): TSModulTagesschule {
         if (modulFromServer) {
             this.parseAbstractMutableEntity(modulTagesschuleTS, modulFromServer);
+            modulTagesschuleTS.gesuchsperiodeId = modulFromServer.gesuchsperiodeId;
             modulTagesschuleTS.modulTagesschuleName = modulFromServer.modulTagesschuleName;
             modulTagesschuleTS.wochentag = modulFromServer.wochentag;
             modulTagesschuleTS.zeitVon = DateUtil.localDateTimeToMoment(modulFromServer.zeitVon);
@@ -3150,6 +3151,7 @@ export default class EbeguRestUtil {
     private modulTagesschuleToRestObject(restModul: any, modulTagesschuleTS: TSModulTagesschule): any {
         if (modulTagesschuleTS) {
             this.abstractMutableEntityToRestObject(restModul, modulTagesschuleTS);
+            restModul.gesuchsperiodeId = modulTagesschuleTS.gesuchsperiodeId;
             restModul.modulTagesschuleName = modulTagesschuleTS.modulTagesschuleName;
             restModul.wochentag = modulTagesschuleTS.wochentag;
             restModul.zeitVon = DateUtil.momentToLocalDateTime(modulTagesschuleTS.zeitVon);

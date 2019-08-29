@@ -44,24 +44,31 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 
 	private static final long serialVersionUID = -8403411439182708718L;
 
-	@NotNull
+	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_inst_stammdaten_tagesschule_id"), nullable = false)
 	private InstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 
+	@NotNull @Nonnull
+	@ManyToOne(optional = false)
+	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_modul_tagesschule_gesuchsperiode_id"))
+	private Gesuchsperiode gesuchsperiode;
+
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	private DayOfWeek wochentag;
 
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	private ModulTagesschuleName modulTagesschuleName;
 
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	private LocalTime zeitVon;
 
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	private LocalTime zeitBis;
 
@@ -84,55 +91,69 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 			Objects.equals(getZeitBis(), otherModulTagesschule.getZeitBis());
 	}
 
+	@Nonnull
 	public DayOfWeek getWochentag() {
 		return wochentag;
 	}
 
-	public void setWochentag(DayOfWeek wochentag) {
+	public void setWochentag(@Nonnull DayOfWeek wochentag) {
 		this.wochentag = wochentag;
 	}
 
+	@Nonnull
 	public ModulTagesschuleName getModulTagesschuleName() {
 		return modulTagesschuleName;
 	}
 
-	public void setModulTagesschuleName(ModulTagesschuleName modulname) {
+	public void setModulTagesschuleName(@Nonnull ModulTagesschuleName modulname) {
 		this.modulTagesschuleName = modulname;
 	}
 
+	@Nonnull
 	public LocalTime getZeitVon() {
 		return zeitVon;
 	}
 
-	public void setZeitVon(LocalTime zeitVon) {
+	public void setZeitVon(@Nonnull LocalTime zeitVon) {
 		this.zeitVon = zeitVon;
 	}
 
+	@Nonnull
 	public LocalTime getZeitBis() {
 		return zeitBis;
 	}
 
-	public void setZeitBis(LocalTime zeitBis) {
+	public void setZeitBis(@Nonnull LocalTime zeitBis) {
 		this.zeitBis = zeitBis;
 	}
 
+	@Nonnull
 	public InstitutionStammdatenTagesschule getInstitutionStammdatenTagesschule() {
 		return institutionStammdatenTagesschule;
 	}
 
-	public void setInstitutionStammdatenTagesschule(InstitutionStammdatenTagesschule instStammdaten) {
+	public void setInstitutionStammdatenTagesschule(@Nonnull InstitutionStammdatenTagesschule instStammdaten) {
 		this.institutionStammdatenTagesschule = instStammdaten;
+	}
+
+	@Nonnull
+	public Gesuchsperiode getGesuchsperiode() {
+		return gesuchsperiode;
+	}
+
+	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		this.gesuchsperiode = gesuchsperiode;
 	}
 
 	@Override
 	public int compareTo(@Nonnull ModulTagesschule o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getInstitutionStammdatenTagesschule(), o.getInstitutionStammdatenTagesschule());
+		builder.append(this.getGesuchsperiode(), o.getGesuchsperiode());
 		builder.append(this.getZeitVon(), o.getZeitVon());
 		builder.append(this.getZeitBis(), o.getZeitBis());
 		builder.append(this.getWochentag(), o.getWochentag());
 		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
 		return builder.toComparison();
 	}
-
 }
