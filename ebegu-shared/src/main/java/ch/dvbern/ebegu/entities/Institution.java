@@ -65,6 +65,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@Column(nullable = false)
 	private @NotNull boolean stammdatenCheckRequired = false;
 
+	@Deprecated
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
 

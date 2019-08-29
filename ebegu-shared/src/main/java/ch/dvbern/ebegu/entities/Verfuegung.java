@@ -77,6 +77,7 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private @NotNull boolean kategorieNichtEintreten = false;
 
+	@Deprecated
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
 

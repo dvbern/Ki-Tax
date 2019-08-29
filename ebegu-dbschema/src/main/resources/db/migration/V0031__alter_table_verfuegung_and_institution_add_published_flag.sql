@@ -19,6 +19,8 @@ ALTER TABLE institution
 
 -- In FlyWay migration 0015 two institutions are inserted without name, which is invalid according to BeanValidation,
 -- thus set some name to avoid ConstraintViolationException when publishing
-UPDATE institution
-SET name = 'unbekannt'
-WHERE name = '';
+UPDATE institution SET name = 'Unbekannte Kita'
+	WHERE id = UNHEX(REPLACE('00000000-0000-0000-0000-000000000000', '-', ''));
+
+UPDATE institution SET name = 'Unbekannte TFO'
+	WHERE id = UNHEX(REPLACE('00000000-0000-0000-0000-000000000001', '-', ''));
