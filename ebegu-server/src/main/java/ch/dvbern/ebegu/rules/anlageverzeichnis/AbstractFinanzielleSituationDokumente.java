@@ -108,8 +108,8 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 			case NACHWEIS_VERMOEGEN:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
 					!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
-					abstractFinanzielleSituation.getBruttovermoegen() != null &&
-					abstractFinanzielleSituation.getBruttovermoegen().compareTo(BigDecimal.ZERO) > 0;
+					(abstractFinanzielleSituation.getBruttovermoegen() == null ||
+					abstractFinanzielleSituation.getBruttovermoegen().compareTo(BigDecimal.ZERO) >= 0);
 			case NACHWEIS_SCHULDEN:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
 					!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
