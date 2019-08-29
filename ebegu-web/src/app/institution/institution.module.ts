@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {IbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
@@ -39,6 +39,10 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
         IbanModule,
         NgxMaterialTimepickerModule,
     ],
+    // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
+    // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
+    // See https://stackoverflow.com/a/51214263
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         InstitutionListComponent,
         EditInstitutionComponent,

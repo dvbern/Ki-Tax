@@ -21,15 +21,21 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import TSGemeinde from '../../../models/TSGemeinde';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionStammdatenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {LogFactory} from '../../core/logging/LogFactory';
+import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+
+const LOG = LogFactory.createLog('EditInstitutionTagesschuleComponent');
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
     templateUrl: './edit-institution-tagesschule.component.html',
+    styleUrls: ['./edit-institution-tagesschule.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
@@ -38,15 +44,21 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
 
-    public gemeindeList: TSGemeinde[];
-    public modulTageschuleMap: { [key: string]: TSModulTagesschule; } = {};
+    public gesuchsperiodenList: TSGesuchsperiode[] = [];
+    public gemeindeList: TSGemeinde[] = [];
+    public moduleProGesuchsperiode: Map<string, Map<TSModulTagesschuleName, TSModulTagesschule>> =
+        new Map<string, Map<TSModulTagesschuleName, TSModulTagesschule>>();
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
     ) {
     }
 
     public ngOnInit(): void {
+        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then(allGesuchsperioden => {
+            this.gesuchsperiodenList = allGesuchsperioden;
+        });
         this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
             this.gemeindeList = allGemeinden;
         });
@@ -65,60 +77,72 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return getTSModulTagesschuleNameValues();
     }
 
-    public getModulTagesschule(modulname: TSModulTagesschuleName): TSModulTagesschule {
-        let modul = this.modulTageschuleMap[modulname];
+    public getModulTagesschule(modulname: TSModulTagesschuleName, gesuchsperiodeId: string) {
+        if (!this.moduleProGesuchsperiode.has(gesuchsperiodeId)) {
+            this.moduleProGesuchsperiode.set(gesuchsperiodeId, new Map<TSModulTagesschuleName, TSModulTagesschule>());
+        }
+        let modul = this.moduleProGesuchsperiode.get(gesuchsperiodeId).get(modulname);
         if (!modul) {
             // Gespeichert wird das Modul dann fuer jeden Wochentag. Als Vertreter wird der Montag ausgefüllt
             modul = new TSModulTagesschule();
+            modul.gesuchsperiodeId = gesuchsperiodeId;
             modul.wochentag = TSDayOfWeek.MONDAY;
             modul.modulTagesschuleName = modulname;
-            this.modulTageschuleMap[modulname] = modul;
+            this.moduleProGesuchsperiode.get(gesuchsperiodeId).set(modulname, modul);
         }
         return modul;
     }
 
     private loadModuleTagesschule(): void {
-        this.modulTageschuleMap = {};
+        this.moduleProGesuchsperiode = new Map<string, Map<TSModulTagesschuleName, TSModulTagesschule>>();
         // tslint:disable-next-line:early-exit
         if (this.stammdaten && this.stammdaten.id) {
             if (this.stammdaten.institutionStammdatenTagesschule
-                && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule) {
+                && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule
+                && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule.length > 0) {
+                console.warn('existing modules from server: ',
+                    this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
                 this.fillModulTagesschuleMap(this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
             }
         } else {
+            console.warn('create new empty modules');
             this.fillModulTagesschuleMap([]);
         }
     }
 
     private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]): void {
-        getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
-            const foundmodul = modulListFromServer.filter(modul => (
-                modul.modulTagesschuleName === modulname && modul.wochentag === TSDayOfWeek.MONDAY
-            ))[0];
-            // tslint:disable-next-line:early-exit
-            if (foundmodul) {
-                (foundmodul as any).zeitVon = DateUtil.momentToHoursAndMinutes(foundmodul.zeitVon);
-                (foundmodul as any).zeitBis = DateUtil.momentToHoursAndMinutes(foundmodul.zeitBis);
-                this.modulTageschuleMap[modulname] = foundmodul;
-            } else {
-                this.modulTageschuleMap[modulname] = this.getModulTagesschule(modulname);
-            }
+        this.gesuchsperiodenList.forEach((gp: TSGesuchsperiode) => {
+            getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
+                const foundmodul = modulListFromServer.filter(modul => (
+                    modul.modulTagesschuleName === modulname &&
+                    modul.wochentag === TSDayOfWeek.MONDAY &&
+                    modul.gesuchsperiodeId === gp.id
+                ))[0];
+                // tslint:disable-next-line:early-exit
+                if (foundmodul) {
+                    (foundmodul as any).zeitVon = DateUtil.momentToHoursAndMinutes(foundmodul.zeitVon);
+                    (foundmodul as any).zeitBis = DateUtil.momentToHoursAndMinutes(foundmodul.zeitBis);
+                    this.moduleProGesuchsperiode.get(gp.id).set(modulname, foundmodul);
+                } else {
+                    this.getModulTagesschule(modulname, gp.id);
+                }
+
+            });
         });
     }
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
         const definedModulTagesschule: TSModulTagesschule[] = [];
-        // tslint:disable-next-line:forin
-        for (const modulname in this.modulTageschuleMap) {
-            const tempModul = this.modulTageschuleMap[modulname];
-            // tslint:disable-next-line:early-exit
-            if (tempModul.zeitVon && tempModul.zeitBis) {
-                tempModul.zeitVon = DateUtil.hoursAndMinutesToMoment(tempModul.zeitVon);
-                tempModul.zeitBis = DateUtil.hoursAndMinutesToMoment(tempModul.zeitBis);
-                definedModulTagesschule.push(tempModul);
-            }
-        }
-
+        this.moduleProGesuchsperiode.forEach((mapOfModules, gesuchsperiodeId) => {
+            mapOfModules.forEach((tempModul, modulname) => {
+                if (tempModul.zeitVon && tempModul.zeitBis) {
+                    tempModul.zeitVon = DateUtil.hoursAndMinutesToMoment(tempModul.zeitVon);
+                    tempModul.zeitBis = DateUtil.hoursAndMinutesToMoment(tempModul.zeitBis);
+                    tempModul.gesuchsperiodeId = gesuchsperiodeId;
+                    definedModulTagesschule.push(tempModul);
+                }
+            })
+        });
         // tslint:disable-next-line:early-exit
         if (definedModulTagesschule.length > 0) {
             if (!this.stammdaten.institutionStammdatenTagesschule) {

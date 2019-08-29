@@ -41,44 +41,59 @@
         <h1 translate>INSTITUTION_ST_MODULE</h1>
     </div>
 </div>
-<!-- Titelzeile -->
-<div class="row">
-    <div class="col-md-2">
-        <span translate>INSTITUTION_ST_MODULNAME</span>
-    </div>
-    <div class="col-md-3">
-        <span translate>VON</span>
-    </div>
-    <div class="col-md-3">
-        <span translate>BIS</span>
-    </div>
-</div>
-<div *ngFor="let modul of getModulTagesschuleNamen()">
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label translate>{{modul}}</label>
+
+<dv-accordion class="gemeindeList" allow-multiple-sections="true">
+    <dv-accordion-tab
+        *ngFor="let gp of gesuchsperiodenList; trackBy:gp?.id; let i = index"
+        [tabid]="i">
+        <tab-title>
+            <div class="message-header">
+                <p class="fa fa-angle-right"></p>{{gp.gesuchsperiodeString}}
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerVon"
-                       [format]="24" name="pickerVon{{modul}}" readonly
-                       [(ngModel)]="getModulTagesschule(modul).zeitVon"
-                       [required]="getModulTagesschule(modul).zeitBis">
-                <ngx-material-timepicker #pickerVon></ngx-material-timepicker>
-                <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
+        </tab-title>
+        <tab-body>
+            <!-- Titelzeile -->
+            <div class="row">
+                <div class="col-md-2">
+                    <span translate>INSTITUTION_ST_MODULNAME</span>
+                </div>
+                <div class="col-md-3">
+                    <span translate>VON</span>
+                </div>
+                <div class="col-md-3">
+                    <span translate>BIS</span>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerBis"
-                       [format]="24" name="pickerBis{{modul}}" readonly
-                       [(ngModel)]="getModulTagesschule(modul).zeitBis"
-                       [required]="getModulTagesschule(modul).zeitVon">
-                <ngx-material-timepicker #pickerBis></ngx-material-timepicker>
-                <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
+
+            <div *ngFor="let modul of getModulTagesschuleNamen()">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label translate>{{modul}}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerVon"
+                                   [format]="24" name="pickerVon{{modul}}" readonly
+                                   [(ngModel)]="getModulTagesschule(modul, gp.id).zeitVon"
+                                   [required]="getModulTagesschule(modul, gp.id).zeitBis">
+                            <ngx-material-timepicker #pickerVon></ngx-material-timepicker>
+                            <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerBis"
+                                   [format]="24" name="pickerBis{{modul}}" readonly
+                                   [(ngModel)]="getModulTagesschule(modul, gp.id).zeitBis"
+                                   [required]="getModulTagesschule(modul, gp.id).zeitVon">
+                            <ngx-material-timepicker #pickerBis></ngx-material-timepicker>
+                            <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
+        </tab-body>
+    </dv-accordion-tab>
+</dv-accordion>

@@ -4156,6 +4156,7 @@ public class JaxBConverter extends AbstractConverter {
 					arbeitstageOhneMontag.stream()
 						.map(dayOfWeek -> {
 							JaxModulTagesschule modulTagesschule = new JaxModulTagesschule();
+							modulTagesschule.setGesuchsperiodeId(res.getGesuchsperiodeId());
 							modulTagesschule.setWochentag(dayOfWeek);
 							modulTagesschule.setModulTagesschuleName(res.getModulTagesschuleName());
 							modulTagesschule.setZeitVon(res.getZeitVon());
