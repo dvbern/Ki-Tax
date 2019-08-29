@@ -832,7 +832,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				}
 			}
 
-			// Den Gesuchsstatus auf Freigageben setzen (auch bei nur Schulamt-Gesuchen)
+			// Den Gesuchsstatus auf Freigegeben setzen (auch bei reinen Schulamt-Gesuchen)
 			gesuch.setStatus(AntragStatus.FREIGEGEBEN);
 
 			// Step Freigabe gruen
@@ -866,6 +866,43 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		throw new EbeguEntityNotFoundException("antragFreigeben", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
+	public Gesuch antragZurueckziehen(
+		@Nonnull String gesuchId) {
+
+		//direkt ueber persistence da wir eigentlich noch nicht leseberechtigt sind)
+		Optional<Gesuch> gesuchOptional = Optional.ofNullable(persistence.find(Gesuch.class, gesuchId));
+		if (gesuchOptional.isPresent()) {
+			Gesuch gesuch = gesuchOptional.get();
+
+			// TODO KIBON-702 was ist mit Erneuerungsgesuchen?
+			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH) {
+				throw new EbeguRuntimeException("antragZurueckziehen", "Only Online Gesuche can be reverted");
+			}
+
+			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
+			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
+			// Das Eingangsdatum muss wieder zurückgesetzt werden, falls es ein Online Gesuch ist
+			if (Eingangsart.ONLINE == gesuch.getEingangsart()) {
+				gesuch.setFreigabeDatum(null);
+			}
+
+			// TODO Reviewer KIBON-702: wir müssen es tun. Aber dürfen wir es auch? Ich bin mir nicht so sicher...
+			generatedDokumentService.removeFreigabequittungFromGesuch(gesuch);
+
+			wizardStepService.unsetWizardStepFreigabe(gesuch.getId());
+
+			final Gesuch merged = persistence.merge(gesuch);
+			antragStatusHistoryService.saveStatusChange(merged, null);
+			return merged;
+
+		}
+
+		throw new EbeguEntityNotFoundException("antragZurueckziehen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 	}
 
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,

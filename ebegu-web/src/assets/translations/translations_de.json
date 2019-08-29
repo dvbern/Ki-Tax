@@ -1621,5 +1621,6 @@
     "BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP": "<i class='fa fa-pencil black'></i> : Die Abweichung befindet sich in Bearbeitung.<br><i class='fa fa-hourglass orange'></i> : Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet.<br><i class='fa fa-check green'></i> : Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt.",
     "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "Die Abweichung befindet sich in Bearbeitung",
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet",
-    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt."
+    "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt.",
+    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "(Freigabe zurückziehen und Antrag erneut bearbeiten)"
 }

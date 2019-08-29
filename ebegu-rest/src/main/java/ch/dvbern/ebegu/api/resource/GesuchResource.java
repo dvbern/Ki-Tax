@@ -377,6 +377,30 @@ public class GesuchResource {
 		return Response.ok(converter.gesuchToJAX(gesuch)).build();
 	}
 
+	@ApiOperation(value = "Zieht einen freigegebenen Online Antrag zurück und versetzt ihn in den Status In "
+		+ "Bearbeitung Gesuchsteller",
+		response = JaxGesuch.class)
+	@Nullable
+	@POST
+	@Path("/zurueckziehen/{antragId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response antraZurueckziehen(
+		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
+		resourceHelper.assertGesuchStatusForFreigabe(antragJaxId.getId());
+
+		Objects.requireNonNull(antragJaxId.getId());
+
+		final String antragId = converter.toEntityId(antragJaxId);
+
+		Gesuch gesuch = gesuchService.antragZurueckziehen(antragId);
+		return Response.ok(converter.gesuchToJAX(gesuch)).build();
+	}
+
 	@ApiOperation(value = "Setzt das gegebene Gesuch als Beschwerde haengig und bei allen Gesuchen der Periode das " +
 		"Flag gesperrtWegenBeschwerde auf true", response = JaxGesuch.class)
 	@Nullable
