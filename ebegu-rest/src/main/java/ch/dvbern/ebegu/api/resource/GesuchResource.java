@@ -61,13 +61,11 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
-import ch.dvbern.ebegu.util.MathUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
@@ -191,20 +189,16 @@ public class GesuchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxAntragDTO findGesuchForFreigabe(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
-		@Nonnull @NotNull @PathParam("anzZurueckgezogen") String anzZurueckgezogen) {
+		@Nonnull @NotNull @PathParam("anzZurueckgezogen") String anzZurueckgezogen
+	) {
 		Objects.requireNonNull(gesuchJAXPId.getId());
 		String gesuchID = converter.toEntityId(gesuchJAXPId);
-		Optional<Gesuch> gesuchOptional = gesuchService.findGesuchForFreigabe(gesuchID);
-
-		if (!gesuchOptional.isPresent()) {
-			return null;
-		}
-		Gesuch gesuchToReturn = gesuchOptional.get();
+		Integer zuruckgezogenAsInt = Integer.valueOf(anzZurueckgezogen);
+		Gesuch gesuchToReturn = gesuchService.findGesuchForFreigabe(gesuchID, zuruckgezogenAsInt, true);
 
 		JaxAntragDTO jaxAntragDTO = converter.gesuchToAntragDTO(gesuchToReturn,
 			principalBean.discoverMostPrivilegedRole());
 
-		jaxAntragDTO.setNewestFreigabequittung(MathUtil.DEFAULT.from(anzZurueckgezogen).compareTo(gesuchToReturn.getAnzahlGesuchZurueckgezogen()) == 0);
 		jaxAntragDTO.setFamilienName(gesuchToReturn.extractFullnamesString()); //hier volle Namen beider GS
 		return jaxAntragDTO;
 	}

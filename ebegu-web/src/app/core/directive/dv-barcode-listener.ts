@@ -19,12 +19,17 @@ import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {FreigabeController} from '../../../gesuch/dialog/FreigabeController';
+import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import TSAntragDTO from '../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../errors/service/ErrorService';
+import {LogFactory} from '../logging/LogFactory';
 import {DvDialog} from './dv-dialog/dv-dialog';
+import ITranslateService = angular.translate.ITranslateService;
 
 const FREIGEBEN_DIALOG_TEMPLATE = require('../../../gesuch/dialog/freigabe.html');
+const LOG = LogFactory.createLog('DVBarcodeListener');
 
 export class DVBarcodeListener implements IDirective {
     public restrict = 'A';
@@ -54,6 +59,8 @@ export class DVBarcodeController implements IController {
         'ErrorService',
         '$log',
         'AuthLifeCycleService',
+        'GesuchRS',
+        '$translate',
     ];
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -69,6 +76,8 @@ export class DVBarcodeController implements IController {
         private readonly errorService: ErrorService,
         private readonly $log: ILogService,
         private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly $translate: ITranslateService,
     ) {
     }
 
@@ -146,9 +155,22 @@ export class DVBarcodeController implements IController {
                 this.barcodeBuffer = [];
                 this.$timeout.cancel(this.barcodeReadtimeout);
 
-                this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                    docID: barcodeDocID,
-                    anzZurueckgezogen: barcodeDocAnzahlZurueckgezogen,
+                this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen).then((response: TSAntragDTO) => {
+                    let message = undefined;
+                    if (!response) {
+                        message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
+                    }
+                    if (!response.canBeFreigegeben()) {
+                        message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                    }
+                    this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
+                        docID: barcodeDocID,
+                        errorMessage: message,
+                        gesuch: response
+                    });
+                }).catch((e) => {
+                    this.errorService.addMesageAsError('Gesuch konnte nicht freigegeben werden!');
+                    LOG.warn('Gesuch konnte nicht freigegeben werden!', e);
                 });
             } else {
                 this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);

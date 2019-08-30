@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -386,14 +385,20 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
 		SACHBEARBEITER_TS, GESUCHSTELLER })
-	public Optional<Gesuch> findGesuchForFreigabe(@Nonnull String gesuchId) {
+	public Gesuch findGesuchForFreigabe(@Nonnull String gesuchId, @Nonnull Integer anzahlZurueckgezogen, boolean checkAnzahlZurueckgezogen) {
 		Objects.requireNonNull(gesuchId, "gesuchId muss gesetzt sein");
 		Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
-		if (gesuch != null) {
-			authorizer.checkReadAuthorizationForFreigabe(gesuch);
-			return Optional.of(gesuch);
+		if (gesuch == null) {
+			throw new EbeguRuntimeException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		return Optional.empty();
+		if (checkAnzahlZurueckgezogen) {
+			if (!Objects.equals(anzahlZurueckgezogen, gesuch.getAnzahlGesuchZurueckgezogen())) {
+				throw new EbeguRuntimeException("findGesuchForFreigabe",
+					ErrorCodeEnum.ERROR_GESUCH_DURCH_GS_ZURUECKGEZOGEN);
+			}
+		}
+		authorizer.checkReadAuthorizationForFreigabe(gesuch);
+		return gesuch;
 	}
 
 	@PermitAll
@@ -871,17 +876,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
-	public Gesuch antragZurueckziehen(
-		@Nonnull String gesuchId) {
-
+	public Gesuch antragZurueckziehen(@Nonnull String gesuchId) {
 		Optional<Gesuch> gesuchOptional = Optional.ofNullable(persistence.find(Gesuch.class, gesuchId));
 		if (gesuchOptional.isPresent()) {
 			Gesuch gesuch = gesuchOptional.get();
 
-			// TODO KIBON-702 was ist mit Erneuerungsgesuchen?
-			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH || Eingangsart.ONLINE != gesuch.getEingangsart()) {
+			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH
+					|| Eingangsart.ONLINE != gesuch.getEingangsart()
+					|| gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
 				throw new EbeguRuntimeException("antragZurueckziehen", "Only Online Erstgesuche can be reverted");
 			}
+
+			LOG.warn("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
 
 			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
@@ -890,7 +896,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			// jedesmal wenn die Freigabe zurueckgezogen wird, erhöhen wir den Counter um 1, damit wir wissen,
 			// ob der Gesuchsteller die richtige Freigabequittung eingeschickt hat.
-			gesuch.setAnzahlGesuchZurueckgezogen(gesuch.getAnzahlGesuchZurueckgezogen().add(BigDecimal.ONE));
+			gesuch.setAnzahlGesuchZurueckgezogen(gesuch.getAnzahlGesuchZurueckgezogen() + 1);
 
 			// bestehende Freigabequittung löschen
 			generatedDokumentService.removeFreigabequittungFromGesuch(gesuch);
@@ -901,9 +907,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			final Gesuch merged = persistence.merge(gesuch);
 			antragStatusHistoryService.saveStatusChange(merged, null);
 			return merged;
-
 		}
-
 		throw new EbeguEntityNotFoundException("antragZurueckziehen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 	}
 

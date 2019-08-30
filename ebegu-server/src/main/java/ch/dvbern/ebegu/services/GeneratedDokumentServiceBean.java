@@ -949,6 +949,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		if (document.isPresent()) {
 			persistence.remove(GeneratedDokument.class, document.get().getId());
+			fileSaverService.remove(document.get().getFilepfad());
 		}
 	}
 

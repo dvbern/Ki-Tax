@@ -1639,6 +1639,5 @@
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
     "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
-    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "(Freigabe zurückziehen und Antrag erneut bearbeiten)",
-    "FREIGABE_GESUCH_ALTE_FREIGABEQUITTUNG": "Das Gesuch wurde nach der Freigabe erneut vom Gesuchsteller bearbeitet. Bitte scannen Sie die neue Freigabequittung."
+    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "(Freigabe zurückziehen und Antrag erneut bearbeiten)"
 }
