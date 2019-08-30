@@ -68,8 +68,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public findGesuchForFreigabe(gesuchID: string): IPromise<TSAntragDTO> {
-        return this.$http.get(`${this.serviceURL}/freigabe/${encodeURIComponent(gesuchID)}`)
+    public findGesuchForFreigabe(gesuchID: string, anzZurueckgezogen: string): IPromise<TSAntragDTO> {
+        return this.$http.get(`${this.serviceURL}/freigabe/${encodeURIComponent(gesuchID)}/${anzZurueckgezogen}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseAntragDTO(new TSAntragDTO(), response.data);
             });

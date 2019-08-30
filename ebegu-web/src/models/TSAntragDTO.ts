@@ -48,6 +48,7 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     private _gesuchBetreuungenStatus: TSGesuchBetreuungenStatus;
     private _dokumenteHochgeladen: boolean;
     private _gemeinde: string;
+    private _newestFreigabequittung: boolean;
 
     public constructor() {
         super();
@@ -284,5 +285,17 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
 
     public set gesuchBetreuungenStatus(value: TSGesuchBetreuungenStatus) {
         this._gesuchBetreuungenStatus = value;
+    }
+
+    public get newestFreigabequittung(): boolean {
+        return this._newestFreigabequittung;
+    }
+
+    public set newestFreigabequittung(value: boolean) {
+        this._newestFreigabequittung = value;
+    }
+
+    public isNewestFreigabequittung(): boolean {
+        return this._newestFreigabequittung;
     }
 }

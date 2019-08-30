@@ -132,20 +132,23 @@ export class DVBarcodeController implements IController {
 
             const barcodeParts = barcodeRead.split('|');
 
-            if (barcodeParts.length === 3) {
+            if (barcodeParts.length == 3 || barcodeParts.length == 4) {
                 const barcodeDocType = barcodeParts[0];
                 const barcodeDocFunction = barcodeParts[1];
                 const barcodeDocID = barcodeParts[2];
+                const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || 0;
 
                 this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
                 this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
                 this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
+                this.$log.debug('Barcode Doc Anzahl Zurueckgezogen: ' + barcodeDocAnzahlZurueckgezogen);
 
                 this.barcodeBuffer = [];
                 this.$timeout.cancel(this.barcodeReadtimeout);
 
                 this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
                     docID: barcodeDocID,
+                    anzZurueckgezogen: barcodeDocAnzahlZurueckgezogen,
                 });
             } else {
                 this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);

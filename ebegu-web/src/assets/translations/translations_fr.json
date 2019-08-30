@@ -1618,5 +1618,6 @@
     "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "",
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
     "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "",
-    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": ""
+    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "",
+    "FREIGABE_GESUCH_ALTE_FREIGABEQUITTUNG": ""
 }

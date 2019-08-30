@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -156,7 +157,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private Persistence persistence;
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
 	@Inject
 	private BenutzerService benutzerService;
 	@Inject
@@ -874,26 +874,28 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public Gesuch antragZurueckziehen(
 		@Nonnull String gesuchId) {
 
-		//direkt ueber persistence da wir eigentlich noch nicht leseberechtigt sind)
 		Optional<Gesuch> gesuchOptional = Optional.ofNullable(persistence.find(Gesuch.class, gesuchId));
 		if (gesuchOptional.isPresent()) {
 			Gesuch gesuch = gesuchOptional.get();
 
 			// TODO KIBON-702 was ist mit Erneuerungsgesuchen?
-			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH) {
-				throw new EbeguRuntimeException("antragZurueckziehen", "Only Online Gesuche can be reverted");
+			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH || Eingangsart.ONLINE != gesuch.getEingangsart()) {
+				throw new EbeguRuntimeException("antragZurueckziehen", "Only Online Erstgesuche can be reverted");
 			}
 
 			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
-			// Das Eingangsdatum muss wieder zurückgesetzt werden, falls es ein Online Gesuch ist
-			if (Eingangsart.ONLINE == gesuch.getEingangsart()) {
-				gesuch.setFreigabeDatum(null);
-			}
+			// Das Freigabedatum muss wieder zurückgesetzt werden, falls es ein Online Gesuch ist
+			gesuch.setFreigabeDatum(null);
 
-			// TODO Reviewer KIBON-702: wir müssen es tun. Aber dürfen wir es auch? Ich bin mir nicht so sicher...
+			// jedesmal wenn die Freigabe zurueckgezogen wird, erhöhen wir den Counter um 1, damit wir wissen,
+			// ob der Gesuchsteller die richtige Freigabequittung eingeschickt hat.
+			gesuch.setAnzahlGesuchZurueckgezogen(gesuch.getAnzahlGesuchZurueckgezogen().add(BigDecimal.ONE));
+
+			// bestehende Freigabequittung löschen
 			generatedDokumentService.removeFreigabequittungFromGesuch(gesuch);
 
+			// den WizardStep anpassen
 			wizardStepService.unsetWizardStepFreigabe(gesuch.getId());
 
 			final Gesuch merged = persistence.merge(gesuch);

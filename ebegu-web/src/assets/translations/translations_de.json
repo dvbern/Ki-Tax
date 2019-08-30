@@ -1622,5 +1622,6 @@
     "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "Die Abweichung befindet sich in Bearbeitung",
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "Die Abweichung wurde freigegeben und eine Mutationsmeldung an die Gemeinde gesendet",
     "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "Die Abweichung wurde von der Gemeinde zu einer Mutation hinzugefügt.",
-    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "(Freigabe zurückziehen und Antrag erneut bearbeiten)"
+    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "(Freigabe zurückziehen und Antrag erneut bearbeiten)",
+    "FREIGABE_GESUCH_ALTE_FREIGABEQUITTUNG": "Das Gesuch wurde nach der Freigabe erneut vom Gesuchsteller bearbeitet. Bitte scannen Sie die neue Freigabequittung."
 }

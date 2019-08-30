@@ -33,6 +33,7 @@ export class FreigabeController {
 
     public static $inject: string[] = [
         'docID',
+        'anzZurueckgezogen',
         '$mdDialog',
         'GesuchRS',
         'BenutzerRS',
@@ -54,6 +55,7 @@ export class FreigabeController {
 
     public constructor(
         private readonly docID: string,
+        private readonly anzZurueckgezogen: string,
         private readonly $mdDialog: IDialogService,
         private readonly gesuchRS: GesuchRS,
         private readonly benutzerRS: BenutzerRS,
@@ -63,7 +65,7 @@ export class FreigabeController {
         private readonly dossierRS: DossierRS,
     ) {
 
-        gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
+        gesuchRS.findGesuchForFreigabe(this.docID, this.anzZurueckgezogen).then((response: TSAntragDTO) => {
             this.errorMessage = undefined; // just for safety replace old value
             if (!response) {
                 this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
@@ -72,6 +74,11 @@ export class FreigabeController {
 
             if (!response.canBeFreigegeben()) {
                 this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                return;
+            }
+
+            if (!response.isNewestFreigabequittung()) {
+                this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_ALTE_FREIGABEQUITTUNG');
                 return;
             }
 
