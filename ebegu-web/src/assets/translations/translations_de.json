@@ -93,7 +93,7 @@
     "FINANZIELLE_SITUATION_VERMOEGEN_GEMEINSAM": "Gemeinsames Bruttovermögen",
     "FINANZIELLE_SITUATION_VERMOEGEN_GS_1": "Bruttovermögen {{namegs1}}",
     "FINANZIELLE_SITUATION_VERMOEGEN_GS_2": "Bruttovermögen {{namegs2}}",
-    "FINANZIELLE_SITUATION_VERMOEGEN_HELP": "Ihr Vermögensstand vom 31.12. des massgebenden Jahres: Vermögen gemäss Wertschriftenverzeichnis (Formular 3, Ziff. 32) minus Geschäftsertrag / Geschäftsvermögen (Formular 3, Ziff. 53) plus Steuerwert von Liegenschaften (Formular 7, Ziff. 7.0) plus Anteil Vermögen aus Erbengemeinschaften / Miteigentum (nur Anteil Privatvermögen, Formular 8, Ziff. 8.3) plus weitere Vermögenswerte sowie Versicherungen und Zinsen auf Sparkapitalien (Formular 4, Ziff. 4.1, 4.2).<br>Das Vermögen ergibt sich aus allen Bankkonten (ausser Jugendsparkonten), ggf. Steuerwert Fahrzeug, Immobilien, Miteigentümerschaften etc.",
+    "FINANZIELLE_SITUATION_VERMOEGEN_HELP": "Ihr Vermögensstand vom 31.12. des massgebenden Jahres: Vermögen gemäss Wertschriftenverzeichnis (Formular 3, Ziff. 32) minus Geschäftsertrag / Geschäftsvermögen (Formular 3, Ziff. 53) plus Steuerwert von Liegenschaften (Formular 7, Ziff. 7.0) plus Anteil Vermögen aus Erbengemeinschaften / Miteigentum (nur Anteil Privatvermögen, Formular 8, Ziff. 8.3) plus weitere Vermögenswerte sowie Versicherungen und Zinsen auf Sparkapitalien (Formular 4, Ziff. 4.1, 4.2).<br>Das Vermögen ergibt sich aus allen Bankkonten, ggf. Steuerwert Fahrzeug, Immobilien, Miteigentümerschaften etc.",
     "FINANZIELLE_SITUATION_SCHULDEN_GEMEINSAM": "Gemeinsame Schulden",
     "FINANZIELLE_SITUATION_SCHULDEN_GS_1": "Schulden {{namegs1}}",
     "FINANZIELLE_SITUATION_SCHULDEN_GS_2": "Schulden {{namegs2}}",
