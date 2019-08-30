@@ -1282,6 +1282,7 @@ export default class EbeguRestUtil {
         if (institutionStammdatenTagesschule) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenTagesschule,
                 institutionStammdatenTagesschule);
+            restInstitutionStammdatenTagesschule.gemeinde = this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
             restInstitutionStammdatenTagesschule.moduleTagesschule =
                 this.moduleTagesschuleArrayToRestObject(institutionStammdatenTagesschule.moduleTagesschule);
             return restInstitutionStammdatenTagesschule;
@@ -1296,6 +1297,7 @@ export default class EbeguRestUtil {
         if (institutionStammdatenTagesschuleFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTagesschuleTS,
                 institutionStammdatenTagesschuleFromServer);
+            institutionStammdatenTagesschuleTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
             institutionStammdatenTagesschuleTS.moduleTagesschule =
                 this.parseModuleTagesschuleArray(institutionStammdatenTagesschuleFromServer.moduleTagesschule);
             return institutionStammdatenTagesschuleTS;
