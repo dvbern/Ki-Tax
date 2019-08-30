@@ -110,7 +110,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         this.gesuchModelManager.antragFreigeben(gesuchID, null, null);
     }
 
-
     public freigabeZurueckziehen(): void {
         const gesuchID = this.gesuchModelManager.getGesuch().id;
         this.gesuchModelManager.antragZurueckziehen(gesuchID);

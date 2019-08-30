@@ -1402,6 +1402,7 @@ export default class GesuchModelManager {
      * Antrag zurueckziehen
      */
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
+        // tslint:disable-next-line:no-identical-functions
         return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
             this.setGesuch(response);
 

@@ -132,11 +132,11 @@ export class DVBarcodeController implements IController {
 
             const barcodeParts = barcodeRead.split('|');
 
-            if (barcodeParts.length == 3 || barcodeParts.length == 4) {
+            if (barcodeParts.length === 3 || barcodeParts.length === 4) {
                 const barcodeDocType = barcodeParts[0];
                 const barcodeDocFunction = barcodeParts[1];
                 const barcodeDocID = barcodeParts[2];
-                const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || 0;
+                const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || '0';
 
                 this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
                 this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
