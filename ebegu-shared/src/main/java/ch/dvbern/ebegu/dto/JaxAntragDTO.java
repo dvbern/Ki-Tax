@@ -372,6 +372,10 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 		this.gemeinde = gemeinde;
 	}
 
+	public boolean isNewestFreigabequittung() {
+		return newestFreigabequittung;
+	}
+
 	public void setNewestFreigabequittung(boolean newestFreigabequittung) {
 		this.newestFreigabequittung = newestFreigabequittung;
 	}
