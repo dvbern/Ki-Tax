@@ -166,8 +166,8 @@ public class InstitutionStammdatenResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
 		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
-			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten,
-				new JaxInstitutionStammdatenSummary()))
+			.map(instStammdaten ->
+				converter.institutionStammdatenSummaryToJAX(instStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 
@@ -189,9 +189,10 @@ public class InstitutionStammdatenResource {
 		@Nullable @QueryParam("date") String stringDate) {
 
 		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stringDate);
+
 		return institutionStammdatenService.getAllInstitutionStammdatenByDate(date).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
-				new JaxInstitutionStammdatenSummary()))
+			.map(stammdaten ->
+				converter.institutionStammdatenSummaryToJAX(stammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 
@@ -216,9 +217,10 @@ public class InstitutionStammdatenResource {
 		Objects.requireNonNull(gesuchsperiodeJaxId);
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
+
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
-				new JaxInstitutionStammdatenSummary()))
+			.map(stammdaten ->
+				converter.institutionStammdatenSummaryToJAX(stammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 

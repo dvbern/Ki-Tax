@@ -337,7 +337,7 @@ public class InstitutionResource {
 	public Response deactivateStammdatenCheckRequired(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJaxId
 	) {
-		Objects.requireNonNull(institutionJaxId.getId());
+		requireNonNull(institutionJaxId.getId());
 		final String institutionId = converter.toEntityId(institutionJaxId);
 
 		final Institution updatedInstitution = institutionService.deactivateStammdatenCheckRequired(institutionId);

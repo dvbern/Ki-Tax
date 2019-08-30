@@ -45,7 +45,7 @@ public interface InstitutionService {
 	Institution createInstitution(@Nonnull Institution institution);
 
 	/**
-	 * @param key PK (id) der Institution
+	 * @param id PK (id) der Institution
 	 * @return Institution mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull

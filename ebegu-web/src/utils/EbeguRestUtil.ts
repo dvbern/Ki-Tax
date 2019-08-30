@@ -1282,7 +1282,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenTagesschule) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenTagesschule,
                 institutionStammdatenTagesschule);
-            restInstitutionStammdatenTagesschule.gemeinde = this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
+            restInstitutionStammdatenTagesschule.gemeinde =
+                this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
             restInstitutionStammdatenTagesschule.moduleTagesschule =
                 this.moduleTagesschuleArrayToRestObject(institutionStammdatenTagesschule.moduleTagesschule);
             return restInstitutionStammdatenTagesschule;
@@ -1297,7 +1298,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenTagesschuleFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTagesschuleTS,
                 institutionStammdatenTagesschuleFromServer);
-            institutionStammdatenTagesschuleTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
+            institutionStammdatenTagesschuleTS.gemeinde =
+                this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
             institutionStammdatenTagesschuleTS.moduleTagesschule =
                 this.parseModuleTagesschuleArray(institutionStammdatenTagesschuleFromServer.moduleTagesschule);
             return institutionStammdatenTagesschuleTS;
@@ -1758,7 +1760,9 @@ export default class EbeguRestUtil {
 
         restAbweichung.status = abweichung.status;
 
-        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ?
+            MULTIPLIER_KITA :
+            MULTIPLIER_TAGESFAMILIEN;
 
         const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
         const originalPensum = restAbweichung.vertraglichesPensum
@@ -1887,7 +1891,9 @@ export default class EbeguRestUtil {
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
 
-        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
+            MULTIPLIER_KITA :
+            MULTIPLIER_TAGESFAMILIEN;
 
         const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));

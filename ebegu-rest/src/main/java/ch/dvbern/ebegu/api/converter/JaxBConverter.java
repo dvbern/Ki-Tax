@@ -1309,28 +1309,13 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		// Traegerschaft ist nicht required!
-		if (institutionJAXP.getTraegerschaft() != null) {
-			if (institutionJAXP.getTraegerschaft().getId() != null) {
-				final Optional<Traegerschaft> traegerschaftFromDB =
-					traegerschaftService.findTraegerschaft(institutionJAXP.getTraegerschaft().getId());
-				if (traegerschaftFromDB.isPresent()) {
-					// Traegerschaft darf nicht vom Client ueberschrieben werden
-					institution.setTraegerschaft(traegerschaftFromDB.get());
-				} else {
-					throw new EbeguEntityNotFoundException(
-						"institutionToEntity -> traegerschaft",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						institutionJAXP
-							.getTraegerschaft().getId());
-				}
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"institutionToEntity -> traegerschaft",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-			}
-		} else {
-			institution.setTraegerschaft(null);
-		}
+		Traegerschaft traegerschaft = Optional.ofNullable(institutionJAXP.getTraegerschaft())
+			.map(JaxTraegerschaft::getId)
+			.flatMap(id -> traegerschaftService.findTraegerschaft(id))
+			.orElse(null);
+
+		institution.setTraegerschaft(traegerschaft);
+
 		return institution;
 	}
 
@@ -1346,9 +1331,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
 		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
 		if (persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
-			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheineToJAX(
-				persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()
-			));
+			jaxInstStammdaten.setInstitutionStammdatenBetreuungsgutscheine(
+				institutionStammdatenBetreuungsgutscheineToJAX(
+					persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()
+				));
 		}
 		if (persistedInstStammdaten.getInstitutionStammdatenTagesschule() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(
@@ -1409,13 +1395,14 @@ public class JaxBConverter extends AbstractConverter {
 					.orElseGet(InstitutionStammdatenBetreuungsgutscheine::new);
 
 			InstitutionStammdatenBetreuungsgutscheine convertedIsBG =
-			 institutionStammdatenBetreuungsgutscheineToEntity(
-				institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine(),
-				isBG
-			);
+				institutionStammdatenBetreuungsgutscheineToEntity(
+					institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine(),
+					isBG
+				);
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(convertedIsBG);
 		}
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
+			updateJaxModuleTagesschule(institutionStammdatenJAXP);
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch
 			// nicht vorhanden, erzeugt werden
 			InstitutionStammdatenTagesschule isTS =
@@ -1808,10 +1795,10 @@ public class JaxBConverter extends AbstractConverter {
 		Set<JaxBetreuung> betreuungen = betreuungListToJax(persistedKind.getBetreuungen());
 		jaxKindContainer.getBetreuungen().addAll(betreuungen);
 		Set<JaxBetreuung> anmeldungenTagesschule =
-		 anmeldungTagesschuleListToJax(persistedKind.getAnmeldungenTagesschule());
+			anmeldungTagesschuleListToJax(persistedKind.getAnmeldungenTagesschule());
 		jaxKindContainer.getBetreuungen().addAll(anmeldungenTagesschule);
 		Set<JaxBetreuung> anmeldungenFerieninsel =
-		 anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
+			anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
 		jaxKindContainer.getBetreuungen().addAll(anmeldungenFerieninsel);
 		jaxKindContainer.setKindNummer(persistedKind.getKindNummer());
 		jaxKindContainer.setNextNumberBetreuung(persistedKind.getNextNumberBetreuung());
@@ -2201,8 +2188,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public <T extends AbstractPlatz> T abstractPlatzToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
-	 @Nonnull final T betreuung) {
+	public <T extends AbstractPlatz> T abstractPlatzToEntity(
+		@Nonnull final JaxBetreuung betreuungJAXP,
+		@Nonnull final T betreuung) {
 		requireNonNull(betreuung);
 		requireNonNull(betreuungJAXP);
 
@@ -2226,11 +2214,8 @@ public class JaxBConverter extends AbstractConverter {
 
 		// try to load the Kind with the ID given by BetreuungJax
 		if (betreuungJAXP.getKindId() != null) {
-			KindContainer kindContainer =
-			 kindService.findKind(betreuungJAXP.getKindId()).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"betreuungToEntity",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				 betreuungJAXP.getKindId()));
+			KindContainer kindContainer = kindService.findKind(betreuungJAXP.getKindId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException("betreuungToEntity", betreuungJAXP.getKindId()));
 			betreuung.setKind(kindContainer);
 		}
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
@@ -2238,8 +2223,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public AnmeldungTagesschule anmeldungTagesschuleToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
-	 @Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
+	public AnmeldungTagesschule anmeldungTagesschuleToEntity(
+		@Nonnull final JaxBetreuung betreuungJAXP,
+		@Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
 		AnmeldungTagesschule betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungTagesschule);
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
@@ -2269,8 +2255,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public AnmeldungFerieninsel anmeldungFerieninselToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
-	 @Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
+	public AnmeldungFerieninsel anmeldungFerieninselToEntity(
+		@Nonnull final JaxBetreuung betreuungJAXP,
+		@Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
 		AnmeldungFerieninsel betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungFerieninsel);
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
@@ -2425,34 +2412,32 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public AnmeldungTagesschule anmeldungTagesschuleToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
 		requireNonNull(betreuungJAXP);
-		AnmeldungTagesschule betreuungToMergeWith = new AnmeldungTagesschule();
-		if (betreuungJAXP.getId() != null) {
-			final Optional<AnmeldungTagesschule> optionalBetreuung =
-			 betreuungService.findAnmeldungTagesschule(betreuungJAXP.getId());
-			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungTagesschule());
-		}
+
+		AnmeldungTagesschule betreuungToMergeWith = Optional.ofNullable(betreuungJAXP.getId())
+			.flatMap(id -> betreuungService.findAnmeldungTagesschule(id))
+			.orElseGet(AnmeldungTagesschule::new);
+
 		return this.anmeldungTagesschuleToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
 	@Nonnull
 	public AnmeldungFerieninsel anmeldungFerieninselToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
 		requireNonNull(betreuungJAXP);
-		AnmeldungFerieninsel betreuungToMergeWith = new AnmeldungFerieninsel();
-		if (betreuungJAXP.getId() != null) {
-			final Optional<AnmeldungFerieninsel> optionalBetreuung =
-			 betreuungService.findAnmeldungFerieninsel(betreuungJAXP.getId());
-			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungFerieninsel());
-		}
+
+		AnmeldungFerieninsel betreuungToMergeWith = Optional.ofNullable(betreuungJAXP.getId())
+			.flatMap(id -> betreuungService.findAnmeldungFerieninsel(id))
+			.orElseGet(AnmeldungFerieninsel::new);
+
 		return this.anmeldungFerieninselToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
 	public Betreuung betreuungToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
 		requireNonNull(betreuungJAXP);
-		Betreuung betreuungToMergeWith = new Betreuung();
-		if (betreuungJAXP.getId() != null) {
-			final Optional<Betreuung> optionalBetreuung = betreuungService.findBetreuung(betreuungJAXP.getId());
-			betreuungToMergeWith = optionalBetreuung.orElse(new Betreuung());
-		}
+
+		Betreuung betreuungToMergeWith = Optional.ofNullable(betreuungJAXP.getId())
+			.flatMap(id ->  betreuungService.findBetreuung(id))
+			.orElseGet(Betreuung::new);
+
 		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
@@ -2763,7 +2748,8 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(@Nonnull BetreuungspensumAbweichung abweichung) {
+	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(
+		@Nonnull BetreuungspensumAbweichung abweichung) {
 		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
 		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
 		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
@@ -3767,7 +3753,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(JaxBetreuung::getInstitutionStammdaten)
-			.filter(is -> is != null)
+			.filter(Objects::nonNull)
 			.map(is -> is.getInstitution().getName())
 			.collect(Collectors.toSet());
 	}
@@ -4126,9 +4112,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Kopiert die Daten die fuer den Motag eingegeben wurden in alle andere Wochentage
+	 * Kopiert die Daten die fuer den Montag eingegeben wurden in alle andere Wochentage
 	 */
-	public JaxInstitutionStammdaten updateJaxModuleTagesschule(@Nonnull JaxInstitutionStammdaten jaxInstDaten) {
+	public void updateJaxModuleTagesschule(@Nonnull JaxInstitutionStammdaten jaxInstDaten) {
 		requireNonNull(jaxInstDaten);
 
 		JaxInstitutionStammdatenTagesschule stammdatenTagesschule = jaxInstDaten.getInstitutionStammdatenTagesschule();
@@ -4157,7 +4143,6 @@ public class JaxBConverter extends AbstractConverter {
 				});
 			stammdatenTagesschule.setModuleTagesschule(moduleTagesschuleComplete);
 		}
-		return jaxInstDaten;
 	}
 
 	@Nonnull

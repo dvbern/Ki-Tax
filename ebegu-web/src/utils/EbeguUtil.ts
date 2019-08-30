@@ -226,25 +226,28 @@ export default class EbeguUtil {
     }
 
     /**
-     * Both parameters must always be set, thuogh they are nullable in the Familiensituation because they are not set while
-     * creating the object but later while filling out the finanzielle situation.
+     * Both parameters must always be set, thuogh they are nullable in the Familiensituation because they are not set
+     * while creating the object but later while filling out the finanzielle situation.
      *
      * For the finanzielle situation to be required:
      * sozialhilfeBezueger=false and antragNurFuerBehinderungszuschlag=false
      */
-    public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, antragNurFuerBehinderungszuschlag: boolean): boolean {
+    public static isFinanzielleSituationRequired(
+        sozialhilfeBezueger: boolean,
+        antragNurFuerBehinderungszuschlag: boolean,
+    ): boolean {
         return sozialhilfeBezueger === false && antragNurFuerBehinderungszuschlag === false; // tslint:disable-line:no-boolean-literal-compare
     }
 
     public static getAmtsspracheAsString(
         gemeindeStammdaten: TSGemeindeStammdaten,
-        translate: ITranslateService
+        translate: ITranslateService,
     ): string {
 
         if (!gemeindeStammdaten || !translate) {
             return '';
         }
-        if  (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
+        if (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
             return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
         if (gemeindeStammdaten.korrespondenzspracheFr) {
