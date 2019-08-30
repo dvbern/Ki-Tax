@@ -55,7 +55,8 @@ export class InstitutionRS {
     public createInstitution(institution: TSInstitution,
                              beguStartDatum: moment.Moment,
                              betreuungsangebot: TSBetreuungsangebotTyp,
-                             adminMail: string
+                             adminMail: string,
+                             gemeindeId: string
     ): IPromise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
@@ -64,6 +65,7 @@ export class InstitutionRS {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
                     betreuung: betreuungsangebot,
                     adminMail,
+                    gemeindeId
                 },
             })
             .then(response => {

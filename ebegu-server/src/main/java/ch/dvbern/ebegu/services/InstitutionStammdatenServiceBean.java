@@ -52,10 +52,15 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -69,10 +74,12 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	private static final String GP_START = "gpStart";
 	private static final String GP_END = "gpEnd";
 
-	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
+	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu
+	// generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
 	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
-	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
+	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE =
+		"00000000-0000-0000-0000-000000000001";
 
 	@Inject
 	private Persistence persistence;
@@ -88,7 +95,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
 
@@ -144,7 +152,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		query.where(intervalPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
 
-		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, date);
+		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam
+			, date);
 		List<InstitutionStammdaten> resultList = q.getResultList();
 		return resultList;
 	}
@@ -164,8 +173,11 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		// InstStammdaten Ende muss NACH GP Start sein
 		// InstStammdaten Start muss VOR GP Ende sein
-		Predicate startPredicate = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam);
-		Predicate endPredicate = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
+		Predicate startPredicate =
+			cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+				startParam);
+		Predicate endPredicate =
+			cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
 
 		query.where(startPredicate, endPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
 
@@ -192,14 +204,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			institution,
 			InstitutionStammdaten_.institution
 		).orElseThrow(() -> new EbeguEntityNotFoundException
-			("getInstitutionStammdatenByInstitution_institutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+			("getInstitutionStammdatenByInstitution_institutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				institutionId));
 	}
 
 	@Nullable
 	@Override
 	@PermitAll
 	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution = institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
+		Institution institution =
+			institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
 			("fetchInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
@@ -216,7 +230,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		if (role.isRoleSchulamt()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
 			return BetreuungsangebotTyp.getSchulamtTypes();
 		}
-		Collection<Institution> institutionenForCurrentBenutzer = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+		Collection<Institution> institutionenForCurrentBenutzer =
+			institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 		if (institutionenForCurrentBenutzer.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -232,10 +247,12 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 
-		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution).in(institutionenForCurrentBenutzer);
+		Predicate institutionPredicate =
+			root.get(InstitutionStammdaten_.institution).in(institutionenForCurrentBenutzer);
 
 		query.where(intervalPredicate, institutionPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
-		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, LocalDate.now());
+		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam,
+			LocalDate.now());
 		List<BetreuungsangebotTyp> resultList = q.getResultList();
 		return resultList;
 	}

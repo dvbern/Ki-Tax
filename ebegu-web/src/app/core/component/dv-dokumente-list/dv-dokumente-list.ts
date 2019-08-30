@@ -282,4 +282,9 @@ export class DVDokumenteListController implements IController {
         }
         return '';
     }
+
+    public getDokumentText(dokumentGrund: TSDokumentGrund): string {
+        const key = `${dokumentGrund.dokumentGrundTyp}_${dokumentGrund.dokumentTyp}`;
+        return this.$translate.instant(key);
+    }
 }

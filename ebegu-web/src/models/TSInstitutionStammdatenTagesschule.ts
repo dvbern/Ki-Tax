@@ -14,15 +14,25 @@
  */
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSGemeinde from './TSGemeinde';
 import TSModulTagesschule from './TSModulTagesschule';
 
 export default class TSInstitutionStammdatenTagesschule extends TSAbstractDateRangedEntity {
 
+    private _gemeinde: TSGemeinde;
     private _moduleTagesschule: Array<TSModulTagesschule>;
 
     public constructor(moduleTagesschule?: Array<TSModulTagesschule>) {
         super();
         this._moduleTagesschule = moduleTagesschule;
+    }
+
+    public get gemeinde(): TSGemeinde {
+        return this._gemeinde;
+    }
+
+    public set gemeinde(value: TSGemeinde) {
+        this._gemeinde = value;
     }
 
     public get moduleTagesschule(): Array<TSModulTagesschule> {

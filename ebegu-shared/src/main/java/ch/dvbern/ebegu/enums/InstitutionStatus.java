@@ -23,6 +23,7 @@ import java.util.List;
 public enum InstitutionStatus {
 
 	AKTIV,
+	KONFIGURATION,
 	EINGELADEN;
 
 	public boolean isEnabled() {

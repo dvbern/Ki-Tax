@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,10 +33,22 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 
 	private static final long serialVersionUID = 6958211446966611467L;
 
-	@NotNull
+	@NotNull @Nonnull
+	private JaxGemeinde gemeinde;
+
+	@NotNull @Nonnull
 	private List<JaxModulTagesschule> moduleTagesschule = new ArrayList<>();
 
-	@NotNull
+	@Nonnull
+	public JaxGemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nonnull JaxGemeinde gemeinde) {
+		this.gemeinde = gemeinde;
+	}
+
+	@Nonnull
 	public List<JaxModulTagesschule> getModuleTagesschule() {
 		return moduleTagesschule;
 	}

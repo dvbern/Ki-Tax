@@ -519,7 +519,24 @@ _:-ms-fullscreen, .mat-cell {
     display: none;
     // IE11 needs z-index
     z-index: 999;
+}
 
+// this class can be used to align child items horizontal. do NOT use it for mobile screens
+.dv-navigation-mobileless {
+    float: left;
+    width: 100%;
+
+    button {
+        width: auto;
+        max-width: 250px;
+    }
+    button {
+        margin: 1rem 0 0 1rem;
+    }
+    span {
+        margin: 1rem;
+        width: auto;
+    }
 }
 
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and
