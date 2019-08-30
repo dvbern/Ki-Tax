@@ -33,6 +33,12 @@
             [allowedRoles]="getMitarbeiterVisibleRoles()">
         </dv-stammdaten-header>
 
+        <div *ngIf="externalClients">
+            <dv-external-client-multiselect
+                [externalClients]="externalClients">
+            </dv-external-client-multiselect>
+        </div>
+
         <div class="dv-content">
             <fieldset *ngIf="editMode; else showViewMode">
                 <div class="viewSubTitle">

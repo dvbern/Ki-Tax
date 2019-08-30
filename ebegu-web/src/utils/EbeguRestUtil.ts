@@ -70,6 +70,8 @@ import TSEWKBeziehung from '../models/TSEWKBeziehung';
 import TSEWKEinwohnercode from '../models/TSEWKEinwohnercode';
 import TSEWKPerson from '../models/TSEWKPerson';
 import TSEWKResultat from '../models/TSEWKResultat';
+import TSExternalClient from '../models/TSExternalClient';
+import TSExternalClientAssignment from '../models/TSExternalClientAssignment';
 import {TSFachstelle} from '../models/TSFachstelle';
 import TSFall from '../models/TSFall';
 import TSFallAntragDTO from '../models/TSFallAntragDTO';
@@ -1105,6 +1107,27 @@ export default class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseInstitution(new TSInstitution(), item))
             : [this.parseInstitution(new TSInstitution(), data)];
+    }
+
+    public parseExternalClientAssignment(data: any): TSExternalClientAssignment {
+        const tsInstitutionExternalClients = new TSExternalClientAssignment();
+
+        tsInstitutionExternalClients.availableClients = data.availableClients
+            .map((client: any) => this.parseExternalClient(client));
+
+        tsInstitutionExternalClients.assignedClients = data.assignedClients
+            .map((client: any) => this.parseExternalClient(client));
+
+        return tsInstitutionExternalClients;
+    }
+
+    public parseExternalClient(data: any): TSExternalClient {
+        const tsExternalClient = new TSExternalClient();
+        this.parseAbstractEntity(tsExternalClient, data);
+        tsExternalClient.clientName = data.clientName;
+        tsExternalClient.type = data.type;
+
+        return tsExternalClient;
     }
 
     public institutionStammdatenToRestObject(

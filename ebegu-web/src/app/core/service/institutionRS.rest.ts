@@ -16,6 +16,8 @@
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSExternalClient from '../../../models/TSExternalClient';
+import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 import TSInstitution from '../../../models/TSInstitution';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -93,6 +95,11 @@ export class InstitutionRS {
         return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
             return response.data;
         });
+    }
+
+    public getExternalClients(institutionId: string): IPromise<TSExternalClientAssignment> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionId)}/externalclients`)
+            .then(response => this.ebeguRestUtil.parseExternalClientAssignment(response.data));
     }
 
     public isStammdatenCheckRequired(): IPromise<boolean> {

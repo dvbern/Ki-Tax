@@ -22,7 +22,7 @@ import {
     OnInit,
     QueryList,
     ViewChild,
-    ViewChildren
+    ViewChildren,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
@@ -33,6 +33,8 @@ import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetre
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
+import TSExternalClient from '../../../models/TSExternalClient';
+import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -53,7 +55,7 @@ import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschu
 @Component({
     selector: 'dv-edit-institution',
     templateUrl: './edit-institution.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class EditInstitutionComponent implements OnInit {
@@ -63,6 +65,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
+    public externalClients?: TSExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
@@ -73,6 +76,8 @@ export class EditInstitutionComponent implements OnInit {
 
     @ViewChild(EditInstitutionTagesschuleComponent)
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
+
+    private initiallyAssignedClients: TSExternalClient[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -101,7 +106,18 @@ export class EditInstitutionComponent implements OnInit {
         this.fetchInstitution(institutionId);
     }
 
+    private initExternalClients(institutionId: string): void {
+        this.institutionRS.getExternalClients(institutionId).then(externalClients => {
+            this.externalClients = externalClients;
+            // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
+            this.initiallyAssignedClients = [...externalClients.assignedClients];
+            this.changeDetectorRef.markForCheck();
+        });
+    }
+
     private fetchInstitution(institutionId: string): void {
+        this.initExternalClients(institutionId);
+
         this.institutionRS.findInstitution(institutionId).then(institution => {
 
             this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id)
