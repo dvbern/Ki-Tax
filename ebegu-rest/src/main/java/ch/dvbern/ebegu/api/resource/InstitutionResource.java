@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -44,11 +45,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -63,6 +67,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -86,6 +91,9 @@ public class InstitutionResource {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private ExternalClientService externalClientService;
 
 	@Inject
 	private BenutzerService benutzerService;
@@ -308,6 +316,41 @@ public class InstitutionResource {
 			.filter(inst -> inst.getStatus() == InstitutionStatus.EINGELADEN)
 			.count();
 		return Response.ok(anzahl > 0).build();
+	}
+
+	@ApiOperation(value = "Returns all still available external clients and all assigned external clients",
+		response = JaxExternalClientAssignment.class)
+	@Nonnull
+	@GET
+	@Path("/{institutionId}/externalclients")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	//	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
+	public Response getExternalClients(@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
+
+		requireNonNull(institutionJAXPId.getId());
+		String institutionID = converter.toEntityId(institutionJAXPId);
+		Institution institution = institutionService.findInstitution(institutionID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getExternalClients",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				institutionJAXPId.getId()));
+
+		Collection<ExternalClient> availableClients = externalClientService.getAll();
+		availableClients.removeAll(institution.getExternalClients());
+
+		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
+		jaxExternalClientAssignment.getAvailableClients().addAll(convert(availableClients));
+		jaxExternalClientAssignment.getAssignedClients().addAll(convert(institution.getExternalClients()));
+
+		return Response.ok(jaxExternalClientAssignment).build();
+	}
+
+	@Nonnull
+	private List<JaxExternalClient> convert(@Nonnull Collection<ExternalClient> externalClients) {
+		return externalClients.stream()
+			.map(externalClient -> converter.externalClientToJAX(externalClient))
+			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(

@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
@@ -156,6 +157,7 @@ import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -1271,6 +1273,16 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFachstelle.setFachstelleAnspruch(persistedFachstelle.isFachstelleAnspruch());
 		jaxFachstelle.setFachstelleErweiterteBetreuung(persistedFachstelle.isFachstelleErweiterteBetreuung());
 		return jaxFachstelle;
+	}
+
+	@Nonnull
+	public JaxExternalClient externalClientToJAX(@Nonnull final ExternalClient persistedExternalClient) {
+		JaxExternalClient jaxExternalClient = new JaxExternalClient();
+		convertAbstractFieldsToJAX(persistedExternalClient, jaxExternalClient);
+		jaxExternalClient.setClientName(persistedExternalClient.getClientName());
+		jaxExternalClient.setType(persistedExternalClient.getType());
+
+		return jaxExternalClient;
 	}
 
 	public JaxInstitution institutionToJAX(final Institution persistedInstitution) {

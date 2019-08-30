@@ -15,8 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.entities;
+package ch.dvbern.ebegu.api.dtos;
 
-public enum ExternalClientType {
-	EXCHANGE_SERVICE_USER
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.validation.Valid;
+
+public class JaxExternalClientAssignment {
+
+	@Nonnull
+	private final @Valid List<JaxExternalClient> availableClients = new ArrayList<>();
+
+	@Nonnull
+	private final @Valid List<JaxExternalClient> assignedClients = new ArrayList<>();
+
+	@Nonnull
+	public List<JaxExternalClient> getAvailableClients() {
+		return availableClients;
+	}
+
+	@Nonnull
+	public List<JaxExternalClient> getAssignedClients() {
+		return assignedClients;
+	}
 }
