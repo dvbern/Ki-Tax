@@ -56,17 +56,17 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then(allGesuchsperioden => {
-            this.gesuchsperiodenList = allGesuchsperioden;
-        });
-        this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
-            this.gemeindeList = allGemeinden;
-        });
         if (EbeguUtil.isNullOrUndefined(this.stammdaten.institutionStammdatenTagesschule)) {
             this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
             this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = [];
         }
-        this.loadModuleTagesschule();
+        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then(allGesuchsperioden => {
+            this.gesuchsperiodenList = allGesuchsperioden;
+            this.loadModuleTagesschule();
+        });
+        this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
+            this.gemeindeList = allGemeinden;
+        });
     }
 
     public onPrePersist(): void {
