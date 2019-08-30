@@ -37,6 +37,8 @@ export default class GemeindeRS implements IEntityRS {
     public serviceURL: string;
 
     private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubjectTS$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubjectFI$ = new BehaviorSubject<TSGemeinde[]>([]);
 
     public constructor(
         public $http: IHttpService,
@@ -63,6 +65,14 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
+    public getGemeindenForTSByPrincipal$(): Observable<TSGemeinde[]> {
+        return this.principalGemeindenSubjectTS$.asObservable();
+    }
+
+    public getGemeindenForFIByPrincipal$(): Observable<TSGemeinde[]> {
+        return this.principalGemeindenSubjectFI$.asObservable();
+    }
+
     public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubject$.asObservable();
     }
@@ -78,6 +88,16 @@ export default class GemeindeRS implements IEntityRS {
             .subscribe(
                 gemeinden => {
                     this.principalGemeindenSubject$.next(gemeinden);
+
+                    const gemeindenTS = angular.copy(gemeinden.filter(g => {
+                        return g.angebotTS;
+                    }));
+                    const gemeindenFI = angular.copy(gemeinden.filter(g => {
+                        return g.angebotFI;
+                    }));
+
+                    this.principalGemeindenSubjectTS$.next(gemeindenTS);
+                    this.principalGemeindenSubjectFI$.next(gemeindenFI);
                 },
                 err => this.$log.error(err),
             );
