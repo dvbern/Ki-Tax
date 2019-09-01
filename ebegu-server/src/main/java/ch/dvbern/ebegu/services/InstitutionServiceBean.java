@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -43,12 +45,14 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -397,6 +401,24 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
 		persistence.remove(institution);
+	}
+
+	@Override
+	public void saveExternalClients(
+		@Nonnull Institution institution,
+		@Nonnull Collection<ExternalClient> externalClients) {
+
+		Set<ExternalClient> existingExternalClients = institution.getExternalClients();
+
+		// find out which are deleted
+		HashSet<ExternalClient> deleted = new HashSet<>(existingExternalClients);
+		deleted.removeAll(externalClients);
+
+		// find out which are added
+		HashSet<ExternalClient> added = new HashSet<>(externalClients);
+		added.removeAll(existingExternalClients);
+
+		institution.setExternalClients(new HashSet<>(externalClients));
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {

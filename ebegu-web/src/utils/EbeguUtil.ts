@@ -74,6 +74,37 @@ export default class EbeguUtil {
     }
 
     /**
+     * Compares two array and returns TRUE when both arrays contain objects with the same IDs (but not necessarily the
+     * same references)
+     */
+    public static isSameById<T extends TSAbstractEntity>(a: T[], b: T[]): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const compareId = (value1: T, value2: T) => value1.id.localeCompare(value2.id);
+
+        const aSorted = a.concat().sort(compareId);
+        const bSorted = b.concat().sort(compareId);
+
+        return aSorted.every((value, index) => bSorted[index].id === value.id);
+    }
+
+    /**
+     * Compares two array and returns TRUE when both arrays contain the same objects
+     */
+    public static isSame<T>(a: T[], b: T[]): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const aSorted = a.concat().sort();
+        const bSorted = b.concat().sort();
+
+        return aSorted.every((value, index) => bSorted[index] === value);
+    }
+
+    /**
      * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als
      * string zurueck
      */

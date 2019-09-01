@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, IPromise} from 'angular';
+import {IHttpPromise, IHttpResponse, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSExternalClient from '../../../models/TSExternalClient';
@@ -51,14 +51,15 @@ export class InstitutionRS {
     }
 
     /**
-     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so the server can
-     * create all required objects within a single transaction.
+     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so
+     * the server can create all required objects within a single transaction.
      */
-    public createInstitution(institution: TSInstitution,
-                             beguStartDatum: moment.Moment,
-                             betreuungsangebot: TSBetreuungsangebotTyp,
-                             adminMail: string,
-                             gemeindeId: string
+    public createInstitution(
+        institution: TSInstitution,
+        beguStartDatum: moment.Moment,
+        betreuungsangebot: TSBetreuungsangebotTyp,
+        adminMail: string,
+        gemeindeId: string,
     ): IPromise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
@@ -67,7 +68,7 @@ export class InstitutionRS {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
                     betreuung: betreuungsangebot,
                     adminMail,
-                    gemeindeId
+                    gemeindeId,
                 },
             })
             .then(response => {
@@ -106,6 +107,13 @@ export class InstitutionRS {
         return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`).then((response: any) => {
             return response.data;
         });
+    }
+
+    public saveExternalClients(institutionId: string, externalClients: TSExternalClient[]): IPromise<IHttpResponse<unknown>> {
+        const ids = externalClients.map(client => client.id);
+
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionId)}/externalclients`,
+            {externalClients: ids});
     }
 
     public getServiceName(): string {

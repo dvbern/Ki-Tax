@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
@@ -119,4 +120,6 @@ public interface InstitutionService {
 	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
 	 */
 	void removeInstitution(@Nonnull String institutionId);
+
+	void saveExternalClients(@Nonnull Institution institution, @Nonnull Collection<ExternalClient> externalClients);
 }

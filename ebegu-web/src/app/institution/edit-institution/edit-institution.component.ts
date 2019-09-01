@@ -27,6 +27,7 @@ import {
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -215,30 +216,49 @@ export class EditInstitutionComponent implements OnInit {
             this.componentTagesschule.onPrePersist();
         }
 
-        // tslint:disable-next-line:early-exit
-        if (this.initName === this.stammdaten.institution.name) {
-            this.saveStammdaten();
-        } else {
-            this.institutionRS.updateInstitution(this.stammdaten.institution)
-                .then(institution => {
-                    this.stammdaten.institution = institution;
-                    this.saveStammdaten();
-                });
-        }
+        this.updateInstitution()
+            .then(institution => this.saveStammdaten(institution)
+                .then(() => this.saveExternalClients(institution.id)))
+            .then(() => this.setValuesAfterSave());
     }
 
-    private saveStammdaten(): void {
-        this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
+    private updateInstitution(): IPromise<TSInstitution> {
+        if (this.initName === this.stammdaten.institution.name) {
+            // no backend update necessary
+            return Promise.resolve(this.stammdaten.institution);
+        }
+
+        return this.institutionRS.updateInstitution(this.stammdaten.institution);
+    }
+
+    private saveStammdaten(institution: TSInstitution): IPromise<TSInstitutionStammdaten> {
+        this.stammdaten.institution = institution;
+
+        return this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
             .then(stammdaten => {
                 this.stammdaten = stammdaten;
-                this.setValuesAfterSave();
+
+                return stammdaten;
             });
+    }
+
+    private saveExternalClients(institutionId: string): IPromise<unknown> {
+        const assignedClients = this.externalClients.assignedClients;
+
+        if (EbeguUtil.isSame(assignedClients, this.initiallyAssignedClients)) {
+            // no backed update necessary
+            return Promise.resolve();
+        }
+
+        return this.institutionRS.saveExternalClients(institutionId, assignedClients);
     }
 
     private setValuesAfterSave(): void {
         this.editMode = false;
+        if (this.navigateToWelcomesite()) {
+            return;
+        }
         this.changeDetectorRef.markForCheck();
-        this.navigateToWelcomesite();
         // if we don't navigate away we refresh all data
         this.fetchInstitution(this.stammdaten.institution.id);
     }
@@ -255,11 +275,13 @@ export class EditInstitutionComponent implements OnInit {
         this.$state.go('institution.list');
     }
 
-    private navigateToWelcomesite(): void {
+    private navigateToWelcomesite(): boolean {
         if (this.isRegisteringInstitution) {
             this.$state.go('welcome');
-            return;
+            return true;
         }
+
+        return false;
     }
 
     public getGueltigkeitTodisplay(): string {
