@@ -1,0 +1,177 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="title">
+    <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
+</div>
+<div class="form-group">
+    <div class="row">
+        <!-- IBAN-Nummer -->
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="required" translate for="iban_nr_id">IBAN_NUMMER</label>
+                <input id="iban_nr_id" type="text" name="iban_nr_id" #iban="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.iban"
+                       [maxlength]="26" class="form-control" required ngxIban
+                       placeholder="CHXX XXXX XXXX XXXX XXXX X">
+                <dv-error-messages [errorObject]="iban.errors" inputId="iban_nr_id"></dv-error-messages>
+            </div>
+        </div>
+        <!-- Kontoinhaber -->
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="required" translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
+                <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #kontoinhaber="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.kontoinhaber"
+                       [maxlength]="255" class="form-control" required>
+                <dv-error-messages [errorObject]="kontoinhaber.errors" inputId="kontoinhaber_id"></dv-error-messages>
+            </div>
+        </div>
+        <!-- Anschrift -->
+        <div class="col-sm-6">
+            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                <label class="required" translate for="za_anschrift_id">ADRESSE_ANSCHRIFT</label>
+                <input id="za_anschrift_id" type="text" name="za_anschrift_id" #anschrift="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.organisation"
+                       [maxlength]="255" class="form-control" required>
+                <dv-error-messages [errorObject]="anschrift.errors" inputId="za_anschrift_id"></dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Checkbox Abweichende Zahlungsadresse -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <mat-checkbox id="abweichende_za_id" name="abweichende_za_id"
+                              [(ngModel)]="abweichendeZahlungsAdresse"
+                              (click)="onAbweichendeZahlungsAdresseClick()">
+                    {{'INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE'|translate}}
+                </mat-checkbox>
+            </div>
+        </div>
+        <!-- Strasse -->
+        <div class="col-sm-5">
+            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                <label class="required" translate for="za_strasse_id">ADRESSE_STRASSE</label>
+                <input id="za_strasse_id" type="text" name="za_strasse_id" #strasse="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.strasse"
+                       [maxlength]="255" class="form-control" required>
+                <dv-error-messages [errorObject]="strasse.errors" inputId="za_strasse_id"></dv-error-messages>
+            </div>
+        </div>
+        <!-- Hausnummer -->
+        <div class="col-sm-1">
+            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                <label translate for="za_hausnummer_id">ADRESSE_NUMMER</label>
+                <input id="za_hausnummer_id" type="text" name="za_hausnummer_id" #hausnr="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.hausnummer"
+                       [maxlength]="255" class="form-control">
+                <dv-error-messages [errorObject]="hausnr.errors" inputId="za_hausnummer_id"></dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+        </div>
+        <!-- PLZ -->
+        <div class="col-sm-1">
+            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                <label class="required" translate for="za_plz_id">ADRESSE_PLZ</label>
+                <input id="za_plz_id" type="text" name="za_plz_id" #plz="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.plz"
+                       [maxlength]="255" class="form-control" required>
+                <dv-error-messages [errorObject]="plz.errors" inputId="za_plz_id"></dv-error-messages>
+            </div>
+        </div>
+        <!-- Ort -->
+        <div class="col-sm-5">
+            <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                <label class="required" translate for="za_ort_id">ADRESSE_ORT</label>
+                <input id="za_ort_id" type="text" name="za_ort_id" #ort="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber.ort"
+                       [maxlength]="255" class="form-control" required>
+                <dv-error-messages [errorObject]="ort.errors" inputId="za_ort_id"></dv-error-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Alterskategorie -->
+        <div class="col-sm-6">
+            <div class="form-group">
+                <h3 translate for="alterskategorie_id">INSTITUTION_ALTERSKATEGORIE</h3>
+                <div class="form-group" id="alterskategorie_id">
+                    <mat-checkbox id="alterskategorieBaby_id" name="alterskategorieBaby_id"
+                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby">
+                        {{'INSTITUTION_ALTERSKATEGORIE_BABY'|translate}}
+                    </mat-checkbox>
+                    <mat-checkbox id="alterskategorieVorschule_id" name="alterskategorieVorschule_id"
+                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule">
+                        {{'INSTITUTION_ALTERSKATEGORIE_VORSCHULE'|translate}}
+                    </mat-checkbox>
+                    <mat-checkbox id="alterskategorieKindergarten_id" name="alterskategorieKindergarten_id"
+                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten">
+                        {{'INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'|translate}}
+                    </mat-checkbox>
+                    <mat-checkbox id="alterskategorieSchule_id" name="alterskategorieSchule_id"
+                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule">
+                        {{'INSTITUTION_ALTERSKATEGORIE_SCHULE'|translate}}
+                    </mat-checkbox>
+                </div>
+            </div>
+
+        </div>
+        <!-- Subventionierte Plätze -->
+        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
+            <h3 translate>INSTITUTION_PLAETZE</h3>
+        </div>
+        <!-- Anzahl Plätze -->
+        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
+            <div class="form-group">
+                <label class="required" translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
+                <input id="anzahlPlaetze_id" type="number" name="anzahlPlaetze_id" #anzahlPlaetze="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetze"
+                       class="form-control"
+                       customMinMax [minValue]="0.1"
+                       placeholder="{{getPlaceholderForPlaetze()}}" required>
+                <dv-error-messages [errorObject]="anzahlPlaetze.errors" inputId="anzahlPlaetze_id"></dv-error-messages>
+            </div>
+        </div>
+        <!-- Anzahl Plätze Firmen -->
+        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
+            <div class="form-group">
+                <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
+                <input id="anzahlPlaetzeFirmen_id" type="number" name="anzahlPlaetzeFirmen_id"
+                       #anzahlPlaetzeFirmen="ngModel"
+                       [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
+                       class="form-control"
+                       customMinMax [minValue]="0.1"
+                       placeholder="{{getPlaceholderForPlaetze()}}">
+                <dv-error-messages [errorObject]="anzahlPlaetzeFirmen.errors"
+                                   inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
+            </div>
+        </div>
+        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
+            <div class="form-group">
+                <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
+                              [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze">
+                    {{'INSTITUTION_SUBVENTIONIERTE_PLAETZE'|translate}}
+                </mat-checkbox>
+            </div>
+        </div>
+    </div>
+
+</div>

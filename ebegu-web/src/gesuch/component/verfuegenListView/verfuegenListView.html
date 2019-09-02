@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <!--FinSitStatus-->
-                <div class="row marginTop30" ng-if="vm.isFinanzielleSituationRequired() && !vm.isGesuchsteller()">
+                <div class="row marginTop30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchsteller()">
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
                             <dv-radio-container name="finSitStatus" class="input-element"
@@ -232,7 +232,7 @@
                   dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button type="button" button-click="vm.setGesuchStatusGeprueft()"
                                    aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
-                                   button-disabled="vm.isFinanzielleSituationRequired() && !vm.isFinSitChoosen()">
+                                   button-disabled="!vm.isFinSitChoosen()">
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
                 <dv-loading-button button-click="vm.setGesuchStatusVerfuegen()"

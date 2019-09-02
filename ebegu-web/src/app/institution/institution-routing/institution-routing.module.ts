@@ -18,6 +18,7 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddInstitutionComponent} from '../add-institution/add-institution.component';
@@ -45,7 +46,16 @@ const states: Ng2StateDeclaration[] = [
         url: '/add',
         component: AddInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
+            roles: TSRoleUtil.getInstitutionProfilRoles(),
+        },
+        params: {
+            betreuungsangebote: {
+                type: 'any',
+                value: [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN]
+            },
+            betreuungsangebot: {
+                type: 'any',
+            },
         },
     },
     {
