@@ -940,6 +940,31 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 	}
 
+	@Override
+	@PermitAll
+	public void removeFreigabequittungFromGesuch(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch);
+
+		Optional<WriteProtectedDokument> document = getFreigabequittungFromGesuch(gesuch);
+
+		if (document.isPresent()) {
+			persistence.remove(GeneratedDokument.class, document.get().getId());
+			fileSaverService.remove(document.get().getFilepfad());
+		}
+	}
+
+	@Nonnull
+	private Optional<WriteProtectedDokument> getFreigabequittungFromGesuch(@Nonnull Gesuch gesuch) {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+
+		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
+			GeneratedDokumentTyp.FREIGABEQUITTUNG, gesuch.getJahrFallAndGemeindenummer(),
+			sprache.getLocale()
+		);
+
+		return getMaybeExistingGeneratedDokument(gesuch.getId(), fileNameForGeneratedDokumentTyp);
+	}
+
 	@Nonnull
 	@Override
 	public Collection<GeneratedDokument> findGeneratedDokumentsFromGesuch(@Nonnull Gesuch gesuch) {

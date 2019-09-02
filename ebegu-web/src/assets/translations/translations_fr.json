@@ -1630,6 +1630,8 @@
     "TSBetreuungspensumAbweichungStatus_NICHT_FREIGEGEBEN": "",
     "TSBetreuungspensumAbweichungStatus_VERRECHNET": "",
     "TSBetreuungspensumAbweichungStatus_UEBERNOMMEN": "",
+    "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "",
+    "FREIGABE_GESUCH_ALTE_FREIGABEQUITTUNG": "",
     "TAGESSCHULE_HINZUFUEGEN": "",
     "FERIENINSEL_HINZUFUEGEN": "",
     "KEINE_GEMEINDE_KONFIGURATION": "",

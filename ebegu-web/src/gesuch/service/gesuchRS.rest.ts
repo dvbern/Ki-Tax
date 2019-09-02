@@ -68,8 +68,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public findGesuchForFreigabe(gesuchID: string): IPromise<TSAntragDTO> {
-        return this.$http.get(`${this.serviceURL}/freigabe/${encodeURIComponent(gesuchID)}`)
+    public findGesuchForFreigabe(gesuchID: string, anzZurueckgezogen: string): IPromise<TSAntragDTO> {
+        return this.$http.get(`${this.serviceURL}/freigabe/${encodeURIComponent(gesuchID)}/${anzZurueckgezogen}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseAntragDTO(new TSAntragDTO(), response.data);
             });
@@ -103,6 +103,15 @@ export default class GesuchRS implements IEntityRS {
 
     public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/freigeben/${encodeURIComponent(antragId)}/JA/${usernameJA}/SCH/${usernameSCH}`;
+        return this.$http.post(url, null, {
+            headers: {'Content-Type': 'text/plain'},
+        }).then(response => {
+            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+        });
+    }
+
+    public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
+        const url = `${this.serviceURL}/zurueckziehen/${encodeURIComponent(antragId)}`;
         return this.$http.post(url, null, {
             headers: {'Content-Type': 'text/plain'},
         }).then(response => {
