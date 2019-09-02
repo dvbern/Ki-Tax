@@ -160,8 +160,6 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	@NotNull
 	private String gemeinde;
 
-	private boolean newestFreigabequittung;
-
 
 	public String getAntragId() {
 		return antragId;
@@ -372,11 +370,4 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 		this.gemeinde = gemeinde;
 	}
 
-	public boolean isNewestFreigabequittung() {
-		return newestFreigabequittung;
-	}
-
-	public void setNewestFreigabequittung(boolean newestFreigabequittung) {
-		this.newestFreigabequittung = newestFreigabequittung;
-	}
 }

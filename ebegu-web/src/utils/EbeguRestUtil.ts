@@ -2155,7 +2155,6 @@ export default class EbeguRestUtil {
         antragTS.besitzerUsername = antragFromServer.besitzerUsername;
         antragTS.dokumenteHochgeladen = antragFromServer.dokumenteHochgeladen;
         antragTS.gemeinde = antragFromServer.gemeinde;
-        antragTS.newestFreigabequittung = antragFromServer.newestFreigabequittung;
         return antragTS;
     }
 

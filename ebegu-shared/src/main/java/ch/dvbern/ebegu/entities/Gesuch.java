@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -243,11 +242,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = true)
 	private Boolean gueltig = null;
 
-	@NotNull
-	@Column
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	// jedesmal wenn der Gesuchsteller das Gesuch zurück zieht, wird dieses Feld um 1 erhöht, damit wir beim
 	// einscannen der Freigabequittung wissen, ob es sich um die aktuelle Freigabequittung handelt.
-	private BigDecimal anzahlGesuchZurueckgezogen = BigDecimal.ZERO;
+	private Integer anzahlGesuchZurueckgezogen = 0;
+
 
 	public Gesuch() {
 	}
@@ -564,6 +564,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setFinSitStatus(@Nullable FinSitStatus finSitStatus) {
 		this.finSitStatus = finSitStatus;
+	}
+
+	@Nonnull
+	public Integer getAnzahlGesuchZurueckgezogen() {
+		return anzahlGesuchZurueckgezogen;
+	}
+
+	public void setAnzahlGesuchZurueckgezogen(@Nonnull Integer anzahlGesuchZurueckgezogen) {
+		this.anzahlGesuchZurueckgezogen = anzahlGesuchZurueckgezogen;
 	}
 
 	@Override
@@ -953,14 +962,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Override
 	public String getOwningDossierId() {
 		return getDossier().getId();
-	}
-
-	public BigDecimal getAnzahlGesuchZurueckgezogen() {
-		return anzahlGesuchZurueckgezogen;
-	}
-
-	public void setAnzahlGesuchZurueckgezogen(BigDecimal anzahlGesuchZurueckgezogen) {
-		this.anzahlGesuchZurueckgezogen = anzahlGesuchZurueckgezogen;
 	}
 
 	@Nonnull
