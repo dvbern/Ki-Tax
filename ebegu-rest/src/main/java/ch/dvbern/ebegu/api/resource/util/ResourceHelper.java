@@ -61,8 +61,7 @@ public class ResourceHelper {
 	@SuppressWarnings("ConstantConditions")
 	public void assertGesuchStatusForFreigabe(@Nonnull String gesuchId) {
 		requireNonNull(gesuchId);
-		Optional<Gesuch> optGesuch = gesuchService.findGesuchForFreigabe(gesuchId);
-		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
+		Gesuch gesuch = gesuchService.findGesuchForFreigabe(gesuchId, 0, false);
 		assertGesuchStatus(gesuch, AntragStatusDTO.IN_BEARBEITUNG_GS, AntragStatusDTO.FREIGABEQUITTUNG);
 	}
 

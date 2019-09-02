@@ -71,7 +71,6 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Nonnull
 	private final List<DokumentGrund> benoetigteUnterlagen;
 
-
 	public FreigabequittungPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeStammdaten stammdaten,
@@ -79,7 +78,6 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		super(gesuch, stammdaten);
 		this.benoetigteUnterlagen = benoetigteUnterlagen;
 	}
-
 
 	@Override
 	@Nonnull
@@ -90,7 +88,8 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Override
 	@Nonnull
 	protected CustomGenerator getCustomGenerator() {
-		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch, sprache);
+		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch,
+			sprache);
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			addBarcode(document);
@@ -142,10 +141,12 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
 			BitmapCanvasProvider canvas = new BitmapCanvasProvider(
 				bytesOut, "image/x-png", 175, BufferedImage.TYPE_BYTE_BINARY, false, 0);
-			dataMatrixBean.generateBarcode(canvas, "§FREIGABE|OPEN|" + getGesuch().getId() + '§');
+			dataMatrixBean.generateBarcode(canvas,
+				"§FREIGABE|OPEN|" + getGesuch().getId() + '|' + getGesuch().getAnzahlGesuchZurueckgezogen() + '§');
 			canvas.finish();
 			Image image = Image.getInstance(bytesOut.toByteArray());
-			image.setAbsolutePosition(document.leftMargin(), document.getPageSize().getHeight() - 2 * Utilities.millimetersToPoints(PdfLayoutConfiguration.BARCODE_TOP_IN_MM));
+			image.setAbsolutePosition(document.leftMargin(),
+				document.getPageSize().getHeight() - 2 * Utilities.millimetersToPoints(PdfLayoutConfiguration.BARCODE_TOP_IN_MM));
 			document.add(image);
 		} catch (IOException | DocumentException e) {
 			LOG.error("Failed to read the Barcode: {}", e.getMessage(), e);
@@ -156,7 +157,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	public PdfPTable createBetreuungsangeboteTable() throws DocumentException {
 		PdfPTable table = new PdfPTable(3);
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
-		table.setWidths(new int[] {30, 50, 20});
+		table.setWidths(new int[] { 30, 50, 20 });
 		table.setHeaderRows(1);
 		table.setKeepTogether(true);
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_KIND)));
@@ -165,7 +166,8 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 		getGesuch().extractAllBetreuungen().forEach(betreuung -> {
 			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), getPageConfiguration().getFont()));
-			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache), getPageConfiguration().getFont()));
+			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache),
+				getPageConfiguration().getFont()));
 			table.addCell(new Phrase(betreuung.getBGNummer(), getPageConfiguration().getFont()));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
@@ -189,7 +191,8 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		return table;
 	}
 
-	private void addGesuchstellerToUnterschriften(@Nonnull PdfPTable table, @Nonnull GesuchstellerContainer gesuchsteller) {
+	private void addGesuchstellerToUnterschriften(@Nonnull PdfPTable table,
+		@Nonnull GesuchstellerContainer gesuchsteller) {
 		table.addCell(new Phrase(translate(UNTERSCHRIFTEN_ORT_DATUM), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(gesuchsteller.extractFullName(), getPageConfiguration().getFont()));
 

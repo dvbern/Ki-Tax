@@ -90,4 +90,9 @@ public interface GeneratedDokumentService {
 
 	@Nonnull
 	Collection<GeneratedDokument> findGeneratedDokumentsFromGesuch(@Nonnull Gesuch gesuch);
+
+	/**
+	 * Löscht die Freigabequittung von einem Gesuch
+	 */
+	void removeFreigabequittungFromGesuch(@Nonnull Gesuch gesuch);
 }

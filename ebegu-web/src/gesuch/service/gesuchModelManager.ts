@@ -1426,6 +1426,18 @@ export default class GesuchModelManager {
     }
 
     /**
+     * Antrag zurueckziehen
+     */
+    public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
+        // tslint:disable-next-line:no-identical-functions
+        return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
+            this.setGesuch(response);
+
+            return response;
+        });
+    }
+
+    /**
      * Returns true if the Gesuch has the given status
      */
     public isGesuchStatus(status: TSAntragStatus): boolean {

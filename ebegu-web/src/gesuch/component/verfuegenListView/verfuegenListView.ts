@@ -270,8 +270,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return (gesuch && gesuch.hasNichtBerechenbareBetreuungen());
     }
 
-    public isFinanzielleSituationRequired(): boolean {
-        return this.gesuchModelManager.isFinanzielleSituationRequired();
+    public mustFinanzielleSituationBeValidated(): boolean {
+        // Die FinSit muss auch bei Sozialhilfe geprueft werden!
+        return this.gesuchModelManager.isFinanzielleSituationRequired()
+            || this.getGesuch().familiensituationContainer.familiensituationJA.sozialhilfeBezueger;
     }
 
     public isBegleitschreibenVisible(): boolean {

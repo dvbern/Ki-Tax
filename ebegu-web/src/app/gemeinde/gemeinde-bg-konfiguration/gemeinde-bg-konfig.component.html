@@ -31,8 +31,6 @@
                         <!-- readonly -->
                         <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
                             <div class="form-group">
-                                <!-- Titel -->
-                                <h3 translate>GEMEINDE_REGELN</h3>
                                 <!-- BG bis Schulstufe -->
                                 <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
                                 <!-- Kontingentierung -->
@@ -42,10 +40,6 @@
                         </div>
                         <!-- editable -->
                         <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                            <!-- Titel -->
-							<div class="form-group">
-								<h3 translate>GEMEINDE_REGELN</h3>
-                            </div>
                             <!-- BG bis Schulstufe -->
                             <div class="form-group">
 								<label class="required" translate>BEGU_KITAS_BIS_UND_MIT</label>

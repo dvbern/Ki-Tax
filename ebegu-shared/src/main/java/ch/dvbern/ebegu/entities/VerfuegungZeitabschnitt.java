@@ -946,8 +946,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return MathUtil.isSame(getBgPensum(), that.getBgPensum()) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
-			MathUtil.isSame(vollkosten, that.vollkosten) &&
-			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
+			MathUtil.isSame(verguenstigung, that.verguenstigung) &&
+			MathUtil.isSame(getMinimalerElternbeitragGekuerzt(), that.getMinimalerElternbeitragGekuerzt()) &&
 			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
 	}
 
