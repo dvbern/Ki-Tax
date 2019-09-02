@@ -156,4 +156,15 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
 		return builder.toComparison();
 	}
+
+	public ModulTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		ModulTagesschule copy = new ModulTagesschule();
+		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
+		copy.setGesuchsperiode(gesuchsperiode);
+		copy.setWochentag(this.getWochentag());
+		copy.setModulTagesschuleName(this.getModulTagesschuleName());
+		copy.setZeitVon(this.getZeitVon());
+		copy.setZeitBis(this.getZeitBis());
+		return copy;
+	}
 }
