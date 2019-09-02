@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -281,5 +282,25 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			return getInstitutionStammdatenBetreuungsgutscheine().getIban();
 		}
 		return null;
+	}
+
+	public boolean isTagesschuleActivatable() {
+		final InstitutionStammdatenTagesschule institutionStammdatenTagesschule = this.getInstitutionStammdatenTagesschule();
+		return institutionStammdatenTagesschule != null
+			&& institutionStammdatenTagesschule.getModuleTagesschule() != null
+			&& !institutionStammdatenTagesschule.getModuleTagesschule().isEmpty();
+	}
+
+	public boolean isVisibleForGemeindeUser(Benutzer benutzer) {
+		Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
+		Gemeinde gemeinde = null;
+		if (getInstitutionStammdatenTagesschule() != null) {
+			gemeinde =getInstitutionStammdatenTagesschule().getGemeinde();
+		}
+		if (getInstitutionStammdatenFerieninsel() != null) {
+			gemeinde =getInstitutionStammdatenFerieninsel().getGemeinde();
+		}
+
+		return gemeinden.contains(gemeinde);
 	}
 }

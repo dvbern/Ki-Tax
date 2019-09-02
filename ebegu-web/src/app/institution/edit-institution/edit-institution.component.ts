@@ -15,13 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
@@ -30,6 +38,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
@@ -38,6 +47,8 @@ import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
+import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
 
 @Component({
     selector: 'dv-edit-institution',
@@ -47,16 +58,21 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 export class EditInstitutionComponent implements OnInit {
 
-    @ViewChild(NgForm) public form: NgForm;
+    @ViewChildren(NgForm) public forms: QueryList<NgForm>;
     public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
     public isCheckRequired: boolean = false;
-    public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
     private initName: string;
+
+    @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
+    private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
+
+    @ViewChild(EditInstitutionTagesschuleComponent)
+    private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -96,8 +112,6 @@ export class EditInstitutionComponent implements OnInit {
                         this.createInstitutionStammdaten(institution);
                     }
                     this.isCheckRequired = institution.stammdatenCheckRequired;
-                    this.abweichendeZahlungsAdresse =
-                        !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
                     this.initName = this.stammdaten.institution.name;
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
@@ -159,22 +173,30 @@ export class EditInstitutionComponent implements OnInit {
         }
     }
 
-    public onAbweichendeZahlungsAdresseClick(): void {
-        if (!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber) {
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = new TSAdresse();
-        }
-    }
-
     private persistStammdaten(): void {
-        if (!this.form.valid) {
+        let valid = true;
+        this.forms.forEach(form => {
+            if (!form.valid) {
+                valid = false;
+            }
+        });
+
+        if (!valid) {
+            EbeguUtil.selectFirstInvalid();
             return;
         }
+
         this.errorService.clearAll();
-        if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
-            this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = undefined;
-        }
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
+        }
+
+        // PrePersist auch auf den Child-Komponenten aufrufen
+        if (this.componentBetreuungsgutscheine) {
+            this.componentBetreuungsgutscheine.onPrePersist();
+        }
+        if (this.componentTagesschule) {
+            this.componentTagesschule.onPrePersist();
         }
 
         // tslint:disable-next-line:early-exit
@@ -242,33 +264,6 @@ export class EditInstitutionComponent implements OnInit {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
     }
 
-    public getAlterskategorien(): string {
-        const alterskategorien: string[] = [];
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
-        }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
-        }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
-        }
-        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule) {
-            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
-        }
-        return alterskategorien.join(', ');
-    }
-
-    public getPlaceholderForPlaetze(): string {
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
-            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1');
-        }
-        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
-        }
-        return '';
-    }
-
     public getPlaceholderForOeffnungszeiten(): string {
         return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
     }
@@ -276,10 +271,21 @@ export class EditInstitutionComponent implements OnInit {
     public deactivateStammdatenCheckRequired(): void {
         this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
             .then(() => this.navigateBack());
-
     }
 
     public isCheckRequiredEnabled(): boolean {
         return this.isCheckRequired && !this.editMode;
+    }
+
+    public isBetreuungsgutschein(): boolean {
+        return isJugendamt(this.stammdaten.betreuungsangebotTyp);
+    }
+
+    public isTagesschule(): boolean {
+        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE;
+    }
+
+    public isFerieninsel(): boolean {
+        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL;
     }
 }

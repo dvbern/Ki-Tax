@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -120,6 +121,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDokumentServiceBean.class.getSimpleName());
 	public static final byte[] EMPTY_BYTES = new byte[0];
+	private static final Pattern PATTERN = Pattern.compile("\\s+");
 
 	@Inject
 	private Persistence persistence;
@@ -869,7 +871,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		String debitorName = gemeindeStammdaten.getKontoinhaber();
 		String debitorBic = gemeindeStammdaten.getBic();
-		String debitorIban = gemeindeStammdaten.getIban().getIban();
+		IBAN ibanGemeinde = gemeindeStammdaten.getIban();
+		Objects.requireNonNull(ibanGemeinde, "Keine IBAN fuer Gemeinde " + gemeindeStammdaten.getGemeinde().getName());
+		String debitorIban = ibanToUnformattedString(ibanGemeinde);
 		String debitorIbanGebuehren = applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
 
 		pain001DTO.setSchuldnerName(debitorName);
@@ -899,10 +903,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setZahlungsempfaegerPlz(adresseKontoinhaber.getPlz());
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
-				IBAN iban = institutionStammdaten.extractIban();
-				Objects.requireNonNull(iban, "Keine IBAN fuer Institution " + institutionStammdaten.getInstitution().getName());
-				auszahlungDTO.setZahlungsempfaegerIBAN(iban.toString());
-				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(iban.extractClearingNumberWithoutLeadingZeros());
+				IBAN ibanInstitution = institutionStammdaten.extractIban();
+				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Institution " + institutionStammdaten.getInstitution().getName());
+				auszahlungDTO.setZahlungsempfaegerIBAN(ibanToUnformattedString(ibanInstitution));
+				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(ibanInstitution.extractClearingNumberWithoutLeadingZeros());
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
 				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
 					gemeindeStammdaten.getGemeinde().getName(),
@@ -914,6 +918,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			});
 
 		return pain001DTO;
+	}
+
+	@Nonnull
+	protected String ibanToUnformattedString(@Nonnull IBAN iban) {
+		Objects.requireNonNull(iban);
+		return PATTERN.matcher(iban.getIban()).replaceAll("");
 	}
 
 	@Override

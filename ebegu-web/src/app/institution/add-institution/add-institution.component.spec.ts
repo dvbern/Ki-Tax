@@ -19,6 +19,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -45,6 +46,8 @@ describe('AddInstitutionComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
+        ['getGemeindenForPrincipal$']);
 
     beforeEach(async(() => {
 
@@ -62,6 +65,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeServiceSpy},
             ],
             declarations: [
                 AddInstitutionComponent,

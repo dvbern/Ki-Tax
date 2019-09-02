@@ -106,6 +106,7 @@ public class GemeindeResource {
 	@Inject
 	private JaxBConverter converter;
 
+
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@POST
