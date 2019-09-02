@@ -391,11 +391,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuch == null) {
 			throw new EbeguRuntimeException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		if (checkAnzahlZurueckgezogen) {
-			if (!Objects.equals(anzahlZurueckgezogen, gesuch.getAnzahlGesuchZurueckgezogen())) {
-				throw new EbeguRuntimeException("findGesuchForFreigabe",
-					ErrorCodeEnum.ERROR_GESUCH_DURCH_GS_ZURUECKGEZOGEN);
-			}
+		if (checkAnzahlZurueckgezogen && !Objects.equals(anzahlZurueckgezogen,
+			gesuch.getAnzahlGesuchZurueckgezogen())) {
+			throw new EbeguRuntimeException("findGesuchForFreigabe",
+				ErrorCodeEnum.ERROR_GESUCH_DURCH_GS_ZURUECKGEZOGEN);
 		}
 		authorizer.checkReadAuthorizationForFreigabe(gesuch);
 		return gesuch;
