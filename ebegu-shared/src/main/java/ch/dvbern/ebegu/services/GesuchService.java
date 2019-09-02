@@ -105,10 +105,12 @@ public interface GesuchService {
 	Optional<Gesuch> findGesuch(@Nonnull String key, boolean doAuthCheck);
 
 	/**
-	 * Spezialmethode fuer die Freigabe. Kann Gesuche lesen die im Status Freigabequittung oder hoeher sind
+	 * Spezialmethode fuer die Freigabe. Kann Gesuche lesen die im Status Freigabequittung oder hoeher sind.
+	 * Ausserdem wird geprüft, ob es sich um die korrekte Freigabequittung handelt (also seither das Gesuch
+	 * nicht durch den Gesuchsteller zurückgezogen wurde)
 	 */
 	@Nonnull
-	Optional<Gesuch> findGesuchForFreigabe(@Nonnull String gesuchId);
+	Gesuch findGesuchForFreigabe(@Nonnull String gesuchId, @Nonnull Integer anzahlZurueckgezogen, boolean checkAnzahlZurueckgezogen);
 
 	/**
 	 * Gibt alle Gesuche zurueck die in der Liste der gesuchIds auftauchen und fuer die der Benutzer berechtigt ist.
@@ -209,6 +211,12 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	Gesuch antragFreigeben(@Nonnull String gesuchId, @Nullable String usernameJA, @Nullable String usernameSCH);
+
+	/**
+	 * Zieht die Freigabe wieder zurück.
+	 */
+	@Nonnull
+	Gesuch antragZurueckziehen(@Nonnull String gesuchId);
 
 	/**
 	 * Verantwortliche müssen gesetzt werden wenn in einem Papiergesuch oder Papiermutation eine Betreuung hinzugefügt

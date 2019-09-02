@@ -30,17 +30,9 @@
                     <div class="row">
                         <!-- readonly -->
                         <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                            <div class="form-group">
-                                <!-- Titel -->
-                                <h3 translate>GEMEINDE_REGELN</h3>
-                            </div>
                         </div>
                         <!-- editable -->
                         <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                            <!-- Titel -->
-							<div class="form-group">
-								<h3 translate>GEMEINDE_REGELN</h3>
-                            </div>
                         </div>
                     </div>
                 </tab-body>

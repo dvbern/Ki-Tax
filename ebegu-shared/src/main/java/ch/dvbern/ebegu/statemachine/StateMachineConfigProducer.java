@@ -41,7 +41,9 @@ public class StateMachineConfigProducer {
 			.permit(AntragEvents.FREIGEBEN, AntragStatus.FREIGEGEBEN);
 
 		gesuchFSMConfig.configure(AntragStatus.FREIGABEQUITTUNG)
-			.permit(AntragEvents.FREIGEBEN, AntragStatus.FREIGEGEBEN);
+			.permit(AntragEvents.FREIGEBEN, AntragStatus.FREIGEGEBEN)
+			// GS darf seinen Freigegebenen Antrag wieder zurueckziehen und nochmals bearbeiten
+			.permit(AntragEvents.FREIGABEQUITTUNG_ERSTELLEN, AntragStatus.IN_BEARBEITUNG_GS);
 
 		gesuchFSMConfig.configure(AntragStatus.FREIGEGEBEN)
 			.permit(AntragEvents.ERSTES_OEFFNEN_JA, AntragStatus.IN_BEARBEITUNG_JA);
