@@ -369,5 +369,4 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 	public void setGemeinde(String gemeinde) {
 		this.gemeinde = gemeinde;
 	}
-
 }
