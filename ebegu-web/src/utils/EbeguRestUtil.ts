@@ -3132,8 +3132,8 @@ export default class EbeguRestUtil {
             modulTagesschuleTS.gesuchsperiodeId = modulFromServer.gesuchsperiodeId;
             modulTagesschuleTS.modulTagesschuleName = modulFromServer.modulTagesschuleName;
             modulTagesschuleTS.wochentag = modulFromServer.wochentag;
-            modulTagesschuleTS.zeitVon = DateUtil.localDateTimeToMoment(modulFromServer.zeitVon);
-            modulTagesschuleTS.zeitBis = DateUtil.localDateTimeToMoment(modulFromServer.zeitBis);
+            modulTagesschuleTS.zeitVon = modulFromServer.zeitVon;
+            modulTagesschuleTS.zeitBis = modulFromServer.zeitBis;
             return modulTagesschuleTS;
         }
         return undefined;
@@ -3154,8 +3154,8 @@ export default class EbeguRestUtil {
             restModul.gesuchsperiodeId = modulTagesschuleTS.gesuchsperiodeId;
             restModul.modulTagesschuleName = modulTagesschuleTS.modulTagesschuleName;
             restModul.wochentag = modulTagesschuleTS.wochentag;
-            restModul.zeitVon = DateUtil.momentToLocalDateTime(modulTagesschuleTS.zeitVon);
-            restModul.zeitBis = DateUtil.momentToLocalDateTime(modulTagesschuleTS.zeitBis);
+            restModul.zeitVon = modulTagesschuleTS.zeitVon;
+            restModul.zeitBis = modulTagesschuleTS.zeitBis;
             return restModul;
         }
         return undefined;

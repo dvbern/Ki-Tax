@@ -17,8 +17,12 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionStammdatenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
+import EbeguUtil from '../../../utils/EbeguUtil';
+import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
 @Component({
     selector: 'dv-view-institution-tagesschule',
@@ -30,23 +34,49 @@ export class ViewInstitutionTagesschuleComponent implements OnInit {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
 
-    public module: TSModulTagesschule[] = [];
+    public gesuchsperiodenList: TSGesuchsperiode[] = [];
+    public moduleProGesuchsperiode: Map<string, TSModulTagesschule[]> =
+        new Map<string, TSModulTagesschule[]>();
 
     public constructor(
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
     ) {
     }
 
     public ngOnInit(): void {
-        // Die Module werden pro Wochentag gespeichert. Wir zeigen hier nur den Montag an
-        // als Vertreter der ganzen Woche
-        if (!this.stammdaten || !this.stammdaten.institutionStammdatenTagesschule) {
-            return;
+        if (EbeguUtil.isNullOrUndefined(this.stammdaten.institutionStammdatenTagesschule)) {
+            this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
+            this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule = [];
         }
+        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then(allGesuchsperioden => {
+            this.gesuchsperiodenList = allGesuchsperioden;
+            // Die Module werden pro Wochentag gespeichert. Wir zeigen hier nur den Montag an
+            // als Vertreter der ganzen Woche
+            this.loadModuleTagesschule();
+        });
+    }
+
+    private loadModuleTagesschule(): void {
         const moduleTagesschule = this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
+        let moduleTagesschuleMontag: TSModulTagesschule[] = [];
         for (const tsModulTagesschule of moduleTagesschule) {
             if (tsModulTagesschule.wochentag === TSDayOfWeek.MONDAY) {
-                this.module.push(tsModulTagesschule);
+                moduleTagesschuleMontag.push(tsModulTagesschule);
             }
         }
+        this.fillModulTagesschuleMap(moduleTagesschuleMontag);
+    }
+
+    private fillModulTagesschuleMap(modulListFromServer: TSModulTagesschule[]): void {
+        this.gesuchsperiodenList.forEach((periode: TSGesuchsperiode) => {
+            const foundmodul = modulListFromServer.filter((modul: TSModulTagesschule) => (
+                modul.wochentag === TSDayOfWeek.MONDAY &&
+                modul.gesuchsperiodeId === periode.id
+            ))[0];
+            // tslint:disable-next-line:early-exit
+            if (foundmodul) {
+                this.moduleProGesuchsperiode.get(periode.id).push(foundmodul);
+            }
+        });
     }
 }

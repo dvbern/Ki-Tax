@@ -16,17 +16,14 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
-import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 /**
  * DTO fuer Module fuer die Tagesschulen
@@ -47,12 +44,10 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 	private ModulTagesschuleName modulTagesschuleName;
 
 	@NotNull @Nonnull
-	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime zeitVon;
+	private String zeitVon;
 
 	@NotNull @Nonnull
-	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime zeitBis;
+	private String zeitBis;
 
 	@Nonnull
 	public String getGesuchsperiodeId() {
@@ -82,20 +77,20 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public LocalDateTime getZeitVon() {
+	public String getZeitVon() {
 		return zeitVon;
 	}
 
-	public void setZeitVon(@Nonnull LocalDateTime zeitVon) {
-		this.zeitVon = zeitVon;
+	public void setZeitVon(@Nonnull String von) {
+		this.zeitVon = von;
 	}
 
 	@Nonnull
-	public LocalDateTime getZeitBis() {
+	public String getZeitBis() {
 		return zeitBis;
 	}
 
-	public void setZeitBis(@Nonnull LocalDateTime zeitBis) {
-		this.zeitBis = zeitBis;
+	public void setZeitBis(@Nonnull String bis) {
+		this.zeitBis = bis;
 	}
 }

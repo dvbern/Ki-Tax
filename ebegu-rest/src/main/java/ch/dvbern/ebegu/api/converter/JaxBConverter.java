@@ -19,8 +19,8 @@ package ch.dvbern.ebegu.api.converter;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1644,10 +1644,24 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschule.setGesuchsperiode(gesuchsperiode.get());
 		modulTagesschule.setModulTagesschuleName(jaxModulTagesschule.getModulTagesschuleName());
 		modulTagesschule.setWochentag(jaxModulTagesschule.getWochentag());
-		modulTagesschule.setZeitVon(jaxModulTagesschule.getZeitVon().toLocalTime());
-		modulTagesschule.setZeitBis(jaxModulTagesschule.getZeitBis().toLocalTime());
+		modulTagesschule.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschule.getZeitVon()));
+		modulTagesschule.setZeitBis(hoursAndMinutesToDate(jaxModulTagesschule.getZeitBis()));
 
 		return modulTagesschule;
+	}
+
+	private LocalTime hoursAndMinutesToDate(@Nonnull String hoursAndMinutes) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		LocalTime time = LocalTime.parse(hoursAndMinutes, dateTimeFormatter);
+		System.out.println("hoursAndMinutesToDate: " + hoursAndMinutes + " " + time);
+		return time;
+	}
+
+	private String dateToHoursAndMinutes(@Nonnull LocalTime date) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		String format = date.format(dateTimeFormatter);
+		System.out.println("dateToHoursAndMinutes: " + date + " " + format);
+		return format;
 	}
 
 	@Nonnull
@@ -2818,8 +2832,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxModulTagesschule.setGesuchsperiodeId(modulTagesschule.getGesuchsperiode().getId());
 		jaxModulTagesschule.setModulTagesschuleName(modulTagesschule.getModulTagesschuleName());
 		jaxModulTagesschule.setWochentag(modulTagesschule.getWochentag());
-		jaxModulTagesschule.setZeitVon(LocalDateTime.of(LocalDate.now(), modulTagesschule.getZeitVon()));
-		jaxModulTagesschule.setZeitBis(LocalDateTime.of(LocalDate.now(), modulTagesschule.getZeitBis()));
+		jaxModulTagesschule.setZeitVon(dateToHoursAndMinutes(modulTagesschule.getZeitVon()));
+		jaxModulTagesschule.setZeitBis(dateToHoursAndMinutes(modulTagesschule.getZeitBis()));
 
 		return jaxModulTagesschule;
 	}

@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
@@ -23,16 +22,16 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
     public gesuchsperiodeId: string;
     public wochentag: TSDayOfWeek;
     public modulTagesschuleName: TSModulTagesschuleName;
-    public zeitVon: moment.Moment;
-    public zeitBis: moment.Moment;
+    public zeitVon: string;
+    public zeitBis: string;
 
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
 
     public constructor(
         wochentag?: TSDayOfWeek,
         modulTagesschuleName?: TSModulTagesschuleName,
-        zeitVon?: moment.Moment,
-        zeitBis?: moment.Moment,
+        zeitVon?: string,
+        zeitBis?: string,
     ) {
         super();
         this.wochentag = wochentag;

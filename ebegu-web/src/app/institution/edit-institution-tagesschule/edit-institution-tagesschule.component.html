@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<dv-accordion class="gemeindeList" allow-multiple-sections="true">
+<dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true">
     <dv-accordion-tab
         *ngFor="let gp of gesuchsperiodenList; trackBy:gp?.id; let i = index"
         [tabid]="i">
@@ -74,21 +74,21 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerVon"
-                                   [format]="24" name="pickerVon{{modul}}" readonly
+                            <input id="pickerVon{{modul}}" type="text" name="pickerVon{{modul}}" #pickerVon="ngModel"
                                    [(ngModel)]="getModulTagesschule(modul, gp.id).zeitVon"
-                                   [required]="getModulTagesschule(modul, gp.id).zeitBis">
-                            <ngx-material-timepicker #pickerVon></ngx-material-timepicker>
+                                   [required]="getModulTagesschule(modul, gp.id).zeitBis"
+                                   [maxlength]="26" class="form-control" required
+                                   placeholder="HH:mm">
                             <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerBis"
-                                   [format]="24" name="pickerBis{{modul}}" readonly
+                            <input id="pickerBis{{modul}}" type="text" name="pickerBis{{modul}}" #pickerBis="ngModel"
                                    [(ngModel)]="getModulTagesschule(modul, gp.id).zeitBis"
-                                   [required]="getModulTagesschule(modul, gp.id).zeitVon">
-                            <ngx-material-timepicker #pickerBis></ngx-material-timepicker>
+                                   [required]="getModulTagesschule(modul, gp.id).zeitVon"
+                                   [maxlength]="26" class="form-control" required
+                                   placeholder="HH:mm">
                             <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
                         </div>
                     </div>

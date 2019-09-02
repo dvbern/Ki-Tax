@@ -41,7 +41,10 @@ export default class DateUtil {
      * Calls momentToLocalDateFormat with the format by default 'YYYY-MM-DD'
      */
     public static momentToLocalDate(aMoment: Moment): string {
-        return DateUtil.momentToLocalDateFormat(aMoment, 'YYYY-MM-DD');
+        if (aMoment && aMoment.isValid()) {
+            return DateUtil.momentToLocalDateFormat(aMoment, 'YYYY-MM-DD');
+        }
+        return (aMoment as any);
     }
 
     /**
@@ -123,24 +126,13 @@ export default class DateUtil {
     }
 
     public static momentToHoursAndMinutes(date: Moment): string {
-        const hours = date.get('hours');
-        const minutes = date.get('minutes');
-        return `${hours}':'${minutes}`;
+        return date.format('HH.mm');
     }
 
     public static hoursAndMinutesToMoment(hoursAndMinutes: any): Moment {
-        return DateUtil.add(DateUtil.now().startOf('day'), hoursAndMinutes);
-    }
-
-    public static add(date: Moment, add: any): Moment {
-        if (!add || add.indexOf(':') === -1) {
-            return undefined;
-        }
-        const split = add.split(':');
+        const split = hoursAndMinutes.split(':');
         const hours = split[0];
         const minutes = split[1];
-        date.add(hours, 'hours');
-        date.add(minutes, 'minutes');
-        return date;
+        return moment({hour: hours, minute: minutes});
     }
 }

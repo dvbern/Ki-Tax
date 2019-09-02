@@ -25,7 +25,6 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionStammdatenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
-import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
@@ -120,8 +119,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                 ))[0];
                 // tslint:disable-next-line:early-exit
                 if (foundmodul) {
-                    (foundmodul as any).zeitVon = DateUtil.momentToHoursAndMinutes(foundmodul.zeitVon);
-                    (foundmodul as any).zeitBis = DateUtil.momentToHoursAndMinutes(foundmodul.zeitBis);
                     this.moduleProGesuchsperiode.get(gp.id).set(modulname, foundmodul);
                 } else {
                     this.getModulTagesschule(modulname, gp.id);
@@ -136,8 +133,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.moduleProGesuchsperiode.forEach((mapOfModules, gesuchsperiodeId) => {
             mapOfModules.forEach((tempModul, modulname) => {
                 if (tempModul.zeitVon && tempModul.zeitBis) {
-                    tempModul.zeitVon = DateUtil.hoursAndMinutesToMoment(tempModul.zeitVon);
-                    tempModul.zeitBis = DateUtil.hoursAndMinutesToMoment(tempModul.zeitBis);
                     tempModul.gesuchsperiodeId = gesuchsperiodeId;
                     definedModulTagesschule.push(tempModul);
                 }

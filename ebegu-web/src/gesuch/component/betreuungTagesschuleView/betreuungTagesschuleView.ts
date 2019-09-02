@@ -187,8 +187,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
      */
     public isModulDefinedInSelectedTS(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): boolean {
         const modulTS = this.getModul(modulName, weekday);
-        return !!(modulTS && modulTS.zeitBis && modulTS.zeitVon);
+        return !!(modulTS && modulTS.zeitVon && modulTS.zeitBis);
     }
+
+    public getModulMonday(modulName: TSModulTagesschuleName): TSModulTagesschule {
+        return this.getModul(modulName, TSDayOfWeek.MONDAY);
+    }
+
 
     public getModul(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): TSModulTagesschule {
         if (this.getBetreuungModel().belegungTagesschule
@@ -252,15 +257,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public getModulTimeAsStringViaName(modulName: TSModulTagesschuleName): string {
         const modul = this.getModul(modulName, TSDayOfWeek.MONDAY);
-        if (modul) {
-            return `${modul.zeitVon.format('HH:mm')} - ${modul.zeitBis.format('HH:mm')}`;
-        }
-        return '';
+        return this.getModulTimeAsString(modul);
     }
 
     public getModulTimeAsString(modul: TSModulTagesschule): string {
         if (modul) {
-            return ` (${modul.zeitVon.format('HH:mm')} - ${modul.zeitBis.format('HH:mm')})`;
+            return `${modul.zeitVon} - ${modul.zeitBis}`;
         }
         return '';
     }
