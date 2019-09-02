@@ -36,14 +36,13 @@
     <dv-accordion-tab
         *ngFor="let gp of gesuchsperiodenList; trackBy:gp?.id; let i = index"
         [tabid]="i">
-        {{gp}}
         <tab-title>
             <div class="message-header">
                 <p class="fa fa-angle-right"></p>{{gp.gesuchsperiodeString}}
             </div>
         </tab-title>
         <tab-body>
-            <!-- Titelzeile -->
+             <!--Titelzeile-->
             <div class="row">
                 <div class="col-md-2">
                     <span translate>INSTITUTION_ST_MODULNAME</span>
@@ -55,7 +54,7 @@
                     <span translate>BIS</span>
                 </div>
             </div>
-            <div *ngFor="let modul of moduleProGesuchsperiode.get(gp.id)">
+            <div *ngFor="let modul of getModuleTagesschuleProGesuchsperiode(gp.id)">
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group">

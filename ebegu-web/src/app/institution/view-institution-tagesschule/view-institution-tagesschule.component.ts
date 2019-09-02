@@ -79,4 +79,8 @@ export class ViewInstitutionTagesschuleComponent implements OnInit {
             }
         });
     }
+
+    public getModuleTagesschuleProGesuchsperiode(gpId: string): TSModulTagesschule[] {
+        return this.moduleProGesuchsperiode.get(gpId);
+    }
 }

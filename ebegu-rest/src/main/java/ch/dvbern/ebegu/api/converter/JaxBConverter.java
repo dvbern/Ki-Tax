@@ -1653,14 +1653,12 @@ public class JaxBConverter extends AbstractConverter {
 	private LocalTime hoursAndMinutesToDate(@Nonnull String hoursAndMinutes) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 		LocalTime time = LocalTime.parse(hoursAndMinutes, dateTimeFormatter);
-		System.out.println("hoursAndMinutesToDate: " + hoursAndMinutes + " " + time);
 		return time;
 	}
 
 	private String dateToHoursAndMinutes(@Nonnull LocalTime date) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 		String format = date.format(dateTimeFormatter);
-		System.out.println("dateToHoursAndMinutes: " + date + " " + format);
 		return format;
 	}
 
