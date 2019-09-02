@@ -116,6 +116,7 @@ export class DVBarcodeController implements IController {
         this.$document.unbind('keypress', keypressEvent);
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public barcodeOnKeyPressed(e: any): void {
         const key = e.keyCode || e.which || 0;
         const keyPressChar = String.fromCharCode(key);
@@ -155,22 +156,23 @@ export class DVBarcodeController implements IController {
                 this.barcodeBuffer = [];
                 this.$timeout.cancel(this.barcodeReadtimeout);
 
-                this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen).then((response: TSAntragDTO) => {
-                    let message = undefined;
-                    if (!response) {
-                        message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
-                    }
-                    if (!response.canBeFreigegeben()) {
-                        message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
-                    }
-                    this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                        docID: barcodeDocID,
-                        errorMessage: message,
-                        gesuch: response
-                    });
-                }).catch((e) => {
+                this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen)
+                    .then((response: TSAntragDTO) => {
+                        let message;
+                        if (!response) {
+                            message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
+                        }
+                        if (!response.canBeFreigegeben()) {
+                            message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                        }
+                        this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
+                            docID: barcodeDocID,
+                            errorMessage: message,
+                            gesuch: response
+                        });
+                    }).catch(error => {
                     this.errorService.addMesageAsError('Gesuch konnte nicht freigegeben werden!');
-                    LOG.warn('Gesuch konnte nicht freigegeben werden!', e);
+                    LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
                 });
             } else {
                 this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);
