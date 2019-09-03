@@ -83,24 +83,12 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void getAllInstitutionStammdatenByDateTest() {
-		Assert.assertNotNull(institutionStammdatenService);
-		createGesuchsperiode1718();
-		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
-
-		insertedInstitutionStammdaten.setGueltigkeit(new DateRange(LocalDate.of(2010, 1, 1), Constants.END_OF_TIME));
-		institutionStammdatenService.saveInstitutionStammdaten(insertedInstitutionStammdaten);
-		Collection<InstitutionStammdaten> allInstitutionStammdatenByDate2 = institutionStammdatenService.getAllInstitutionStammdatenByDate(LocalDate.now());
-		Assert.assertEquals(1, allInstitutionStammdatenByDate2.size());
-	}
-
-	@Test
 	public void getAllInstitutionStammdatenByInstitution() {
 		Assert.assertNotNull(institutionStammdatenService);
 		createGesuchsperiode1718();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 		String id = insertedInstitutionStammdaten.getInstitution().getId();
-		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.getInstitutionStammdatenByInstitution(id);
+		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id);
 		Assert.assertNotNull(stammdatenByInstitution);
 	}
 

@@ -75,19 +75,19 @@ public interface BetreuungService {
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_UEBERNOMMEN und sendet dem Gesuchsteller eine E-Mail.
 	 */
 	@Nonnull
-	Betreuung anmeldungSchulamtUebernehmen(@Valid @Nonnull Betreuung betreuung);
+	AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_ABGELEHNT und sendet dem Gesuchsteller eine E-Mail
 	 */
 	@Nonnull
-	Betreuung anmeldungSchulamtAblehnen(@Valid @Nonnull Betreuung betreuung);
+	AbstractAnmeldung anmeldungSchulamtAblehnen(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_FALSCHE_INSTITUTION.
 	 */
 	@Nonnull
-	Betreuung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull Betreuung betreuung);
+	AbstractAnmeldung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
 	 * @param key PK (id) der Betreuung
@@ -113,6 +113,12 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	Optional<? extends AbstractAnmeldung> findAnmeldung(@Nonnull String id);
+
+	/**
+	 * Sucht den Platz (Betreuung oder Anmeldung) mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<? extends AbstractPlatz> findPlatz(@Nonnull String id);
 
 	/**
 	 * @param key PK (id) der Betreuung

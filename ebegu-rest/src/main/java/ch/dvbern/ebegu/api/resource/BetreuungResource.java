@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -285,13 +286,12 @@ public class BetreuungResource {
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 
-
-		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
+		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		Betreuung persistedBetreuung = this.betreuungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
 
-		return converter.betreuungToJAX(persistedBetreuung);
+		return converter.platzToJAX(persistedBetreuung);
 	}
 
 	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution abgelehnt", response = JaxBetreuung.class)
@@ -313,12 +313,12 @@ public class BetreuungResource {
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 		Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
 
-		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
+		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		Betreuung persistedBetreuung = this.betreuungService.anmeldungSchulamtAblehnen(convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtAblehnen(convertedBetreuung);
 
-		return converter.betreuungToJAX(persistedBetreuung);
+		return converter.platzToJAX(persistedBetreuung);
 	}
 
 	@ApiOperation(value = "Schulamt-Anmeldung fuer falsche Institution gestellt", response = JaxBetreuung.class)
@@ -338,13 +338,13 @@ public class BetreuungResource {
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 		Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 
-		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
+		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		Betreuung persistedBetreuung =
+		AbstractAnmeldung persistedBetreuung =
 			this.betreuungService.anmeldungSchulamtFalscheInstitution(convertedBetreuung);
 
-		return converter.betreuungToJAX(persistedBetreuung);
+		return converter.platzToJAX(persistedBetreuung);
 	}
 
 	@ApiOperation(value = "Sucht die Betreuung mit der übergebenen Id in der Datenbank. Dabei wird geprüft, ob der " +

@@ -254,23 +254,6 @@ public class InstitutionResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Find and return a list of Institution by the Traegerschaft as parameter",
-		responseContainer = "List", response = JaxInstitution.class)
-	@Nonnull
-	@GET
-	@Path("/traegerschaft/{traegerschaftId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitution> getAllInstitutionenFromTraegerschaft(
-		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId) {
-
-		requireNonNull(traegerschaftJAXPId.getId());
-		String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
-		return institutionService.getAllInstitutionenFromTraegerschaft(traegerschaftId).stream()
-			.map(institution -> converter.institutionToJAX(institution))
-			.collect(Collectors.toList());
-	}
-
 	@ApiOperation(value = "Find and return a list of all Institutionen",
 		responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull

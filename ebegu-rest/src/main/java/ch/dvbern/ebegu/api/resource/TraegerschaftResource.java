@@ -138,7 +138,7 @@ public class TraegerschaftResource {
 		final String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
 
 		Collection<Institution> allInstitutionen = institutionService
-			.getAllActiveInstitutionenFromTraegerschaft(traegerschaftId);
+			.getAllInstitutionenFromTraegerschaft(traegerschaftId);
 
 		// set null Traegerschaft
 		for (Institution institution : allInstitutionen) {
