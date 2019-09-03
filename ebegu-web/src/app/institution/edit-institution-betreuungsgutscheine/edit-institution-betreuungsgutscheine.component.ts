@@ -42,6 +42,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
     //
     public ngOnInit(): void {
         this.abweichendeZahlungsAdresse =
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine &&
             !!this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber;
     }
 
