@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import TSExternalClient from '../../../models/TSExternalClient';
+import TSExternalClient, {externalClientComparator} from '../../../models/TSExternalClient';
 import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 
 let nextId = 0;
@@ -42,7 +42,7 @@ export class ExternalClientMultiselectComponent implements OnChanges {
     private static getOptions(currentValue?: TSExternalClientAssignment): TSExternalClient[] {
         if (currentValue) {
             return currentValue.assignedClients.concat(currentValue.availableClients)
-                .sort((a, b) => a.clientName.localeCompare(b.clientName));
+                .sort(externalClientComparator);
         }
 
         return [];

@@ -22,3 +22,15 @@ export default class TSExternalClient extends TSAbstractEntity {
     public clientName: string;
     public type: TSExternalClientType;
 }
+
+export function createClient(name: string): TSExternalClient {
+    const client = new TSExternalClient();
+    client.clientName = name;
+    client.type = TSExternalClientType.EXCHANGE_SERVICE_USER;
+
+    return client;
+}
+
+export function externalClientComparator(a: TSExternalClient, b: TSExternalClient) {
+    return a.clientName.localeCompare(b.clientName);
+}

@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {externalClientComparator} from '../../../models/TSExternalClient';
 import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 
 @Component({
@@ -41,7 +42,8 @@ export class ExternalClientAssignmentComponent implements OnChanges {
 
     private updateAssignedClients(clients?: TSExternalClientAssignment): void {
         this.assignedClients = clients && clients.assignedClients
+            .sort(externalClientComparator)
             .map(client => client.clientName)
-            .join(',') || this.translate.instant('LABEL_KEINE');
+            .join(', ') || this.translate.instant('LABEL_KEINE');
     }
 }

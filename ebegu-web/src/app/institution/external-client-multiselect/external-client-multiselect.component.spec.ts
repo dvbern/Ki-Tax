@@ -15,7 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {SimpleChange} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NgForm} from '@angular/forms';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {TSExternalClientType} from '../../../models/enums/TSExternalClienType';
+import TSExternalClient, {createClient} from '../../../models/TSExternalClient';
+import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {MaterialModule} from '../../shared/material.module';
+import {SharedModule} from '../../shared/shared.module';
 
 import {ExternalClientMultiselectComponent} from './external-client-multiselect.component';
 
@@ -25,6 +34,15 @@ describe('ExternalClientMultiselectComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                MaterialModule,
+            ],
+            providers: [
+                WindowRef,
+                {provide: NgForm, useValue: new NgForm([], [])},
+            ],
             declarations: [ExternalClientMultiselectComponent],
         })
             .compileComponents();
@@ -33,10 +51,29 @@ describe('ExternalClientMultiselectComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ExternalClientMultiselectComponent);
         component = fixture.componentInstance;
+        component.externalClients = new TSExternalClientAssignment();
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should have empty options when no clients', () => {
+        expect(component.options).toEqual([]);
+    });
+
+    it('should merge assigned and available clients and sort them as options', () => {
+        const foo = createClient('foo');
+        const bar = createClient('bar');
+        const returns = createClient('returns');
+
+        const clients = new TSExternalClientAssignment();
+        clients.assignedClients = [foo, bar];
+        clients.availableClients = [returns];
+
+        component.ngOnChanges({externalClients: new SimpleChange(component.externalClients, clients, false)});
+
+        expect(component.options).toEqual([bar, foo, returns]);
     });
 });

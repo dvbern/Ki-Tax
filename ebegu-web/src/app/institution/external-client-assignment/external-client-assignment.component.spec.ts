@@ -15,16 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {SimpleChange} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {TranslateService} from '@ngx-translate/core';
+import {createClient} from '../../../models/TSExternalClient';
+import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 
 import {ExternalClientAssignmentComponent} from './external-client-assignment.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('ExternalClientAssignmentComponent', () => {
     let component: ExternalClientAssignmentComponent;
     let fixture: ComponentFixture<ExternalClientAssignmentComponent>;
+    let translateServiceSpy: SpyObj<TranslateService>;
 
     beforeEach(async(() => {
+        translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name, ['instant']);
         TestBed.configureTestingModule({
+            providers: [
+                {
+                    provide: TranslateService,
+                    useValue: translateServiceSpy,
+                },
+            ],
             declarations: [ExternalClientAssignmentComponent],
         })
             .compileComponents();
@@ -38,5 +51,20 @@ describe('ExternalClientAssignmentComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should display KEINE when no assignment', () => {
+        translateServiceSpy.instant.and.returnValue('none');
+        component.ngOnChanges({externalClients: new SimpleChange(undefined, new TSExternalClientAssignment(), true)});
+        expect(translateServiceSpy.instant).toHaveBeenCalledWith('LABEL_KEINE');
+        expect(component.assignedClients).toBe('none');
+    });
+
+    it('should concat clients by name', () => {
+        const clients = new TSExternalClientAssignment();
+        clients.assignedClients = [createClient('foo'), createClient('bar')];
+
+        component.ngOnChanges({externalClients: new SimpleChange(undefined, clients, true)});
+        expect(component.assignedClients).toBe('bar, foo');
     });
 });
