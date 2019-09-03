@@ -16,12 +16,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import * as moment from 'moment';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class InstitutionStammdatenRS {
@@ -73,9 +71,16 @@ export class InstitutionStammdatenRS {
             });
     }
 
-    public getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId: string, gemeindeId: string): IPromise<TSInstitutionStammdaten[]> {
+    public getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId: string,
+                                                                        gemeindeId: string): IPromise<TSInstitutionStammdaten[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE);
-        return this.$http.get(`${this.serviceURL}/gesuchsperiode/gemeinde/active`, {params: {gesuchsperiodeId, gemeindeId}, cache})
+        return this.$http.get(`${this.serviceURL}/gesuchsperiode/gemeinde/active`, {
+            params: {
+                gesuchsperiodeId,
+                gemeindeId,
+            },
+            cache
+        })
             .then((response: any) => {
                 return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
             });

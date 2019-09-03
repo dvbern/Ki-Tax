@@ -1009,16 +1009,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (isJugendamt(this.getBetreuungModel().getAngebotTyp())) {
-            if (!(!this.getBetreuungModel().isNew() &&
-                this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
-                return;
-            }
-            this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
-                .then((response: TSBetreuungsmitteilung) => {
-                    this.existingMutationsMeldung = response;
-                });
+        if (!isJugendamt(this.getBetreuungModel().getAngebotTyp())) {
+            return;
         }
+        if (!(!this.getBetreuungModel().isNew() &&
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+            return;
+        }
+        this.mitteilungRS.getNewestBetreuungsmitteilung(this.getBetreuungModel().id)
+            .then((response: TSBetreuungsmitteilung) => {
+                this.existingMutationsMeldung = response;
+            });
     }
 
     public tageschuleSaveDisabled(): boolean {
@@ -1144,7 +1145,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private createProvisorischeBetreuung(): void {
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
-		// Die unbekannte Institution ermitteln und lesen
+        // Die unbekannte Institution ermitteln und lesen
         this.setUnbekannteInstitutionAccordingToAngebot();
         this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStammId)
             .then((stammdaten: TSInstitutionStammdaten) => {
@@ -1161,6 +1162,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {
+        // tslint:disable:prefer-conditional-expression
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {

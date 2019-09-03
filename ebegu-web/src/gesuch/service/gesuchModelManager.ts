@@ -205,7 +205,7 @@ export default class GesuchModelManager {
         this.ewkResultatGS2 = undefined;
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
-        this.activInstitutionenForGemeindeList = undefined
+        this.activInstitutionenForGemeindeList = undefined;
         this.loadGemeindeStammdaten();
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 

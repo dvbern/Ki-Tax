@@ -116,23 +116,6 @@ describe('institutionStammdatenRS', () => {
                 checkFieldValues(updatedInstitutionStammdaten, mockInstitutionStammdaten);
             });
         });
-
-        describe('getAllInstitutionStammdaten', () => {
-            it('should return all InstitutionStammdaten', () => {
-                const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
-                $httpBackend.expectGET(institutionStammdatenRS.serviceURL).respond(institutionStammdatenRestArray);
-
-                let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
-                institutionStammdatenRS.getAllInstitutionStammdaten().then(result => {
-                    returnedInstitutionStammdaten = result;
-                });
-                $httpBackend.flush();
-                expect(returnedInstitutionStammdaten).toBeDefined();
-                expect(returnedInstitutionStammdaten.length).toEqual(2);
-                checkFieldValues(returnedInstitutionStammdaten[0], institutionStammdatenRestArray[0]);
-                checkFieldValues(returnedInstitutionStammdaten[1], institutionStammdatenRestArray[1]);
-            });
-        });
     });
 
     function checkFieldValues(

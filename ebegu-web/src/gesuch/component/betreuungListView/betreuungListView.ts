@@ -141,7 +141,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         // Diese wird im GMM gecached und enthält eventuell nicht die neuesten Daten, insbesondere beim Hinzufügen von
         // Betreuungen.
         if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            this.gesuchModelManager.resetActiveInstitutionenForGemeindeList()
+            this.gesuchModelManager.resetActiveInstitutionenForGemeindeList();
         }
     }
 
