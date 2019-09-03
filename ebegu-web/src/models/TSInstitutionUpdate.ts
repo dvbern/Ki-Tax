@@ -15,24 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.dtos;
+import TSInstitutionStammdaten from './TSInstitutionStammdaten';
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+export default class TSInstitutionUpdate {
 
-import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
-
-public class JaxExternalClientIds implements Serializable {
-
-	private static final long serialVersionUID = 1918546318897606276L;
-
-	@Nonnull
-	private final @NotNull List<String> externalClients = new ArrayList<>();
-
-	@Nonnull
-	public List<String> getExternalClients() {
-		return externalClients;
-	}
+    public name: string;
+    public traegerschaftId: string;
+    public stammdaten: TSInstitutionStammdaten;
+    public externalClients: string[];
 }

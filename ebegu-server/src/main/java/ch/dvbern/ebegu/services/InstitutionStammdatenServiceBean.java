@@ -114,9 +114,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		InstitutionStammdaten updatedStammdaten = persistence.merge(institutionStammdaten);
 
-		event.fire(institutionEventConverter.of(updatedStammdaten));
-
 		return updatedStammdaten;
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten) {
+		event.fire(institutionEventConverter.of(updatedStammdaten));
 	}
 
 	@Nonnull

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import TSExternalClient from '../../../models/TSExternalClient';
 import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
@@ -28,21 +28,27 @@ let nextId = 0;
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
-export class ExternalClientMultiselectComponent implements OnInit {
+export class ExternalClientMultiselectComponent implements OnChanges {
 
     @Input() public externalClients: TSExternalClientAssignment;
 
     public inputId = `external-client-multiselect-${nextId++}`;
     public options: TSExternalClient[] = [];
-    public foo: TSExternalClient[];
 
     public constructor(public readonly form: NgForm,
     ) {
     }
 
-    public ngOnInit(): void {
-        this.options = this.externalClients.assignedClients.concat(this.externalClients.availableClients)
-            .sort((a, b) => a.clientName.localeCompare(b.clientName));
+    private static getOptions(currentValue?: TSExternalClientAssignment): TSExternalClient[] {
+        if (currentValue) {
+            return currentValue.assignedClients.concat(currentValue.availableClients)
+                .sort((a, b) => a.clientName.localeCompare(b.clientName));
+        }
+
+        return [];
     }
 
+    public ngOnChanges(changes: SimpleChanges): void {
+        this.options = ExternalClientMultiselectComponent.getOptions(changes.externalClients.currentValue);
+    }
 }

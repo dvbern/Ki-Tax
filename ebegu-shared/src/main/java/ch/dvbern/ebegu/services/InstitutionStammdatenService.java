@@ -37,6 +37,8 @@ public interface InstitutionStammdatenService {
 	 */
 	InstitutionStammdaten saveInstitutionStammdaten(InstitutionStammdaten institutionStammdaten);
 
+	void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten);
+
 	/**
 	 * @param institutionStammdatenID PK (id) der InstitutionStammdaten
 	 * @return InstitutionStammdaten mit dem gegebenen key oder null falls nicht vorhanden

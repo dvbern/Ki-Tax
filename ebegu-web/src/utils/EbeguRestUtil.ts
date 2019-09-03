@@ -96,6 +96,7 @@ import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitution
 import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
+import TSInstitutionUpdate from '../models/TSInstitutionUpdate';
 import TSKind from '../models/TSKind';
 import TSKindContainer from '../models/TSKindContainer';
 import TSKindDublette from '../models/TSKindDublette';
@@ -1071,6 +1072,15 @@ export default class EbeguRestUtil {
             return traegerschaftTS;
         }
         return undefined;
+    }
+
+    public institutionUpdateToRestObject(update: TSInstitutionUpdate): any {
+        return {
+            name: update.name || null,
+            traegerschaftId: update.traegerschaftId || null,
+            stammdaten: this.institutionStammdatenToRestObject({}, update.stammdaten) || null,
+            externalClients: update.externalClients || null
+        };
     }
 
     public institutionToRestObject(restInstitution: any, institution: TSInstitution): any {

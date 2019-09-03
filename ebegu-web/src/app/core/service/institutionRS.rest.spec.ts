@@ -76,22 +76,6 @@ describe('institutionRS', () => {
 
         });
 
-        describe('updateInstitution', () => {
-            it('should update an institution', () => {
-                mockInstitution.name = 'changedname';
-                mockInstitutionRest = ebeguRestUtil.institutionToRestObject({}, mockInstitution);
-                let updatedInstitution: TSInstitution;
-                $httpBackend.expectPUT(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
-
-                institutionRS.updateInstitution(mockInstitution)
-                    .then(result => {
-                        updatedInstitution = result;
-                    });
-                $httpBackend.flush();
-                checkFieldValues(updatedInstitution, mockInstitution);
-            });
-        });
-
         describe('getAllInstitutionen', () => {
             it('should return all Institutionen', () => {
                 const institutionenRestArray = [mockInstitutionRest, mockInstitutionRest];

@@ -13,12 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpResponse, IHttpService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSExternalClient from '../../../models/TSExternalClient';
 import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 import TSInstitution from '../../../models/TSInstitution';
+import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionUpdate from '../../../models/TSInstitutionUpdate';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -36,18 +37,16 @@ export class InstitutionRS {
     }
 
     public findInstitution(institutionID: string): IPromise<TSInstitution> {
-        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(institutionID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-            });
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionID)}`)
+            .then(response => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data));
     }
 
-    public updateInstitution(institution: TSInstitution): IPromise<TSInstitution> {
-        let restInstitution = {};
-        restInstitution = this.ebeguRestUtil.institutionToRestObject(restInstitution, institution);
-        return this.$http.put(this.serviceURL, restInstitution).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-        });
+    public updateInstitution(institutionID: string, update: TSInstitutionUpdate): IPromise<TSInstitutionStammdaten> {
+        const restInstitution = this.ebeguRestUtil.institutionUpdateToRestObject(update);
+
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionID)}`, restInstitution)
+            .then(response => response.data)
+            .then(data => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data));
     }
 
     /**
@@ -107,13 +106,6 @@ export class InstitutionRS {
         return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`).then((response: any) => {
             return response.data;
         });
-    }
-
-    public saveExternalClients(institutionId: string, externalClients: TSExternalClient[]): IPromise<IHttpResponse<unknown>> {
-        const ids = externalClients.map(client => client.id);
-
-        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionId)}/externalclients`,
-            {externalClients: ids});
     }
 
     public getServiceName(): string {

@@ -49,6 +49,8 @@ import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
 import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -73,6 +75,7 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -119,7 +122,7 @@ public class InstitutionResource {
 		@Context HttpServletResponse response) {
 
 		requireNonNull(adminMail);
-		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
+		Institution convertedInstitution = converter.institutionToNewEntity(institutionJAXP);
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
 		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail, gemeindeId);
@@ -208,34 +211,61 @@ public class InstitutionResource {
 		return gemeinde;
 	}
 
-	@ApiOperation(value = "Update a Institution in the database.", response = JaxInstitution.class)
+	@ApiOperation(value = "Update a Institution and Stammdaten in the database.",
+		response = JaxInstitutionStammdaten.class)
 	@Nullable
 	@PUT
+	@Path("/{institutionId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxInstitution updateInstitution(
-		@Nonnull @NotNull @Valid JaxInstitution institutionJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
+	//	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public JaxInstitutionStammdaten updateInstitutionAndStammdaten(
+		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
+		@Nonnull @NotNull @Valid JaxInstitutionUpdate update) {
 
-		requireNonNull(institutionJAXP.getId());
-		Optional<Institution> optInstitution = institutionService.findInstitution(institutionJAXP.getId());
-		Institution institutionFromDB = optInstitution
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"update",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				institutionJAXP.getId()));
+		Institution institution = institutionService.findInstitution(requireNonNull(institutionJAXPId.getId()))
+			.orElseThrow(() -> new EbeguEntityNotFoundException("update", institutionJAXPId.getId()));
 
-		Institution institutionToMerge = converter.institutionToEntity(institutionJAXP, institutionFromDB);
-		Institution modifiedInstitution = this.institutionService.updateInstitution(institutionToMerge);
-		return converter.institutionToJAX(modifiedInstitution);
+		InstitutionStammdaten stammdaten = Optional.ofNullable(update.getStammdaten().getId())
+			.flatMap(id -> institutionStammdatenService.findInstitutionStammdaten(id))
+			.orElseGet(() -> new InstitutionStammdaten(institution));
+
+		converter.institutionStammdatenToEntity(update.getStammdaten(), stammdaten);
+
+		Preconditions.checkArgument(
+			stammdaten.getInstitution().equals(institution),
+			"Stammdaten and Institution must belong together, but %s != %s",
+			stammdaten.getInstitution(),
+			institution);
+
+		// set the updated institution
+		stammdaten.setInstitution(institution);
+
+		boolean institutionUpdated = converter.institutionToEntity(update, institution, stammdaten);
+
+		if (institutionUpdated) {
+			institutionService.updateInstitution(institution);
+		}
+
+		if (update.getExternalClients() != null) {
+			Collection<ExternalClient> availableClients = externalClientService.getAll();
+			availableClients.removeIf(client -> !update.getExternalClients().contains(client.getId()));
+			institutionService.saveExternalClients(institution, availableClients);
+		}
+
+		InstitutionStammdaten persistedInstData =
+			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
+
+		institutionStammdatenService.fireStammdatenChangedEvent(persistedInstData);
+
+		return converter.institutionStammdatenToJAX(persistedInstData);
 	}
 
 	@ApiOperation(value = "Find and return an Institution by his institution id as parameter",
 		response = JaxInstitution.class)
 	@Nullable
 	@GET
-	@Path("/id/{institutionId}")
+	@Path("/{institutionId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxInstitution findInstitution(
@@ -325,7 +355,7 @@ public class InstitutionResource {
 	@Path("/{institutionId}/externalclients")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	//	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
+	//	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Response getExternalClients(@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
 		requireNonNull(institutionJAXPId.getId());

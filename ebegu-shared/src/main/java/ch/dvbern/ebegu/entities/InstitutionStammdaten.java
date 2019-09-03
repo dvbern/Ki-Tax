@@ -116,6 +116,10 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	public InstitutionStammdaten() {
 	}
 
+	public InstitutionStammdaten(@Nonnull Institution institution) {
+		this.institution = institution;
+	}
+
 	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;

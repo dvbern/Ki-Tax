@@ -84,39 +84,6 @@ describe('institutionStammdatenRS', () => {
 
         });
 
-        describe('createInstitutionStammdaten', () => {
-            it('should create a InstitutionStammdaten', () => {
-                let createdInstitutionStammdaten: TSInstitutionStammdaten;
-                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(
-                    mockInstitutionStammdatenRest);
-
-                institutionStammdatenRS.createInstitutionStammdaten(mockInstitutionStammdaten)
-                    .then(result => {
-                        createdInstitutionStammdaten = result;
-                    });
-                $httpBackend.flush();
-                checkFieldValues(createdInstitutionStammdaten, mockInstitutionStammdaten);
-            });
-        });
-
-        describe('updateInstitutionStammdaten', () => {
-            it('should update a InstitutionStammdaten', () => {
-                mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'CH123456';
-                mockInstitutionStammdatenRest =
-                    ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
-                let updatedInstitutionStammdaten: TSInstitutionStammdaten;
-                $httpBackend.expectPUT(institutionStammdatenRS.serviceURL, mockInstitutionStammdatenRest).respond(
-                    mockInstitutionStammdatenRest);
-
-                institutionStammdatenRS.updateInstitutionStammdaten(mockInstitutionStammdaten)
-                    .then(result => {
-                        updatedInstitutionStammdaten = result;
-                    });
-                $httpBackend.flush();
-                checkFieldValues(updatedInstitutionStammdaten, mockInstitutionStammdaten);
-            });
-        });
-
         describe('getAllInstitutionStammdaten', () => {
             it('should return all InstitutionStammdaten', () => {
                 const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];

@@ -64,7 +64,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
+import ch.dvbern.ebegu.outbox.institutionclient.InstitutionClientEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -103,9 +103,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
 	@Inject
-	private Event<ExportedEvent> event;
+	private Event<ExportedEvent> exportedEvent;
 	@Inject
-	private InstitutionEventConverter institutionEventConverter;
+	private InstitutionClientEventConverter institutionClientEventConverter;
 
 	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
@@ -117,16 +117,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
-		Institution updated = persistence.merge(institution);
 
-		String id = updated.getId();
-		InstitutionStammdaten stammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(id);
-		if (stammdaten != null) {
-			// no need to notify before stammdaten are known.
-			event.fire(institutionEventConverter.of(stammdaten));
-		}
-
-		return updated;
+		return persistence.merge(institution);
 	}
 
 	@Nonnull
@@ -404,19 +396,29 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public void saveExternalClients(
 		@Nonnull Institution institution,
 		@Nonnull Collection<ExternalClient> externalClients) {
 
+		String id = institution.getId();
 		Set<ExternalClient> existingExternalClients = institution.getExternalClients();
 
-		// find out which are deleted
-		HashSet<ExternalClient> deleted = new HashSet<>(existingExternalClients);
-		deleted.removeAll(externalClients);
+		// find out which are removed
+		HashSet<ExternalClient> removed = new HashSet<>(existingExternalClients);
+		removed.removeAll(externalClients);
+
+		removed.stream()
+			.map(client -> institutionClientEventConverter.clientRemovedEventOf(id, client))
+			.forEach(event -> exportedEvent.fire(event));
 
 		// find out which are added
 		HashSet<ExternalClient> added = new HashSet<>(externalClients);
 		added.removeAll(existingExternalClients);
+
+		added.stream()
+			.map(client -> institutionClientEventConverter.clientAddedEventOf(id, client))
+			.forEach(event -> exportedEvent.fire(event));
 
 		institution.setExternalClients(new HashSet<>(externalClients));
 	}

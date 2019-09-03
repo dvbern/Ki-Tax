@@ -101,6 +101,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
@@ -119,6 +120,7 @@ import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
@@ -204,6 +206,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -260,6 +263,9 @@ import static java.util.Objects.requireNonNull;
 @Dependent
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
 public class JaxBConverter extends AbstractConverter {
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
@@ -1299,9 +1305,66 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstitution;
 	}
 
-	public Institution institutionToEntity(final JaxInstitution institutionJAXP, final Institution institution) {
+	public boolean institutionToEntity(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
+		boolean nameUpdated = updateName(update, institution);
+		boolean traegerschaftUpdated = updateTraegerschaft(update, institution);
+		boolean statusUpdated = updateStatus(institution, stammdaten);
+
+		return nameUpdated || traegerschaftUpdated || statusUpdated;
+	}
+
+	/**
+	 * @return TRUE when the name of the institution was updated
+	 */
+	private boolean updateName(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution) {
+		Optional<String> newName = update.getName()
+			// we are only interrested in the value, when it is different
+			.filter(name -> !institution.getName().equals(name));
+
+		newName.ifPresent(institution::setName);
+
+		return newName.isPresent();
+	}
+
+	/**
+	 * @return TRUE when the Traegerschaft of the institution was updated
+	 */
+	private boolean updateTraegerschaft(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution) {
+		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
+			// only SUPER_ADMIN may change Traegerschaft
+			return false;
+		}
+
+		Traegerschaft newTraegerschaft = update.getTraegerschaftId()
+			.flatMap(id -> traegerschaftService.findTraegerschaft(id))
+			.orElse(null);
+
+		if (!Objects.equals(institution.getTraegerschaft(), newTraegerschaft)) {
+			institution.setTraegerschaft(newTraegerschaft);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return TRUE when the Status of the institution was updated
+	 */
+	private boolean updateStatus(@Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
+		if (institution.getStatus() == InstitutionStatus.EINGELADEN ||
+			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.isTagesschuleActivatable())) {
+			institution.setStatus(InstitutionStatus.AKTIV);
+			return true;
+		}
+
+		return false;
+	}
+
+	@Nonnull
+	public Institution institutionToNewEntity(@Nonnull JaxInstitution institutionJAXP) {
 		requireNonNull(institutionJAXP);
-		requireNonNull(institution);
+		Institution institution = new Institution();
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
 		institution.setName(institutionJAXP.getName());
 		institution.setStatus(institutionJAXP.getStatus());
@@ -1383,14 +1446,12 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstStammdaten;
 	}
 
-	public InstitutionStammdaten institutionStammdatenToEntity(
-		final JaxInstitutionStammdaten institutionStammdatenJAXP,
-		final InstitutionStammdaten institutionStammdaten) {
+	public void institutionStammdatenToEntity(
+		@Nonnull JaxInstitutionStammdaten institutionStammdatenJAXP,
+		@Nonnull InstitutionStammdaten institutionStammdaten) {
 
 		requireNonNull(institutionStammdatenJAXP);
-		requireNonNull(institutionStammdatenJAXP.getInstitution());
 		requireNonNull(institutionStammdaten);
-		requireNonNull(institutionStammdaten.getAdresse());
 
 		convertAbstractDateRangedFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
 
@@ -1441,18 +1502,6 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSendMailWennOffenePendenzen(institutionStammdatenJAXP.isSendMailWennOffenePendenzen());
 
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
-
-		String id = institutionStammdatenJAXP.getInstitution().getId();
-		Objects.requireNonNull(id);
-		Institution institutionFromDB = institutionService.findInstitution(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"institutionStammdatenToEntity",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				id));
-		// Institution darf nicht vom Client ueberschrieben werden
-		institutionStammdaten.setInstitution(institutionFromDB);
-
-		return institutionStammdaten;
 	}
 
 	@Nonnull

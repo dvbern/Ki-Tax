@@ -46,25 +46,6 @@ export class InstitutionStammdatenRS {
             });
     }
 
-    public createInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
-        return this.saveInstitutionStammdaten(institutionStammdaten);
-    }
-
-    public updateInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
-        return this.saveInstitutionStammdaten(institutionStammdaten);
-    }
-
-    public saveInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
-        let restInstitutionStammdaten = {};
-        restInstitutionStammdaten =
-            this.ebeguRestUtil.institutionStammdatenToRestObject(restInstitutionStammdaten, institutionStammdaten);
-
-        return this.$http.put(this.serviceURL, restInstitutionStammdaten).then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
-            },
-        );
-    }
-
     public getAllInstitutionStammdaten(): IPromise<TSInstitutionStammdaten[]> {
         return this.$http.get(this.serviceURL).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
