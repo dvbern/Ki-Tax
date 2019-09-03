@@ -5,6 +5,7 @@ import {StateService, Transition} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {GemeindeModule} from '../../gemeinde/gemeinde.module';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -22,6 +23,8 @@ describe('EditInstitutionComponent', () => {
         ['getAllActiveTraegerschaften']);
     const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenForCurrentBenutzer']);
+    const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
+        ['findInstitutionStammdaten']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
@@ -45,6 +48,7 @@ describe('EditInstitutionComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
+                {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
@@ -53,6 +57,7 @@ describe('EditInstitutionComponent', () => {
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         insitutionServiceSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        stammdatenServiceSpy.findInstitutionStammdaten.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));
