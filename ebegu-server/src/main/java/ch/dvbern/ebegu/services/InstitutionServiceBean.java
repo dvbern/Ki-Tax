@@ -15,10 +15,8 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -33,15 +31,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -59,7 +56,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -85,6 +82,8 @@ import static java.util.Objects.requireNonNull;
 @PermitAll
 public class InstitutionServiceBean extends AbstractBaseService implements InstitutionService {
 
+	private static final String GEMEINDEN = "gemeinden";
+
 	@Inject
 	private Persistence persistence;
 	@Inject
@@ -95,11 +94,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	private BenutzerService benutzerService;
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
-
-	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
-	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	private static final String ID_UNKNOWN_INSTITUTION_KITA = "00000000-0000-0000-0000-000000000000";
-	private static final String ID_UNKNOWN_INSTITUTION_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
 
 	@Nonnull
 	@Override
@@ -168,36 +162,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Predicate predTraegerschaft =
 			cb.equal(root.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
 
-		query.where(predTraegerschaft, excludeUnknownInstitutionPredicate(root));
-
-		return persistence.getCriteriaResults(query);
-	}
-
-	@Override
-	@Nonnull
-	@PermitAll
-	public Collection<Institution> getAllActiveInstitutionenFromTraegerschaft(String traegerschaftId) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
-
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-
-		query.select(root.get(InstitutionStammdaten_.institution));
-
-		Join<InstitutionStammdaten, Institution> institutionJoin =
-			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
-		//Traegerschaft
-		Predicate predTraegerschaft =
-			cb.equal(institutionJoin.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
-		Predicate predActive = cb.greaterThanOrEqualTo(
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
-			LocalDate.now()
-		);
-
-		query.where(
-			predTraegerschaft,
-			predActive,
-			excludeUnknownInstitutionPredicate(root));
+		query.where(predTraegerschaft, PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -213,31 +178,11 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		Predicate predSchulamt =
 			root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getSchulamtTypes());
-		Predicate predActive = cb.greaterThanOrEqualTo(
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
-			LocalDate.now()
-		);
+		Predicate predActive = PredicateHelper.getPredicateDateRangedEntityGueltig(cb, root);
+		Predicate predNoUnknown = PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root);
 
-		query.where(predSchulamt, predActive, excludeUnknownInstitutionPredicate(root));
+		query.where(predSchulamt, predActive, predNoUnknown);
 
-		return persistence.getCriteriaResults(query);
-	}
-
-	@Override
-	@Nonnull
-	@PermitAll
-	public Collection<Institution> getAllActiveInstitutionen() {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		query.select(root.get(InstitutionStammdaten_.institution));
-		query.distinct(true);
-		Predicate predActive = cb.greaterThanOrEqualTo(
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
-			LocalDate.now()
-		);
-
-		query.where(predActive, excludeUnknownInstitutionPredicate(root));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -250,9 +195,25 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root.get(InstitutionStammdaten_.institution));
 		query.distinct(true);
+		List<Predicate> predicates = new ArrayList<>();
 
-		query.where(excludeUnknownInstitutionPredicate(root));
-		return persistence.getCriteriaResults(query);
+		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+
+		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
+		if (roleGemeindeabhaengig) {
+			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+		}
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		TypedQuery<Institution> typedQuery = persistence.getEntityManager().createQuery(query);
+		if (roleGemeindeabhaengig) {
+			typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
+		}
+
+		return typedQuery.getResultList();
 	}
 
 	@Nonnull
@@ -418,11 +379,5 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		return instStammdaten.getTimestampMutiert() != null
 			&& instStammdaten.getTimestampMutiert().isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
-	}
-
-	private Predicate excludeUnknownInstitutionPredicate(Root root) {
-		return root.get(AbstractEntity_.id)
-			.in(Arrays.asList(ID_UNKNOWN_INSTITUTION_KITA, ID_UNKNOWN_INSTITUTION_TAGESFAMILIE))
-			.not();
 	}
 }

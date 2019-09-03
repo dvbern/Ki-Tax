@@ -17,8 +17,8 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,8 +38,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -49,7 +49,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -73,13 +73,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	private static final String GP_START = "gpStart";
 	private static final String GP_END = "gpEnd";
-
-	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu
-	// generieren
-	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
-	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE =
-		"00000000-0000-0000-0000-000000000001";
+	private static final String GEMEINDEN = "gemeinden";
 
 	@Inject
 	private Persistence persistence;
@@ -89,6 +83,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -122,44 +119,43 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		List<Predicate> predicates = new ArrayList<>();
 
-		query.where(excludeUnknownInstitutionStammdatenPredicate(root));
+		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
 
-		return persistence.getCriteriaResults(query);
+		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
+		if (roleGemeindeabhaengig) {
+			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+		}
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
+		if (roleGemeindeabhaengig) {
+			typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());
+		}
+		return typedQuery.getResultList();
 	}
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
-		InstitutionStammdaten institutionStammdatenToRemove = getInstitutionStammdatenByInstitution(institutionId);
-
-		persistence.remove(institutionStammdatenToRemove);
-	}
-
-	@Override
-	@PermitAll
-	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenByDate(@Nonnull LocalDate date) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		query.select(root);
-
-		ParameterExpression<LocalDate> dateParam = cb.parameter(LocalDate.class, "date");
-		Predicate intervalPredicate = cb.between(dateParam,
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-
-		query.where(intervalPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
-
-		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam
-			, date);
-		List<InstitutionStammdaten> resultList = q.getResultList();
-		return resultList;
+		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId);
+		if (institutionStammdatenToRemove != null) {
+			persistence.remove(institutionStammdatenToRemove);
+		}
 	}
 
 	@Override
 	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(@Nonnull String gesuchsperiodeId) {
+
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, currentBenutzer.extractGemeindenForUser());
+		}
 
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
 
@@ -167,19 +163,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root);
+		List<Predicate> predicates = new ArrayList<>();
 
 		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
 		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
 
 		// InstStammdaten Ende muss NACH GP Start sein
 		// InstStammdaten Start muss VOR GP Ende sein
-		Predicate startPredicate =
-			cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
-				startParam);
-		Predicate endPredicate =
-			cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
-
-		query.where(startPredicate, endPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
+		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
+		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
@@ -188,24 +181,48 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@Nonnull
-	@PermitAll
-	public InstitutionStammdaten getInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution = institutionService.findInstitution(institutionId)
-			.orElseThrow(() ->
-				new EbeguEntityNotFoundException(
-					"getInstitutionStammdatenByInstitution_institution",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					institutionId)
-			);
+	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(@Nonnull String gesuchsperiodeId,
+		@Nonnull String gemeindeId) {
 
-		return criteriaQueryHelper.getEntityByUniqueAttribute(
-			InstitutionStammdaten.class,
-			institution,
-			InstitutionStammdaten_.institution
-		).orElseThrow(() -> new EbeguEntityNotFoundException
-			("getInstitutionStammdatenByInstitution_institutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				institutionId));
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		List<Gemeinde> gemeinden = Collections.singletonList(gemeinde );
+		return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeinden);
+	}
+
+	private Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Collection<Gemeinde> gemeinden
+	) {
+
+		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root);
+		List<Predicate> predicates = new ArrayList<>();
+
+		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
+		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
+
+		// InstStammdaten Ende muss NACH GP Start sein
+		// InstStammdaten Start muss VOR GP Ende sein
+		predicates.addAll(PredicateHelper.getPredicateDateRangedEntityIncludedInRange(cb, root, startParam, endParam));
+
+		ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
+		predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+
+		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
+		typedQuery.setParameter(GP_END, gesuchsperiode.getGueltigkeit().getGueltigBis());
+		typedQuery.setParameter(GEMEINDEN, gemeinden);
+		return typedQuery.getResultList();
 	}
 
 	@Nullable
@@ -243,24 +260,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		query.distinct(true);
 
 		ParameterExpression<LocalDate> dateParam = cb.parameter(LocalDate.class, "date");
-		Predicate intervalPredicate = cb.between(dateParam,
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
+		Predicate intervalPredicate = PredicateHelper.getPredicateDateRangedEntityGueltigAm(cb, root, dateParam);
+		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution).in(institutionenForCurrentBenutzer);
+		Predicate noUnknown = PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root);
 
-		Predicate institutionPredicate =
-			root.get(InstitutionStammdaten_.institution).in(institutionenForCurrentBenutzer);
-
-		query.where(intervalPredicate, institutionPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
-		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam,
-			LocalDate.now());
+		query.where(intervalPredicate, institutionPredicate, noUnknown);
+		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, LocalDate.now());
 		List<BetreuungsangebotTyp> resultList = q.getResultList();
 		return resultList;
 	}
-
-	private Predicate excludeUnknownInstitutionStammdatenPredicate(Root root) {
-		return root.get(AbstractEntity_.id)
-			.in(Arrays.asList(ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA, ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE))
-			.not();
-	}
-
 }

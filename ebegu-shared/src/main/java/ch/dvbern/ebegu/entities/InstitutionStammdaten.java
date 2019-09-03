@@ -295,10 +295,10 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
 		Gemeinde gemeinde = null;
 		if (getInstitutionStammdatenTagesschule() != null) {
-			gemeinde =getInstitutionStammdatenTagesschule().getGemeinde();
+			gemeinde = getInstitutionStammdatenTagesschule().getGemeinde();
 		}
 		if (getInstitutionStammdatenFerieninsel() != null) {
-			gemeinde =getInstitutionStammdatenFerieninsel().getGemeinde();
+			gemeinde = getInstitutionStammdatenFerieninsel().getGemeinde();
 		}
 
 		return gemeinden.contains(gemeinde);

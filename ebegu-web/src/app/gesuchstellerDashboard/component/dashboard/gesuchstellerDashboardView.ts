@@ -25,6 +25,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../../../models/enums/TSGesuchBetreuungenStatus';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSDossier from '../../../../models/TSDossier';
+import TSGemeindeKonfiguration from '../../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../../models/TSGemeindeStammdaten';
 import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
 import DateUtil from '../../../../utils/DateUtil';
@@ -228,12 +229,39 @@ export class GesuchstellerDashboardViewController implements IController {
         }
     }
 
+    private loadGemeindeKonfiguration(gp: TSGesuchsperiode): TSGemeindeKonfiguration {
+        if (this.gemeindeStammdaten) {
+            for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
+                // tslint:disable-next-line:early-exit
+                if (konfigurationsListeElement.gesuchsperiode.id === gp.id) {
+                    konfigurationsListeElement.initProperties();
+                    return konfigurationsListeElement;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    public showAnmeldungTagesschuleCreate(periode: TSGesuchsperiode): boolean {
+        if (this.gemeindeStammdaten) {
+            return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreate(periode);
+        }
+        return undefined;
+    }
+
+    public showAnmeldungFerieninselCreate(periode: TSGesuchsperiode): boolean {
+        if (this.gemeindeStammdaten) {
+            return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreate(periode);
+        }
+        return undefined;
+    }
+
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+        const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung();
         return tsEnabledForMandant
-            && this.gemeindeStammdaten
-            && this.gemeindeStammdaten.getGemeindeKonfigurationForGesuchsperiode(periode).hasTagesschulenAnmeldung()
+            && tsEnabledForGemeinde
             && !!antrag
             && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
             && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG

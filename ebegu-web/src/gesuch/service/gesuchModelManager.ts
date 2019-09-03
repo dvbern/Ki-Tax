@@ -15,6 +15,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import ErrorService from '../../app/core/errors/service/ErrorService';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
@@ -104,6 +105,7 @@ export default class GesuchModelManager {
     private fachstellenAnspruchList: Array<TSFachstelle>;
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenList: Array<TSInstitutionStammdaten>;
+    private activInstitutionenForGemeindeList: Array<TSInstitutionStammdaten>;
     public gemeindeStammdaten: TSGemeindeStammdaten;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
 
@@ -203,6 +205,7 @@ export default class GesuchModelManager {
         this.ewkResultatGS2 = undefined;
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
+        this.activInstitutionenForGemeindeList = undefined
         this.loadGemeindeStammdaten();
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
@@ -302,6 +305,19 @@ export default class GesuchModelManager {
         this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenList = response;
+            });
+    }
+
+    /**
+     * Retrieves the list of InstitutionStammdaten for the date of today.
+     */
+    public updateActiveInstitutionenForGemeindeList(): void {
+        if (!this.getGesuchsperiode()) {
+            return;
+        }
+        this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(this.getGesuchsperiode().id, this.getGemeinde().id)
+            .then((response: TSInstitutionStammdaten[]) => {
+                this.activInstitutionenForGemeindeList = response;
             });
     }
 
@@ -570,17 +586,28 @@ export default class GesuchModelManager {
         if (this.activInstitutionenList === undefined) {
             this.activInstitutionenList = []; // init empty while we wait for promise
             this.updateActiveInstitutionenList();
-
         }
-
         return this.activInstitutionenList;
+    }
+
+    public getActiveInstitutionenForGemeindeList(): Array<TSInstitutionStammdaten> {
+        if (this.activInstitutionenForGemeindeList === undefined) {
+            this.activInstitutionenForGemeindeList = []; // init empty while we wait for promise
+            this.updateActiveInstitutionenForGemeindeList();
+        }
+        return this.activInstitutionenForGemeindeList;
     }
 
     public resetActiveInstitutionenList(): void {
         // Der Cache muss geloescht werden, damit die Institutionen beim nächsten Aufruf neu geladen werden
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert
-                                                                                               // werden
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll();
         this.updateActiveInstitutionenList();
+    }
+
+    public resetActiveInstitutionenForGemeindeList(): void {
+        // Der Cache muss geloescht werden, damit die Institutionen beim nächsten Aufruf neu geladen werden
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();
+        this.updateActiveInstitutionenForGemeindeList();
     }
 
     public getStammdatenToWorkWith(): TSGesuchstellerContainer {
@@ -1444,7 +1471,7 @@ export default class GesuchModelManager {
 
         if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
-            const gesuchReadonly = isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
+            const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             return gesuchReadonly || periodeReadonly;
         }
 
@@ -1594,7 +1621,7 @@ export default class GesuchModelManager {
      * erkannt.
      */
     public isDefaultTagesschuleAllowed(instStamm: TSInstitutionStammdaten): boolean {
-        if (instStamm.id === '199ac4a1-448f-4d4c-b3a6-5aee21f89613') {
+        if (instStamm.id === CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE) {
             return !(this.gemeindeKonfiguration.hasTagesschulenAnmeldung());
         }
         return true;

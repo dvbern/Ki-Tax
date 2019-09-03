@@ -133,25 +133,6 @@ describe('institutionStammdatenRS', () => {
                 checkFieldValues(returnedInstitutionStammdaten[1], institutionStammdatenRestArray[1]);
             });
         });
-
-        describe('getAllInstitutionStammdatenByDate', () => {
-            it('should return all InstitutionStammdaten im gegebenen Datum', () => {
-                const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
-                $httpBackend.expectGET(`${institutionStammdatenRS.serviceURL}/date?date=${DateUtil.momentToLocalDate(
-                    today)}`)
-                    .respond(institutionStammdatenRestArray);
-
-                let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
-                institutionStammdatenRS.getAllInstitutionStammdatenByDate(today).then(result => {
-                    returnedInstitutionStammdaten = result;
-                });
-                $httpBackend.flush();
-                expect(returnedInstitutionStammdaten).toBeDefined();
-                expect(returnedInstitutionStammdaten.length).toEqual(2);
-                checkFieldValues(returnedInstitutionStammdaten[0], institutionStammdatenRestArray[0]);
-                checkFieldValues(returnedInstitutionStammdaten[1], institutionStammdatenRestArray[1]);
-            });
-        });
     });
 
     function checkFieldValues(

@@ -1515,6 +1515,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionStammdatenFerieninsel jaxInstStammdatenFerieninsel =
 			new JaxInstitutionStammdatenFerieninsel();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
+		jaxInstStammdatenFerieninsel.setGemeinde(gemeindeToJAX(persistedInstStammdatenFerieninsel.getGemeinde()));
 		jaxInstStammdatenFerieninsel.setAusweichstandortFruehlingsferien(persistedInstStammdatenFerieninsel.getAusweichstandortFruehlingsferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortHerbstferien(persistedInstStammdatenFerieninsel.getAusweichstandortHerbstferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortSommerferien(persistedInstStammdatenFerieninsel.getAusweichstandortSommerferien());
@@ -1535,6 +1536,16 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdatenFerieninselJAXP,
 			institutionStammdatenFerieninsel
 		);
+
+		// Die Gemeinde muss neu von der DB gelesen werden
+		String gemeindeID = institutionStammdatenFerieninselJAXP.getGemeinde().getId();
+		Objects.requireNonNull(gemeindeID);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeID)
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"findGemeinde",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeID));
+		institutionStammdatenFerieninsel.setGemeinde(gemeinde);
 
 		institutionStammdatenFerieninsel.setAusweichstandortFruehlingsferien(institutionStammdatenFerieninselJAXP.getAusweichstandortFruehlingsferien());
 		institutionStammdatenFerieninsel.setAusweichstandortHerbstferien(institutionStammdatenFerieninselJAXP.getAusweichstandortHerbstferien());
@@ -2201,7 +2212,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public <T extends AbstractPlatz> T abstractPlatzToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
+	private <T extends AbstractPlatz> T abstractPlatzToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
 	 @Nonnull final T betreuung) {
 		requireNonNull(betreuung);
 		requireNonNull(betreuungJAXP);
@@ -2456,6 +2467,15 @@ public class JaxBConverter extends AbstractConverter {
 		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
+	public <T extends AbstractPlatz> T platzToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
+		if (betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+			return (T) anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
+		} else if (betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.FERIENINSEL) {
+			return (T) anmeldungFerieninselToStoreableEntity(betreuungJAXP);
+		}
+		return (T) betreuungToStoreableEntity(betreuungJAXP);
+	}
+
 	public void setBetreuungInbetreuungsAbweichungen(
 		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
 		final Betreuung betreuung) {
@@ -2688,7 +2708,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public JaxBetreuung platzToJAX(@Nonnull final AbstractPlatz betreuungFromServer) {
+	private JaxBetreuung abstractPlatzToJAX(@Nonnull final AbstractPlatz betreuungFromServer) {
 		final JaxBetreuung jaxBetreuung = new JaxBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(betreuungFromServer, jaxBetreuung);
 		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
@@ -2710,7 +2730,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxBetreuung anmeldungTagesschuleToJAX(@Nonnull final AnmeldungTagesschule betreuungFromServer) {
-		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		JaxBetreuung jaxBetreuung = abstractPlatzToJAX(betreuungFromServer);
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
@@ -2721,7 +2741,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxBetreuung anmeldungFerieninselToJAX(@Nonnull final AnmeldungFerieninsel betreuungFromServer) {
-		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		JaxBetreuung jaxBetreuung = abstractPlatzToJAX(betreuungFromServer);
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setBelegungFerieninsel(belegungFerieninselToJAX(betreuungFromServer.getBelegungFerieninsel()));
@@ -2739,7 +2759,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxBetreuung betreuungToJAX(@Nonnull final Betreuung betreuungFromServer) {
-		JaxBetreuung jaxBetreuung = platzToJAX(betreuungFromServer);
+		JaxBetreuung jaxBetreuung = abstractPlatzToJAX(betreuungFromServer);
 		jaxBetreuung.setGrundAblehnung(betreuungFromServer.getGrundAblehnung());
 		jaxBetreuung.setDatumAblehnung(betreuungFromServer.getDatumAblehnung());
 		jaxBetreuung.setDatumBestaetigung(betreuungFromServer.getDatumBestaetigung());
@@ -2754,6 +2774,16 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
 		return jaxBetreuung;
+	}
+
+	@Nonnull
+	public <T extends AbstractPlatz> JaxBetreuung platzToJAX(@Nonnull final T platz) {
+		if (platz.getBetreuungsangebotTyp().isTagesschule()) {
+			return anmeldungTagesschuleToJAX((AnmeldungTagesschule) platz);
+		} else if (platz.getBetreuungsangebotTyp().isFerieninsel()) {
+			return anmeldungFerieninselToJAX((AnmeldungFerieninsel) platz);
+		}
+		return betreuungToJAX((Betreuung) platz);
 	}
 
 	@Nonnull
