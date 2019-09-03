@@ -204,7 +204,7 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 	public int compareTo(@Nonnull ModulTagesschule o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getInstitutionStammdatenTagesschule(), o.getInstitutionStammdatenTagesschule());
-		builder.append(this.getGesuchsperiode(), o.getGesuchsperiode());
+		builder.append(this.getGesuchsperiode().getId(), o.getGesuchsperiode().getId());
 		builder.append(this.getZeitVon(), o.getZeitVon());
 		builder.append(this.getZeitBis(), o.getZeitBis());
 		builder.append(this.getWochentag(), o.getWochentag());
