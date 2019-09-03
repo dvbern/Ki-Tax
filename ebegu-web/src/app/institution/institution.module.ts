@@ -25,6 +25,7 @@ import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-b
 import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
+import {ExternalClientAssignmentComponent} from './external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './external-client-multiselect/external-client-multiselect.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
@@ -51,6 +52,7 @@ import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschul
         EditInstitutionFerieninselComponent,
         ViewInstitutionFerieninselComponent,
         ExternalClientMultiselectComponent,
+        ExternalClientAssignmentComponent,
     ],
     entryComponents: [
         InstitutionListComponent,

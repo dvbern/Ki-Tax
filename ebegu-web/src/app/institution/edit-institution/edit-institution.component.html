@@ -33,12 +33,6 @@
             [allowedRoles]="getMitarbeiterVisibleRoles()">
         </dv-stammdaten-header>
 
-        <div *ngIf="externalClients">
-            <dv-external-client-multiselect
-                [externalClients]="externalClients">
-            </dv-external-client-multiselect>
-        </div>
-
         <div class="dv-content">
             <fieldset *ngIf="editMode; else showViewMode">
                 <div class="viewSubTitle">
@@ -232,6 +226,12 @@
                             </div>
                         </div>
                     </div>
+
+                    <div *ngIf="externalClients" class="col-sm-6">
+                        <dv-external-client-multiselect
+                            [externalClients]="externalClients">
+                        </dv-external-client-multiselect>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -248,9 +248,9 @@
                 </div>
 
                 <div *ngIf="isBetreuungsgutschein()" ngForm="institution_betreuungsgutscheine">
-					<dv-edit-institution-betreuungsgutscheine
-						[stammdaten]="stammdaten">
-					</dv-edit-institution-betreuungsgutscheine>
+                    <dv-edit-institution-betreuungsgutscheine
+                        [stammdaten]="stammdaten">
+                    </dv-edit-institution-betreuungsgutscheine>
                 </div>
 
                 <div *ngIf="isTagesschule()" ngForm="institution_tagesschule">
@@ -310,6 +310,12 @@
                             </div>
                         </div>
 
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <dv-external-client-assignment [externalClients]="externalClients">
+                                </dv-external-client-assignment>
+                            </div>
+                        </div>
                     </div>
 
                 </fieldset>
