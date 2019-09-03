@@ -109,6 +109,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution createInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
+		if (institution.getMandant() == null) {
+			institution.setMandant(requireNonNull(principalBean.getMandant()));
+		}
+
 		return persistence.persist(institution);
 	}
 
