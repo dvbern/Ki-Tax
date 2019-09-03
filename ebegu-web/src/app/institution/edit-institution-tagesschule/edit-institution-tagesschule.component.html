@@ -65,35 +65,32 @@
                 </div>
             </div>
 
-            <div *ngFor="let modul of getModulTagesschuleNamen()">
+            <div *ngFor="let modul of getModuleTagesschuleForGesuchsperiode(gp.id); trackBy:modul?.uniqueId()">
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label translate>{{modul}}</label>
+                            <label translate>{{modul.modulTagesschuleName}}</label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input id="pickerVon{{modul}}" type="text" name="pickerVon{{modul}}" #pickerVon="ngModel"
-                                   [(ngModel)]="getModulTagesschule(modul, gp.id).zeitVon"
-                                   [required]="getModulTagesschule(modul, gp.id).zeitBis"
-                                   [maxlength]="26" class="form-control" required
+                            <input type="text" id="zeitVon{{modul.uniqueId()}}" name="zeitVon{{modul.uniqueId()}}"
+                                    [(ngModel)]="modul.zeitVon"
+                                   [required]="modul.zeitBis"
                                    placeholder="HH:mm">
-                            <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <input id="pickerBis{{modul}}" type="text" name="pickerBis{{modul}}" #pickerBis="ngModel"
-                                   [(ngModel)]="getModulTagesschule(modul, gp.id).zeitBis"
-                                   [required]="getModulTagesschule(modul, gp.id).zeitVon"
-                                   [maxlength]="26" class="form-control" required
+                            <input type="text" id="zeitBis{{modul.uniqueId()}}" name="zeitBis{{modul.uniqueId()}}"
+                                   [(ngModel)]="modul.zeitBis"
+                                   [required]="modul.zeitVon"
                                    placeholder="HH:mm">
-                            <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
                         </div>
                     </div>
                 </div>
             </div>
+
         </tab-body>
     </dv-accordion-tab>
 </dv-accordion>

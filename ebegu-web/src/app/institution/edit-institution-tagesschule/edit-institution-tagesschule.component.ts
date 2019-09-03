@@ -72,22 +72,32 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
     }
 
-    public getModulTagesschuleNamen(): TSModulTagesschuleName[] {
-        return getTSModulTagesschuleNameValues();
+    public getModuleTagesschuleForGesuchsperiode(gesuchsperiodeId: string): TSModulTagesschule[] {
+        let elemente: TSModulTagesschule[] = [];
+
+        let map = this.moduleProGesuchsperiode.get(gesuchsperiodeId);
+        if (!map) {
+            return [];
+        }
+        map.forEach(el => {
+            elemente.push(el);
+        })
+        return elemente;
     }
 
-    public getModulTagesschule(modulname: TSModulTagesschuleName, gesuchsperiodeId: string) {
+    private getModulTagesschule(modulname: TSModulTagesschuleName, gesuchsperiodeId: string) {
         if (!this.moduleProGesuchsperiode.has(gesuchsperiodeId)) {
             this.moduleProGesuchsperiode.set(gesuchsperiodeId, new Map<TSModulTagesschuleName, TSModulTagesschule>());
         }
-        let modul = this.moduleProGesuchsperiode.get(gesuchsperiodeId).get(modulname);
+        let map = this.moduleProGesuchsperiode.get(gesuchsperiodeId);
+        let modul = map.get(modulname);
         if (!modul) {
             // Gespeichert wird das Modul dann fuer jeden Wochentag. Als Vertreter wird der Montag ausgefüllt
             modul = new TSModulTagesschule();
             modul.gesuchsperiodeId = gesuchsperiodeId;
             modul.wochentag = TSDayOfWeek.MONDAY;
             modul.modulTagesschuleName = modulname;
-            this.moduleProGesuchsperiode.get(gesuchsperiodeId).set(modulname, modul);
+            map.set(modulname, modul);
         }
         return modul;
     }
@@ -99,12 +109,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             if (this.stammdaten.institutionStammdatenTagesschule
                 && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule
                 && this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule.length > 0) {
-                console.warn('existing modules from server: ',
-                    this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
                 this.fillModulTagesschuleMap(this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
             }
         } else {
-            console.warn('create new empty modules');
             this.fillModulTagesschuleMap([]);
         }
     }
@@ -123,7 +130,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                 } else {
                     this.getModulTagesschule(modulname, gp.id);
                 }
-
             });
         });
     }
