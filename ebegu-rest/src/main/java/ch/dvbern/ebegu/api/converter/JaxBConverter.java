@@ -1643,9 +1643,13 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		modulTagesschule.setGesuchsperiode(gesuchsperiode.get());
 		modulTagesschule.setModulTagesschuleName(jaxModulTagesschule.getModulTagesschuleName());
+		modulTagesschule.setBezeichnung(jaxModulTagesschule.getBezeichnung());
 		modulTagesschule.setWochentag(jaxModulTagesschule.getWochentag());
 		modulTagesschule.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschule.getZeitVon()));
 		modulTagesschule.setZeitBis(hoursAndMinutesToDate(jaxModulTagesschule.getZeitBis()));
+		modulTagesschule.setVerpflegungskosten(jaxModulTagesschule.getVerpflegungskosten());
+		modulTagesschule.setIntervall(jaxModulTagesschule.getIntervall());
+		modulTagesschule.setWirdPaedagogischBetreut(jaxModulTagesschule.isWirdPaedagogischBetreut());
 
 		return modulTagesschule;
 	}
@@ -2829,9 +2833,13 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(modulTagesschule, jaxModulTagesschule);
 		jaxModulTagesschule.setGesuchsperiodeId(modulTagesschule.getGesuchsperiode().getId());
 		jaxModulTagesschule.setModulTagesschuleName(modulTagesschule.getModulTagesschuleName());
+		jaxModulTagesschule.setBezeichnung(modulTagesschule.getBezeichnung());
 		jaxModulTagesschule.setWochentag(modulTagesschule.getWochentag());
 		jaxModulTagesschule.setZeitVon(dateToHoursAndMinutes(modulTagesschule.getZeitVon()));
 		jaxModulTagesschule.setZeitBis(dateToHoursAndMinutes(modulTagesschule.getZeitBis()));
+		jaxModulTagesschule.setVerpflegungskosten(modulTagesschule.getVerpflegungskosten());
+		jaxModulTagesschule.setIntervall(modulTagesschule.getIntervall());
+		jaxModulTagesschule.setWirdPaedagogischBetreut(modulTagesschule.isWirdPaedagogischBetreut());
 
 		return jaxModulTagesschule;
 	}
@@ -4171,8 +4179,12 @@ public class JaxBConverter extends AbstractConverter {
 							modulTagesschule.setGesuchsperiodeId(res.getGesuchsperiodeId());
 							modulTagesschule.setWochentag(dayOfWeek);
 							modulTagesschule.setModulTagesschuleName(res.getModulTagesschuleName());
+							modulTagesschule.setBezeichnung(res.getBezeichnung());
 							modulTagesschule.setZeitVon(res.getZeitVon());
 							modulTagesschule.setZeitBis(res.getZeitBis());
+							modulTagesschule.setVerpflegungskosten(res.getVerpflegungskosten());
+							modulTagesschule.setIntervall(res.getIntervall());
+							modulTagesschule.setWirdPaedagogischBetreut(res.isWirdPaedagogischBetreut());
 
 							return modulTagesschule;
 						})

@@ -15,14 +15,17 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 
 /**
@@ -44,10 +47,23 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 	private ModulTagesschuleName modulTagesschuleName;
 
 	@NotNull @Nonnull
+	private String bezeichnung;
+
+	@NotNull @Nonnull
 	private String zeitVon;
 
 	@NotNull @Nonnull
 	private String zeitBis;
+
+	@Nullable
+	private BigDecimal verpflegungskosten;
+
+	@NotNull @Nonnull
+	private ModulTagesschuleIntervall intervall;
+
+	@NotNull @Nonnull
+	private boolean wirdPaedagogischBetreut;
+
 
 	@Nonnull
 	public String getGesuchsperiodeId() {
@@ -92,5 +108,40 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 
 	public void setZeitBis(@Nonnull String bis) {
 		this.zeitBis = bis;
+	}
+
+	@Nonnull
+	public String getBezeichnung() {
+		return bezeichnung;
+	}
+
+	public void setBezeichnung(@Nonnull String bezeichnung) {
+		this.bezeichnung = bezeichnung;
+	}
+
+	@Nullable
+	public BigDecimal getVerpflegungskosten() {
+		return verpflegungskosten;
+	}
+
+	public void setVerpflegungskosten(@Nullable BigDecimal verpflegungskosten) {
+		this.verpflegungskosten = verpflegungskosten;
+	}
+
+	@Nonnull
+	public ModulTagesschuleIntervall getIntervall() {
+		return intervall;
+	}
+
+	public void setIntervall(@Nonnull ModulTagesschuleIntervall intervall) {
+		this.intervall = intervall;
+	}
+
+	public boolean isWirdPaedagogischBetreut() {
+		return wirdPaedagogischBetreut;
+	}
+
+	public void setWirdPaedagogischBetreut(boolean wirdPaedagogischBetreut) {
+		this.wirdPaedagogischBetreut = wirdPaedagogischBetreut;
 	}
 }

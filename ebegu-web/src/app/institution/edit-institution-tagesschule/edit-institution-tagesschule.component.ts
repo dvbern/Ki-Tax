@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
@@ -87,6 +88,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             modul.gesuchsperiodeId = gesuchsperiodeId;
             modul.wochentag = TSDayOfWeek.MONDAY;
             modul.modulTagesschuleName = modulname;
+            modul.bezeichnung = 'Testmodul';
+            modul.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
+            modul.wirdPaedagogischBetreut = true;
             this.moduleProGesuchsperiode.get(gesuchsperiodeId).set(modulname, modul);
         }
         return modul;

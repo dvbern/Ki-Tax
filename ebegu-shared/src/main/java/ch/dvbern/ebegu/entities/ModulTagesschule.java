@@ -15,11 +15,13 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -29,6 +31,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 import ch.dvbern.ebegu.validators.CheckTimeRange;
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -62,7 +65,11 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 	@Enumerated(value = EnumType.STRING)
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private ModulTagesschuleName modulTagesschuleName;
+	private ModulTagesschuleName modulTagesschuleName = ModulTagesschuleName.DYNAMISCH;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private String bezeichnung;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -71,6 +78,20 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private LocalTime zeitBis;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal verpflegungskosten;
+
+	@Enumerated(value = EnumType.STRING)
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private ModulTagesschuleIntervall intervall = ModulTagesschuleIntervall.WOECHENTLICH;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private boolean wirdPaedagogischBetreut = false;
+
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -145,6 +166,40 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
+	@Nonnull
+	public String getBezeichnung() {
+		return bezeichnung;
+	}
+
+	public void setBezeichnung(@Nonnull String bezeichnung) {
+		this.bezeichnung = bezeichnung;
+	}
+
+	public BigDecimal getVerpflegungskosten() {
+		return verpflegungskosten;
+	}
+
+	public void setVerpflegungskosten(BigDecimal verpflegungskosten) {
+		this.verpflegungskosten = verpflegungskosten;
+	}
+
+	@Nonnull
+	public ModulTagesschuleIntervall getIntervall() {
+		return intervall;
+	}
+
+	public void setIntervall(@Nonnull ModulTagesschuleIntervall intervall) {
+		this.intervall = intervall;
+	}
+
+	public boolean isWirdPaedagogischBetreut() {
+		return wirdPaedagogischBetreut;
+	}
+
+	public void setWirdPaedagogischBetreut(boolean wirdPaedagogischBetreut) {
+		this.wirdPaedagogischBetreut = wirdPaedagogischBetreut;
+	}
+
 	@Override
 	public int compareTo(@Nonnull ModulTagesschule o) {
 		CompareToBuilder builder = new CompareToBuilder();
@@ -163,8 +218,12 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 		copy.setGesuchsperiode(gesuchsperiode);
 		copy.setWochentag(this.getWochentag());
 		copy.setModulTagesschuleName(this.getModulTagesschuleName());
+		copy.setBezeichnung(this.getBezeichnung());
 		copy.setZeitVon(this.getZeitVon());
 		copy.setZeitBis(this.getZeitBis());
+		copy.setVerpflegungskosten(this.getVerpflegungskosten());
+		copy.setIntervall(this.getIntervall());
+		copy.setWirdPaedagogischBetreut(this.isWirdPaedagogischBetreut());
 		return copy;
 	}
 }

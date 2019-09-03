@@ -3131,9 +3131,13 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(modulTagesschuleTS, modulFromServer);
             modulTagesschuleTS.gesuchsperiodeId = modulFromServer.gesuchsperiodeId;
             modulTagesschuleTS.modulTagesschuleName = modulFromServer.modulTagesschuleName;
+            modulTagesschuleTS.bezeichnung = modulFromServer.bezeichnung;
             modulTagesschuleTS.wochentag = modulFromServer.wochentag;
             modulTagesschuleTS.zeitVon = modulFromServer.zeitVon;
             modulTagesschuleTS.zeitBis = modulFromServer.zeitBis;
+            modulTagesschuleTS.verpflegungskosten = modulFromServer.verpflegungskosten;
+            modulTagesschuleTS.intervall = modulFromServer.intervall;
+            modulTagesschuleTS.wirdPaedagogischBetreut = modulFromServer.wirdPaedagogischBetreut;
             return modulTagesschuleTS;
         }
         return undefined;
@@ -3153,9 +3157,13 @@ export default class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restModul, modulTagesschuleTS);
             restModul.gesuchsperiodeId = modulTagesschuleTS.gesuchsperiodeId;
             restModul.modulTagesschuleName = modulTagesschuleTS.modulTagesschuleName;
+            restModul.bezeichnung = modulTagesschuleTS.bezeichnung;
             restModul.wochentag = modulTagesschuleTS.wochentag;
             restModul.zeitVon = modulTagesschuleTS.zeitVon;
             restModul.zeitBis = modulTagesschuleTS.zeitBis;
+            restModul.verpflegungskosten = modulTagesschuleTS.verpflegungskosten;
+            restModul.intervall = modulTagesschuleTS.intervall;
+            restModul.wirdPaedagogischBetreut = modulTagesschuleTS.wirdPaedagogischBetreut;
             return restModul;
         }
         return undefined;

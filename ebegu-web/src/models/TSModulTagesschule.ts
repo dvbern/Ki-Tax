@@ -14,6 +14,7 @@
  */
 
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
+import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
@@ -22,8 +23,12 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
     public gesuchsperiodeId: string;
     public wochentag: TSDayOfWeek;
     public modulTagesschuleName: TSModulTagesschuleName;
+    public bezeichnung: string;
     public zeitVon: string;
     public zeitBis: string;
+    public verpflegungskosten: number;
+    public intervall: TSModulTagesschuleIntervall;
+    public wirdPaedagogischBetreut: boolean;
 
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
 
@@ -50,6 +55,8 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
         return modulTagesschule
             && this.wochentag === modulTagesschule.wochentag
             && this.modulTagesschuleName === modulTagesschule.modulTagesschuleName
+            && this.bezeichnung === modulTagesschule.bezeichnung
+            && this.wochentag === modulTagesschule.wochentag
             && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId
     }
 }
