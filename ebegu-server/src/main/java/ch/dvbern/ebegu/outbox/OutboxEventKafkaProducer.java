@@ -32,8 +32,10 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -65,7 +67,9 @@ public class OutboxEventKafkaProducer {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<OutboxEvent> query = cb.createQuery(OutboxEvent.class);
-		query.from(OutboxEvent.class);
+		Root<OutboxEvent> root = query.from(OutboxEvent.class);
+
+		query.orderBy(cb.asc(root.get(AbstractEntity_.timestampErstellt)));
 
 		List<OutboxEvent> events = entityManager.createQuery(query)
 			// lock until we are done
