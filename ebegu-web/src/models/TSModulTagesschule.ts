@@ -59,4 +59,8 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
             && this.wochentag === modulTagesschule.wochentag
             && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId
     }
+
+    public uniqueId(): string {
+        return this.id + this.gesuchsperiodeId + this.modulTagesschuleName + this.wochentag;
+    }
 }

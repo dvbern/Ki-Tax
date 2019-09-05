@@ -273,7 +273,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public mustFinanzielleSituationBeValidated(): boolean {
         // Die FinSit muss auch bei Sozialhilfe geprueft werden!
         return this.gesuchModelManager.isFinanzielleSituationRequired()
-            || this.getGesuch().familiensituationContainer.familiensituationJA.sozialhilfeBezueger;
+            || (this.getGesuch() && this.getGesuch().familiensituationContainer.familiensituationJA.sozialhilfeBezueger);
     }
 
     public isBegleitschreibenVisible(): boolean {

@@ -15,10 +15,12 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<fieldset>
+
 <!-- Gemeinde -->
 <div class="row">
     <div class="col-sm-6">
-        <div class="form-group">
+        <div class="form-group" *ngIf="editMode">
             <h3 translate for="gemeinde">GEMEINDE</h3>
             <mat-select [(ngModel)]="stammdaten.institutionStammdatenTagesschule.gemeinde"
                         [compareWith]="compareGemeinde"
@@ -31,6 +33,10 @@
                 </mat-option>
             </mat-select>
             <dv-error-messages [errorObject]="gemeinde?.errors" inputId="gemeinde"></dv-error-messages>
+        </div>
+        <div class="form-group" *ngIf="!editMode">
+            <h3 translate for="gemeinde">GEMEINDE</h3>
+            <p>{{stammdaten.institutionStammdatenTagesschule.gemeinde.name}}</p>
         </div>
     </div>
 </div>
@@ -65,35 +71,63 @@
                 </div>
             </div>
 
-            <div *ngFor="let modul of getModulTagesschuleNamen()">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label translate>{{modul}}</label>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <input id="pickerVon{{modul}}" type="text" name="pickerVon{{modul}}" #pickerVon="ngModel"
-                                   [(ngModel)]="getModulTagesschule(modul, gp.id).zeitVon"
-                                   [required]="getModulTagesschule(modul, gp.id).zeitBis"
-                                   [maxlength]="26" class="form-control" required
-                                   placeholder="HH:mm">
-                            <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <input id="pickerBis{{modul}}" type="text" name="pickerBis{{modul}}" #pickerBis="ngModel"
-                                   [(ngModel)]="getModulTagesschule(modul, gp.id).zeitBis"
-                                   [required]="getModulTagesschule(modul, gp.id).zeitVon"
-                                   [maxlength]="26" class="form-control" required
-                                   placeholder="HH:mm">
-                            <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
+            <div *ngIf="editMode">
+				<div *ngFor="let modul of getModuleTagesschuleForGesuchsperiodeToEdit(gp.id); trackBy:modul?.uniqueId()">
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label translate>{{modul.modulTagesschuleName}}</label>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<input type="text" id="zeitVon{{modul.uniqueId()}}" name="zeitVon{{modul.uniqueId()}}"
+										[(ngModel)]="modul.zeitVon"
+									   [required]="modul.zeitBis"
+									   placeholder="HH:mm">
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<input type="text" id="zeitBis{{modul.uniqueId()}}" name="zeitBis{{modul.uniqueId()}}"
+									   [(ngModel)]="modul.zeitBis"
+									   [required]="modul.zeitVon"
+									   placeholder="HH:mm">
+							</div>
+						</div>
+					</div>
+				</div>
             </div>
+
+            <div *ngIf="!editMode">
+				<div *ngFor="let modul of getModuleTagesschuleForGesuchsperiodePersisted(gp.id); trackBy:modul?.uniqueId()">
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label translate>{{modul.modulTagesschuleName}}</label>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>{{modul.zeitVon}}</label>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>{{modul.zeitBis}}</label>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label translate>{{modul.wochentag}}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+
         </tab-body>
     </dv-accordion-tab>
 </dv-accordion>
+
+</fieldset>

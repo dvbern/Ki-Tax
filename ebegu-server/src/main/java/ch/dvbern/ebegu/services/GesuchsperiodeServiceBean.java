@@ -158,14 +158,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		// Alle Statusuebergaenge werden geloggt
 		logStatusChange(gesuchsperiode, statusBisher);
 		// Superadmin darf alles
-		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
-			if (!isStatusUebergangValid(statusBisher, gesuchsperiode.getStatus())) {
-				throw new EbeguRuntimeException(
-					"saveGesuchsperiode",
-					ErrorCodeEnum.ERROR_GESUCHSPERIODE_INVALID_STATUSUEBERGANG,
-					statusBisher,
-					gesuchsperiode.getStatus());
-			}
+		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)
+				&& !isStatusUebergangValid(statusBisher, gesuchsperiode.getStatus())) {
+			throw new EbeguRuntimeException(
+				"saveGesuchsperiode",
+				ErrorCodeEnum.ERROR_GESUCHSPERIODE_INVALID_STATUSUEBERGANG,
+				statusBisher,
+				gesuchsperiode.getStatus());
 		}
 		// Falls es ein Statuswechsel war, und der neue Status ist AKTIV -> Mail an alle Gesuchsteller schicken
 		// Nur, wenn die Gesuchsperiode noch nie auf aktiv geschaltet war.
@@ -180,14 +179,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				gesuchsperiode.setDatumAktiviert(LocalDate.now());
 			}
 		}
-		if (GesuchsperiodeStatus.GESCHLOSSEN == gesuchsperiode.getStatus()) {
-			// Prüfen, dass ALLE Gesuche dieser Periode im Status "Verfügt" oder "Schulamt" sind. Sind noch
-			// Gesuce in Bearbeitung, oder in Beschwerde etc. darf nicht geschlossen werden!
-			if (!gesuchService.canGesuchsperiodeBeClosed(gesuchsperiode)) {
-				throw new EbeguRuntimeException(
-					"saveGesuchsperiode",
-					ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_CLOSED);
-			}
+		// Prüfen, dass ALLE Gesuche dieser Periode im Status "Verfügt" oder "Schulamt" sind. Sind noch
+		// Gesuce in Bearbeitung, oder in Beschwerde etc. darf nicht geschlossen werden!
+		if (GesuchsperiodeStatus.GESCHLOSSEN == gesuchsperiode.getStatus()
+				&& !gesuchService.canGesuchsperiodeBeClosed(gesuchsperiode)) {
+			throw new EbeguRuntimeException(
+				"saveGesuchsperiode",
+				ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_CLOSED);
 		}
 	}
 

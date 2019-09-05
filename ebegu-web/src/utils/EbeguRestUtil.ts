@@ -1242,6 +1242,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenFerieninsel) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenFerieninsel,
                 institutionStammdatenFerieninsel);
+            restInstitutionStammdatenFerieninsel.gemeinde =
+                this.gemeindeToRestObject({}, institutionStammdatenFerieninsel.gemeinde);
             restInstitutionStammdatenFerieninsel.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninsel.ausweichstandortFruehlingsferien;
             restInstitutionStammdatenFerieninsel.ausweichstandortHerbstferien =
@@ -1262,6 +1264,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenFerieninselFromServer) {
             this.parseDateRangeEntity(institutionStammdatenFerieninselTS,
                 institutionStammdatenFerieninselFromServer);
+            institutionStammdatenFerieninselTS.gemeinde =
+                this.parseGemeinde(new TSGemeinde(), institutionStammdatenFerieninselFromServer.gemeinde);
             institutionStammdatenFerieninselTS.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninselFromServer.ausweichstandortFruehlingsferien;
             institutionStammdatenFerieninselTS.ausweichstandortHerbstferien =
@@ -1282,7 +1286,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenTagesschule) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenTagesschule,
                 institutionStammdatenTagesschule);
-            restInstitutionStammdatenTagesschule.gemeinde = this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
+            restInstitutionStammdatenTagesschule.gemeinde =
+                this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
             restInstitutionStammdatenTagesschule.moduleTagesschule =
                 this.moduleTagesschuleArrayToRestObject(institutionStammdatenTagesschule.moduleTagesschule);
             return restInstitutionStammdatenTagesschule;
@@ -1297,7 +1302,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenTagesschuleFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTagesschuleTS,
                 institutionStammdatenTagesschuleFromServer);
-            institutionStammdatenTagesschuleTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
+            institutionStammdatenTagesschuleTS.gemeinde =
+                this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
             institutionStammdatenTagesschuleTS.moduleTagesschule =
                 this.parseModuleTagesschuleArray(institutionStammdatenTagesschuleFromServer.moduleTagesschule);
             return institutionStammdatenTagesschuleTS;
@@ -1745,6 +1751,8 @@ export default class EbeguRestUtil {
 
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
+        restAngebot.betreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+        restAngebot.betreuung.vertrag = true;
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;

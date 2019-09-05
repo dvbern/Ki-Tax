@@ -26,9 +26,6 @@ import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschul
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
-import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
-import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
-import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
@@ -48,22 +45,16 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
         EditInstitutionComponent,
         AddInstitutionComponent,
         EditInstitutionBetreuungsgutscheineComponent,
-        ViewInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
-        ViewInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
-        ViewInstitutionFerieninselComponent,
     ],
     entryComponents: [
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
         EditInstitutionBetreuungsgutscheineComponent,
-        ViewInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
-        ViewInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
-        ViewInstitutionFerieninselComponent,
     ],
     providers: [],
 })
