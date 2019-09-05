@@ -211,8 +211,11 @@ export default class TSBenutzer {
         return rolePrefix() + this.currentBerechtigung.role;
     }
 
-    public getCurrentRole(): TSRole {
-        return this.currentBerechtigung.role;
+    public getCurrentRole(): TSRole | undefined {
+        if (this.currentBerechtigung) {
+            return this.currentBerechtigung.role;
+        }
+        return undefined;
     }
 
     public hasJustOneGemeinde(): boolean {

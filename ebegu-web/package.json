@@ -122,8 +122,8 @@
     "xml2js": "~0.4.17"
   },
   "engines": {
-    "node": "=10.13.0",
-    "npm": "=6.4.1"
+    "node": "=10.16.2",
+    "npm": "=6.9.0"
   },
   "dependencies": {
     "@angular/animations": "^7.2.15",
@@ -152,6 +152,7 @@
     "iban": "0.0.12",
     "ngx-guided-tour": "=1.1.2",
     "ngx-iban": "^2.3.0",
+    "ngx-material-timepicker": "^3.2.2",
     "randomcolor": "^0.5.4",
     "raven-js": "~3.27.0",
     "rxjs": "^6.5.2",

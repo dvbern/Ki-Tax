@@ -39,7 +39,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
@@ -83,8 +83,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 	@Inject
 	private Persistence persistence;
-	@Inject
-	private BetreuungService betreuungService;
 	@Inject
 	private KindService kindService;
 	@Inject
@@ -462,9 +460,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepName.VERFUEGEN == wizardStep.getWizardStepName()
 				&& WizardStepStatus.OK != wizardStep.getWizardStepStatus()) {
-				final List<Betreuung> betreuungenFromGesuch =
-					betreuungService.findAllBetreuungenFromGesuch(wizardStep.getGesuch().getId());
-				if (betreuungenFromGesuch.stream()
+				List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
+				if (allPlaetze
+					.stream()
 					.allMatch(betreuung -> betreuung.getBetreuungsstatus().isGeschlossen())) {
 					gesuchVerfuegen(wizardStep);
 				}
@@ -575,6 +573,18 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		wizardStep.setWizardStepStatus(getWizardStepStatusOkOrMutiert(wizardStep));
 	}
 
+	@Override
+	public void unsetWizardStepFreigabe(@NotNull String gesuchId) {
+		final List<WizardStep> wizardSteps = findWizardStepsFromGesuch(gesuchId);
+		WizardStep wizardStepFreigabe =
+			wizardSteps.stream()
+				.filter(step -> step.getWizardStepName() == WizardStepName.FREIGABE)
+				.findFirst()
+				.get();
+
+		wizardStepFreigabe.setWizardStepStatus(WizardStepStatus.WARTEN);
+	}
+
 	private WizardStepStatus getWizardStepStatusOkOrMutiert(WizardStep wizardStep) {
 		if (AntragTyp.MUTATION != wizardStep.getGesuch().getTyp()) {
 			// just to avoid doing the calculation for Gesuche that are not of Type Mutation if it is not needed
@@ -633,6 +643,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.FINANZIELLE_SITUATION == wizardStepName) {
 			if (gesuch.getGesuchsteller1() != null) {
 				relatedObjects.add(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+				relatedObjects.add(gesuch.extractFamiliensituation());
 			}
 			if (gesuch.getGesuchsteller2() != null) {
 				relatedObjects.add(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
@@ -854,8 +865,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private void checkStepStatusForBetreuung(@Nonnull WizardStep wizardStep, boolean changesBecauseOtherStates) {
-		final List<Betreuung> betreuungenFromGesuch =
-			betreuungService.findAllBetreuungenFromGesuch(wizardStep.getGesuch().getId());
+		List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
 		WizardStepStatus status;
 		if (changesBecauseOtherStates && wizardStep.getWizardStepStatus() != WizardStepStatus.MUTIERT) {
 			status = WizardStepStatus.OK;
@@ -863,10 +873,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			status = getWizardStepStatusOkOrMutiert(wizardStep);
 		}
 
-		if (betreuungenFromGesuch.size() <= 0) {
+		if (allPlaetze.size() <= 0) {
 			status = WizardStepStatus.NOK;
 		} else {
-			for (Betreuung betreuung : betreuungenFromGesuch) {
+			for (AbstractPlatz betreuung : allPlaetze) {
 				if (Betreuungsstatus.ABGEWIESEN == betreuung.getBetreuungsstatus()) {
 					status = WizardStepStatus.NOK;
 					break;
@@ -892,10 +902,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (wizardStep.getWizardStepName() == WizardStepName.EINKOMMENSVERSCHLECHTERUNG
 			|| wizardStep.getWizardStepName() == WizardStepName.FINANZIELLE_SITUATION) {
 
-			final List<Betreuung> betreuungenFromGesuch =
-				betreuungService.findAllBetreuungenFromGesuch(wizardStep.getGesuch().getId());
+			List<AbstractPlatz> allPlaetze = wizardStep.getGesuch().extractAllPlaetze();
 
-			BetreuungsangebotTyp dominantType = getDominantBetreuungsangebotTyp(betreuungenFromGesuch);
+			BetreuungsangebotTyp dominantType = getDominantBetreuungsangebotTyp(allPlaetze);
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
 			}
@@ -925,9 +934,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * KITA > TAGESSCHULE > FERINEINSEL
 	 */
 	@Nonnull
-	private BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<Betreuung> betreuungenFromGesuch) {
+	private BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<AbstractPlatz> betreuungenFromGesuch) {
 		BetreuungsangebotTyp dominantType = BetreuungsangebotTyp.FERIENINSEL; // less dominant type
-		for (Betreuung betreuung : betreuungenFromGesuch) {
+		for (AbstractPlatz betreuung : betreuungenFromGesuch) {
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
 				dominantType = BetreuungsangebotTyp.TAGESSCHULE;
 			}

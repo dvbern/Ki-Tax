@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,8 +49,12 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
@@ -60,6 +63,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -87,6 +91,9 @@ public class InstitutionResource {
 	private BenutzerService benutzerService;
 
 	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
@@ -97,8 +104,9 @@ public class InstitutionResource {
 	public Response createInstitution(
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
-		@Nonnull @NotNull @Valid @QueryParam("betreuung") String betreuungsangebot,
+		@Nonnull @NotNull @Valid @QueryParam("betreuung") BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
+		@Nullable @Valid @QueryParam("gemeindeId") String gemeindeId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -106,25 +114,27 @@ public class InstitutionResource {
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail);
+		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail, gemeindeId);
 
-		Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
-			.map(b -> {
-				if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
-					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
-					// an existing user cannot be used to create a new Institution
-					throw new EbeguRuntimeException(
-						KibonLogLevel.INFO,
-						"createInstitution",
-						ErrorCodeEnum.EXISTING_USER_MAIL,
-						adminMail);
-				}
+		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
+			Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+				.map(b -> {
+					if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
+						!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
+						// an existing user cannot be used to create a new Institution
+						throw new EbeguRuntimeException(
+							KibonLogLevel.INFO,
+							"createInstitution",
+							ErrorCodeEnum.EXISTING_USER_MAIL,
+							adminMail);
+					}
 
-				return b;
-			})
-			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
+					return b;
+				})
+				.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
-		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
+			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
+		}
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(InstitutionResource.class)
@@ -137,28 +147,57 @@ public class InstitutionResource {
 
 	private void initInstitutionStammdaten(
 		@Nonnull String stringDateBeguStart,
-		@Nonnull String betreuungsangebot,
+		@Nonnull BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull Institution persistedInstitution,
-		@Nonnull String adminMail
+		@Nonnull String adminMail,
+		@Nullable String gemeindeId
 	) {
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
+		Gemeinde gemeinde;
+		switch (betreuungsangebot) {
+		case KITA:
+		case TAGESFAMILIEN:
+			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(new InstitutionStammdatenBetreuungsgutscheine());
+			LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
+			DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
+			institutionStammdaten.setGueltigkeit(gueltigkeit);
+			break;
+		case TAGESSCHULE:
+			gemeinde = getGemeindeOrThrowException(gemeindeId);
+			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
+			stammdatenTS.setGemeinde(gemeinde);
+			institutionStammdaten.setInstitutionStammdatenTagesschule(stammdatenTS);
+			break;
+
+		case FERIENINSEL:
+			gemeinde = getGemeindeOrThrowException(gemeindeId);
+			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
+			stammdatenFI.setGemeinde(gemeinde);
+			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
+			break;
+		}
+
 		Adresse adresse = new Adresse();
 		adresse.setStrasse("");
 		adresse.setPlz("");
 		adresse.setOrt("");
 		institutionStammdaten.setAdresse(adresse);
-		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
-
-		if (institutionStammdaten.getBetreuungsangebotTyp() != BetreuungsangebotTyp.TAGESFAMILIEN) {
-			institutionStammdaten.setAnzahlPlaetze(BigDecimal.ZERO);
-		}
-
+		institutionStammdaten.setBetreuungsangebotTyp(betreuungsangebot);
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
-		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
-		DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
-		institutionStammdaten.setGueltigkeit(gueltigkeit);
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
+	}
+
+	@Nonnull
+	private Gemeinde getGemeindeOrThrowException(@Nullable String gemeindeId) {
+		if (gemeindeId == null) {
+			throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
+		}
+		Gemeinde gemeinde =
+			gemeindeService.findGemeinde(gemeindeId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
+		return gemeinde;
 	}
 
 	@ApiOperation(value = "Update a Institution in the database.", response = JaxInstitution.class)
@@ -215,23 +254,6 @@ public class InstitutionResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Find and return a list of Institution by the Traegerschaft as parameter",
-		responseContainer = "List", response = JaxInstitution.class)
-	@Nonnull
-	@GET
-	@Path("/traegerschaft/{traegerschaftId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitution> getAllInstitutionenFromTraegerschaft(
-		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId) {
-
-		requireNonNull(traegerschaftJAXPId.getId());
-		String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
-		return institutionService.getAllInstitutionenFromTraegerschaft(traegerschaftId).stream()
-			.map(institution -> converter.institutionToJAX(institution))
-			.collect(Collectors.toList());
-	}
-
 	@ApiOperation(value = "Find and return a list of all Institutionen",
 		responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
@@ -240,22 +262,6 @@ public class InstitutionResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxInstitution> getAllInstitutionen() {
 		return institutionService.getAllInstitutionen().stream()
-			.map(inst -> converter.institutionToJAX(inst))
-			.collect(Collectors.toList());
-	}
-
-	@ApiOperation(
-		value = "Find and return a list of all active Institutionen. An active Institution is a Institution where the "
-			+ "active flag is true",
-		responseContainer = "List",
-		response = JaxInstitution.class)
-	@Nonnull
-	@GET
-	@Path("/active")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitution> getAllActiveInstitutionen() {
-		return institutionService.getAllActiveInstitutionen().stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}
@@ -273,7 +279,8 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Institutionen in Status EINGELADEN", response = Boolean.class)
+	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Institutionen in Status "
+		+ "EINGELADEN", response = Boolean.class)
 	@Nonnull
 	@GET
 	@Path("/hasEinladungen/currentuser")
@@ -287,7 +294,8 @@ public class InstitutionResource {
 	}
 
 	@ApiOperation(
-		value = "Returns true, if the currently logged in Benutzer has any Institutionen which Stammdaten haven't been checked in the last 100 days",
+		value = "Returns true, if the currently logged in Benutzer has any Institutionen which Stammdaten haven't been"
+			+ " checked in the last 100 days",
 		response = Boolean.class)
 	@Nonnull
 	@GET

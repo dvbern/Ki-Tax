@@ -15,13 +15,23 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="dv-content">
+<div class="dv-content" *ngIf="stammdaten$ | async as stammdaten">
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-ts">
+            <dv-gemeinde-ts-konfiguration
+                [konfigurationsListe]="stammdaten.konfigurationsListe"
+                [gemeindeStatus]="stammdaten.gemeinde.status"
+                [editMode]="editMode">
+            </dv-gemeinde-ts-konfiguration>
         </fieldset>
     </div>
     <ng-template #viewModeTemplate>
         <fieldset>
+            <dv-gemeinde-ts-konfiguration
+                [konfigurationsListe]="stammdaten.konfigurationsListe"
+                [gemeindeStatus]="stammdaten.gemeinde.status"
+                [editMode]="editMode">
+            </dv-gemeinde-ts-konfiguration>
         </fieldset>
     </ng-template>
 </div>

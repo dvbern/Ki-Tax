@@ -403,7 +403,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      */
     private setBemerkungen(): void {
         const verfuegungen = this.getVerfuegenToWorkWith();
-        if (this.getBetreuung()
+        if (verfuegungen
+            && this.getBetreuung()
             && (this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT ||
                 this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)) {
             this.bemerkungen = verfuegungen.manuelleBemerkungen;

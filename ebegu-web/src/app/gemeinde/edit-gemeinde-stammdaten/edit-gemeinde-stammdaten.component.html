@@ -138,6 +138,49 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Konfiguration der Angebote -->
+                <div class="col-sm-6">
+
+                    <div class="form-group">
+                        <label class="md-no-float" translate for="begu_start_ID" *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
+
+                        <mat-checkbox id="angebotBG" name="angebotBG"
+                                      [(ngModel)]="stammdaten.gemeinde.angebotBG"
+                                      *ngIf="tageschuleEnabledForMandant"
+                                      [disabled]="!(isSuperadmin())">
+                            {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
+
+                        <div class="form-group" *ngIf="stammdaten.gemeinde.angebotBG">
+                            <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
+                                   [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
+                                   [min]="beguStartDatumMin"
+                                   [matDatepicker]="begu_start"
+                                   [disabled]="!(isSuperadmin())"
+                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                            <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                            <mat-datepicker #begu_start></mat-datepicker>
+                            <dv-error-messages inputid="begu_start_ID"
+                                               [errorObject]="bgStartDate.errors">
+                            </dv-error-messages>
+                        </div>
+
+                        <mat-checkbox id="angebotTS" name="angebotTS"
+                                      [(ngModel)]="stammdaten.gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
+                            {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
+
+                        <mat-checkbox id="angebotFI" name="angebotFI"
+                                      [(ngModel)]="stammdaten.gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
+                            {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
+
+                        <div class="dv-error-messages" *ngIf="showMessageKeinAngebotSelected">
+                            <span>{{'GEMEINDE_ANGEBOT_EMPTY_SELECTION' | translate}}</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -338,6 +381,15 @@
                         <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
                         <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
                         <p><a href="{{stammdaten.webseite}}" target="tah">{{stammdaten.webseite}}</a></p>
+                    </div>
+                </div>
+                <!-- Angebot -->
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <h3 translate>GEMEINDE_ANGEBOT</h3>
+                        <p *ngIf="stammdaten.gemeinde.angebotBG" translate>GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE</p>
+                        <p *ngIf="stammdaten.gemeinde.angebotTS" translate>GEMEINDE_ANGEBOT_TAGESSCHULE</p>
+                        <p *ngIf="stammdaten.gemeinde.angebotFI" translate>GEMEINDE_ANGEBOT_FERIENINSEL</p>
                     </div>
                 </div>
             </div>

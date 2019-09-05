@@ -45,6 +45,8 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -86,6 +88,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -144,6 +147,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
@@ -240,7 +245,7 @@ public final class TestDataUtil {
 		return adresse;
 	}
 
-	public static GesuchstellerContainer createDefaultGesuchstellerContainer(Gesuch gesuch) {
+	public static GesuchstellerContainer createDefaultGesuchstellerContainer() {
 		final GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
 		gesuchstellerContainer.addAdresse(createDefaultGesuchstellerAdresseContainer(gesuchstellerContainer));
 		gesuchstellerContainer.setGesuchstellerJA(createDefaultGesuchsteller());
@@ -333,6 +338,7 @@ public final class TestDataUtil {
 
 	public static Mandant createDefaultMandant() {
 		Mandant mandant = new Mandant();
+		mandant.setId(UUID.randomUUID().toString());
 		mandant.setName("Mandant1");
 		return mandant;
 	}
@@ -491,14 +497,16 @@ public final class TestDataUtil {
 	private static InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull String name, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
-		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(angebotTyp);
 		instStammdaten.setInstitution(createDefaultInstitution());
 		instStammdaten.getInstitution().setName(name);
 		instStammdaten.setAdresse(createDefaultAdresse());
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
+		institutionStammdatenBetreuungsgutscheine.setIban(new IBAN(iban));
+		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
 		return instStammdaten;
 	}
 
@@ -525,32 +533,26 @@ public final class TestDataUtil {
 		return list;
 	}
 
-	@Nullable
-	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
-		if (institutionStammdaten != null) {
-			Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
-			InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
-			if (found == null && institution != null) {
-				institutionStammdaten.setInstitution(institution);
-				return persistence.merge(institutionStammdaten);
-			}
-			return found;
+	@Nonnull
+	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nonnull InstitutionStammdaten institutionStammdaten) {
+		Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
+		InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
+		if (found == null) {
+			institutionStammdaten.setInstitution(institution);
+			return persistence.merge(institutionStammdaten);
 		}
-		return null;
+		return found;
 	}
 
-	@Nullable
-	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nullable Institution institution) {
-		if (institution != null) {
-			saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
-			saveMandantIfNecessary(persistence, institution.getMandant());
-			Institution found = persistence.find(Institution.class, institution.getId());
-			if (found == null) {
-				found = persistEntity(persistence, institution);
-			}
-			return found;
+	@Nonnull
+	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nonnull Institution institution) {
+		saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
+		saveMandantIfNecessary(persistence, institution.getMandant());
+		Institution found = persistence.find(Institution.class, institution.getId());
+		if (found == null) {
+			found = persistEntity(persistence, institution);
 		}
-		return null;
+		return found;
 	}
 
 	private static void saveTraegerschaftIfNecessary(@Nonnull Persistence persistence, @Nullable Traegerschaft traegerschaft) {
@@ -658,17 +660,30 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
-	public static Betreuung createAnmeldungTagesschule(KindContainer kind) {
-		Betreuung betreuung = new Betreuung();
+	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind) {
+		AnmeldungTagesschule betreuung = new AnmeldungTagesschule();
 		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern());
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-		betreuung.setBetreuungspensumContainers(new TreeSet<>());
-		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
-		erweiterteBetreuungContainer.setBetreuung(betreuung);
-		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
+		return betreuung;
+	}
+
+	public static AnmeldungFerieninsel createAnmeldungFerieninsel(KindContainer kind) {
+		AnmeldungFerieninsel betreuung = new AnmeldungFerieninsel();
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenFerieninselGuarda());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		betreuung.setKind(kind);
+		betreuung.setBelegungFerieninsel(createDefaultBelegungFerieninsel());
+		return betreuung;
+	}
+
+	public static AnmeldungFerieninsel createDefaultAnmeldungFerieninsel() {
+		AnmeldungFerieninsel betreuung = new AnmeldungFerieninsel();
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenFerieninselGuarda());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		betreuung.setKind(createDefaultKindContainer());
+		betreuung.setBelegungFerieninsel(createDefaultBelegungFerieninsel());
 		return betreuung;
 	}
 
@@ -769,8 +784,7 @@ public final class TestDataUtil {
 	}
 
 	public static GesuchstellerContainer createDefaultGesuchstellerWithEinkommensverschlechterung() {
-		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		final GesuchstellerContainer gesuchsteller = createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = createDefaultGesuchstellerContainer();
 		gesuchsteller.setEinkommensverschlechterungContainer(createDefaultEinkommensverschlechterungsContainer());
 		return gesuchsteller;
 	}
@@ -967,6 +981,7 @@ public final class TestDataUtil {
 		InstitutionService instService,
 		Persistence persistence,
 		@Nullable LocalDate eingangsdatum) {
+
 		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, null);
 	}
 
@@ -1095,7 +1110,7 @@ public final class TestDataUtil {
 		gesuch.getDossier().setVerantwortlicherBG(verantwortlicher);
 		persistence.persist(gesuch.getFall());
 		persistence.persist(gesuch.getDossier());
-		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		persistence.persist(gesuch.getGesuchsperiode());
 
 		Set<KindContainer> kindContainers = new TreeSet<>();
@@ -1148,7 +1163,7 @@ public final class TestDataUtil {
 			persistence.merge(gesuch.getGesuchsperiode());
 		}
 		persistence.persist(gesuch);
-		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		return gesuch;
 	}
@@ -1163,7 +1178,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
-		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		return gesuch;
 	}
@@ -1178,7 +1193,7 @@ public final class TestDataUtil {
 		persistence.persist(gesuch.getDossier());
 		persistence.persist(gesuch.getGesuchsperiode());
 		persistence.persist(gesuch);
-		GesuchstellerContainer gs = createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gs = createDefaultGesuchstellerContainer();
 		persistence.persist(gs);
 		return gesuch;
 	}
@@ -1265,6 +1280,10 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION, "60", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB,
+			Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG,
+			Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -1465,7 +1484,7 @@ public final class TestDataUtil {
 		for (int i = 0; i < numberOfDocuments; i++) {
 			bemerkungen.add("Test Dokument " + (i + 1));
 		}
-		mahnung.setBemerkungen(bemerkungen.stream().collect(Collectors.joining("\n")));
+		mahnung.setBemerkungen(String.join("\n", bemerkungen));
 		mahnung.setDatumFristablauf(firstAblauf);
 		mahnung.setTimestampErstellt(LocalDateTime.now());
 		mahnung.setUserMutiert("Hans Muster");
@@ -1613,7 +1632,7 @@ public final class TestDataUtil {
 		gesuch.setGesuchsperiode(persistEntity(persistence, gesuchsperiode));
 		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
@@ -1637,7 +1656,7 @@ public final class TestDataUtil {
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
 		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
-		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller1 = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
@@ -1720,5 +1739,11 @@ public final class TestDataUtil {
 	public static Gesuch correctTimestampVerfuegt(Gesuch gesuch, LocalDateTime date, Persistence persistence) {
 		gesuch.setTimestampVerfuegt(date.minusDays(1));
 		return persistence.merge(gesuch);
+	}
+
+	public static void initVorgaengerVerfuegungenWithNULL(@Nonnull Gesuch gesuch) {
+		gesuch.getKindContainers().stream()
+			.flatMap(k -> k.getBetreuungen().stream())
+			.forEach(b -> b.initVorgaengerVerfuegungen(null, null));
 	}
 }

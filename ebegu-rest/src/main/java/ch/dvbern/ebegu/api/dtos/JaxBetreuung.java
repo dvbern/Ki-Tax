@@ -93,6 +93,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	private Integer kindNummer;
 
 	@Nullable
+	private String kindId;
+
+	@Nullable
 	private String gesuchId;
 
 	@Nullable
@@ -109,6 +112,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	@Nullable
 	private AnmeldungMutationZustand anmeldungMutationZustand;
+
+	@NotNull
+	private List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungen = new ArrayList<>();
 
 	private boolean keineDetailinformationen = false;
 
@@ -228,6 +234,15 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	}
 
 	@Nullable
+	public String getKindId() {
+		return kindId;
+	}
+
+	public void setKindId(@Nullable String kindId) {
+		this.kindId = kindId;
+	}
+
+	@Nullable
 	public String getGesuchId() {
 		return gesuchId;
 	}
@@ -312,6 +327,15 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setKeineDetailinformationen(boolean keineDetailinformationen) {
 		this.keineDetailinformationen = keineDetailinformationen;
+	}
+
+	@Nonnull
+	public List<JaxBetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
+		return betreuungspensumAbweichungen;
+	}
+
+	public void setBetreuungspensumAbweichungen(@Nonnull List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
 	@Override

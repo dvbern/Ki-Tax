@@ -319,4 +319,11 @@ public class Benutzer extends AbstractMutableEntity {
 			bemerkungen = bemerkungen + '\n' + bemerkungWithDate;
 		}
 	}
+
+	@Override
+	public String getMessageForAccessException() {
+		return "username: " + this.getUsername()
+			+ ", rolle: " + this.getRole()
+			+ ", berechtigung: " + this.extractRollenAbhaengigkeitAsString();
+	}
 }

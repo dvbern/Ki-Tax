@@ -17,5 +17,6 @@
 
 export enum TSInstitutionStatus {
     AKTIV = 'AKTIV',
+    KONFIGURATION = 'KONFIGURATION',
     EINGELADEN = 'EINGELADEN'
 }

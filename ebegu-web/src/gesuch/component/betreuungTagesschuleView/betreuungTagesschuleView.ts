@@ -127,7 +127,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public $onInit(): void {
         this.copyModuleToBelegung();
-        this.datumErsterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
+        this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
         this.setErsterSchultag();
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
             return;
@@ -147,10 +147,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getTagesschuleAnmeldungNotYetReadyText(): string {
-        const gp = this.gesuchModelManager.getGesuch().gesuchsperiode;
-        if (gp.hasTagesschulenAnmeldung()) {
-            if (gp.isTagesschulenAnmeldungKonfiguriert()) {
-                const terminValue = DateUtil.momentToLocalDateFormat(gp.datumFreischaltungTagesschule, 'DD.MM.YYYY');
+        if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()) {
+            if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulenAnmeldungKonfiguriert()) {
+                const terminValue = DateUtil.momentToLocalDateFormat(
+                    this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
                 return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
                     termin: terminValue,
                 });
@@ -278,7 +278,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.getGesuchsperiode()
-            && this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
+        return this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
     }
 }

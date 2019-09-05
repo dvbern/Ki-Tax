@@ -17,6 +17,8 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {Observable} from 'rxjs';
+import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 
 @Component({
     selector: 'dv-edit-gemeinde-ts',
@@ -26,6 +28,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 })
 export class EditGemeindeComponentTS implements OnInit {
 
+    @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
 

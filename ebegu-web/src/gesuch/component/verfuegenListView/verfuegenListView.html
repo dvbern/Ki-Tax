@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <!--FinSitStatus-->
-                <div class="row marginTop30" ng-if="vm.isFinanzielleSituationRequired() && !vm.isGesuchsteller()">
+                <div class="row marginTop30" ng-if="vm.mustFinanzielleSituationBeValidated() && !vm.isGesuchsteller()">
                     <div class="col-xs-12 dv-input-container-medium">
                         <div class="form-group">
                             <dv-radio-container name="finSitStatus" class="input-element"

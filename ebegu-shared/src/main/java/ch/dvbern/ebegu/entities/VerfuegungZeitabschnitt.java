@@ -943,11 +943,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 * Vergleich nur die relevanten Daten fuer die Berechnung einer Verfuegung.
 	 */
 	public boolean isSameBerechnung(VerfuegungZeitabschnitt that) {
-		return MathUtil.isSame(betreuungspensum, that.betreuungspensum) &&
+		return MathUtil.isSame(getBgPensum(), that.getBgPensum()) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
-			MathUtil.isSame(vollkosten, that.vollkosten) &&
-			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
+			MathUtil.isSame(verguenstigung, that.verguenstigung) &&
+			MathUtil.isSame(getMinimalerElternbeitragGekuerzt(), that.getMinimalerElternbeitragGekuerzt()) &&
 			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
 	}
 

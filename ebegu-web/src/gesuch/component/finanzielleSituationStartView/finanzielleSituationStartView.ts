@@ -167,7 +167,10 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public hasTagesschulenAnmeldung(): boolean {
-        return this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung();
+        if (!this.gesuchModelManager.gemeindeKonfiguration) {
+            return undefined;
+        }
+        return this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
     }
 
     public gemeinsameStekClicked(): void {
@@ -237,12 +240,5 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
     public is2GSRequired(): boolean {
         return this.gesuchModelManager.isGesuchsteller2Required();
-    }
-
-    public getBasisjahr(): number | undefined {
-        if (this.gesuchModelManager && this.gesuchModelManager.getBasisjahr()) {
-            return this.gesuchModelManager.getBasisjahr();
-        }
-        return undefined;
     }
 }

@@ -22,13 +22,19 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import org.needle4j.annotation.InjectIntoMany;
 
 public class PrincipalBeanMock extends PrincipalBean {
 
 	@Nullable
 	private Benutzer benutzer;
+
+	@InjectIntoMany
+	private MandantServiceMock mandantService = new MandantServiceMock();
+
 
 	@Nonnull
 	@Override
@@ -43,5 +49,11 @@ public class PrincipalBeanMock extends PrincipalBean {
 	@Override
 	public boolean isCallerInRole(@Nonnull UserRole role) {
 		return benutzer != null && benutzer.getRole() == role;
+	}
+
+	@Nullable
+	@Override
+	public Mandant getMandant() {
+		return mandantService.getFirst();
 	}
 }

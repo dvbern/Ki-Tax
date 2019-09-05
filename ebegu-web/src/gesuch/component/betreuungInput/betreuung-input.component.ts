@@ -16,7 +16,7 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
+import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/constants/CONSTANTS';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
@@ -40,12 +40,6 @@ export class BetreuungInputComponent implements IController {
     public static $inject = ['$translate'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
-
-    public readonly CONSTANTS: any = CONSTANTS;
-    // 100% = 20 days => 1% = 0.2 days
-    private readonly MULTIPLIER_KITA = 0.2;
-    // 100% = 220 hours => 1% = 2.2 hours
-    private readonly MULTIPLIER_TAGESFAMILIEN = 2.2;
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
 
     public pensumContainer: TSBetreuungspensumContainer;
@@ -82,7 +76,8 @@ export class BetreuungInputComponent implements IController {
     }
 
     public getPlaceholder(): string {
-        if (this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
+        if (this.pensumContainer
+                && this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
             if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
                 return this.translate.instant('STUNDEN_PLACEHOLDER');
             }
@@ -94,10 +89,10 @@ export class BetreuungInputComponent implements IController {
     public setAngebotDependingVariables(): void {
         if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
-            this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
+            this.multiplier = MULTIPLIER_TAGESFAMILIEN;
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
-            this.multiplier = this.MULTIPLIER_KITA;
+            this.multiplier = MULTIPLIER_KITA;
         }
     }
 

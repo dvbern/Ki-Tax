@@ -225,7 +225,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public kannVerfuegungOeffnen(betreuung: TSBetreuung): boolean {
-        return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
+        if (betreuung) {
+            return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
+        }
+        return false;
     }
 
     /**
@@ -267,8 +270,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return (gesuch && gesuch.hasNichtBerechenbareBetreuungen());
     }
 
-    public isFinanzielleSituationRequired(): boolean {
-        return this.gesuchModelManager.isFinanzielleSituationRequired();
+    public mustFinanzielleSituationBeValidated(): boolean {
+        // Die FinSit muss auch bei Sozialhilfe geprueft werden!
+        return this.gesuchModelManager.isFinanzielleSituationRequired()
+            || (this.getGesuch() && this.getGesuch().familiensituationContainer.familiensituationJA.sozialhilfeBezueger);
     }
 
     public isBegleitschreibenVisible(): boolean {
@@ -508,7 +513,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             this.mahnung.gesuch = this.getGesuch();
             this.mahnung.timestampAbgeschlossen = null;
             this.mahnung.bemerkungen = generatedBemerkungen.data;
-            if (this.getGesuchsperiode().hasTagesschulenAnmeldung()
+            if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
                 && this.getGesuch().areThereOnlySchulamtAngebote()) {
                 this.mahnung.datumFristablauf = moment(moment.now()).add(7, 'days');
             }

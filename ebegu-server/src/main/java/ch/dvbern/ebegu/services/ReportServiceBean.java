@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
@@ -84,6 +85,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -103,8 +105,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
-import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -117,6 +117,8 @@ import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.KantonDataRow;
 import ch.dvbern.ebegu.reporting.kanton.KantonExcelConverter;
+import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
+import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragExcelConverter;
@@ -434,7 +436,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 		Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
-		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind, JoinType.LEFT);
+		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(AbstractPlatz_.kind, JoinType.LEFT);
 		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
 		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
 		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
@@ -502,9 +504,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 			row.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 			row.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
-			if (betreuung.getBetreuungsangebotTyp() != null) {
-				row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
-			}
+			row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
 			kantonDataRowList.add(row);
 		}
 		return kantonDataRowList;
@@ -1901,7 +1901,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1981,17 +1982,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
-		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
-		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
-		row.setKindergarten(institutionStammdaten.getAlterskategorieKindergarten());
-		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
+			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());
+		row.setVorschulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieVorschule());
+		row.setKindergarten(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieKindergarten());
+		row.setSchulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieSchule());
 		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
-			row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
-			if (institutionStammdaten.getAnzahlPlaetze() != null) {
-				row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+			row.setSubventioniert(institutionStammdatenBG != null && institutionStammdatenBG.getSubventioniertePlaetze());
+			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetze() != null) {
+				row.setKapazitaet(institutionStammdatenBG.getAnzahlPlaetze());
 			}
-			if (institutionStammdaten.getAnzahlPlaetzeFirmen() != null) {
-				row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
+			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetzeFirmen() != null) {
+				row.setReserviertFuerFirmen(institutionStammdatenBG.getAnzahlPlaetzeFirmen());
 			}
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());

@@ -111,4 +111,10 @@ public interface WizardStepService {
 	 * Setzt den übergebenen Step für das übergebene Gesuch auf Okay.
 	 */
 	void setWizardStepOkay(String gesuchId, WizardStepName stepName);
+
+	/**
+	 * Setzt die Freigabe in den Status Warten. Diese Methode sollte explizit nur dann verwendet werden, wenn der
+	 * Gesuchsteller seinen Antrag nach der Freigabe nochmals zurueckzieht.
+	 */
+	void unsetWizardStepFreigabe(@NotNull String gesuchId);
 }

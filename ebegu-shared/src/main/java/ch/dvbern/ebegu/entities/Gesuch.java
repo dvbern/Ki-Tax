@@ -242,6 +242,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = true)
 	private Boolean gueltig = null;
 
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	// jedesmal wenn der Gesuchsteller das Gesuch zurück zieht, wird dieses Feld um 1 erhöht, damit wir beim
+	// einscannen der Freigabequittung wissen, ob es sich um die aktuelle Freigabequittung handelt.
+	private Integer anzahlGesuchZurueckgezogen = 0;
+
+
 	public Gesuch() {
 	}
 
@@ -559,6 +566,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		this.finSitStatus = finSitStatus;
 	}
 
+	@Nonnull
+	public Integer getAnzahlGesuchZurueckgezogen() {
+		return anzahlGesuchZurueckgezogen;
+	}
+
+	public void setAnzahlGesuchZurueckgezogen(@Nonnull Integer anzahlGesuchZurueckgezogen) {
+		this.anzahlGesuchZurueckgezogen = anzahlGesuchZurueckgezogen;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -596,6 +612,29 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		final List<Betreuung> list = new ArrayList<>();
 		for (final KindContainer kind : getKindContainers()) {
 			list.addAll(kind.getBetreuungen());
+		}
+		return list;
+	}
+
+	@Transient
+	@Nonnull
+	public List<AbstractAnmeldung> extractAllAnmeldungen() {
+		final List<AbstractAnmeldung> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			list.addAll(kind.getAnmeldungenTagesschule());
+			list.addAll(kind.getAnmeldungenFerieninsel());
+		}
+		return list;
+	}
+
+	@Transient
+	@Nonnull
+	public List<AbstractPlatz> extractAllPlaetze() {
+		final List<AbstractPlatz> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			list.addAll(kind.getBetreuungen());
+			list.addAll(kind.getAnmeldungenTagesschule());
+			list.addAll(kind.getAnmeldungenFerieninsel());
 		}
 		return list;
 	}
@@ -705,10 +744,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> {
-				if (betreuung.getBetreuungsangebotTyp() != null) {
-					return betreuung.getBetreuungsangebotTyp().isJugendamt();
-				}
-				return false;
+				return betreuung.getBetreuungsangebotTyp().isJugendamt();
 			});
 	}
 
@@ -717,10 +753,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> {
-				if (betreuung.getBetreuungsangebotTyp() != null) {
-					return betreuung.getBetreuungsangebotTyp().isSchulamt();
-				}
-				return false;
+				return betreuung.getBetreuungsangebotTyp().isSchulamt();
 			});
 	}
 

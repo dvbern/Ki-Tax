@@ -163,7 +163,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		jaxInstitution.getTraegerschaft().setName("ChangedTraegerschaft");
 		jaxInstitution.getMandant().setName("ChangedMandant");
 		institutionResource.createInstitution(jaxInstitution, "2020-01-01",
-			BetreuungsangebotTyp.KITA.toString(), "mail@example.com", DUMMY_URIINFO, DUMMY_RESPONSE);
+			BetreuungsangebotTyp.KITA, "mail@example.com", null, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
@@ -203,7 +203,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
 		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenSummaryToJAX(kitaBruennen, new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.getInstitutionStammdaten().setGueltigAb(LocalDate.now());
-		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
+		betreuungResource.saveBetreuung(jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		InstitutionStammdaten loadedKitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
 		assertEquals(Constants.START_OF_TIME, loadedKitaBruennen.getGueltigkeit().getGueltigAb());

@@ -157,15 +157,6 @@ public abstract class AbstractBGRechner {
 		return MATH.add(verguenstigungProTag, zuschlagFuerBesondereBeduerfnisse);
 	}
 
-	/**
-	 * Berechnet die Anzahl Tage zwischen zwei Daten
-	 */
-	protected long daysBetween(@Nonnull LocalDate start, @Nonnull LocalDate end) {
-		return Stream.iterate(start, d -> d.plusDays(1))
-			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
-			.count();
-	}
-
 	@Nonnull
 	protected abstract BigDecimal getAnteilMonat(
 		@Nonnull BGRechnerParameterDTO parameterDTO,

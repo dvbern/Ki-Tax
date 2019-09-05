@@ -19,12 +19,17 @@ import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {FreigabeController} from '../../../gesuch/dialog/FreigabeController';
+import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
+import TSAntragDTO from '../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../errors/service/ErrorService';
+import {LogFactory} from '../logging/LogFactory';
 import {DvDialog} from './dv-dialog/dv-dialog';
+import ITranslateService = angular.translate.ITranslateService;
 
 const FREIGEBEN_DIALOG_TEMPLATE = require('../../../gesuch/dialog/freigabe.html');
+const LOG = LogFactory.createLog('DVBarcodeListener');
 
 export class DVBarcodeListener implements IDirective {
     public restrict = 'A';
@@ -54,6 +59,8 @@ export class DVBarcodeController implements IController {
         'ErrorService',
         '$log',
         'AuthLifeCycleService',
+        'GesuchRS',
+        '$translate',
     ];
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -69,6 +76,8 @@ export class DVBarcodeController implements IController {
         private readonly errorService: ErrorService,
         private readonly $log: ILogService,
         private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly $translate: ITranslateService,
     ) {
     }
 
@@ -107,6 +116,7 @@ export class DVBarcodeController implements IController {
         this.$document.unbind('keypress', keypressEvent);
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public barcodeOnKeyPressed(e: any): void {
         const key = e.keyCode || e.which || 0;
         const keyPressChar = String.fromCharCode(key);
@@ -132,20 +142,37 @@ export class DVBarcodeController implements IController {
 
             const barcodeParts = barcodeRead.split('|');
 
-            if (barcodeParts.length === 3) {
+            if (barcodeParts.length === 3 || barcodeParts.length === 4) {
                 const barcodeDocType = barcodeParts[0];
                 const barcodeDocFunction = barcodeParts[1];
                 const barcodeDocID = barcodeParts[2];
+                const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || '0';
 
                 this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
                 this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
                 this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
+                this.$log.debug('Barcode Doc Anzahl Zurueckgezogen: ' + barcodeDocAnzahlZurueckgezogen);
 
                 this.barcodeBuffer = [];
                 this.$timeout.cancel(this.barcodeReadtimeout);
 
-                this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                    docID: barcodeDocID,
+                this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen)
+                    .then((response: TSAntragDTO) => {
+                        let message;
+                        if (!response) {
+                            message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
+                        }
+                        if (!response.canBeFreigegeben()) {
+                            message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                        }
+                        this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
+                            docID: barcodeDocID,
+                            errorMessage: message,
+                            gesuch: response
+                        });
+                    }).catch(error => {
+                    this.errorService.addMesageAsError('Gesuch konnte nicht freigegeben werden!');
+                    LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
                 });
             } else {
                 this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);

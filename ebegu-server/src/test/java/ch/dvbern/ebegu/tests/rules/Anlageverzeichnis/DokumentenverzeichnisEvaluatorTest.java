@@ -113,7 +113,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		}
 		erwerbspensumJA.getGueltigkeit().setGueltigAb(LocalDate.of(1980, 1, 1));
 
-		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller.getGesuchstellerJA().setNachname("Chavez");
 		gesuchsteller.getGesuchstellerJA().setVorname(vorname);
 
@@ -130,7 +130,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		finanzielleSituation.setSteuerveranlagungErhalten(steuerveranlagungErhalten);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
 
-		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller.getGesuchstellerJA().setNachname("Chavez");
 		gesuchsteller.getGesuchstellerJA().setVorname(vorname);
 
@@ -150,7 +150,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		einkommensverschlechterungsContainer.setEkvJABasisJahrPlus1(einkommensverschlechterung1);
 		einkommensverschlechterungsContainer.setEkvJABasisJahrPlus2(einkommensverschlechterung2);
 
-		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		final GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller.getGesuchstellerJA().setNachname("Chavez");
 		gesuchsteller.getGesuchstellerJA().setVorname(vorname);
 
@@ -532,10 +532,10 @@ public class DokumentenverzeichnisEvaluatorTest {
 		ekvJABasisJahrPlus2.setNettolohn(BigDecimal.valueOf(200000));
 
 		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(4, dokumentGrunds.size());
+		Assert.assertEquals(8, dokumentGrunds.size()); // Vermoegen wird neu immer gefragt (2 GS x 2 EKVs)
 
 		Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-		Assert.assertEquals(2, dokumentGrundGS1.size());
+		Assert.assertEquals(4, dokumentGrundGS1.size());
 
 		assertType(dokumentGrundGS1, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
@@ -544,7 +544,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 
 		Set<DokumentGrund> dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
-		Assert.assertEquals(2, dokumentGrundGS2.size());
+		Assert.assertEquals(4, dokumentGrundGS2.size());
 
 		Assert.assertNotNull(testgesuch.getGesuchsteller2());
 		assertType(dokumentGrundGS2, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller2().extractFullName(), "2016",

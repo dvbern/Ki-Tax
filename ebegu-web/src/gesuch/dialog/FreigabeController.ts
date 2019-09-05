@@ -24,7 +24,6 @@ import GemeindeRS from '../service/gemeindeRS.rest';
 import GesuchRS from '../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
 import IDialogService = angular.material.IDialogService;
-import ITranslateService = angular.translate.ITranslateService;
 
 /**
  * Controller fuer das Freigabe Popup
@@ -33,58 +32,39 @@ export class FreigabeController {
 
     public static $inject: string[] = [
         'docID',
+        'errorMessage',
+        'gesuch',
         '$mdDialog',
         'GesuchRS',
         'BenutzerRS',
         'AuthServiceRS',
-        '$translate',
         'GemeindeRS',
         'DossierRS'
     ];
 
-    public gesuch: TSAntragDTO;
     public selectedUserBG: string;
     public selectedUserTS: string;
     public userBGList: Array<TSBenutzer>;
     public userTSList: Array<TSBenutzer>;
     public fallNummer: string;
     public familie: string;
-    public errorMessage: string;
     public readonly TSRoleUtil = TSRoleUtil;
 
     public constructor(
         private readonly docID: string,
+        private readonly errorMessage: string,
+        private readonly gesuch: TSAntragDTO,
         private readonly $mdDialog: IDialogService,
         private readonly gesuchRS: GesuchRS,
         private readonly benutzerRS: BenutzerRS,
         private readonly authService: AuthServiceRS,
-        private readonly $translate: ITranslateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly dossierRS: DossierRS,
     ) {
-
-        gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
-            this.errorMessage = undefined; // just for safety replace old value
-            if (!response) {
-                this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
-                return;
-            }
-
-            if (!response.canBeFreigegeben()) {
-                this.errorMessage = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
-                return;
-            }
-
-            this.gesuch = response;
-            this.fallNummer = EbeguUtil.addZerosToFallNummer(response.fallNummer);
-            this.familie = response.familienName;
-            this.setVerantwortliche();
-        }).catch(() => {
-            this.cancel(); // close popup
-        });
-
+        this.fallNummer = EbeguUtil.addZerosToFallNummer(gesuch.fallNummer);
+        this.familie = gesuch.familienName;
+        this.setVerantwortliche();
         this.updateUserList();
-
     }
 
     private setVerantwortliche(): void {

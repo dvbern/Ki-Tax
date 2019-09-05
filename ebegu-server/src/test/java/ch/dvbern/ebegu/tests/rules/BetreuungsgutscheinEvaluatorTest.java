@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -50,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdaten;
+import static ch.dvbern.ebegu.test.TestDataUtil.initVorgaengerVerfuegungenWithNULL;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -92,7 +94,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setEingangsdatum(LocalDate.of(2016, 7, 1));
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(testgesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
@@ -107,7 +109,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(new BigDecimal("500000")); //zu hoch -> Comment wird erzeugt
 
-		evaluator.evaluate(testgesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -174,11 +176,15 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
 		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		TestDataUtil.calculateFinanzDaten(gesuch);
+
+		initVorgaengerVerfuegungenWithNULL(gesuch);
+
 		return gesuch;
 	}
 
 	private Betreuung createBetreuungWithPensum(Gesuch gesuch, DateRange gueltigkeit) {
 		Betreuung betreuung = new Betreuung();
+		betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
 
 		KindContainer kindContainer = new KindContainer();
 		betreuung.setKind(kindContainer);

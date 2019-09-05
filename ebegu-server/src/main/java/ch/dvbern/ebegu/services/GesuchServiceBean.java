@@ -60,6 +60,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -155,7 +156,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private Persistence persistence;
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
 	@Inject
 	private BenutzerService benutzerService;
 	@Inject
@@ -385,14 +385,19 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
 		SACHBEARBEITER_TS, GESUCHSTELLER })
-	public Optional<Gesuch> findGesuchForFreigabe(@Nonnull String gesuchId) {
+	public Gesuch findGesuchForFreigabe(@Nonnull String gesuchId, @Nonnull Integer anzahlZurueckgezogen, boolean checkAnzahlZurueckgezogen) {
 		Objects.requireNonNull(gesuchId, "gesuchId muss gesetzt sein");
 		Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
-		if (gesuch != null) {
-			authorizer.checkReadAuthorizationForFreigabe(gesuch);
-			return Optional.of(gesuch);
+		if (gesuch == null) {
+			throw new EbeguRuntimeException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		return Optional.empty();
+		if (checkAnzahlZurueckgezogen && !Objects.equals(anzahlZurueckgezogen,
+			gesuch.getAnzahlGesuchZurueckgezogen())) {
+			throw new EbeguRuntimeException("findGesuchForFreigabe",
+				ErrorCodeEnum.ERROR_GESUCH_DURCH_GS_ZURUECKGEZOGEN);
+		}
+		authorizer.checkReadAuthorizationForFreigabe(gesuch);
+		return gesuch;
 	}
 
 	@PermitAll
@@ -488,16 +493,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	 * @param currentGesuch das zurzeit neueste Gesuch
 	 */
 	private void resetMutierteAnmeldungen(@Nonnull Gesuch currentGesuch) {
-		currentGesuch.extractAllBetreuungen().stream()
-			.filter(betreuung -> betreuung.isAngebotSchulamt() && betreuung.getVorgaengerId() != null)
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(betreuung -> betreuung.getVorgaengerId() != null)
+			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
 			.forEach(betreuung -> {
-				Betreuung vorgaengerBetreuung = betreuungService.findBetreuung(betreuung.getVorgaengerId())
+				AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"resetMutierteAnmeldungen",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
-				vorgaengerBetreuung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				persistence.merge(vorgaengerBetreuung);
+				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				persistence.merge(vorgaenger);
 			});
 	}
 
@@ -817,24 +823,20 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			}
 
 			// Eventuelle Schulamt-Anmeldungen auf AUSGELOEST setzen
-			for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-				if (betreuung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
-					betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+			for (AbstractAnmeldung anmeldung : gesuch.extractAllAnmeldungen()) {
+				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
+					anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 				}
 				// Set noch nicht freigegebene Betreuungen to aktuelle Anmeldung bei Freigabe
-				if (betreuung.isAngebotSchulamt()) {
-					if (betreuung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-						betreuung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-						if (betreuung.getVorgaengerId() != null) {
-							betreuungService.changeAnmeldungMutationZustand(
-								betreuung.getVorgaengerId(),
-								AnmeldungMutationZustand.MUTIERT);
-						}
+				if (anmeldung.getAnmeldungMutationZustand() == AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+					anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+					if (anmeldung.getVorgaengerId() != null) {
+						anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
 					}
 				}
 			}
 
-			// Den Gesuchsstatus auf Freigageben setzen (auch bei nur Schulamt-Gesuchen)
+			// Den Gesuchsstatus auf Freigegeben setzen (auch bei reinen Schulamt-Gesuchen)
 			gesuch.setStatus(AntragStatus.FREIGEGEBEN);
 
 			// Step Freigabe gruen
@@ -868,6 +870,44 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		throw new EbeguEntityNotFoundException("antragFreigeben", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
+	public Gesuch antragZurueckziehen(@Nonnull String gesuchId) {
+		Optional<Gesuch> gesuchOptional = Optional.ofNullable(persistence.find(Gesuch.class, gesuchId));
+		if (gesuchOptional.isPresent()) {
+			Gesuch gesuch = gesuchOptional.get();
+
+			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH
+					|| Eingangsart.ONLINE != gesuch.getEingangsart()
+					|| gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
+				throw new EbeguRuntimeException("antragZurueckziehen", "Only Online Erstgesuche can be reverted");
+			}
+
+			LOG.warn("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
+
+			// Den Gesuchsstatus auf In Bearbeitung GS zurücksetzen
+			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
+			// Das Freigabedatum muss wieder zurückgesetzt werden, falls es ein Online Gesuch ist
+			gesuch.setFreigabeDatum(null);
+
+			// jedesmal wenn die Freigabe zurueckgezogen wird, erhöhen wir den Counter um 1, damit wir wissen,
+			// ob der Gesuchsteller die richtige Freigabequittung eingeschickt hat.
+			gesuch.setAnzahlGesuchZurueckgezogen(gesuch.getAnzahlGesuchZurueckgezogen() + 1);
+
+			// bestehende Freigabequittung löschen
+			generatedDokumentService.removeFreigabequittungFromGesuch(gesuch);
+
+			// den WizardStep anpassen
+			wizardStepService.unsetWizardStepFreigabe(gesuch.getId());
+
+			final Gesuch merged = persistence.merge(gesuch);
+			antragStatusHistoryService.saveStatusChange(merged, null);
+			return merged;
+		}
+		throw new EbeguEntityNotFoundException("antragZurueckziehen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 	}
 
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,

@@ -22,10 +22,13 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Abwesenheit;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 
 /**
  * Service zum Verwalten von Betreuungen
@@ -40,6 +43,20 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit);
+
+	/**
+	 * Speichert die AnmeldungTagesschule neu in der DB falls der Key noch nicht existiert. Sonst wird die existierende AnmeldungTagesschule aktualisiert
+	 * Bean validation wird eingeschaltet
+	 */
+	@Nonnull
+	AnmeldungTagesschule saveAnmeldungTagesschule(@Valid @Nonnull AnmeldungTagesschule anmeldungTagesschule, @Nonnull Boolean isAbwesenheit);
+
+	/**
+	 * Speichert die AnmeldungFerieninsel neu in der DB falls der Key noch nicht existiert. Sonst wird die existierende AnmeldungFerieninsel aktualisiert
+	 * Bean validation wird eingeschaltet
+	 */
+	@Nonnull
+	AnmeldungFerieninsel saveAnmeldungFerieninsel(@Valid @Nonnull AnmeldungFerieninsel anmeldungFerieninsel, @Nonnull Boolean isAbwesenheit);
 
 	/**
 	 * Setzt die Betreuungsplatzanfrage auf ABGEWIESEN und sendet dem Gesuchsteller eine E-Mail
@@ -58,19 +75,19 @@ public interface BetreuungService {
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_UEBERNOMMEN und sendet dem Gesuchsteller eine E-Mail.
 	 */
 	@Nonnull
-	Betreuung anmeldungSchulamtUebernehmen(@Valid @Nonnull Betreuung betreuung);
+	AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_ABGELEHNT und sendet dem Gesuchsteller eine E-Mail
 	 */
 	@Nonnull
-	Betreuung anmeldungSchulamtAblehnen(@Valid @Nonnull Betreuung betreuung);
+	AbstractAnmeldung anmeldungSchulamtAblehnen(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_FALSCHE_INSTITUTION.
 	 */
 	@Nonnull
-	Betreuung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull Betreuung betreuung);
+	AbstractAnmeldung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
 	 * @param key PK (id) der Betreuung
@@ -78,6 +95,30 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	Optional<Betreuung> findBetreuung(@Nonnull String key);
+
+	/**
+	 * Sucht die AnmeldungTagesschule mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<AnmeldungTagesschule> findAnmeldungTagesschule(@Nonnull String id);
+
+	/**
+	 * Sucht die AnmeldungFerieninsel mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<AnmeldungFerieninsel> findAnmeldungFerieninsel(@Nonnull String id);
+
+	/**
+	 * Sucht die (Tageschule oder Ferieninsel-) Anmeldung mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<? extends AbstractAnmeldung> findAnmeldung(@Nonnull String id);
+
+	/**
+	 * Sucht den Platz (Betreuung oder Anmeldung) mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<? extends AbstractPlatz> findPlatz(@Nonnull String id);
 
 	/**
 	 * @param key PK (id) der Betreuung
@@ -91,13 +132,13 @@ public interface BetreuungService {
 	 * @param bgNummer BGNummer der Betreuung
 	 * @return Betreuung mit der angegebenen ID (z.B. 18.000116.1.2) oder null falls nicht vorhanden
 	 */
-	List<Betreuung> findAnmeldungenByBGNummer(@Nonnull String bgNummer);
+	List<AbstractAnmeldung> findAnmeldungenByBGNummer(@Nonnull String bgNummer);
 
 	/**
 	 * @param bgNummer BGNummer der Betreuung
 	 * @return Betreuung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
 	 */
-	List<Betreuung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
+	List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
 
 	/**
 	 * Gibt die aktuell gültige Betreuung für die übergebene BG Nummer zurück (z.B. 18.000116.1.2)
@@ -113,7 +154,7 @@ public interface BetreuungService {
 	Optional<Betreuung> findBetreuungWithBetreuungsPensen(@Nonnull String key);
 
 	/**
-	 * entfernt eine Betreuung aus der Databse
+	 * entfernt eine Betreuung aus der Database
 	 *
 	 * @param betreuungId Id der Betreuung zu entfernen
 	 */
@@ -130,10 +171,7 @@ public interface BetreuungService {
 	 * und deren Status "WARTEN" ist.
 	 */
 	@Nonnull
-	Collection<Betreuung> getPendenzenBetreuungen();
-
-	@Nonnull
-	List<Betreuung> findAllBetreuungenFromGesuch(String gesuchId);
+	Collection<AbstractPlatz> getPendenzenBetreuungen();
 
 	/**
 	 * @param dossier Dossier, dessen verfuegte Betreuungen zurueckgegeben werden
@@ -162,9 +200,6 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics();
-
-
-	int changeAnmeldungMutationZustand(String betreuungsId, AnmeldungMutationZustand anmeldungMutationZustand);
 
 	/**
 	 * Sendet eine E-Mail an alle Institutionen die aktuell offene Pendenzen haben.

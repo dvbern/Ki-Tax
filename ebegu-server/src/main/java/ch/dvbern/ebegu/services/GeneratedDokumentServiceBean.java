@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -84,6 +85,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.AuszahlungDTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001DTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001Service;
@@ -119,6 +121,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDokumentServiceBean.class.getSimpleName());
 	public static final byte[] EMPTY_BYTES = new byte[0];
+	private static final Pattern PATTERN = Pattern.compile("\\s+");
 
 	@Inject
 	private Persistence persistence;
@@ -298,7 +301,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			finanzielleSituationService.calculateFinanzDaten(gesuch);
 
 			// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
-			initializeBetreuungenWithVorgaenger(gesuch);
+			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 
 			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch, sprache.getLocale());
 			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
@@ -314,19 +317,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		}
 		return persistedDokument;
-	}
-
-	private void initializeBetreuungenWithVorgaenger(@Nonnull Gesuch gesuch) {
-		gesuch.getKindContainers()
-			.stream()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.forEach(betreuung -> {
-					Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = verfuegungService.findVorgaengerAusbezahlteVerfuegung(betreuung);
-					betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung.orElse(null));
-					Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
-					betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
-				}
-			);
 	}
 
 	@Nonnull
@@ -793,7 +783,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 
 		if (Betreuungsstatus.NICHT_EINGETRETEN != betreuung.getBetreuungsstatus() || persistedDokument == null) {
-
+			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 			// persistedDokument == null:  Wenn das Dokument nicht geladen werden konnte, heisst es dass es nicht
 			// existiert und wir muessen es trotzdem erstellen
 
@@ -881,7 +871,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		String debitorName = gemeindeStammdaten.getKontoinhaber();
 		String debitorBic = gemeindeStammdaten.getBic();
-		String debitorIban = gemeindeStammdaten.getIban().getIban();
+		IBAN ibanGemeinde = gemeindeStammdaten.getIban();
+		Objects.requireNonNull(ibanGemeinde, "Keine IBAN fuer Gemeinde " + gemeindeStammdaten.getGemeinde().getName());
+		String debitorIban = ibanToUnformattedString(ibanGemeinde);
 		String debitorIbanGebuehren = applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
 
 		pain001DTO.setSchuldnerName(debitorName);
@@ -899,22 +891,22 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
 				AuszahlungDTO auszahlungDTO = new AuszahlungDTO();
 				auszahlungDTO.setBetragTotalZahlung(zahlung.getBetragTotalZahlung());
-				String kontoinhaber = StringUtils.isNotEmpty(institutionStammdaten.getKontoinhaber())
-					? institutionStammdaten.getKontoinhaber() : institutionStammdaten.getInstitution().getName();
-				Adresse adresseKontoinhaber = institutionStammdaten.getAdresseKontoinhaber() != null
-					? institutionStammdaten.getAdresseKontoinhaber() : institutionStammdaten.getAdresse();
+				String kontoinhaber = StringUtils.isNotEmpty(institutionStammdaten.extractKontoinhaber())
+					? institutionStammdaten.extractKontoinhaber() : institutionStammdaten.getInstitution().getName();
+
+				Adresse adresseKontoinhaber = institutionStammdaten.extractAdresseKontoinhaber() != null
+					? institutionStammdaten.extractAdresseKontoinhaber() : institutionStammdaten.getAdresse();
+				Objects.requireNonNull(adresseKontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerName(kontoinhaber);
 				auszahlungDTO.setZahlungsempfaegerStrasse(adresseKontoinhaber.getStrasse());
 				auszahlungDTO.setZahlungsempfaegerHausnummer(adresseKontoinhaber.getHausnummer());
 				auszahlungDTO.setZahlungsempfaegerPlz(adresseKontoinhaber.getPlz());
 				auszahlungDTO.setZahlungsempfaegerOrt(adresseKontoinhaber.getOrt());
 				auszahlungDTO.setZahlungsempfaegerLand(adresseKontoinhaber.getLand().toString());
-				if (institutionStammdaten.getIban() == null) {
-					LOGGER.warn("Keine IBAN fuer Institution {}", institutionStammdaten.getInstitution().getName());
-				}
-				auszahlungDTO.setZahlungsempfaegerIBAN(institutionStammdaten.getIban().toString());
-				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(institutionStammdaten.getIban()
-					.extractClearingNumberWithoutLeadingZeros());
+				IBAN ibanInstitution = institutionStammdaten.extractIban();
+				Objects.requireNonNull(ibanInstitution, "Keine IBAN fuer Institution " + institutionStammdaten.getInstitution().getName());
+				auszahlungDTO.setZahlungsempfaegerIBAN(ibanToUnformattedString(ibanInstitution));
+				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(ibanInstitution.extractClearingNumberWithoutLeadingZeros());
 				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
 				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
 					gemeindeStammdaten.getGemeinde().getName(),
@@ -926,6 +918,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			});
 
 		return pain001DTO;
+	}
+
+	@Nonnull
+	protected String ibanToUnformattedString(@Nonnull IBAN iban) {
+		Objects.requireNonNull(iban);
+		return PATTERN.matcher(iban.getIban()).replaceAll("");
 	}
 
 	@Override
@@ -940,6 +938,31 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			LOGGER.info("Deleting Dokument: {}", generatedDokument.getId());
 			persistence.remove(GeneratedDokument.class, generatedDokument.getId());
 		}
+	}
+
+	@Override
+	@PermitAll
+	public void removeFreigabequittungFromGesuch(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch);
+
+		Optional<WriteProtectedDokument> document = getFreigabequittungFromGesuch(gesuch);
+
+		if (document.isPresent()) {
+			persistence.remove(GeneratedDokument.class, document.get().getId());
+			fileSaverService.remove(document.get().getFilepfad());
+		}
+	}
+
+	@Nonnull
+	private Optional<WriteProtectedDokument> getFreigabequittungFromGesuch(@Nonnull Gesuch gesuch) {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+
+		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
+			GeneratedDokumentTyp.FREIGABEQUITTUNG, gesuch.getJahrFallAndGemeindenummer(),
+			sprache.getLocale()
+		);
+
+		return getMaybeExistingGeneratedDokument(gesuch.getId(), fileNameForGeneratedDokumentTyp);
 	}
 
 	@Nonnull

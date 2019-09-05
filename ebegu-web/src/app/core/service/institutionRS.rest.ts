@@ -55,15 +55,17 @@ export class InstitutionRS {
     public createInstitution(institution: TSInstitution,
                              beguStartDatum: moment.Moment,
                              betreuungsangebot: TSBetreuungsangebotTyp,
-                             adminMail: string
+                             adminMail: string,
+                             gemeindeId: string
     ): IPromise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
             {
                 params: {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
-                    betreuung: betreuungsangebot.toString(),
+                    betreuung: betreuungsangebot,
                     adminMail,
+                    gemeindeId
                 },
             })
             .then(response => {
@@ -77,12 +79,6 @@ export class InstitutionRS {
 
     public getAllInstitutionen(): IPromise<TSInstitution[]> {
         return this.$http.get(this.serviceURL).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionen(response.data);
-        });
-    }
-
-    public getAllActiveInstitutionen(): IPromise<TSInstitution[]> {
-        return this.$http.get(`${this.serviceURL}/active`).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionen(response.data);
         });
     }

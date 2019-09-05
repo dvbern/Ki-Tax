@@ -58,7 +58,7 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 
 		FinanzielleSituation finanzielleSituation = TestDataUtil.createDefaultFinanzielleSituation();
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		gesuchsteller = persistence.persist(gesuchsteller);
 
 		FinanzielleSituationContainer container = TestDataUtil.createFinanzielleSituationContainer();
@@ -96,7 +96,7 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 
 	private FinanzielleSituationContainer insertNewEntity() {
 		this.gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
+		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
 		FinanzielleSituationContainer container = TestDataUtil.createFinanzielleSituationContainer();
 		gesuchsteller.setFinanzielleSituationContainer(container);
 		gesuchsteller = persistence.persist(gesuchsteller);

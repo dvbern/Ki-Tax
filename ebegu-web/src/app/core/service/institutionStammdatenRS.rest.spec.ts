@@ -20,6 +20,7 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import TSAdresse from '../../../models/TSAdresse';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenBetreuungsgutscheine from '../../../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -53,7 +54,8 @@ describe('institutionStammdatenRS', () => {
         mockInstitution = new TSInstitution('Institution_Test');
         mockAdresse = new TSAdresse();
         mockInstitutionStammdaten = new TSInstitutionStammdaten();
-        mockInstitutionStammdaten.iban = 'iban';
+        mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine = new TSInstitutionStammdatenBetreuungsgutscheine();
+        mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'iban';
         mockInstitutionStammdaten.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
         mockInstitutionStammdaten.institution = mockInstitution;
         mockInstitutionStammdaten.adresse = mockAdresse;
@@ -99,7 +101,7 @@ describe('institutionStammdatenRS', () => {
 
         describe('updateInstitutionStammdaten', () => {
             it('should update a InstitutionStammdaten', () => {
-                mockInstitutionStammdaten.iban = 'CH123456';
+                mockInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'CH123456';
                 mockInstitutionStammdatenRest =
                     ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
                 let updatedInstitutionStammdaten: TSInstitutionStammdaten;
@@ -114,42 +116,6 @@ describe('institutionStammdatenRS', () => {
                 checkFieldValues(updatedInstitutionStammdaten, mockInstitutionStammdaten);
             });
         });
-
-        describe('getAllInstitutionStammdaten', () => {
-            it('should return all InstitutionStammdaten', () => {
-                const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
-                $httpBackend.expectGET(institutionStammdatenRS.serviceURL).respond(institutionStammdatenRestArray);
-
-                let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
-                institutionStammdatenRS.getAllInstitutionStammdaten().then(result => {
-                    returnedInstitutionStammdaten = result;
-                });
-                $httpBackend.flush();
-                expect(returnedInstitutionStammdaten).toBeDefined();
-                expect(returnedInstitutionStammdaten.length).toEqual(2);
-                checkFieldValues(returnedInstitutionStammdaten[0], institutionStammdatenRestArray[0]);
-                checkFieldValues(returnedInstitutionStammdaten[1], institutionStammdatenRestArray[1]);
-            });
-        });
-
-        describe('getAllInstitutionStammdatenByDate', () => {
-            it('should return all InstitutionStammdaten im gegebenen Datum', () => {
-                const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
-                $httpBackend.expectGET(`${institutionStammdatenRS.serviceURL}/date?date=${DateUtil.momentToLocalDate(
-                    today)}`)
-                    .respond(institutionStammdatenRestArray);
-
-                let returnedInstitutionStammdaten: Array<TSInstitutionStammdaten>;
-                institutionStammdatenRS.getAllInstitutionStammdatenByDate(today).then(result => {
-                    returnedInstitutionStammdaten = result;
-                });
-                $httpBackend.flush();
-                expect(returnedInstitutionStammdaten).toBeDefined();
-                expect(returnedInstitutionStammdaten.length).toEqual(2);
-                checkFieldValues(returnedInstitutionStammdaten[0], institutionStammdatenRestArray[0]);
-                checkFieldValues(returnedInstitutionStammdaten[1], institutionStammdatenRestArray[1]);
-            });
-        });
     });
 
     function checkFieldValues(
@@ -157,7 +123,8 @@ describe('institutionStammdatenRS', () => {
         institutionStammdaten2: TSInstitutionStammdaten,
     ): void {
         expect(institutionStammdaten1).toBeDefined();
-        expect(institutionStammdaten1.iban).toEqual(institutionStammdaten2.iban);
+        expect(institutionStammdaten1.institutionStammdatenBetreuungsgutscheine.iban)
+            .toEqual(institutionStammdaten2.institutionStammdatenBetreuungsgutscheine.iban);
         expect(institutionStammdaten1.id).toEqual(institutionStammdaten2.id);
         expect(institutionStammdaten1.institution.name).toEqual(institutionStammdaten2.institution.name);
     }

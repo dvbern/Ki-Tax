@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,25 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.enums;
 
-import org.junit.Test;
-
-public class GemeindeServiceBeanTest {
-
-	@Test
-	public void findGemeinde() {
-	}
-
-	@Test
-	public void getFirst() {
-	}
-
-	@Test
-	public void getAllGemeinden() {
-	}
-
-	@Test
-	public void getStammdatenByGemeinde() {
-	}
+public enum BetreuungspensumAbweichungStatus {
+	NONE, // No BetreuungspensumAbweichung was submitted (yet)
+	NICHT_FREIGEGEBEN, // Mutationsmeldung has not been submitted yet
+	VERRECHNET, // Mutationsmeldung has been submitted
+	UEBERNOMMEN // Mutationsmeldung has been applied
 }

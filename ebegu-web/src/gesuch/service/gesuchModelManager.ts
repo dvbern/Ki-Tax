@@ -15,6 +15,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import ErrorService from '../../app/core/errors/service/ErrorService';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
@@ -66,6 +67,7 @@ import TSFamiliensituation from '../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
 import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
 import TSGemeinde from '../../models/TSGemeinde';
+import TSGemeindeKonfiguration from '../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
@@ -103,7 +105,9 @@ export default class GesuchModelManager {
     private fachstellenAnspruchList: Array<TSFachstelle>;
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenList: Array<TSInstitutionStammdaten>;
+    private activInstitutionenForGemeindeList: Array<TSInstitutionStammdaten>;
     public gemeindeStammdaten: TSGemeindeStammdaten;
+    public gemeindeKonfiguration: TSGemeindeKonfiguration;
 
     public ewkResultatGS1: TSEWKResultat;
     public ewkResultatGS2: TSEWKResultat;
@@ -201,6 +205,7 @@ export default class GesuchModelManager {
         this.ewkResultatGS2 = undefined;
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
+        this.activInstitutionenForGemeindeList = undefined;
         this.loadGemeindeStammdaten();
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
@@ -260,7 +265,22 @@ export default class GesuchModelManager {
         this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id)
             .then(stammdaten => {
                 this.gemeindeStammdaten = stammdaten;
+                this.loadGemeindeKonfiguration();
             });
+    }
+
+    /**
+     * Loads the GemeindeKonfiguration for the current Gesuch, i.e. the current Gemeinde and Gesuchsperiode
+     */
+    private loadGemeindeKonfiguration(): void {
+        for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
+            // tslint:disable-next-line:early-exit
+            if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
+                this.gemeindeKonfiguration = konfigurationsListeElement;
+                this.gemeindeKonfiguration.initProperties();
+                return;
+            }
+        }
     }
 
     public updateFachstellenAnspruchList(): void {
@@ -285,6 +305,19 @@ export default class GesuchModelManager {
         this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenList = response;
+            });
+    }
+
+    /**
+     * Retrieves the list of InstitutionStammdaten for the date of today.
+     */
+    public updateActiveInstitutionenForGemeindeList(): void {
+        if (!this.getGesuchsperiode()) {
+            return;
+        }
+        this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(this.getGesuchsperiode().id, this.getGemeinde().id)
+            .then((response: TSInstitutionStammdaten[]) => {
+                this.activInstitutionenForGemeindeList = response;
             });
     }
 
@@ -553,17 +586,28 @@ export default class GesuchModelManager {
         if (this.activInstitutionenList === undefined) {
             this.activInstitutionenList = []; // init empty while we wait for promise
             this.updateActiveInstitutionenList();
-
         }
-
         return this.activInstitutionenList;
+    }
+
+    public getActiveInstitutionenForGemeindeList(): Array<TSInstitutionStammdaten> {
+        if (this.activInstitutionenForGemeindeList === undefined) {
+            this.activInstitutionenForGemeindeList = []; // init empty while we wait for promise
+            this.updateActiveInstitutionenForGemeindeList();
+        }
+        return this.activInstitutionenForGemeindeList;
     }
 
     public resetActiveInstitutionenList(): void {
         // Der Cache muss geloescht werden, damit die Institutionen beim nächsten Aufruf neu geladen werden
-        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert
-                                                                                               // werden
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll();
         this.updateActiveInstitutionenList();
+    }
+
+    public resetActiveInstitutionenForGemeindeList(): void {
+        // Der Cache muss geloescht werden, damit die Institutionen beim nächsten Aufruf neu geladen werden
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();
+        this.updateActiveInstitutionenForGemeindeList();
     }
 
     public getStammdatenToWorkWith(): TSGesuchstellerContainer {
@@ -760,15 +804,13 @@ export default class GesuchModelManager {
         betreuungsstatusNeu: TSBetreuungsstatus,
         abwesenheit: boolean,
     ): IPromise<TSBetreuung> {
-        const kindId = this.getKindToWorkWith().id;
-
         const handleStatus = (betreuungenStatus: TSGesuchBetreuungenStatus, storedBetreuung: TSBetreuung) => {
             this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
 
             return this.handleSavedBetreuung(storedBetreuung);
         };
 
-        return this.doSaveBetreuung(betreuungToSave, betreuungsstatusNeu, kindId, abwesenheit)
+        return this.doSaveBetreuung(betreuungToSave, betreuungsstatusNeu, abwesenheit)
             .then(storedBetreuung => this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id)
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
@@ -798,26 +840,25 @@ export default class GesuchModelManager {
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
-        kindId: string,
         abwesenheit: boolean,
     ): IPromise<TSBetreuung> {
 
         switch (betreuungsstatusNeu) {
             case TSBetreuungsstatus.ABGEWIESEN:
-                return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.BESTAETIGT:
-                return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
-                return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
-                return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, kindId, this.gesuch.id);
+                return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, this.gesuch.id);
             case null:
-                return this.betreuungRS.saveBetreuung(betreuungToSave, kindId, this.gesuch.id, abwesenheit);
+                return this.betreuungRS.saveBetreuung(betreuungToSave, this.gesuch.id, abwesenheit);
             default:
                 betreuungToSave.betreuungsstatus = betreuungsstatusNeu;
-                return this.betreuungRS.saveBetreuung(betreuungToSave, kindId, this.gesuch.id, abwesenheit);
+                return this.betreuungRS.saveBetreuung(betreuungToSave, this.gesuch.id, abwesenheit);
         }
     }
 
@@ -1129,7 +1170,7 @@ export default class GesuchModelManager {
      * Sets the current user as VerantwortlicherBG and saves it in the DB
      */
     public setUserAsFallVerantwortlicherBG(user: TSBenutzer): void {
-        if (!this.gesuch || !this.gesuch.dossier) {
+        if (!this.gesuch || !this.gesuch.dossier || !this.gesuch.dossier.id) {
             return;
         }
         this.dossierRS.setVerantwortlicherBG(this.gesuch.dossier.id, user ? user.username : null)
@@ -1385,6 +1426,18 @@ export default class GesuchModelManager {
     }
 
     /**
+     * Antrag zurueckziehen
+     */
+    public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
+        // tslint:disable-next-line:no-identical-functions
+        return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
+            this.setGesuch(response);
+
+            return response;
+        });
+    }
+
+    /**
      * Returns true if the Gesuch has the given status
      */
     public isGesuchStatus(status: TSAntragStatus): boolean {
@@ -1418,7 +1471,7 @@ export default class GesuchModelManager {
 
         if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
             // readonly fuer gs wenn gesuch freigegeben oder weiter
-            const gesuchReadonly = isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
+            const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             return gesuchReadonly || periodeReadonly;
         }
 
@@ -1568,10 +1621,9 @@ export default class GesuchModelManager {
      * erkannt.
      */
     public isDefaultTagesschuleAllowed(instStamm: TSInstitutionStammdaten): boolean {
-        if (instStamm.id === '199ac4a1-448f-4d4c-b3a6-5aee21f89613') {
-            return !(this.getGesuchsperiode() && this.getGesuchsperiode().hasTagesschulenAnmeldung());
+        if (instStamm.id === CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE) {
+            return !(this.gemeindeKonfiguration.hasTagesschulenAnmeldung());
         }
-
         return true;
     }
 

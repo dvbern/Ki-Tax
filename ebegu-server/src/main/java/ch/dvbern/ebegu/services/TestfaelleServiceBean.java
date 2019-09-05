@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -953,8 +954,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		mailService.sendInfoBetreuungenBestaetigt(gesuch);
 		mailService.sendInfoBetreuungAbgelehnt(firstBetreuung);
-		mailService.sendInfoSchulamtAnmeldungUebernommen(firstBetreuung);
-		mailService.sendInfoSchulamtAnmeldungAbgelehnt(firstBetreuung);
 		mailService.sendInfoVerfuegtGesuch(gesuch);
 		mailService.sendInfoVerfuegtMutation(gesuch);
 		mailService.sendInfoMahnung(gesuch);
@@ -965,6 +964,14 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 		mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
 		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale);
+
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setId(firstBetreuung.getId());
+		anmeldung.setInstitutionStammdaten(firstBetreuung.getInstitutionStammdaten());
+		anmeldung.setKind(firstBetreuung.getKind());
+
+		mailService.sendInfoSchulamtAnmeldungUebernommen(anmeldung);
+		mailService.sendInfoSchulamtAnmeldungAbgelehnt(anmeldung);
 	}
 
 	@Nonnull

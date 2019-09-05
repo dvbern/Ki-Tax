@@ -217,6 +217,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		extractedFamiliensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		extractedFamiliensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
+		betreuung.initVorgaengerVerfuegungen(null, null);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(betreuung);
 
 
@@ -270,6 +271,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		extractedFamiliensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		extractedFamiliensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
+		betreuung.initVorgaengerVerfuegungen(null, null);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(betreuung);
 		assertNotNull(result);
 		assertEquals(12, result.size());

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,6 +54,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -284,9 +286,16 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	public void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode) {
 		Collection<Einstellung> einstellungenOfLastGP = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, lastGesuchsperiode,
 			Einstellung_.gesuchsperiode);
+		LocalDate gueltigAb = gesuchsperiodeToCreate.getGueltigkeit().getGueltigAb();
+		String gueltigAbAsString = Constants.DATE_FORMATTER.format(gueltigAb);
 		einstellungenOfLastGP
 			.forEach(lastGPEinstellung -> {
 				Einstellung einstellungOfNewGP = lastGPEinstellung.copyGesuchsperiode(gesuchsperiodeToCreate);
+				// Es gibt zwei Ausnahmen, wo die Einstellung nicht kopiert werden darf. Wir ueberschreiben mit dem Start der GP
+				if (lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB ||
+					lastGPEinstellung.getKey() == EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG) {
+					einstellungOfNewGP.setValue(gueltigAbAsString);
+				}
 				saveEinstellung(einstellungOfNewGP);
 			});
 	}

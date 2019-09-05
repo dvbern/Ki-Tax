@@ -44,6 +44,7 @@ import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSInstitution from '../models/TSInstitution';
 import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
 import {TSMandant} from '../models/TSMandant';
 import TSModulTagesschule from '../models/TSModulTagesschule';
@@ -234,7 +235,8 @@ describe('EbeguRestUtil', () => {
         describe('parseBetreuung()', () => {
             it('should transform TSBetreuung to REST object and back', () => {
                 const instStam = new TSInstitutionStammdaten();
-                instStam.iban = 'iban';
+                instStam.institutionStammdatenBetreuungsgutscheine = new TSInstitutionStammdatenBetreuungsgutscheine();
+                instStam.institutionStammdatenBetreuungsgutscheine.iban = 'iban';
                 instStam.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
                 instStam.institution = createInstitution();
                 instStam.adresse = createAdresse();
@@ -291,7 +293,7 @@ describe('EbeguRestUtil', () => {
 
                 expect(restBetreuung).toBeDefined();
                 expect(restBetreuung.betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND);
-                expect(restBetreuung.institutionStammdaten.iban).toEqual(betreuung.institutionStammdaten.iban);
+                expect(restBetreuung.institutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban).toEqual(betreuung.institutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban);
                 expect(restBetreuung.betreuungspensumContainers).toBeDefined();
                 expect(restBetreuung.betreuungspensumContainers.length)
                     .toEqual(betreuung.betreuungspensumContainers.length);
@@ -348,9 +350,11 @@ describe('EbeguRestUtil', () => {
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
                 tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
+                tsInstStammdatenTagesschule.gemeinde = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
                 const myInstitutionStammdaten = new TSInstitutionStammdaten();
-                myInstitutionStammdaten.iban = 'my-iban';
+                myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine = new TSInstitutionStammdatenBetreuungsgutscheine();
+                myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'my-iban';
                 myInstitutionStammdaten.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
                 myInstitutionStammdaten.institution = myInstitution;
                 myInstitutionStammdaten.adresse = myAdress;
@@ -360,12 +364,13 @@ describe('EbeguRestUtil', () => {
                 myInstitutionStammdaten.institutionStammdatenTagesschule = tsInstStammdatenTagesschule;
 
                 TestDataUtil.setAbstractMutableFieldsUndefined(myInstitutionStammdaten);
+                TestDataUtil.setAbstractFieldsUndefined(myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine);
 
                 const restInstitutionStammdaten = ebeguRestUtil.institutionStammdatenToRestObject({},
                     myInstitutionStammdaten);
 
                 expect(restInstitutionStammdaten).toBeDefined();
-                expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
+                expect(restInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban).toEqual(myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban);
                 expect(restInstitutionStammdaten.mail).toEqual(myInstitutionStammdaten.mail);
                 expect(restInstitutionStammdaten.telefon).toEqual(myInstitutionStammdaten.telefon);
                 expect(restInstitutionStammdaten.gueltigAb)
