@@ -1634,5 +1634,8 @@
     "FERIENINSEL_HINZUFUEGEN": "",
     "KEINE_GEMEINDE_KONFIGURATION": "",
     "INSTITUTION_ERSTELLEN": "",
-    "INSTITUTION_STATUS_KONFIGURATION": ""
+    "INSTITUTION_STATUS_KONFIGURATION": "",
+    "BLOG_NEUIGKEITEN_LINK": "https://blog.kibon.ch/fr/category/nouvelles/",
+    "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-commune/",
+    "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-institutions/"
 }

@@ -42,6 +42,20 @@
         </p>
     </div>
 
+    <div class="marginTop40" *ngIf="hasRoleGemeinde || hasRoleInstitution">
+        <h2>Blog</h2>
+        <p *ngIf="hasRoleGemeinde">
+            <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_GEMEINDE_LINK' | translate}}">
+                <span translate="GEMEINDE">&nbsp;</span>
+            </a>
+        </p>
+        <p *ngIf="hasRoleInstitution">
+            <a target="_blank" rel="noopener noreferrer" href="{{'BLOG_INSTITUTION_LINK' | translate}}">
+                <span translate="INSTITUTION">&nbsp;</span>
+            </a>
+        </p>
+    </div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions class="marginTop40" layout-align="center center">
