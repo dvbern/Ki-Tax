@@ -47,7 +47,6 @@ import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
 import {TSMandant} from '../models/TSMandant';
-import TSModulTagesschule from '../models/TSModulTagesschule';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
