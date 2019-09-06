@@ -58,6 +58,7 @@ export class EditGemeindeComponent implements OnInit {
     public editMode: boolean = false;
     public tageschuleEnabledForMandant: boolean;
     public currentTab: number;
+    public altBGAdresse: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -95,11 +96,19 @@ export class EditGemeindeComponent implements OnInit {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+
                 if (stammdaten.adresse === undefined) {
                     stammdaten.adresse = new TSAdresse();
                 }
                 if (stammdaten.beschwerdeAdresse === undefined) {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
+                }
+                if (stammdaten.bgAdresse === undefined) {
+                    this.altBGAdresse = false;
+                    stammdaten.bgAdresse = new TSAdresse();
+                }
+                else{
+                    this.altBGAdresse = true;
                 }
                 if (!stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessource();
@@ -144,6 +153,10 @@ export class EditGemeindeComponent implements OnInit {
             if (this.keineBeschwerdeAdresse) {
                 // Reset Beschwerdeadresse if not used
                 stammdaten.beschwerdeAdresse = undefined;
+            }
+            if (!this.altBGAdresse) {
+                // Reset BGAdresse if not used
+                stammdaten.bgAdresse = undefined;
             }
             if (stammdaten.standardRechtsmittelbelehrung) {
                 // reset custom Rechtsmittelbelehrung if checkbox not checked

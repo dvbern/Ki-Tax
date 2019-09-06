@@ -48,7 +48,8 @@
                 <dv-edit-gemeinde-bg [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
                                      [beguStartStr]="beguStartStr"
-                                     [editMode]="editModeForBG()">
+                                     [editMode]="editModeForBG()"
+                                     [altBGAdresse]="altBGAdresse">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"

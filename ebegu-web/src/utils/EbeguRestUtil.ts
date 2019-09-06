@@ -794,8 +794,11 @@ export default class EbeguRestUtil {
 
             restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
             restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
+            restStammdaten.defaultBenutzer = this.userToRestObject({}, stammdaten.defaultBenutzer);
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
+            restStammdaten.bgAdresse = this.adresseToRestObject({}, stammdaten.bgAdresse);
+            restStammdaten.tsAdresse = this.adresseToRestObject({}, stammdaten.tsAdresse);
             restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;

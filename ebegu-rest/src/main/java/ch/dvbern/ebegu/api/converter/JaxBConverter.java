@@ -4255,12 +4255,36 @@ public class JaxBConverter extends AbstractConverter {
 			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
 				.ifPresent(stammdaten::setDefaultBenutzerTS);
 		}
+		if (jaxStammdaten.getDefaultBenutzer() != null) {
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzer);
+		}
 
 		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
 		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
 			.ifPresent(stammdaten::setGemeinde);
 
 		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+
+		if(jaxStammdaten.getBgAdresse() != null){
+			if(stammdaten.getBgAdresse() == null){
+				stammdaten.setBgAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBgAdresse(), stammdaten.getBgAdresse());
+		}
+		else{
+			stammdaten.setBgAdresse(null);
+		}
+
+		if(jaxStammdaten.getTsAdresse() != null){
+			if(stammdaten.getTsAdresse() == null){
+				stammdaten.setTsAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getTsAdresse(), stammdaten.getTsAdresse());
+		}
+		else{
+			stammdaten.setTsAdresse(null);
+		}
 
 		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
 			if (stammdaten.getBeschwerdeAdresse() == null) {

@@ -33,6 +33,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public beguStartStr: string;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
+    @Input() public altBGAdresse: boolean;
 
     public constructor(
     ) {

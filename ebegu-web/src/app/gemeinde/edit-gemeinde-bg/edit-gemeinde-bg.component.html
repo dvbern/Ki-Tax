@@ -20,13 +20,95 @@
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
-                <!-- Betreuungsgutscheine anbieten ab -->
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <h3 translate>BEGU_START</h3>
-                        <p>{{beguStartStr}}</p>
+                        <div class="form-group">
+                            <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
+                                          [(ngModel)]="altBGAdresse">
+                                {{'BG_ALTERNATIVE_ADRESSE'|translate}}
+                            </mat-checkbox>
+                        </div>
+                        <div *ngIf="altBGAdresse">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="required"
+                                                   translate for="anschrift_bg_id">ADRESSE_ANSCHRIFT</label>
+                                            <input id="anschrift_bg_id"
+                                                   type="text"
+                                                   name="anschrift_bg_id"
+												   #nameAnschriftBG="ngModel"
+                                                   [(ngModel)]="stammdaten.bgAdresse.organisation"
+                                                   [maxlength]="255"
+                                                   class="form-control"
+                                                   required
+                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                            <dv-error-messages [errorObject]="nameAnschriftBG.errors"
+                                                               inputId="anschrift_bg_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Strasse -->
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <label class="required"
+                                               translate
+                                               for="strasse_bg_id">ADRESSE_STRASSE</label>
+                                        <input id="strasse_bg_id" type="text" name="strasse_bg_id"
+											   #nameStrasseBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.strasse"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="nameStrasseBG.errors"
+                                                           inputId="strasse_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Hausnummer -->
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label translate for="hausnummer_bg_id">ADRESSE_NUMMER</label>
+                                        <input id="hausnummer_bg_id"
+                                               type="text"
+                                               name="hausnummer_bg_id"
+											   #nameHausnummerBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.hausnummer"
+                                               [maxlength]="255"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameHausnummerBG.errors"
+                                                           inputId="hausnummer_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- PLZ -->
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label class="required" translate for="plz_bg_id">ADRESSE_PLZ</label>
+                                        <input id="plz_bg_id" type="text" name="plz_bg_id" #namePLZBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.plz"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="namePLZBG.errors"
+                                                           inputId="plz_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Ort -->
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <label class="required" translate for="ort_bg_id">ADRESSE_ORT</label>
+                                        <input id="ort_bg_id" type="text" name="ort_bg_id" #nameOrtBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.ort"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="nameOrtBG.errors"
+                                                           inputId="ort_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <!-- Standardverantwortliche BG -->
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -37,7 +119,7 @@
                                     id="verantwortliche_bg_id"
                                     name="verantwortliche_bg_id"
                                     class="form-control"
-                                    #nameVerantwortlicheBG='ngModel'
+									#nameVerantwortlicheBG='ngModel'
                                     [compareWith]="compareBenutzer"
                                     required>
                             <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
@@ -46,6 +128,15 @@
                         </mat-select>
                         <dv-error-messages [errorObject]="nameVerantwortlicheBG.errors"
                                            inputId="verantwortliche_bg_id"></dv-error-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Betreuungsgutscheine anbieten ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>BEGU_START</h3>
+                        <p>{{beguStartStr}}</p>
                     </div>
                 </div>
             </div>
@@ -60,13 +151,28 @@
     <ng-template #viewModeTemplate>
         <fieldset>
             <div class="row">
-                <!-- Betreuungsgutscheine anbieten ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>BEGU_START</h3>
-                        <p>{{beguStartStr}}</p>
+
+                <!-- Beschwerdeadresse -->
+                <div>
+                    <div *ngIf="!altBGAdresse; else displayBGAdresse" class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BG_ADRESSE</h3>
+                            <p translate>BG_ALTERNATIVE_ADRESSE</p>
+                        </div>
                     </div>
+                    <ng-template #displayBGAdresse>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>BG_ADRESSE</h3>
+                                <p>{{stammdaten.bgAdresse.organisation}}</p>
+                                <p>{{stammdaten.bgAdresse.strasse}}
+                                    {{stammdaten.bgAdresse.hausnummer}}</p>
+                                <p>{{stammdaten.bgAdresse.plz}} {{stammdaten.bgAdresse.ort}}</p>
+                            </div>
+                        </div>
+                    </ng-template>
                 </div>
+
                 <!-- Standardverantwortliche -->
                 <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
                     <div class="form-group">
@@ -74,6 +180,15 @@
                         <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
                     </div>
                 </div>
+
+                <!-- Betreuungsgutscheine anbieten ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>BEGU_START</h3>
+                        <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+
             </div>
             <dv-gemeinde-bg-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
