@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -100,7 +99,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private Integer reihenfolge;
 
-	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
 	@OrderBy("wochentag")
 	private Set<ModulTagesschule> module = new LinkedHashSet<>();
 
