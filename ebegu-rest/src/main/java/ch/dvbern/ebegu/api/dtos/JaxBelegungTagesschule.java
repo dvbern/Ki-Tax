@@ -16,8 +16,8 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,17 +37,17 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 	private static final long serialVersionUID = -1297972380574937397L;
 
 	@NotNull
-	private List<JaxModulTagesschule> moduleTagesschule = new ArrayList<>();
+	private Set<JaxModulTagesschule> moduleTagesschule = new LinkedHashSet<>();
 
 	@NotNull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eintrittsdatum;
 
-	public List<JaxModulTagesschule> getModuleTagesschule() {
+	public Set<JaxModulTagesschule> getModuleTagesschule() {
 		return moduleTagesschule;
 	}
 
-	public void setModuleTagesschule(List<JaxModulTagesschule> moduleTagesschule) {
+	public void setModuleTagesschule(Set<JaxModulTagesschule> moduleTagesschule) {
 		this.moduleTagesschule = moduleTagesschule;
 	}
 

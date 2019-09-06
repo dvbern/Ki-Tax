@@ -15,13 +15,9 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
 import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,67 +27,47 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
-import ch.dvbern.ebegu.enums.ModulTagesschuleName;
-import ch.dvbern.ebegu.validators.CheckTimeRange;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 /**
  * Entity for the Module of the Tageschulangebote.
  */
-@CheckTimeRange
 @Audited
 @Entity
-public class ModulTagesschule extends AbstractMutableEntity implements Comparable<ModulTagesschule> {
+public class ModulTagesschule extends AbstractEntity implements Comparable<ModulTagesschule> {
 
 	private static final long serialVersionUID = -8403411439182708718L;
 
-	@NotNull @Nonnull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_inst_stammdaten_tagesschule_id"), nullable = false)
-	private InstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
-	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_modul_tagesschule_gesuchsperiode_id"))
-	private Gesuchsperiode gesuchsperiode;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_modul_tagesschule_group_id"), nullable = false)
+	private ModulTagesschuleGroup modulTagesschuleGroup;
 
 	@Enumerated(value = EnumType.STRING)
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private DayOfWeek wochentag;
 
-	@Enumerated(value = EnumType.STRING)
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private ModulTagesschuleName modulTagesschuleName = ModulTagesschuleName.DYNAMISCH;
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private String bezeichnung;
+	public ModulTagesschuleGroup getModulTagesschuleGroup() {
+		return modulTagesschuleGroup;
+	}
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private LocalTime zeitVon;
+	public void setModulTagesschuleGroup(ModulTagesschuleGroup modulTagesschuleGroup) {
+		this.modulTagesschuleGroup = modulTagesschuleGroup;
+	}
 
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private LocalTime zeitBis;
+	@Nonnull
+	public DayOfWeek getWochentag() {
+		return wochentag;
+	}
 
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal verpflegungskosten;
-
-	@Enumerated(value = EnumType.STRING)
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private ModulTagesschuleIntervall intervall = ModulTagesschuleIntervall.WOECHENTLICH;
-
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private boolean wirdPaedagogischBetreut = false;
-
+	public void setWochentag(@Nonnull DayOfWeek wochentag) {
+		this.wochentag = wochentag;
+	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -105,125 +81,38 @@ public class ModulTagesschule extends AbstractMutableEntity implements Comparabl
 		if (!(other instanceof ModulTagesschule)) {
 			return false;
 		}
+
 		final ModulTagesschule otherModulTagesschule = (ModulTagesschule) other;
-		return getModulTagesschuleName() == otherModulTagesschule.getModulTagesschuleName() &&
-			getWochentag() == otherModulTagesschule.getWochentag() &&
-			Objects.equals(getZeitVon(), otherModulTagesschule.getZeitVon()) &&
-			Objects.equals(getZeitBis(), otherModulTagesschule.getZeitBis());
-	}
-
-	@Nonnull
-	public DayOfWeek getWochentag() {
-		return wochentag;
-	}
-
-	public void setWochentag(@Nonnull DayOfWeek wochentag) {
-		this.wochentag = wochentag;
-	}
-
-	@Nonnull
-	public ModulTagesschuleName getModulTagesschuleName() {
-		return modulTagesschuleName;
-	}
-
-	public void setModulTagesschuleName(@Nonnull ModulTagesschuleName modulname) {
-		this.modulTagesschuleName = modulname;
-	}
-
-	@Nonnull
-	public LocalTime getZeitVon() {
-		return zeitVon;
-	}
-
-	public void setZeitVon(@Nonnull LocalTime zeitVon) {
-		this.zeitVon = zeitVon;
-	}
-
-	@Nonnull
-	public LocalTime getZeitBis() {
-		return zeitBis;
-	}
-
-	public void setZeitBis(@Nonnull LocalTime zeitBis) {
-		this.zeitBis = zeitBis;
-	}
-
-	@Nonnull
-	public InstitutionStammdatenTagesschule getInstitutionStammdatenTagesschule() {
-		return institutionStammdatenTagesschule;
-	}
-
-	public void setInstitutionStammdatenTagesschule(@Nonnull InstitutionStammdatenTagesschule instStammdaten) {
-		this.institutionStammdatenTagesschule = instStammdaten;
-	}
-
-	@Nonnull
-	public Gesuchsperiode getGesuchsperiode() {
-		return gesuchsperiode;
-	}
-
-	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
-		this.gesuchsperiode = gesuchsperiode;
-	}
-
-	@Nonnull
-	public String getBezeichnung() {
-		return bezeichnung;
-	}
-
-	public void setBezeichnung(@Nonnull String bezeichnung) {
-		this.bezeichnung = bezeichnung;
-	}
-
-	public BigDecimal getVerpflegungskosten() {
-		return verpflegungskosten;
-	}
-
-	public void setVerpflegungskosten(BigDecimal verpflegungskosten) {
-		this.verpflegungskosten = verpflegungskosten;
-	}
-
-	@Nonnull
-	public ModulTagesschuleIntervall getIntervall() {
-		return intervall;
-	}
-
-	public void setIntervall(@Nonnull ModulTagesschuleIntervall intervall) {
-		this.intervall = intervall;
-	}
-
-	public boolean isWirdPaedagogischBetreut() {
-		return wirdPaedagogischBetreut;
-	}
-
-	public void setWirdPaedagogischBetreut(boolean wirdPaedagogischBetreut) {
-		this.wirdPaedagogischBetreut = wirdPaedagogischBetreut;
+		return getModulTagesschuleGroup().isSame(otherModulTagesschule.getModulTagesschuleGroup()) &&
+			getWochentag() == otherModulTagesschule.getWochentag();
 	}
 
 	@Override
 	public int compareTo(@Nonnull ModulTagesschule o) {
 		CompareToBuilder builder = new CompareToBuilder();
-		builder.append(this.getInstitutionStammdatenTagesschule(), o.getInstitutionStammdatenTagesschule());
-		builder.append(this.getGesuchsperiode().getId(), o.getGesuchsperiode().getId());
-		builder.append(this.getZeitVon(), o.getZeitVon());
-		builder.append(this.getZeitBis(), o.getZeitBis());
+		builder.append(this.getModulTagesschuleGroup(), o.getModulTagesschuleGroup());
 		builder.append(this.getWochentag(), o.getWochentag());
-		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
 		return builder.toComparison();
+	}
+
+	@Nonnull
+	public ModulTagesschule copyModulTagesschule(@Nonnull ModulTagesschule target, @Nonnull AntragCopyType copyType) {
+		switch (copyType) {
+		case MUTATION:
+			target.setWochentag(getWochentag());
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 
 	public ModulTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		ModulTagesschule copy = new ModulTagesschule();
-		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
-		copy.setGesuchsperiode(gesuchsperiode);
+		copy.setModulTagesschuleGroup(this.getModulTagesschuleGroup().copyForGesuchsperiode(gesuchsperiode));
 		copy.setWochentag(this.getWochentag());
-		copy.setModulTagesschuleName(this.getModulTagesschuleName());
-		copy.setBezeichnung(this.getBezeichnung());
-		copy.setZeitVon(this.getZeitVon());
-		copy.setZeitBis(this.getZeitBis());
-		copy.setVerpflegungskosten(this.getVerpflegungskosten());
-		copy.setIntervall(this.getIntervall());
-		copy.setWirdPaedagogischBetreut(this.isWirdPaedagogischBetreut());
 		return copy;
 	}
 }

@@ -19,9 +19,9 @@ import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 
-public class CheckTimeRangeValidator implements ConstraintValidator<CheckTimeRange, ModulTagesschule> {
+public class CheckTimeRangeValidator implements ConstraintValidator<CheckTimeRange, ModulTagesschuleGroup> {
 
 	@Override
 	public void initialize(CheckTimeRange constraintAnnotation) {
@@ -29,7 +29,7 @@ public class CheckTimeRangeValidator implements ConstraintValidator<CheckTimeRan
 	}
 
 	@Override
-	public boolean isValid(@Nonnull ModulTagesschule modul, ConstraintValidatorContext constraintValidatorContext) {
+	public boolean isValid(@Nonnull ModulTagesschuleGroup modul, ConstraintValidatorContext constraintValidatorContext) {
 		return modul.getZeitVon().isBefore(modul.getZeitBis()); // es ist nicht erlaubt dass sie gleich sind
 	}
 }

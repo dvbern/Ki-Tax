@@ -46,7 +46,7 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenTagesschule")
-	private Set<ModulTagesschule> moduleTagesschule = new TreeSet<>();
+	private Set<ModulTagesschuleGroup> modulTagesschuleGroups = new TreeSet<>();
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
@@ -79,12 +79,12 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 	}
 
 	@Nullable
-	public Set<ModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	public Set<ModulTagesschuleGroup> getModulTagesschuleGroups() {
+		return modulTagesschuleGroups;
 	}
 
-	public void setModuleTagesschule(@Nullable Set<ModulTagesschule> moduleTagesschule) {
-		this.moduleTagesschule = moduleTagesschule;
+	public void setModulTagesschuleGroups(@Nullable Set<ModulTagesschuleGroup> modulTagesschuleGroups) {
+		this.modulTagesschuleGroups = modulTagesschuleGroups;
 	}
 
 	@Nonnull

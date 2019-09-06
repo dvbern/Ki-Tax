@@ -106,6 +106,7 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
@@ -184,6 +185,7 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.TextRessource;
@@ -1562,7 +1564,7 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxInstitutionStammdatenTagesschule();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
 		jaxInstStammdatenTagesschule.setGemeinde(gemeindeToJAX(persistedInstStammdatenTagesschule.getGemeinde()));
-		jaxInstStammdatenTagesschule.setModuleTagesschule(moduleTagesschuleListToJax(persistedInstStammdatenTagesschule.getModuleTagesschule()));
+		jaxInstStammdatenTagesschule.setModulTagesschuleGroups(modulTagesschuleGroupListToJax(persistedInstStammdatenTagesschule.getModulTagesschuleGroups()));
 
 		return jaxInstStammdatenTagesschule;
 	}
@@ -1589,23 +1591,85 @@ public class JaxBConverter extends AbstractConverter {
 				gemeindeID));
 		institutionStammdatenTagesschule.setGemeinde(gemeinde);
 
-		final Set<ModulTagesschule> convertedModuleTagesschule =
-			moduleTagesschuleListToEntity(institutionStammdatenTagesschuleJAXP.getModuleTagesschule(),
-				institutionStammdatenTagesschule.getModuleTagesschule(), institutionStammdatenTagesschule);
+		final Set<ModulTagesschuleGroup> convertedModuleTagesschule =
+			modulTagesschuleGroupListToEntity(institutionStammdatenTagesschuleJAXP.getModulTagesschuleGroups(),
+				institutionStammdatenTagesschule.getModulTagesschuleGroups(), institutionStammdatenTagesschule);
 		if (convertedModuleTagesschule != null) {
 			//change the existing collection to reflect changes
 			// Already tested: All existing module of the list remain as they were, that means their data are updated
 			// and the objects are not created again. ID and InsertTimeStamp are the same as before
-			institutionStammdatenTagesschule.getModuleTagesschule().clear();
-			institutionStammdatenTagesschule.getModuleTagesschule().addAll(convertedModuleTagesschule);
+			institutionStammdatenTagesschule.getModulTagesschuleGroups().clear();
+			institutionStammdatenTagesschule.getModulTagesschuleGroups().addAll(convertedModuleTagesschule);
 		}
 
 		return institutionStammdatenTagesschule;
 	}
 
 	@Nullable
+	private ModulTagesschuleGroup modulTagesschuleGroupToEntity(
+		@Nullable JaxModulTagesschuleGroup jaxModulTagesschuleGroup,
+		@Nonnull ModulTagesschuleGroup modulTagesschuleGroup,
+		@Nonnull InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+
+		if (jaxModulTagesschuleGroup == null) {
+			return null;
+		}
+
+		convertAbstractFieldsToEntity(jaxModulTagesschuleGroup, modulTagesschuleGroup);
+		final Optional<Gesuchsperiode> gesuchsperiode =
+			gesuchsperiodeService.findGesuchsperiode(jaxModulTagesschuleGroup.getGesuchsperiodeId());
+		if (!gesuchsperiode.isPresent()) {
+			throw new EbeguEntityNotFoundException(
+				"modulTagesschuleToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jaxModulTagesschuleGroup.getGesuchsperiodeId());
+		}
+		modulTagesschuleGroup.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschule);
+		modulTagesschuleGroup.setGesuchsperiode(gesuchsperiode.get());
+		modulTagesschuleGroup.setModulTagesschuleName(jaxModulTagesschuleGroup.getModulTagesschuleName());
+		modulTagesschuleGroup.setBezeichnung(jaxModulTagesschuleGroup.getBezeichnung());
+		modulTagesschuleGroup.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitVon()));
+		modulTagesschuleGroup.setZeitBis(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitBis()));
+		modulTagesschuleGroup.setVerpflegungskosten(jaxModulTagesschuleGroup.getVerpflegungskosten());
+		modulTagesschuleGroup.setIntervall(jaxModulTagesschuleGroup.getIntervall());
+		modulTagesschuleGroup.setWirdPaedagogischBetreut(jaxModulTagesschuleGroup.isWirdPaedagogischBetreut());
+		modulTagesschuleGroup.setReihenfolge(jaxModulTagesschuleGroup.getReihenfolge());
+
+		modulTagesschuleGroup.setModule(moduleTagesschuleListToEntity(jaxModulTagesschuleGroup.getModule(), modulTagesschuleGroup.getModule(), institutionStammdatenTagesschule));
+
+		return modulTagesschuleGroup;
+	}
+
+	@Nullable
+	private Set<ModulTagesschuleGroup> modulTagesschuleGroupListToEntity(
+		@Nullable List<JaxModulTagesschuleGroup> jaxModulTagesschuleGroups,
+		@Nullable Set<ModulTagesschuleGroup> modulTagesschuleGroupsOfInstitution,
+		@Nonnull InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+
+		if (modulTagesschuleGroupsOfInstitution != null && jaxModulTagesschuleGroups != null) {
+			final Set<ModulTagesschuleGroup> transformedModule = new TreeSet<>();
+			for (final JaxModulTagesschuleGroup jaxModulTagesschule : jaxModulTagesschuleGroups) {
+				final ModulTagesschuleGroup modulTagesschuleToMergeWith = modulTagesschuleGroupsOfInstitution.stream()
+					.filter(existingModul -> existingModul.getId().equalsIgnoreCase(jaxModulTagesschule.getId()))
+					.reduce(StreamsUtil.toOnlyElement())
+					.orElse(new ModulTagesschuleGroup());
+				final ModulTagesschuleGroup modulTagesschuleToAdd =
+					modulTagesschuleGroupToEntity(jaxModulTagesschule, modulTagesschuleToMergeWith, institutionStammdatenTagesschule);
+				if (modulTagesschuleToAdd != null) {
+					final boolean added = transformedModule.add(modulTagesschuleToAdd);
+					if (!added) {
+						LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", modulTagesschuleToAdd);
+					}
+				}
+			}
+			return transformedModule;
+		}
+		return null;
+	}
+
+	@Nullable
 	private Set<ModulTagesschule> moduleTagesschuleListToEntity(
-		@Nullable List<JaxModulTagesschule> jaxModuleTagesschule,
+		@Nullable Set<JaxModulTagesschule> jaxModuleTagesschule,
 		@Nullable Set<ModulTagesschule> moduleOfInstitution,
 		@Nonnull InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
 
@@ -1619,7 +1683,6 @@ public class JaxBConverter extends AbstractConverter {
 				final ModulTagesschule modulTagesschuleToAdd =
 					modulTagesschuleToEntity(jaxModulTagesschule, modulTagesschuleToMergeWith);
 				if (modulTagesschuleToAdd != null) {
-					modulTagesschuleToAdd.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschule);
 					final boolean added = transformedModule.add(modulTagesschuleToAdd);
 					if (!added) {
 						LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", modulTagesschuleToAdd);
@@ -1636,32 +1699,11 @@ public class JaxBConverter extends AbstractConverter {
 		@Nullable JaxModulTagesschule jaxModulTagesschule,
 		@Nonnull ModulTagesschule modulTagesschule) {
 
-		if (jaxModulTagesschule == null
-			|| jaxModulTagesschule.getZeitVon() == null
-			|| jaxModulTagesschule.getZeitBis() == null) {
-
+		if (jaxModulTagesschule == null) {
 			return null;
 		}
-
-		convertAbstractVorgaengerFieldsToEntity(jaxModulTagesschule, modulTagesschule);
-		final Optional<Gesuchsperiode> gesuchsperiode =
-			gesuchsperiodeService.findGesuchsperiode(jaxModulTagesschule.getGesuchsperiodeId());
-		if (!gesuchsperiode.isPresent()) {
-			throw new EbeguEntityNotFoundException(
-				"modulTagesschuleToEntity",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				jaxModulTagesschule.getGesuchsperiodeId());
-		}
-		modulTagesschule.setGesuchsperiode(gesuchsperiode.get());
-		modulTagesschule.setModulTagesschuleName(jaxModulTagesschule.getModulTagesschuleName());
-		modulTagesschule.setBezeichnung(jaxModulTagesschule.getBezeichnung());
+		convertAbstractFieldsToEntity(jaxModulTagesschule, modulTagesschule);
 		modulTagesschule.setWochentag(jaxModulTagesschule.getWochentag());
-		modulTagesschule.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschule.getZeitVon()));
-		modulTagesschule.setZeitBis(hoursAndMinutesToDate(jaxModulTagesschule.getZeitBis()));
-		modulTagesschule.setVerpflegungskosten(jaxModulTagesschule.getVerpflegungskosten());
-		modulTagesschule.setIntervall(jaxModulTagesschule.getIntervall());
-		modulTagesschule.setWirdPaedagogischBetreut(jaxModulTagesschule.isWirdPaedagogischBetreut());
-
 		return modulTagesschule;
 	}
 
@@ -2441,19 +2483,25 @@ public class JaxBConverter extends AbstractConverter {
 		if (belegungTagesschuleJAXP != null && instStammdatenTagesschule != null) {
 			convertAbstractVorgaengerFieldsToEntity(belegungTagesschuleJAXP, belegungTagesschule);
 
-			final Set<ModulTagesschule> convertedModule =
-				moduleTagesschuleListToEntity(belegungTagesschuleJAXP.getModuleTagesschule(),
-					instStammdatenTagesschule.getModuleTagesschule(), instStammdatenTagesschule);
-			if (convertedModule != null) {
+			if (instStammdatenTagesschule.getModulTagesschuleGroups() != null) {
+
+				final Set<ModulTagesschule> convertedModule = new HashSet<>();
+				instStammdatenTagesschule.getModulTagesschuleGroups().forEach(group -> {
+					Set<ModulTagesschule> convertedSet = moduleTagesschuleListToEntity(belegungTagesschuleJAXP.getModuleTagesschule(),
+						group.getModule(), instStammdatenTagesschule);
+					if (convertedSet != null) {
+						convertedModule.addAll(convertedSet);
+					}
+				});
 				// change the existing collection to reflect changes
 				// Already tested: All existing module of the list remain as they were, that means their data are
 				// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
 				belegungTagesschule.getModuleTagesschule().clear();
 				belegungTagesschule.getModuleTagesschule().addAll(convertedModule);
 			}
-
 			belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
 			return belegungTagesschule;
+
 		}
 		return null;
 	}
@@ -2843,14 +2891,24 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private List<JaxModulTagesschule> moduleTagesschuleListToJax(@Nullable final Set<ModulTagesschule> module) {
+	private List<JaxModulTagesschuleGroup> modulTagesschuleGroupListToJax(@Nullable final Set<ModulTagesschuleGroup> module) {
 		if (module == null) {
 			return Collections.emptyList();
+		}
+		return module.stream()
+			.map(this::modulTagesschuleGroupToJAX)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private Set<JaxModulTagesschule> moduleTagesschuleListToJax(@Nullable final Set<ModulTagesschule> module) {
+		if (module == null) {
+			return Collections.emptySet();
 		}
 
 		return module.stream()
 			.map(this::modulTagesschuleToJAX)
-			.collect(Collectors.toList());
+			.collect(Collectors.toSet());
 	}
 
 	@Nullable
@@ -2860,18 +2918,26 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		final JaxModulTagesschule jaxModulTagesschule = new JaxModulTagesschule();
-		convertAbstractVorgaengerFieldsToJAX(modulTagesschule, jaxModulTagesschule);
-		jaxModulTagesschule.setGesuchsperiodeId(modulTagesschule.getGesuchsperiode().getId());
-		jaxModulTagesschule.setModulTagesschuleName(modulTagesschule.getModulTagesschuleName());
-		jaxModulTagesschule.setBezeichnung(modulTagesschule.getBezeichnung());
+		convertAbstractFieldsToJAX(modulTagesschule, jaxModulTagesschule);
 		jaxModulTagesschule.setWochentag(modulTagesschule.getWochentag());
-		jaxModulTagesschule.setZeitVon(dateToHoursAndMinutes(modulTagesschule.getZeitVon()));
-		jaxModulTagesschule.setZeitBis(dateToHoursAndMinutes(modulTagesschule.getZeitBis()));
-		jaxModulTagesschule.setVerpflegungskosten(modulTagesschule.getVerpflegungskosten());
-		jaxModulTagesschule.setIntervall(modulTagesschule.getIntervall());
-		jaxModulTagesschule.setWirdPaedagogischBetreut(modulTagesschule.isWirdPaedagogischBetreut());
-
 		return jaxModulTagesschule;
+	}
+
+	@Nonnull
+	public JaxModulTagesschuleGroup modulTagesschuleGroupToJAX(@Nonnull ModulTagesschuleGroup modulTagesschuleGroup) {
+		final JaxModulTagesschuleGroup jaxModulTagesschuleGroup = new JaxModulTagesschuleGroup();
+		convertAbstractFieldsToJAX(modulTagesschuleGroup, jaxModulTagesschuleGroup);
+		jaxModulTagesschuleGroup.setGesuchsperiodeId(modulTagesschuleGroup.getGesuchsperiode().getId());
+		jaxModulTagesschuleGroup.setModulTagesschuleName(modulTagesschuleGroup.getModulTagesschuleName());
+		jaxModulTagesschuleGroup.setBezeichnung(modulTagesschuleGroup.getBezeichnung());
+		jaxModulTagesschuleGroup.setZeitVon(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitVon()));
+		jaxModulTagesschuleGroup.setZeitBis(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitBis()));
+		jaxModulTagesschuleGroup.setVerpflegungskosten(modulTagesschuleGroup.getVerpflegungskosten());
+		jaxModulTagesschuleGroup.setIntervall(modulTagesschuleGroup.getIntervall());
+		jaxModulTagesschuleGroup.setWirdPaedagogischBetreut(modulTagesschuleGroup.isWirdPaedagogischBetreut());
+		jaxModulTagesschuleGroup.setReihenfolge(modulTagesschuleGroup.getReihenfolge());
+		jaxModulTagesschuleGroup.setModule(moduleTagesschuleListToJax(modulTagesschuleGroup.getModule()));
+		return jaxModulTagesschuleGroup;
 	}
 
 	/**
@@ -4183,46 +4249,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTag.setTag(persistedFerieninselTag.getTag());
 
 		return jaxTag;
-	}
-
-	/**
-	 * Kopiert die Daten die fuer den Motag eingegeben wurden in alle andere Wochentage
-	 */
-	public JaxInstitutionStammdaten updateJaxModuleTagesschule(@Nonnull JaxInstitutionStammdaten jaxInstDaten) {
-		requireNonNull(jaxInstDaten);
-
-		JaxInstitutionStammdatenTagesschule stammdatenTagesschule = jaxInstDaten.getInstitutionStammdatenTagesschule();
-
-		if (stammdatenTagesschule != null && !stammdatenTagesschule.getModuleTagesschule().isEmpty()) {
-			List<JaxModulTagesschule> moduleTagesschule = stammdatenTagesschule.getModuleTagesschule();
-			List<JaxModulTagesschule> moduleTagesschuleComplete = new ArrayList<>();
-			List<DayOfWeek> arbeitstageOhneMontag =
-				Arrays.asList(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY);
-
-			moduleTagesschule.stream()
-				.filter(m -> m.getWochentag() == DayOfWeek.MONDAY)
-				.forEach(res -> {
-					moduleTagesschuleComplete.add(res);
-					arbeitstageOhneMontag.stream()
-						.map(dayOfWeek -> {
-							JaxModulTagesschule modulTagesschule = new JaxModulTagesschule();
-							modulTagesschule.setGesuchsperiodeId(res.getGesuchsperiodeId());
-							modulTagesschule.setWochentag(dayOfWeek);
-							modulTagesschule.setModulTagesschuleName(res.getModulTagesschuleName());
-							modulTagesschule.setBezeichnung(res.getBezeichnung());
-							modulTagesschule.setZeitVon(res.getZeitVon());
-							modulTagesschule.setZeitBis(res.getZeitBis());
-							modulTagesschule.setVerpflegungskosten(res.getVerpflegungskosten());
-							modulTagesschule.setIntervall(res.getIntervall());
-							modulTagesschule.setWirdPaedagogischBetreut(res.isWirdPaedagogischBetreut());
-
-							return modulTagesschule;
-						})
-						.forEach(moduleTagesschuleComplete::add);
-				});
-			stammdatenTagesschule.setModuleTagesschule(moduleTagesschuleComplete);
-		}
-		return jaxInstDaten;
 	}
 
 	@Nonnull

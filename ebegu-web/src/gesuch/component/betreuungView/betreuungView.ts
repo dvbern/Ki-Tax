@@ -25,7 +25,8 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
-    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, isJugendamt,
+    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
+    isJugendamt,
     TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -441,14 +442,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public copyModuleToBelegung(): void {
         const stammdaten = this.getBetreuungModel().institutionStammdaten;
         if (!(stammdaten && stammdaten.institutionStammdatenTagesschule
-            && stammdaten.institutionStammdatenTagesschule.moduleTagesschule)) {
+            && stammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups)) {
             return;
         }
 
         const tagesschule = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
         const angemeldeteModule = angular.copy(tagesschule);
         this.getBetreuungModel().belegungTagesschule.moduleTagesschule =
-            angular.copy(stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
+            angular.copy(stammdaten.institutionStammdatenTagesschule.getAllModulTagesschule());
 
         if (!angemeldeteModule) {
             return;

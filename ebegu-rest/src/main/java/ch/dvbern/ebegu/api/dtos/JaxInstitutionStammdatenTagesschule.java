@@ -37,7 +37,7 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 	private JaxGemeinde gemeinde;
 
 	@NotNull @Nonnull
-	private List<JaxModulTagesschule> moduleTagesschule = new ArrayList<>();
+	private List<JaxModulTagesschuleGroup> modulTagesschuleGroups = new ArrayList<>();
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
@@ -48,12 +48,11 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 		this.gemeinde = gemeinde;
 	}
 
-	@Nonnull
-	public List<JaxModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	public List<JaxModulTagesschuleGroup> getModulTagesschuleGroups() {
+		return modulTagesschuleGroups;
 	}
 
-	public void setModuleTagesschule(@NotNull List<JaxModulTagesschule> moduleTagesschule) {
-		this.moduleTagesschule = moduleTagesschule;
+	public void setModulTagesschuleGroups(List<JaxModulTagesschuleGroup> modulTagesschuleGroups) {
+		this.modulTagesschuleGroups = modulTagesschuleGroups;
 	}
 }

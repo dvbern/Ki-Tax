@@ -16,15 +16,16 @@
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSGemeinde from './TSGemeinde';
 import TSModulTagesschule from './TSModulTagesschule';
+import TSModulTagesschuleGroup from './TSModulTagesschuleGroup';
 
 export default class TSInstitutionStammdatenTagesschule extends TSAbstractDateRangedEntity {
 
     private _gemeinde: TSGemeinde;
-    private _moduleTagesschule: Array<TSModulTagesschule>;
+    private _modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
 
-    public constructor(moduleTagesschule?: Array<TSModulTagesschule>) {
+    public constructor(moduleTagesschule?: Array<TSModulTagesschuleGroup>) {
         super();
-        this._moduleTagesschule = moduleTagesschule;
+        this._modulTagesschuleGroups = moduleTagesschule;
     }
 
     public get gemeinde(): TSGemeinde {
@@ -35,11 +36,21 @@ export default class TSInstitutionStammdatenTagesschule extends TSAbstractDateRa
         this._gemeinde = value;
     }
 
-    public get moduleTagesschule(): Array<TSModulTagesschule> {
-        return this._moduleTagesschule;
+    public get modulTagesschuleGroups(): Array<TSModulTagesschuleGroup> {
+        return this._modulTagesschuleGroups;
     }
 
-    public set moduleTagesschule(value: Array<TSModulTagesschule>) {
-        this._moduleTagesschule = value;
+    public set modulTagesschuleGroups(value: Array<TSModulTagesschuleGroup>) {
+        this._modulTagesschuleGroups = value;
+    }
+
+    public getAllModulTagesschule(): Array<TSModulTagesschule> {
+        const allModule: TSModulTagesschule[] = [];
+        for (const modulTagesschuleGroup of this.modulTagesschuleGroups) {
+            for (const modul of modulTagesschuleGroup.module) {
+                allModule.push(modul);
+            }
+        }
+        return allModule;
     }
 }

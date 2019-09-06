@@ -345,9 +345,9 @@ describe('EbeguRestUtil', () => {
                 const myInstitution = createInstitution();
                 const myAdress = createAdresse();
                 const tsInstStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
-                const tsModul = TestDataUtil.createModulTagesschule();
+                const tsModul = TestDataUtil.createModulTagesschuleGroup();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
-                tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
+                tsInstStammdatenTagesschule.modulTagesschuleGroups = [tsModul];
                 tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
                 tsInstStammdatenTagesschule.gemeinde = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);

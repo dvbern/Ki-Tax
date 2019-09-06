@@ -14,36 +14,13 @@
  */
 
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
-import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
-import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSModulTagesschule extends TSAbstractMutableEntity {
 
-    public gesuchsperiodeId: string;
     public wochentag: TSDayOfWeek;
-    public modulTagesschuleName: TSModulTagesschuleName;
-    public bezeichnung: string;
-    public zeitVon: string;
-    public zeitBis: string;
-    public verpflegungskosten: number;
-    public intervall: TSModulTagesschuleIntervall;
-    public wirdPaedagogischBetreut: boolean;
 
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
-
-    public constructor(
-        wochentag?: TSDayOfWeek,
-        modulTagesschuleName?: TSModulTagesschuleName,
-        zeitVon?: string,
-        zeitBis?: string,
-    ) {
-        super();
-        this.wochentag = wochentag;
-        this.modulTagesschuleName = modulTagesschuleName;
-        this.zeitVon = zeitVon;
-        this.zeitBis = zeitBis;
-    }
 
     /**
      * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
@@ -52,14 +29,11 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
      */
     public isSameModul(modulTagesschule: TSModulTagesschule): boolean {
         return modulTagesschule
-            && this.wochentag === modulTagesschule.wochentag
-            && this.modulTagesschuleName === modulTagesschule.modulTagesschuleName
-            && this.bezeichnung === modulTagesschule.bezeichnung
-            && this.wochentag === modulTagesschule.wochentag
-            && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId;
+            && this.wochentag === modulTagesschule.wochentag;
     }
 
     public uniqueId(): string {
-        return this.id + this.gesuchsperiodeId + this.modulTagesschuleName + this.wochentag;
+        return this.id
+            + this.wochentag;
     }
 }
