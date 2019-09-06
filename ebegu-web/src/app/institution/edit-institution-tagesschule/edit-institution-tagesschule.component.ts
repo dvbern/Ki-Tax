@@ -83,10 +83,11 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     private loadModuleTagesschule(): void {
-        let moduleFromServer = this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
+        const moduleFromServer = this.stammdaten.institutionStammdatenTagesschule.moduleTagesschule;
         this.modulePersisted = this.toMapPerGesuchsperiode(moduleFromServer, false);
         this.moduleToEdit = new Map<string, TSModulTagesschule[]>();
         // tslint:disable-next-line:early-exit
+        // tslint:disable-next-line:prefer-conditional-expression
         if (moduleFromServer && moduleFromServer.length > 0) {
             this.moduleToEdit = this.toMapPerGesuchsperiode(moduleFromServer, true);
         } else {
@@ -94,8 +95,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         }
     }
 
-    private toMapPerGesuchsperiode(moduleList: TSModulTagesschule[], addMissing: boolean): Map<string, TSModulTagesschule[]> {
-        const mapPerGesuchsperiode: Map<string, TSModulTagesschule[]> = new Map<string, TSModulTagesschule[]>();
+    private toMapPerGesuchsperiode(moduleList: TSModulTagesschule[], addMissing: boolean
+    ): Map<string, TSModulTagesschule[]> {
+        const mapPerGesuchsperiode = new Map<string, TSModulTagesschule[]>();
         this.gesuchsperiodenList.forEach((gp: TSGesuchsperiode) => {
             if (!mapPerGesuchsperiode.get(gp.id)) {
                 mapPerGesuchsperiode.set(gp.id, []);
@@ -118,9 +120,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return mapPerGesuchsperiode;
     }
 
-    private createModulTagesschule(gesuchsperiodeId: string, modulname: TSModulTagesschuleName) {
+    private createModulTagesschule(gesuchsperiodeId: string, modulname: TSModulTagesschuleName
+    ): TSModulTagesschule {
         // Gespeichert wird das Modul dann fuer jeden Wochentag. Als Vertreter wird der Montag ausgefüllt
-        let modul = new TSModulTagesschule();
+        const modul = new TSModulTagesschule();
         modul.gesuchsperiodeId = gesuchsperiodeId;
         modul.wochentag = TSDayOfWeek.MONDAY;
         modul.modulTagesschuleName = modulname;
@@ -132,12 +135,12 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
         const definedModulTagesschule: TSModulTagesschule[] = [];
-        this.moduleToEdit.forEach((mapOfModules, gesuchsperiodeId) => {
-            mapOfModules.forEach((tempModul) => {
+        this.moduleToEdit.forEach(mapOfModules => {
+            mapOfModules.forEach(tempModul => {
                 if (tempModul.zeitVon && tempModul.zeitBis) {
                     definedModulTagesschule.push(tempModul);
                 }
-            })
+            });
         });
         // tslint:disable-next-line:early-exit
         if (definedModulTagesschule.length > 0) {

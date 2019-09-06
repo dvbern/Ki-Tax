@@ -194,7 +194,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return this.getModul(modulName, TSDayOfWeek.MONDAY);
     }
 
-
     public getModul(modulName: TSModulTagesschuleName, weekday: TSDayOfWeek): TSModulTagesschule {
         if (this.getBetreuungModel().belegungTagesschule
             && this.getBetreuungModel().belegungTagesschule.moduleTagesschule) {
