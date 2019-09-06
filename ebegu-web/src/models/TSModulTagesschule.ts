@@ -40,7 +40,6 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
         this.zeitBis = zeitBis;
     }
 
-
     /**
      * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
      * Die ZeitVon und ZeitBis spielt keine Rolle in diesem Fall, da so Module unterschiedlichen Institutionen
@@ -50,7 +49,7 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
         return modulTagesschule
             && this.wochentag === modulTagesschule.wochentag
             && this.modulTagesschuleName === modulTagesschule.modulTagesschuleName
-            && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId
+            && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId;
     }
 
     public uniqueId(): string {
