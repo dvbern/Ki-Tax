@@ -161,6 +161,7 @@
         <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.openMitteilungen()"
                 aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" class="dv-btn gesuchsperiode-button">
             <span data-translate="TOOLBAR_MITTEILUNGEN"></span>
+            <span ng-bind="vmgs.getAmountNewMitteilungenGS()"></span>
         </button>
     </div>
     <!--Kontakt-->
