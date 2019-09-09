@@ -123,17 +123,37 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     private createModulGroupTagesschule(gesuchsperiodeId: string, modulname: TSModulTagesschuleName
     ): TSModulTagesschuleGroup {
         // Gespeichert wird das Modul dann fuer jeden Wochentag. Als Vertreter wird der Montag ausgefüllt
-        const modul = new TSModulTagesschuleGroup();
-        modul.gesuchsperiodeId = gesuchsperiodeId;
-        modul.modulTagesschuleName = modulname;
-        modul.bezeichnung = 'Testmodul';
-        modul.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
-        modul.wirdPaedagogischBetreut = true;
-        modul.module = [];
+        const group = new TSModulTagesschuleGroup();
+        group.gesuchsperiodeId = gesuchsperiodeId;
+        group.modulTagesschuleName = modulname;
+        group.bezeichnung = 'Testmodul';
+        group.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
+        group.wirdPaedagogischBetreut = true;
+        group.module = [];
+        this.createAllWeekdaysForGroup(group);
+        return group;
+    }
+
+    private createAllWeekdaysForGroup(group: TSModulTagesschuleGroup) {
         let montag = new TSModulTagesschule();
         montag.wochentag = TSDayOfWeek.MONDAY;
-        modul.module.push(montag);
-        return modul;
+        group.module.push(montag);
+
+        let dienstag = new TSModulTagesschule();
+        dienstag.wochentag = TSDayOfWeek.TUESDAY;
+        group.module.push(dienstag);
+
+        let mittwoch = new TSModulTagesschule();
+        mittwoch.wochentag = TSDayOfWeek.WEDNESDAY;
+        group.module.push(mittwoch);
+
+        let donnerstag = new TSModulTagesschule();
+        donnerstag.wochentag = TSDayOfWeek.THURSDAY;
+        group.module.push(donnerstag);
+
+        let freitag = new TSModulTagesschule();
+        freitag.wochentag = TSDayOfWeek.FRIDAY;
+        group.module.push(freitag);
     }
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {

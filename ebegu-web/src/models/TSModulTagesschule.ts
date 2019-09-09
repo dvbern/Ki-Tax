@@ -21,6 +21,7 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
     public wochentag: TSDayOfWeek;
 
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
+    public angeboten: boolean;
 
     /**
      * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
@@ -29,6 +30,7 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
      */
     public isSameModul(modulTagesschule: TSModulTagesschule): boolean {
         return modulTagesschule
+            && this.id === modulTagesschule.id
             && this.wochentag === modulTagesschule.wochentag;
     }
 
