@@ -1640,5 +1640,6 @@
     "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen",
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
-    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration"
+    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
+    "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "Ungültige Auswahl"
 }

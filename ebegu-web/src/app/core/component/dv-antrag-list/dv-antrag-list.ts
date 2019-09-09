@@ -92,6 +92,7 @@ export class DVAntragListController implements IController {
     public selectedVerantwortlicherTS: TSBenutzer;
     public selectedDokumenteHochgeladen: string;
     public pendenz: boolean;
+    public selectedInstitutionName: string;
 
     public tableId: string;
     public tableTitle: string;
@@ -262,5 +263,16 @@ export class DVAntragListController implements IController {
 
     public isTagesschulangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotTS();
+    }
+
+    public querySearch(query: string): Array<TSInstitution> {
+        const searchString = query.toLocaleLowerCase();
+        return this.institutionenList.filter(item => {
+            return (item.name.toLocaleLowerCase().indexOf(searchString) > -1);
+        });
+    }
+
+    public setSelectedInstitutionName(): void {
+        this.selectedInstitutionName = this.selectedInstitution.name;
     }
 }
