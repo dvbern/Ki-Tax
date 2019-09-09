@@ -38,7 +38,7 @@
             <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}" ngForm="gemeinde_stammdaten">
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
-                                             [keineBeschwerdeAdresse]="keineBeschwerdeAdresse"
+                                             [(keineBeschwerdeAdresse)]="keineBeschwerdeAdresse"
                                              [editMode]="editMode"
                                              [tageschuleEnabledForMandant]="tageschuleEnabledForMandant">
                 </dv-edit-gemeinde-stammdaten>

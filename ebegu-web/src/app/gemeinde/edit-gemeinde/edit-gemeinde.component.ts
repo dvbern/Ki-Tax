@@ -171,6 +171,9 @@ export class EditGemeindeComponent implements OnInit {
                     return;
                 }
             });
+            if (stammdaten.beschwerdeAdresse === undefined) {
+                stammdaten.beschwerdeAdresse = new TSAdresse();
+            }
         });
     }
 
