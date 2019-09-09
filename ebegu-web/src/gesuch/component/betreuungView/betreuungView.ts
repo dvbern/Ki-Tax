@@ -675,9 +675,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public extractInstStammId(): string {
         if (this.instStammId.id) {
             return this.instStammId.id;
-        } else {
-            return this.instStammId;
         }
+
+        return this.instStammId;
     }
 
     public setSelectedInstitutionStammdaten(): void {
