@@ -182,17 +182,16 @@
                     </th>
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        <input id="institutionen" st-search="institutionen" class="form-control" type="hidden"/>
                         <md-autocomplete md-min-length="0"
                                          md-no-cache="true"
-                                         st-input-event="change"
-                                         st-search="institutionen"
                                          md-delay="0"
                                          md-require-exact-match="true"
                                          ng-attr-placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}"
                                          md-class="form-control"
                                          md-select-on-focus="true"
-                                         ng-model="vm.selectedInstitution"
                                          md-selected-item="vm.selectedInstitution"
+                                         md-selected-item-change="vm.updateInstitutionFilter()"
                                          md-menu-container-class="antrag-list-autocomplete"
                                          md-search-text="vm.searchQuery"
                                          md-items="item in vm.querySearch(vm.searchQuery)"
