@@ -27,7 +27,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -93,20 +92,6 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 		builder.append(this.getModulTagesschuleGroup(), o.getModulTagesschuleGroup());
 		builder.append(this.getWochentag(), o.getWochentag());
 		return builder.toComparison();
-	}
-
-	@Nonnull
-	public ModulTagesschule copyModulTagesschule(@Nonnull ModulTagesschule target, @Nonnull AntragCopyType copyType) {
-		switch (copyType) {
-		case MUTATION:
-			target.setWochentag(getWochentag());
-			break;
-		case ERNEUERUNG:
-		case MUTATION_NEUES_DOSSIER:
-		case ERNEUERUNG_NEUES_DOSSIER:
-			break;
-		}
-		return target;
 	}
 
 	public ModulTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {

@@ -19,13 +19,13 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,7 +38,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 import ch.dvbern.ebegu.validators.CheckTimeRange;
@@ -99,7 +98,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private Integer reihenfolge;
 
-	@OneToMany(mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
 	@OrderBy("wochentag")
 	private Set<ModulTagesschule> module = new LinkedHashSet<>();
 
@@ -226,37 +225,6 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		builder.append(this.getZeitBis(), o.getZeitBis());
 		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
 		return builder.toComparison();
-	}
-
-	@Nonnull
-	public ModulTagesschuleGroup copyModulTagesschuleGroup(@Nonnull ModulTagesschuleGroup target, @Nonnull AntragCopyType copyType) {
-		switch (copyType) {
-		case MUTATION:
-			target.setGesuchsperiode(getGesuchsperiode());
-			target.setInstitutionStammdatenTagesschule(getInstitutionStammdatenTagesschule());
-			target.setModulTagesschuleName(getModulTagesschuleName());
-			target.setBezeichnung(getBezeichnung());
-			target.setZeitVon(LocalTime.from(getZeitVon()));
-			target.setZeitBis(LocalTime.from(getZeitBis()));
-			target.setVerpflegungskosten(getVerpflegungskosten());
-			target.setIntervall(getIntervall());
-			target.setWirdPaedagogischBetreut(isWirdPaedagogischBetreut());
-			target.setReihenfolge(getReihenfolge());
-			if (this.getModule() != null) {
-				target.setModule(new HashSet<>());
-				this.getModule().forEach(
-					modulTagesschule -> {
-						target.getModule().add(modulTagesschule.copyModulTagesschule(new ModulTagesschule(), copyType));
-					}
-				);
-			}
-			break;
-		case ERNEUERUNG:
-		case MUTATION_NEUES_DOSSIER:
-		case ERNEUERUNG_NEUES_DOSSIER:
-			break;
-		}
-		return target;
 	}
 
 	public ModulTagesschuleGroup copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {

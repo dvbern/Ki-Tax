@@ -1635,7 +1635,14 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschuleGroup.setWirdPaedagogischBetreut(jaxModulTagesschuleGroup.isWirdPaedagogischBetreut());
 		modulTagesschuleGroup.setReihenfolge(jaxModulTagesschuleGroup.getReihenfolge());
 
-		modulTagesschuleGroup.setModule(moduleTagesschuleListToEntity(jaxModulTagesschuleGroup.getModule(), modulTagesschuleGroup.getModule(), institutionStammdatenTagesschule));
+		Set<ModulTagesschule> convertedModules = moduleTagesschuleListToEntity(jaxModulTagesschuleGroup.getModule(), modulTagesschuleGroup.getModule(),
+			institutionStammdatenTagesschule);
+		if (convertedModules != null) {
+			for (ModulTagesschule convertedModule : convertedModules) {
+				convertedModule.setModulTagesschuleGroup(modulTagesschuleGroup);
+			}
+		}
+		modulTagesschuleGroup.setModule(convertedModules);
 
 		return modulTagesschuleGroup;
 	}
