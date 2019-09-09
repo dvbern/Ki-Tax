@@ -247,8 +247,8 @@ export class KommentarViewController {
 
     public freigebenSTV(): void {
         this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: this.getFreigabeTitel(),
-            deleteText: this.getFreigabeBeschreibung(),
+            title: 'ZURUECK_AN_GEMEINDE_TITLE',
+            deleteText: 'ZURUCK_AN_GEMEINDE',
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
@@ -268,17 +268,7 @@ export class KommentarViewController {
     }
 
     public getFreigabeName(): string {
-        return this.$translate.instant(this.getFreigabeTitel());
-    }
-
-    public getFreigabeTitel(): string {
-        return this.getGesuch().areThereOnlySchulamtAngebote() ? 'FREIGABE_SCH' : 'FREIGABE_JA';
-    }
-
-    public getFreigabeBeschreibung(): string {
-        return this.getGesuch().areThereOnlySchulamtAngebote() ?
-            'FREIGABE_SCH_BESCHREIBUNG' :
-            'FREIGABE_JA_BESCHREIBUNG';
+        return this.$translate.instant('ZURUECK_AN_GEMEINDE_TITLE');
     }
 
     public showEwkFields(): boolean {
