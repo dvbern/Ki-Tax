@@ -3202,7 +3202,8 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    private modulTagesschuleGroupToRestObject(restModulGroup: any, modulTagesschuleGroupTS: TSModulTagesschuleGroup): any {
+    private modulTagesschuleGroupToRestObject(restModulGroup: any, modulTagesschuleGroupTS: TSModulTagesschuleGroup
+    ): any {
         if (modulTagesschuleGroupTS) {
             this.abstractMutableEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.gesuchsperiodeId = modulTagesschuleGroupTS.gesuchsperiodeId;

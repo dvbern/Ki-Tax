@@ -134,24 +134,24 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return group;
     }
 
-    private createAllWeekdaysForGroup(group: TSModulTagesschuleGroup) {
-        let montag = new TSModulTagesschule();
+    private createAllWeekdaysForGroup(group: TSModulTagesschuleGroup): void {
+        const montag = new TSModulTagesschule();
         montag.wochentag = TSDayOfWeek.MONDAY;
         group.module.push(montag);
 
-        let dienstag = new TSModulTagesschule();
+        const dienstag = new TSModulTagesschule();
         dienstag.wochentag = TSDayOfWeek.TUESDAY;
         group.module.push(dienstag);
 
-        let mittwoch = new TSModulTagesschule();
+        const mittwoch = new TSModulTagesschule();
         mittwoch.wochentag = TSDayOfWeek.WEDNESDAY;
         group.module.push(mittwoch);
 
-        let donnerstag = new TSModulTagesschule();
+        const donnerstag = new TSModulTagesschule();
         donnerstag.wochentag = TSDayOfWeek.THURSDAY;
         group.module.push(donnerstag);
 
-        let freitag = new TSModulTagesschule();
+        const freitag = new TSModulTagesschule();
         freitag.wochentag = TSDayOfWeek.FRIDAY;
         group.module.push(freitag);
     }
