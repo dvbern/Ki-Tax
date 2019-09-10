@@ -113,15 +113,13 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <h3 translate
-                            class="required"
                             for="verantwortliche_ts_id">ALT_STANDARD_VERANTWORTLICHE</h3>
                         <mat-select [(ngModel)]="stammdaten.defaultBenutzerTS"
                                     id="verantwortliche_ts_id"
                                     name="verantwortliche_ts_id"
                                     class="form-control"
 									#nameVerantwortlicheTS='ngModel'
-                                    [compareWith]="compareBenutzer"
-                                    required>
+                                    [compareWith]="compareBenutzer">
                             <mat-option *ngFor="let vts of stammdaten.benutzerListeTS" [value]="vts">
                                 {{vts.vorname}} {{vts.nachname}}
                             </mat-option>

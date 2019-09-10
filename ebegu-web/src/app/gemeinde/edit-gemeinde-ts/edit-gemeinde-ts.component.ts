@@ -34,7 +34,7 @@ export class EditGemeindeComponentTS implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altTSAdresse: boolean;
 
-    @Output() public altTSAdresseChange:EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public constructor(
     ) {

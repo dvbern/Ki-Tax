@@ -860,7 +860,6 @@ export default class EbeguRestUtil {
             stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
             stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
 
-
             return stammdatenTS;
         }
         return undefined;

@@ -26,7 +26,6 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
@@ -108,15 +107,13 @@ export class EditGemeindeComponent implements OnInit {
                 if (stammdaten.bgAdresse === undefined) {
                     this.altBGAdresse = false;
                     stammdaten.bgAdresse = new TSAdresse();
-                }
-                else{
+                } else {
                     this.altBGAdresse = true;
                 }
                 if (stammdaten.tsAdresse === undefined) {
                     this.altTSAdresse = false;
                     stammdaten.tsAdresse = new TSAdresse();
-                }
-                else{
+                } else {
                     this.altTSAdresse = true;
                 }
                 if (!stammdaten.rechtsmittelbelehrung) {
@@ -159,22 +156,8 @@ export class EditGemeindeComponent implements OnInit {
             this.setViewMode();
 
             this.errorService.clearAll();
-            if (this.keineBeschwerdeAdresse) {
-                // Reset Beschwerdeadresse if not used
-                stammdaten.beschwerdeAdresse = undefined;
-            }
-            if (!this.altBGAdresse) {
-                // Reset BGAdresse if not used
-                stammdaten.bgAdresse = undefined;
-            }
-            if (!this.altTSAdresse) {
-                // Reset BGAdresse if not used
-                stammdaten.tsAdresse = undefined;
-            }
-            if (stammdaten.standardRechtsmittelbelehrung) {
-                // reset custom Rechtsmittelbelehrung if checkbox not checked
-                stammdaten.rechtsmittelbelehrung = undefined;
-            }
+
+            this.setRequiredFieldsToUndefined(stammdaten);
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
                 if (this.fileToUpload) {
@@ -194,6 +177,25 @@ export class EditGemeindeComponent implements OnInit {
                 stammdaten.tsAdresse = new TSAdresse();
             }
         });
+    }
+
+    private setRequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
+        if (this.keineBeschwerdeAdresse) {
+            // Reset Beschwerdeadresse if not used
+            stammdaten.beschwerdeAdresse = undefined;
+        }
+        if (!this.altBGAdresse) {
+            // Reset BGAdresse if not used
+            stammdaten.bgAdresse = undefined;
+        }
+        if (!this.altTSAdresse) {
+            // Reset BGAdresse if not used
+            stammdaten.tsAdresse = undefined;
+        }
+        if (stammdaten.standardRechtsmittelbelehrung) {
+            // reset custom Rechtsmittelbelehrung if checkbox not checked
+            stammdaten.rechtsmittelbelehrung = undefined;
+        }
     }
 
     private persistLogo(file: File): void {

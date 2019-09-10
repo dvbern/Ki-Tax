@@ -35,7 +35,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
 
-    @Output() public altBGAdresseChange:EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public constructor(
     ) {

@@ -42,7 +42,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
 
-    @Output() public keineBeschwerdeAdresseChange:EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public korrespondenzsprache: string;
 

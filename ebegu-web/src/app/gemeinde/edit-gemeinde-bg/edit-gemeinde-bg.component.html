@@ -114,15 +114,13 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <h3 translate
-                            class="required"
                             for="verantwortliche_bg_id">ALT_STANDARD_VERANTWORTLICHE</h3>
                         <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
                                     id="verantwortliche_bg_id"
                                     name="verantwortliche_bg_id"
                                     class="form-control"
 									#nameVerantwortlicheBG='ngModel'
-                                    [compareWith]="compareBenutzer"
-                                    required>
+                                    [compareWith]="compareBenutzer">
                             <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
                                 {{vbg.vorname}} {{vbg.nachname}}
                             </mat-option>
