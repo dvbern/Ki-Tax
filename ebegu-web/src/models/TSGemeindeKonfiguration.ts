@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {prop} from '@uirouter/core';
 import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import EbeguUtil from '../utils/EbeguUtil';
