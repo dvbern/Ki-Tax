@@ -1565,7 +1565,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
 		jaxInstStammdatenTagesschule.setGemeinde(gemeindeToJAX(persistedInstStammdatenTagesschule.getGemeinde()));
 		jaxInstStammdatenTagesschule.setModulTagesschuleGroups(modulTagesschuleGroupListToJax(persistedInstStammdatenTagesschule.getModulTagesschuleGroups()));
-
+		jaxInstStammdatenTagesschule.setModulTagesschuleTyp(persistedInstStammdatenTagesschule.getModulTagesschuleTyp());
 		return jaxInstStammdatenTagesschule;
 	}
 
@@ -1601,6 +1601,8 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdatenTagesschule.getModulTagesschuleGroups().clear();
 			institutionStammdatenTagesschule.getModulTagesschuleGroups().addAll(convertedModuleTagesschule);
 		}
+
+		institutionStammdatenTagesschule.setModulTagesschuleTyp(institutionStammdatenTagesschuleJAXP.getModulTagesschuleTyp());
 
 		return institutionStammdatenTagesschule;
 	}

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSModulTagesschuleTyp} from './enums/TSModulTagesschuleTyp';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSGemeinde from './TSGemeinde';
 import TSModulTagesschule from './TSModulTagesschule';
@@ -20,28 +21,13 @@ import TSModulTagesschuleGroup from './TSModulTagesschuleGroup';
 
 export default class TSInstitutionStammdatenTagesschule extends TSAbstractDateRangedEntity {
 
-    private _gemeinde: TSGemeinde;
-    private _modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
+    public gemeinde: TSGemeinde;
+    public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
+    public modulTagesschuleTyp: TSModulTagesschuleTyp;
 
     public constructor(moduleTagesschule?: Array<TSModulTagesschuleGroup>) {
         super();
-        this._modulTagesschuleGroups = moduleTagesschule;
-    }
-
-    public get gemeinde(): TSGemeinde {
-        return this._gemeinde;
-    }
-
-    public set gemeinde(value: TSGemeinde) {
-        this._gemeinde = value;
-    }
-
-    public get modulTagesschuleGroups(): Array<TSModulTagesschuleGroup> {
-        return this._modulTagesschuleGroups;
-    }
-
-    public set modulTagesschuleGroups(value: Array<TSModulTagesschuleGroup>) {
-        this._modulTagesschuleGroups = value;
+        this.modulTagesschuleGroups = moduleTagesschule;
     }
 
     public getAllModulTagesschule(): Array<TSModulTagesschule> {

@@ -1291,6 +1291,8 @@ export default class EbeguRestUtil {
                 this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
             restInstitutionStammdatenTagesschule.modulTagesschuleGroups =
                 this.moduleTagesschuleGroupsArrayToRestObject(institutionStammdatenTagesschule.modulTagesschuleGroups);
+            restInstitutionStammdatenTagesschule.modulTagesschuleTyp =
+                institutionStammdatenTagesschule.modulTagesschuleTyp;
             return restInstitutionStammdatenTagesschule;
         }
         return undefined;
@@ -1307,6 +1309,8 @@ export default class EbeguRestUtil {
                 this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
             institutionStammdatenTagesschuleTS.modulTagesschuleGroups =
                 this.parseModuleTagesschuleGroupsArray(institutionStammdatenTagesschuleFromServer.modulTagesschuleGroups);
+            institutionStammdatenTagesschuleTS.modulTagesschuleTyp =
+                institutionStammdatenTagesschuleFromServer.modulTagesschuleTyp;
             return institutionStammdatenTagesschuleTS;
         }
         return undefined;

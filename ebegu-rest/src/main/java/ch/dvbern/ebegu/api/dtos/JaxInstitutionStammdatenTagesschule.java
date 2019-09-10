@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
+
 /**
  * DTO fuer InstitutionStammdatenTagesschule
  */
@@ -39,6 +41,9 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 	@NotNull @Nonnull
 	private List<JaxModulTagesschuleGroup> modulTagesschuleGroups = new ArrayList<>();
 
+	@NotNull @Nonnull
+	private ModulTagesschuleTyp modulTagesschuleTyp = ModulTagesschuleTyp.DYNAMISCH;
+
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
 		return gemeinde;
@@ -48,11 +53,21 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 		this.gemeinde = gemeinde;
 	}
 
+	@Nonnull
 	public List<JaxModulTagesschuleGroup> getModulTagesschuleGroups() {
 		return modulTagesschuleGroups;
 	}
 
-	public void setModulTagesschuleGroups(List<JaxModulTagesschuleGroup> modulTagesschuleGroups) {
+	public void setModulTagesschuleGroups(@Nonnull List<JaxModulTagesschuleGroup> modulTagesschuleGroups) {
 		this.modulTagesschuleGroups = modulTagesschuleGroups;
+	}
+
+	@Nonnull
+	public ModulTagesschuleTyp getModulTagesschuleTyp() {
+		return modulTagesschuleTyp;
+	}
+
+	public void setModulTagesschuleTyp(@Nonnull ModulTagesschuleTyp modulTagesschuleTyp) {
+		this.modulTagesschuleTyp = modulTagesschuleTyp;
 	}
 }

@@ -59,6 +59,11 @@ ALTER TABLE modul_tagesschule_aud DROP modul_tagesschule_name;
 ALTER TABLE modul_tagesschule ADD COLUMN modul_tagesschule_group_id BINARY(16) NOT NULL;
 ALTER TABLE modul_tagesschule_aud ADD COLUMN modul_tagesschule_group_id BINARY(16);
 
+ALTER TABLE institution_stammdaten_tagesschule ADD COLUMN modul_tagesschule_typ VARCHAR(255) NOT NULL;
+ALTER TABLE institution_stammdaten_tagesschule_aud ADD COLUMN modul_tagesschule_typ VARCHAR(255);
+
+UPDATE institution_stammdaten_tagesschule SET modul_tagesschule_typ = 'SCOLARIS';
+
 alter table modul_tagesschule_group_aud
 	add constraint FK_modul_tagesschule_group_aud_revinfo
 foreign key (rev)
