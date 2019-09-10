@@ -73,7 +73,9 @@ public enum EinstellungKey {
 	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
 	MIN_ERWERBSPENSUM_EINGESCHULT,
 	// Zuschlag, um den der Anspruch aufgrund des Erwerbspensums automatisch erhöht wird
-	ERWERBSPENSUM_ZUSCHLAG,
+	ERWERBSPENSUM_ZUSCHLAG(EinstellungTyp.GEMEINDE),
+	// Gibt an, ob der Zuschlag überschrieben wurde
+	ERWERBSPENSUM_ZUSCHLAG_OVERRIDEN(EinstellungTyp.GEMEINDE),
 
 
 	// Min Pensum Kitas

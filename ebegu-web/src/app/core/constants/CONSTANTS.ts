@@ -44,3 +44,7 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10000000;
+
+
+// Minimaler Wert bei der Reduzierung des kantonalen Zuschlags bei der Anspruchsberechnung (Gemeinde)
+export const ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE = 0;

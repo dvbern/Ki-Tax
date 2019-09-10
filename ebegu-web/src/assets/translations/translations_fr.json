@@ -1638,5 +1638,6 @@
     "FERIENINSEL_HINZUFUEGEN": "Ajouter un îlot de vacances",
     "KEINE_GEMEINDE_KONFIGURATION": "Aucune de vos communes n'a activé l'offre correspondante.",
     "INSTITUTION_ERSTELLEN": "Nouvelle institution",
-    "INSTITUTION_STATUS_KONFIGURATION": "Configuration"
+    "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
+    "EWP_ZUSCHLAG_OVERRIDE": ""
 }

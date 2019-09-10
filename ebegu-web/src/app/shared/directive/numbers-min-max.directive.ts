@@ -20,12 +20,12 @@ export class NumbersMinMaxDirective implements Validator {
         // only validate if user actually put a value
         if (v !== null) {
             // check if minValue is set and if its valid
-            if (this.minValue && v < this.minValue) {
+            if (this.minValue !== undefined && v < this.minValue) {
                 return {min: true, value: this.minValue};
             }
 
             // check if maxValue is set and if its valid
-            if (this.maxValue && v > this.maxValue) {
+            if (this.maxValue !== undefined && v > this.maxValue) {
                 return {max: true, value: this.maxValue};
             }
         }

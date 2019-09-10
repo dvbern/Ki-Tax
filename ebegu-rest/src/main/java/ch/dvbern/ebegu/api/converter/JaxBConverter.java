@@ -4446,6 +4446,13 @@ public class JaxBConverter extends AbstractConverter {
 			.filter(map -> map.getKey().isGemeindeEinstellung())
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
+
+		konfiguration.setErwerbspensumZuschlagMandant(
+			einstellungService.getAllEinstellungenByMandant(gesuchsperiode).stream()
+				.filter(einstellung ->
+					einstellung.getKey().equals(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG))
+				.findFirst().get().getValueAsInteger()
+		);
 		return konfiguration;
 	}
 }

@@ -49,11 +49,13 @@
                     </div>
                 </div>
             </div>
-            <dv-gemeinde-bg-konfiguration
-                [konfigurationsListe]="stammdaten.konfigurationsListe"
-                [gemeindeStatus]="stammdaten.gemeinde.status"
-                [editMode]="editMode">
-            </dv-gemeinde-bg-konfiguration>
+            <div ngForm="gemeinde_bg_gp_form">
+                <dv-gemeinde-bg-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [editMode]="editMode">
+                </dv-gemeinde-bg-konfiguration>
+            </div>
         </fieldset>
     </div>
 

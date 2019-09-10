@@ -25,6 +25,8 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
+import {ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE} from '../../core/constants/CONSTANTS';
+
 
 @Component({
     selector: 'dv-gemeinde-bg-konfiguration',
@@ -39,6 +41,7 @@ export class GemeindeBgKonfigComponent implements OnInit {
     @Input() public editMode: boolean = false;
 
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
+    public readonly ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE = ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE;
     private navigationDest: StateDeclaration;
 
     public constructor(
@@ -72,6 +75,28 @@ export class GemeindeBgKonfigComponent implements OnInit {
         gk.konfigurationen
             .filter(property => TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key)
             .forEach(property => { property.value = gk.konfigBeguBisUndMitSchulstufe; });
+    }
+
+    public changeErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG_OVERRIDEN === property.key)
+            .forEach(property => { property.value =  String(gk.erwerbspensumZuschlagOverriden); });
+
+        // if the flag is unchecked, we need to restore the original value
+        if (gk.erwerbspensumZuschlagOverriden === false) {
+            this.resetErwerbspensumZuschlag(gk);
+        }
+    }
+
+    public changeErwerbspensumZuschlag(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG === property.key)
+            .forEach(property => { property.value =  String(gk.erwerbspensumZuschlag); });
+    }
+
+    public resetErwerbspensumZuschlag(gk: TSGemeindeKonfiguration): void {
+        gk.erwerbspensumZuschlag = gk.erwerbspensumZuschlagMandant;
+        this.changeErwerbspensumZuschlag(gk);
     }
 
     public isKonfigurationEditable(gk: TSGemeindeKonfiguration): boolean {
