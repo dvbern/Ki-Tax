@@ -31,7 +31,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
     selector: 'dv-edit-gemeinde-stammdaten',
     templateUrl: './edit-gemeinde-stammdaten.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
@@ -41,7 +41,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
 
-    @Output() public keineBeschwerdeAdresseChange:EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public korrespondenzsprache: string;
 
@@ -60,9 +60,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         this.stammdaten$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-            stammdaten => this.initStrings(stammdaten),
-            err => LOG.error(err)
-        );
+                stammdaten => this.initStrings(stammdaten),
+                err => LOG.error(err)
+            );
     }
 
     public ngOnDestroy(): void {
