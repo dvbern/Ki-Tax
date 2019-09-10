@@ -20,7 +20,6 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
-
 /**
  * This component shows a Help Dialog with all contact details and a Link to the user manual
  */
