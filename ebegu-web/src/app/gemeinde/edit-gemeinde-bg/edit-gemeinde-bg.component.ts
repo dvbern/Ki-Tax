@@ -66,7 +66,7 @@ export class EditGemeindeComponentBG implements OnInit {
                 this.gemeindeStatus = stammdaten.gemeinde.status;
                 this.initProperties();
             },
-            err => LOG.error(err),);
+            err => LOG.error(err));
 
         this.navigationDest = this.$transition$.to();
         this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
