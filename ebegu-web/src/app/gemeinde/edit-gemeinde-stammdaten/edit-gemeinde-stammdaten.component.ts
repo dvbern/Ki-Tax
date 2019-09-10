@@ -22,6 +22,7 @@ import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
 
@@ -88,5 +89,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public kBAdresseChange(newVal: boolean): void {
         this.keineBeschwerdeAdresse = newVal;
         this.keineBeschwerdeAdresseChange.emit(newVal);
+    }
+
+    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
+        return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 }

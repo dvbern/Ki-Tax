@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -4388,6 +4389,20 @@ public class JaxBConverter extends AbstractConverter {
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+
+		List<JaxBenutzer> benutzerBGTSList = new ArrayList<>();
+		if(jaxStammdaten.getBenutzerListeBG() != null) {
+			benutzerBGTSList.addAll(jaxStammdaten.getBenutzerListeBG());
+		}
+		if(jaxStammdaten.getBenutzerListeTS() != null) {
+			for (JaxBenutzer j : jaxStammdaten.getBenutzerListeTS()) {
+				if (!benutzerBGTSList.contains(j)) {
+					benutzerBGTSList.add(j);
+				}
+			}
+		}
+		jaxStammdaten.setBenutzerListe(benutzerBGTSList);
+
 		if (!stammdaten.isNew()) {
 			if (stammdaten.getDefaultBenutzerBG() != null) {
 				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
@@ -4395,8 +4410,17 @@ public class JaxBConverter extends AbstractConverter {
 			if (stammdaten.getDefaultBenutzerTS() != null) {
 				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
 			}
+			if (stammdaten.getDefaultBenutzer() != null) {
+				jaxStammdaten.setDefaultBenutzer(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzer()));
+			}
 			if (stammdaten.getBeschwerdeAdresse() != null) {
 				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			}
+			if (stammdaten.getBgAdresse() != null) {
+				jaxStammdaten.setBgAdresse(adresseToJAX(stammdaten.getBgAdresse()));
+			}
+			if (stammdaten.getTsAdresse() != null) {
+				jaxStammdaten.setTsAdresse(adresseToJAX(stammdaten.getTsAdresse()));
 			}
 		}
 	}

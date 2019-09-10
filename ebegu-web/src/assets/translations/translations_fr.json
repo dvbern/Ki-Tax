@@ -1639,6 +1639,7 @@
     "KEINE_GEMEINDE_KONFIGURATION": "Aucune de vos communes n'a activé l'offre correspondante.",
     "INSTITUTION_ERSTELLEN": "Nouvelle institution",
     "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
-    "BG_ALTERNATIVE_ADRESSE": "Adresse de contact alternative",
-    "BG_ADRESSE": "Adresse"
+    "ALTERNATIVE_ADRESSE": "Adresse de contact alternative",
+    "NO_ALTERNATIVE_ADRESSE": "Aucune adresse de contact alternative",
+    "ALT_STANDARD_VERANTWORTLICHE": "Responsable standard alternatif"
 }

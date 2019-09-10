@@ -24,8 +24,9 @@
                     <div class="form-group">
                         <div class="form-group">
                             <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
-                                          [(ngModel)]="altBGAdresse">
-                                {{'BG_ALTERNATIVE_ADRESSE'|translate}}
+                                          [ngModel]="altBGAdresse"
+                                          (ngModelChange)="altBGAdresseHasChange($event)">
+                                {{'ALTERNATIVE_ADRESSE'|translate}}
                             </mat-checkbox>
                         </div>
                         <div *ngIf="altBGAdresse">
@@ -114,7 +115,7 @@
                     <div class="form-group">
                         <h3 translate
                             class="required"
-                            for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
+                            for="verantwortliche_bg_id">ALT_STANDARD_VERANTWORTLICHE</h3>
                         <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
                                     id="verantwortliche_bg_id"
                                     name="verantwortliche_bg_id"
@@ -156,14 +157,13 @@
                 <div>
                     <div *ngIf="!altBGAdresse; else displayBGAdresse" class="col-sm-6">
                         <div class="form-group">
-                            <h3 translate>BG_ADRESSE</h3>
-                            <p translate>BG_ALTERNATIVE_ADRESSE</p>
+                            <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
                         </div>
                     </div>
                     <ng-template #displayBGAdresse>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <h3 translate>BG_ADRESSE</h3>
+                                <h3 translate>ALTERNATIVE_ADRESSE</h3>
                                 <p>{{stammdaten.bgAdresse.organisation}}</p>
                                 <p>{{stammdaten.bgAdresse.strasse}}
                                     {{stammdaten.bgAdresse.hausnummer}}</p>
@@ -176,11 +176,12 @@
                 <!-- Standardverantwortliche -->
                 <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
                     <div class="form-group">
-                        <h3 translate>STANDARD_VERANTWORTLICHE</h3>
+                        <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
                         <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
                     </div>
                 </div>
-
+            </div>
+            <div class="row">
                 <!-- Betreuungsgutscheine anbieten ab -->
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -188,7 +189,6 @@
                         <p>{{beguStartStr}}</p>
                     </div>
                 </div>
-
             </div>
             <dv-gemeinde-bg-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"

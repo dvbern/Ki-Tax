@@ -1449,7 +1449,7 @@
     "BANKVERBINDUNG": "Bankverbindung für Auszahlungen",
     "BESCHWERDE_ADRESSE": "Beschwerde",
     "BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT": "Identisch wie Kontaktadresse",
-    "STANDARD_VERANTWORTLICHE": "Standard-Verantwortliche",
+    "STANDARD_VERANTWORTLICHE": "Standard Nachrichtenempfänger",
     "KONTO_INHABER": "Kontoinhaber",
     "BIC_SWIFT_NUMMER": "BIC/SWIFT-Nummer",
     "BEGU_KONFIGURATION": "Betreuungsgutscheine Konfiguration",
@@ -1639,6 +1639,7 @@
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
     "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
-    "BG_ALTERNATIVE_ADRESSE": "Alternative Kontaktadresse",
-    "BG_ADRESSE": "Adresse"
+    "ALTERNATIVE_ADRESSE": "Alternative Kontaktadresse",
+    "NO_ALTERNATIVE_ADRESSE": "Keine alternative Kontaktadresse",
+    "ALT_STANDARD_VERANTWORTLICHE": "Alternative standard Nachrichtenempfänger"
 }

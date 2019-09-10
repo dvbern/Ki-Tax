@@ -49,14 +49,15 @@
                                      [gemeindeId]="gemeindeId"
                                      [beguStartStr]="beguStartStr"
                                      [editMode]="editModeForBG()"
-                                     [altBGAdresse]="altBGAdresse">
+                                     [(altBGAdresse)]="altBGAdresse">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
                 <dv-edit-gemeinde-ts [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
-                                     [editMode]="editModeForTSFI()">
+                                     [editMode]="editModeForTSFI()"
+                                     [(altTSAdresse)]="altTSAdresse">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"

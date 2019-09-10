@@ -832,6 +832,7 @@ export default class EbeguRestUtil {
             stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
             stammdatenTS.defaultBenutzerBG = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerBG);
             stammdatenTS.defaultBenutzerTS = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerTS);
+            stammdatenTS.defaultBenutzer = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzer);
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
@@ -842,6 +843,7 @@ export default class EbeguRestUtil {
             stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
             stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
+            stammdatenTS.benutzerListe = stammdatenFromServer.benutzerListe;
             stammdatenTS.konfigurationsListe =
                 this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
             stammdatenTS.kontoinhaber = stammdatenFromServer.kontoinhaber;
@@ -855,6 +857,9 @@ export default class EbeguRestUtil {
                         stammdatenFromServer.rechtsmittelbelehrung,
                     );
             }
+            stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
+            stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
+
 
             return stammdatenTS;
         }

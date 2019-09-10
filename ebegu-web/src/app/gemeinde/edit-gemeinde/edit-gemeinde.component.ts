@@ -26,6 +26,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
@@ -59,6 +60,7 @@ export class EditGemeindeComponent implements OnInit {
     public tageschuleEnabledForMandant: boolean;
     public currentTab: number;
     public altBGAdresse: boolean;
+    public altTSAdresse: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -110,6 +112,13 @@ export class EditGemeindeComponent implements OnInit {
                 else{
                     this.altBGAdresse = true;
                 }
+                if (stammdaten.tsAdresse === undefined) {
+                    this.altTSAdresse = false;
+                    stammdaten.tsAdresse = new TSAdresse();
+                }
+                else{
+                    this.altTSAdresse = true;
+                }
                 if (!stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessource();
                 }
@@ -158,6 +167,10 @@ export class EditGemeindeComponent implements OnInit {
                 // Reset BGAdresse if not used
                 stammdaten.bgAdresse = undefined;
             }
+            if (!this.altTSAdresse) {
+                // Reset BGAdresse if not used
+                stammdaten.tsAdresse = undefined;
+            }
             if (stammdaten.standardRechtsmittelbelehrung) {
                 // reset custom Rechtsmittelbelehrung if checkbox not checked
                 stammdaten.rechtsmittelbelehrung = undefined;
@@ -173,6 +186,12 @@ export class EditGemeindeComponent implements OnInit {
             });
             if (stammdaten.beschwerdeAdresse === undefined) {
                 stammdaten.beschwerdeAdresse = new TSAdresse();
+            }
+            if (stammdaten.bgAdresse === undefined) {
+                stammdaten.bgAdresse = new TSAdresse();
+            }
+            if (stammdaten.tsAdresse === undefined) {
+                stammdaten.tsAdresse = new TSAdresse();
             }
         });
     }

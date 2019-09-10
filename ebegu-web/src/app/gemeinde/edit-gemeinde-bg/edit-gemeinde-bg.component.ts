@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {Observable} from 'rxjs';
 import TSBenutzer from '../../../models/TSBenutzer';
@@ -35,6 +35,8 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
 
+    @Output() public altBGAdresseChange:EventEmitter<boolean> = new EventEmitter();
+
     public constructor(
     ) {
     }
@@ -47,5 +49,10 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
+    }
+
+    public altBGAdresseHasChange(newVal: boolean): void {
+        this.altBGAdresse = newVal;
+        this.altBGAdresseChange.emit(newVal);
     }
 }

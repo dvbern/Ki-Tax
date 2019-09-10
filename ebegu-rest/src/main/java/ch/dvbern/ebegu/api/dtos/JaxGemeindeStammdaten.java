@@ -64,6 +64,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
 	private List<JaxBenutzer> benutzerListeTS; // Für die ComboBox Standardverantwortliche TS
+	@Nullable
+	private List<JaxBenutzer> benutzerListe; // Für die ComboBox Standardverantwortliche
 	@NotNull
 	private String kontoinhaber;
 	@NotNull
@@ -282,5 +284,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setDefaultBenutzer(@Nullable JaxBenutzer defaultBenutzer) {
 		this.defaultBenutzer = defaultBenutzer;
+	}
+
+	@Nullable
+	public List<JaxBenutzer> getBenutzerListe() {
+		return benutzerListe;
+	}
+
+	public void setBenutzerListe(@Nullable List<JaxBenutzer> benutzerListe) {
+		this.benutzerListe = benutzerListe;
 	}
 }
