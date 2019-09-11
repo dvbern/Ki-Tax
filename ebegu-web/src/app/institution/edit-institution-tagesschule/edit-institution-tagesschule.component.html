@@ -47,6 +47,19 @@
         <h1 translate>INSTITUTION_ST_MODULE</h1>
     </div>
 </div>
+<div class="row" *ngIf="editMode">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label translate for="typ">MODUL_CREATION_TYP</label>
+            <mat-select id="typ" name="typ" class="form-control"
+                [(ngModel)]="stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp"
+                (selectionChange)="changeModulTagesschuleTyp()">
+                <mat-option *ngFor="let option of getModulTagesschuleTypen()"
+                            [value]="option">{{option | translate}} </mat-option>
+            </mat-select>
+        </div>
+    </div>
+</div>
 
 <dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true">
     <dv-accordion-tab
@@ -58,67 +71,69 @@
             </div>
         </tab-title>
         <tab-body>
-            <!-- Titelzeile -->
-            <div class="row">
-                <div class="col-md-2">
-                    <span translate>INSTITUTION_ST_MODULNAME</span>
-                </div>
-                <div class="col-md-3">
-                    <span translate>VON</span>
-                </div>
-                <div class="col-md-3">
-                    <span translate>BIS</span>
-                </div>
+            <div *ngIf="!showModulDetail">
+                <table
+                       class="table fixedtable table-hover" title="Title">
+                    <thead>
+                    <tr>
+                        <th translate>MODUL_BEZEICHNUNG</th>
+                        <th translate>MODUL_ZEITRAUM</th>
+                        <th translate>MODUL_VERPFLEGUNG</th>
+                        <th translate>MODUL_VERFUEGBAR</th>
+                        <th translate>MODUL_INTERVALL</th>
+                        <th *ngIf="editMode"></th>
+                        <th *ngIf="editMode"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let group of getGroupsPerGesuchsperiode(gp.id); trackBy:group?.uniqueId()">
+                        <td title="{{group.bezeichnung}}">
+                            {{group.bezeichnung}}
+                        </td>
+                        <td title="{{group.getZeitraumString()}}">
+                            {{group.getZeitraumString()}}
+                        </td>
+                        <td title="{{group.verpflegungskosten}}">
+                            {{group.verpflegungskosten}}
+                        </td>
+                        <td title="{{getWochentageAsString(group)}}">
+                            {{getWochentageAsString(group)}}
+                        </td>
+                        <td title="{{group.intervall}}">
+                            {{group.intervall}}
+                        </td>
+                        <td *ngIf="editMode">
+                            <button type="button" (click)="editModulTagesschuleGroup(group)">
+                                <i class="fa fa-lg fa-arrow-right"></i>
+                            </button>
+                        </td>
+                        <td *ngIf="editMode">
+                            <button type="button" (click)="removeModulTagesschuleGroup(group)">
+                                <i class="fa fa-lg fa-trash-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <button *ngIf="editMode && !isModulTagesschuleTypScolaris()" type="button" (click)="addModulTagesschuleGroup(gp.id)"  class="dv-btn">
+                    <i class="fa fa-lg fa-plus-circle"></i>
+                    <span translate>MODUL_HINZUFUEGEN</span>
+                </button>
+
             </div>
 
-            <div *ngIf="editMode">
-				<div *ngFor="let modul of getModuleTagesschuleForGesuchsperiodeToEdit(gp.id); trackBy:modul?.uniqueId()">
-					<div class="row">
-						<div class="col-md-2">
-							<div class="form-group">
-								<label translate>{{modul.modulTagesschuleName}}</label>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<input type="text" id="zeitVon{{modul.uniqueId()}}" name="zeitVon{{modul.uniqueId()}}"
-										[(ngModel)]="modul.zeitVon"
-									   [required]="modul.zeitBis"
-									   placeholder="HH:mm">
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<input type="text" id="zeitBis{{modul.uniqueId()}}" name="zeitBis{{modul.uniqueId()}}"
-									   [(ngModel)]="modul.zeitBis"
-									   [required]="modul.zeitVon"
-									   placeholder="HH:mm">
-							</div>
-						</div>
-					</div>
-				</div>
-            </div>
+            <div *ngIf="showModulDetail">
+				<dv-edit-modul-tagesschule
+					[(modulTagesschuleGroup)]="groupToEdit">
+				</dv-edit-modul-tagesschule>
 
-            <div *ngIf="!editMode">
-				<div *ngFor="let modul of getModuleTagesschuleForGesuchsperiodePersisted(gp.id); trackBy:modul?.uniqueId()">
-					<div class="row">
-						<div class="col-md-2">
-							<div class="form-group">
-								<label translate>{{modul.modulTagesschuleName}}</label>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>{{modul.zeitVon}}</label>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>{{modul.zeitBis}}</label>
-							</div>
-						</div>
-					</div>
-				</div>
+                <div class="row">
+                    <button type="button" class="dv-btn"
+                            (click)="applyModulTagesschuleGroup()">
+                        <span translate>OK</span>
+                    </button>
+                </div>
             </div>
 
         </tab-body>

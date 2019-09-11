@@ -17,6 +17,7 @@
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {IbanModule} from 'ngx-iban';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
@@ -24,9 +25,9 @@ import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-b
 import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
+import {EditModulTagesschuleComponent} from './edit-modul-tagesschule/edit-modul-tagesschule.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
     imports: [
@@ -47,6 +48,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
         EditInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
+        EditModulTagesschuleComponent,
     ],
     entryComponents: [
         InstitutionListComponent,
@@ -55,6 +57,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
         EditInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
+        EditModulTagesschuleComponent,
     ],
     providers: [],
 })

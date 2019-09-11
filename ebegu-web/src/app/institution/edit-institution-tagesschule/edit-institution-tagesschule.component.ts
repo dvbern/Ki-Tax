@@ -17,10 +17,14 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
+import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
+import {getTSModulTagesschuleTypen, TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
@@ -28,6 +32,8 @@ import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionSta
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
 @Component({
@@ -45,12 +51,16 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public gesuchsperiodenList: TSGesuchsperiode[] = [];
     public gemeindeList: TSGemeinde[] = [];
-    private moduleToEdit: Map<string, TSModulTagesschuleGroup[]> = new Map<string, TSModulTagesschuleGroup[]>();
-    private modulePersisted: Map<string, TSModulTagesschuleGroup[]> = new Map<string, TSModulTagesschuleGroup[]>();
+    public groupsPerGesuchsperiode: Map<string, Set<TSModulTagesschuleGroup>> = new Map<string, Set<TSModulTagesschuleGroup>>();
+    public showModulDetail: boolean = false;
+    public groupToEdit: TSModulTagesschuleGroup = undefined;
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -58,10 +68,12 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         if (EbeguUtil.isNullOrUndefined(this.stammdaten.institutionStammdatenTagesschule)) {
             this.stammdaten.institutionStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
             this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups = [];
+            this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
         }
         this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then(allGesuchsperioden => {
             this.gesuchsperiodenList = allGesuchsperioden;
-            this.loadModuleTagesschule();
+            this.initializeGesuchsperioden();
+            this.loadExistingModulTagesschuleGroups();
         });
         this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
             this.gemeindeList = allGemeinden;
@@ -72,69 +84,151 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.replaceTagesschulmoduleOnInstitutionStammdatenTagesschule();
     }
 
-    /**
-     * Gibt alle potenziell auszufüllenden Module für die GP zurück (also auch leere)
-     */
-    public getModuleTagesschuleForGesuchsperiodeToEdit(gesuchsperiodeId: string): TSModulTagesschuleGroup[] {
-        return this.moduleToEdit.get(gesuchsperiodeId);
+    private initializeGesuchsperioden(): void {
+        this.groupsPerGesuchsperiode = new Map<string, Set<TSModulTagesschuleGroup>>();
+        this.gesuchsperiodenList.forEach((gp: TSGesuchsperiode) => {
+            if (!this.groupsPerGesuchsperiode.get(gp.id)) {
+                this.groupsPerGesuchsperiode.set(gp.id, new Set<TSModulTagesschuleGroup>());
+            }
+        });
     }
 
-    public getModuleTagesschuleForGesuchsperiodePersisted(gesuchsperiodeId: string): TSModulTagesschuleGroup[] {
-        return this.modulePersisted.get(gesuchsperiodeId);
-    }
-
-    private loadModuleTagesschule(): void {
+    private loadExistingModulTagesschuleGroups(): void {
         const moduleFromServer = this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups;
-        this.modulePersisted = this.toMapPerGesuchsperiode(moduleFromServer, false);
-        this.moduleToEdit = new Map<string, TSModulTagesschuleGroup[]>();
-        // tslint:disable-next-line:early-exit
-        // tslint:disable-next-line:prefer-conditional-expression
-        if (moduleFromServer && moduleFromServer.length > 0) {
-            this.moduleToEdit = this.toMapPerGesuchsperiode(moduleFromServer, true);
+        moduleFromServer.forEach((group: TSModulTagesschuleGroup) => {
+            this.groupsPerGesuchsperiode.get(group.gesuchsperiodeId).add(group);
+        });
+    }
+
+    public getGroupsPerGesuchsperiode(gesuchsperiodeId: string): Set<TSModulTagesschuleGroup> {
+        return this.groupsPerGesuchsperiode.get(gesuchsperiodeId);
+    }
+
+    public addModulTagesschuleGroup(gesuchsperiodeId: string): void {
+        this.groupToEdit = new TSModulTagesschuleGroup();
+        this.groupToEdit.gesuchsperiodeId = gesuchsperiodeId;
+        this.groupToEdit.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
+        this.showModulDetail = true;
+    }
+
+    public editModulTagesschuleGroup(group: TSModulTagesschuleGroup) {
+        this.groupToEdit = group;
+        this.showModulDetail = true;
+    }
+
+    public removeModulTagesschuleGroup(group: TSModulTagesschuleGroup): void {
+        this.groupsPerGesuchsperiode.get(group.gesuchsperiodeId).delete(group);
+    }
+
+    public applyModulTagesschuleGroup() {
+        if (this.groupToEdit.isNew()) {
+            this.groupsPerGesuchsperiode.get(this.groupToEdit.gesuchsperiodeId).add(this.groupToEdit);
+        }
+        this.groupToEdit = undefined;
+        this.showModulDetail = false;
+    }
+
+    public getModulTagesschuleTypen() {
+        return getTSModulTagesschuleTypen();
+    }
+
+    public isModulTagesschuleTypScolaris(): boolean {
+        return this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS;
+    }
+
+    public changeModulTagesschuleTyp(): void {
+        if (this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS) {
+            this.changeToScolaris();
         } else {
-            this.moduleToEdit = this.toMapPerGesuchsperiode([], true);
+            this.changeToDynamisch();
         }
     }
 
-    private toMapPerGesuchsperiode(moduleGroupList: TSModulTagesschuleGroup[], addMissing: boolean
-    ): Map<string, TSModulTagesschuleGroup[]> {
-        const mapPerGesuchsperiode = new Map<string, TSModulTagesschuleGroup[]>();
-        this.gesuchsperiodenList.forEach((gp: TSGesuchsperiode) => {
-            if (!mapPerGesuchsperiode.get(gp.id)) {
-                mapPerGesuchsperiode.set(gp.id, []);
-            }
-            getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
-                let foundmodul = moduleGroupList.filter(modul => (
-                    modul.modulTagesschuleName === modulname &&
-                    modul.gesuchsperiodeId === gp.id
-                ))[0];
-                // tslint:disable-next-line:early-exit
-                if (addMissing && !foundmodul) {
-                    foundmodul = this.createModulGroupTagesschule(gp.id, modulname);
+    private changeToDynamisch() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'MODUL_TYP_DYNAMISCH_TITLE',
+            text: 'MODUL_TYP_DYNAMISCH_INFO',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(
+                userAccepted => {
+                    if (!userAccepted) {
+                        // Benutzer hat abgebrochen -> Flag zuruecksetzen
+                        this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp
+                            = TSModulTagesschuleTyp.SCOLARIS;
+                        return;
+                    }
+                    // Die Module sind neu dynamisch -> Alle eventuell vorhandenen auf DYNAMISCH setzen
+                    this.groupsPerGesuchsperiode.forEach(mapOfModules => {
+                        mapOfModules.forEach(tempModul => {
+                            tempModul.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
+                        });
+                    });
+                },
+                () => {
+                    this.errorService.addMesageAsError("error");
                 }
-                if (foundmodul) {
-                    mapPerGesuchsperiode.get(gp.id).push(foundmodul);
-                }
-            });
-        });
-        return mapPerGesuchsperiode;
+            );
     }
 
-    private createModulGroupTagesschule(gesuchsperiodeId: string, modulname: TSModulTagesschuleName
+    private changeToScolaris() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'MODUL_TYP_SCOLARIS_TITLE',
+            text: 'MODUL_TYP_SCOLARIS_INFO',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(
+                userAccepted => {
+                    if (!userAccepted) {
+                        // Benutzer hat abgebrochen -> Flag zuruecksetzen
+                        this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp
+                            = TSModulTagesschuleTyp.DYNAMISCH;
+                        return;
+                    }
+                    // Die Module sind neu nach Scolaris -> Alle eventuell vorhandenen werden gelöscht
+                    this.initializeGesuchsperioden();
+                    this.createModulGroupsScolaris();
+                },
+                () => {
+                    this.errorService.addMesageAsError("error");
+                }
+            );
+    }
+
+    public showCreateModulGroupsScolaris(): boolean {
+        return this.stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp !== TSModulTagesschuleTyp.SCOLARIS;
+    }
+
+    public createModulGroupsScolaris(): void {
+        this.gesuchsperiodenList.forEach((gp: TSGesuchsperiode) => {
+            if (this.groupsPerGesuchsperiode.get(gp.id).size > 0) {
+                this.errorService.addMesageAsError("TODO: Achtung, es sind bereits Module definiert. Bitte löschen Sie diese zuerst");
+                return;
+            }
+            getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
+                let modul = this.createModulGroupScolaris(gp.id, modulname);
+                this.groupsPerGesuchsperiode.get(gp.id).add(modul);
+            });
+        });
+    }
+
+    private createModulGroupScolaris(gesuchsperiodeId: string, modulname: TSModulTagesschuleName
     ): TSModulTagesschuleGroup {
         // Gespeichert wird das Modul dann fuer jeden Wochentag. Als Vertreter wird der Montag ausgefüllt
         const group = new TSModulTagesschuleGroup();
         group.gesuchsperiodeId = gesuchsperiodeId;
         group.modulTagesschuleName = modulname;
-        group.bezeichnung = 'Testmodul';
+        group.bezeichnung = this.translate.instant(modulname);
         group.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
         group.wirdPaedagogischBetreut = true;
         group.module = [];
-        this.createAllWeekdaysForGroup(group);
+        this.createModuleScolaris(group);
         return group;
     }
 
-    private createAllWeekdaysForGroup(group: TSModulTagesschuleGroup): void {
+    private createModuleScolaris(group: TSModulTagesschuleGroup): void {
         const montag = new TSModulTagesschule();
         montag.wochentag = TSDayOfWeek.MONDAY;
         group.module.push(montag);
@@ -158,7 +252,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     private replaceTagesschulmoduleOnInstitutionStammdatenTagesschule(): void {
         const definedModulTagesschule: TSModulTagesschuleGroup[] = [];
-        this.moduleToEdit.forEach(mapOfModules => {
+        this.groupsPerGesuchsperiode.forEach(mapOfModules => {
             mapOfModules.forEach(tempModul => {
                 if (tempModul.zeitVon && tempModul.zeitBis) {
                     definedModulTagesschule.push(tempModul);
@@ -173,5 +267,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public compareGemeinde(b1: TSGemeinde, b2: TSGemeinde): boolean {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
+    }
+
+    public getWochentageAsString(group: TSModulTagesschuleGroup): string {
+        return 'TODO: Mo Di Mi';
     }
 }

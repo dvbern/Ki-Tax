@@ -1,0 +1,98 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate>MODUL_NAME</label>
+            {{modulTagesschuleGroup.modulTagesschuleName}}
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate for="bezeichnung">MODUL_BEZEICHNUNG</label>
+            <input id="bezeichnung" type="text" name="bezeichnung"
+                   #bezeichnung="ngModel"
+                   [(ngModel)]="modulTagesschuleGroup.bezeichnung">
+            <dv-error-messages [errorObject]="bezeichnung.errors"
+                               inputId="bezeichnung"></dv-error-messages>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate for="zeitVon">MODUL_VON</label>
+            <input id="zeitVon" type="text" name="zeitVon"
+                   #zeitVon="ngModel"
+                   [(ngModel)]="modulTagesschuleGroup.zeitVon"
+                   [required]="modulTagesschuleGroup.zeitBis"
+                   placeholder="HH:mm">
+            <dv-error-messages [errorObject]="zeitVon.errors"
+                               inputId="zeitVon"></dv-error-messages>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate for="zeitBis">MODUL_BIS</label>
+            <input id="zeitBis" type="text" name="zeitBis"
+                   #zeitBis="ngModel"
+                   [(ngModel)]="modulTagesschuleGroup.zeitBis"
+                   [required]="modulTagesschuleGroup.zeitVon"
+                   placeholder="HH:mm">
+            <dv-error-messages [errorObject]="zeitBis.errors"
+                               inputId="zeitBis"></dv-error-messages>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate for="verpflegungskosten">MODUL_VERPFLEGUNG</label>
+            <input id="verpflegungskosten" type="number" name="verpflegungskosten"
+                   #verpflegungskosten="ngModel"
+                   [(ngModel)]="modulTagesschuleGroup.verpflegungskosten">
+            <dv-error-messages [errorObject]="verpflegungskosten.errors"
+                               inputId="verpflegungskostenId"></dv-error-messages>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate for="verpflegungskosten">MODUL_VERFUEGBAR</label>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <mat-checkbox id="wirdPaedagogischBetreut" name="wirdPaedagogischBetreut"
+                          [(ngModel)]="modulTagesschuleGroup.wirdPaedagogischBetreut">
+                {{'MODUL_PAEDAGOGISCH_BETREUT'|translate}}
+            </mat-checkbox>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label translate for="intervall">MODUL_INTERVALL</label>
+            <mat-select [(ngModel)]="modulTagesschuleGroup.intervall"
+                        #intervall="ngModel" id="intervall"
+                        name="intervall" class="form-control" required>
+                <mat-option *ngFor="let option of getModulTagesschuleIntervallOptions()"
+                            [value]="option">{{option | translate}} </mat-option>
+            </mat-select>
+            <dv-error-messages [errorObject]="intervall.errors"
+                               inputId="intervall"></dv-error-messages>
+        </div>
+    </div>
+</div>

@@ -59,4 +59,11 @@ export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
     public uniqueId(): string {
         return this.id + this.gesuchsperiodeId + this.modulTagesschuleName;
     }
+
+    public getZeitraumString(): string {
+        if (this.zeitVon && this.zeitBis) {
+            return this.zeitVon + ' - ' + this.zeitBis;
+        }
+        return '';
+    }
 }
