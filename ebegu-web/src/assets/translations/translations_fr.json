@@ -1639,5 +1639,6 @@
     "KEINE_GEMEINDE_KONFIGURATION": "Aucune de vos communes n'a activé l'offre correspondante.",
     "INSTITUTION_ERSTELLEN": "Nouvelle institution",
     "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
-    "EWP_ZUSCHLAG_OVERRIDE": ""
+    "EWP_ZUSCHLAG_OVERRIDE": "",
+    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": ""
 }

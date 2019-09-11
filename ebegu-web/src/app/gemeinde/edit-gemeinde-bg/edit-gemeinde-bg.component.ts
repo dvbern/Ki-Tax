@@ -27,7 +27,6 @@ import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStat
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
-import {ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
@@ -47,7 +46,6 @@ export class EditGemeindeComponentBG implements OnInit {
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
-    public readonly ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE = ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE;
     private navigationDest: StateDeclaration;
 
     public constructor(
@@ -102,12 +100,6 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG_OVERRIDEN === property.key)
-            .forEach(property => {
-                property.value = String(gk.erwerbspensumZuschlagOverriden);
-            });
-
         // if the flag is unchecked, we need to restore the original value
         if (!gk.erwerbspensumZuschlagOverriden) {
             this.resetErwerbspensumZuschlag(gk);
@@ -123,7 +115,7 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public resetErwerbspensumZuschlag(gk: TSGemeindeKonfiguration): void {
-        gk.erwerbspensumZuschlag = gk.erwerbspensumZuschlagMandant;
+        gk.erwerbspensumZuschlag = gk.erwerbspensumZuschlagMax;
         this.changeErwerbspensumZuschlag(gk);
     }
 

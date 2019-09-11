@@ -62,17 +62,6 @@
                             </tab-title>
                             <tab-body>
                                 <div class="row">
-                                    <!-- readonly -->
-                                    <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                                        <div class="form-group">
-                                            <!-- BG bis Schulstufe -->
-                                            <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
-                                            <!-- Kontingentierung -->
-                                            <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
-                                               class="line-through">{{getKonfigKontingentierungString()}}</p>
-                                            <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
-                                        </div>
-                                    </div>
                                     <!-- editable -->
                                     <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
                                         <!-- BG bis Schulstufe -->
@@ -105,7 +94,7 @@
                                                           [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
                                                           (change)="changeErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
                                                 <span translate
-                                                      [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMandant}">
+                                                      [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
                                                     EWP_ZUSCHLAG_OVERRIDE
                                                 </span>
                                             </mat-checkbox>
@@ -116,16 +105,16 @@
                                                    name="ewp_zuschlag_id_{{i}}"
                                                    class="form-control"
                                                    type="number"
-                                                   #gugus='ngModel'
+                                                   #ewp_zuschlag='ngModel'
                                                    required
                                                    customMinMax
-                                                   [minValue]="ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE"
-                                                   [maxValue]="konfigurationsListe[i].erwerbspensumZuschlagMandant"
+                                                   [minValue]="0"
+                                                   [maxValue]="konfigurationsListe[i].erwerbspensumZuschlagMax"
                                                    [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlag"
                                                    (change)="changeErwerbspensumZuschlag(konfigurationsListe[i])">
 
                                             <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
-                                                               [errorObject]="gugus.errors">
+                                                               [errorObject]="ewp_zuschlag.errors">
                                             </dv-error-messages>
                                         </div>
                                     </div>
@@ -178,62 +167,14 @@
                                             <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
                                                class="line-through">{{getKonfigKontingentierungString()}}</p>
                                             <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
-                                        </div>
-                                    </div>
-                                    <!-- editable -->
-                                    <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                                        <!-- BG bis Schulstufe -->
-                                        <div class="form-group">
-                                            <label class="required" translate>BEGU_KITAS_BIS_UND_MIT</label>
-                                            <mat-select
-                                                [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
-                                                (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(konfigurationsListe[i])"
-                                                id="begu_kitas_bis_und_mit_id_{{i}}"
-                                                name="begu_kitas_bis_und_mit_id_{{i}}"
-                                                class="form-control">
-                                                <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
-                                                            [value]="etv">{{etv | translate}}
-                                                </mat-option>
-                                            </mat-select>
-                                        </div>
-                                        <!-- Kontingentierung -->
-                                        <div class="form-group">
-                                            <mat-checkbox id="kontingentierung_id_{{i}}"
-                                                          name="kontingentierung_id_{{i}}"
-                                                          [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
-                                                          (change)="changeKonfigKontingentierung(konfigurationsListe[i])">
-                                                {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
-                                        </div>
-
-                                        <!-- Custom Erwerbspensum Zuschlag -->
-                                        <div class="form-group">
-                                            <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
-                                                          name="ewp_zuschlag_override_id_{{i}}"
-                                                          [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
-                                                          (change)="changeErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
+                                            <p *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
                                                 <span translate
-                                                      [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMandant}">
-                                                    EWP_ZUSCHLAG_OVERRIDE
+                                                  [translateParams]="{valueMandant:
+                                                  konfigurationsListe[i].erwerbspensumZuschlagMax, value:
+                                                  konfigurationsListe[i].erwerbspensumZuschlag}">
+                                                    EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
                                                 </span>
-                                            </mat-checkbox>
-                                        </div>
-                                        <div class="form-group"
-                                             *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
-                                            <input id="ewp_zuschlag_id_{{i}}"
-                                                   name="ewp_zuschlag_id_{{i}}"
-                                                   class="form-control"
-                                                   type="number"
-                                                   #gugus='ngModel'
-                                                   required
-                                                   customMinMax
-                                                   [minValue]="ERWERBSPENSUM_ZUSCHLAG_MIN_VALUE"
-                                                   [maxValue]="konfigurationsListe[i].erwerbspensumZuschlagMandant"
-                                                   [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlag"
-                                                   (change)="changeErwerbspensumZuschlag(konfigurationsListe[i])">
-
-                                            <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
-                                                               [errorObject]="gugus.errors">
-                                            </dv-error-messages>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

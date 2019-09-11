@@ -31,7 +31,7 @@ public class JaxGemeindeKonfiguration {
 	@NotNull
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
 
-	private int erwerbspensumZuschlagMandant;
+	private int erwerbspensumZuschlagMax;
 
 
 	public String getGesuchsperiodeName() {
@@ -59,11 +59,11 @@ public class JaxGemeindeKonfiguration {
 		this.konfigurationen = konfigurationen;
 	}
 
-	public int getErwerbspensumZuschlagMandant() {
-		return erwerbspensumZuschlagMandant;
+	public int geterwerbspensumZuschlagMax() {
+		return erwerbspensumZuschlagMax;
 	}
 
-	public void setErwerbspensumZuschlagMandant(int erwerbspensumZuschlagMandant) {
-		this.erwerbspensumZuschlagMandant = erwerbspensumZuschlagMandant;
+	public void seterwerbspensumZuschlagMax(int erwerbspensumZuschlagMax) {
+		this.erwerbspensumZuschlagMax = erwerbspensumZuschlagMax;
 	}
 }

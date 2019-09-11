@@ -31,9 +31,9 @@ export default class TSGemeindeKonfiguration {
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
     public erwerbspensumZuschlag: number;
-    public erwerbspensumZuschlagOverriden: boolean;
     // never override this property. we just load it for validation reasons
-    public erwerbspensumZuschlagMandant: number;
+    public erwerbspensumZuschlagMax: number;
+    public erwerbspensumZuschlagOverriden: boolean;
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
 
@@ -76,12 +76,11 @@ export default class TSGemeindeKonfiguration {
             if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG === property.key) {
                 this.konfigTagesschuleErsterSchultag = moment(property.value, CONSTANTS.DATE_FORMAT);
             }
-            if (TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG_OVERRIDEN === property.key) {
-                this.erwerbspensumZuschlagOverriden = (property.value === 'true');
-            }
             if (TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG === property.key) {
                 this.erwerbspensumZuschlag = Number(property.value);
             }
         });
+
+        this.erwerbspensumZuschlagOverriden = this.erwerbspensumZuschlag !== this.erwerbspensumZuschlagMax;
     }
 }
