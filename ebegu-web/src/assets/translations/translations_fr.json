@@ -1640,5 +1640,5 @@
     "INSTITUTION_ERSTELLEN": "Nouvelle institution",
     "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
     "EWP_ZUSCHLAG_OVERRIDE": "Réduire le supplément cantonal de {{valueMandant}}% pour le calcul du taux de prise en charge accordé (OPIS art. 34h)",
-    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": ""
+    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Réduire le supplément cantonal de {{valueMandant}}% à {{value}}% pour le calcul du taux de prise en charge accordé (OPIS art. 34h)"
 }
