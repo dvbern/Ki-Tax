@@ -43,6 +43,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public beguStartStr: string;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
+
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;

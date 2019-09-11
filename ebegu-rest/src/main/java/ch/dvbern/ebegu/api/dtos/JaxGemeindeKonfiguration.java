@@ -59,11 +59,11 @@ public class JaxGemeindeKonfiguration {
 		this.konfigurationen = konfigurationen;
 	}
 
-	public int geterwerbspensumZuschlagMax() {
+	public int getErwerbspensumZuschlagMax() {
 		return erwerbspensumZuschlagMax;
 	}
 
-	public void seterwerbspensumZuschlagMax(int erwerbspensumZuschlagMax) {
+	public void setErwerbspensumZuschlagMax(int erwerbspensumZuschlagMax) {
 		this.erwerbspensumZuschlagMax = erwerbspensumZuschlagMax;
 	}
 }

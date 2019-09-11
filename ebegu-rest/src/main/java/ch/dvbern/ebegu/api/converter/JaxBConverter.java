@@ -4447,7 +4447,7 @@ public class JaxBConverter extends AbstractConverter {
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 
-		konfiguration.seterwerbspensumZuschlagMax(
+		konfiguration.setErwerbspensumZuschlagMax(
 			einstellungService.getAllEinstellungenByMandant(gesuchsperiode).stream()
 				.filter(einstellung ->
 					einstellung.getKey().equals(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG))
