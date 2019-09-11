@@ -1638,5 +1638,7 @@
     "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen",
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
-    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration"
+    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
+    "EWP_ZUSCHLAG_OVERRIDE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren",
+    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren auf {{value}}%"
 }
