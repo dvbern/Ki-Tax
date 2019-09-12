@@ -153,12 +153,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private Benutzer defaultBenutzer;
 
 	@Nullable
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_bg_adresse_id"), nullable = true)
 	private Adresse bgAdresse;
 
 	@Nullable
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_ts_adresse_id"), nullable = true)
 	private Adresse tsAdresse;
 
