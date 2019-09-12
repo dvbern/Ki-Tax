@@ -269,10 +269,10 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		List<TableRowLabelValue> intro = new ArrayList<>();
 		intro.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
-		if (betreuung.getVorgaengerAusbezahlteVerfuegung() != null) {
-			Objects.requireNonNull(betreuung.getVorgaengerAusbezahlteVerfuegung().getTimestampErstellt());
+		if (betreuung.getVorgaengerVerfuegung() != null) {
+			Objects.requireNonNull(betreuung.getVorgaengerVerfuegung().getTimestampErstellt());
 			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
-				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerAusbezahlteVerfuegung().getTimestampErstellt()))));
+				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
 		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));

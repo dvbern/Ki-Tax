@@ -126,7 +126,7 @@
     "GEBURTSDATUM": "Geburtsdatum",
     "KORRESPONDENZSPRACHE": "Gewünschte Korrespondenzsprache",
     "KORRESPONDENZSPRACHE_HELP": "Die Korrespondenz erfolgt nur in der gewünschten Sprache, falls die Gemeinde diese Sprache auch anbietet. Ansonsten erfolgt die Korrespondenz in der von der Gemeinde angegebenen Sprache",
-    "DUBLETTEN": "Dubletten",
+    "DUBLETTEN": "Potenzielle Dubletten",
     "UMZUG": "geplanter Umzug",
     "NICHT_IN_GEMEINDE_WOHNHAFT": "Nicht in {{gemeinde}} wohnhaft",
     "NICHT_IN_GEMEINDE_WOHNHAFT_HELP": "Definiert, ob der zivilrechtliche Wohnsitz in der Gemeinde liegt. Durch aktivieren dieses Häkchens entfällt der Anspruch gemäss Art. 34b Abs. 1 Bst. c ASIV.",
@@ -916,7 +916,7 @@
     "VERFUEGEN": "Verfügen",
     "VERFUEGEN_NICHT_EINTRETEN": "Nicht Eintreten",
     "VERFUEGEN_ABLEHNEN": "Ablehnen",
-    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "Ja, wir haben die Begründungen geprüft und wo sinnvoll ergänzt. Manuelle Korrekturen haben wir begründet.",
+    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "Ja, wir haben die Begründungen geprüft und wo sinnvoll ergänzt. Korrekturen an berechnungsrelevanten Gesuchsdaten (wie z.B. Erwerbspensum, Lohn) wurden begründet.",
     "ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED": "Bitte bestätigen Sie die Begründungen um diese Betreuung zu verfügen",
     "VERFUEGT": "Verfügt",
     "PRUEFUNG_STV": "Prüfung Steuerverwaltung",
@@ -1620,7 +1620,7 @@
     "GEMEINDE_TAB_BG": "Betreuungsgutscheine",
     "GEMEINDE_TAB_TS": "Tagesschule",
     "GEMEINDE_TAB_FI": "Ferieninsel",
-    "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Reiter.",
+    "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Register.",
     "ERROR_IBAN": "IBAN hat ein ungültiges Format",
     "TAGESSCHULE_AKTIVIERUNGSDATUM": "Anmeldungen für Tagesschule akzeptieren ab",
     "TAGESSCHULE_ERSTER_SCHULTAG": "Erster Schultag",
@@ -1638,5 +1638,7 @@
     "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen",
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
-    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration"
+    "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
+    "EWP_ZUSCHLAG_OVERRIDE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren",
+    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren auf {{value}}%"
 }
