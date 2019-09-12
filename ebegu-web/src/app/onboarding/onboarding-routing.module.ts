@@ -25,6 +25,7 @@ import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
+import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
 
 const states: Ng2StateDeclaration[] = [
@@ -79,6 +80,14 @@ const states: Ng2StateDeclaration[] = [
         resolve: {
             nextState: () => 'onboarding.gesuchsteller.registration',
             showLogin: () => false,
+        },
+    },
+    {
+        name: 'onboarding.neubenutzer',
+        url: '/neu-benutzer',
+        component: OnboardingNeuBenutzerComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS],
         },
     },
 ];

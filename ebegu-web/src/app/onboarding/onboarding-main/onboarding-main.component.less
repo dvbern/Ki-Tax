@@ -14,19 +14,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 .onboarding-container {
     overflow-y: auto;
+    height: 100%;
+    width: 100vw;
+}
+
+.onboarding-container-left {
     background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
     url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
     background-size: cover;
-    height: 100%;
-    width: 100vw;
+    height: 94vh;
+    width: 50vw;
+    left: 0;
+    top: 0;
+    bottom:0;
+    float: left;
 
     .onboarding-title{
-
+        margin-left: 22%;
+        margin-top: 13%;
         .kibon-logo-white {
-            margin: 0 auto;
             width: 180px;
             height: 100px;
             background-image: url("../../../assets/images/logo-kibon-white.svg");
@@ -34,6 +42,54 @@
             background-size: cover;
             background-repeat: no-repeat;
         }
+
+        p {
+            color: #FFFFFF;
+            font-family: "Open Sans";
+            font-size: 20px;
+            letter-spacing: 1.38px;
+            line-height: 24px;
+        }
+    }
+
+    .onboarding-information{
+        margin-top: 5%;
+        text-align: left;
+
+        .information-icons{
+            float: left;
+            line-height: 0px;
+            font-size: 34px;
+            margin-top: 1%;
+        }
+
+        p{
+            margin-left: 10%;
+            font-family: "Open Sans";
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1.38px;
+            line-height: 24px;
+        }
+
+        h4{
+            margin-top: 5px;
+            margin-left: 10%;
+            font-family: "Open Sans";
+            font-size: 16px;
+            letter-spacing: 1.38px;
+            line-height: 24px;
+        }
     }
 }
 
+.onboarding-container-right {
+    background-color: white;
+    background-size: cover;
+    height: 94vh;
+    width: 50vw;
+    right: 0;
+    top: 0;
+    bottom:0;
+    margin-left: 50vw;
+}

@@ -16,51 +16,25 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 @Component({
     selector: 'dv-onboarding',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding.component.html',
     styleUrls: ['./onboarding.component.less', '../onboarding.less'],
 })
 export class OnboardingComponent {
 
-    @Input() public nextState: string = 'onboarding.be-login';
     @Input() public showLogin: boolean = true;
 
-    public gemeinden$: Observable<TSGemeinde[]>;
-    public gemeinde?: TSGemeinde;
 
     public isDummyMode$: Observable<boolean>;
 
     public constructor(
-        private readonly gemeindeRS: GemeindeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly stateService: StateService,
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
-            .pipe(map(gemeinden => {
-                gemeinden.sort(EbeguUtil.compareByName);
-
-                return gemeinden;
-            }));
-
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
 
-    public onSubmit(form: NgForm): void {
-        if (!form.valid) {
-            return;
-        }
-
-        this.stateService.go(this.nextState, {gemeindeId: this.gemeinde.id});
-    }
 }
