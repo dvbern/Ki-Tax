@@ -1410,10 +1410,10 @@ public class JaxBConverter extends AbstractConverter {
 					.orElseGet(InstitutionStammdatenBetreuungsgutscheine::new);
 
 			InstitutionStammdatenBetreuungsgutscheine convertedIsBG =
-			 institutionStammdatenBetreuungsgutscheineToEntity(
-				institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine(),
-				isBG
-			);
+				institutionStammdatenBetreuungsgutscheineToEntity(
+					institutionStammdatenJAXP.getInstitutionStammdatenBetreuungsgutscheine(),
+					isBG
+				);
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(convertedIsBG);
 		}
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
@@ -1820,10 +1820,10 @@ public class JaxBConverter extends AbstractConverter {
 		Set<JaxBetreuung> betreuungen = betreuungListToJax(persistedKind.getBetreuungen());
 		jaxKindContainer.getBetreuungen().addAll(betreuungen);
 		Set<JaxBetreuung> anmeldungenTagesschule =
-		 anmeldungTagesschuleListToJax(persistedKind.getAnmeldungenTagesschule());
+			anmeldungTagesschuleListToJax(persistedKind.getAnmeldungenTagesschule());
 		jaxKindContainer.getBetreuungen().addAll(anmeldungenTagesschule);
 		Set<JaxBetreuung> anmeldungenFerieninsel =
-		 anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
+			anmeldungFerieninselListToJax(persistedKind.getAnmeldungenFerieninsel());
 		jaxKindContainer.getBetreuungen().addAll(anmeldungenFerieninsel);
 		jaxKindContainer.setKindNummer(persistedKind.getKindNummer());
 		jaxKindContainer.setNextNumberBetreuung(persistedKind.getNextNumberBetreuung());
@@ -2214,7 +2214,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	private <T extends AbstractPlatz> T abstractPlatzToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
-	 @Nonnull final T betreuung) {
+		@Nonnull final T betreuung) {
 		requireNonNull(betreuung);
 		requireNonNull(betreuungJAXP);
 
@@ -2239,10 +2239,10 @@ public class JaxBConverter extends AbstractConverter {
 		// try to load the Kind with the ID given by BetreuungJax
 		if (betreuungJAXP.getKindId() != null) {
 			KindContainer kindContainer =
-			 kindService.findKind(betreuungJAXP.getKindId()).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"betreuungToEntity",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				 betreuungJAXP.getKindId()));
+				kindService.findKind(betreuungJAXP.getKindId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"betreuungToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					betreuungJAXP.getKindId()));
 			betreuung.setKind(kindContainer);
 		}
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
@@ -2251,7 +2251,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public AnmeldungTagesschule anmeldungTagesschuleToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
-	 @Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
+		@Nonnull final AnmeldungTagesschule anmeldungTagesschule) {
 		AnmeldungTagesschule betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungTagesschule);
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
@@ -2282,7 +2282,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public AnmeldungFerieninsel anmeldungFerieninselToEntity(@Nonnull final JaxBetreuung betreuungJAXP,
-	 @Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
+		@Nonnull final AnmeldungFerieninsel anmeldungFerieninsel) {
 		AnmeldungFerieninsel betreuung = abstractPlatzToEntity(betreuungJAXP, anmeldungFerieninsel);
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
@@ -2440,7 +2440,7 @@ public class JaxBConverter extends AbstractConverter {
 		AnmeldungTagesschule betreuungToMergeWith = new AnmeldungTagesschule();
 		if (betreuungJAXP.getId() != null) {
 			final Optional<AnmeldungTagesschule> optionalBetreuung =
-			 betreuungService.findAnmeldungTagesschule(betreuungJAXP.getId());
+				betreuungService.findAnmeldungTagesschule(betreuungJAXP.getId());
 			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungTagesschule());
 		}
 		return this.anmeldungTagesschuleToEntity(betreuungJAXP, betreuungToMergeWith);
@@ -2452,7 +2452,7 @@ public class JaxBConverter extends AbstractConverter {
 		AnmeldungFerieninsel betreuungToMergeWith = new AnmeldungFerieninsel();
 		if (betreuungJAXP.getId() != null) {
 			final Optional<AnmeldungFerieninsel> optionalBetreuung =
-			 betreuungService.findAnmeldungFerieninsel(betreuungJAXP.getId());
+				betreuungService.findAnmeldungFerieninsel(betreuungJAXP.getId());
 			betreuungToMergeWith = optionalBetreuung.orElse(new AnmeldungFerieninsel());
 		}
 		return this.anmeldungFerieninselToEntity(betreuungJAXP, betreuungToMergeWith);
@@ -2505,7 +2505,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * all containers that existed as entity
 	 * but not in the list of jax, won't be added to the list and are then removed (cascade and orphanremoval)
 	 *
-	 * @param jaxBetPenContainers Betreuungspensen DTOs from Client
+	 * @param jaxBetPenContainers      Betreuungspensen DTOs from Client
 	 * @param existingBetreuungspensen List of currently stored BetreungspensumContainers
 	 */
 	private void betreuungsPensumContainersToEntity(
@@ -3430,7 +3430,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * adds it to the list. Thus all dokumente that existed as entity but not in the list of jax, won't be added to
 	 * the list and then removed (cascade and orphanremoval)
 	 *
-	 * @param jaxDokuments Dokumente DTOs from Client
+	 * @param jaxDokuments      Dokumente DTOs from Client
 	 * @param existingDokumente List of currently stored Dokumente
 	 */
 	private void dokumenteToEntity(
@@ -4267,34 +4267,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
 
-		if(jaxStammdaten.getBgAdresse() != null){
-			if(stammdaten.getBgAdresse() == null){
-				stammdaten.setBgAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getBgAdresse(), stammdaten.getBgAdresse());
-		}
-		else{
-			stammdaten.setBgAdresse(null);
-		}
-
-		if(jaxStammdaten.getTsAdresse() != null){
-			if(stammdaten.getTsAdresse() == null){
-				stammdaten.setTsAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getTsAdresse(), stammdaten.getTsAdresse());
-		}
-		else{
-			stammdaten.setTsAdresse(null);
-		}
-
-		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
-			if (stammdaten.getBeschwerdeAdresse() == null) {
-				stammdaten.setBeschwerdeAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
-		} else {
-			stammdaten.setBeschwerdeAdresse(null);
-		}
+		gemeindeStammdatenAdresseToEntity(jaxStammdaten, stammdaten);
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
@@ -4327,6 +4300,37 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		return stammdaten;
+	}
+
+	private void gemeindeStammdatenAdresseToEntity(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten) {
+		if (jaxStammdaten.getBgAdresse() != null) {
+			if (stammdaten.getBgAdresse() == null) {
+				stammdaten.setBgAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBgAdresse(), stammdaten.getBgAdresse());
+		} else {
+			stammdaten.setBgAdresse(null);
+		}
+
+		if (jaxStammdaten.getTsAdresse() != null) {
+			if (stammdaten.getTsAdresse() == null) {
+				stammdaten.setTsAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getTsAdresse(), stammdaten.getTsAdresse());
+		} else {
+			stammdaten.setTsAdresse(null);
+		}
+
+		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
+			if (stammdaten.getBeschwerdeAdresse() == null) {
+				stammdaten.setBeschwerdeAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
+		} else {
+			stammdaten.setBeschwerdeAdresse(null);
+		}
 	}
 
 	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
@@ -4391,10 +4395,10 @@ public class JaxBConverter extends AbstractConverter {
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 
 		List<JaxBenutzer> benutzerBGTSList = new ArrayList<>();
-		if(jaxStammdaten.getBenutzerListeBG() != null) {
+		if (jaxStammdaten.getBenutzerListeBG() != null) {
 			benutzerBGTSList.addAll(jaxStammdaten.getBenutzerListeBG());
 		}
-		if(jaxStammdaten.getBenutzerListeTS() != null) {
+		if (jaxStammdaten.getBenutzerListeTS() != null) {
 			for (JaxBenutzer j : jaxStammdaten.getBenutzerListeTS()) {
 				if (!benutzerBGTSList.contains(j)) {
 					benutzerBGTSList.add(j);
