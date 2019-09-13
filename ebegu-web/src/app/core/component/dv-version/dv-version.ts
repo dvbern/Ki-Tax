@@ -82,8 +82,10 @@ export class DVVersionController implements IController {
 
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
         this.applicationPropertyRS.getBackgroundColorFromServer();
-        this.applicationPropertyRS.getPublicPropertiesCached().then(value => this.currentNode = value.currentNode);
-        // Den Blog für Gesuchsteller nicht anzeigen (Wird nur bei Reload angepasst, sollte aber für unsere Zwecke genügen)
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(value => this.currentNode = value.currentNode);
+        // Den Blog für Gesuchsteller nicht anzeigen (Wird nur bei Reload angepasst,
+        // sollte aber für unsere Zwecke genügen)
         this.showBlog = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller());
     }
 
