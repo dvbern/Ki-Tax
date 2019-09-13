@@ -120,9 +120,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.groupsPerGesuchsperiode.get(group.gesuchsperiodeId).delete(group);
     }
 
-    public applyModulTagesschuleGroup() {
-        if (this.groupToEdit.isNew()) {
-            this.groupsPerGesuchsperiode.get(this.groupToEdit.gesuchsperiodeId).add(this.groupToEdit);
+    public applyModulTagesschuleGroup(group: TSModulTagesschuleGroup) {
+        if (group.isNew()) {
+            this.groupsPerGesuchsperiode.get(group.gesuchsperiodeId).add(group);
         }
         this.groupToEdit = undefined;
         this.showModulDetail = false;

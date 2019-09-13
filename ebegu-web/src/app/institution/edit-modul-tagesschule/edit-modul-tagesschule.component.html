@@ -71,7 +71,42 @@
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label translate for="verpflegungskosten">MODUL_VERFUEGBAR</label>
+            <div class="form-group" id="verfuegbar">
+                <div class="row">
+                    <div class="col-md-1">
+                        <label for="montag" translate>MONDAY_SHORT</label>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="dienstag" translate>TUESDAY_SHORT</label>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="mittwoch" translate>WEDNESDAY_SHORT</label>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="donnerstag" translate>THURSDAY_SHORT</label>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="freitag" translate>FRIDAY_SHORT</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1">
+                        <mat-checkbox id="montag" name="montag" [(ngModel)]="modulMontag.angeboten"></mat-checkbox>
+                    </div>
+                    <div class="col-md-1">
+                        <mat-checkbox id="dienstag" name="dienstag" [(ngModel)]="modulDienstag.angeboten"></mat-checkbox>
+                    </div>
+                    <div class="col-md-1">
+                        <mat-checkbox id="mittwoch" name="mittwoch" [(ngModel)]="modulMittwoch.angeboten"></mat-checkbox>
+                    </div>
+                    <div class="col-md-1">
+                        <mat-checkbox id="donnerstag" name="donnerstag" [(ngModel)]="modulDonnerstag.angeboten"></mat-checkbox>
+                    </div>
+                    <div class="col-md-1">
+                        <mat-checkbox id="freitag" name="freitag" [(ngModel)]="modulFreitag.angeboten"></mat-checkbox>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
@@ -94,5 +129,14 @@
             <dv-error-messages [errorObject]="intervall.errors"
                                inputId="intervall"></dv-error-messages>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <button type="button" class="dv-btn"
+                (click)="apply()">
+            <span translate>OK</span>
+        </button>
     </div>
 </div>

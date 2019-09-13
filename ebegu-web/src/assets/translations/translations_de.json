@@ -1282,6 +1282,11 @@
     "WEDNESDAY": "Mittwoch",
     "THURSDAY": "Donnerstag",
     "FRIDAY": "Freitag",
+    "MONDAY_SHORT": "Mo",
+    "TUESDAY_SHORT": "Di",
+    "WEDNESDAY_SHORT": "Mi",
+    "THURSDAY_SHORT": "Do",
+    "FRIDAY_SHORT": "Fr",
     "SATURDAY": "Samstag",
     "SUNDAY": "Sonntag",
     "Monday": "Montag",
@@ -1657,5 +1662,7 @@
     "MODUL_TYP_DYNAMISCH_INFO": "Achtung: Die Module können anschliessend nicht mehr über die Schnittstelle mit Scolaris synchronisiert werden",
     "MODUL_TYP_SCOLARIS_TITLE": "Modul-Erstellung auf Scolaris wechseln",
     "MODUL_TYP_SCOLARIS_INFO": "Achtung: Alle bereits vorhandenen Module werden gelöscht!",
+    "WOECHENTLICH": "Wöchentlich",
+    "WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN": "Wöchentlich oder alle zwei Wochen",
     "THE_LAST": "-- bitte dies am schluss lassen --"
 }

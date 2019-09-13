@@ -125,15 +125,9 @@
 
             <div *ngIf="showModulDetail">
 				<dv-edit-modul-tagesschule
-					[(modulTagesschuleGroup)]="groupToEdit">
+					[(modulTagesschuleGroup)]="groupToEdit"
+                    (callback)="applyModulTagesschuleGroup($event)">
 				</dv-edit-modul-tagesschule>
-
-                <div class="row">
-                    <button type="button" class="dv-btn"
-                            (click)="applyModulTagesschuleGroup()">
-                        <span translate>OK</span>
-                    </button>
-                </div>
             </div>
 
         </tab-body>
