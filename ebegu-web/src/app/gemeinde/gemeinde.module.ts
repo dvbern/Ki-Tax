@@ -25,7 +25,6 @@ import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.compo
 import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
 import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
-import {GemeindeBgKonfigComponent} from './gemeinde-bg-konfiguration/gemeinde-bg-konfig.component';
 import {GemeindeFiKonfigComponent} from './gemeinde-fi-konfiguration/gemeinde-fi-konfig.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
@@ -50,7 +49,6 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         EditGemeindeComponentFI,
         EditGemeindeComponentStammdaten,
         EditGemeindeComponentTS,
-        GemeindeBgKonfigComponent,
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
     ],
@@ -62,7 +60,6 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         EditGemeindeComponentFI,
         EditGemeindeComponentTS,
         EditGemeindeComponentStammdaten,
-        GemeindeBgKonfigComponent,
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
     ],
