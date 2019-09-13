@@ -60,7 +60,6 @@ public class JaxBenutzer implements Serializable {
 	@Nonnull
 	private Set<JaxBerechtigung> berechtigungen = new LinkedHashSet<>();
 
-
 	@SuppressFBWarnings(value = "NM_CONFUSING", justification = "Other method is external interface, cant change that")
 	@Nonnull
 	public String getUsername() {
@@ -177,5 +176,14 @@ public class JaxBenutzer implements Serializable {
 				}
 			}
 		}
+	}
+
+	public boolean equals(Object object) {
+		boolean same = false;
+		if (object != null && object instanceof JaxBenutzer) {
+			same =
+				this.username == ((JaxBenutzer) object).getUsername() && this.email == ((JaxBenutzer) object).getEmail();
+		}
+		return same;
 	}
 }
