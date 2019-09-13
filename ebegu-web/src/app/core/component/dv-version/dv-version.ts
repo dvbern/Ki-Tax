@@ -14,8 +14,10 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor';
@@ -39,12 +41,14 @@ export class DVVersionController implements IController {
         '$window',
         'ApplicationPropertyRS',
         '$translate',
+        'AuthServiceRS'
     ];
 
     public backendVersion: string;
     public readonly buildTime: string = BUILDTSTAMP;
     public readonly frontendVersion: string = VERSION;
     public showSingleVersion: boolean = true;
+    public showBlog: boolean = false;
     public currentYear: number;
     public currentNode: string;
 
@@ -54,6 +58,7 @@ export class DVVersionController implements IController {
         private readonly $window: IWindowService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly $translate: ITranslateService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
 
     }
@@ -78,6 +83,8 @@ export class DVVersionController implements IController {
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
         this.applicationPropertyRS.getBackgroundColorFromServer();
         this.applicationPropertyRS.getPublicPropertiesCached().then(value => this.currentNode = value.currentNode);
+        // Den Blog für Gesuchsteller nicht anzeigen (Wird nur bei Reload angepasst, sollte aber für unsere Zwecke genügen)
+        this.showBlog = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller());
     }
 
     private updateDisplayVersion(): void {
