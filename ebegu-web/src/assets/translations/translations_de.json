@@ -1640,8 +1640,11 @@
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
     "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
     "EWP_ZUSCHLAG_OVERRIDE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren",
-    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren auf {{value}}%"
+    "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren auf {{value}}%",
+    "BLOG_FOOTER_LINK": "Blog",
     "BLOG_NEUIGKEITEN_LINK": "https://blog.kibon.ch/category/neuigkeiten/",
+    "BLOG_MANDANT_LINK": "https://blog.kibon.ch/category/knowhow-kanton/",
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/category/know-how-gemeinden/",
-    "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/category/knowhow-institutionen/"
+    "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/category/knowhow-institutionen/",
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

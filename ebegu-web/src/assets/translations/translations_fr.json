@@ -1641,7 +1641,10 @@
     "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
     "EWP_ZUSCHLAG_OVERRIDE": "Réduire le supplément cantonal de {{valueMandant}}% pour le calcul du taux de prise en charge accordé (OPIS art. 34h)",
     "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Réduire le supplément cantonal de {{valueMandant}}% à {{value}}% pour le calcul du taux de prise en charge accordé (OPIS art. 34h)",
+    "BLOG_FOOTER_LINK": "Blog",
     "BLOG_NEUIGKEITEN_LINK": "https://blog.kibon.ch/fr/category/nouvelles/",
+    "BLOG_MANDANT_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-canton/",
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-commune/",
-    "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-institutions/"
+    "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-institutions/",
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

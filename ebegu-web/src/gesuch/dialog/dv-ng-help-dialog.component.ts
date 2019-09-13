@@ -31,6 +31,7 @@ export class DvNgHelpDialogComponent {
 
     public hasRoleGemeinde: boolean = false;
     public hasRoleInstitution: boolean = false;
+    public hasRoleMandant: boolean = false;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
@@ -40,6 +41,7 @@ export class DvNgHelpDialogComponent {
     ) {
         this.hasRoleGemeinde = this.isGemeinde();
         this.hasRoleInstitution = this.isInstitution();
+        this.hasRoleMandant = this.isMandant();
     }
 
     public close(): void {
@@ -62,5 +64,9 @@ export class DvNgHelpDialogComponent {
 
     private isInstitution(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles().concat(TSRoleUtil.getMandantRoles()));
+    }
+
+    private isMandant(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 }
