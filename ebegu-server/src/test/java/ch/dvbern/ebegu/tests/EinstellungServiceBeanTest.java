@@ -75,11 +75,11 @@ public class EinstellungServiceBeanTest extends AbstractEbeguLoginTest {
 		kantonLuzern.setName("Kanton Luzern");
 		kantonLuzern = persistence.merge(kantonLuzern);
 
-		gemeindeBern = TestDataUtil.createGemeindeBern();
+		gemeindeBern = TestDataUtil.createGemeindeParis();
 		gemeindeBern.setMandant(kantonBern);
-		gemeindeOstermundigen = TestDataUtil.createGemeindeOstermundigen();
+		gemeindeOstermundigen = TestDataUtil.createGemeindeLondon();
 		gemeindeOstermundigen.setMandant(kantonBern);
-		gemeindeLuzern = TestDataUtil.createGemeindeBern();
+		gemeindeLuzern = TestDataUtil.createGemeindeParis();
 		gemeindeLuzern.setId("65a0c4a3-80a1-48cd-80af-6bb9fc403f7d");
 		gemeindeLuzern.setBfsNummer(SEQUENCE.incrementAndGet());
 		gemeindeLuzern.setName("Luzern");

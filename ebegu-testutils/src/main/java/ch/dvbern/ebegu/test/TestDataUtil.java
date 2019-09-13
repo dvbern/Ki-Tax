@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -332,7 +331,7 @@ public final class TestDataUtil {
 	public static Dossier createDefaultDossier() {
 		Dossier dossier = new Dossier();
 		dossier.setFall(createDefaultFall());
-		dossier.setGemeinde(createGemeindeBern());
+		dossier.setGemeinde(createGemeindeParis());
 		return dossier;
 	}
 
@@ -373,7 +372,7 @@ public final class TestDataUtil {
 	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
-			gemeinde = createGemeindeBern();
+			gemeinde = createGemeindeParis();
 			persistence.persist(gemeinde.getMandant());
 			return persistence.persist(gemeinde);
 		}
@@ -384,33 +383,33 @@ public final class TestDataUtil {
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
 		if (gemeinde == null) {
-			gemeinde = createGemeindeOstermundigen();
+			gemeinde = createGemeindeLondon();
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
 	}
 
 	@Nonnull
-	public static Gemeinde createGemeindeBern() {
+	public static Gemeinde createGemeindeParis() {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_BERN_ID);
 		gemeinde.setName("Bern");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
-		gemeinde.setBfsNummer(351L);
+		gemeinde.setBfsNummer(99998L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		return gemeinde;
 	}
 
 	@Nonnull
-	public static Gemeinde createGemeindeOstermundigen() {
+	public static Gemeinde createGemeindeLondon() {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
-		gemeinde.setName("Ostermundigen");
+		gemeinde.setName("London");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
-		gemeinde.setBfsNummer(363L);
+		gemeinde.setBfsNummer(99999L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		return gemeinde;
@@ -1317,7 +1316,7 @@ public final class TestDataUtil {
 	}
 
 	public static GemeindeStammdaten createGemeindeWithStammdaten() {
-		return createGemeindeStammdaten(createGemeindeBern());
+		return createGemeindeStammdaten(createGemeindeParis());
 	}
 
 	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde) {
