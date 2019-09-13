@@ -16,7 +16,6 @@
 <!--suppress XmlDuplicatedId -->
 <div class="dv-error-messages">
     <div ng-messages="vm.errorObject" class="error">
-        <div ng-message="iban" id="{{vm.inputid + '-error'}}" data-translate="ERROR_IBAN"></div>
         <div ng-message="required" id="{{vm.inputid + '-error'}}" data-translate="ERROR_REQUIRED"></div>
         <div ng-message="minlength" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MIN_LENG"></div>
         <div ng-message="maxlength" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MAX_LENG"></div>
@@ -43,5 +42,8 @@
              id="{{vm.inputid + '-error'}}"
              data-translate="ERROR_NO_FUTURE_DATETIME"></div>
         <div ng-message="parse" role="alert" data-translate="ERROR_PARSE"></div>
+        <div ng-message="iban" id="{{vm.inputid + '-error'}}" data-translate="ERROR_IBAN"></div>
+        <div ng-message="md-require-match" id="{{vm.inputid + '-error'}}"
+             data-translate="AUTOCOMPLETE_REQUIRE_EXACT_MATCH"></div>
     </div>
 </div>

@@ -1649,5 +1649,6 @@
     "BLOG_MANDANT_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-canton/",
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-commune/",
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-institutions/",
+    "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
