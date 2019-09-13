@@ -17,6 +17,7 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {Transition} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
@@ -32,6 +33,8 @@ describe('EditGemeindeComponentBG', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+
     beforeEach(async(() => {
 
         TestBed.configureTestingModule({
@@ -44,6 +47,7 @@ describe('EditGemeindeComponentBG', () => {
             schemas: [],
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: Transition, useValue: transitionSpy},
             ],
             declarations: [
             ],
