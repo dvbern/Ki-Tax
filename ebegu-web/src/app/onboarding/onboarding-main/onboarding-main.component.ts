@@ -23,4 +23,13 @@ import {Component} from '@angular/core';
     styleUrls: ['./onboarding-main.component.less', '../onboarding.less'],
 })
 export class OnboardingMainComponent {
+    placeholder1 = 'ONBOARDING_MAIN_PH1';
+    description1 = 'ONBOARDING_MAIN_DESC1';
+    placeholder2 = 'ONBOARDING_MAIN_PH2';
+    description2 = 'ONBOARDING_MAIN_DESC2';
+    placeholder3 = 'ONBOARDING_MAIN_PH3';
+    description3 = 'ONBOARDING_MAIN_DESC3';
+    placeholder4 = 'ONBOARDING_MAIN_PH4';
+    description4 = 'ONBOARDING_MAIN_DESC4';
+
 }
