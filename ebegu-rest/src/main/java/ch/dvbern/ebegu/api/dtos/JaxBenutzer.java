@@ -16,6 +16,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -178,12 +179,24 @@ public class JaxBenutzer implements Serializable {
 		}
 	}
 
-	public boolean equals(Object object) {
-		boolean same = false;
-		if (object != null && object instanceof JaxBenutzer) {
-			same =
-				this.username == ((JaxBenutzer) object).getUsername() && this.email == ((JaxBenutzer) object).getEmail();
+	@Override
+	public boolean equals(@Nullable Object o) {
+		if (this == o) {
+			return true;
 		}
-		return same;
+		if (!(o instanceof JaxBenutzer)) {
+			return false;
+		}
+		JaxBenutzer other = (JaxBenutzer) o;
+		//noinspection NonFinalFieldReferenceInEquals
+		return Objects.equals(this.getUsername(), other.getUsername())
+			&& Objects.equals(this.getEmail(), other.getEmail());
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode()
+			+ Objects.hashCode(this.getUsername())
+			+ Objects.hashCode(this.getEmail());
 	}
 }

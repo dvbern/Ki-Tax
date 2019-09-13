@@ -129,7 +129,7 @@
 									#nameVerantwortliche='ngModel'
                                     [compareWith]="compareBenutzer"
                                     required>
-                            <mat-option *ngFor="let vgem of stammdaten.benutzerListe" [value]="vgem">
+                            <mat-option *ngFor="let vgem of benutzerListe" [value]="vgem">
                                 {{vgem.vorname}} {{vgem.nachname}}
                             </mat-option>
                         </mat-select>
@@ -159,8 +159,10 @@
                         </div>
                     </div>
                 </div>
+
             </div>
             <div class="row">
+
                 <!-- Beschwerde-Adresse Checkbox -->
                 <div class="col-sm-6">
                     <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
@@ -217,8 +219,8 @@
                     </div>
                     <div class="form-group" *ngIf="stammdaten.standardRechtsmittelbelehrung">
                         <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                      [ngModel]="keineBeschwerdeAdresse"
-                                      (ngModelChange)="kBAdresseChange($event)">
+                                      [(ngModel)]="keineBeschwerdeAdresse"
+                                      (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
                             {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                         </mat-checkbox>
                     </div>

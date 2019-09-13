@@ -51,7 +51,6 @@ export class EditGemeindeComponentTS implements OnInit {
     }
 
     public altTSAdresseHasChange(newVal: boolean): void {
-        this.altTSAdresse = newVal;
         this.altTSAdresseChange.emit(newVal);
     }
 }

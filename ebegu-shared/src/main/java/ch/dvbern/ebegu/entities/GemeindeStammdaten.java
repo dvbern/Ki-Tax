@@ -56,14 +56,19 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 		@UniqueConstraint(columnNames = "gemeinde_id", name = "UK_gemeinde_stammdaten_gemeinde_id"),
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id"),
 		@UniqueConstraint(columnNames = "rechtsmittelbelehrung_id", name = "UK_rechtsmittelbelehrung_id"),
-		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_bg_adresse_id"),
-		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id")
+		@UniqueConstraint(columnNames = "bg_adresse_id", name = "UK_gemeinde_stammdaten_bg_adresse_id"),
+		@UniqueConstraint(columnNames = "ts_adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id")
 	}
 )
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+	@Nullable
+	@OneToOne(optional = true, orphanRemoval = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzer_id"), nullable = true)
+	private Benutzer defaultBenutzer;
 
 	@Nullable
 	@OneToOne(optional = true, orphanRemoval = false)
@@ -84,6 +89,16 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_adresse_id"), nullable = false)
 	private Adresse adresse;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_bg_adresse_id"), nullable = true)
+	private Adresse bgAdresse;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_ts_adresse_id"), nullable = true)
+	private Adresse tsAdresse;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -147,20 +162,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rechtsmittelbelehrung_id"))
 	private TextRessource rechtsmittelbelehrung;
 
-	@Nullable
-	@OneToOne(optional = true, orphanRemoval = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzer_id"), nullable = true)
-	private Benutzer defaultBenutzer;
-
-	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_bg_adresse_id"), nullable = true)
-	private Adresse bgAdresse;
-
-	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_ts_adresse_id"), nullable = true)
-	private Adresse tsAdresse;
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {

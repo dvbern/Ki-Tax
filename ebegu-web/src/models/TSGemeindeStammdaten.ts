@@ -41,7 +41,6 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public korrespondenzspracheFr: boolean;
     public benutzerListeBG: TSBenutzer[]; // read only
     public benutzerListeTS: TSBenutzer[]; // read only
-    public benutzerListe: TSBenutzer[]; // read only
     public kontoinhaber: string;
     public bic: string;
     public iban: string;

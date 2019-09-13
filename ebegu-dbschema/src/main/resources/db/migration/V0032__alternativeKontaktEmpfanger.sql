@@ -26,3 +26,6 @@ ALTER TABLE gemeinde_stammdaten
 	ADD CONSTRAINT FK_gemeindestammdaten_defaultbenutzer_id
 FOREIGN KEY (default_benutzer_id)
 REFERENCES benutzer(id);
+
+update gemeinde_stammdaten set default_benutzer_id = default_benutzerbg_id;
+update gemeinde_stammdaten set default_benutzerbg_id = null;

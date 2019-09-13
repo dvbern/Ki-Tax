@@ -96,34 +96,37 @@ export class EditGemeindeComponent implements OnInit {
     private loadStammdaten(): void {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
-
-                if (stammdaten.adresse === undefined) {
+				this.initializeEmptyUnrequiredFields(stammdaten);
+                if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
                     stammdaten.adresse = new TSAdresse();
-                }
-                if (stammdaten.beschwerdeAdresse === undefined) {
-                    stammdaten.beschwerdeAdresse = new TSAdresse();
-                }
-                if (stammdaten.bgAdresse === undefined) {
-                    this.altBGAdresse = false;
-                    stammdaten.bgAdresse = new TSAdresse();
-                } else {
-                    this.altBGAdresse = true;
-                }
-                if (stammdaten.tsAdresse === undefined) {
-                    this.altTSAdresse = false;
-                    stammdaten.tsAdresse = new TSAdresse();
-                } else {
-                    this.altTSAdresse = true;
-                }
-                if (!stammdaten.rechtsmittelbelehrung) {
-                    stammdaten.rechtsmittelbelehrung = new TSTextRessource();
                 }
                 if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
                     this.beguStartStr = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
                 }
                 return stammdaten;
             }));
+    }
+
+    private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
+        this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+        if (EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
+            stammdaten.beschwerdeAdresse = new TSAdresse();
+        }
+        if (EbeguUtil.isNullOrUndefined(stammdaten.bgAdresse)) {
+            this.altBGAdresse = false;
+            stammdaten.bgAdresse = new TSAdresse();
+        } else {
+            this.altBGAdresse = true;
+        }
+        if (EbeguUtil.isNullOrUndefined(stammdaten.tsAdresse)) {
+            this.altTSAdresse = false;
+            stammdaten.tsAdresse = new TSAdresse();
+        } else {
+            this.altTSAdresse = true;
+        }
+        if (!stammdaten.rechtsmittelbelehrung) {
+            stammdaten.rechtsmittelbelehrung = new TSTextRessource();
+        }
     }
 
     public getHeaderTitle(gemeinde: TSGemeinde): string {
@@ -157,7 +160,7 @@ export class EditGemeindeComponent implements OnInit {
 
             this.errorService.clearAll();
 
-            this.setRequiredFieldsToUndefined(stammdaten);
+            this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
                 if (this.fileToUpload) {
@@ -167,19 +170,14 @@ export class EditGemeindeComponent implements OnInit {
                     return;
                 }
             });
-            if (stammdaten.beschwerdeAdresse === undefined) {
-                stammdaten.beschwerdeAdresse = new TSAdresse();
-            }
-            if (stammdaten.bgAdresse === undefined) {
-                stammdaten.bgAdresse = new TSAdresse();
-            }
-            if (stammdaten.tsAdresse === undefined) {
-                stammdaten.tsAdresse = new TSAdresse();
-            }
+
+            // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
+            // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
+            this.initializeEmptyUnrequiredFields(stammdaten);
         });
     }
 
-    private setRequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
+    private setEmptyUnrequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
         if (this.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;

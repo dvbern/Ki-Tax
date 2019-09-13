@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -4265,9 +4264,7 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
 			.ifPresent(stammdaten::setGemeinde);
 
-		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
-
-		gemeindeStammdatenAdresseToEntity(jaxStammdaten, stammdaten);
+		gemeindeStammdatenAdressenToEntity(jaxStammdaten, stammdaten);
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
@@ -4302,9 +4299,12 @@ public class JaxBConverter extends AbstractConverter {
 		return stammdaten;
 	}
 
-	private void gemeindeStammdatenAdresseToEntity(
+	private void gemeindeStammdatenAdressenToEntity(
 		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten) {
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
+		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+
 		if (jaxStammdaten.getBgAdresse() != null) {
 			if (stammdaten.getBgAdresse() == null) {
 				stammdaten.setBgAdresse(new Adresse());
@@ -4348,12 +4348,12 @@ public class JaxBConverter extends AbstractConverter {
 			.map(Benutzer::getFullName)
 			.collect(Collectors.joining(", ")));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
-		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
+		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
 		// Konfiguration
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
 			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
@@ -4394,19 +4394,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 
-		List<JaxBenutzer> benutzerBGTSList = new ArrayList<>();
-		if (jaxStammdaten.getBenutzerListeBG() != null) {
-			benutzerBGTSList.addAll(jaxStammdaten.getBenutzerListeBG());
-		}
-		if (jaxStammdaten.getBenutzerListeTS() != null) {
-			for (JaxBenutzer j : jaxStammdaten.getBenutzerListeTS()) {
-				if (!benutzerBGTSList.contains(j)) {
-					benutzerBGTSList.add(j);
-				}
-			}
-		}
-		jaxStammdaten.setBenutzerListe(benutzerBGTSList);
-
 		if (!stammdaten.isNew()) {
 			if (stammdaten.getDefaultBenutzerBG() != null) {
 				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
@@ -4417,15 +4404,22 @@ public class JaxBConverter extends AbstractConverter {
 			if (stammdaten.getDefaultBenutzer() != null) {
 				jaxStammdaten.setDefaultBenutzer(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzer()));
 			}
-			if (stammdaten.getBeschwerdeAdresse() != null) {
-				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
-			}
-			if (stammdaten.getBgAdresse() != null) {
-				jaxStammdaten.setBgAdresse(adresseToJAX(stammdaten.getBgAdresse()));
-			}
-			if (stammdaten.getTsAdresse() != null) {
-				jaxStammdaten.setTsAdresse(adresseToJAX(stammdaten.getTsAdresse()));
-			}
+		}
+	}
+
+	private void gemeindeStammdatenAdressenToJax(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
+		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
+		if (stammdaten.getBeschwerdeAdresse() != null) {
+			jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+		}
+		if (stammdaten.getBgAdresse() != null) {
+			jaxStammdaten.setBgAdresse(adresseToJAX(stammdaten.getBgAdresse()));
+		}
+		if (stammdaten.getTsAdresse() != null) {
+			jaxStammdaten.setTsAdresse(adresseToJAX(stammdaten.getTsAdresse()));
 		}
 	}
 

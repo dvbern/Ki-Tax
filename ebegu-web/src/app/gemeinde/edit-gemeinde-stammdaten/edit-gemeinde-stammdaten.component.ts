@@ -45,6 +45,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public korrespondenzsprache: string;
+    public benutzerListe: Array<TSBenutzer>;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -61,7 +62,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         this.stammdaten$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-            stammdaten => this.initStrings(stammdaten),
+            stammdaten => this.initValues(stammdaten),
             err => LOG.error(err)
         );
     }
@@ -71,7 +72,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         this.unsubscribe$.complete();
     }
 
-    private initStrings(stammdaten: TSGemeindeStammdaten): void {
+    private initValues(stammdaten: TSGemeindeStammdaten): void {
         const languages: string[] = [];
         if (stammdaten.korrespondenzspracheDe) {
             languages.push(this.translate.instant('DEUTSCH'));
@@ -80,18 +81,27 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             languages.push(this.translate.instant('FRANZOESISCH'));
         }
         this.korrespondenzsprache = languages.join(', ');
+
+        // Für den "normalen" Defaultbenutzer sollen alle Benutzer der BG oder TS Rolle vorgeschlagen werden
+        // Duplikate müssen aber vermieden werden
+        this.benutzerListe = stammdaten.benutzerListeBG;
+        stammdaten.benutzerListeTS.forEach((tsBen) => {
+            if (!this.benutzerListe.find(value => value.username === tsBen.username)) {
+                this.benutzerListe.push(tsBen);
+            }
+        })
     }
 
     public isSuperadmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
-    public kBAdresseChange(newVal: boolean): void {
-        this.keineBeschwerdeAdresse = newVal;
+    public keineBeschwerdeAdresseChanged(newVal: boolean): void {
         this.keineBeschwerdeAdresseChange.emit(newVal);
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
+
 }

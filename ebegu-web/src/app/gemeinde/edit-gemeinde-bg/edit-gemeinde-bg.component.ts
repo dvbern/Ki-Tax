@@ -79,7 +79,6 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public altBGAdresseHasChange(newVal: boolean): void {
-        this.altBGAdresse = newVal;
         this.altBGAdresseChange.emit(newVal);
     }
 
