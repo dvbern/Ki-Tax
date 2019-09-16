@@ -71,6 +71,10 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@Column(nullable = false)
 	private @NotNull boolean stammdatenCheckRequired = false;
 
+	/**
+	 * @deprecated used to convert all Institutionen from the database to InstitutionChangedEvents and publish them to
+	 * Kafka. Thus, only required for one deployment.
+	 */
 	@Deprecated
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
