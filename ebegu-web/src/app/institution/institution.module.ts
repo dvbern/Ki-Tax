@@ -17,6 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {IbanModule} from 'ngx-iban';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
@@ -24,12 +25,13 @@ import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-b
 import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
+import {ExternalClientAssignmentComponent} from './external-client-assignment/external-client-assignment.component';
+import {ExternalClientMultiselectComponent} from './external-client-multiselect/external-client-multiselect.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
 import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
 import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
 import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
     imports: [
@@ -49,6 +51,8 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
         ViewInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
         ViewInstitutionFerieninselComponent,
+        ExternalClientMultiselectComponent,
+        ExternalClientAssignmentComponent,
     ],
     entryComponents: [
         InstitutionListComponent,

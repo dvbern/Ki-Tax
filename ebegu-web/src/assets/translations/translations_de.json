@@ -586,6 +586,7 @@
     "LABEL_SPEICHERN": "Speichern",
     "LABEL_ABBRECHEN": "Abbrechen",
     "LABEL_KEINE_ANGABE": "Keine Angabe",
+    "LABEL_KEINE": "Keine",
     "PENDENZEN_LIST": "Pendenzenliste",
     "VERLAUF_LIST": "Verlauf",
     "ALLE_VERFUEGUNGEN_LIST": "Alle Verfügungen",
@@ -1647,5 +1648,6 @@
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/category/know-how-gemeinden/",
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/category/knowhow-institutionen/",
     "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "Ungültige Auswahl",
+    "PERMITTED_EXTERNAL_CLIENTS": "Zugriffsberechtigte Drittanwendungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

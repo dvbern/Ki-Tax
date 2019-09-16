@@ -190,7 +190,7 @@ public class InstitutionenInsertCreator {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO adresse ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde, gueltig_ab, gueltig_bis, hausnummer, land, ort, plz, strasse, zusatzzeile) ");
+		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde, gueltig_ab, gueltig_bis, hausnummer, land, ort, plz, strasse, zusatzzeile, event_published) ");
 		sb.append("VALUES (");
 		sb.append('\'').append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
@@ -206,7 +206,8 @@ public class InstitutionenInsertCreator {
 		sb.append(toStringOrNull(ort)).append(", "); // ort
 		sb.append(toStringOrNull(plz)).append(", "); // plz
 		sb.append(toStringOrNull(strasse)).append(", "); // strasse
-		sb.append(toStringOrNull(zusatzzeile));    // zusatzzeile
+		sb.append(toStringOrNull(zusatzzeile)).append(", ");    // zusatzzeile
+		sb.append("0");    // event_published
 		sb.append(");");
 		insertAdressen.add(sb.toString());
 

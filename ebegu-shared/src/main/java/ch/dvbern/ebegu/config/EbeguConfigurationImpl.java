@@ -16,7 +16,9 @@
 package ch.dvbern.ebegu.config;
 
 import java.io.Serializable;
+import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -29,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Konfiguration von Kurstool. Liest system Properties aus
+ * Konfiguration von kiBon. Liest system Properties aus
  */
 @Dependent
 public class EbeguConfigurationImpl extends SystemConfiguration implements EbeguConfiguration, Serializable {
@@ -65,6 +67,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String SENTRY_ENVIRONMENT = "sentry.environment"; //use same property as sentry logger
 	private static final String EBEGU_SUPERUSER_MAIL = "ebegu.superuser.mail";
 	private static final String EBEGU_SUPPORT_MAIL = "ebegu.support.mail";
+
+	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
 
 
 	@Inject
@@ -234,5 +238,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getSupportMail() {
 		return getString(EBEGU_SUPPORT_MAIL, "support@kibon.ch");
+	}
+
+	@Nonnull
+	@Override
+	public Optional<String> getKafkaURL() {
+		return Optional.ofNullable(getString(KIBON_KAFKA_URL));
 	}
 }

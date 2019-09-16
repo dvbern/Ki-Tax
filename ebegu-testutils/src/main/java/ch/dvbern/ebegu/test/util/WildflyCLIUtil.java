@@ -28,9 +28,13 @@ import org.slf4j.LoggerFactory;
  * @author Dominik Pospisil <dpospisi@redhat.com>
  * @see org.jboss.as.test.integration.management.ManagementOperations
  */
-public class WildflyCLIUtil {
+public final class WildflyCLIUtil {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WildflyCLIUtil.class);
+
+	private WildflyCLIUtil() {
+		// util
+	}
 
 	public static List<String> modelNodeAsStringList(ModelNode node) {
 		List<String> ret = new LinkedList<>();

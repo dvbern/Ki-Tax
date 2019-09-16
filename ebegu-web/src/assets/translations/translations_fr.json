@@ -586,6 +586,7 @@
     "LABEL_SPEICHERN": "Enregistrer",
     "LABEL_ABBRECHEN": "Interrompre",
     "LABEL_KEINE_ANGABE": "Aucune indication",
+    "LABEL_KEINE": "Aucune",
     "PENDENZEN_LIST": "Liste de cas en suspens",
     "VERLAUF_LIST": "Historique",
     "ALLE_VERFUEGUNGEN_LIST": "Toutes les décisions",
@@ -1647,5 +1648,6 @@
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-commune/",
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-institutions/",
     "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "",
+    "PERMITTED_EXTERNAL_CLIENTS": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
