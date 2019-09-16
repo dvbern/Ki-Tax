@@ -14,6 +14,8 @@
  */
 
 import * as moment from 'moment';
+import {LogLevel} from '../app/core/logging/log-level';
+import {LogFactory} from '../app/core/logging/LogFactory';
 import DateUtil from './DateUtil';
 
 // tslint:disable:no-identical-functions no-duplicate-string
@@ -21,11 +23,14 @@ describe('dateUtil', () => {
 
     describe('localDateToMoment()', () => {
         it('should return null for invalid input', () => {
+            // avoid log spam
+            LogFactory.setModuleLevel('DateUtil', LogLevel.ERROR);
             expect(DateUtil.localDateTimeToMoment(undefined)).toEqual(undefined);
             expect(DateUtil.localDateTimeToMoment(null)).toEqual(undefined);
             expect(DateUtil.localDateTimeToMoment('')).toEqual(undefined);
             expect(DateUtil.localDateTimeToMoment('invalid format')).toEqual(undefined);
             expect(DateUtil.localDateTimeToMoment('1995-12-25')).toEqual(undefined);
+            LogFactory.setModuleLevel('DateUtil', LogLevel.WARN);
         });
 
         it('should return a valid moment', () => {

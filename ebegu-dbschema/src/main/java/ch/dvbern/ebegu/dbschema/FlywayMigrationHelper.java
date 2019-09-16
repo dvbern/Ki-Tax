@@ -43,7 +43,7 @@ import ch.dvbern.ebegu.enums.UserRoleName;
 public class FlywayMigrationHelper {
 
 	@PersistenceContext(unitName = "ebeguPersistenceUnit")
-	EntityManager em;
+	private EntityManager em;
 
 	@Resource
 	private SessionContext ctx;

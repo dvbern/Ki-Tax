@@ -77,6 +77,14 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private @NotNull boolean kategorieNichtEintreten = false;
 
+	/**
+	 * @deprecated used to convert all Verfuegungen from the database to VerfuegungVerfuegtEvents and publish them to
+	 * Kafka. Thus, only required for one deployment.
+	 */
+	@Deprecated
+	@Column(nullable = false)
+	private @NotNull boolean eventPublished = true;
+
 	public Verfuegung() {
 		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
 	}
@@ -155,6 +163,14 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	public void setKategorieNichtEintreten(boolean kategorieNichtEintreten) {
 		this.kategorieNichtEintreten = kategorieNichtEintreten;
+	}
+
+	public boolean isEventPublished() {
+		return eventPublished;
+	}
+
+	public void setEventPublished(boolean eventPublished) {
+		this.eventPublished = eventPublished;
 	}
 
 	public String toString() {

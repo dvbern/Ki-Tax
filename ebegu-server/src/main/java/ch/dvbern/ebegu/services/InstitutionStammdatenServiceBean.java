@@ -29,6 +29,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -48,6 +49,8 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -90,6 +93,12 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private PrincipalBean principalBean;
 
+	@Inject
+	private Event<ExportedEvent> event;
+
+	@Inject
+	private InstitutionEventConverter institutionEventConverter;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
@@ -100,7 +109,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
 
-		return persistence.merge(institutionStammdaten);
+		InstitutionStammdaten updatedStammdaten = persistence.merge(institutionStammdaten);
+
+		return updatedStammdaten;
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
+	public void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten) {
+		event.fire(institutionEventConverter.of(updatedStammdaten));
 	}
 
 	@Nonnull
@@ -150,11 +168,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(@Nonnull String gesuchsperiodeId) {
+	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(
+		@Nonnull String gesuchsperiodeId) {
 
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, currentBenutzer.extractGemeindenForUser());
+			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
+				gesuchsperiodeId,
+				currentBenutzer.extractGemeindenForUser());
 		}
 
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
@@ -181,14 +202,17 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(@Nonnull String gesuchsperiodeId,
+	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
+		@Nonnull String gesuchsperiodeId,
 		@Nonnull String gemeindeId) {
 
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeId));
 
-		List<Gemeinde> gemeinden = Collections.singletonList(gemeinde );
+		List<Gemeinde> gemeinden = Collections.singletonList(gemeinde);
 		return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeinden);
 	}
 
@@ -229,9 +253,10 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Override
 	@PermitAll
 	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution =
-			institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
-			("fetchInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+		Institution institution = institutionService.findInstitution(institutionId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"fetchInstitutionStammdatenByInstitution",
+				institutionId));
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,
@@ -261,11 +286,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		ParameterExpression<LocalDate> dateParam = cb.parameter(LocalDate.class, "date");
 		Predicate intervalPredicate = PredicateHelper.getPredicateDateRangedEntityGueltigAm(cb, root, dateParam);
-		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution).in(institutionenForCurrentBenutzer);
+		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution)
+			.in(institutionenForCurrentBenutzer);
 		Predicate noUnknown = PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root);
 
 		query.where(intervalPredicate, institutionPredicate, noUnknown);
-		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, LocalDate.now());
+		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query)
+			.setParameter(dateParam, LocalDate.now());
 		List<BetreuungsangebotTyp> resultList = q.getResultList();
 		return resultList;
 	}
