@@ -14,8 +14,8 @@ pipeline {
 		disableConcurrentBuilds()
 	}
 	stages {
-		lock('ebegu-tests') {
-			stage("Test") {
+		stage("Test") {
+			lock('ebegu-tests') {
 				agent {
 					docker {
 						image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:latest"
@@ -41,8 +41,8 @@ pipeline {
 					always {
 						recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
 								(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
-						junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml build/karma-results' +
-								'.xml'
+						junit allowEmptyResults: true,
+								testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
 						cleanWs notFailBuild: true
 					}
 				}
