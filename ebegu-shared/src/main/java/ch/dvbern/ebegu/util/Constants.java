@@ -116,6 +116,12 @@ public final class Constants {
 
 	public static final String UNKNOWN_INSTITUTION_NAME = "";
 
+	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
+	// und darf dem Benutzer <b>nie>/b> angezeigt werden
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE= "00000000-0000-0000-0000-000000000002";
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :

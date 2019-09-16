@@ -132,16 +132,16 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             return;
         }
         this.gesuchModelManager.setKindIndex(kindIndex);
-        this.resetActiveInstitutionenList();
+        this.resetActiveInstitutionenForGemeindeList();
         this.openBetreuungView(undefined, kind.kindNummer);
     }
 
-    private resetActiveInstitutionenList(): void {
+    private resetActiveInstitutionenForGemeindeList(): void {
         // Beim Navigieren auf die BetreuungView muss eventuell die Liste der Institutionen neu geladen werden.
         // Diese wird im GMM gecached und enthält eventuell nicht die neuesten Daten, insbesondere beim Hinzufügen von
         // Betreuungen.
         if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            this.gesuchModelManager.resetActiveInstitutionenList();
+            this.gesuchModelManager.resetActiveInstitutionenForGemeindeList();
         }
     }
 
@@ -160,7 +160,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             return;
         }
         this.gesuchModelManager.setKindIndex(kindIndex);
-        this.resetActiveInstitutionenList();
+        this.resetActiveInstitutionenForGemeindeList();
         this.openAnmeldungView(kind.kindNummer, betreuungstyp);
     }
 
@@ -244,6 +244,18 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
 
     public setFocusBack(elementID: string): void {
         angular.element(`#${elementID}`).first().focus();
+    }
+
+    public showButtonAnmeldungTagesschule(): boolean {
+        return this.gesuchModelManager.getGemeinde()
+            && this.gesuchModelManager.getGemeinde().angebotTS
+            && this.showButtonAnmeldungSchulamt();
+    }
+
+    public showButtonAnmeldungFerieninsel(): boolean {
+        return this.gesuchModelManager.getGemeinde()
+            && this.gesuchModelManager.getGemeinde().angebotFI
+            && this.showButtonAnmeldungSchulamt();
     }
 
     public showButtonAnmeldungSchulamt(): boolean {

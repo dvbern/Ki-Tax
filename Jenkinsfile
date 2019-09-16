@@ -31,7 +31,7 @@ pipeline {
 								artifactsPublisher(disabled: true)
 						]) {
 							sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P ' +
-									'test-wildfly-managed -P ci clean install'
+									'test-wildfly-managed -P ci -P frontend clean install'
 						}
 					}
 				}

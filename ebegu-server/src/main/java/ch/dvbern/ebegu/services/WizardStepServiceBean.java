@@ -573,6 +573,18 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		wizardStep.setWizardStepStatus(getWizardStepStatusOkOrMutiert(wizardStep));
 	}
 
+	@Override
+	public void unsetWizardStepFreigabe(@NotNull String gesuchId) {
+		final List<WizardStep> wizardSteps = findWizardStepsFromGesuch(gesuchId);
+		WizardStep wizardStepFreigabe =
+			wizardSteps.stream()
+				.filter(step -> step.getWizardStepName() == WizardStepName.FREIGABE)
+				.findFirst()
+				.get();
+
+		wizardStepFreigabe.setWizardStepStatus(WizardStepStatus.WARTEN);
+	}
+
 	private WizardStepStatus getWizardStepStatusOkOrMutiert(WizardStep wizardStep) {
 		if (AntragTyp.MUTATION != wizardStep.getGesuch().getTyp()) {
 			// just to avoid doing the calculation for Gesuche that are not of Type Mutation if it is not needed

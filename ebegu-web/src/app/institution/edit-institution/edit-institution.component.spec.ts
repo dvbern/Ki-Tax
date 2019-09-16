@@ -24,7 +24,7 @@ describe('EditInstitutionComponent', () => {
     const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenForCurrentBenutzer']);
     const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
-        ['getInstitutionStammdatenByInstitution']);
+        ['findInstitutionStammdaten']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
@@ -57,7 +57,7 @@ describe('EditInstitutionComponent', () => {
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         insitutionServiceSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
-        stammdatenServiceSpy.getInstitutionStammdatenByInstitution.and.returnValue(Promise.resolve([]));
+        stammdatenServiceSpy.findInstitutionStammdaten.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));

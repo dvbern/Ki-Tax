@@ -90,10 +90,9 @@ export class CreateAngebotListViewController implements IController {
 
     public getInstitutionenSDList(): Array<TSInstitutionStammdaten> {
         const result: Array<TSInstitutionStammdaten> = [];
-        this.gesuchModelManager.getActiveInstitutionenList().forEach((instStamm: TSInstitutionStammdaten) => {
+        this.gesuchModelManager.getActiveInstitutionenForGemeindeList().forEach((instStamm: TSInstitutionStammdaten) => {
             if (this.ts) {
-                if (instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE
-                    && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm)) {
+                if (instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE) {
                     result.push(instStamm);
                 }
             } else if (this.fi && instStamm.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL) {

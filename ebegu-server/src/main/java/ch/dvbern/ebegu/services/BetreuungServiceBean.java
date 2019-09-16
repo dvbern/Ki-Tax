@@ -259,6 +259,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		return mergedBetreuung;
 	}
 
+	private <T extends AbstractPlatz> T savePlatz(T platz) {
+		if (platz.getBetreuungsangebotTyp().isFerieninsel()) {
+			return (T) saveAnmeldungFerieninsel((AnmeldungFerieninsel) platz, false);
+		} else if (platz instanceof AnmeldungTagesschule) {
+			return (T) saveAnmeldungTagesschule((AnmeldungTagesschule) platz, false);
+		} else {
+			return (T) saveBetreuung((Betreuung) platz, false);
+		}
+	}
+
 	private void updateWizardSteps(@Nonnull AbstractPlatz mergedBetreuung, @Nonnull Boolean isAbwesenheit) {
 		if (isAbwesenheit) {
 			wizardStepService.updateSteps(
@@ -362,10 +372,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Betreuung anmeldungSchulamtUebernehmen(@Valid @Nonnull Betreuung betreuung) {
+	public AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
-		Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
+		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
 		try {
 			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungUebernommen(persistedBetreuung);
@@ -381,10 +391,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Betreuung anmeldungSchulamtAblehnen(@Valid @Nonnull Betreuung betreuung) {
+	public AbstractAnmeldung anmeldungSchulamtAblehnen(@Valid @Nonnull AbstractAnmeldung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT);
-		Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
+		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
 		try {
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungAbgelehnt(persistedBetreuung);
@@ -400,10 +410,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Betreuung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull Betreuung betreuung) {
+	public AbstractAnmeldung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull AbstractAnmeldung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
-		Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
+		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
 		return persistedBetreuung;
 	}
 
@@ -455,6 +465,20 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			return anmeldungTagesschule;
 		}
 		Optional<AnmeldungFerieninsel> anmeldungFerieninsel = findAnmeldungFerieninsel(id);
+		return anmeldungFerieninsel;
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Optional<? extends AbstractPlatz> findPlatz(@Nonnull String id) {
+		Optional<Betreuung> anmeldungTagesschule = findBetreuung(id);
+		if (anmeldungTagesschule.isPresent()) {
+			return anmeldungTagesschule;
+		}
+		Optional<? extends AbstractAnmeldung> anmeldungFerieninsel = findAnmeldung(id);
 		return anmeldungFerieninsel;
 	}
 
@@ -705,6 +729,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 
+		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+		if (institutionen.isEmpty()) {
+			// Wenn der Benutzer fuer keine Institution berechtigt ist, darf er auch keine Verfuegungen sehen
+			return Collections.emptyList();
+		}
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 
@@ -721,7 +751,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Predicate verfuegungPredicate = cb.isNotNull(root.get(Betreuung_.verfuegung));
 		predicatesToUse.add(verfuegungPredicate);
 
-		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 		Predicate predicateInstitution = root.get(Betreuung_.institutionStammdaten)
 			.get(InstitutionStammdaten_.institution)
 			.in(Collections.singletonList(institutionen));
@@ -974,15 +1003,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	public void sendInfoOffenePendenzenInstitution() {
-		Collection<Institution> activeInstitutionen = institutionService.getAllActiveInstitutionen();
-		for (Institution institution : activeInstitutionen) {
-			Collection<Betreuung> pendenzen = getPendenzenForInstitution(institution);
-			if (CollectionUtils.isNotEmpty(pendenzen)) {
-				InstitutionStammdaten stammdaten =
-					institutionStammdatenService.getInstitutionStammdatenByInstitution(institution.getId());
-				if (stammdaten.getSendMailWennOffenePendenzen()) {
-					mailService.sendInfoOffenePendenzenInstitution(stammdaten);
-				}
+		Collection<InstitutionStammdaten> activeInstitutionen = institutionStammdatenService.getAllInstitutionStammdaten();
+		for (InstitutionStammdaten stammdaten : activeInstitutionen) {
+			Collection<Betreuung> pendenzen = getPendenzenForInstitution(stammdaten.getInstitution());
+			if (CollectionUtils.isNotEmpty(pendenzen) && stammdaten.getSendMailWennOffenePendenzen()) {
+				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
 			}
 		}
 	}

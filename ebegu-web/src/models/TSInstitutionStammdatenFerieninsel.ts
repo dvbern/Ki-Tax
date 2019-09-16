@@ -16,9 +16,11 @@
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSFerienname} from './enums/TSFerienname';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSGemeinde from './TSGemeinde';
 
 export default class TSInstitutionStammdatenFerieninsel extends TSAbstractDateRangedEntity {
 
+    private _gemeinde: TSGemeinde;
     private _ausweichstandortSommerferien: string;
     private _ausweichstandortHerbstferien: string;
     private _ausweichstandortSportferien: string;
@@ -26,6 +28,14 @@ export default class TSInstitutionStammdatenFerieninsel extends TSAbstractDateRa
 
     public constructor() {
         super();
+    }
+
+    public get gemeinde(): TSGemeinde {
+        return this._gemeinde;
+    }
+
+    public set gemeinde(value: TSGemeinde) {
+        this._gemeinde = value;
     }
 
     public get ausweichstandortSommerferien(): string {

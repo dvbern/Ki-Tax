@@ -893,6 +893,7 @@ export default class EbeguRestUtil {
         konfigurationFromServer: any,
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
+            konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
@@ -1275,6 +1276,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenFerieninsel) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenFerieninsel,
                 institutionStammdatenFerieninsel);
+            restInstitutionStammdatenFerieninsel.gemeinde =
+                this.gemeindeToRestObject({}, institutionStammdatenFerieninsel.gemeinde);
             restInstitutionStammdatenFerieninsel.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninsel.ausweichstandortFruehlingsferien;
             restInstitutionStammdatenFerieninsel.ausweichstandortHerbstferien =
@@ -1295,6 +1298,8 @@ export default class EbeguRestUtil {
         if (institutionStammdatenFerieninselFromServer) {
             this.parseDateRangeEntity(institutionStammdatenFerieninselTS,
                 institutionStammdatenFerieninselFromServer);
+            institutionStammdatenFerieninselTS.gemeinde =
+                this.parseGemeinde(new TSGemeinde(), institutionStammdatenFerieninselFromServer.gemeinde);
             institutionStammdatenFerieninselTS.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninselFromServer.ausweichstandortFruehlingsferien;
             institutionStammdatenFerieninselTS.ausweichstandortHerbstferien =
@@ -1780,6 +1785,8 @@ export default class EbeguRestUtil {
 
     public anmeldungDTOToRestObject(restAngebot: any, angebotDTO: TSAnmeldungDTO): any {
         restAngebot.betreuung = this.betreuungToRestObject({}, angebotDTO.betreuung);
+        restAngebot.betreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+        restAngebot.betreuung.vertrag = true;
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;

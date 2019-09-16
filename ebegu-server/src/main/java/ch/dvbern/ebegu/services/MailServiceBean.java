@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
@@ -133,25 +134,25 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungUebernommen(@Nonnull Betreuung betreuung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService);
+	public void sendInfoSchulamtAnmeldungUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
 		sendMail(
-			betreuung.extractGesuch(),
+			abstractAnmeldung.extractGesuch(),
 			"InfoSchulamtAnmeldungUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(abstractAnmeldung, gesuchsteller, adr, sprache),
 			AntragStatus.values()
 		);
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungAbgelehnt(@Nonnull Betreuung betreuung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService);
+	public void sendInfoSchulamtAnmeldungAbgelehnt(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
 		sendMail(
-			betreuung.extractGesuch(),
+			abstractAnmeldung.extractGesuch(),
 			"InfoSchulamtAnmeldungAbgelehnt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoSchulamtAnmeldungAbgelehnt(
-				betreuung,
+				abstractAnmeldung,
 				gesuchsteller,
 				adr,
 				sprache),

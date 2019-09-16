@@ -110,7 +110,10 @@ export function appRun(
             listResourceRS.getLaenderList();  // initial aufruefen damit cache populiert wird
             mandantRS.getFirst();
         }
-        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll(); // muss immer geleert werden
+        // muss immer geleert werden
+        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN).removeAll();
+        // muss immer geleert werden
+        globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE).removeAll();
         // since we will need these lists anyway we already load on login
         gesuchsperiodeRS.updateActiveGesuchsperiodenList().then(gesuchsperioden => {
             // tslint:disable-next-line:early-exit

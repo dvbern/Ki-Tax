@@ -302,6 +302,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	}
 
 	public boolean isVisibleForGemeindeUser(Benutzer benutzer) {
+		if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
+			return true;
+		}
 		Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
 		Gemeinde gemeinde = null;
 		if (getInstitutionStammdatenTagesschule() != null) {

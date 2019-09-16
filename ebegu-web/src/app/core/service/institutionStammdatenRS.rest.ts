@@ -16,12 +16,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import * as moment from 'moment';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class InstitutionStammdatenRS {
@@ -46,6 +44,25 @@ export class InstitutionStammdatenRS {
             });
     }
 
+    public createInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
+        return this.saveInstitutionStammdaten(institutionStammdaten);
+    }
+
+    public updateInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
+        return this.saveInstitutionStammdaten(institutionStammdaten);
+    }
+
+    public saveInstitutionStammdaten(institutionStammdaten: TSInstitutionStammdaten): IPromise<TSInstitutionStammdaten> {
+        let restInstitutionStammdaten = {};
+        restInstitutionStammdaten =
+            this.ebeguRestUtil.institutionStammdatenToRestObject(restInstitutionStammdaten, institutionStammdaten);
+
+        return this.$http.put(this.serviceURL, restInstitutionStammdaten).then((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
+            },
+        );
+    }
+
     public getAllInstitutionStammdaten(): IPromise<TSInstitutionStammdaten[]> {
         return this.$http.get(this.serviceURL).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
@@ -67,10 +84,18 @@ export class InstitutionStammdatenRS {
             });
     }
 
-    public getInstitutionStammdatenByInstitution(institutionID: string): IPromise<TSInstitutionStammdaten> {
-        return this.$http.get(`${this.serviceURL}/institution/${encodeURIComponent(institutionID)}`)
+    public getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId: string,
+                                                                        gemeindeId: string): IPromise<TSInstitutionStammdaten[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN_GEMEINDE);
+        return this.$http.get(`${this.serviceURL}/gesuchsperiode/gemeinde/active`, {
+            params: {
+                gesuchsperiodeId,
+                gemeindeId,
+            },
+            cache
+        })
             .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
+                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
             });
     }
 

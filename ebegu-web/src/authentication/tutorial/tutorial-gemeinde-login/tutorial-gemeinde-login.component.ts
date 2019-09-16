@@ -80,7 +80,7 @@ export class TutorialGemeindeLoginComponent {
             'password9',
             'gerlinde.tutorial@example.com',
             this.mandant,
-            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_BG,
             undefined,
             undefined,
             [this.gemeindeTutorial]);

@@ -31,8 +31,6 @@
                         <!-- readonly -->
                         <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
                             <div class="form-group">
-                                <!-- Titel -->
-                                <h3 translate>GEMEINDE_REGELN</h3>
                                 <!-- Datum Aktivierung Tagesschulen -->
                                 <label>{{'TAGESSCHULE_AKTIVIERUNGSDATUM'|translate}}&nbsp;
                                     <strong>{{getTagesschuleAktivierungsdatumAsString(konfigurationsListe[i])}}</strong>
@@ -44,10 +42,6 @@
                         </div>
                         <!-- editable -->
                         <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                            <!-- Titel -->
-							<div class="form-group">
-								<h3 translate>GEMEINDE_REGELN</h3>
-                            </div>
                             <!-- Datum Aktivierung Tagesschulen -->
                             <div class="form-group">
                                 <label class="required" translate for="tsAktivierungsdatum">TAGESSCHULE_AKTIVIERUNGSDATUM</label>
