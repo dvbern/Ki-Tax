@@ -1648,6 +1648,6 @@
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/category/know-how-gemeinden/",
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/category/knowhow-institutionen/",
     "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "Ungültige Auswahl",
-    "PERMITTED_EXTERNAL_CLIENTS": "Zugriffsberechtigte Drittanwendungen"
+    "PERMITTED_EXTERNAL_CLIENTS": "Zugriffsberechtigte Drittanwendungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
