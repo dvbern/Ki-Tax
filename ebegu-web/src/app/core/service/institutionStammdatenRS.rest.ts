@@ -63,19 +63,6 @@ export class InstitutionStammdatenRS {
         );
     }
 
-    public getAllInstitutionStammdaten(): IPromise<TSInstitutionStammdaten[]> {
-        return this.$http.get(this.serviceURL).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
-        });
-    }
-
-    public getAllInstitutionStammdatenByDate(dateParam: moment.Moment): IPromise<TSInstitutionStammdaten[]> {
-        return this.$http.get(`${this.serviceURL}/date`, {params: {date: DateUtil.momentToLocalDate(dateParam)}})
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
-            });
-    }
-
     public getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSInstitutionStammdaten[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_INSTITUTIONSSTAMMDATEN);
         return this.$http.get(`${this.serviceURL}/gesuchsperiode/active`, {params: {gesuchsperiodeId}, cache})

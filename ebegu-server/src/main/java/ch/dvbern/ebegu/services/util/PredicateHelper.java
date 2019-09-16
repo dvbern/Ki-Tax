@@ -33,6 +33,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
@@ -84,7 +85,10 @@ public final class PredicateHelper<V> {
 		return predicates;
 	}
 
-	public static Predicate excludeUnknownInstitutionStammdatenPredicate(Root root) {
+	/**
+	 * @param root Root darf Institution oder InstituionStammdaten sein
+	 */
+	public static Predicate excludeUnknownInstitutionStammdatenPredicate(Root<? extends AbstractEntity> root) {
 		return root.get(AbstractEntity_.id)
 			.in(Arrays.asList(
 				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA,

@@ -41,8 +41,6 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.util.DateUtil;
-import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -77,44 +75,6 @@ public class InstitutionStammdatenResource {
 
 		return optional.map(institutionStammdaten -> converter.institutionStammdatenToJAX(institutionStammdaten))
 			.orElse(null);
-	}
-
-	@ApiOperation(value = "Gibt alle vorhandenen Institutionsstammdaten zurueck",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
-		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
-			.map(instStammdaten ->
-				converter.institutionStammdatenSummaryToJAX(instStammdaten, new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
-	}
-
-	/**
-	 * Sucht in der DB alle InstitutionStammdaten, bei welchen das gegebene Datum zwischen DatumVon und DatumBis liegt
-	 * Wenn das Datum null ist, wird dieses automatisch als heutiges Datum gesetzt.
-	 *
-	 * @param stringDate Date als String mit Format "yyyy-MM-dd". Wenn null, heutiges Datum gesetzt
-	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
-	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Path("/date")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdatenByDate(
-		@Nullable @QueryParam("date") String stringDate) {
-
-		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stringDate);
-
-		return institutionStammdatenService.getAllInstitutionStammdatenByDate(date).stream()
-			.map(stammdaten ->
-				converter.institutionStammdatenSummaryToJAX(stammdaten, new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
 	}
 
 	/**

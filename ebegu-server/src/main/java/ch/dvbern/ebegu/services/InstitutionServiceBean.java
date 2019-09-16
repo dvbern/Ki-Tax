@@ -423,13 +423,4 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return timestampMutiert != null
 			&& timestampMutiert.isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
 	}
-
-	/**
-	 * @param root Root darf Institution oder InstituionStammdaten sein
-	 */
-	private Predicate excludeUnknownInstitutionPredicate(Root<? extends AbstractEntity> root) {
-		List<String> excludedIds = Arrays.asList(ID_UNKNOWN_INSTITUTION_KITA, ID_UNKNOWN_INSTITUTION_TAGESFAMILIE);
-
-		return root.get(AbstractEntity_.id).in(excludedIds).not();
-	}
 }
