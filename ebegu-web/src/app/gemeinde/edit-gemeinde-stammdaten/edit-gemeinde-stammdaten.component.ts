@@ -85,11 +85,11 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         // Für den "normalen" Defaultbenutzer sollen alle Benutzer der BG oder TS Rolle vorgeschlagen werden
         // Duplikate müssen aber vermieden werden
         this.benutzerListe = stammdaten.benutzerListeBG;
-        stammdaten.benutzerListeTS.forEach((tsBen) => {
+        stammdaten.benutzerListeTS.forEach(tsBen => {
             if (!this.benutzerListe.find(value => value.username === tsBen.username)) {
                 this.benutzerListe.push(tsBen);
             }
-        })
+        });
     }
 
     public isSuperadmin(): boolean {

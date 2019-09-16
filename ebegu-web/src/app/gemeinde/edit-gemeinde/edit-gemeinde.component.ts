@@ -96,7 +96,7 @@ export class EditGemeindeComponent implements OnInit {
     private loadStammdaten(): void {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-				this.initializeEmptyUnrequiredFields(stammdaten);
+                this.initializeEmptyUnrequiredFields(stammdaten);
                 if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
                     stammdaten.adresse = new TSAdresse();
                 }
