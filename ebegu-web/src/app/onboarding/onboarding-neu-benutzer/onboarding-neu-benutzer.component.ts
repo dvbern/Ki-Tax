@@ -31,14 +31,16 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
     styleUrls: ['./onboarding-neu-benutzer.component.less', '../onboarding.less'],
 })
 export class OnboardingNeuBenutzerComponent {
-
     @Input() public nextState: string = 'onboarding.be-login';
     @Input() public showLogin: boolean = true;
 
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
+    private _gemeindeList: Array<TSGemeinde> = [];
 
     public isDummyMode$: Observable<boolean>;
+    public betreuungsgutscheinBeantragen: boolean;
+    public tsBeantragen: boolean;
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -51,7 +53,6 @@ export class OnboardingNeuBenutzerComponent {
 
                 return gemeinden;
             }));
-
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
 
@@ -61,5 +62,13 @@ export class OnboardingNeuBenutzerComponent {
         }
 
         this.stateService.go(this.nextState, {gemeindeId: this.gemeinde.id});
+    }
+
+    public set gemeindeList(value: Array<TSGemeinde>) {
+        this._gemeindeList = value;
+    }
+
+    public get gemeindeList(): Array<TSGemeinde> {
+        return this._gemeindeList;
     }
 }

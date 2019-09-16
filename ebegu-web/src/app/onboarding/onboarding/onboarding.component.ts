@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {from, Observable} from 'rxjs';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
@@ -28,7 +28,6 @@ export class OnboardingComponent {
 
     @Input() public showLogin: boolean = true;
 
-
     public isDummyMode$: Observable<boolean>;
 
     public constructor(
@@ -36,5 +35,4 @@ export class OnboardingComponent {
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
-
 }

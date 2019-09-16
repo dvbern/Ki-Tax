@@ -16,6 +16,7 @@
  */
 
 import {Component} from '@angular/core';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
     selector: 'dv-onboarding-main',
@@ -23,13 +24,41 @@ import {Component} from '@angular/core';
     styleUrls: ['./onboarding-main.component.less', '../onboarding.less'],
 })
 export class OnboardingMainComponent {
-    placeholder1 = 'ONBOARDING_MAIN_PH1';
-    description1 = 'ONBOARDING_MAIN_DESC1';
-    placeholder2 = 'ONBOARDING_MAIN_PH2';
-    description2 = 'ONBOARDING_MAIN_DESC2';
-    placeholder3 = 'ONBOARDING_MAIN_PH3';
-    description3 = 'ONBOARDING_MAIN_DESC3';
-    placeholder4 = 'ONBOARDING_MAIN_PH4';
-    description4 = 'ONBOARDING_MAIN_DESC4';
+    public placeholder1: string = 'ONBOARDING_MAIN_PH1';
+    public description1: string = 'ONBOARDING_MAIN_DESC1';
+    public placeholder2: string = 'ONBOARDING_MAIN_PH2';
+    public description2: string = 'ONBOARDING_MAIN_DESC2';
+    public placeholder3: string = 'ONBOARDING_MAIN_PH3';
+    public description3: string = 'ONBOARDING_MAIN_DESC3';
+    public placeholder4: string = 'ONBOARDING_MAIN_PH4';
+    public description4: string = 'ONBOARDING_MAIN_DESC4';
 
+    public constructor(
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+    ){
+        this.onboardingPlaceholderService.description1.subscribe(updatedDescription1 =>{
+            this.description1 = updatedDescription1;
+        });
+        this.onboardingPlaceholderService.description2.subscribe(updatedDescription2 =>{
+            this.description2 = updatedDescription2;
+        });
+        this.onboardingPlaceholderService.description3.subscribe(updatedDescription3 =>{
+            this.description3 = updatedDescription3;
+        });
+        this.onboardingPlaceholderService.description4.subscribe(updatedDescription4 =>{
+            this.description4 = updatedDescription4;
+        });
+        this.onboardingPlaceholderService.placeholder1.subscribe(updatedPlaceholder1 =>{
+            this.placeholder1 = updatedPlaceholder1;
+        });
+        this.onboardingPlaceholderService.placeholder2.subscribe(updatedPlaceholder2 =>{
+            this.placeholder2 = updatedPlaceholder2;
+        });
+        this.onboardingPlaceholderService.placeholder3.subscribe(updatedPlaceholder3 =>{
+            this.placeholder3 = updatedPlaceholder3;
+        });
+        this.onboardingPlaceholderService.placeholder4.subscribe(updatedPlaceholder4 =>{
+            this.placeholder4 = updatedPlaceholder4;
+        });
+    }
 }

@@ -15,39 +15,72 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 <div style="display: inline-block; max-width:100%;">
-    <div class="onboarding-subtitle" translate>ONBOARDING_BG_BEANTRAGEN</div>
-    <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
-        <div class="onboarding-gemeinde-container">
-            <div class="onboarding-gemeinde-input-container">
-                <div class="onboarding-gemeinde-search">
-                    <label class="onboarding-gemeinde-label" for="gemeinde" translate>
-                        ONBOARDING_GEMEINDE_AUSWAHL
-                    </label>
-                    <div class="onboarding-gemeinde-search-input">
-                        <div class="dv-select-style dv-select-style-onboarding">
-                            <select [(ngModel)]="gemeinde"
-                                    name="gemeinde"
-                                    class="form-control"
-                                    id="gemeinde"
-                                    [required]="true">
-                                <option [ngValue]="null" selected="selected"></option>
-                                <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
-                                    {{gemeinde.name}}
-                                </option>
-                            </select>
+
+    <div class="onboarding-neubenutzer">
+        <i class="fa fa-arrow-circle-left"></i>&nbsp;
+        <a href=""
+           uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
+        <br/>
+        <h1 translate>ONBOARDING_NEU_BENUTZER</h1>
+        <p translate>ONBOARDING_NEU_INTRO</p>
+
+        <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+            <div class="neu-bg-checkbox">
+                <mat-checkbox id="betreuungsgutscheinBeantragen_id" name="betreuungsgutscheinBeantragen_id"
+                              [(ngModel)]="betreuungsgutscheinBeantragen">
+                    {{'ONBOARDING_BG_BEANTRAGEN'|translate}}
+                </mat-checkbox>
+            </div>
+            <div class="neu-ts-checkbox">
+                <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
+                              [(ngModel)]="tsBeantragen">
+                    {{'ONBOARDING_TS_BEANTRAGEN'|translate}}
+                </mat-checkbox>
+            </div>
+            <div class="onboarding-nb-gemeinde-container">
+                <div class="onboarding-nb-gemeinde-input-container">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="betreuungsgutscheinBeantragen">
+                        <p translate>ONBOARDING_MEIN_GEMEINDE</p>
+                        <div class="onboarding-nb-gemeinde-search-input">
+                            <div class="dv-select-style dv-select-style-onboarding">
+                                <select [(ngModel)]="gemeinde"
+                                        name="gemeinde"
+                                        class="form-control"
+                                        id="gemeinde"
+                                        [required]="true">
+                                    <option [ngValue]="null" selected="selected"></option>
+                                    <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
+                                        {{gemeinde.name}}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
+                        <dv-error-messages [errorObject]="form.controls.gemeinde?.errors"
+                                           inputId="gemeinde"
+                                           class="input-error">
+                        </dv-error-messages>
                     </div>
-                    <dv-error-messages [errorObject]="form.controls.gemeinde?.errors"
-                                       inputId="gemeinde"
-                                       class="input-error">
-                    </dv-error-messages>
                 </div>
-                <div>
-                    <button [type]="'submit'" class="dv-btn onboarding-gemeinde-auswaehlen">
-                        <span translate>ONBOARDING_GEMEINDE_AUSWAEHLEN</span>
-                    </button>
+                <div class="onboarding-nb-gemeinde-input">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen">
+                        <p translate>ONBOARDING_TS_GEMEINDE</p>
+                        <!-- Gemeinde(n) -->
+                        <dv-gemeinde-multiselect [selected]="gemeindeList"
+                                                 [disabled]="false"
+                                                 [required]="true"
+                                                 [showLabel]="false"
+                                                 [allowedInMap]="gemeinden$">
+                        </dv-gemeinde-multiselect>
+                    </div>
+                </div>
+                <div class="onboarding-nb-gemeinde-input-button">
+                    <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen">
+                        <button [type]="'submit'" class="dv-btn onboarding-nb-gemeinde-auswaehlen">
+                            <span translate>ONBOARDING_REGISTRIEREN</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

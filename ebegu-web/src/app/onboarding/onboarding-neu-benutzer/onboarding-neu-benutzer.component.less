@@ -16,7 +16,7 @@
  */
 @import (reference) '../../../style/variables.less';
 
-.onboarding-gemeinde {
+.onboarding-nb-gemeinde {
     &-container {
         display: flex;
         flex-flow: column;
@@ -27,12 +27,28 @@
         margin-bottom: 1.7rem;
     }
 
-    &-input-container {
+    &-input{
         display: flex;
         flex-flow: row wrap;
         align-items: flex-end;
         justify-content: space-between;
-        padding: 0 1.6rem;
+        &-container {
+            margin-top: 2rem;
+        }
+        &-button{
+            margin-top: 0rem;
+            font-family: "Open Sans";
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            line-height: 19px;
+        }
+        ::ng-deep .mat-select, .mat-option{
+            font-family: "Open Sans";
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            line-height: 19px;
+            border: 2px solid @black;
+        }
     }
 
     &-search {
@@ -40,21 +56,24 @@
 
         &-input {
             height: 4rem;
-            background: @primary;
+            top: 0.5rem;
+            color: @black;
             width: 26.3rem;
             display: flex;
-            justify-content: center;
             align-items: center;
         }
 
         .dv-select-style-onboarding {
-            border: 1px solid @anthracite;
+            border: 2px solid @black;
             background: @contrast-lightest;
 
             select {
                 width: calc(25.2rem - 1px);
                 height: calc(3rem - 1px);
-                font-size: 1.4rem;
+                font-family: "Open Sans";
+                font-size: 14px;
+                letter-spacing: 0.5px;
+                line-height: 19px;
                 font-weight: normal;
             }
 
@@ -71,6 +90,11 @@
         width: auto;
         text-transform: uppercase;
         margin-bottom: 4rem;
+        display: block;
+        font-family: "Open Sans";
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        line-height: 19px;
         // wenn der button fokusiert ist braucht er 2px für den Outline
     }
 }
@@ -79,10 +103,6 @@
 .input-error {
     height: 4rem;
     width: 26.3rem;
-}
-
-.onboarding-gemeinde-auswaehlen {
-    margin-bottom: 4rem;
 }
 
 form:not(.ng-submitted) .input-error /deep/ .error {
@@ -105,7 +125,59 @@ form:not(.ng-submitted) .input-error /deep/ .error {
     align-items: center;
 }
 
-.onboarding-subtitle {
-    width: 500px;
-    max-width: 100%;
+
+.onboarding-neubenutzer {
+    margin-left: 11vw;
+    margin-right: 11vw;
+    margin-top: 28%;
+    text-align: left;
+    color: #000000;
+    font-family: "Open Sans";
+    overflow-x: unset;
+
+    .fa-arrow-circle-left {
+        color: red;
+    }
+
+    h1 {
+        font-size: 20px;
+        letter-spacing: 1.38px;
+        line-height: 24px;
+        margin-top: 1rem;
+    }
+
+    p {
+        font-size: 14px;
+        letter-spacing: 1px;
+        line-height: 19px;
+        color: #222222;
+    }
+
+    a {
+        color: red;
+        font-family: "Open Sans";
+        font-size: 12px;
+        letter-spacing: 0.82px;
+        line-height: 17px;
+    }
+
+    .neu-bg-checkbox {
+        margin-top: 2rem;
+        margin-left: 0px;
+    }
+
+    .neu-ts-checkbox {
+        margin-top: 0rem;
+        margin-left: 0px;
+    }
+
+    ::ng-deep .mat-checkbox-label {
+        font-size: 14px;
+        letter-spacing: 1px;
+        line-height: 19px;
+        color: #222222;
+        font-family: "Open Sans";
+    }
 }
+
+
