@@ -31,6 +31,6 @@ export function createClient(name: string): TSExternalClient {
     return client;
 }
 
-export function externalClientComparator(a: TSExternalClient, b: TSExternalClient) {
+export function externalClientComparator(a: TSExternalClient, b: TSExternalClient): number {
     return a.clientName.localeCompare(b.clientName);
 }
