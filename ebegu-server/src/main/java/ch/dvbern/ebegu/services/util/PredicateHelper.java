@@ -86,7 +86,7 @@ public final class PredicateHelper<V> {
 	}
 
 	/**
-	 * @param root Root darf Institution oder InstituionStammdaten sein
+	 * @param root Root darf Institution oder InstitutionStammdaten sein
 	 */
 	public static Predicate excludeUnknownInstitutionStammdatenPredicate(Root<? extends AbstractEntity> root) {
 		return root.get(AbstractEntity_.id)
