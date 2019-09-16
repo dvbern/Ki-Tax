@@ -30,6 +30,12 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import com.google.common.base.Objects;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+/**
+ * An OutboxEvent is used to persist an {@link ExportedEvent}, allowing that the event is persisted in the same
+ * database transaction as the business entities.<br>
+ *
+ * The {@link OutboxEventKafkaProducer} will periodically check the OutboxEvent table and send the events to Kafka.
+ */
 @Entity
 public class OutboxEvent extends AbstractEntity {
 
