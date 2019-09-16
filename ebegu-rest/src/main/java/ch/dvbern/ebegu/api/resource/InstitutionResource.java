@@ -218,7 +218,6 @@ public class InstitutionResource {
 	@Path("/{institutionId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	//	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public JaxInstitutionStammdaten updateInstitutionAndStammdaten(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Nonnull @NotNull @Valid JaxInstitutionUpdate update) {
@@ -338,7 +337,6 @@ public class InstitutionResource {
 	@Path("/{institutionId}/externalclients")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	//	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Response getExternalClients(@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
 		requireNonNull(institutionJAXPId.getId());
