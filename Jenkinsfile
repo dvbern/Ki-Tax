@@ -14,35 +14,37 @@ pipeline {
 		disableConcurrentBuilds()
 	}
 	stages {
-		stage("Test") {
-			agent {
-				docker {
-					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:latest"
-					args "--privileged"
+		lock('ebegu-tests') {
+			stage("Test") {
+				agent {
+					docker {
+						image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:latest"
+						args "--privileged"
+					}
 				}
-			}
 
-			steps {
-				ansiColor('xterm') {
-					lock('ebegu-tests') {
+				steps {
+					ansiColor('xterm') {
+
 						withMaven(options: [
 								junitPublisher(healthScaleFactor: 1.0),
 								spotbugsPublisher(),
 								artifactsPublisher(disabled: true)
 						]) {
-							sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P ' +
-									'test-wildfly-managed -P ci -P frontend clean install'
+							sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C ' +
+									'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
 						}
 					}
 				}
-			}
 
-			post {
-				always {
-					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
-							(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
-					junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
-					cleanWs notFailBuild: true
+				post {
+					always {
+						recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
+								(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
+						junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml build/karma-results' +
+								'.xml'
+						cleanWs notFailBuild: true
+					}
 				}
 			}
 		}
