@@ -94,8 +94,8 @@ describe('GemeindeRS', () => {
 
     function createAllGemeinden(): void {
         allGemeinde = [
-            TestDataUtil.createGemeindeBern(),
-            TestDataUtil.createGemeindeOstermundigen(),
+            TestDataUtil.createGemeindeParis(),
+            TestDataUtil.createGemeindeLondon(),
         ];
     }
 });

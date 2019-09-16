@@ -99,7 +99,7 @@ describe('betreuungView', () => {
             return betreuungView ? betreuungView.model : betreuung;
         });
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
-        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeBern());
+        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeParis());
         gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
         $rootScope = $injector.get('$rootScope');
         authServiceRS = $injector.get('AuthServiceRS');

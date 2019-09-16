@@ -228,8 +228,8 @@ describe('fallToolbar', () => {
     });
 
     function initObjects(): void {
-        gemeinde1 = TestDataUtil.createGemeindeOstermundigen();
-        gemeinde2 = TestDataUtil.createGemeindeBern();
+        gemeinde1 = TestDataUtil.createGemeindeLondon();
+        gemeinde2 = TestDataUtil.createGemeindeParis();
         gemeinde3 = TestDataUtil.createGemeindeThun();
 
         fall = TestDataUtil.createFall();
