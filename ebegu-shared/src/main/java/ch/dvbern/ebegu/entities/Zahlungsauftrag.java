@@ -142,7 +142,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	}
 
 	public String getFilename() {
-		return "Zahlungslauf_" + Constants.SQL_DATE_FORMAT.format(getDatumGeneriert());
+		return "Zahlungslauf_" + getGemeinde().getName() + "_" + Constants.SQL_DATE_FORMAT.format(getDatumGeneriert());
 	}
 
 	@Override
