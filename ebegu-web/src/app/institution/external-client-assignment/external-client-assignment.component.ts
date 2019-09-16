@@ -36,14 +36,17 @@ export class ExternalClientAssignmentComponent implements OnChanges {
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes.externalClients) {
-            this.updateAssignedClients(changes.externalClients.currentValue);
+            this.assignedClients = this.getAssignedClientsLabel(changes.externalClients.currentValue);
         }
     }
 
-    private updateAssignedClients(clients?: TSExternalClientAssignment): void {
-        this.assignedClients = clients && clients.assignedClients
-            .sort(externalClientComparator)
-            .map(client => client.clientName)
-            .join(', ') || this.translate.instant('LABEL_KEINE');
+    private getAssignedClientsLabel(clients?: TSExternalClientAssignment): string {
+        if (!clients) {
+            return this.translate.instant('LABEL_KEINE');
+        }
+
+        const copy = [...clients.assignedClients].sort(externalClientComparator);
+
+        return copy.map(client => client.clientName).join(', ');
     }
 }
