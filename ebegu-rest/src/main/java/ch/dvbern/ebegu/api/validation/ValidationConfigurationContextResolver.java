@@ -30,23 +30,30 @@ import org.jboss.resteasy.spi.validation.GeneralValidator;
 @Provider
 public class ValidationConfigurationContextResolver implements ContextResolver<GeneralValidator> {
 
-	/**
-	 * Get a context of type {@code GeneralValidator} that is applicable to the supplied type.
-	 *
-	 * @param type the class of object for which a context is desired
-	 * @return a context for the supplied type or {@code null} if a context for the supplied type is not available from
-	 *         this provider.
-	 */
-	@Override
-	public GeneralValidator getContext(Class<?> type) {
+	private final GeneralValidatorImpl generalValidator;
+
+	public ValidationConfigurationContextResolver() {
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
 
 		config.messageInterpolator(new LocaleAwareMessageInterpolator(config
 			.getDefaultMessageInterpolator()));
 
-		return new GeneralValidatorImpl(config.buildValidatorFactory(),
+		generalValidator = new GeneralValidatorImpl(
+			config.buildValidatorFactory(),
 			bootstrapConfiguration.isExecutableValidationEnabled(),
 			bootstrapConfiguration.getDefaultValidatedExecutableTypes());
+	}
+
+	/**
+	 * Get a context of type {@code GeneralValidator} that is applicable to the supplied type.
+	 *
+	 * @param type the class of object for which a context is desired
+	 * @return a context for the supplied type or {@code null} if a context for the supplied type is not available from
+	 * this provider.
+	 */
+	@Override
+	public GeneralValidator getContext(Class<?> type) {
+		return generalValidator;
 	}
 }

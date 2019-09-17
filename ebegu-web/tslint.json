@@ -434,9 +434,9 @@
         "rxjs-no-patched": {
             "severity": "error"
         },
-        "rxjs-no-unbound-methods": {
-            "severity": "error"
-        },
+        //        "rxjs-no-unbound-methods": {
+        //            "severity": "error"
+        //        },
         //        "rxjs-no-unsafe-scope": {
         //            "severity": "error"
         //        },
