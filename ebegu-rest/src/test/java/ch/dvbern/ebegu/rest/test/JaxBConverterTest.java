@@ -23,9 +23,11 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.resource.BetreuungResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
@@ -68,7 +70,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests fuer den JaxBConverter. Insbesondere wird geprüft, dass beim Speichern von Gesuchsdaten keine Stammdaten verändert werden dürfen.
+ * Tests fuer den JaxBConverter. Insbesondere wird geprüft, dass beim Speichern von Gesuchsdaten keine Stammdaten
+ * verändert werden dürfen.
  * Gesuchsperiode
  * - beim Speichern von Gesuch => gesuchSpeichernDarfGesuchsperiodeNichtUpdaten
  * Mandant
@@ -76,13 +79,14 @@ import static org.junit.Assert.assertNotNull;
  * Trägerschaft
  * - beim Speichern von Institution => institutionSpeichernDarfMandantUndTraegerschaftNichtUpdaten
  * Institution
- *  - beim Speichern von InstitutionsStammdaten => institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten
+ * - beim Speichern von InstitutionsStammdaten => institutionsStammdatenSpeichernDarfInstitutionNichtUpdaten
  * InstitutionsStammdaten
  * - beim Speichern von Betreuung => betreuungSpeichernDarfInstitutionsStammdatenNichtUpdaten
  * Fachstelle
  * - beim Speichern von PensumFachstelle => pensumFachstelleSpeichernDarfFachstelleNichtUpdaten
  */
-@SuppressWarnings({ "LocalVariableNamingConvention", "InstanceMethodNamingConvention", "InstanceVariableNamingConvention" })
+@SuppressWarnings({ "LocalVariableNamingConvention", "InstanceMethodNamingConvention",
+	"InstanceVariableNamingConvention" })
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
@@ -124,7 +128,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		final InstitutionStammdaten tagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();
 		Mandant mandant = TestDataUtil.createDefaultMandant();
-		TestdataSetupConfig setupConfig = new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, tagesfamilien, gesuchsperiode);
+		TestdataSetupConfig setupConfig =
+			new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, tagesfamilien, gesuchsperiode);
 		testdataCreationService.setupTestdata(setupConfig);
 	}
 
@@ -182,9 +187,12 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		JaxInstitutionStammdaten jaxStammdaten = TestJaxDataUtil.createTestJaxInstitutionsStammdaten();
 		jaxStammdaten.setInstitution(converter.institutionToJAX(institution));
-		jaxStammdaten.getInstitution().setName("ChangedInstitution");
-		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource
-			.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
+		jaxStammdaten.getInstitution().setStammdatenCheckRequired(true);
+		JaxInstitutionUpdate jaxUpdate = new JaxInstitutionUpdate();
+		jaxUpdate.setStammdaten(jaxStammdaten);
+
+		JaxId id = new JaxId(institution.getId());
+		JaxInstitutionStammdaten updatedInstitution = institutionResource.updateInstitutionAndStammdaten(id, jaxUpdate);
 
 		assertNotNull(updatedInstitution);
 		assertEquals("Institution1", updatedInstitution.getInstitution().getName());
@@ -201,11 +209,14 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		Betreuung betreuung = gesuch.extractAllBetreuungen().get(0);
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
-		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenSummaryToJAX(kitaBruennen, new JaxInstitutionStammdatenSummary()));
+		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenSummaryToJAX(
+			kitaBruennen,
+			new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.getInstitutionStammdaten().setGueltigAb(LocalDate.now());
 		betreuungResource.saveBetreuung(jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		InstitutionStammdaten loadedKitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
+		InstitutionStammdaten loadedKitaBruennen =
+			criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
 		assertEquals(Constants.START_OF_TIME, loadedKitaBruennen.getGueltigkeit().getGueltigAb());
 	}
 
@@ -229,7 +240,10 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		kindContainer = persistence.merge(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);
 		assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
-		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
+		jaxKindContainer.getKindJA()
+			.getPensumFachstelle()
+			.getFachstelle()
+			.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();

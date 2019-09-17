@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.api.dtos;
 import java.time.LocalDate;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;

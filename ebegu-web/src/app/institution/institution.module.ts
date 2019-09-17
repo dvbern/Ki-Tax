@@ -26,8 +26,13 @@ import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninse
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {EditModulTagesschuleComponent} from './edit-modul-tagesschule/edit-modul-tagesschule.component';
+import {ExternalClientAssignmentComponent} from './external-client-assignment/external-client-assignment.component';
+import {ExternalClientMultiselectComponent} from './external-client-multiselect/external-client-multiselect.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
+import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
+import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
+import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
 
 @NgModule({
     imports: [
@@ -49,6 +54,8 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
         EditModulTagesschuleComponent,
+        ExternalClientMultiselectComponent,
+        ExternalClientAssignmentComponent,
     ],
     entryComponents: [
         InstitutionListComponent,

@@ -216,17 +216,34 @@
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="INSTITUTION" for="institution">
                                 </label>
-                                <div class="dv-select-style">
-                                    <select aria-describedby="institution-error" name="institution" id="institution"
-                                            ng-model="vm.instStammId"
-                                            class="form-control"
-                                            ng-options="institutionSD.id as institutionSD.institution.name for institutionSD in vm.getInstitutionenSDList() | orderBy: 'institution.name'"
-                                            ng-required="true" ng-change="vm.setSelectedInstitutionStammdaten()"
-                                            ng-disabled="!(vm.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
-                                    </select>
+                                <md-autocomplete flex
+                                                 md-input-name="institution"
+                                                 md-input-id="institution"
+                                                 md-min-length="0"
+                                                 md-no-cache="true"
+                                                 md-delay="0"
+                                                 class="form-control"
+                                                 ng-attr-placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}"
+                                                 md-select-on-focus="true"
+                                                 md-selected-item="vm.instStammId"
+                                                 md-match-case-insensitive="true"
+                                                 md-menu-container-class="institution-autocomplete"
+                                                 md-selected-item-change="vm.setSelectedInstitutionStammdaten()"
+                                                 md-search-text="vm.searchQuery"
+                                                 md-require-match="true"
+                                                 md-items="item in vm.querySearch(vm.searchQuery)"
+                                                 md-item-text="item.institution.name"
+                                                 ng-required="true">
+                                    <md-item-template>
+                                        <span md-highlight-text="vm.searchQuery">
+                                            {{item.getAutocompleteText()}}
+                                        </span>
+                                    </md-item-template>
+                                </md-autocomplete>
+                                <span ng-if="vm.form.institution.$touched">
                                     <dv-error-messages input-id="institution"
                                                        for="vm.form.institution.$error"></dv-error-messages>
-                                </div>
+                                </span>
                             </div>
                         </div>
                         <!-- Institiutionen wenn readonly als Textfeld anzeigen-->
@@ -379,14 +396,15 @@
                                                                 text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
                                                 </label>
                                                 <div class="dv-input-container-medium-label">
-                                                    <input aria-describedby="monatlicheBetreuungskosten-{{$index}}-error"
-                                                           id="monatlicheBetreuungskosten-{{$index}}" type="number"
-                                                           name="monatlicheBetreuungskosten-{{$index}}"
-                                                           ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
-                                                           dv-max-length class="form-control"
-                                                           ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                                           ng-required="true"
-                                                           ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                                    <input
+                                                        aria-describedby="monatlicheBetreuungskosten-{{$index}}-error"
+                                                        id="monatlicheBetreuungskosten-{{$index}}" type="number"
+                                                        name="monatlicheBetreuungskosten-{{$index}}"
+                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
+                                                        dv-max-length class="form-control"
+                                                        ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                        ng-required="true"
+                                                        ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                                     <dv-error-messages input-id="monatlicheBetreuungskosten-{{$index}}"
                                                                        for="vm.form['monatlicheBetreuungskosten-' + $index].$error"></dv-error-messages>
                                                 </div>
@@ -484,36 +502,37 @@
                                     </div>
                                 </div>
                                 <!-- Bestätigung Korrekte Kostenangabe -->
-								<div class="row"
-									 dv-show-element
-									 dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-									 dv-show-expression="vm.isBetreuungsstatusWarten()">
-									<div class="col-xs-12 dv-input-container-question">
-										<div class="checkbox-bestaetigung">
-											<md-checkbox ng-model="vm.korrekteKostenBestaetigung"
-														 name="korrekteKostenBestaetigung"
-														 aria-label="{{'KORREKTE_KOSTEN_BESTAETIGUNG_1'|translate}}"
-														 ng-required="vm.isBestaetigenClicked">
-												<span data-translate="KORREKTE_KOSTEN_BESTAETIGUNG_1"></span>
-											</md-checkbox>
-											<div class="dv-error-messages" ng-if="vm.isBestaetigenClicked && !vm.korrekteKostenBestaetigung">
-												<div ng-messages="vm.form.korrekteKostenBestaetigung.$error"
-													 class="error">
-													<div ng-message="required"
-														 data-translate="KORREKTE_KOSTEN_BESTAETIGUNG_ERROR"
-														 for="vm.form.korrekteKostenBestaetigung.$error"
-														 role="alert"></div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-xs-12">
-										<ul>
-											<li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
-											<li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
-										</ul>
-									</div>
-								</div>
+                                <div class="row"
+                                     dv-show-element
+                                     dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                                     dv-show-expression="vm.isBetreuungsstatusWarten()">
+                                    <div class="col-xs-12 dv-input-container-question">
+                                        <div class="checkbox-bestaetigung">
+                                            <md-checkbox ng-model="vm.korrekteKostenBestaetigung"
+                                                         name="korrekteKostenBestaetigung"
+                                                         aria-label="{{'KORREKTE_KOSTEN_BESTAETIGUNG_1'|translate}}"
+                                                         ng-required="vm.isBestaetigenClicked">
+                                                <span data-translate="KORREKTE_KOSTEN_BESTAETIGUNG_1"></span>
+                                            </md-checkbox>
+                                            <div class="dv-error-messages"
+                                                 ng-if="vm.isBestaetigenClicked && !vm.korrekteKostenBestaetigung">
+                                                <div ng-messages="vm.form.korrekteKostenBestaetigung.$error"
+                                                     class="error">
+                                                    <div ng-message="required"
+                                                         data-translate="KORREKTE_KOSTEN_BESTAETIGUNG_ERROR"
+                                                         for="vm.form.korrekteKostenBestaetigung.$error"
+                                                         role="alert"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <ul>
+                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
+                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </fieldset>
                         </div>
 

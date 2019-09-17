@@ -70,6 +70,8 @@ import TSEWKBeziehung from '../models/TSEWKBeziehung';
 import TSEWKEinwohnercode from '../models/TSEWKEinwohnercode';
 import TSEWKPerson from '../models/TSEWKPerson';
 import TSEWKResultat from '../models/TSEWKResultat';
+import TSExternalClient from '../models/TSExternalClient';
+import TSExternalClientAssignment from '../models/TSExternalClientAssignment';
 import {TSFachstelle} from '../models/TSFachstelle';
 import TSFall from '../models/TSFall';
 import TSFallAntragDTO from '../models/TSFallAntragDTO';
@@ -94,6 +96,7 @@ import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitution
 import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
+import TSInstitutionUpdate from '../models/TSInstitutionUpdate';
 import TSKind from '../models/TSKind';
 import TSKindContainer from '../models/TSKindContainer';
 import TSKindDublette from '../models/TSKindDublette';
@@ -891,6 +894,7 @@ export default class EbeguRestUtil {
         konfigurationFromServer: any,
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
+            konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
@@ -1072,6 +1076,15 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public institutionUpdateToRestObject(update: TSInstitutionUpdate): any {
+        return {
+            name: update.name || null,
+            traegerschaftId: update.traegerschaftId || null,
+            stammdaten: this.institutionStammdatenToRestObject({}, update.stammdaten) || null,
+            externalClients: update.externalClients || null
+        };
+    }
+
     public institutionToRestObject(restInstitution: any, institution: TSInstitution): any {
         if (institution) {
             this.abstractMutableEntityToRestObject(restInstitution, institution);
@@ -1106,6 +1119,27 @@ export default class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseInstitution(new TSInstitution(), item))
             : [this.parseInstitution(new TSInstitution(), data)];
+    }
+
+    public parseExternalClientAssignment(data: any): TSExternalClientAssignment {
+        const tsInstitutionExternalClients = new TSExternalClientAssignment();
+
+        tsInstitutionExternalClients.availableClients = data.availableClients
+            .map((client: any) => this.parseExternalClient(client));
+
+        tsInstitutionExternalClients.assignedClients = data.assignedClients
+            .map((client: any) => this.parseExternalClient(client));
+
+        return tsInstitutionExternalClients;
+    }
+
+    public parseExternalClient(data: any): TSExternalClient {
+        const tsExternalClient = new TSExternalClient();
+        this.parseAbstractEntity(tsExternalClient, data);
+        tsExternalClient.clientName = data.clientName;
+        tsExternalClient.type = data.type;
+
+        return tsExternalClient;
     }
 
     public institutionStammdatenToRestObject(
@@ -1771,7 +1805,9 @@ export default class EbeguRestUtil {
 
         restAbweichung.status = abweichung.status;
 
-        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ?
+            MULTIPLIER_KITA :
+            MULTIPLIER_TAGESFAMILIEN;
 
         const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
         const originalPensum = restAbweichung.vertraglichesPensum
@@ -1900,7 +1936,9 @@ export default class EbeguRestUtil {
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
 
-        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ? MULTIPLIER_KITA : MULTIPLIER_TAGESFAMILIEN;
+        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
+            MULTIPLIER_KITA :
+            MULTIPLIER_TAGESFAMILIEN;
 
         const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));

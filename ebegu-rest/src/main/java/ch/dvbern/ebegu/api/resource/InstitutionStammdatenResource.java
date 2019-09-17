@@ -25,35 +25,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
-import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.InstitutionStatus;
-import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -67,12 +54,6 @@ public class InstitutionStammdatenResource {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
-
-	@Inject
-	private InstitutionService institutionService;
-
-	@Inject
-	private TraegerschaftService traegerschaftService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -153,19 +134,6 @@ public class InstitutionStammdatenResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Gibt alle vorhandenen Institutionsstammdaten zurueck",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
-		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
-			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten,
-				new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
-	}
-
 	/**
 	 * Sucht in der DB alle aktiven InstitutionStammdaten, deren Gueltigkeit zwischen DatumVon und DatumBis
 	 * der Gesuchsperiode liegt
@@ -187,9 +155,10 @@ public class InstitutionStammdatenResource {
 		Objects.requireNonNull(gesuchsperiodeJaxId);
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
+
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
-				new JaxInstitutionStammdatenSummary()))
+			.map(stammdaten ->
+				converter.institutionStammdatenSummaryToJAX(stammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 
