@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
@@ -108,6 +107,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.groupToEdit = new TSModulTagesschuleGroup();
         this.groupToEdit.gesuchsperiodeId = gesuchsperiodeId;
         this.groupToEdit.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
+        this.groupToEdit.module = [];
         this.showModulDetail = true;
     }
 

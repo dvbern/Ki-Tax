@@ -32,7 +32,7 @@ export class EditModulTagesschuleComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
-    @Input() public modulTagesschuleGroup: TSModulTagesschuleGroup = undefined;
+    @Input() public modulTagesschuleGroup: TSModulTagesschuleGroup;
     @Output() callback = new EventEmitter<TSModulTagesschuleGroup>();
 
     public modulMontag: TSModulTagesschule;
@@ -44,6 +44,8 @@ export class EditModulTagesschuleComponent implements OnInit {
     public constructor(
     ) {
     }
+
+
 
     public ngOnInit(): void {
         // Alle die aktuell gesetzt sind, werden als angeboten initialisiert

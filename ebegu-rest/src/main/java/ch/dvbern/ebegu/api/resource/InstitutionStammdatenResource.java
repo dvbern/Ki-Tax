@@ -58,63 +58,6 @@ public class InstitutionStammdatenResource {
 	@Inject
 	private JaxBConverter converter;
 
-	@ApiOperation(value = "Speichert ein InstitutionsStammdaten", response = JaxInstitutionStammdaten.class)
-	@Nullable
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxInstitutionStammdaten saveInstitutionStammdaten(
-		@Nonnull @NotNull @Valid JaxInstitutionStammdaten institutionStammdatenJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		InstitutionStammdaten instDaten;
-		JaxInstitutionStammdaten stammdaten = institutionStammdatenJAXP;
-		if (institutionStammdatenJAXP.getId() != null) {
-			Optional<InstitutionStammdaten> optional =
-				institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenJAXP.getId());
-			instDaten = optional.orElse(new InstitutionStammdaten());
-		} else {
-			instDaten = new InstitutionStammdaten();
-			instDaten.setAdresse(new Adresse());
-		}
-
-		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(stammdaten, instDaten);
-
-		// converting InstitutionStammdaten from JAX to Entity will discard any change in the Institution object. It
-		// will load
-		// the institution from the DB. For this reason we need to change any field of the institution manually
-
-		// Statuswechsel eingeladen -> aktiv
-		Institution convertedInstitution = convertedInstData.getInstitution();
-		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN ||
-			(convertedInstitution.getStatus() == InstitutionStatus.KONFIGURATION
-				&& convertedInstData.isTagesschuleActivatable())) {
-			institutionService.activateInstitution(convertedInstData.getInstitution().getId());
-		}
-
-		// Trägerschaft speichern
-		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstitution);
-
-		InstitutionStammdaten persistedInstData =
-			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
-
-		return converter.institutionStammdatenToJAX(persistedInstData);
-
-	}
-
-	private void updateTraegerschaft(
-		@Nonnull JaxInstitution institutionJAXP,
-		@Nonnull Institution institutionStammdaten
-	) {
-		Optional<Traegerschaft> traegerschaft = Optional.empty();
-		final JaxTraegerschaft jaxTraegerschaft = institutionJAXP.getTraegerschaft();
-		if (jaxTraegerschaft != null && jaxTraegerschaft.getId() != null) {
-			traegerschaft = traegerschaftService.findTraegerschaft(jaxTraegerschaft.getId());
-		}
-		institutionStammdaten.setTraegerschaft(traegerschaft.orElse(null));
-	}
-
 	@ApiOperation(value = "Sucht die InstitutionsStammdaten mit der uebergebenen Id in der Datenbank",
 		response = JaxInstitutionStammdaten.class)
 	@Nullable
