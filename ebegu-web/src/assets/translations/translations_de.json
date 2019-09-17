@@ -612,6 +612,7 @@
     "ALLE_MITTEILUNGEN": "Alle Mitteilungen",
     "NEUE_MITTEILUNGEN": "Neue Mitteilungen",
     "NEUE_MITTEILUNG_GEMEINDE": "Neue Mitteilung an die Gemeinde {{gemeinde}}",
+    "NEUE_MITTEILUNG_BETREUUNG": "Mitteilung an die Gemeinde {{gemeinde}} betreffend {{kind}} ",
     "NEUE_MITTEILUNG_GESUCHSTELLER": "Neue Mitteilung an den Gesuchsteller",
     "AUSSTEHEND": "Ausstehend",
     "WARTEN": "Warten",
