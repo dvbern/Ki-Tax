@@ -76,10 +76,9 @@ const states: Ng2StateDeclaration[] = [
     {
         name: 'onboarding.gesuchsteller.registration-incomplete',
         url: '/registration-abschliessen',
-        component: OnboardingComponent,
+        component: OnboardingNeuBenutzerComponent,
         resolve: {
             nextState: () => 'onboarding.gesuchsteller.registration',
-            showLogin: () => false,
         },
     },
     {

@@ -16,7 +16,10 @@
  */
 
 import {Component} from '@angular/core';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
+
+const LOG = LogFactory.createLog('OnboardingMainComponent');
 
 @Component({
     selector: 'dv-onboarding-main',
@@ -35,30 +38,30 @@ export class OnboardingMainComponent {
 
     public constructor(
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
-    ){
-        this.onboardingPlaceholderService.description1.subscribe(updatedDescription1 =>{
+    ) {
+        this.onboardingPlaceholderService.description1.subscribe(updatedDescription1 => {
             this.description1 = updatedDescription1;
-        });
-        this.onboardingPlaceholderService.description2.subscribe(updatedDescription2 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description2.subscribe(updatedDescription2 => {
             this.description2 = updatedDescription2;
-        });
-        this.onboardingPlaceholderService.description3.subscribe(updatedDescription3 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description3.subscribe(updatedDescription3 => {
             this.description3 = updatedDescription3;
-        });
-        this.onboardingPlaceholderService.description4.subscribe(updatedDescription4 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description4.subscribe(updatedDescription4 => {
             this.description4 = updatedDescription4;
-        });
-        this.onboardingPlaceholderService.placeholder1.subscribe(updatedPlaceholder1 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.placeholder1.subscribe(updatedPlaceholder1 => {
             this.placeholder1 = updatedPlaceholder1;
-        });
-        this.onboardingPlaceholderService.placeholder2.subscribe(updatedPlaceholder2 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.placeholder2.subscribe(updatedPlaceholder2 => {
             this.placeholder2 = updatedPlaceholder2;
-        });
-        this.onboardingPlaceholderService.placeholder3.subscribe(updatedPlaceholder3 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.placeholder3.subscribe(updatedPlaceholder3 => {
             this.placeholder3 = updatedPlaceholder3;
-        });
-        this.onboardingPlaceholderService.placeholder4.subscribe(updatedPlaceholder4 =>{
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.placeholder4.subscribe(updatedPlaceholder4 => {
             this.placeholder4 = updatedPlaceholder4;
-        });
+        }, err => LOG.error(err));
     }
 }

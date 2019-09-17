@@ -15,49 +15,53 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 <div class="onboarding-container">
-    <div class="onboarding-container-left">
-        <div class="onboarding-title">
-            <div class="kibon-logo-white"></div>
-            <p translate>ONBOARDING_SUBTITLE</p>
-            <div class="onboarding-information">
-                <div class="information-icons">
-                    <i class="fa fa-file"></i>
+    <div class="col-md-6">
+        <div class="onboarding-container-left">
+            <div class="onboarding-title">
+                <div class="kibon-logo-white"></div>
+                <p translate>ONBOARDING_SUBTITLE</p>
+                <div class="onboarding-information">
+                    <div class="information-icons">
+                        <i class="fa fa-file"></i>
+                    </div>
+                    <div class="information-text">
+                        <p translate>{{placeholder1}}</p>
+                        <h4 translate>{{description1}}</h4>
+                    </div>
                 </div>
-                <div class="information-text">
-                    <p translate>{{placeholder1}}</p>
-                    <h4 translate>{{description1}}</h4>
+                <div class="onboarding-information">
+                    <div class="information-icons">
+                        <i class="fa fa-cogs"></i>
+                    </div>
+                    <div class="information-text">
+                        <p translate>{{placeholder2}}</p>
+                        <h4 translate>{{description2}}</h4>
+                    </div>
                 </div>
-            </div>
-            <div class="onboarding-information">
-                <div class="information-icons">
-                    <i class="fa fa-cogs"></i>
+                <div class="onboarding-information">
+                    <div class="information-icons">
+                        <i class="fa fa-eye"></i>
+                    </div>
+                    <div class="information-text">
+                        <p translate>{{placeholder3}}</p>
+                        <h4 translate>{{description3}}</h4>
+                    </div>
                 </div>
-                <div class="information-text">
-                    <p translate>{{placeholder2}}</p>
-                    <h4 translate>{{description2}}</h4>
-                </div>
-            </div>
-            <div class="onboarding-information">
-                <div class="information-icons">
-                    <i class="fa fa-eye"></i>
-                </div>
-                <div class="information-text">
-                    <p translate>{{placeholder3}}</p>
-                    <h4 translate>{{description3}}</h4>
-                </div>
-            </div>
-            <div class="onboarding-information">
-                <div class="information-icons">
-                    <i class="fa fa-euro"></i>
-                </div>
-                <div class="information-text">
-                    <p translate>{{placeholder4}}</p>
-                    <h4 translate>{{description4}}</h4>
+                <div class="onboarding-information">
+                    <div class="information-icons">
+                        <i class="fa fa-euro"></i>
+                    </div>
+                    <div class="information-text">
+                        <p translate>{{placeholder4}}</p>
+                        <h4 translate>{{description4}}</h4>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="onboarding-container-right">
-        <ui-view></ui-view>
+    <div class="col-md-6">
+        <div class="onboarding-container-right">
+            <ui-view></ui-view>
+        </div>
     </div>
 </div>

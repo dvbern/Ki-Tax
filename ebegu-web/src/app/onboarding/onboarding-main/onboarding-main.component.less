@@ -18,6 +18,14 @@
     overflow-y: auto;
     height: 100%;
     width: 100vw;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+::ng-deep .col-md-6{
+    padding-right: 0px;
+    padding-left: 0px;
 }
 
 .onboarding-container-left {
@@ -25,15 +33,13 @@
     url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
     background-size: cover;
     height: 94vh;
-    width: 50vw;
     left: 0;
     top: 0;
     bottom:0;
-    float: left;
 
     .onboarding-title{
         margin-left: 22%;
-        margin-top: 13%;
+        padding-top: 18%;
         .kibon-logo-white {
             width: 180px;
             height: 100px;
@@ -86,10 +92,13 @@
 .onboarding-container-right {
     background-color: white;
     background-size: cover;
-    height: 94vh;
-    width: 50vw;
     right: 0;
     top: 0;
     bottom:0;
-    margin-left: 50vw;
+}
+
+@media (max-width: 1030px) {
+    .onboarding-container {
+         flex-direction: column-reverse;
+     }
 }
