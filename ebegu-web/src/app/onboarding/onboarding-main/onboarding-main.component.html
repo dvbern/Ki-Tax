@@ -14,7 +14,7 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-<div class="onboarding-container">
+<div class="onboarding-container" *ngIf="splittedScreen">
     <div class="col-md-6">
         <div class="onboarding-container-left">
             <div class="onboarding-title">
@@ -62,6 +62,18 @@
     <div class="col-md-6">
         <div class="onboarding-container-right">
             <ui-view></ui-view>
+        </div>
+    </div>
+</div>
+<div class="onboarding-single-container" *ngIf="!splittedScreen">
+    <div class="container">
+        <div class="onboarding-title">
+            <div class="kibon-logo-white"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ui-view></ui-view>
+            </div>
         </div>
     </div>
 </div>

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
@@ -35,33 +35,37 @@ export class OnboardingMainComponent {
     public description3: string = 'ONBOARDING_MAIN_DESC3';
     public placeholder4: string = 'ONBOARDING_MAIN_PH4';
     public description4: string = 'ONBOARDING_MAIN_DESC4';
+    public splittedScreen: boolean = true;
 
     public constructor(
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
-        this.onboardingPlaceholderService.description1.subscribe(updatedDescription1 => {
+        this.onboardingPlaceholderService.description1$.subscribe(updatedDescription1 => {
             this.description1 = updatedDescription1;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.description2.subscribe(updatedDescription2 => {
+        this.onboardingPlaceholderService.description2$.subscribe(updatedDescription2 => {
             this.description2 = updatedDescription2;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.description3.subscribe(updatedDescription3 => {
+        this.onboardingPlaceholderService.description3$.subscribe(updatedDescription3 => {
             this.description3 = updatedDescription3;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.description4.subscribe(updatedDescription4 => {
+        this.onboardingPlaceholderService.description4$.subscribe(updatedDescription4 => {
             this.description4 = updatedDescription4;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder1.subscribe(updatedPlaceholder1 => {
+        this.onboardingPlaceholderService.placeholder1$.subscribe(updatedPlaceholder1 => {
             this.placeholder1 = updatedPlaceholder1;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder2.subscribe(updatedPlaceholder2 => {
+        this.onboardingPlaceholderService.placeholder2$.subscribe(updatedPlaceholder2 => {
             this.placeholder2 = updatedPlaceholder2;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder3.subscribe(updatedPlaceholder3 => {
+        this.onboardingPlaceholderService.placeholder3$.subscribe(updatedPlaceholder3 => {
             this.placeholder3 = updatedPlaceholder3;
         }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder4.subscribe(updatedPlaceholder4 => {
+        this.onboardingPlaceholderService.placeholder4$.subscribe(updatedPlaceholder4 => {
             this.placeholder4 = updatedPlaceholder4;
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.splittedScreen$.subscribe(updatedSplittedScreen => {
+            this.splittedScreen = updatedSplittedScreen;
         }, err => LOG.error(err));
     }
 }

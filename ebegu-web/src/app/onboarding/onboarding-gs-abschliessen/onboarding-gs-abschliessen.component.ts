@@ -27,6 +27,7 @@ import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 
@@ -49,14 +50,20 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         public readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
         private readonly dossierRS: DossierRS,
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
-
         this.gemeindeId = this.transition.params().gemeindeId;
     }
 
     public ngOnInit(): void {
         this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
         this.user$ = this.authServiceRS.principal$;
+
+        if (this.stateService.transition) {
+            this.onboardingPlaceholderService.setSplittedScreen(true);
+        } else {
+            this.onboardingPlaceholderService.setSplittedScreen(false);
+        }
     }
 
     public onSubmit(form: NgForm): void {
@@ -73,9 +80,11 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
     public changeGemeinde(): void {
         switch (this.authServiceRS.getPrincipalRole()) {
             case TSRole.GESUCHSTELLER:
+                this.onboardingPlaceholderService.setSplittedScreen(true);
                 this.stateService.go('onboarding.gesuchsteller.registration-incomplete');
                 break;
             case TSRole.ANONYMOUS:
+                this.onboardingPlaceholderService.setSplittedScreen(true);
                 this.stateService.go('onboarding.start');
                 break;
             default:

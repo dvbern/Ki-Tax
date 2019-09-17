@@ -43,7 +43,7 @@ export class GemeindeMultiselectComponent implements OnInit {
     @Input() public required: boolean = false;
     @Input() public selected!: TSGemeinde[]; // Die selektierten Gemeinden
     @Input() public disabled: boolean = false;
-    @Input() public allowedInMap: Observable<TSGemeinde[]>;
+    @Input() public allowedInMap$: Observable<TSGemeinde[]>;
     @Input() public showLabel: boolean = true;
 
     public allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
@@ -56,23 +56,21 @@ export class GemeindeMultiselectComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.allowedInMap != null) {
-            this.allowedMap$ = this.allowedInMap.pipe(map(gemeinden => {
+        if (this.allowedInMap$ !== null) {
+            this.allowedMap$ = this.createMap(this.allowedInMap$);
+        } else {
+            this.allowedMap$ = this.createMap(this.gemeindeRS.getGemeindenForPrincipal$());
+        }
+    }
+
+    private createMap(gemeindenList: Observable<TSGemeinde[]>): Observable<Map<TSGemeinde,boolean>>{
+        return gemeindenList.pipe(map(gemeinden => {
                 return gemeinden.reduce((currentMap, currentValue) => {
                     const found = this.selected.find(g => g.id === currentValue.id);
                     return currentMap.set(found || currentValue, !!found);
                 }, new Map<TSGemeinde, boolean>());
-            }),);
-        } else {
-            this.allowedMap$ = this.gemeindeRS.getGemeindenForPrincipal$()
-                .pipe(map(gemeinden => {
-                        return gemeinden.reduce((currentMap, currentValue) => {
-                            const found = this.selected.find(g => g.id === currentValue.id);
-                            return currentMap.set(found || currentValue, !!found);
-                        }, new Map<TSGemeinde, boolean>());
-                    }),
-                );
-        }
+            }),
+        );
     }
 
     public onSelectionChange(item: MatOptionSelectionChange): void {
