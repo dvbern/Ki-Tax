@@ -101,7 +101,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public betreuungsangebotValues: Array<any>;
     // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
     // InstitutionStammdaten umgewandert
-    public instStammId: string;
+    public instStammId: any;
     public isSavingData: boolean; // Semaphore
     public initialBetreuung: TSBetreuung;
     public flagErrorVertrag: boolean;
@@ -124,6 +124,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public zuschlagBehinderungProTag: number;
     public korrekteKostenBestaetigung: boolean = false;
     public isBestaetigenClicked: boolean = false;
+    public searchQuery: string = '';
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -336,6 +337,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.cleanInstitutionStammdaten();
         }
         this.cleanBelegungen();
+        this.instStammId = undefined;
     }
 
     public setErsterSchultag(): void {
@@ -669,12 +671,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
+    // please do not blame me, blame mdAutocomplete instead...
+    public extractInstStammId(): string {
+        if (this.instStammId.id) {
+            return this.instStammId.id;
+        }
+
+        return this.instStammId;
+    }
+
     public setSelectedInstitutionStammdaten(): void {
+        if (!this.instStammId) {
+            return;
+        }
         const instStamList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList();
-        const found = instStamList.find(i => i.id === this.instStammId);
+        const found = instStamList.find(i => i.id === this.extractInstStammId());
         if (found) {
             this.model.institutionStammdaten = found;
         } else {
+            // reset
+            this.model.institutionStammdaten = undefined;
             console.error('Institution not found!', this.instStammId);
         }
     }
@@ -1109,7 +1125,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
-            this.getBetreuungModel().vertrag  = false;
+            this.getBetreuungModel().vertrag = false;
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         } else {
@@ -1219,6 +1235,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
             kindNumber: this.$stateParams.kindNumber,
+        });
+    }
+
+    public querySearch(query: string): Array<TSInstitutionStammdaten> {
+        if (!query) {
+            return this.getInstitutionenSDList();
+        }
+        const searchString = query.toLocaleLowerCase();
+        return this.getInstitutionenSDList().filter(item => {
+            return (item.institution.name.toLocaleLowerCase().indexOf(searchString) > -1)
+                || (item.adresse.ort.toLocaleLowerCase().indexOf(searchString) > -1)
+                || (item.adresse.plz.toLocaleLowerCase().indexOf(searchString) > -1)
+                || (item.adresse.strasse.toLocaleLowerCase().indexOf(searchString) > -1);
         });
     }
 }
