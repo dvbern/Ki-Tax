@@ -305,6 +305,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return undefined;
     }
 
+    public getInstitutionPhone(): string {
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()
+            && this.getBetreuung() && this.getBetreuung().institutionStammdaten) {
+            return this.getBetreuung().institutionStammdaten.telefon;
+        }
+        return undefined;
+    }
+
     public getBetreuungNumber(): string {
         if (this.ebeguUtil && this.gesuchModelManager && this.gesuchModelManager.getGesuch()
             && this.gesuchModelManager.getKindToWorkWith() && this.gesuchModelManager.getBetreuungToWorkWith()) {
@@ -352,21 +360,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public saveMutierteVerfuegung(): IPromise<TSVerfuegung> {
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
-            title: 'CONFIRM_SAVE_MUTIERTE_VERFUEGUNG',
-            questionText: 'KORREKTURZAHLUNG_DIALOG_FRAGE',
-            cancelText: 'LABEL_NEIN',
-            firstOkText: 'WEITER_ONLY',
-            radioYes: 'KORREKTURZAHLUNG_DIALOG_OPTION_JA',
-            radioYesHint: 'KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION',
-            radioNo: 'KORREKTURZAHLUNG_DIALOG_OPTION_NEIN',
-            radioNoHint: 'KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION',
-            titleStep2: 'KORREKTURZAHLUNG_DIALOG_STEP2_TITLE',
-            checkboxLabel: 'KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL',
-            warning: 'KORREKTURZAHLUNG_DIALOG_IMMUTABLE',
-            backText: 'KORREKTURZAHLUNG_DIALOG_BACK',
-            nextText: 'WEITER_ONLY',
-            finishText: 'KORREKTURZAHLUNG_DIALOG_FINISH',
-
+            institutionName: this.getInstitutionName(),
+            institutionPhone: this.getInstitutionPhone(),
         }).then(response => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             this.isVerfuegenClicked = false;
