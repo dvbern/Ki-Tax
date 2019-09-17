@@ -41,7 +41,7 @@ export class ExternalClientAssignmentComponent implements OnChanges {
     }
 
     private getAssignedClientsLabel(clients?: TSExternalClientAssignment): string {
-        if (!clients) {
+        if (!clients || clients.assignedClients.length === 0) {
             return this.translate.instant('LABEL_KEINE');
         }
 
