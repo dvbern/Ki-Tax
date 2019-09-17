@@ -75,7 +75,8 @@
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase" data-translate="VERANTWORTLICHER_SCHULAMT"
+                    <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase"
+                        data-translate="VERANTWORTLICHER_SCHULAMT"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
                         ng-if="vm.isTagesschulangebotEnabled()">
@@ -181,14 +182,26 @@
                     </th>
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
-                        <div class="dv-select-style">
-                            <select st-input-event="change" name="institutionen" id="institutionen"
-                                    st-search="institutionen" class="form-control"
-                                    ng-options="institution.name for institution in vm.institutionenList | orderBy: 'name' track by institution.name"
-                                    ng-model="vm.selectedInstitution">
-                                <option value="">{{"ALLE" | translate}}</option>
-                            </select>
-                        </div>
+                        <input id="institutionen" st-search="institutionen" class="form-control" type="hidden"/>
+                        <md-autocomplete md-min-length="0"
+                                         md-no-cache="true"
+                                         md-delay="0"
+                                         md-require-exact-match="true"
+                                         ng-attr-placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}"
+                                         md-class="form-control"
+                                         md-select-on-focus="true"
+                                         md-selected-item="vm.selectedInstitution"
+                                         md-selected-item-change="vm.updateInstitutionFilter()"
+                                         md-menu-container-class="antrag-list-autocomplete"
+                                         md-search-text="vm.searchQuery"
+                                         md-items="item in vm.querySearch(vm.searchQuery)"
+                                         md-item-text="item.name">
+                            <md-item-template>
+                                        <span md-highlight-text="vm.searchQuery">
+                                            {{item.name}}
+                                        </span>
+                            </md-item-template>
+                        </md-autocomplete>
                     </th>
                     <th dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"

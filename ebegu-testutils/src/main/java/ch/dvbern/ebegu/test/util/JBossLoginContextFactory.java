@@ -29,11 +29,19 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.jboss.security.ClientLoginModule;
+import org.jboss.security.SecurityContext;
+import org.jboss.security.auth.spi.UsersRolesLoginModule;
+
 /**
  * Provides a {@link LoginContext} for use by unit tests. It is driven by users.properties and roles.properties files as
  * described in <a href="https://community.jboss.org/wiki/UsersRolesLoginModule">UsersRolesLoginModule</a>
  */
-public class JBossLoginContextFactory {
+public final class JBossLoginContextFactory {
+
+	private JBossLoginContextFactory() {
+		// util
+	}
 
 	static class NamePasswordCallbackHandler implements CallbackHandler {
 		private final String username;
@@ -44,6 +52,7 @@ public class JBossLoginContextFactory {
 			this.password = password;
 		}
 
+		@Override
 		public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 			for (Callback current : callbacks) {
 				if (current instanceof NameCallback) {
@@ -67,7 +76,7 @@ public class JBossLoginContextFactory {
 		@Override
 		public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
 			if (!configurationName.equals(name)) {
-				throw new IllegalArgumentException("Unexpected configuration name '" + name + "'");
+				throw new IllegalArgumentException("Unexpected configuration name '" + name + '\'');
 			}
 
 			return new AppConfigurationEntry[] {
@@ -80,7 +89,7 @@ public class JBossLoginContextFactory {
 		}
 
 		/**
-		 * The {@link org.jboss.security.auth.spi.UsersRolesLoginModule} creates the association between users and
+		 * The {@link UsersRolesLoginModule} creates the association between users and
 		 * roles.
 		 */
 		private AppConfigurationEntry createUsersRolesLoginModuleConfigEntry() {
@@ -90,8 +99,8 @@ public class JBossLoginContextFactory {
 		}
 
 		/**
-		 * The {@link org.jboss.security.ClientLoginModule} associates the user credentials with the
-		 * {@link org.jboss.security.SecurityContext} where the JBoss security runtime can find it.
+		 * The {@link ClientLoginModule} associates the user credentials with the
+		 * {@link SecurityContext} where the JBoss security runtime can find it.
 		 */
 		private AppConfigurationEntry createClientLoginModuleConfigEntry() {
 			Map<String, String> options = new HashMap<String, String>();

@@ -16,7 +16,10 @@
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 import TSInstitution from '../../../models/TSInstitution';
+import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionUpdate from '../../../models/TSInstitutionUpdate';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -34,29 +37,28 @@ export class InstitutionRS {
     }
 
     public findInstitution(institutionID: string): IPromise<TSInstitution> {
-        return this.$http.get(`${this.serviceURL}/id/${encodeURIComponent(institutionID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-            });
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionID)}`)
+            .then(response => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data));
     }
 
-    public updateInstitution(institution: TSInstitution): IPromise<TSInstitution> {
-        let restInstitution = {};
-        restInstitution = this.ebeguRestUtil.institutionToRestObject(restInstitution, institution);
-        return this.$http.put(this.serviceURL, restInstitution).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-        });
+    public updateInstitution(institutionID: string, update: TSInstitutionUpdate): IPromise<TSInstitutionStammdaten> {
+        const restInstitution = this.ebeguRestUtil.institutionUpdateToRestObject(update);
+
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionID)}`, restInstitution)
+            .then(response => response.data)
+            .then(data => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data));
     }
 
     /**
-     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so the server can
-     * create all required objects within a single transaction.
+     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so
+     * the server can create all required objects within a single transaction.
      */
-    public createInstitution(institution: TSInstitution,
-                             beguStartDatum: moment.Moment,
-                             betreuungsangebot: TSBetreuungsangebotTyp,
-                             adminMail: string,
-                             gemeindeId: string
+    public createInstitution(
+        institution: TSInstitution,
+        beguStartDatum: moment.Moment,
+        betreuungsangebot: TSBetreuungsangebotTyp,
+        adminMail: string,
+        gemeindeId: string,
     ): IPromise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
@@ -65,7 +67,7 @@ export class InstitutionRS {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
                     betreuung: betreuungsangebot,
                     adminMail,
-                    gemeindeId
+                    gemeindeId,
                 },
             })
             .then(response => {
@@ -93,6 +95,11 @@ export class InstitutionRS {
         return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
             return response.data;
         });
+    }
+
+    public getExternalClients(institutionId: string): IPromise<TSExternalClientAssignment> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionId)}/externalclients`)
+            .then(response => this.ebeguRestUtil.parseExternalClientAssignment(response.data));
     }
 
     public isStammdatenCheckRequired(): IPromise<boolean> {

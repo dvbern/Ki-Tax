@@ -99,7 +99,7 @@
                     <span data-translate="PAPIERGESUCH_OEFFNEN"></span>
                 </div>
 
-                <div ng-if="!vm.hasPapiergesuch() && !vm.isGesuchReadonly()"
+                <div ng-if="vm.isPapiergesuch() && !vm.hasPapiergesuch() && !vm.isGesuchReadonly()"
                      accept=".pdf, .docx, .odt"
                      ngf-select="vm.upload($files)" ngf-multiple="false"
                      ngf-drop="vm.upload($files)"

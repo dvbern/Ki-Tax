@@ -19,9 +19,16 @@ import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    getTSAntragStatusPendenzValues,
+    getTSAntragStatusValuesByRole,
+    TSAntragStatus,
+} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandant,
+    TSBetreuungsangebotTyp,
+} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
@@ -92,6 +99,7 @@ export class DVAntragListController implements IController {
     public selectedVerantwortlicherTS: TSBenutzer;
     public selectedDokumenteHochgeladen: string;
     public pendenz: boolean;
+    public selectedInstitutionName: string;
 
     public tableId: string;
     public tableTitle: string;
@@ -138,6 +146,12 @@ export class DVAntragListController implements IController {
     public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+    }
+
+    public updateInstitutionFilter(): void {
+        const inputElement = angular.element('#institutionen');
+        this.setSelectedInstitutionName();
+        inputElement.val(this.selectedInstitutionName).trigger('input');
     }
 
     public updateInstitutionenList(): void {
@@ -262,5 +276,16 @@ export class DVAntragListController implements IController {
 
     public isTagesschulangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotTS();
+    }
+
+    public querySearch(query: string): Array<TSInstitution> {
+        const searchString = query.toLocaleLowerCase();
+        return this.institutionenList.filter(item => {
+            return (item.name.toLocaleLowerCase().indexOf(searchString) > -1);
+        });
+    }
+
+    public setSelectedInstitutionName(): void {
+        this.selectedInstitutionName = this.selectedInstitution ? this.selectedInstitution.name : null;
     }
 }

@@ -729,6 +729,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 
+		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+		if (institutionen.isEmpty()) {
+			// Wenn der Benutzer fuer keine Institution berechtigt ist, darf er auch keine Verfuegungen sehen
+			return Collections.emptyList();
+		}
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 
@@ -745,7 +751,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Predicate verfuegungPredicate = cb.isNotNull(root.get(Betreuung_.verfuegung));
 		predicatesToUse.add(verfuegungPredicate);
 
-		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 		Predicate predicateInstitution = root.get(Betreuung_.institutionStammdaten)
 			.get(InstitutionStammdaten_.institution)
 			.in(Collections.singletonList(institutionen));

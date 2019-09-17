@@ -12,6 +12,7 @@ pipeline {
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
 		timeout(time: 2, unit: 'HOURS')
 		disableConcurrentBuilds()
+		lock('ebegu-tests')
 	}
 	stages {
 		stage("Test") {
@@ -23,19 +24,25 @@ pipeline {
 			}
 
 			steps {
-				lock('ebegu-tests') {
+				ansiColor('xterm') {
+
 					withMaven(options: [
 							junitPublisher(healthScaleFactor: 1.0),
-							findbugsPublisher(),
+							spotbugsPublisher(),
 							artifactsPublisher(disabled: true)
 					]) {
-						sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
+						sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C ' +
+								'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
 					}
 				}
 			}
 
 			post {
 				always {
+					recordIssues(enabledForFailure: true, tools: [pmdParser(), checkStyle(), spotBugs
+							(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
+					junit allowEmptyResults: true,
+							testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
 					cleanWs notFailBuild: true
 				}
 			}

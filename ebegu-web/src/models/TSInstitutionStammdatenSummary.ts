@@ -40,4 +40,9 @@ export default class TSInstitutionStammdatenSummary extends TSAbstractDateRanged
     public constructor() {
         super();
     }
+
+    public getAutocompleteText(): string {
+        return `${this.institution.name} - ${this.adresse.strasse}
+        ${this.adresse.hausnummer}, ${this.adresse.plz} ${this.adresse.ort}`;
+    }
 }
