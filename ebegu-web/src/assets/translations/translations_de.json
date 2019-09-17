@@ -1607,7 +1607,7 @@
     "ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT": "Diese Änderung erfordert eine erneute Platzbestätigung, da die Institution die Verrechnung für den ausserordentlichen Betreuungsaufwand bestätigen muss.",
     "VERSION_ERROR_TEXT": "Der Client {{frontendVersion}} hat eine andere Version als der Server {{backendVersion}}. Bitte laden sie die Seite komplett neu (F5)",
     "KORREKTURZAHLUNG_DIALOG_FRAGE": "Sie sind dabei, eine Mutation zu verfügen, welche zu Korrekturen an bereits ausbezahlten Beträgen führt. Möchten Sie fortfahren?",
-    "KORREKTURZAHLUNG_DIALOG_OPTION_JA": "Ja, Korrekturen in nächsten Zahlungslauf übernehmen.",
+    "KORREKTURZAHLUNG_DIALOG_OPTION_JA": "Ja, Korrekturen in den nächsten Zahlungslauf übernehmen.",
     "KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION": "In diesem Fall erfolgt der Abgleich automatisch und wie bis anhin über kiBon direkt an die Institutionen.",
     "KORREKTURZAHLUNG_DIALOG_OPTION_NEIN": "Ja, Korrekturen aber ignorieren.",
     "KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION": "In diesem Fall müssen Sie die Auszahlung respektive Rückerstattung dieser Korrekturen ausserhalb kiBon direkt mit den Eltern vornehmen.",
