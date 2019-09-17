@@ -1651,5 +1651,12 @@
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/fr/category/savoir-faire-institutions/",
     "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "",
     "PERMITTED_EXTERNAL_CLIENTS": "",
+    "KORREKTURZAHLUNG_YES_CASE_INFO": "",
+    "KORREKTURZAHLUNG_YES_CASE_1": "",
+    "KORREKTURZAHLUNG_NO_CASE_INFO": "",
+    "KORREKTURZAHLUNG_NO_CASE_1": "",
+    "KORREKTURZAHLUNG_NO_CASE_2": "",
+    "KORREKTURZAHLUNG_NO_CASE_3": "",
+    "KORREKTURZAHLUNG_INSTITUTION_HINT": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

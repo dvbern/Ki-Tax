@@ -1651,5 +1651,12 @@
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/category/knowhow-institutionen/",
     "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "Ungültige Auswahl",
     "PERMITTED_EXTERNAL_CLIENTS": "Zugriffsberechtigte Drittanwendungen",
+    "KORREKTURZAHLUNG_YES_CASE_INFO": "In folgenden Fällen erfolgt der Abgleich über die Institutionen:",
+    "KORREKTURZAHLUNG_YES_CASE_1": "Bei rückwirkenden Änderungen des Betreuungspensums",
+    "KORREKTURZAHLUNG_NO_CASE_INFO": "Rückerstattungen sind in folgenden Fällen zwingend über die Eltern abzurechnen:",
+    "KORREKTURZAHLUNG_NO_CASE_1": "Bei einer rückwirkenden Erhöhung des massgebenden Einkommens",
+    "KORREKTURZAHLUNG_NO_CASE_2": "Bei einer rückwirkenden Senkung des Anspruchs",
+    "KORREKTURZAHLUNG_NO_CASE_3": "Bei einer rückwirkenden Aufhebung des Betreuungsgutscheins",
+    "KORREKTURZAHLUNG_INSTITUTION_HINT": "Info: Hat sich rückwirkend sowohl das vereinbarte Betreuungspensum, wie auch das massgebende Einkommen oder der Anspruch geändert, ist es in der Regel sinnvoll Rückforderungen ausserhalb von kiBon über die Eltern und Rückerstattungen über kiBon an die Institutionen umzusetzen. In beiden Fällen empfiehlt sich die Rücksprache mit der Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

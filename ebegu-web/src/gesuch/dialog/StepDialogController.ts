@@ -24,20 +24,8 @@ export class StepDialogController {
     public static $inject = [
         '$mdDialog',
         '$translate',
-        'title',
-        'questionText',
-        'cancelText',
-        'firstOkText',
-        'radioYes',
-        'radioYesHint',
-        'radioNo',
-        'radioNoHint',
-        'checkboxLabel',
-        'titleStep2',
-        'warning',
-        'backText',
-        'nextText',
-        'finishText',
+        'institutionName',
+        'institutionPhone',
     ];
 
     public title: string;
@@ -57,39 +45,47 @@ export class StepDialogController {
     public backText: string;
     public nextText: string;
     public finishText: string;
+    public radioYesCasesInfo: string;
+    public radioYesCases: Array<string>;
+    public radioNoCasesInfo: string;
+    public radioNoCases: Array<string>;
+    public institutionHint: string;
 
     public constructor(
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
-        title: string,
-        questionText: string,
-        cancelText: string,
-        firstOkText: string,
-        radioYes: string,
-        radioYesHint: string,
-        radioNo: string,
-        radioNoHint: string,
-        checkboxLabel: string,
-        titleStep2: string,
-        warning: string,
-        backText: string,
-        nextText: string,
-        finishText: string,
+        institutionName: string,
+        institutionPhone: string,
     ) {
-        this.title = $translate.instant(title);
-        this.questionText = $translate.instant(questionText);
-        this.cancelText = $translate.instant(cancelText);
-        this.firstOkText = $translate.instant(firstOkText);
-        this.radioYes = $translate.instant(radioYes);
-        this.radioYesHint = $translate.instant(radioYesHint);
-        this.radioNo = $translate.instant(radioNo);
-        this.radioNoHint = $translate.instant(radioNoHint);
-        this.checkboxLabel = $translate.instant(checkboxLabel);
-        this.titleStep2 = $translate.instant(titleStep2);
-        this.warning = $translate.instant(warning);
-        this.backText = $translate.instant(backText);
-        this.nextText = $translate.instant(nextText);
-        this.finishText = $translate.instant(finishText);
+        this.title = $translate.instant('CONFIRM_SAVE_MUTIERTE_VERFUEGUNG');
+        this.questionText = $translate.instant('KORREKTURZAHLUNG_DIALOG_FRAGE');
+        this.cancelText = $translate.instant('LABEL_NEIN');
+        this.firstOkText = $translate.instant('WEITER_ONLY');
+        this.radioYes = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_JA');
+        this.radioYesHint = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION');
+        this.radioNo = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN');
+        this.radioNoHint = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION');
+        this.checkboxLabel = $translate.instant('KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL');
+        this.titleStep2 = $translate.instant('KORREKTURZAHLUNG_DIALOG_STEP2_TITLE');
+        this.warning = $translate.instant('KORREKTURZAHLUNG_DIALOG_IMMUTABLE');
+        this.backText = $translate.instant('KORREKTURZAHLUNG_DIALOG_BACK');
+        this.nextText = $translate.instant('WEITER_ONLY');
+        this.finishText = $translate.instant('KORREKTURZAHLUNG_DIALOG_FINISH');
+        this.radioYesCasesInfo = $translate.instant('KORREKTURZAHLUNG_YES_CASE_INFO');
+        this.radioYesCases = [$translate.instant('KORREKTURZAHLUNG_YES_CASE_1')];
+        this.radioNoCasesInfo = $translate.instant('KORREKTURZAHLUNG_NO_CASE_INFO');
+        this.radioNoCases = [$translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
+            $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
+            $translate.instant('KORREKTURZAHLUNG_NO_CASE_3')];
+        this.institutionHint = $translate.instant('KORREKTURZAHLUNG_INSTITUTION_HINT');
+
+        if (institutionName) {
+            this.institutionHint += ` ${institutionName}`;
+        }
+
+        if (institutionPhone) {
+            this.institutionHint += ` (${$translate.instant('TELEFON')} ${institutionPhone})`;
+        }
     }
 
     public next(): void {
