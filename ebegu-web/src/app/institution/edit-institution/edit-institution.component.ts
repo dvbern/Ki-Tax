@@ -22,19 +22,23 @@ import {
     OnInit,
     QueryList,
     ViewChild,
-    ViewChildren
+    ViewChildren,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
+import TSExternalClient from '../../../models/TSExternalClient';
+import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionUpdate from '../../../models/TSInstitutionUpdate';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
@@ -53,7 +57,7 @@ import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschu
 @Component({
     selector: 'dv-edit-institution',
     templateUrl: './edit-institution.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class EditInstitutionComponent implements OnInit {
@@ -63,16 +67,19 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
+    public externalClients?: TSExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
-    private isRegisteringInstitution: boolean = false;
-    private initName: string;
 
     @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
     private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
 
     @ViewChild(EditInstitutionTagesschuleComponent)
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
+
+    private isRegisteringInstitution: boolean = false;
+    private initName: string;
+    private initiallyAssignedClients: TSExternalClient[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -87,6 +94,16 @@ export class EditInstitutionComponent implements OnInit {
     ) {
     }
 
+    private static createInstitutionStammdaten(institution: TSInstitution): TSInstitutionStammdaten {
+        const stammdaten = new TSInstitutionStammdaten();
+        stammdaten.adresse = new TSAdresse();
+        stammdaten.institution = institution;
+        stammdaten.gueltigkeit = new TSDateRange();
+        stammdaten.gueltigkeit.gueltigAb = moment();
+
+        return stammdaten;
+    }
+
     public ngOnInit(): void {
         const institutionId = this.$transition$.params().institutionId;
         if (!institutionId) {
@@ -98,25 +115,48 @@ export class EditInstitutionComponent implements OnInit {
             this.traegerschaftenList = allTraegerschaften;
         });
 
-        this.fetchInstitution(institutionId);
+        this.fetchInstitutionAndStammdaten(institutionId);
+        this.fetchExternalClients(institutionId);
     }
 
-    private fetchInstitution(institutionId: string): void {
-        this.institutionRS.findInstitution(institutionId).then(institution => {
+    private fetchExternalClients(institutionId: string): void {
+        this.institutionRS.getExternalClients(institutionId)
+            .then(externalClients => this.initExternalClients(externalClients));
+    }
 
-            this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id)
-                .then(stammdaten => {
-                    if (stammdaten) {
-                        this.stammdaten = stammdaten;
-                    } else {
-                        this.createInstitutionStammdaten(institution);
-                    }
-                    this.isCheckRequired = institution.stammdatenCheckRequired;
-                    this.initName = this.stammdaten.institution.name;
-                    this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
-                    this.changeDetectorRef.markForCheck();
-                });
+    private initExternalClients(externalClients: TSExternalClientAssignment): void {
+        this.externalClients = externalClients;
+        // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
+        this.initiallyAssignedClients = [...externalClients.assignedClients];
+        this.changeDetectorRef.markForCheck();
+    }
+
+    private fetchInstitutionAndStammdaten(institutionId: string): void {
+        this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institutionId)
+            .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten))
+            .then(stammdaten => this.initModel(stammdaten));
+    }
+
+    private getOrCreateStammdaten(
+        institutionId: string,
+        optionalStammdaten?: TSInstitutionStammdaten | null,
+    ): IPromise<TSInstitutionStammdaten> {
+
+        if (optionalStammdaten) {
+            return Promise.resolve(optionalStammdaten);
+        }
+
+        return this.institutionRS.findInstitution(institutionId).then(institution => {
+            return EditInstitutionComponent.createInstitutionStammdaten(institution);
         });
+    }
+
+    private initModel(stammdaten: TSInstitutionStammdaten): void {
+        this.stammdaten = stammdaten;
+        this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
+        this.initName = stammdaten.institution.name;
+        this.editMode = stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
+        this.changeDetectorRef.markForCheck();
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
@@ -199,64 +239,72 @@ export class EditInstitutionComponent implements OnInit {
             this.componentTagesschule.onPrePersist();
         }
 
-        // tslint:disable-next-line:early-exit
-        if (this.initName === this.stammdaten.institution.name) {
-            this.saveStammdaten();
-        } else {
-            this.institutionRS.updateInstitution(this.stammdaten.institution)
-                .then(institution => {
-                    this.stammdaten.institution = institution;
-                    this.saveStammdaten();
-                });
+        const updateModel = new TSInstitutionUpdate();
+        updateModel.name = this.stammdaten.institution.name;
+        updateModel.traegerschaftId = this.getTraegerschaftsUpdate();
+        updateModel.externalClients = this.getExternalClientsUpdate();
+        updateModel.stammdaten = this.stammdaten;
+
+        this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
+            .then(stammdaten => this.setValuesAfterSave(stammdaten));
+    }
+
+    private getExternalClientsUpdate(): string[] | null {
+        const assignedClients = this.externalClients.assignedClients;
+
+        if (EbeguUtil.isSame(assignedClients, this.initiallyAssignedClients)) {
+            // no backed update necessary
+            return null;
         }
+
+        return assignedClients.map(client => client.id);
     }
 
-    private saveStammdaten(): void {
-        this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
-            .then(stammdaten => {
-                this.stammdaten = stammdaten;
-                this.setValuesAfterSave();
-            });
+    private getTraegerschaftsUpdate(): string | null {
+        const traegerschaft = this.stammdaten.institution.traegerschaft;
+
+        return traegerschaft ? traegerschaft.id : null;
     }
 
-    private setValuesAfterSave(): void {
+    private setValuesAfterSave(stammdaten: TSInstitutionStammdaten): void {
         this.editMode = false;
-        this.changeDetectorRef.markForCheck();
-        this.navigateToWelcomesite();
+        if (this.navigateToWelcomesite()) {
+            return;
+        }
         // if we don't navigate away we refresh all data
-        this.fetchInstitution(this.stammdaten.institution.id);
-    }
-
-    private createInstitutionStammdaten(institution: TSInstitution): void {
-        this.stammdaten = new TSInstitutionStammdaten();
-        this.stammdaten.adresse = new TSAdresse();
-        this.stammdaten.institution = institution;
-        this.stammdaten.gueltigkeit = new TSDateRange();
-        this.stammdaten.gueltigkeit.gueltigAb = moment();
+        this.fetchExternalClients(stammdaten.institution.id);
+        this.initModel(stammdaten);
     }
 
     private navigateBack(): void {
         this.$state.go('institution.list');
     }
 
-    private navigateToWelcomesite(): void {
+    private navigateToWelcomesite(): boolean {
         if (this.isRegisteringInstitution) {
             this.$state.go('welcome');
-            return;
+            return true;
         }
+
+        return false;
     }
 
     public getGueltigkeitTodisplay(): string {
-        return `${this.translate.instant('AB')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigAb, CONSTANTS.DATE_FORMAT)}
-             ${this.getBisDateIfSet()}`;
+        const date = DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigAb, CONSTANTS.DATE_FORMAT);
+
+        return `${this.translate.instant('AB')} ${date} ${this.getBisDateIfSet()}`;
     }
 
     private getBisDateIfSet(): string {
-        if (this.stammdaten.gueltigkeit.gueltigBis
-            && DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT) !== CONSTANTS.END_OF_TIME_STRING
-        ) {
-            return ` ${this.translate.instant('BIS')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT)}`;
+        if (!this.stammdaten.gueltigkeit.gueltigBis) {
+            return '';
         }
+
+        const date = DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT);
+        if (date !== CONSTANTS.END_OF_TIME_STRING) {
+            return `${this.translate.instant('BIS')} ${date}`;
+        }
+
         return '';
     }
 

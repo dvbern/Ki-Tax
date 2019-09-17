@@ -15,6 +15,10 @@
 
 package ch.dvbern.ebegu.config;
 
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 
 /**
@@ -180,4 +184,7 @@ public interface EbeguConfiguration {
 	 * Gibt die E-Mail des Kibon-Supports zurück
 	 */
 	String getSupportMail();
+
+	@Nonnull
+	Optional<String> getKafkaURL();
 }
