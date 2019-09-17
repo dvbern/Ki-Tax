@@ -726,6 +726,18 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
 	}
 
+	/**
+	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat, wenn es kein kind oder betr gibt wird false zurueckgegeben
+	 */
+	@Transient
+	public boolean hasOnlyBetreuungenOfJugendamt() {
+		//noinspection SimplifyStreamApiCallChains
+		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+			.collect(Collectors.toList());
+		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
+			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt());
+	}
+
 	@Transient
 	public boolean areAllBetreuungenBestaetigt() {
 		List<Betreuung> betreuungs = extractAllBetreuungen();

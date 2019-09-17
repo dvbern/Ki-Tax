@@ -366,4 +366,20 @@ public class GemeindeStammdaten extends AbstractEntity {
 	public boolean isZahlungsinformationValid() {
 		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(bic) && StringUtils.isNotEmpty(iban.getIban());
 	}
+
+	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG-Adresse (falls gesetzt), sonst die Allgemeine Adresse
+	 * Fuer *reine* TS-Angebote verwenden wir die TS-Adresse (falls gesetzt), sonst die Allgemeine Adresse
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die Allgemeine Adresse
+	 */
+	@Nonnull
+	public Adresse getAdresseForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.hasOnlyBetreuungenOfJugendamt() && bgAdresse != null) {
+			return bgAdresse;
+		}
+		if (gesuch.hasOnlyBetreuungenOfSchulamt() && tsAdresse != null) {
+			return tsAdresse;
+		}
+		return adresse;
+	}
 }

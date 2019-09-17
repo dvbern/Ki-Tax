@@ -277,7 +277,7 @@ public class MailTemplateConfiguration {
 		GemeindeStammdaten stammdaten = gemeindeService
 			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
 
-		paramMap.put(ADRESSE, stammdaten.getAdresse().getAddressAsStringInOneLine());
+		paramMap.put(ADRESSE, stammdaten.getAdresseForGesuch(gesuch).getAddressAsStringInOneLine());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
 
