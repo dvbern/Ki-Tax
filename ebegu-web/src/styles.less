@@ -375,6 +375,98 @@ dv-quicksearchbox {
     }
 }
 
+.betreuungView,
+.dv-antrag-list{
+    md-autocomplete {
+        height: 4rem;
+        border-radius: 0;
+        padding: 0;
+        :focus {
+            outline: 2px solid @contrast-darkest;
+            outline-offset: 0;
+            box-shadow: none /*@secondary-dark*/;
+        }
+    }
+
+    md-autocomplete-wrap {
+        height: 4rem !important;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+
+        button {
+            width: 15px;
+            height: 15px;
+            font-size: 1rem;
+            //display: none;
+        }
+
+        button md-icon {
+            -webkit-transform: translate3d(-50%, -50%, 0) scale(0.5);
+            transform: translate3d(-50%, -50%, 0) scale(0.5);
+        }
+    }
+
+    md-autocomplete input:not(.md-input) {
+        pointer: cursor;
+        height: 4rem;
+        padding-left: 1rem;
+        font-weight: 700;
+        font-style: normal;
+        font-size: 1.6rem;
+        letter-spacing: 0.1rem;
+        line-height: 2rem;
+        border: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        .ebeguPlaceholder();
+    }
+
+    md-autocomplete input.ng-touched.ng-invalid {
+        .ErrorInput();
+    }
+}
+
+.dv-antrag-list {
+    md-autocomplete-wrap {
+        background: @lgrey;
+    }
+}
+
+.antrag-list-autocomplete {
+    background-color: @lgrey !important;
+}
+
+
+.institution-autocomplete,
+.antrag-list-autocomplete {
+    background-color: @white;
+    max-width: unset;
+    //border: 1px solid blue;
+
+    .md-autocomplete-suggestions li {
+        height: 4rem;
+        padding: 0 0 0 1rem;
+        margin: 0;
+        line-height: 4rem;
+        color: @black;
+        font-size: 1.7rem;
+    }
+
+    .md-autocomplete-suggestions {
+        li:hover,
+        li:focus{
+            color: @black;
+            background: @grey;
+        }
+    }
+
+    .highlight {
+        color: @black !important;
+    }
+}
+
 .skiplinks {
     display: block !important;
     .skiplinks__list {

@@ -469,4 +469,8 @@ export class DVMitteilungListController implements IOnInit {
     private isBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
         return mitteilung instanceof TSBetreuungsmitteilung;
     }
+
+    public isCurrentUserAmt(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+    }
 }

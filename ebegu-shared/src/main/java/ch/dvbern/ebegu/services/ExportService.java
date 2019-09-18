@@ -28,6 +28,10 @@ public interface ExportService {
 	 *
 	 * @param betreuungID ID of the Betreuung that should be exported
 	 * @return All Information needed to download the generated file (i.e. the accessToken)
+	 * @deprecated the classical file export as known from ki-tax will be discontinued. Instead, the
+	 * kibon-exchange-api should be used by certified applications to import Verfuegungen.
+	 * The entire dataexport.v1 package is deprecated.
 	 */
+	@Deprecated
 	UploadFileInfo exportVerfuegungOfBetreuungAsFile(String betreuungID);
 }

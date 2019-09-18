@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * Leider generiert SmartTable  ein verschachteltes JSON Objekt fuer die Suchpredicates. Daher muessen wir das hier nachbauen
+ * Leider generiert SmartTable ein verschachteltes JSON Objekt fuer die Suchpredicates. Daher muessen wir das hier nachbauen
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
