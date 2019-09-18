@@ -355,11 +355,11 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	private Gemeinde getGemeindeParis() {
-		Gemeinde bern = persistence.find(Gemeinde.class, "4c453263-f992-48af-86b5-dc04cd7e8bb8");
-		if (bern == null) {
+		Gemeinde paris = persistence.find(Gemeinde.class, "4c453263-f992-48af-86b5-dc04cd7e8bb8");
+		if (paris == null) {
 			throw new IllegalStateException("Gemeinde Paris not found");
 		}
-		return bern;
+		return paris;
 	}
 
 	@Nonnull
