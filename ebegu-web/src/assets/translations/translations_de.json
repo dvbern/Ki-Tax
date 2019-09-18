@@ -586,6 +586,7 @@
     "LABEL_SPEICHERN": "Speichern",
     "LABEL_ABBRECHEN": "Abbrechen",
     "LABEL_KEINE_ANGABE": "Keine Angabe",
+    "LABEL_KEINE": "Keine",
     "PENDENZEN_LIST": "Pendenzenliste",
     "VERLAUF_LIST": "Verlauf",
     "ALLE_VERFUEGUNGEN_LIST": "Alle Verfügungen",
@@ -610,7 +611,9 @@
     "MITTEILUNG": "Mitteilung",
     "ALLE_MITTEILUNGEN": "Alle Mitteilungen",
     "NEUE_MITTEILUNGEN": "Neue Mitteilungen",
-    "NEUE_MITTEILUNG": "Neue Mitteilung an die Gemeinde {{gemeinde}}",
+    "NEUE_MITTEILUNG_GEMEINDE": "Neue Mitteilung an die Gemeinde {{gemeinde}}",
+    "NEUE_MITTEILUNG_BETREUUNG": "Mitteilung an die Gemeinde {{gemeinde}} betreffend {{kind}} ",
+    "NEUE_MITTEILUNG_GESUCHSTELLER": "Neue Mitteilung an den Gesuchsteller",
     "AUSSTEHEND": "Ausstehend",
     "WARTEN": "Warten",
     "SCHULAMT": "Nicht nötig",
@@ -1647,5 +1650,6 @@
     "BLOG_GEMEINDE_LINK": "https://blog.kibon.ch/category/know-how-gemeinden/",
     "BLOG_INSTITUTION_LINK": "https://blog.kibon.ch/category/knowhow-institutionen/",
     "AUTOCOMPLETE_REQUIRE_EXACT_MATCH": "Ungültige Auswahl",
+    "PERMITTED_EXTERNAL_CLIENTS": "Zugriffsberechtigte Drittanwendungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

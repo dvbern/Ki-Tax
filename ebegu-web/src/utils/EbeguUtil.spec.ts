@@ -15,6 +15,7 @@
 
 import * as moment from 'moment';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
+import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
@@ -127,6 +128,63 @@ describe('EbeguUtil', () => {
         });
         it('it returns a string with 0 characters, for negative sizes', () => {
             expect(EbeguUtil.generateRandomName(-1).length).toBe(0);
+        });
+    });
+
+    describe('isSame', () => {
+
+        it('should not allow duplicates', () => {
+            expect(EbeguUtil.isSame([1, 1], [1])).toBe(false);
+        });
+
+        it('should allow identity', () => {
+            const a = [1, 1];
+            expect(EbeguUtil.isSame(a, a)).toBe(true);
+        });
+
+        it('should allow similar arrays', () => {
+            expect(EbeguUtil.isSame([1, 2], [1, 2])).toBe(true);
+        });
+
+        it('should allow similar arrays - regardless of order', () => {
+            expect(EbeguUtil.isSame([1, 2], [2, 1])).toBe(true);
+        });
+    });
+
+    describe('isSameById', () => {
+        class Entity extends TSAbstractEntity {
+            public constructor(id: string) {
+                super();
+                this.id = id;
+            }
+
+            public static of(id: string): Entity {
+                return new Entity(id);
+            }
+        }
+
+        it('should not allow duplicates', () => {
+            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('1')], [Entity.of('1')])).toBe(false);
+        });
+
+        it('should allow identity', () => {
+            const a = [Entity.of('1'), Entity.of('1')];
+            expect(EbeguUtil.isSameById(a, a)).toBe(true);
+        });
+
+        it('should allow similar arrays', () => {
+            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('2')], [Entity.of('1'), Entity.of('2')]))
+                .toBe(true);
+        });
+
+        it('should allow similar arrays - regardless of order', () => {
+            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('2')], [Entity.of('2'), Entity.of('1')]))
+                .toBe(true);
+        });
+
+        it('should not require distinct ids', () => {
+            expect(EbeguUtil.isSameById([Entity.of('1'), Entity.of('1')], [Entity.of('1'), Entity.of('2')]))
+                .toBe(false);
         });
     });
 });

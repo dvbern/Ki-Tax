@@ -25,35 +25,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
-import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.InstitutionStatus;
-import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -69,73 +56,7 @@ public class InstitutionStammdatenResource {
 	private InstitutionStammdatenService institutionStammdatenService;
 
 	@Inject
-	private InstitutionService institutionService;
-
-	@Inject
-	private TraegerschaftService traegerschaftService;
-
-	@Inject
 	private JaxBConverter converter;
-
-	@ApiOperation(value = "Speichert ein InstitutionsStammdaten", response = JaxInstitutionStammdaten.class)
-	@Nullable
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxInstitutionStammdaten saveInstitutionStammdaten(
-		@Nonnull @NotNull @Valid JaxInstitutionStammdaten institutionStammdatenJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		InstitutionStammdaten instDaten;
-		JaxInstitutionStammdaten stammdaten = institutionStammdatenJAXP;
-		if (institutionStammdatenJAXP.getId() != null) {
-			Optional<InstitutionStammdaten> optional =
-				institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenJAXP.getId());
-			instDaten = optional.orElse(new InstitutionStammdaten());
-		} else {
-			instDaten = new InstitutionStammdaten();
-			instDaten.setAdresse(new Adresse());
-		}
-		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
-			stammdaten = converter.updateJaxModuleTagesschule(institutionStammdatenJAXP);
-		}
-
-		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(stammdaten, instDaten);
-
-		// converting InstitutionStammdaten from JAX to Entity will discard any change in the Institution object. It
-		// will load
-		// the institution from the DB. For this reason we need to change any field of the institution manually
-
-		// Statuswechsel eingeladen -> aktiv
-		Institution convertedInstitution = convertedInstData.getInstitution();
-		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN ||
-			(convertedInstitution.getStatus() == InstitutionStatus.KONFIGURATION
-				&& convertedInstData.isTagesschuleActivatable())) {
-			institutionService.activateInstitution(convertedInstData.getInstitution().getId());
-		}
-
-		// Trägerschaft speichern
-		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstitution);
-
-		InstitutionStammdaten persistedInstData =
-			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
-
-		return converter.institutionStammdatenToJAX(persistedInstData);
-
-	}
-
-	private void updateTraegerschaft(
-		@Nonnull JaxInstitution institutionJAXP,
-		@Nonnull Institution institutionStammdaten
-	) {
-		Optional<Traegerschaft> traegerschaft = Optional.empty();
-		final JaxTraegerschaft jaxTraegerschaft = institutionJAXP.getTraegerschaft();
-		if (jaxTraegerschaft != null && jaxTraegerschaft.getId() != null) {
-			traegerschaft = traegerschaftService.findTraegerschaft(jaxTraegerschaft.getId());
-		}
-		institutionStammdaten.setTraegerschaft(traegerschaft.orElse(null));
-	}
 
 	@ApiOperation(value = "Sucht die InstitutionsStammdaten mit der uebergebenen Id in der Datenbank",
 		response = JaxInstitutionStammdaten.class)
@@ -154,19 +75,6 @@ public class InstitutionStammdatenResource {
 
 		return optional.map(institutionStammdaten -> converter.institutionStammdatenToJAX(institutionStammdaten))
 			.orElse(null);
-	}
-
-	@ApiOperation(value = "Gibt alle vorhandenen Institutionsstammdaten zurueck",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
-	@Nonnull
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
-		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
-			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten,
-				new JaxInstitutionStammdatenSummary()))
-			.collect(Collectors.toList());
 	}
 
 	/**
@@ -190,9 +98,10 @@ public class InstitutionStammdatenResource {
 		Objects.requireNonNull(gesuchsperiodeJaxId);
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
+
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten,
-				new JaxInstitutionStammdatenSummary()))
+			.map(stammdaten ->
+				converter.institutionStammdatenSummaryToJAX(stammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 

@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -42,9 +43,10 @@ import org.slf4j.LoggerFactory;
 public class LocalhostChecker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LocalhostChecker.class.getSimpleName());
-	private Set<String> localAddresses = new HashSet<>();
+	private final Set<String> localAddresses = new HashSet<>();
 
-	private String localIp;
+	@Nullable
+	private String localIp = null;
 
 	@SuppressWarnings({ "OverlyBroadCatchBlock", "PMD.UnusedPrivateMethod" })
 	@PostConstruct
@@ -76,7 +78,7 @@ public class LocalhostChecker {
 	public String findLocalIp() {
 		if (this.localIp == null) {
 
-			try (final DatagramSocket socket = new DatagramSocket()) {
+			try (DatagramSocket socket = new DatagramSocket()) {
 				socket.connect(InetAddress.getByName("8.8.8.8"), 10002); // connect to google dns to test our ip
 				this.localIp = socket.getLocalAddress().getHostAddress();
 			} catch (SocketException | UnknownHostException e) {
@@ -107,7 +109,7 @@ public class LocalhostChecker {
 
 		URI uri = new URI(originalURL);
 		final int oldPort = uri.getPort();
-		String newAuthority = newHost.contains(":") || oldPort == -1 ? newHost : newHost + ":" + oldPort;
+		String newAuthority = newHost.contains(":") || oldPort == -1 ? newHost : newHost + ':' + oldPort;
 		uri = new URI(uri.getScheme().toLowerCase(Locale.US), newAuthority,
 			uri.getPath(), uri.getQuery(), uri.getFragment());
 

@@ -74,6 +74,37 @@ export default class EbeguUtil {
     }
 
     /**
+     * Compares two array and returns TRUE when both arrays contain objects with the same IDs (but not necessarily the
+     * same references)
+     */
+    public static isSameById<T extends TSAbstractEntity>(a: T[], b: T[]): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const compareId = (value1: T, value2: T) => value1.id.localeCompare(value2.id);
+
+        const aSorted = a.concat().sort(compareId);
+        const bSorted = b.concat().sort(compareId);
+
+        return aSorted.every((value, index) => bSorted[index].id === value.id);
+    }
+
+    /**
+     * Compares two array and returns TRUE when both arrays contain the same objects
+     */
+    public static isSame<T>(a: T[], b: T[]): boolean {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const aSorted = a.concat().sort();
+        const bSorted = b.concat().sort();
+
+        return aSorted.every((value, index) => bSorted[index] === value);
+    }
+
+    /**
      * Die Methode fuegt 0s (links) hinzu bis die gegebene Nummer, die gegebene Laenge hat und dann gibt die nummer als
      * string zurueck
      */
@@ -226,25 +257,28 @@ export default class EbeguUtil {
     }
 
     /**
-     * Both parameters must always be set, thuogh they are nullable in the Familiensituation because they are not set while
-     * creating the object but later while filling out the finanzielle situation.
+     * Both parameters must always be set, thuogh they are nullable in the Familiensituation because they are not set
+     * while creating the object but later while filling out the finanzielle situation.
      *
      * For the finanzielle situation to be required:
      * sozialhilfeBezueger=false and antragNurFuerBehinderungszuschlag=false
      */
-    public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, antragNurFuerBehinderungszuschlag: boolean): boolean {
+    public static isFinanzielleSituationRequired(
+        sozialhilfeBezueger: boolean,
+        antragNurFuerBehinderungszuschlag: boolean,
+    ): boolean {
         return sozialhilfeBezueger === false && antragNurFuerBehinderungszuschlag === false; // tslint:disable-line:no-boolean-literal-compare
     }
 
     public static getAmtsspracheAsString(
         gemeindeStammdaten: TSGemeindeStammdaten,
-        translate: ITranslateService
+        translate: ITranslateService,
     ): string {
 
         if (!gemeindeStammdaten || !translate) {
             return '';
         }
-        if  (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
+        if (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
             return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
         if (gemeindeStammdaten.korrespondenzspracheFr) {
