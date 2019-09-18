@@ -17,8 +17,15 @@
     <div class="row viewTitle" ng-if="vm.getCurrentMitteilung()">
         <div class="col-xs-12 col-md-10 col-md-offset-1">
             <h1>
-                <span ng-if="!vm.betreuung" data-translate="NEUE_MITTEILUNG" data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
-                <span ng-if="vm.betreuung">{{vm.betreuung.kindFullname}} / {{vm.betreuung.institutionStammdaten.institution.name}}</span>
+                <span ng-if="!vm.betreuung && !vm.isCurrentUserAmt()"
+                      data-translate="NEUE_MITTEILUNG_GEMEINDE"
+                      data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
+                <span ng-if="!vm.betreuung && vm.isCurrentUserAmt()"
+                      data-translate="NEUE_MITTEILUNG_GESUCHSTELLER"></span>
+                <span ng-if="vm.betreuung"
+                      data-translate="NEUE_MITTEILUNG_BETREUUNG"
+                      data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
+                      data-translate-value-kind="{{vm.betreuung.kindFullname}} / {{vm.betreuung.institutionStammdaten.institution.name}}"></span>
                 <span ng-if="vm.betreuung" class="pull-right BGNummer">{{vm.getBgNummer()}}</span>
 
             </h1>
