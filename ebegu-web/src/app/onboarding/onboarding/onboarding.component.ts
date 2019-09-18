@@ -18,7 +18,6 @@
 import {Component, Input} from '@angular/core';
 import {from, Observable} from 'rxjs';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
-import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
     selector: 'dv-onboarding',

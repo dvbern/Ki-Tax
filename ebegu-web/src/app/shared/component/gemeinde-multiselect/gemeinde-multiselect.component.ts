@@ -56,15 +56,13 @@ export class GemeindeMultiselectComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (this.allowedInMap$ !== null) {
-            this.allowedMap$ = this.createMap(this.allowedInMap$);
-        } else {
-            this.allowedMap$ = this.createMap(this.gemeindeRS.getGemeindenForPrincipal$());
-        }
+        this.allowedMap$ = this.allowedInMap$ !== null
+            ? this.allowedMap$ = this.createMap$(this.allowedInMap$)
+            : this.allowedMap$ = this.createMap$(this.gemeindeRS.getGemeindenForPrincipal$());
     }
 
-    private createMap(gemeindenList: Observable<TSGemeinde[]>): Observable<Map<TSGemeinde,boolean>>{
-        return gemeindenList.pipe(map(gemeinden => {
+    private createMap$(gemeindenList$: Observable<TSGemeinde[]>): Observable<Map<TSGemeinde, boolean>> {
+        return gemeindenList$.pipe(map(gemeinden => {
                 return gemeinden.reduce((currentMap, currentValue) => {
                     const found = this.selected.find(g => g.id === currentValue.id);
                     return currentMap.set(found || currentValue, !!found);

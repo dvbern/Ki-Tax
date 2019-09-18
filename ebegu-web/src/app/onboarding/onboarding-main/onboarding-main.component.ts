@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
