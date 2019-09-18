@@ -350,14 +350,14 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			return saveGemeindeIfNeeded(setupConfig.getGemeinde());
 		}
 		// Wir nehmen was da ist
-		return saveGemeindeIfNeeded(getGemeindeBern());
+		return saveGemeindeIfNeeded(getGemeindeParis());
 	}
 
 	@Nonnull
-	private Gemeinde getGemeindeBern() {
+	private Gemeinde getGemeindeParis() {
 		Gemeinde bern = persistence.find(Gemeinde.class, "4c453263-f992-48af-86b5-dc04cd7e8bb8");
 		if (bern == null) {
-			throw new IllegalStateException("Gemeinde Bern not found");
+			throw new IllegalStateException("Gemeinde Paris not found");
 		}
 		return bern;
 	}

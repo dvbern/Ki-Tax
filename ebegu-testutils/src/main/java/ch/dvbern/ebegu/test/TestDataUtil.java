@@ -198,8 +198,8 @@ public final class TestDataUtil {
 
 	public static final String TEST_STRASSE = "Nussbaumstrasse";
 
-	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
-	public static final String GEMEINDE_OSTERMUNDIGEN_ID = "4c453263-f992-48af-86b5-dc04cd7e8777";
+	public static final String GEMEINDE_PARIS_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
+	public static final String GEMEINDE_LONDON_ID = "4c453263-f992-48af-86b5-dc04cd7e8777";
 
 	public static final AtomicLong SEQUENCE = new AtomicLong();
 
@@ -354,10 +354,10 @@ public final class TestDataUtil {
 	}
 
 	public static Gemeinde getTestGemeinde(Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
 			gemeinde = new Gemeinde();
-			gemeinde.setId(GEMEINDE_BERN_ID);
+			gemeinde.setId(GEMEINDE_PARIS_ID);
 			gemeinde.setName("Testgemeinde");
 			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
@@ -369,8 +369,8 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
-	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
+	public static Gemeinde getGemeindeParis(@Nonnull Persistence persistence) {
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeParis();
 			persistence.persist(gemeinde.getMandant());
@@ -380,8 +380,8 @@ public final class TestDataUtil {
 	}
 
 	@Nullable
-	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
+	public static Gemeinde getGemeindeLondon(@Nonnull Persistence persistence) {
+		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_LONDON_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeLondon();
 			return persistence.persist(gemeinde);
@@ -392,8 +392,8 @@ public final class TestDataUtil {
 	@Nonnull
 	public static Gemeinde createGemeindeParis() {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(GEMEINDE_BERN_ID);
-		gemeinde.setName("Bern");
+		gemeinde.setId(GEMEINDE_PARIS_ID);
+		gemeinde.setName("Paris");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setBfsNummer(99998L);
@@ -405,7 +405,7 @@ public final class TestDataUtil {
 	@Nonnull
 	public static Gemeinde createGemeindeLondon() {
 		Gemeinde gemeinde = new Gemeinde();
-		gemeinde.setId(GEMEINDE_OSTERMUNDIGEN_ID);
+		gemeinde.setId(GEMEINDE_LONDON_ID);
 		gemeinde.setName("London");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setGemeindeNummer(2);
@@ -1095,7 +1095,7 @@ public final class TestDataUtil {
 	private static Benutzer createAndPersistBenutzer(Persistence persistence) {
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
 		persistence.persist(verantwortlicher.getMandant());
-		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeBern(persistence));
+		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeParis(persistence));
 		persistence.persist(verantwortlicher);
 		return verantwortlicher;
 	}
