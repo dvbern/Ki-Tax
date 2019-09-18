@@ -56,7 +56,7 @@ export class GemeindeMultiselectComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.allowedMap$ = this.allowedInMap$ == undefined || this.allowedInMap$ == null
+        this.allowedMap$ = this.allowedInMap$ === undefined || this.allowedInMap$ === null
             ? this.createMap$(this.gemeindeRS.getGemeindenForPrincipal$())
             : this.createMap$(this.allowedInMap$);
     }
