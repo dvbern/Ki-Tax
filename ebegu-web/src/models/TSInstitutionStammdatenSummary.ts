@@ -16,6 +16,7 @@
  */
 
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
+import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import TSAdresse from './TSAdresse';
 import TSInstitution from './TSInstitution';
@@ -42,7 +43,19 @@ export default class TSInstitutionStammdatenSummary extends TSAbstractDateRanged
     }
 
     public getAutocompleteText(): string {
-        return `${this.institution.name} - ${this.adresse.strasse}
-        ${this.adresse.hausnummer}, ${this.adresse.plz} ${this.adresse.ort}`;
+        let queryString = this.institution.name;
+
+        // ist der Status der Institution AKTIV, hat sie zwingend eine Adresse
+        if (this.institution.status === TSInstitutionStatus.AKTIV) {
+            queryString += ` - ${this.adresse.strasse}`;
+
+            // Hausnummer kann theoretisch undefined sein
+            if (this.adresse.hausnummer) {
+                queryString += ` ${this.adresse.hausnummer}`;
+            }
+            queryString += `, ${this.adresse.plz} ${this.adresse.ort}`;
+        }
+
+        return queryString;
     }
 }
