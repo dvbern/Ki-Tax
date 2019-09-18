@@ -56,9 +56,9 @@ export class GemeindeMultiselectComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.allowedMap$ = this.allowedInMap$ !== null
-            ? this.createMap$(this.allowedInMap$)
-            : this.createMap$(this.gemeindeRS.getGemeindenForPrincipal$());
+        this.allowedMap$ = this.allowedInMap$ == undefined || this.allowedInMap$ == null
+            ? this.createMap$(this.gemeindeRS.getGemeindenForPrincipal$())
+            : this.createMap$(this.allowedInMap$);
     }
 
     private createMap$(gemeindenList$: Observable<TSGemeinde[]>): Observable<Map<TSGemeinde, boolean>> {

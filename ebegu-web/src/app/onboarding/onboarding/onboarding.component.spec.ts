@@ -19,7 +19,6 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -32,13 +31,11 @@ describe('OnboardingComponent', () => {
     let component: OnboardingComponent;
     let fixture: ComponentFixture<OnboardingComponent>;
 
-    const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
     const applicationPropertyRSSpy = createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
 
         TestBed.configureTestingModule({
@@ -49,7 +46,6 @@ describe('OnboardingComponent', () => {
             ],
             declarations: [OnboardingComponent],
             providers: [
-                {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
@@ -66,9 +62,5 @@ describe('OnboardingComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('should load all active Gemeinden', () => {
-        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
     });
 });
