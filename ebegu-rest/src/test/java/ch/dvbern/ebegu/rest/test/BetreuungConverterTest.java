@@ -116,7 +116,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(
 			persistence,
-			TestDataUtil.getGemeindeBern(persistence),
+			TestDataUtil.getGemeindeParis(persistence),
 			null,
 			gesuchsperiode);
 		kind.setGesuch(gesuch);

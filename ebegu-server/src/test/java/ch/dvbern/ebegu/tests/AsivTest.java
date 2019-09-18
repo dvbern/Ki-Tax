@@ -107,7 +107,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		gemeinde = TestDataUtil.getGemeindeParis(persistence);
 		TestDataUtil.createGemeindeStammdaten(gemeinde, persistence);
 	}
 
