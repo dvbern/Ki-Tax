@@ -14,44 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-@import (reference) '../../../style/variables.less';
 
-.input-error {
-    height: 4rem;
-    width: 26.3rem;
-}
-
-form:not(.ng-submitted) .input-error /deep/ .error {
-    display: none
-}
-
-.onboarding-login {
-    margin-top: 10vh;
-    text-align: center;
-    line-height: 2.8rem;
-
-    a {
-        color: @red
-    }
-}
-
-:host {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.onboarding-neubenutzer {
-    .neu-bg-checkbox {
-        margin-top: 2rem;
-        margin-left: 0px;
-    }
-
-    .neu-ts-checkbox {
-        margin-top: 0rem;
-        margin-left: 0px;
-    }
+.testdaten-checkbox {
+    margin-top: 2rem;
+    //text-align: center;
 
     ::ng-deep .mat-checkbox-label {
         font-size: 14px;
@@ -62,3 +28,10 @@ form:not(.ng-submitted) .input-error /deep/ .error {
     }
 }
 
+.input-freetext{
+    border-radius: 0px;
+    border-width: 2px;
+    border-style: solid;
+    margin-top: 1rem;
+    width: auto;
+}

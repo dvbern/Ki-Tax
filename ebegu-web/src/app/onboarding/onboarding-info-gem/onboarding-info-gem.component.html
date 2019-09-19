@@ -16,30 +16,32 @@
   -->
 <div style="display: inline-block; max-width:100%;">
 
-    <div class="onboarding-neubenutzer onboarding-container-info">
+    <div class="onboarding-container-info onboarding-info">
         <i class="fa fa-arrow-circle-left"></i>&nbsp;
         <a href=""
            uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
         <br/>
-        <h1 translate>ONBOARDING_NEU_BENUTZER</h1>
-        <p translate>ONBOARDING_NEU_INTRO</p>
-
+        <h1 translate>ONBOARDING_INFO_GEMEINDE</h1>
+        <p translate>ONBOARDING_INFO_GEM_INTRO</p>
+        <p class="onboarding-info-action">
+            <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_GEMEINDE_LINK' | translate}}">
+                <button class="dv-btn onboarding-big-red-button">
+                    <span translate>ONBOARDING_ZULASSUNG_KANTON</span>
+                </button>
+            </a>
+            <br/>
+            <br/>
+        </p>
         <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
-            <div class="neu-bg-checkbox">
-                <mat-checkbox id="betreuungsgutscheinBeantragen_id" name="betreuungsgutscheinBeantragen_id"
-                              [(ngModel)]="betreuungsgutscheinBeantragen">
-                    {{'ONBOARDING_BG_BEANTRAGEN'|translate}}
-                </mat-checkbox>
-            </div>
-            <div class="neu-ts-checkbox">
-                <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
-                              [(ngModel)]="tsBeantragen">
-                    {{'ONBOARDING_TS_BEANTRAGEN'|translate}}
+            <div class="testdaten-checkbox">
+                <mat-checkbox id="testZugangBeantragen_id" name="testZugangBeantragen_id"
+                              [(ngModel)]="testZugangBeantragen">
+                    {{'ONBOARDING_TESTZUGANG_KIBON'|translate}}
                 </mat-checkbox>
             </div>
             <div class="onboarding-nb-gemeinde-container">
                 <div class="onboarding-nb-gemeinde-input-container">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="betreuungsgutscheinBeantragen">
+                    <div class="onboarding-nb-gemeinde-search" *ngIf="testZugangBeantragen">
                         <p translate>ONBOARDING_MEIN_GEMEINDE</p>
                         <div class="onboarding-nb-gemeinde-search-input">
                             <div class="dv-select-style dv-select-style-onboarding">
@@ -47,7 +49,7 @@
                                         name="gemeinde"
                                         class="form-control"
                                         id="gemeinde"
-                                        [required]="true">
+                                        [required]="true" class="text-center">
                                     <option [ngValue]="null" selected="selected"></option>
                                     <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
                                         {{gemeinde.name}}
@@ -61,23 +63,11 @@
                         </dv-error-messages>
                     </div>
                 </div>
-                <div class="onboarding-nb-gemeinde-input">
-                    <div class="onboarding-nb-gemeinde-search" *ngIf="tsBeantragen">
-                        <p translate>ONBOARDING_TS_GEMEINDE</p>
-                        <!-- Gemeinde(n) -->
-                        <dv-gemeinde-multiselect [selected]="gemeindeList"
-                                                 [disabled]="false"
-                                                 [required]="true"
-                                                 [showLabel]="false"
-                                                 [allowedInMap$]="gemeinden$">
-                        </dv-gemeinde-multiselect>
-                    </div>
-                </div>
                 <div class="onboarding-nb-gemeinde-input-button">
-                    <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen">
-                        <button [type]="'submit'" class="dv-btn onboarding-big-red-button">
-                            <span translate>ONBOARDING_REGISTRIEREN</span>
-                        </button>
+                    <div *ngIf="testZugangBeantragen">
+                            <button [type]="'submit'" class="dv-btn onboarding-red-border-button onboarding-info-gem-padding">
+                                <span translate>ONBOARDING_TESTZUGANG_SHORT</span>
+                            </button>
                     </div>
                 </div>
             </div>

@@ -15,24 +15,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {from, Observable} from 'rxjs';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
     selector: 'dv-onboarding',
     templateUrl: './onboarding.component.html',
     styleUrls: ['./onboarding.component.less', '../onboarding.less'],
 })
-export class OnboardingComponent {
+export class OnboardingComponent implements OnInit{
 
     @Input() public showLogin: boolean = true;
 
+    private readonly placeholder1: string = 'ONBOARDING_MAIN_PH1';
+    private readonly description1: string = 'ONBOARDING_MAIN_DESC1';
+    private readonly placeholder2: string = 'ONBOARDING_MAIN_PH2';
+    private readonly description2: string = 'ONBOARDING_MAIN_DESC2';
+    private readonly placeholder3: string = 'ONBOARDING_MAIN_PH3';
+    private readonly description3: string = 'ONBOARDING_MAIN_DESC3';
+    private readonly placeholder4: string = 'ONBOARDING_MAIN_PH4';
+    private readonly description4: string = 'ONBOARDING_MAIN_DESC4';
     public isDummyMode$: Observable<boolean>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+        private readonly translate: TranslateService,
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
+
+    }
+
+    public ngOnInit(): void {
+        this.onboardingPlaceholderService.setPlaceholder1(this.translate.instant(this.placeholder1));
+        this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
+        this.onboardingPlaceholderService.setPlaceholder2(this.translate.instant(this.placeholder2));
+        this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
+        this.onboardingPlaceholderService.setPlaceholder3(this.translate.instant(this.placeholder3));
+        this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
+        this.onboardingPlaceholderService.setPlaceholder4(this.translate.instant(this.placeholder4));
+        this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
     }
 }

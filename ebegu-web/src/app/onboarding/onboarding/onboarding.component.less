@@ -16,96 +16,17 @@
  */
 @import (reference) '../../../style/variables.less';
 
-.onboarding-gemeinde {
-    &-container {
-        display: flex;
-        flex-flow: column;
-    }
-
-    &-label {
-        width: 26.3rem;
-        margin-bottom: 1.7rem;
-    }
-
-    &-input-container {
-        display: flex;
-        flex-flow: row wrap;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding: 0 1.6rem;
-    }
-
-    &-search {
-        margin-bottom: 0;
-
-        &-input {
-            height: 4rem;
-            background: @primary;
-            width: 26.3rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .dv-select-style-onboarding {
-            border: 1px solid @anthracite;
-            background: @contrast-lightest;
-
-            select {
-                width: calc(25.2rem - 1px);
-                height: calc(3rem - 1px);
-                font-size: 1.4rem;
-                font-weight: normal;
-            }
-
-            &::after {
-                content: " \f002";
-                top: 0.5rem;
-                color: @black;
-            }
-        }
-
-    }
-
-    /deep/ &-auswaehlen {
-        width: auto;
-        text-transform: uppercase;
-        margin-bottom: 4rem;
-        // wenn der button fokusiert ist braucht er 2px für den Outline
-    }
-}
-
-
-.input-error {
-    height: 4rem;
-    width: 26.3rem;
-}
-
-.onboarding-gemeinde-auswaehlen {
-    margin-bottom: 4rem;
-    padding: 0 11.8rem 0;
-    height: 6rem;
-    border-color: red;
-    background-color: white;
-    border-style: solid;
-    color: red;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    line-height: 19px;
-    text-align: center;
-}
-
-form:not(.ng-submitted) .input-error /deep/ .error {
-    display: none
-}
-
 .onboarding-login {
     margin-top: 5vh;
     text-align: center;
     line-height: 2.8rem;
 
     a {
-        color: @red
+        color: @red;
+        font-family: "Open Sans";
+        font-size: 12px;
+        letter-spacing: 0.83px;
+        line-height: 17px;
     }
 }
 
@@ -128,18 +49,6 @@ form:not(.ng-submitted) .input-error /deep/ .error {
         letter-spacing: 1.38px;
         line-height: 24px;
     }
-}
-
-.onboarding-neu-benutzer{
-    color: #FFFFFF;
-    font-family: "Open Sans";
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    line-height: 19px;
-    text-align: center;
-    padding: 0 6.5rem 0;
-    height: 6rem;
-    text-transform: uppercase;
 }
 
 @media (max-width: 1030px) {

@@ -24,6 +24,8 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
+import {OnboardingInfoGemComponent} from './onboarding-info-gem/onboarding-info-gem.component';
+import {OnboardingInfoKitagComponent} from './onboarding-info-kitag/onboarding-info-kitag.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
@@ -85,6 +87,22 @@ const states: Ng2StateDeclaration[] = [
         name: 'onboarding.neubenutzer',
         url: '/neu-benutzer',
         component: OnboardingNeuBenutzerComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS],
+        },
+    },
+    {
+        name: 'onboarding.infogemeinde',
+        url: '/info-gemeinde',
+        component: OnboardingInfoGemComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS],
+        },
+    },
+    {
+        name: 'onboarding.infokitag',
+        url: '/info-kitag',
+        component: OnboardingInfoKitagComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
         },

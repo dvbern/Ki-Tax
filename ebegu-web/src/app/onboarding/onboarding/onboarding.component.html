@@ -22,23 +22,24 @@
     </div>
 
     <p class="onboarding-login" *ngIf="showLogin">
-        <a href=""
-           uiSref="onboarding.neubenutzer">
-            <button class="dv-btn onboarding-neu-benutzer">
-                <span translate>ONBOARDING_NEU_BENUTZER</span>
-            </button>
-        </a>
+        <button uiSref="onboarding.neubenutzer" class="dv-btn onboarding-big-red-button" autofocus>
+            <span translate>ONBOARDING_NEU_BENUTZER</span>
+        </button>
         <br/>
         <br/>
+        <button uiSref="authentication.login" [uiOptions]="{location: false}"
+                class="dv-btn onboarding-red-border-button">
+            <span translate>ONBOARDING_ANMELDEN</span>
+        </button>
+        <br/>
         <a href=""
-           uiSref="authentication.login"
-           [uiOptions]="{location: false}">
-            <button class="dv-btn onboarding-gemeinde-auswaehlen">
-                <span translate>ONBOARDING_ANMELDEN</span>
-            </button>
-        </a>
+           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEM_LINK</a>
+        <br/>
+        <a href=""
+           uiSref="onboarding.infokitag" translate>ONBOARDING_INFO_KITAG_LINK</a>
         <ng-container *ngIf="isDummyMode$ | async">
-            <br>
+            <br/>
+            <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
         </ng-container>
     </p>
