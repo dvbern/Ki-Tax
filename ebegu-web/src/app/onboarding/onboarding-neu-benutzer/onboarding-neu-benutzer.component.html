@@ -31,7 +31,7 @@
                     {{'ONBOARDING_BG_BEANTRAGEN'|translate}}
                 </mat-checkbox>
             </div>
-            <div class="neu-ts-checkbox">
+            <div class="neu-ts-checkbox" *ngIf="isTSAngebotEnabled">
                 <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id"
                               [(ngModel)]="tsBeantragen">
                     {{'ONBOARDING_TS_BEANTRAGEN'|translate}}
@@ -43,7 +43,9 @@
                         <p translate>ONBOARDING_MEIN_GEMEINDE</p>
                         <div class="onboarding-nb-gemeinde-search-input">
                             <div class="dv-select-style dv-select-style-onboarding">
-                                <select [(ngModel)]="gemeinde"
+                                <select [ngModel]="gemeinde"
+                                        (ngModelChange)="updateList($event)"
+                                        ngChange=""
                                         name="gemeinde"
                                         class="form-control"
                                         id="gemeinde"

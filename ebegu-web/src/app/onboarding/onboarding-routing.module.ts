@@ -29,6 +29,17 @@ import {OnboardingInfoKitagComponent} from './onboarding-info-kitag/onboarding-i
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
+import {MandantRS} from '../core/service/mandantRS.rest';
+
+const mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+
+const tsEnabledResolver = [
+    'MandantRS', (mandantRS: MandantRS) => {
+       return mandantRS.findMandant(mandantBernId).then((result: { angebotTS: any; }) => {
+           return result.angebotTS;
+        });
+    },
+];
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -87,6 +98,9 @@ const states: Ng2StateDeclaration[] = [
         name: 'onboarding.neubenutzer',
         url: '/neu-benutzer',
         component: OnboardingNeuBenutzerComponent,
+        resolve: {
+            isTSAngebotEnabled: tsEnabledResolver,
+        },
         data: {
             roles: [TSRole.ANONYMOUS],
         },

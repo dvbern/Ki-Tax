@@ -18,11 +18,12 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {map, filter} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+
+
 
 @Component({
     selector: 'dv-onboarding-neu-benutzer',
@@ -30,8 +31,10 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
     templateUrl: './onboarding-neu-benutzer.component.html',
     styleUrls: ['./onboarding-neu-benutzer.component.less', '../onboarding.less'],
 })
-export class OnboardingNeuBenutzerComponent {
+export class OnboardingNeuBenutzerComponent{
+
     @Input() public nextState: string = 'onboarding.be-login';
+    @Input() public isTSAngebotEnabled: boolean;
 
     public gemeinden$: Observable<TSGemeinde[]>;
     public gemeindenBG$: Observable<TSGemeinde[]>;
@@ -39,13 +42,11 @@ export class OnboardingNeuBenutzerComponent {
     public gemeinde?: TSGemeinde;
     private _gemeindeList: Array<TSGemeinde> = [];
 
-    public isDummyMode$: Observable<boolean>;
     public betreuungsgutscheinBeantragen: boolean;
     public tsBeantragen: boolean;
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly stateService: StateService,
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
@@ -58,7 +59,6 @@ export class OnboardingNeuBenutzerComponent {
             gemeinde => gemeinde.angebotBG)));
         this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.angebotTS)));
-        this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
 
     public onSubmit(form: NgForm): void {
@@ -75,5 +75,15 @@ export class OnboardingNeuBenutzerComponent {
 
     public get gemeindeList(): Array<TSGemeinde> {
         return this._gemeindeList;
+    }
+
+    public updateList(newValue: TSGemeinde): void{
+        this.gemeinde = newValue;
+        let id = this.gemeinde.id;
+        let foundGemeinde = this.gemeindenTS$.pipe(map(gemeinden => gemeinden.find(gemeinde => gemeinde.id == id)));
+        if(foundGemeinde !== undefined){
+            console.log('gemeinde Found: ')
+        }
+
     }
 }
