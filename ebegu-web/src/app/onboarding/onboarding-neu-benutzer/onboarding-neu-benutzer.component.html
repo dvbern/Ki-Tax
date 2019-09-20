@@ -49,7 +49,7 @@
                                         id="gemeinde"
                                         [required]="true">
                                     <option [ngValue]="null" selected="selected"></option>
-                                    <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
+                                    <option *ngFor="let gemeinde of (gemeindenBG$ | async)" [ngValue]="gemeinde">
                                         {{gemeinde.name}}
                                     </option>
                                 </select>
@@ -69,7 +69,7 @@
                                                  [disabled]="false"
                                                  [required]="true"
                                                  [showLabel]="false"
-                                                 [allowedInMap$]="gemeinden$">
+                                                 [allowedInMap$]="gemeindenTS$">
                         </dv-gemeinde-multiselect>
                     </div>
                 </div>

@@ -18,7 +18,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, filter} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
@@ -34,6 +34,8 @@ export class OnboardingNeuBenutzerComponent {
     @Input() public nextState: string = 'onboarding.be-login';
 
     public gemeinden$: Observable<TSGemeinde[]>;
+    public gemeindenBG$: Observable<TSGemeinde[]>;
+    public gemeindenTS$: Observable<TSGemeinde[]>;
     public gemeinde?: TSGemeinde;
     private _gemeindeList: Array<TSGemeinde> = [];
 
@@ -52,6 +54,10 @@ export class OnboardingNeuBenutzerComponent {
 
                 return gemeinden;
             }));
+        this.gemeindenBG$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
+            gemeinde => gemeinde.angebotBG)));
+        this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
+            gemeinde => gemeinde.angebotTS)));
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
     }
 
