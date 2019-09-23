@@ -63,7 +63,7 @@ describe('institutionRS', () => {
     describe('API Usage', () => {
         describe('findInstitution', () => {
             it('should return the Institution by id', () => {
-                const url = `${institutionRS.serviceURL}/id/${mockInstitution.id}`;
+                const url = `${institutionRS.serviceURL}/${mockInstitution.id}`;
                 $httpBackend.expectGET(url).respond(mockInstitutionRest);
 
                 let foundInstitution: TSInstitution;
@@ -74,22 +74,6 @@ describe('institutionRS', () => {
                 checkFieldValues(foundInstitution, mockInstitution);
             });
 
-        });
-
-        describe('updateInstitution', () => {
-            it('should update an institution', () => {
-                mockInstitution.name = 'changedname';
-                mockInstitutionRest = ebeguRestUtil.institutionToRestObject({}, mockInstitution);
-                let updatedInstitution: TSInstitution;
-                $httpBackend.expectPUT(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
-
-                institutionRS.updateInstitution(mockInstitution)
-                    .then(result => {
-                        updatedInstitution = result;
-                    });
-                $httpBackend.flush();
-                checkFieldValues(updatedInstitution, mockInstitution);
-            });
         });
 
         describe('getAllInstitutionen', () => {

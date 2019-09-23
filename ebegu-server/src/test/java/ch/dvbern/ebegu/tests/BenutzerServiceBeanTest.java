@@ -71,7 +71,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void oneBerechtigung() {
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
-		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
+		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		persistence.merge(benutzer.getMandant());
 		persistence.merge(benutzer);
 
@@ -84,7 +84,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void addBerechtigung() {
 		LocalDate AB_ERSTE_BERECHTIGUNG = LocalDate.now();
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
-		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
+		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		benutzer.getCurrentBerechtigung().getGueltigkeit().setGueltigAb(AB_ERSTE_BERECHTIGUNG);
 		persistence.merge(benutzer.getMandant());
 		benutzer = persistence.merge(benutzer);
@@ -102,7 +102,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		secondBerechtigung.setBenutzer(benutzer);
 		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_BG);
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
-		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
+		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
 		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 
@@ -124,7 +124,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void handleAbgelaufeneBerechtigung() {
 		LocalDate AB_ERSTE_BERECHTIGUNG = LocalDate.now().minusYears(1);
 		Benutzer benutzer = TestDataUtil.createDefaultBenutzer();
-		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
+		benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		benutzer.getCurrentBerechtigung().getGueltigkeit().setGueltigAb(AB_ERSTE_BERECHTIGUNG);
 		persistence.merge(benutzer.getMandant());
 		benutzer = persistence.merge(benutzer);
@@ -143,7 +143,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		secondBerechtigung.setRole(UserRole.SACHBEARBEITER_BG);
 		secondBerechtigung.getGueltigkeit().setGueltigAb(AB_ZWEITE_BERECHTIGUNG);
 		secondBerechtigung.getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
-		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
+		secondBerechtigung.getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		benutzer.getBerechtigungen().add(secondBerechtigung);
 		benutzer = benutzerService.saveBenutzerBerechtigungen(benutzer, false);
 		Set<Berechtigung> berechtigungen = benutzer.getBerechtigungen();
@@ -190,7 +190,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void createAdminGemeindeByEmail() {
-		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		Gemeinde gemeinde = TestDataUtil.getGemeindeParis(persistence);
 		final String adminMail = "gemeinde@mailbucket.dvbern.ch";
 		final Benutzer adminGemeinde = benutzerService.createAdminGemeindeByEmail(adminMail, UserRole.ADMIN_GEMEINDE, gemeinde);
 
@@ -210,7 +210,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		benutzer.setMandant(getDummySuperadmin().getMandant());
 		benutzer.setStatus(BenutzerStatus.AKTIV);
 
-		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		Gemeinde gemeinde = TestDataUtil.getGemeindeParis(persistence);
 
 		Einladung einladung = Einladung.forGemeinde(benutzer, gemeinde);
 
@@ -232,7 +232,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		benutzer.setStatus(BenutzerStatus.EINGELADEN);
 		benutzer.setMandant(getDummySuperadmin().getMandant());
 
-		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+		Gemeinde gemeinde = TestDataUtil.getGemeindeParis(persistence);
 
 		Einladung einladung = Einladung.forGemeinde(benutzer, gemeinde);
 

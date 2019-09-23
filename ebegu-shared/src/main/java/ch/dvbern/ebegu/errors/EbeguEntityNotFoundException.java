@@ -30,6 +30,10 @@ public class EbeguEntityNotFoundException extends EbeguRuntimeException {
 
 	private static final long serialVersionUID = 7990458569130165438L;
 
+	public EbeguEntityNotFoundException(@Nullable String methodName, @Nonnull String id) {
+		super(methodName, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id);
+	}
+
 	public EbeguEntityNotFoundException(@Nullable String methodeName, @Nonnull String message, @Nonnull Serializable... args) {
 		super(methodeName, message, args);
 	}

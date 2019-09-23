@@ -68,7 +68,7 @@ describe('freigabeView', () => {
         spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue({});
 
         dossier = TestDataUtil.createDossier('', undefined);
-        dossier.gemeinde = TestDataUtil.createGemeindeBern();
+        dossier.gemeinde = TestDataUtil.createGemeindeParis();
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
 
         controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),

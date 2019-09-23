@@ -14,7 +14,10 @@
  */
 
 import * as moment from 'moment';
+import {LogFactory} from '../app/core/logging/LogFactory';
 import Moment = moment.Moment; // kann das über ein anderes Import Format gelöst werden (import ... from 'moment')?
+
+const LOG = LogFactory.createLog('DateUtil');
 
 export default class DateUtil {
 
@@ -29,7 +32,7 @@ export default class DateUtil {
         const formats = ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm:ss.SSSZ'];
         const theMoment = moment(localDateTimeString, formats, true);
         if (!theMoment.isValid()) {
-            console.warn('Trying to parse an invalid date to moment', theMoment);
+            LOG.warn('Trying to parse an invalid date to moment', theMoment);
 
             return undefined;
         }
