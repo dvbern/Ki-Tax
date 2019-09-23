@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -248,14 +247,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Benutzer benutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
 
-		Optional<Benutzer> optEmpfaengerAmt = dossierService.getHauptOrDefaultVerantwortlicher(
-			mitteilung.getDossier());
-		final Benutzer empfaengerAmt = optEmpfaengerAmt.orElseThrow(() ->
+		Benutzer empfaengerAmt = mitteilung.getDossier().getVerantwortlicherBG();
+		if (empfaengerAmt == null) {
+			empfaengerAmt = mitteilung.getDossier().getVerantwortlicherTS();
+		}
+		if (empfaengerAmt == null) {
 			new EbeguRuntimeException(
 				"setSenderAndEmpfaenger",
 				ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
-				mitteilung.getId())
-		);
+				mitteilung.getId());
+		}
 
 		mitteilung.setSender(benutzer);
 		switch (benutzer.getRole()) {
@@ -804,25 +805,36 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				"Der Empfänger der Mitteilung hat nicht die Rolle Schulamt");
 		}
 
-		// An wen soll die Meldung delegiert werden?
-		Benutzer verantwortlicherBG = Stream.of(
-			mitteilung.getDossier().getVerantwortlicherBG(),
-			gemeindeService.getGemeindeStammdatenByGemeindeId(mitteilung
-				.getDossier()
-				.getGemeinde()
-				.getId()).map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null))
-			.filter(Objects::nonNull)
-			.findFirst()
-			.orElseThrow(() -> new EbeguRuntimeException(
-				"mitteilungUebergebenAnJugendamt",
-				ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND,
-				mitteilung.getId()));
-
 		// Den VerantwortlichenJA als Empfänger setzen
-		mitteilung.setEmpfaenger(verantwortlicherBG);
+		mitteilung.setEmpfaenger(getEmpfaengerDelegationBG(mitteilung));
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 
 		return persistence.merge(mitteilung);
+	}
+
+	@Nonnull
+	private Benutzer getEmpfaengerDelegationBG(@Nonnull Mitteilung mitteilung) {
+		Benutzer empfaenger = null;
+		if (mitteilung.getDossier().getVerantwortlicherBG() != null) {
+			empfaenger = mitteilung.getDossier().getVerantwortlicherBG();
+		} else {
+			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
+			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+			if (stammdatenOptional.isPresent()) {
+				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
+				empfaenger = stammdatenOptional.get().getDefaultBenutzerBG();
+				if (empfaenger == null) {
+					empfaenger = stammdatenOptional.get().getDefaultBenutzer();
+				}
+			}
+		}
+		if (empfaenger == null) {
+			throw new EbeguRuntimeException(
+				"mitteilungUebergebenAnJugendamt",
+				ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND,
+				mitteilung.getId());
+		}
+		return empfaenger;
 	}
 
 	@Nonnull
@@ -841,25 +853,36 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				"Der Empfänger der Mitteilung hat nicht die Rolle Jugendamt");
 		}
 
-		// An wen soll die Meldung delegiert werden?
-		Benutzer verantwortlicherTS = Stream.of(
-			mitteilung.getDossier().getVerantwortlicherTS(),
-			gemeindeService.getGemeindeStammdatenByGemeindeId(mitteilung
-				.getDossier()
-				.getGemeinde()
-				.getId()).map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null))
-			.filter(Objects::nonNull)
-			.findFirst()
-			.orElseThrow(() -> new EbeguRuntimeException(
-				"mitteilungUebergebenAnSchulamt",
-				ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND,
-				mitteilung.getId()));
-
 		// Den VerantwortlichenJA als Empfänger setzen
-		mitteilung.setEmpfaenger(verantwortlicherTS);
+		mitteilung.setEmpfaenger(getEmpfaengerDelegationTS(mitteilung));
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 
 		return persistence.merge(mitteilung);
+	}
+
+	@Nonnull
+	private Benutzer getEmpfaengerDelegationTS(@Nonnull Mitteilung mitteilung) {
+		Benutzer empfaenger = null;
+		if (mitteilung.getDossier().getVerantwortlicherTS() != null) {
+			empfaenger = mitteilung.getDossier().getVerantwortlicherTS();
+		} else {
+			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
+			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+			if (stammdatenOptional.isPresent()) {
+				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
+				empfaenger = stammdatenOptional.get().getDefaultBenutzerTS();
+				if (empfaenger == null) {
+					empfaenger = stammdatenOptional.get().getDefaultBenutzer();
+				}
+			}
+		}
+		if (empfaenger == null) {
+			throw new EbeguRuntimeException(
+				"mitteilungUebergebenAnSchulamt",
+				ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND,
+				mitteilung.getId());
+		}
+		return empfaenger;
 	}
 
 	@Override

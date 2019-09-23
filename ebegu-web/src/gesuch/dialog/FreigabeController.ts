@@ -76,27 +76,32 @@ export class FreigabeController {
         // Jugendamt
         if (this.gesuch.verantwortlicherBG && this.gesuch.verantwortlicherUsernameBG) {
             this.selectedUserBG = this.gesuch.verantwortlicherUsernameBG;
-        } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
-            // Noch kein Verantwortlicher aus Vorjahr vorhanden
+        } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getGemeindeOrBGRoles())) {
+            // Der eingeloggte Benutzer ist berechtigt fuer BG -> Wir nehmen diesen
+            this.selectedUserBG = this.authService.getPrincipal().username;
+        } else {
+            // Der eingeloggte Benutzer ist nicht fuer BG berechtigt. Wir suchen nach einem anderen
+            // Kandidaten
             this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
                 this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
-                    this.selectedUserBG = stammdaten.defaultBenutzerBG.username;
+                    this.selectedUserBG = stammdaten.getDefaultBenutzerWithRoleBG().username;
                 });
             });
-        } else {
-            this.selectedUserBG = this.authService.getPrincipal().username;
         }
 
         // Schulamt
         if (this.gesuch.verantwortlicherTS && this.gesuch.verantwortlicherUsernameTS) {
+            // Es gibt schon einen Verantwortlichen aus dem Vorjahr
             this.selectedUserTS = this.gesuch.verantwortlicherUsernameTS;
-        } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
-            // Noch kein Verantwortlicher aus Vorjahr vorhanden
+        } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getGemeindeOrTSRoles())) {
+            // Der eingeloggte Benutzer ist berechtigt fuer TS -> Wir nehmen diesen
             this.selectedUserTS = this.authService.getPrincipal().username;
         } else {
+            // Der eingeloggte Benutzer ist nicht fuer TS berechtigt. Wir suchen nach einem anderen
+            // Kandidaten
             this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
                 this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
-                    this.selectedUserTS = stammdaten.defaultBenutzerTS.username;
+                    this.selectedUserTS = stammdaten.getDefaultBenutzerWithRoleTS().username;
                 });
             });
         }

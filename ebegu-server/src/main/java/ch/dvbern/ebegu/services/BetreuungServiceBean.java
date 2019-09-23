@@ -287,15 +287,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private void updateVerantwortliche(@Nonnull Gesuch mergedGesuch, @Nonnull AbstractPlatz mergedBetreuung, boolean isAnmeldungSchulamtAusgeloest, boolean isNew) {
 		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), isAnmeldungSchulamtAusgeloest, isNew)) {
-			Optional<GemeindeStammdaten> gemeindeStammdaten =
+			Optional<GemeindeStammdaten> gemeindeStammdatenOptional =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(mergedGesuch
 					.getDossier()
 					.getGemeinde()
 					.getId());
 
-			Benutzer benutzerBG = gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null);
-			Benutzer benutzerTS = gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null);
-
+			Benutzer benutzerBG = null;
+			Benutzer benutzerTS = null;
+			if (gemeindeStammdatenOptional.isPresent()) {
+				GemeindeStammdaten gemeindeStammdaten = gemeindeStammdatenOptional.get();
+				benutzerBG = gemeindeStammdaten.getDefaultBenutzerWithRoleBG().orElse(null);
+				benutzerTS = gemeindeStammdaten.getDefaultBenutzerWithRoleTS().orElse(null);
+			}
 			gesuchService.setVerantwortliche(benutzerBG, benutzerTS, mergedBetreuung.extractGesuch(), true, true);
 		}
 	}

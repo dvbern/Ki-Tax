@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 import TSAbstractEntity from './TSAbstractEntity';
 import TSAdresse from './TSAdresse';
 import TSBenutzer from './TSBenutzer';
@@ -55,6 +56,52 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
                 return konfigurationsListeElement;
             }
         }
+        return undefined;
+    }
+
+    /**
+     * Wir suchen einen Defaultbenutzer mit der Rolle BG oder GEMEINDE, falls ein spezifischer gesetzt ist
+     * in defaultBenutzerBG, so verwenden wir diesen, sonst pruefen wir, ob der allgemeine Defaultbenutzer
+     * zufaellig die gewuenschte Rolle hat. Falls dies auch nicht der Fall ist, geben wir einfach den ersten
+     * Benutzer aus der BG-Benutzerliste zurueck.
+     * Achtung: Diese Methode ist aehnlich auch auf dem Server vorhanden
+     */
+    public getDefaultBenutzerWithRoleBG() {
+        if (this.defaultBenutzerBG && this.defaultBenutzerBG.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
+            return this.defaultBenutzerBG;
+        }
+        if (this.defaultBenutzer && this.defaultBenutzer.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
+            return this.defaultBenutzer;
+        }
+        // Es gibt keinen gesetzten Defaultbenutzer mit der gewuenschten Rolle
+        console.error('kein defaultbenutzer BG fuer gemeinde', this.gemeinde.name);
+        if (this.benutzerListeBG && this.benutzerListeBG.length > 0) {
+            return this.benutzerListeBG[0];
+        }
+        console.error('kein benutzer BG fuer gemeinde', this.gemeinde.name);
+        return undefined;
+    }
+
+    /**
+     * Wir suchen einen Defaultbenutzer mit der Rolle TS oder GEMEINDE, falls ein spezifischer gesetzt ist
+     * in defaultBenutzerTS, so verwenden wir diesen, sonst pruefen wir, ob der allgemeine Defaultbenutzer
+     * zufaellig die gewuenschte Rolle hat. Falls dies auch nicht der Fall ist, geben wir einfach den ersten
+     * Benutzer aus der TS-Benutzerliste zurueck.
+     * Achtung: Diese Methode ist aehnlich auch auf dem Server vorhanden
+     */
+    public getDefaultBenutzerWithRoleTS() {
+        if (this.defaultBenutzerTS && this.defaultBenutzerTS.hasOneOfRoles(TSRoleUtil.getGemeindeOrTSRoles())) {
+            return this.defaultBenutzerTS;
+        }
+        if (this.defaultBenutzer && this.defaultBenutzer.hasOneOfRoles(TSRoleUtil.getGemeindeOrTSRoles())) {
+            return this.defaultBenutzer;
+        }
+        // Es gibt keinen gesetzten Defaultbenutzer mit der gewuenschten Rolle
+        console.error('kein defaultbenutzer TS fuer gemeinde', this.gemeinde.name);
+        if (this.benutzerListeTS && this.benutzerListeTS.length > 0) {
+            return this.benutzerListeTS[0];
+        }
+        console.error('kein benutzer TS fuer gemeinde', this.gemeinde.name);
         return undefined;
     }
 }

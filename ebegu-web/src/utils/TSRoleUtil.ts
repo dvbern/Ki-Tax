@@ -424,6 +424,24 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getGemeindeOrBGRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+        ];
+    }
+
+    public static getGemeindeOrTSRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+        ];
+    }
+
     public static getSchulamtOnlyRoles(): ReadonlyArray<TSRole> {
         return [TSRole.SACHBEARBEITER_TS, TSRole.ADMIN_TS];
     }

@@ -1122,4 +1122,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			+ ", status: " + this.getStatus()
 			+ ", fallNummer: " + this.getJahrFallAndGemeindenummer();
 	}
+
+	public Benutzer getVerantwortlicherAccordingToBetreuungen() {
+		if (hasOnlyBetreuungenOfSchulamt()) {
+			return getDossier().getVerantwortlicherTS();
+		}
+		return getDossier().getVerantwortlicherBG();
+	}
 }

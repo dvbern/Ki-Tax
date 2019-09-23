@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -381,5 +382,53 @@ public class GemeindeStammdaten extends AbstractEntity {
 			return tsAdresse;
 		}
 		return adresse;
+	}
+
+	public Optional<Benutzer> getDefaultBenutzerForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.hasOnlyBetreuungenOfJugendamt()) {
+			if (defaultBenutzerBG != null && defaultBenutzerBG.getRole().isRoleGemeindeOrBG()) {
+				return Optional.ofNullable(defaultBenutzerBG);
+			}
+		}
+		if (gesuch.hasOnlyBetreuungenOfSchulamt() && tsAdresse != null) {
+			if (defaultBenutzerTS != null && defaultBenutzerTS.getRole().isRoleGemeindeOrTS()) {
+				return Optional.ofNullable(defaultBenutzerTS);
+			}
+		}
+		return Optional.ofNullable(defaultBenutzer);
+	}
+
+	/**
+	 * Wir suchen einen Defaultbenutzer mit der Rolle BG oder GEMEINDE, falls ein spezifischer gesetzt ist
+	 * in defaultBenutzerBG, so verwenden wir diesen, sonst pruefen wir, ob der allgemeine Defaultbenutzer
+	 * zufaellig die gewuenschte Rolle hat.
+	 * Achtung: Diese Methode ist aehnlich auch auf dem Client vorhanden
+	 */
+	@Nonnull
+	public Optional<Benutzer> getDefaultBenutzerWithRoleBG() {
+		if (defaultBenutzerBG != null && defaultBenutzerBG.getRole().isRoleGemeindeOrBG()) {
+			return Optional.ofNullable(defaultBenutzerBG);
+		}
+		if (defaultBenutzer != null && defaultBenutzer.getRole().isRoleGemeindeOrBG()) {
+			return Optional.ofNullable(defaultBenutzer);
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Wir suchen einen Defaultbenutzer mit der Rolle TS oder GEMEINDE, falls ein spezifischer gesetzt ist
+	 * in defaultBenutzerTS, so verwenden wir diesen, sonst pruefen wir, ob der allgemeine Defaultbenutzer
+	 * zufaellig die gewuenschte Rolle hat.
+	 * Achtung: Diese Methode ist aehnlich auch auf dem Client vorhanden
+	 */
+	@Nonnull
+	public Optional<Benutzer> getDefaultBenutzerWithRoleTS() {
+		if (defaultBenutzerTS != null && defaultBenutzerTS.getRole().isRoleGemeindeOrTS()) {
+			return Optional.ofNullable(defaultBenutzerTS);
+		}
+		if (defaultBenutzer != null && defaultBenutzer.getRole().isRoleGemeindeOrTS()) {
+			return Optional.ofNullable(defaultBenutzer);
+		}
+		return Optional.empty();
 	}
 }
