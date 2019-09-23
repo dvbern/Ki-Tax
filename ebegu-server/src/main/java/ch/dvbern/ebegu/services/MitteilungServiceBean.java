@@ -155,9 +155,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private MailService mailService;
 
 	@Inject
-	private DossierService dossierService;
-
-	@Inject
 	private GesuchService gesuchService;
 
 	@Inject
@@ -257,7 +254,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 		}
 		if (empfaengerAmt == null) {
-			new EbeguRuntimeException(
+			throw new EbeguRuntimeException(
 				"setSenderAndEmpfaenger",
 				ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
 				mitteilung.getId());

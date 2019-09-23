@@ -391,15 +391,13 @@ public class GemeindeStammdaten extends AbstractEntity {
 	 * In allen anderen Fällen den Allgemeinen Benutzer
 	 */
 	public Optional<Benutzer> getDefaultBenutzerForGesuch(@Nonnull Gesuch gesuch) {
-		if (gesuch.hasOnlyBetreuungenOfJugendamt()) {
-			if (defaultBenutzerBG != null && defaultBenutzerBG.getRole().isRoleGemeindeOrBG()) {
-				return Optional.of(defaultBenutzerBG);
-			}
+		if (gesuch.hasOnlyBetreuungenOfJugendamt()
+				&& defaultBenutzerBG != null && defaultBenutzerBG.getRole().isRoleGemeindeOrBG()) {
+			return Optional.of(defaultBenutzerBG);
 		}
-		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			if (defaultBenutzerTS != null && defaultBenutzerTS.getRole().isRoleGemeindeOrTS()) {
-				return Optional.of(defaultBenutzerTS);
-			}
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()
+				&& defaultBenutzerTS != null && defaultBenutzerTS.getRole().isRoleGemeindeOrTS()) {
+			return Optional.of(defaultBenutzerTS);
 		}
 		return Optional.ofNullable(defaultBenutzer);
 	}
