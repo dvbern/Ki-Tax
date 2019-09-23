@@ -204,13 +204,13 @@ export default class TestDataUtil {
         };
     }
 
-    public static createGemeindeOstermundigen(): TSGemeinde {
+    public static createGemeindeLondon(): TSGemeinde {
         const gemeinde = new TSGemeinde();
         TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
-        gemeinde.name = 'Ostermundigen';
+        gemeinde.name = 'London';
         gemeinde.gemeindeNummer = 2;
-        gemeinde.bfsNummer = 363;
+        gemeinde.bfsNummer = 99999;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
@@ -219,13 +219,13 @@ export default class TestDataUtil {
         return gemeinde;
     }
 
-    public static createGemeindeBern(): TSGemeinde {
+    public static createGemeindeParis(): TSGemeinde {
         const gemeinde = new TSGemeinde();
         TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
         gemeinde.gemeindeNummer = 1;
-        gemeinde.bfsNummer = 351;
+        gemeinde.bfsNummer = 99998;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
@@ -259,7 +259,7 @@ export default class TestDataUtil {
     public static createBerechtigung(role: TSRole, createGemeinde: boolean): TSBerechtigung {
         const berechtigung = new TSBerechtigung();
         if (createGemeinde) {
-            berechtigung.gemeindeList.push(TestDataUtil.createGemeindeOstermundigen());
+            berechtigung.gemeindeList.push(TestDataUtil.createGemeindeLondon());
         }
         berechtigung.role = role;
         return berechtigung;

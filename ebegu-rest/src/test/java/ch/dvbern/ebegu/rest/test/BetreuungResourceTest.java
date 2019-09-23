@@ -205,14 +205,14 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 	private KindContainer persistKindAndDependingObjects() {
 		final Gesuchsperiode gesuchsperiode1718 = persistence.merge(TestDataUtil.createGesuchsperiode1718());
-		final Gemeinde gemeindeBern = TestDataUtil.getGemeindeBern(persistence);
+		final Gemeinde gemeindeParis = TestDataUtil.getGemeindeParis(persistence);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(
 			converter.gesuchsperiodeToJAX(gesuchsperiode1718),
-			converter.gemeindeToJAX(gemeindeBern)
+			converter.gemeindeToJAX(gemeindeParis)
 		);
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeParis(persistence));
 		Mandant persistedMandant =
 			persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));

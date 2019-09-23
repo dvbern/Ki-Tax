@@ -56,7 +56,7 @@ describe('GemeindeListComponent', () => {
         }).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
+            [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));
     }));
 
     beforeEach(() => {

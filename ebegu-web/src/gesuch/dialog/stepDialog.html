@@ -27,10 +27,25 @@
 
         <md-radio-group ng-model="vm.selected">
             <md-radio-button ng-value="1">{{vm.radioYes}}</md-radio-button>
-            <div class="md-dialog-content-body"><p class="step_hint" ng-class="vm.selected == 1 ? 'hint_transition' : ''">{{vm.radioYesHint}}</p></div>
+            <div class="md-dialog-content-body">
+                <p class="step_hint" ng-class="vm.selected == 1 ? 'hint_transition' : ''">
+                    {{vm.radioYesHint}}<br><br>
+                    {{vm.radioYesCasesInfo}}<br><br>
+                    <span ng-repeat="case in vm.radioYesCases">&bull; {{case}}</span><br>
+                </p>
+            </div>
             <md-radio-button ng-value="2">{{vm.radioNo}}</md-radio-button>
-            <div class="md-dialog-content-body"><p class="step_hint" ng-class="vm.selected == 2 ? 'hint_transition' : ''">{{vm.radioNoHint}}</p></div>
+            <div class="md-dialog-content-body">
+                <p class="step_hint" ng-class="vm.selected == 2 ? 'hint_transition' : ''">
+                    {{vm.radioNoHint}}<br><br>
+                    {{vm.radioNoCasesInfo}}<br><br>
+                    <span ng-repeat="case in vm.radioNoCases">&bull; {{case}}<br></span>
+                </p>
+
+            </div>
         </md-radio-group>
+        <br><br>
+        <p>{{vm.institutionHint}}</p>
     </md-dialog-content>
 
     <md-dialog-content class="md-dialog-content step" ng-if="vm.isStepDisplayed(1)">

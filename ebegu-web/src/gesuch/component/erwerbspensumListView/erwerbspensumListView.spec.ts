@@ -83,6 +83,6 @@ describe('erwerbspensumListView', () => {
 
     function prepareDossier(): void {
         dossier = new TSDossier();
-        dossier.gemeinde = TestDataUtil.createGemeindeBern();
+        dossier.gemeinde = TestDataUtil.createGemeindeParis();
     }
 });

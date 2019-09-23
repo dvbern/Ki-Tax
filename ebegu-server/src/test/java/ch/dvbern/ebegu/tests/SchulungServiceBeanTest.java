@@ -87,7 +87,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 
 		assertEmpty();
-		TestDataUtil.getGemeindeBern(persistence);
+		TestDataUtil.getGemeindeParis(persistence);
 		schulungService.createSchulungsdaten();
 
 		Assert.assertEquals(95, adresseService.getAllAdressen().size());

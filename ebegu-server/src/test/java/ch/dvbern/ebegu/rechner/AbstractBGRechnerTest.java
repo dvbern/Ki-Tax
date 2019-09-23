@@ -79,7 +79,7 @@ public class AbstractBGRechnerTest {
 
 	@Before
 	public void setUpCalcuator() {
-		evaluator = createEvaluator(TestDataUtil.createGesuchsperiode1718(), TestDataUtil.createGemeindeBern());
+		evaluator = createEvaluator(TestDataUtil.createGesuchsperiode1718(), TestDataUtil.createGemeindeParis());
 	}
 
 	public static BetreuungsgutscheinEvaluator createEvaluator(
