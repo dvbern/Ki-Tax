@@ -23,15 +23,13 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
-
-
 @Component({
     selector: 'dv-onboarding-neu-benutzer',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-neu-benutzer.component.html',
     styleUrls: ['./onboarding-neu-benutzer.component.less', '../onboarding.less'],
 })
-export class OnboardingNeuBenutzerComponent{
+export class OnboardingNeuBenutzerComponent {
 
     @Input() public nextState: string = 'onboarding.be-login';
     @Input() public isTSAngebotEnabled: boolean;
@@ -65,8 +63,15 @@ export class OnboardingNeuBenutzerComponent{
         if (!form.valid) {
             return;
         }
+        let listIds: string[] = [];
+        listIds.push(this.gemeinde.id);
+        this._gemeindeList.forEach((gemeinde) => {
+            if (listIds.indexOf(gemeinde.id) === -1) {
+                listIds.push(gemeinde.id);
+            }
+        })
 
-        this.stateService.go(this.nextState, {gemeindeId: this.gemeinde.id});
+        this.stateService.go(this.nextState, {gemeindenId: listIds});
     }
 
     public set gemeindeList(value: Array<TSGemeinde>) {
@@ -77,11 +82,12 @@ export class OnboardingNeuBenutzerComponent{
         return this._gemeindeList;
     }
 
-    public updateList(newValue: TSGemeinde): void{
+    public updateList(newValue: TSGemeinde): void {
+        //not finished but complicated as it should select in another component something...
         this.gemeinde = newValue;
         let id = this.gemeinde.id;
         let foundGemeinde = this.gemeindenTS$.pipe(map(gemeinden => gemeinden.find(gemeinde => gemeinde.id == id)));
-        if(foundGemeinde !== undefined){
+        if (foundGemeinde !== undefined) {
             console.log('gemeinde Found: ')
         }
 

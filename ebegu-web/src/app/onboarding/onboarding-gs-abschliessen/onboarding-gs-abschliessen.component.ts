@@ -40,9 +40,9 @@ const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSBenutzer>;
-    public gemeinde$: Observable<TSGemeinde>;
+    public gemeinden$: Array<Observable<TSGemeinde>>;
 
-    private readonly gemeindeId: string; // Parameter aus URL
+    private readonly gemeindenId: string; // Parameter aus URL
 
     public constructor(
         private readonly transition: Transition,
@@ -52,11 +52,16 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         private readonly dossierRS: DossierRS,
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
-        this.gemeindeId = this.transition.params().gemeindeId;
+        this.gemeindenId = this.transition.params().gemeindenId;
     }
 
     public ngOnInit(): void {
-        this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
+        console.log(this.gemeindenId.length);
+        let gemeindenIdList: string[] = this.gemeindenId.split(',');
+        this.gemeinden$ = [];
+        gemeindenIdList.forEach((gemeindeId) => {
+            this.gemeinden$.push(from(this.gemeindeRS.findGemeinde(gemeindeId)));
+        })
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -70,10 +75,16 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
-            this.stateService.go('gesuchsteller.dashboard', {
-                dossierId: dossier.id,
+        let gemeindenIdList: string[] = this.gemeindenId.split(',');
+        let dossierIdList: string[] = [];
+        gemeindenIdList.forEach((gemeindeId) => {
+            this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId).then((dossier:
+                                                                                                   TSDossier) => {
+                dossierIdList.push(dossier.id);
             });
+        })
+        this.stateService.go('gesuchsteller.dashboard', {
+            dossierId: dossierIdList[0],
         });
     }
 

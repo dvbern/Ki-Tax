@@ -31,8 +31,11 @@
                             translate>ONBOARDING_GS_GEMEINDE_AENDERN
                     </button>
                 </div>
-                <div class="onboarding-gs-gemeinde-content">
-                    <span>{{(gemeinde$ | async)?.name}}</span>
+                <div class="onboarding-gs-gemeinde-content" >
+                    <span
+                        *ngFor="let gemeinde$ of gemeinden$ ; first as isFirst">
+                        <b *ngIf="!isFirst">,</b>
+                        {{(gemeinde$ | async)?.name}}</span>
                 </div>
             </div>
             <button type="submit"

@@ -66,7 +66,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.be-login',
-        url: '/{gemeindeId:[0-9a-fA-F\-]{36}}',
+        url: '/{gemeindenId}',
         component: OnboardingBeLoginComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
@@ -83,7 +83,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.gesuchsteller.registration',
-        url: '/registration/{gemeindeId:[0-9a-fA-F\-]{36}}',
+        url: '/registration/{gemeindenId}',
         component: OnboardingGsAbschliessenComponent,
     },
     {
@@ -91,6 +91,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/registration-abschliessen',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
+            isTSAngebotEnabled: tsEnabledResolver,
             nextState: () => 'onboarding.gesuchsteller.registration',
         },
     },
