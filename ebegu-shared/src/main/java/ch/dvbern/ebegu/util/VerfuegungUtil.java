@@ -92,22 +92,8 @@ public final class VerfuegungUtil {
 	private static VerfuegungsZeitabschnittZahlungsstatus findStatusOldZeitabschnitt(List<VerfuegungZeitabschnitt> zeitabschnitteGSM, VerfuegungZeitabschnitt newZeitabschnitt) {
 		for (VerfuegungZeitabschnitt zeitabschnittGSM : zeitabschnitteGSM) {
 			if (zeitabschnittGSM.getGueltigkeit().getOverlap(newZeitabschnitt.getGueltigkeit()).isPresent()) {
-				// wir gehen davon aus, dass Zahlung immer fuer einen ganzen Monat gemacht werden, deswegen reicht es wenn ein Zeitabschnitt VERRECHNET bzw. IGNORIERT ist
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET) {
-					return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT) {
-					return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND) {
-					return VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
-					return VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT) {
-					return VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
-				}
+				// Wenn ein Vorgaenger vorhanden ist, wird der Status von diesem uebernommen
+				return zeitabschnittGSM.getZahlungsstatus();
 			}
 		}
 		return VerfuegungsZeitabschnittZahlungsstatus.NEU;

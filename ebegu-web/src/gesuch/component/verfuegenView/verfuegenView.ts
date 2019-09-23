@@ -73,7 +73,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public showSchemas: boolean;
     public sameVerfuegungsdaten: boolean;
-    public sameVerrechneteVerguenstigung: boolean;
+    public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
 
@@ -149,7 +149,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegungsdaten();
-        this.setSameVerrechneteVerfuegungdaten();
+        this.setFragenObIgnorieren();
     }
 
     private initDevModeParameter(): void {
@@ -174,10 +174,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      * Checks whether all Abschnitte that are already paid, have the same value of the new abschnitte from
      * the new verfuegung. Returns true if they are the same
      */
-    private setSameVerrechneteVerfuegungdaten(): void {
-        this.sameVerrechneteVerguenstigung = false; // by default
+    private setFragenObIgnorieren(): void {
+        this.fragenObIgnorieren = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.sameVerrechneteVerguenstigung = this.getVerfuegenToWorkWith().isSameVerrechneteVerguenstigung();
+            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
         }
     }
 
@@ -185,8 +185,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.sameVerfuegungsdaten;
     }
 
-    private isSameVerrechneteVerguenstigung(): boolean {
-        return this.sameVerrechneteVerguenstigung;
+    private isFragenObIgnorieren(): boolean {
+        return this.fragenObIgnorieren;
     }
 
     private isAlreadyIgnored(): boolean {
@@ -203,7 +203,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+        const direktVerfuegen = !isAngebotKITA || !this.isFragenObIgnorieren() || !this.isMutation()
             || this.isAlreadyIgnored();
         // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
         if (this.isAlreadyIgnored()) {

@@ -98,23 +98,34 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
      * Checks whether all Zeitabschnitte that have been paid (verrechnet)
      * have the same Verguenstigung as the previous (vorgaenger) Verfuegung.
      * All Ignorierte Zeitabschnitte must be ignored because they will always be ignored
+     * Entscheidet, ob die Frage nach dem Ignorieren gestellt werden soll
      */
-    public isSameVerrechneteVerguenstigung(): boolean {
+    public fragenObIgnorieren(): boolean {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
-            if (!this._zeitabschnitte[i].sameVerguenstigung
-                && (this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET
-                    || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT)) {
-                return false;
+            const zeitabschnitt = this._zeitabschnitte[i];
+            // Wir muessen alle Zeitabschnitte kontrollieren, die in irgendeiner Form schon verrechnet
+            // oder behandelt waren, also nicht NEU sind
+            // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
+            // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
+            // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
+            // tslint:disable-next-line:early-exit
+            if (zeitabschnitt.zahlungsstatus !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
+                    && !zeitabschnitt.sameVerguenstigung) {
+                // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
+                // gestellt werden
+                return true;
             }
         }
-        return true;
-    }
+                return false;
+            }
+
     public isAlreadyIgnored(): boolean {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
-            if (!this._zeitabschnitte[i].sameVerguenstigung
-                && this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT) {
+            const abschnitt = this._zeitabschnitte[i];
+            if (!abschnitt.sameVerguenstigung
+                && abschnitt.zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT) {
                 return true;
             }
         }
