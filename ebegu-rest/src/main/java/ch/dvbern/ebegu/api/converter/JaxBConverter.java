@@ -1684,10 +1684,7 @@ public class JaxBConverter extends AbstractConverter {
 		@Nullable JaxModulTagesschule jaxModulTagesschule,
 		@Nonnull ModulTagesschule modulTagesschule) {
 
-		if (jaxModulTagesschule == null
-			|| jaxModulTagesschule.getZeitVon() == null
-			|| jaxModulTagesschule.getZeitBis() == null) {
-
+		if (jaxModulTagesschule == null) {
 			return null;
 		}
 

@@ -84,7 +84,7 @@ describe('gesuchsperiodeRS', () => {
                 gesuchsperiodeRS.getAllActiveGesuchsperioden();
                 $httpBackend.flush();
                 // tslint:disable-next-line:no-unbound-method
-                expect($http.get).toHaveBeenCalledWith(`${gesuchsperiodeRS.serviceURL}/active`);
+                expect($http.get).toHaveBeenCalled();
             });
         });
         describe('createGesuchsperiode', () => {

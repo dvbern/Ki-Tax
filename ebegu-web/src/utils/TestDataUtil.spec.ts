@@ -38,6 +38,7 @@ import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import {TSMandant} from '../models/TSMandant';
+import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSWizardStep from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -293,6 +294,12 @@ export default class TestDataUtil {
         mandant.angebotTS = false;
         mandant.angebotFI = false;
         return mandant;
+    }
+
+    public static createModulTagesschule(): TSModulTagesschule {
+        const tsModul = new TSModulTagesschule();
+        tsModul.gesuchsperiodeId = undefined;
+        return tsModul;
     }
 
     /**

@@ -47,7 +47,6 @@ import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
 import {TSMandant} from '../models/TSMandant';
-import TSModulTagesschule from '../models/TSModulTagesschule';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
@@ -346,7 +345,7 @@ describe('EbeguRestUtil', () => {
                 const myInstitution = createInstitution();
                 const myAdress = createAdresse();
                 const tsInstStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
-                const tsModul = new TSModulTagesschule();
+                const tsModul = TestDataUtil.createModulTagesschule();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
                 tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
