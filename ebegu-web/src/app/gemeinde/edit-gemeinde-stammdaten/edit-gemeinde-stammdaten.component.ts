@@ -32,7 +32,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
     selector: 'dv-edit-gemeinde-stammdaten',
     templateUrl: './edit-gemeinde-stammdaten.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
@@ -62,9 +62,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         this.stammdaten$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-            stammdaten => this.initValues(stammdaten),
-            err => LOG.error(err)
-        );
+                stammdaten => this.initValues(stammdaten),
+                err => LOG.error(err)
+            );
     }
 
     public ngOnDestroy(): void {

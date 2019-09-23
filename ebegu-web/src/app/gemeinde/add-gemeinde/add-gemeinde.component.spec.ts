@@ -78,7 +78,7 @@ describe('AddGemeindeComponent', () => {
             .compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
+            [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));
         gemeindeServiceSpy.getUnregisteredBfsGemeinden.and.returnValue([]);
         transitionSpy.params.and.returnValue({});
         gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
