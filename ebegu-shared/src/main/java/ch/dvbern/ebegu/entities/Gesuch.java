@@ -715,7 +715,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	/**
-	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat, wenn es kein kind oder betr gibt wird false zurueckgegeben
+	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat,
+	 * wenn es kein kind oder betr gibt wird false zurueckgegeben
 	 */
 	@Transient
 	public boolean hasOnlyBetreuungenOfSchulamt() {
@@ -727,7 +728,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	/**
-	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat, wenn es kein kind oder betr gibt wird false zurueckgegeben
+	 * @return false wenn es ein kind gibt dass eine nicht jugendamt betreuung hat,
+	 * wenn es kein kind oder betr gibt wird false zurueckgegeben
 	 */
 	@Transient
 	public boolean hasOnlyBetreuungenOfJugendamt() {

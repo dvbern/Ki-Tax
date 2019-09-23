@@ -249,7 +249,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Benutzer empfaengerAmt = mitteilung.getDossier().getVerantwortlicherBG();
 		if (empfaengerAmt == null) {
-			empfaengerAmt = mitteilung.getDossier().getVerantwortlicherTS();
+			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
+			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+			if (stammdatenOptional.isPresent()) {
+				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
+				empfaengerAmt = stammdatenOptional.get().getDefaultBenutzer();
+			}
 		}
 		if (empfaengerAmt == null) {
 			new EbeguRuntimeException(
