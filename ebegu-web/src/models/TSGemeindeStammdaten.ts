@@ -66,7 +66,7 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
      * Benutzer aus der BG-Benutzerliste zurueck.
      * Achtung: Diese Methode ist aehnlich auch auf dem Server vorhanden
      */
-    public getDefaultBenutzerWithRoleBG() {
+    public getDefaultBenutzerWithRoleBG(): TSBenutzer {
         if (this.defaultBenutzerBG && this.defaultBenutzerBG.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles())) {
             return this.defaultBenutzerBG;
         }
@@ -89,7 +89,7 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
      * Benutzer aus der TS-Benutzerliste zurueck.
      * Achtung: Diese Methode ist aehnlich auch auf dem Server vorhanden
      */
-    public getDefaultBenutzerWithRoleTS() {
+    public getDefaultBenutzerWithRoleTS(): TSBenutzer {
         if (this.defaultBenutzerTS && this.defaultBenutzerTS.hasOneOfRoles(TSRoleUtil.getGemeindeOrTSRoles())) {
             return this.defaultBenutzerTS;
         }
