@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output, EventEmitter} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
@@ -31,7 +31,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
     selector: 'dv-edit-gemeinde-stammdaten',
     templateUrl: './edit-gemeinde-stammdaten.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
@@ -40,6 +40,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
+
+    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
+
     public korrespondenzsprache: string;
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -57,9 +60,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         this.stammdaten$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-            stammdaten => this.initStrings(stammdaten),
-            err => LOG.error(err)
-        );
+                stammdaten => this.initStrings(stammdaten),
+                err => LOG.error(err)
+            );
     }
 
     public ngOnDestroy(): void {
@@ -80,5 +83,10 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     public isSuperadmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public kBAdresseChange(newVal: boolean): void {
+        this.keineBeschwerdeAdresse = newVal;
+        this.keineBeschwerdeAdresseChange.emit(newVal);
     }
 }

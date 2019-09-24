@@ -86,7 +86,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
+		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
 		TestDataUtil.createGemeindeStammdaten(bern, persistence);
 	}
 

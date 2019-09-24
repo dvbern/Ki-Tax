@@ -113,7 +113,7 @@ public class PDFServiceBeanTest {
 
 		Locale.setDefault(Constants.DEFAULT_LOCALE);
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
-		Gemeinde bern = TestDataUtil.createGemeindeBern();
+		Gemeinde bern = TestDataUtil.createGemeindeParis();
 		evaluator = AbstractBGRechnerTest.createEvaluator(gesuchsperiode1718, bern);
 
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();

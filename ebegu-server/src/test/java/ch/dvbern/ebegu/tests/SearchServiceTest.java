@@ -370,7 +370,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	private Dossier addVerantwortlicherTSToDossier(@Nonnull Dossier dossier) {
 		// mit 2 Verantwortlichen wird zu Mischgesuch
 		Benutzer verantSCH = TestDataUtil.createBenutzerSCH();
-		verantSCH.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeBern(persistence));
+		verantSCH.getBerechtigungen().iterator().next().getGemeindeList().add(TestDataUtil.getGemeindeParis(persistence));
 		persistence.persist(verantSCH.getMandant());
 		persistence.persist(verantSCH);
 		dossier.setVerantwortlicherTS(verantSCH);

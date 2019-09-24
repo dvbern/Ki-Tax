@@ -113,7 +113,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchsperiode = createGesuchsperiode();
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		gemeindeId = Objects.requireNonNull(TestDataUtil.getGemeindeBern(persistence)).getId();
+		gemeindeId = Objects.requireNonNull(TestDataUtil.getGemeindeParis(persistence)).getId();
 	}
 
 	@Test
