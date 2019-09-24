@@ -275,7 +275,8 @@
                     </div>
                     <div class="form-group">
                         <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                      [(ngModel)]="keineBeschwerdeAdresse">
+                                      [ngModel]="keineBeschwerdeAdresse"
+                                      (ngModelChange)="kBAdresseChange($event)">
                             {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                         </mat-checkbox>
                     </div>

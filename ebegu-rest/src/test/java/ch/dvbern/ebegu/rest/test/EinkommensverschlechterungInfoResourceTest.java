@@ -85,7 +85,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	}
 
 	private JaxGesuch crateJaxGesuch() {
-		Gemeinde persistedGemeinde = TestDataUtil.getGemeindeBern(persistence);
+		Gemeinde persistedGemeinde = TestDataUtil.getGemeindeParis(persistence);
 		Benutzer verantwortlicher = TestDataUtil.createDefaultBenutzer();
 		verantwortlicher.getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
 		persistence.persist(verantwortlicher.getMandant());

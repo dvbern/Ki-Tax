@@ -60,7 +60,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	@Before
 	public void setUp() {
 		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
-		gemeinde = TestDataUtil.getGemeindeBern(persistence);;
+		gemeinde = TestDataUtil.getGemeindeParis(persistence);;
 	}
 
 	@Test

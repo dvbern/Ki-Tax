@@ -74,7 +74,7 @@ describe('EditGemeindeComponent', () => {
         ).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
+            [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
         gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));

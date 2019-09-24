@@ -97,7 +97,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		gemeinde = TestDataUtil.getGemeindeBern(persistence).getId();
+		gemeinde = TestDataUtil.getGemeindeParis(persistence).getId();
 		Locale.setDefault(Constants.DEFAULT_LOCALE);
 	}
 
