@@ -62,13 +62,14 @@ export class OnboardingInfoKitagComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        let space: string = ' ';
-        let punkt: string = '.';
-        let mailto: string = 'mailto:support@kibon.ch&subject=';
-        let emailBody: string = '&body=';
-        let zeilenUmbruch: string = '%0D%0A%0D%0A';
+        const space = ' ';
+        const punkt = '.';
+        const mailto = 'mailto:support@kibon.ch&subject=';
+        const emailBody = '&body=';
+        const zeilenUmbruch = '%0D%0A%0D%0A';
+        const bodyText: string = this.translate.instant(this.emailBody);
         const subject: string = this.translate.instant(this.subjectText);
-        const body: string = this.translate.instant(this.emailBody) + space + this.kitagName + punkt;
+        const body = bodyText + space + this.kitagName + punkt;
         const endBody: string = this.translate.instant(this.emailEnd);
         window.location.href = mailto + subject + emailBody + body + zeilenUmbruch + endBody;
     }
