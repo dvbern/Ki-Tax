@@ -234,6 +234,8 @@ public class BetreuungsgutscheinEvaluator {
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {
 			// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
+			// TODO hefr: hier sollten wir ebenfalls die ausbezahlteVorgaenger Verfügung übergeben. ACHTUNG: Methode
+			//  wird wahrscheinlich an anderen Orten ebenfalls verwendet
 			VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), vorgaengerVerfuegung);
 		}
 	}

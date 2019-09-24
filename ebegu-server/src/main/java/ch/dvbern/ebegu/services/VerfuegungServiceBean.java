@@ -195,11 +195,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					// 		Wichtig ist, dass auf dieser Verfuegung (die noch nicht ausbezahlt war) nie ein "behandelter" Status gesetzt wird
 					//		da wir sonst bei einer weiteren Mutation die falsche Vorgängerverfügung verwenden!
 					if (voraengerIgnoriertUndAusbezahlt) {
-								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
+						verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
 					} else if (!zeitraumBereitsVerrechnet) {
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
-							} else {
-						if (ignorieren && !sameGueltigkeitSameBetrag) {
+						verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
+					} else if (!sameGueltigkeitSameBetrag) {
+						// Wenn der Betrag und die Gueltigkeit gleich bleibt: Wir wurden gar nicht gefragt, ob wir
+						// ignorieren wollen -> wir lassen den letzten bekannten Status!
+						if (ignorieren ) {
 							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
 						} else {
 							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
