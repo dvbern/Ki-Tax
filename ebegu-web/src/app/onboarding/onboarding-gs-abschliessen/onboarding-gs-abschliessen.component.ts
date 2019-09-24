@@ -76,15 +76,14 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
             return;
         }
         let gemeindenIdList: string[] = this.gemeindenId.split(',');
-        let dossierIdList: string[] = [];
-        gemeindenIdList.forEach((gemeindeId) => {
-            this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId).then((dossier:
-                                                                                                   TSDossier) => {
-                dossierIdList.push(dossier.id);
+        let firstGemeinde: string = gemeindenIdList.pop();
+        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeinde).then((dossier: TSDossier) => {
+            gemeindenIdList.forEach((gemeindeId) => {
+                this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
+            })
+            this.stateService.go('gesuchsteller.dashboard', {
+                dossierId: dossier.id,
             });
-        })
-        this.stateService.go('gesuchsteller.dashboard', {
-            dossierId: dossierIdList[0],
         });
     }
 
