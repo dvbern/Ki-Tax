@@ -1003,7 +1003,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	public void sendInfoOffenePendenzenInstitution() {
-		Collection<InstitutionStammdaten> activeInstitutionen = institutionStammdatenService.getAllInstitutionStammdaten();
+		Collection<InstitutionStammdaten> activeInstitutionen = institutionStammdatenService.getAllInstitonStammdatenForBatchjobs();
 		for (InstitutionStammdaten stammdaten : activeInstitutionen) {
 			Collection<Betreuung> pendenzen = getPendenzenForInstitution(stammdaten.getInstitution());
 			if (CollectionUtils.isNotEmpty(pendenzen) && stammdaten.getSendMailWennOffenePendenzen()) {

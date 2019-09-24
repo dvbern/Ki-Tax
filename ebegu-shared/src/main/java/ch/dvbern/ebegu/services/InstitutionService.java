@@ -77,6 +77,12 @@ public interface InstitutionService {
 	Collection<Institution> getAllInstitutionen();
 
 	/**
+	 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+	 */
+	@Nonnull
+	Collection<Institution> getAllInstitutionenForBatchjobs();
+
+	/**
 	 * Gibt alle aktiven Institutionen zurueck, fuer welche der aktuell eingeloggte Benutzer berechtigt ist.
 	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden. Dieses Parameter
 	 * gilt nur fuer die Rolen vom Schulamt

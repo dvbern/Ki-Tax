@@ -216,6 +216,18 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return typedQuery.getResultList();
 	}
 
+	@Override
+	@Nonnull
+	@RolesAllowed(SUPER_ADMIN)
+	public Collection<Institution> getAllInstitutionenForBatchjobs() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root.get(InstitutionStammdaten_.institution));
+		query.distinct(true);
+		return persistence.getCriteriaResults(query);
+	}
+
 	@Nonnull
 	@PermitAll
 	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer() {
@@ -277,7 +289,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
 		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void calculateStammdatenCheckRequired() {
-		final Collection<Institution> allInstitutionen = this.getAllInstitutionen();
+		Collection<Institution> allInstitutionen = getAllInstitutionenForBatchjobs();
 
 		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired().
 		// This is better than only
