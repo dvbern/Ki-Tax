@@ -57,11 +57,11 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public ngOnInit(): void {
         console.log(this.gemeindenId.length);
-        let gemeindenIdList: string[] = this.gemeindenId.split(',');
+        const gemeindenIdList = this.gemeindenId.split(',');
         this.gemeinden$ = [];
-        gemeindenIdList.forEach((gemeindeId) => {
+        gemeindenIdList.forEach(gemeindeId => {
             this.gemeinden$.push(from(this.gemeindeRS.findGemeinde(gemeindeId)));
-        })
+        });
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -75,12 +75,12 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        let gemeindenIdList: string[] = this.gemeindenId.split(',');
-        let firstGemeinde: string = gemeindenIdList.pop();
+        const gemeindenIdList = this.gemeindenId.split(',');
+        const firstGemeinde = gemeindenIdList.pop();
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeinde).then((dossier: TSDossier) => {
-            gemeindenIdList.forEach((gemeindeId) => {
+            gemeindenIdList.forEach(gemeindeId => {
                 this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
-            })
+            });
             this.stateService.go('gesuchsteller.dashboard', {
                 dossierId: dossier.id,
             });

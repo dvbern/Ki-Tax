@@ -26,7 +26,7 @@ import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.se
     templateUrl: './onboarding.component.html',
     styleUrls: ['./onboarding.component.less', '../onboarding.less'],
 })
-export class OnboardingComponent implements OnInit{
+export class OnboardingComponent implements OnInit {
 
     @Input() public showLogin: boolean = true;
 

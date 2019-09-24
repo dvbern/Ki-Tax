@@ -31,7 +31,7 @@ import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboardi
 import {OnboardingComponent} from './onboarding/onboarding.component';
 import {MandantRS} from '../core/service/mandantRS.rest';
 
-const mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+const mandantBernId = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
 
 const tsEnabledResolver = [
     'MandantRS', (mandantRS: MandantRS) => {

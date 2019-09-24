@@ -63,14 +63,13 @@ export class OnboardingNeuBenutzerComponent {
         if (!form.valid) {
             return;
         }
-        let listIds: string[] = [];
+        const listIds: string[] = [];
         listIds.push(this.gemeinde.id);
-        this._gemeindeList.forEach((gemeinde) => {
+        this._gemeindeList.forEach(gemeinde => {
             if (listIds.indexOf(gemeinde.id) === -1) {
                 listIds.push(gemeinde.id);
             }
-        })
-
+        });
         this.stateService.go(this.nextState, {gemeindenId: listIds});
     }
 
@@ -80,16 +79,5 @@ export class OnboardingNeuBenutzerComponent {
 
     public get gemeindeList(): Array<TSGemeinde> {
         return this._gemeindeList;
-    }
-
-    public updateList(newValue: TSGemeinde): void {
-        //not finished but complicated as it should select in another component something...
-        this.gemeinde = newValue;
-        let id = this.gemeinde.id;
-        let foundGemeinde = this.gemeindenTS$.pipe(map(gemeinden => gemeinden.find(gemeinde => gemeinde.id == id)));
-        if (foundGemeinde !== undefined) {
-            console.log('gemeinde Found: ')
-        }
-
     }
 }

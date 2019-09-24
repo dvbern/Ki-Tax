@@ -18,11 +18,6 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
@@ -47,12 +42,12 @@ export class OnboardingInfoKitagComponent implements OnInit {
     public testZugangBeantragen: boolean;
     public kitagName: string;
 
-    constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
-                private readonly translate: TranslateService,
+    public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+                       private readonly translate: TranslateService,
     ) {
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.onboardingPlaceholderService.setPlaceholder1(this.translate.instant(this.placeholder1));
         this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
         this.onboardingPlaceholderService.setPlaceholder2(this.translate.instant(this.placeholder2));
@@ -67,9 +62,14 @@ export class OnboardingInfoKitagComponent implements OnInit {
         if (!form.valid) {
             return;
         }
+        let space: string = ' ';
+        let punkt: string = '.';
+        let mailto: string = 'mailto:support@kibon.ch&subject=';
+        let emailBody: string = '&body=';
+        let zeilenUmbruch: string = '%0D%0A%0D%0A';
         const subject: string = this.translate.instant(this.subjectText);
-        const body: string = this.translate.instant(this.emailBody) + ' ' + this.kitagName + '.';
+        const body: string = this.translate.instant(this.emailBody) + space + this.kitagName + punkt;
         const endBody: string = this.translate.instant(this.emailEnd);
-        window.location.href = 'mailto:support@kibon.ch&subject=' + subject + '&body=' + body + '%0D%0A%0D%0A' + endBody;
+        window.location.href = mailto + subject + emailBody + body + zeilenUmbruch + endBody;
     }
 }
