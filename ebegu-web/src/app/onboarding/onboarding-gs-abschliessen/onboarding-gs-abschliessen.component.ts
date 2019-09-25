@@ -56,7 +56,6 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        console.log(this.gemeindenId.length);
         const gemeindenIdList = this.gemeindenId.split(',');
         this.gemeinden$ = [];
         gemeindenIdList.forEach(gemeindeId => {
