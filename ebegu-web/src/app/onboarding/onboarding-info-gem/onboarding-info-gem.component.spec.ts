@@ -31,7 +31,8 @@ describe('OnboardingInfoGemComponent', () => {
     let fixture: ComponentFixture<OnboardingInfoGemComponent>;
 
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const i18nServiceSpy =
+        jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
         gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());

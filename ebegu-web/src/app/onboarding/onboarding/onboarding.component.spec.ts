@@ -26,12 +26,12 @@ import {SharedModule} from '../../shared/shared.module';
 
 import {OnboardingComponent} from './onboarding.component';
 
-
 describe('OnboardingComponent', () => {
     let component: OnboardingComponent;
     let fixture: ComponentFixture<OnboardingComponent>;
 
-    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
