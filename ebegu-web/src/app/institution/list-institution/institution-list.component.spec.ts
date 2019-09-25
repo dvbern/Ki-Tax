@@ -55,7 +55,7 @@ describe('InstitutionListComponent', () => {
             declarations: [InstitutionListComponent],
         }).compileComponents();
 
-        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
     }));
 
     beforeEach(() => {
