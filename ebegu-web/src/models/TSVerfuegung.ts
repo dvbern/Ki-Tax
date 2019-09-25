@@ -117,8 +117,8 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
                 return true;
             }
         }
-                return false;
-            }
+        return false;
+    }
 
     public isAlreadyIgnored(): boolean {
         // tslint:disable-next-line:prefer-for-of

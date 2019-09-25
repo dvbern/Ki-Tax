@@ -206,6 +206,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 						} else {
 							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
 						}
+					} else  {
+						// Es war verrechnet UND derselbe Betrag. Wir muessen den Status trotzdem auf etwas "nicht-behandeltes"
+						// zuruecksetzen!
+						if (verfuegungZeitabschnittNeu.getZahlungsstatus().isVerrechnet()) {
+							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
+						}
 					}
 
 					VerfuegungZeitabschnitt vorgaener = CollectionUtils.isNotEmpty(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung) ?
