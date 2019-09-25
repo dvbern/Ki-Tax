@@ -711,7 +711,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public Collection<AbstractPlatz> getPendenzenBetreuungen() {
 		Collection<AbstractPlatz> pendenzen = new ArrayList<>();
 		Collection<Institution> instForCurrBenutzer =
-			institutionService.getAllowedInstitutionenForCurrentBenutzer(true);
+			institutionService.getInstitutionenReadableForCurrentBenutzer(true);
 		if (!instForCurrBenutzer.isEmpty()) {
 			pendenzen.addAll(getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
 			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
@@ -729,7 +729,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 
-		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+		// Einschraenken nach Institutionen fuer die ich lese-berechtigt bin
+		Collection<Institution> institutionen = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 		if (institutionen.isEmpty()) {
 			// Wenn der Benutzer fuer keine Institution berechtigt ist, darf er auch keine Verfuegungen sehen
 			return Collections.emptyList();

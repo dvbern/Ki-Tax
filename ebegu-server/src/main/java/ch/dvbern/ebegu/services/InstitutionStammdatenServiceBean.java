@@ -259,7 +259,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			return BetreuungsangebotTyp.getSchulamtTypes();
 		}
 		Collection<Institution> institutionenForCurrentBenutzer =
-			institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+			institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 		if (institutionenForCurrentBenutzer.isEmpty()) {
 			return new ArrayList<>();
 		}

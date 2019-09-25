@@ -167,25 +167,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return persistence.getCriteriaResults(query);
 	}
 
-	@Nonnull
-	@PermitAll
-	private Collection<Institution> getAllInstitutionenForSchulamt() {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		query.select(root.get(InstitutionStammdaten_.institution));
-		query.distinct(true);
-
-		Predicate predSchulamt =
-			root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getSchulamtTypes());
-		Predicate predActive = PredicateHelper.getPredicateDateRangedEntityGueltig(cb, root);
-		Predicate predNoUnknown = PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root);
-
-		query.where(predSchulamt, predActive, predNoUnknown);
-
-		return persistence.getCriteriaResults(query);
-	}
-
 	@Override
 	@Nonnull
 	@PermitAll
@@ -230,13 +211,13 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@PermitAll
-	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer() {
+	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(boolean editable, boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
 			return institutionStammdatenService.getAllInstitutionStammdaten()
 				.stream()
-				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer))
+				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer, editable, restrictedForSCH))
 				.map(stammdaten -> stammdaten.getInstitution())
 				.collect(Collectors.toList());
 		}
@@ -245,9 +226,18 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
+	public Collection<Institution> getInstitutionenEditableForCurrentBenutzer(boolean restrictedForSCH) {
+		return getInstitutionenForCurrentBenutzer(restrictedForSCH, true);
+	}
+
+	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Institution> getAllowedInstitutionenForCurrentBenutzer(boolean restrictedForSCH) {
+	public Collection<Institution> getInstitutionenReadableForCurrentBenutzer(boolean restrictedForSCH) {
+		return getInstitutionenForCurrentBenutzer(restrictedForSCH, false);
+	}
+
+	private Collection<Institution> getInstitutionenForCurrentBenutzer(boolean restrictedForSCH, boolean editable) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
@@ -265,11 +255,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 				}
 				return institutionList;
 			}
-			if (restrictedForSCH && benutzer.getRole().isRoleSchulamt()) {
-				return getAllInstitutionenForSchulamt();
-			}
 			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
-				return getAllInstitutionenForGemeindeBenutzer();
+				return getAllInstitutionenForGemeindeBenutzer(editable, restrictedForSCH);
 			}
 			return getAllInstitutionen();
 		}
