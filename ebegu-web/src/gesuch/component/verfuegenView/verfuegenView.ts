@@ -72,7 +72,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public bemerkungen: string;
 
     public showSchemas: boolean;
-    public sameVerfuegungsdaten: boolean;
+    public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
     public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
@@ -148,7 +148,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private setParamsDependingOnCurrentVerfuegung(): void {
-        this.setSameVerfuegungsdaten();
+        this.setSameVerfuegteVerfuegungsrelevanteDaten();
         this.setFragenObIgnorieren();
     }
 
@@ -163,11 +163,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.form.$setPristine();
     }
 
-    private setSameVerfuegungsdaten(): void {
-        this.sameVerfuegungsdaten = false; // by default
+    private setSameVerfuegteVerfuegungsrelevanteDaten(): void {
+        this.sameVerfuegteVerfuegungsrelevanteDaten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.sameVerfuegungsdaten = this.getVerfuegenToWorkWith().areSameVerfuegungsdaten();
+            this.sameVerfuegteVerfuegungsrelevanteDaten = this.getVerfuegenToWorkWith().areSameVerfuegteVerfuegungsrelevanteDaten();
         }
+    }
+
+    public isSameVerfuegteVerfuegungsrelevanteDaten(): boolean {
+        return this.sameVerfuegteVerfuegungsrelevanteDaten;
     }
 
     /**
@@ -179,10 +183,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.getVerfuegenToWorkWith()) {
             this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
         }
-    }
-
-    public isSameVerfuegungsdaten(): boolean {
-        return this.sameVerfuegungsdaten;
     }
 
     private isFragenObIgnorieren(): boolean {
