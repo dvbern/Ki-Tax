@@ -32,7 +32,7 @@ describe('InstitutionListComponent', () => {
 
     beforeEach(async(() => {
         const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-            ['getInstitutionenReadableForCurrentBenutzer']);
+            ['getInstitutionenEditableForCurrentBenutzer']);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
