@@ -15,28 +15,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {UIRouterModule} from '@uirouter/angular';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
+import {SharedModule} from '../../shared/shared.module';
 
-import { OnboardingInfoKitagComponent } from './onboarding-info-kitag.component';
+import {OnboardingInfoKitagComponent} from './onboarding-info-kitag.component';
 
 describe('OnboardingInfoKitagComponent', () => {
-  let component: OnboardingInfoKitagComponent;
-  let fixture: ComponentFixture<OnboardingInfoKitagComponent>;
+    let component: OnboardingInfoKitagComponent;
+    let fixture: ComponentFixture<OnboardingInfoKitagComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ OnboardingInfoKitagComponent ]
-    })
-    .compileComponents();
-  }));
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OnboardingInfoKitagComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+                UIRouterModule.forRoot({useHash: true}),
+            ],
+            declarations: [OnboardingInfoKitagComponent],
+            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+            ],
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(OnboardingInfoKitagComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -25,14 +25,13 @@ import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer.component';
-import createSpyObj = jasmine.createSpyObj;
 
 describe('OnboardingNeuBenutzerComponent', () => {
     let component: OnboardingNeuBenutzerComponent;
     let fixture: ComponentFixture<OnboardingNeuBenutzerComponent>;
 
-    const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
-    const applicationPropertyRSSpy = createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
