@@ -45,7 +45,6 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
-import ch.dvbern.ebegu.api.resource.auth.LocalhostChecker;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -128,8 +127,6 @@ public class DownloadResource {
 	@Inject
 	private Authorizer authorizer;
 
-	@Inject
-	private LocalhostChecker localhostChecker;
 
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
