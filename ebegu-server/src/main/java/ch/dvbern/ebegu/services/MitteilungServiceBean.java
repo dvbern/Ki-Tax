@@ -245,6 +245,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
 
 		Benutzer empfaengerAmt = mitteilung.getDossier().getVerantwortlicherBG();
+		if (empfaengerAmt == null){
+			empfaengerAmt = mitteilung.getDossier().getVerantwortlicherTS();
+		}
 		if (empfaengerAmt == null) {
 			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
 			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
