@@ -167,20 +167,6 @@ public class Dossier extends AbstractMutableEntity implements Searchable {
 		return getId();
 	}
 
-	/**
-	 * wenn der VerantwortlicherBG gesetzt ist, wir er zurueckgegeben.
-	 * Sonst wenn der VerantwortlicherTS gesetzt ist, wir er zurueckgegeben.
-	 * Sonst wird null zurueckgegeben
-	 */
-	@Nullable
-	public Benutzer getHauptVerantwortlicher() {
-		Benutzer hauptverantwortlicher = this.getVerantwortlicherBG();
-		if (hauptverantwortlicher == null) {
-			hauptverantwortlicher = this.getVerantwortlicherTS();
-		}
-		return hauptverantwortlicher;
-	}
-
 	@Override
 	public String getMessageForAccessException() {
 		return "gemeinde: " + this.getGemeinde().getName()

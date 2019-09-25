@@ -32,11 +32,11 @@ INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, u
 																							 'flyway', 0, null, '2018-01-01', '9999-01-01', 'London', '1',
 																							 'CH', 'Gemeinde', 'London', '3072', 'Schiessplatzweg', null);
 
-INSERT INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzerbg_id,
+INSERT INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzer_id,
 								 default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite, beschwerde_adresse_id, korrespondenzsprache,
 								 logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung) VALUES (UNHEX(REPLACE
 																																	  ('4a7d313f-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('4a7afba9-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'bss@bern.ch', '+41 31 321 61 11', 'https://www.bern.ch', null, 'DE_FR', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'Paris Kontoinhaber', true);
-INSERT INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzerbg_id,
+INSERT INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzer_id,
 								 default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite, beschwerde_adresse_id, korrespondenzsprache,
 								 logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung) VALUES (UNHEX(REPLACE
 																																	  ('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'info@ostermundigen.ch', '+41 31 930 14 14', 'https://www.ostermundigen.ch', null, 'DE', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'London Kontoinhaber', true);
@@ -69,3 +69,6 @@ INSERT INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('febf3cd1-4bd9-40eb-b65f-fd9b823b1270', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '21', 'CH', 'Tagesschule', 'Bern', '3008', 'Effingerstrasse', null);
 
 INSERT INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ, adresse_id, institution_id, institution_stammdaten_tagesschule_id, institution_stammdaten_ferieninsel_id, institution_stammdaten_betreuungsgutscheine_id, mail, telefon, webseite, oeffnungszeiten) VALUES (UNHEX(REPLACE('199ac4a1-448f-4d4c-b3a6-5aee21f89613', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', 'TAGESSCHULE', UNHEX(REPLACE('febf3cd1-4bd9-40eb-b65f-fd9b823b1270', '-', '')), UNHEX(REPLACE('f7abc530-5d1d-4f1c-a198-9039232974a0', '-', '')), null, null, null, 'mail@example.com', null, null, null);
+
+update mandant set angebotts = true;
+update mandant set angebotfi = true;

@@ -715,7 +715,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	/**
-	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat, wenn es kein kind oder betr gibt wird false zurueckgegeben
+	 * @return false wenn es ein kind gibt dass eine nicht schulamt betreuung hat,
+	 * wenn es kein kind oder betr gibt wird false zurueckgegeben
 	 */
 	@Transient
 	public boolean hasOnlyBetreuungenOfSchulamt() {
@@ -724,6 +725,19 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			.collect(Collectors.toList());
 		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
 			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
+	}
+
+	/**
+	 * @return false wenn es ein kind gibt dass eine nicht jugendamt betreuung hat,
+	 * wenn es kein kind oder betr gibt wird false zurueckgegeben
+	 */
+	@Transient
+	public boolean hasOnlyBetreuungenOfJugendamt() {
+		//noinspection SimplifyStreamApiCallChains
+		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+			.collect(Collectors.toList());
+		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
+			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt());
 	}
 
 	@Transient
@@ -1109,5 +1123,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return "eingangsart: " + this.getEingangsart()
 			+ ", status: " + this.getStatus()
 			+ ", fallNummer: " + this.getJahrFallAndGemeindenummer();
+	}
+
+	public Benutzer getVerantwortlicherAccordingToBetreuungen() {
+		if (hasOnlyBetreuungenOfSchulamt()) {
+			return getDossier().getVerantwortlicherTS();
+		}
+		return getDossier().getVerantwortlicherBG();
 	}
 }

@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,13 +56,20 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "gemeinde_id", name = "UK_gemeinde_stammdaten_gemeinde_id"),
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id"),
-		@UniqueConstraint(columnNames = "rechtsmittelbelehrung_id", name = "UK_rechtsmittelbelehrung_id")
+		@UniqueConstraint(columnNames = "rechtsmittelbelehrung_id", name = "UK_rechtsmittelbelehrung_id"),
+		@UniqueConstraint(columnNames = "bg_adresse_id", name = "UK_gemeinde_stammdaten_bg_adresse_id"),
+		@UniqueConstraint(columnNames = "ts_adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id")
 	}
 )
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+	@Nullable
+	@OneToOne(optional = true, orphanRemoval = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzer_id"), nullable = true)
+	private Benutzer defaultBenutzer;
 
 	@Nullable
 	@OneToOne(optional = true, orphanRemoval = false)
@@ -82,6 +90,16 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_adresse_id"), nullable = false)
 	private Adresse adresse;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_bg_adresse_id"), nullable = true)
+	private Adresse bgAdresse;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_ts_adresse_id"), nullable = true)
+	private Adresse tsAdresse;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -144,6 +162,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rechtsmittelbelehrung_id"))
 	private TextRessource rechtsmittelbelehrung;
+
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -302,6 +321,33 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
 	}
 
+	@Nullable
+	public Benutzer getDefaultBenutzer() {
+		return defaultBenutzer;
+	}
+
+	public void setDefaultBenutzer(@Nullable Benutzer defaultBenutzer) {
+		this.defaultBenutzer = defaultBenutzer;
+	}
+
+	@Nullable
+	public Adresse getBgAdresse() {
+		return bgAdresse;
+	}
+
+	public void setBgAdresse(@Nullable Adresse bgAdresse) {
+		this.bgAdresse = bgAdresse;
+	}
+
+	@Nullable
+	public Adresse getTsAdresse() {
+		return tsAdresse;
+	}
+
+	public void setTsAdresse(@Nullable Adresse tsAdresse) {
+		this.tsAdresse = tsAdresse;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -320,5 +366,73 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public boolean isZahlungsinformationValid() {
 		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(bic) && StringUtils.isNotEmpty(iban.getIban());
+	}
+
+	/**
+	 * Fuer *reine* BG-Angebote verwenden wir die BG-Adresse (falls gesetzt), sonst die Allgemeine Adresse
+	 * Fuer *reine* TS-Angebote verwenden wir die TS-Adresse (falls gesetzt), sonst die Allgemeine Adresse
+	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die Allgemeine Adresse
+	 */
+	@Nonnull
+	public Adresse getAdresseForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.hasOnlyBetreuungenOfJugendamt() && bgAdresse != null) {
+			return bgAdresse;
+		}
+		if (gesuch.hasOnlyBetreuungenOfSchulamt() && tsAdresse != null) {
+			return tsAdresse;
+		}
+		return adresse;
+	}
+
+	/**
+	 * Wir suchen einen Benutzer aufgrund der Betreuungen des übergebenen Gesuchs.
+	 * Falls *reines* BG Gesuch verwenden wir den BG-Benutzer, falls dieser die richtige Rolle hat
+	 * Falls *reines* TS Gesuch verwenden wir den TS-Benutzer, falls dieser die richtige Rolle hat
+	 * In allen anderen Fällen den Allgemeinen Benutzer
+	 */
+	public Optional<Benutzer> getDefaultBenutzerForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.hasOnlyBetreuungenOfJugendamt()
+				&& defaultBenutzerBG != null && defaultBenutzerBG.getRole().isRoleGemeindeOrBG()) {
+			return Optional.of(defaultBenutzerBG);
+		}
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()
+				&& defaultBenutzerTS != null && defaultBenutzerTS.getRole().isRoleGemeindeOrTS()) {
+			return Optional.of(defaultBenutzerTS);
+		}
+		return Optional.ofNullable(defaultBenutzer);
+	}
+
+	/**
+	 * Wir suchen einen Defaultbenutzer mit der Rolle BG oder GEMEINDE, falls ein spezifischer gesetzt ist
+	 * in defaultBenutzerBG, so verwenden wir diesen, sonst pruefen wir, ob der allgemeine Defaultbenutzer
+	 * zufaellig die gewuenschte Rolle hat.
+	 * Achtung: Diese Methode ist aehnlich auch auf dem Client vorhanden
+	 */
+	@Nonnull
+	public Optional<Benutzer> getDefaultBenutzerWithRoleBG() {
+		if (defaultBenutzerBG != null && defaultBenutzerBG.getRole().isRoleGemeindeOrBG()) {
+			return Optional.ofNullable(defaultBenutzerBG);
+		}
+		if (defaultBenutzer != null && defaultBenutzer.getRole().isRoleGemeindeOrBG()) {
+			return Optional.ofNullable(defaultBenutzer);
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Wir suchen einen Defaultbenutzer mit der Rolle TS oder GEMEINDE, falls ein spezifischer gesetzt ist
+	 * in defaultBenutzerTS, so verwenden wir diesen, sonst pruefen wir, ob der allgemeine Defaultbenutzer
+	 * zufaellig die gewuenschte Rolle hat.
+	 * Achtung: Diese Methode ist aehnlich auch auf dem Client vorhanden
+	 */
+	@Nonnull
+	public Optional<Benutzer> getDefaultBenutzerWithRoleTS() {
+		if (defaultBenutzerTS != null && defaultBenutzerTS.getRole().isRoleGemeindeOrTS()) {
+			return Optional.ofNullable(defaultBenutzerTS);
+		}
+		if (defaultBenutzer != null && defaultBenutzer.getRole().isRoleGemeindeOrTS()) {
+			return Optional.ofNullable(defaultBenutzer);
+		}
+		return Optional.empty();
 	}
 }

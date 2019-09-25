@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
@@ -43,6 +43,9 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public beguStartStr: string;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
+    @Input() public altBGAdresse: boolean;
+
+    @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
@@ -73,6 +76,10 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
+    }
+
+    public altBGAdresseHasChange(newVal: boolean): void {
+        this.altBGAdresseChange.emit(newVal);
     }
 
     public getKonfigKontingentierungString(): string {

@@ -797,8 +797,11 @@ export default class EbeguRestUtil {
 
             restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
             restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
+            restStammdaten.defaultBenutzer = this.userToRestObject({}, stammdaten.defaultBenutzer);
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
+            restStammdaten.bgAdresse = this.adresseToRestObject({}, stammdaten.bgAdresse);
+            restStammdaten.tsAdresse = this.adresseToRestObject({}, stammdaten.tsAdresse);
             restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
@@ -832,6 +835,7 @@ export default class EbeguRestUtil {
             stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
             stammdatenTS.defaultBenutzerBG = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerBG);
             stammdatenTS.defaultBenutzerTS = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerTS);
+            stammdatenTS.defaultBenutzer = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzer);
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
@@ -855,6 +859,8 @@ export default class EbeguRestUtil {
                         stammdatenFromServer.rechtsmittelbelehrung,
                     );
             }
+            stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
+            stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
 
             return stammdatenTS;
         }
