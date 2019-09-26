@@ -103,9 +103,9 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean kategorieKeinPensum = false;
 
-	private boolean sameVerfuegungsdaten;
+	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
-	private boolean sameVerguenstigung;
+	private boolean sameAusbezahlteVerguenstigung;
 
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
@@ -294,19 +294,19 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.bgPensum = bgPensum;
 	}
 
-	public boolean isSameVerfuegungsdaten() {
-		return sameVerfuegungsdaten;
+	public boolean isSameVerfuegteVerfuegungsrelevanteDaten() {
+		return sameVerfuegteVerfuegungsrelevanteDaten;
 	}
 
-	public void setSameVerfuegungsdaten(boolean sameVerfuegungsdaten) {
-		this.sameVerfuegungsdaten = sameVerfuegungsdaten;
+	public void setSameVerfuegteVerfuegungsrelevanteDaten(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
+		this.sameVerfuegteVerfuegungsrelevanteDaten = sameVerfuegteVerfuegungsrelevanteDaten;
 	}
 
-	public boolean isSameVerguenstigung() {
-		return sameVerguenstigung;
+	public boolean isSameAusbezahlteVerguenstigung() {
+		return sameAusbezahlteVerguenstigung;
 	}
 
-	public void setSameVerguenstigung(boolean sameVerguenstigung) {
-		this.sameVerguenstigung = sameVerguenstigung;
+	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
+		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
 	}
 }

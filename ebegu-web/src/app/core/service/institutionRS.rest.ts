@@ -83,8 +83,14 @@ export class InstitutionRS {
         });
     }
 
-    public getInstitutionenForCurrentBenutzer(): IPromise<TSInstitution[]> {
-        return this.$http.get(`${this.serviceURL}/currentuser`).then((response: any) => {
+    public getInstitutionenEditableForCurrentBenutzer(): IPromise<TSInstitution[]> {
+        return this.$http.get(`${this.serviceURL}/editable/currentuser`).then((response: any) => {
+            return this.ebeguRestUtil.parseInstitutionen(response.data);
+        });
+    }
+
+    public getInstitutionenReadableForCurrentBenutzer(): IPromise<TSInstitution[]> {
+        return this.$http.get(`${this.serviceURL}/readable/currentuser`).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionen(response.data);
         });
     }

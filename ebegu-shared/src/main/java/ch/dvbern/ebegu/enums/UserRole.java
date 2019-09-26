@@ -48,8 +48,12 @@ public enum UserRole {
 		this.rollenAbhaengigkeit = rollenAbhaengigkeit;
 	}
 
+	public boolean isRoleSchulamtOnly() {
+		return ADMIN_TS == this || SACHBEARBEITER_TS == this;
+	}
+
 	public boolean isRoleSchulamt() {
-		return ADMIN_TS == this || SACHBEARBEITER_TS == this || isRoleGemeinde();
+		return isRoleSchulamtOnly() || isRoleGemeinde();
 	}
 
 	public boolean isRoleJugendamt() {

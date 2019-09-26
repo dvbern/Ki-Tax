@@ -249,7 +249,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Collection<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = getVerfuegungsZeitabschnitteNachVerfuegungDatum(gemeinde, lastZahlungErstellt,
 			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
-			if (zeitabschnitt.getZahlungsstatus().isIgnorierend() || zeitabschnitt.getZahlungsstatus().isNeu()) {
+			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
+			if (zeitabschnitt.getZahlungsstatus().isZuBehandelnInZahlungslauf()) {
 				createZahlungspositionenKorrekturUndNachzahlung(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 			}
 		}
@@ -458,6 +459,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		korrekturPosition.setStatus(status);
 		zahlung.getZahlungspositionen().add(korrekturPosition);
 		if (vorgaengerZeitabschnitt.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
+			LOGGER.error("Es wird eine Zahlungsposition auf IGNORIERT_KORRIGIERT gesetzt, die vorher IGNORIERT war! {}", vorgaengerZeitabschnitt.getId());
 			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else { // by default VERRECHNET_KORRIGIERT
 			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);

@@ -130,7 +130,7 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then(response => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
             this.institutionenList = response;
         });
     }
