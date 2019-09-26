@@ -301,19 +301,29 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			&& !stammdaten.getModuleTagesschule().isEmpty();
 	}
 
-	public boolean isVisibleForGemeindeUser(Benutzer benutzer) {
-		if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
-			return true;
+	public boolean isVisibleForGemeindeUser(Benutzer benutzer, boolean canEdit, boolean restrictedForSCH) {
+		if (benutzer.getRole().isRoleGemeindeabhaengig()) {
+			if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
+				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch Gemeinde-Benutzer,
+				// ausser das restrictedForSCH Flag ist gesetzt und es ist ein TS-Benutzer
+				if (restrictedForSCH && benutzer.getRole().isRoleSchulamtOnly()) {
+					return false;
+				}
+				return !canEdit;
+			}
+			Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
+			Gemeinde gemeinde = null;
+			if (getInstitutionStammdatenTagesschule() != null) {
+				gemeinde = getInstitutionStammdatenTagesschule().getGemeinde();
+			}
+			if (getInstitutionStammdatenFerieninsel() != null) {
+				gemeinde = getInstitutionStammdatenFerieninsel().getGemeinde();
+			}
+			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde muss stimmen
+			if (gemeinde != null) {
+				return gemeinden.contains(gemeinde);
+			}
 		}
-		Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
-		Gemeinde gemeinde = null;
-		if (getInstitutionStammdatenTagesschule() != null) {
-			gemeinde = getInstitutionStammdatenTagesschule().getGemeinde();
-		}
-		if (getInstitutionStammdatenFerieninsel() != null) {
-			gemeinde = getInstitutionStammdatenFerieninsel().getGemeinde();
-		}
-
-		return gemeinden.contains(gemeinde);
+		return false;
 	}
 }

@@ -133,7 +133,7 @@ public class KindResource {
 		// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder gefilter
 		// damit nur die relevanten Kinder geschickt werden
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT , SACHBEARBEITER_INSTITUTION )) {
-			Collection<Institution> instForCurrBenutzer = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+			Collection<Institution> instForCurrBenutzer = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			RestUtil.purgeSingleKindAndBetreuungenOfInstitutionen(jaxKindContainer, instForCurrBenutzer);
 		}
 

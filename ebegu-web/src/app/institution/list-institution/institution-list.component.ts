@@ -74,7 +74,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForCurrentBenutzer()
+        this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
             .then(insti => {
                 this.dataSource = new MatTableDataSource(insti);
                 this.dataSource.paginator = this.paginator;

@@ -158,6 +158,17 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
+	@Nonnull
+	@RolesAllowed(SUPER_ADMIN)
+	public Collection<InstitutionStammdaten> getAllInstitonStammdatenForBatchjobs() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.where(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
@@ -273,7 +284,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			return BetreuungsangebotTyp.getSchulamtTypes();
 		}
 		Collection<Institution> institutionenForCurrentBenutzer =
-			institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+			institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 		if (institutionenForCurrentBenutzer.isEmpty()) {
 			return new ArrayList<>();
 		}

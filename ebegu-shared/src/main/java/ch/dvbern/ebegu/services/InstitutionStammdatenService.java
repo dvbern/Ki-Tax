@@ -47,7 +47,14 @@ public interface InstitutionStammdatenService {
 	/**
 	 * @return Aller InstitutionStammdaten aus der DB.
 	 */
+	@Nonnull
 	Collection<InstitutionStammdaten> getAllInstitutionStammdaten();
+
+	/**
+	 * @return Aller InstitutionStammdaten aus der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+	 */
+	@Nonnull
+	Collection<InstitutionStammdaten> getAllInstitonStammdatenForBatchjobs();
 
 	/**
 	 * totally removes a InstitutionStammdaten from the Database. It takes the InstitutionStammdaten based on the given Institution ID

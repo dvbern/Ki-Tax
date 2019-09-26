@@ -34,20 +34,45 @@ public final class VerfuegungUtil {
 	private VerfuegungUtil() {
 	}
 
-	public static void setIsSameVerfuegungsdaten(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung verfuegungOnGesuchForMutation) {
-		if (verfuegungOnGesuchForMutation != null) {
+	/**
+	 * Prueft, ob die aktuelle Verfuegung dieseilben Berechnungsrelevanten Daten beinhaltet wie
+	 * die zuletzt verfuegte Verfuegung
+	 * Wird verwendet fuer die Anzeige "Identische Daten" und folgend "Trotzdem verfuegen / Auf verfuegen verzichten"
+	 */
+	public static void setIsSameVerfuegungsdaten(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung letzteVerfuegung) {
+		if (letzteVerfuegung != null) {
 			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
-			final List<VerfuegungZeitabschnitt> zeitabschnitteGSM = verfuegungOnGesuchForMutation.getZeitabschnitte();
+			final List<VerfuegungZeitabschnitt> letztVerfuegteZeitabschnitte = letzteVerfuegung.getZeitabschnitte();
 
 			for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
 				// todo imanol Dies sollte auch subzeitabschnitte vergleichen
-				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(zeitabschnitteGSM, newZeitabschnitt);
+				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(letztVerfuegteZeitabschnitte, newZeitabschnitt);
 				if (oldSameZeitabschnitt.isPresent()) {
-					newZeitabschnitt.setSameVerfuegungsdaten(newZeitabschnitt.isSameBerechnung(oldSameZeitabschnitt.get()));
-					newZeitabschnitt.setSameVerguenstigung(Objects.equals(newZeitabschnitt.getVerguenstigung(), oldSameZeitabschnitt.get().getVerguenstigung()));
+					newZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDaten(newZeitabschnitt.isSameBerechnung(oldSameZeitabschnitt.get()));
 				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-					newZeitabschnitt.setSameVerfuegungsdaten(false);
-					newZeitabschnitt.setSameVerguenstigung(false);
+					newZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDaten(false);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Prueft, ob die aktuelle Verfuegung denselben auszuzahlenden Betrag berechnet wie die
+	 * zuletzt ausbezahlte Verfuegung
+	 * Wird verwendet, um zu entscheiden, ob die Frage Ignorieren/Uebernehmen gestellt werden muss
+	 */
+	public static void setIsSameAusbezahlteVerguenstigung(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung letzteAusbezahlteVerfuegung) {
+		if (letzteAusbezahlteVerfuegung != null) {
+			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
+			final List<VerfuegungZeitabschnitt> letztAusbezahlteZeitabschnitte = letzteAusbezahlteVerfuegung.getZeitabschnitte();
+
+			for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
+				// todo imanol Dies sollte auch subzeitabschnitte vergleichen
+				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
+				if (oldSameZeitabschnitt.isPresent()) {
+					newZeitabschnitt.setSameAusbezahlteVerguenstigung(Objects.equals(newZeitabschnitt.getVerguenstigung(), oldSameZeitabschnitt.get().getVerguenstigung()));
+				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
+					newZeitabschnitt.setSameAusbezahlteVerguenstigung(false);
 				}
 			}
 		}
@@ -92,22 +117,8 @@ public final class VerfuegungUtil {
 	private static VerfuegungsZeitabschnittZahlungsstatus findStatusOldZeitabschnitt(List<VerfuegungZeitabschnitt> zeitabschnitteGSM, VerfuegungZeitabschnitt newZeitabschnitt) {
 		for (VerfuegungZeitabschnitt zeitabschnittGSM : zeitabschnitteGSM) {
 			if (zeitabschnittGSM.getGueltigkeit().getOverlap(newZeitabschnitt.getGueltigkeit()).isPresent()) {
-				// wir gehen davon aus, dass Zahlung immer fuer einen ganzen Monat gemacht werden, deswegen reicht es wenn ein Zeitabschnitt VERRECHNET bzw. IGNORIERT ist
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET) {
-					return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT) {
-					return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND) {
-					return VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
-					return VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT;
-				}
-				if (zeitabschnittGSM.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT) {
-					return VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
-				}
+				// Wenn ein Vorgaenger vorhanden ist, wird der Status von diesem uebernommen
+				return zeitabschnittGSM.getZahlungsstatus();
 			}
 		}
 		return VerfuegungsZeitabschnittZahlungsstatus.NEU;

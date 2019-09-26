@@ -144,7 +144,7 @@ export default class DVSTPersistPendenzen implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
             quicksearchListController.selectedInstitution = institutionList.find(i => i.name === institution);
         });
     }

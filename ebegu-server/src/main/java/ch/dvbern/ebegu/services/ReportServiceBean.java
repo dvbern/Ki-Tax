@@ -461,7 +461,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
 			Collection<Institution> allowedInstitutionen =
-				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung)
 				.get(Verfuegung_.betreuung)
 				.get(Betreuung_.institutionStammdaten)
@@ -872,7 +872,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 
 		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(
 			reportData,
@@ -1052,7 +1052,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
 			Collection<Institution> allowedInstitutionen =
-				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung)
 				.get(Verfuegung_.betreuung)
 				.get(Betreuung_.institutionStammdaten)
@@ -1134,7 +1134,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
 			Collection<Institution> allowedInstitutionen =
-				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			Predicate predicateAllowedInstitutionen = root.get(VerfuegungZeitabschnitt_.verfuegung)
 				.get(Verfuegung_.betreuung)
 				.get(Betreuung_.institutionStammdaten)

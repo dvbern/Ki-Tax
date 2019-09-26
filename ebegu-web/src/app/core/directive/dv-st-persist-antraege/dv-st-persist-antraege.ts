@@ -200,7 +200,7 @@ export default class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
             if (!Array.isArray(institutionList)) {
                 return;
             }

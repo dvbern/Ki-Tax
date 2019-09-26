@@ -2996,8 +2996,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setSameVerfuegungsdaten(zeitabschnitt.isSameVerfuegungsdaten());
-		jaxZeitabschn.setSameVerguenstigung(zeitabschnitt.isSameVerguenstigung());
+		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
+		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.isSameAusbezahlteVerguenstigung());
 
 		return jaxZeitabschn;
 	}
@@ -3034,8 +3034,8 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setKategorieKeinPensum(jaxVerfuegungZeitabschnitt.isKategorieKeinPensum());
 		verfuegungZeitabschnitt.setZuSpaetEingereicht(jaxVerfuegungZeitabschnitt.isZuSpaetEingereicht());
 		verfuegungZeitabschnitt.setZahlungsstatus(jaxVerfuegungZeitabschnitt.getZahlungsstatus());
-		verfuegungZeitabschnitt.setSameVerfuegungsdaten(jaxVerfuegungZeitabschnitt.isSameVerfuegungsdaten());
-		verfuegungZeitabschnitt.setSameVerguenstigung(jaxVerfuegungZeitabschnitt.isSameVerguenstigung());
+		verfuegungZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDaten(jaxVerfuegungZeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
+		verfuegungZeitabschnitt.setSameAusbezahlteVerguenstigung(jaxVerfuegungZeitabschnitt.isSameAusbezahlteVerguenstigung());
 		return verfuegungZeitabschnitt;
 	}
 

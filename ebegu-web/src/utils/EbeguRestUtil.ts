@@ -2584,8 +2584,8 @@ export default class EbeguRestUtil {
             zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
             zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
             zeitabschnitt.zuSpaetEingereicht = zeitabschnittTS.zuSpaetEingereicht;
-            zeitabschnitt.sameVerfuegungsdaten = zeitabschnittTS.sameVerfuegungsdaten;
-            zeitabschnitt.sameVerguenstigung = zeitabschnittTS.sameVerguenstigung;
+            zeitabschnitt.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten;
+            zeitabschnitt.sameAusbezahlteVerguenstigung = zeitabschnittTS.sameAusbezahlteVerguenstigung;
             return zeitabschnitt;
         }
         return undefined;
@@ -2623,8 +2623,8 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
-            verfuegungZeitabschnittTS.sameVerfuegungsdaten = zeitabschnittFromServer.sameVerfuegungsdaten;
-            verfuegungZeitabschnittTS.sameVerguenstigung = zeitabschnittFromServer.sameVerguenstigung;
+            verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
+            verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung = zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             return verfuegungZeitabschnittTS;
         }
         return undefined;

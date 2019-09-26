@@ -118,7 +118,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
 			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
-		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND,
 			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 
@@ -137,7 +137,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
 			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
-		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND,
 			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 

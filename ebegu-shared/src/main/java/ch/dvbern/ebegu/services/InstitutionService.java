@@ -78,11 +78,24 @@ public interface InstitutionService {
 	Collection<Institution> getAllInstitutionen();
 
 	/**
-	 * Gibt alle aktiven Institutionen zurueck, fuer welche der aktuell eingeloggte Benutzer berechtigt ist.
+	 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+	 */
+	@Nonnull
+	Collection<Institution> getAllInstitutionenForBatchjobs();
+
+	/**
+	 * Gibt alle aktiven Institutionen zurueck, fuer welche der aktuell eingeloggte Benutzer *schreib*-berechtigt ist.
 	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden. Dieses Parameter
 	 * gilt nur fuer die Rolen vom Schulamt
 	 */
-	Collection<Institution> getAllowedInstitutionenForCurrentBenutzer(boolean restrictedForSCH);
+	Collection<Institution> getInstitutionenEditableForCurrentBenutzer(boolean restrictedForSCH);
+
+	/**
+	 * Gibt alle aktiven Institutionen zurueck, fuer welche der aktuell eingeloggte Benutzer *lese*-berechtigt ist.
+	 * @param restrictedForSCH true wenn nur die Institutionen der Art TAGESSCHULE oder FERIENINSEL geholt werden. Dieses Parameter
+	 * gilt nur fuer die Rolen vom Schulamt
+	 */
+	Collection<Institution> getInstitutionenReadableForCurrentBenutzer(boolean restrictedForSCH);
 
 	/**
 	 * returns all types of Angebot that are offered by this Institution
