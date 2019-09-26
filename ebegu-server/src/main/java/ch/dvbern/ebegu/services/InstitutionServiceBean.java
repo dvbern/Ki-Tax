@@ -211,7 +211,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@PermitAll
-	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(boolean editable, boolean restrictedForSCH) {
+	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(boolean editable,
+		boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
@@ -227,17 +228,17 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	public Collection<Institution> getInstitutionenEditableForCurrentBenutzer(boolean restrictedForSCH) {
-		return getInstitutionenForCurrentBenutzer(restrictedForSCH, true);
+		return getInstitutionenForCurrentBenutzer(true, restrictedForSCH);
 	}
 
 	@Override
 	@Nonnull
 	@PermitAll
 	public Collection<Institution> getInstitutionenReadableForCurrentBenutzer(boolean restrictedForSCH) {
-		return getInstitutionenForCurrentBenutzer(restrictedForSCH, false);
+		return getInstitutionenForCurrentBenutzer(false, restrictedForSCH);
 	}
 
-	private Collection<Institution> getInstitutionenForCurrentBenutzer(boolean restrictedForSCH, boolean editable) {
+	private Collection<Institution> getInstitutionenForCurrentBenutzer(boolean canEdit, boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
@@ -256,7 +257,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 				return institutionList;
 			}
 			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
-				return getAllInstitutionenForGemeindeBenutzer(editable, restrictedForSCH);
+				return getAllInstitutionenForGemeindeBenutzer(canEdit, restrictedForSCH);
 			}
 			return getAllInstitutionen();
 		}

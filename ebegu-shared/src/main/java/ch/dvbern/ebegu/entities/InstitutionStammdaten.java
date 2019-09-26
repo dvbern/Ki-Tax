@@ -291,7 +291,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			&& !institutionStammdatenTagesschule.getModuleTagesschule().isEmpty();
 	}
 
-	public boolean isVisibleForGemeindeUser(Benutzer benutzer, boolean editable, boolean restrictedForSCH) {
+	public boolean isVisibleForGemeindeUser(Benutzer benutzer, boolean canEdit, boolean restrictedForSCH) {
 		if (benutzer.getRole().isRoleGemeindeabhaengig()) {
 			if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
 				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch Gemeinde-Benutzer,
@@ -299,7 +299,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 				if (restrictedForSCH && benutzer.getRole().isRoleSchulamtOnly()) {
 					return false;
 				}
-				return !editable;
+				return !canEdit;
 			}
 			Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
 			Gemeinde gemeinde = null;
