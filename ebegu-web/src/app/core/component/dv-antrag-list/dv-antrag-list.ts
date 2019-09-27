@@ -40,6 +40,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('DVAntragListController');
 
@@ -74,6 +75,7 @@ export class DVAntragListController implements IController {
         '$window',
         'GemeindeRS',
         'EinstellungRS',
+        '$translate'
     ];
 
     public totalResultCount: number;
@@ -123,6 +125,7 @@ export class DVAntragListController implements IController {
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
+        private readonly $translate: ITranslateService
     ) {
     }
 
@@ -287,5 +290,13 @@ export class DVAntragListController implements IController {
 
     public setSelectedInstitutionName(): void {
         this.selectedInstitutionName = this.selectedInstitution ? this.selectedInstitution.name : null;
+    }
+
+    public getAntragTypBezeichnung(antrag: TSAntragDTO) {
+        let bezeichnung: string = this.$translate.instant(antrag.antragTyp);
+        if (antrag.laufnummer && antrag.laufnummer > 0) {
+            bezeichnung = bezeichnung +  ' ' + antrag.laufnummer;
+        }
+        return bezeichnung;
     }
 }
