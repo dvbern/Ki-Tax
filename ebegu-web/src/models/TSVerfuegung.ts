@@ -124,8 +124,10 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
-            if (!abschnitt.sameAusbezahlteVerguenstigung
-                && abschnitt.zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT) {
+            const datenVeraeandert = !abschnitt.sameAusbezahlteVerguenstigung;
+            const alreadyIgnored = abschnitt.zahlungsstatus == TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
+                || abschnitt.zahlungsstatus == TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
         }

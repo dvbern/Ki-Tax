@@ -24,10 +24,9 @@ public enum VerfuegungsZeitabschnittZahlungsstatus {
 	VERRECHNEND, // Die Zahlung war schon ausbezahlt, wurde aber mit "uebernehmen" gekennzeichnet.
 	VERRECHNET,
 	VERRECHNET_KORRIGIERT, // Die Zahlung war schon ausbezahlt, wurde aber in einem späteren Zahlungslauf korrigiert
-	IGNORIEREND, // Zahlung ist markiert zum Ignorieren aber es wurde noch nicht "ausbezahlt" (d.h. im Excel mit ignoriert exportiert)
-	IGNORIERT, // Zahlung wurde mal als IGNORIEREND markiert und ist auch "ausbezahlt"
-	@Deprecated // Dieser Zustand darf neu nicht mehr vorkommmen. Was einmal ignoriert war, darf nie mehr nicht-ignoriert werden!
-	IGNORIERT_KORRIGIERT; // Die Zahlung war schon ignoriert, wurde aber in einem späteren Zahlungslauf korrigiert
+	IGNORIEREND, 	// Zahlung ist markiert zum Ignorieren aber es wurde noch nicht "ausbezahlt" (d.h. im Excel mit ignoriert exportiert)
+	IGNORIERT, 		// Zahlung wurde bereits einmal ignoriert und muss daher auch künftig ignoriert werden
+	IGNORIERT_KORRIGIERT; // Die Zahlung war schon ignoriert, wurde aber in einem späteren Zahlungslauf korrigiert (und muss weiterhin ignoriert werden)
 
 	public boolean isNeu() {
 		return NEU == this;
