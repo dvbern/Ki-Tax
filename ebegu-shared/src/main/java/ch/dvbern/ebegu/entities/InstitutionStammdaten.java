@@ -306,7 +306,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
 				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch Gemeinde-Benutzer,
 				// ausser das restrictedForSCH Flag ist gesetzt und es ist ein TS-Benutzer
-				if (restrictedForSCH && benutzer.getRole().isRoleSchulamtOnly()) {
+				if (restrictedForSCH && benutzer.getRole().isRoleTsOnly()) {
 					return false;
 				}
 				return !canEdit;
