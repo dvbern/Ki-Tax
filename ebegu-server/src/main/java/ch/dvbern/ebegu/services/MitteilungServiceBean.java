@@ -253,6 +253,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 			if (stammdatenOptional.isPresent()) {
 				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
+				// Wir nehmen den Allgemeinen Default, weil wir auf der Mitteilung kein Gesuch haben
+				// und daher nicht wissen, ob es ein reines BG- oder TS-Gesuch ist
 				empfaengerAmt = stammdatenOptional.get().getDefaultBenutzer();
 			}
 		}
