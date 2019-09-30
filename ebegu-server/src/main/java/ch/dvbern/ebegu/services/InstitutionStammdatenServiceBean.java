@@ -99,12 +99,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private InstitutionEventConverter institutionEventConverter;
 
+	@Inject
+	private Authorizer authorizer;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
+		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);

@@ -92,18 +92,28 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private Persistence persistence;
+
 	@Inject
 	private PrincipalBean principalBean;
+
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
 	@Inject
 	private BenutzerService benutzerService;
+
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
 	@Inject
 	private Event<ExportedEvent> exportedEvent;
+
 	@Inject
 	private InstitutionClientEventConverter institutionClientEventConverter;
+
+	@Inject
+	private Authorizer authorizer;
+
 
 	@Nonnull
 	@Override
@@ -111,7 +121,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
-
+		authorizer.checkWriteAuthorizationInstitution(institution);
 		return persistence.merge(institution);
 	}
 
@@ -232,12 +242,25 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			Benutzer benutzer = benutzerOptional.get();
 			return institutionStammdatenService.getAllInstitutionStammdaten()
 				.stream()
-				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer, editable, restrictedForSCH))
+				.filter(stammdaten -> isAllowedForMode(stammdaten, benutzer, editable, restrictedForSCH))
 				.map(InstitutionStammdaten::getInstitution)
 				.collect(Collectors.toList());
 		}
 
 		return new ArrayList<>();
+	}
+
+	private boolean isAllowedForMode(
+		@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Benutzer benutzer, boolean editMode, boolean restrictedForSCH
+	) {
+		if (editMode) {
+			return authorizer.isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
+		}
+		// Falls das restricted-Flag gesetzt ist, ist nicht einmal lesen erlaubt
+		if (restrictedForSCH && benutzer.getRole().isRoleSchulamtOnly()) {
+			return false;
+		}
+		return authorizer.isReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
 	@Override
