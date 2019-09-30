@@ -69,7 +69,7 @@ export class FreigabeController {
 
     private readDossier(): void {
         // Als erstes das Dossier lesen, da wir dieses fuer weitere Aufrufe brauchen
-        let dossierOfFreizugebenderAntrag: TSDossier = undefined;
+        let dossierOfFreizugebenderAntrag: TSDossier;
         this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
             dossierOfFreizugebenderAntrag = dossier;
             this.updateUserList(dossierOfFreizugebenderAntrag);
@@ -77,10 +77,10 @@ export class FreigabeController {
     }
 
     private updateUserList(dossier: TSDossier): void {
-        this.benutzerRS.getBenutzerBgOrGemeindeForGemeinde(dossier.gemeinde.id).then((response: any) => {
-            this.userBGList = angular.copy(response);
-            this.benutzerRS.getBenutzerTsOrGemeindeForGemeinde(dossier.gemeinde.id).then((response: any) => {
-                this.userTSList = angular.copy(response);
+        this.benutzerRS.getBenutzerBgOrGemeindeForGemeinde(dossier.gemeinde.id).then((responseBG: any) => {
+            this.userBGList = angular.copy(responseBG);
+            this.benutzerRS.getBenutzerTsOrGemeindeForGemeinde(dossier.gemeinde.id).then((responseTS: any) => {
+                this.userTSList = angular.copy(responseTS);
                 this.setVerantwortliche(dossier);
             });
         });
@@ -93,37 +93,43 @@ export class FreigabeController {
         // (3) Defaults aus Properties
 
         // Jugendamt
-        let userVorjahrOrCurrentBG = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(this.gesuch.verantwortlicherUsernameBG, this.userBGList);
+        const userVorjahrOrCurrentBG = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
+            this.gesuch.verantwortlicherUsernameBG, this.userBGList);
         if (EbeguUtil.isNotNullOrUndefined(userVorjahrOrCurrentBG)) {
             this.selectedUserBG = userVorjahrOrCurrentBG;
         } else {
-            // Es gibt keinen Vorjahres-Verantwortlichen und der eingeloggte Benutzer ist nicht fuer BG berechtigt. Wir suchen nach einem anderen
-            // Kandidaten
+            // Es gibt keinen Vorjahres-Verantwortlichen und der eingeloggte Benutzer ist nicht fuer BG berechtigt.
+            // Wir suchen nach einem anderen Kandidaten
             this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
                 this.selectedUserBG = stammdaten.getDefaultBenutzerWithRoleBG().username;
             });
         }
 
         // Schulamt
-        let userVorjahrOrCurrentTS = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(this.gesuch.verantwortlicherUsernameTS, this.userTSList);
+        const userVorjahrOrCurrentTS = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
+            this.gesuch.verantwortlicherUsernameTS, this.userTSList);
+        // tslint:disable-next-line:early-exit
         if (EbeguUtil.isNotNullOrUndefined(userVorjahrOrCurrentTS)) {
             this.selectedUserTS = userVorjahrOrCurrentTS;
         } else {
-            // Es gibt keinen Vorjahres-Verantwortlichen und der eingeloggte Benutzer ist nicht fuer BG berechtigt. Wir suchen nach einem anderen
-            // Kandidaten
+            // Es gibt keinen Vorjahres-Verantwortlichen und der eingeloggte Benutzer ist nicht fuer BG berechtigt.
+            // Wir suchen nach einem anderen Kandidaten
             this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
                 this.selectedUserTS = stammdaten.getDefaultBenutzerWithRoleTS().username;
             });
         }
     }
 
-    private getVerantwortlichenAusVorjahrOrCurrentBenutzer(usernameVorjahr: string, listOfBerechtigteUser: Array<TSBenutzer>): string | undefined {
+    private getVerantwortlichenAusVorjahrOrCurrentBenutzer(
+        usernameVorjahr: string, listOfBerechtigteUser: Array<TSBenutzer>
+    ): string | undefined {
         if (usernameVorjahr) {
-            // Falls schon ein Verantwortlicher aus dem Vorjahr gesetzt ist: Pruefen, ob dieser noch existiert und die richtige Rolle hat
-            // Dazu muss er in der vorher gelesenen Liste der berechtigen Benutzer sein
+            // Falls schon ein Verantwortlicher aus dem Vorjahr gesetzt ist: Pruefen, ob dieser noch existiert
+            // und die richtige Rolle hat Dazu muss er in der vorher gelesenen Liste der berechtigen Benutzer sein
             if (this.isUserInList(usernameVorjahr, listOfBerechtigteUser)) {
                 return usernameVorjahr;
-            } else if (this.isUserInList(this.authService.getPrincipal().username, listOfBerechtigteUser)) {
+            }
+            if (this.isUserInList(this.authService.getPrincipal().username, listOfBerechtigteUser)) {
                 // Der eingeloggte Benutzer ist berechtigt fuer was wir suchen -> Wir nehmen diesen
                 return this.authService.getPrincipal().username;
             }
