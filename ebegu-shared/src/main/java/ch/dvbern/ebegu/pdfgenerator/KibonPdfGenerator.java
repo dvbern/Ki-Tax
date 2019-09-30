@@ -138,7 +138,7 @@ public abstract class KibonPdfGenerator {
 		List<String> gemeindeKontaktdaten = Arrays.asList(
 			translate(ABSENDER_TELEFON, gemeindeStammdaten.getTelefon()),
 			gemeindeStammdaten.getMail(),
-			gemeindeStammdaten.getWebseite(),
+			gemeindeStammdaten.getWebseite() != null ? gemeindeStammdaten.getWebseite() :  "",
 			"",
 			"",
 			gemeindeStammdaten.getGemeinde().getName() + ", " + Constants.DATE_FORMATTER.format(LocalDate.now())
