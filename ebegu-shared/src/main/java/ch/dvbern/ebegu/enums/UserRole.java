@@ -48,16 +48,20 @@ public enum UserRole {
 		this.rollenAbhaengigkeit = rollenAbhaengigkeit;
 	}
 
+	public boolean isRoleBgOnly() {
+		return ADMIN_BG == this || SACHBEARBEITER_BG == this;
+	}
+
 	public boolean isRoleTsOnly() {
 		return ADMIN_TS == this || SACHBEARBEITER_TS == this;
 	}
 
 	public boolean isRoleGemeindeOrBG() {
-		return isRoleGemeinde() || isRoleGemeindeOrBG();
+		return isRoleGemeinde() || isRoleBgOnly();
 	}
 
 	public boolean isRoleGemeindeOrTS() {
-		return isRoleGemeinde() || isRoleGemeindeOrTS();
+		return isRoleGemeinde() || isRoleTsOnly();
 	}
 
 	public boolean isRoleAnyAdminGemeinde() {
