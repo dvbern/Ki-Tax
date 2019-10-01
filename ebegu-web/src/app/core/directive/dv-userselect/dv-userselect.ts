@@ -104,11 +104,11 @@ export class UserselectController implements IController {
 
     private updateUserList(): void {
         if (this.schulamt) {
-            this.benutzerRS.getBenutzerSCHorAdminSCH().then(response => {
+            this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userList = response;
             });
         } else {
-            this.benutzerRS.getBenutzerJAorAdmin().then(response => {
+            this.benutzerRS.getAllBenutzerBgOrGemeinde().then(response => {
                 this.userList = response;
             });
         }
