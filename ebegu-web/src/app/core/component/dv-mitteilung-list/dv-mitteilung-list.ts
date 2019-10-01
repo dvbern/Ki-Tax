@@ -227,7 +227,7 @@ export class DVMitteilungListController implements IOnInit {
      * Wenn das Formular leer ist, wird der Entwurf geloescht (falls er bereits existiert)
      */
     public saveEntwurf(): IPromise<TSMitteilung> {
-       if (this.form.$dirty && !this.isMitteilungEmpty() && this.isLoaded) {
+        if (this.form.$dirty && !this.isMitteilungEmpty() && this.isLoaded) {
             this.isLoaded = false;
             return this.mitteilungRS.saveEntwurf(this.getCurrentMitteilung())
                 .then(() => this.reloadEntwurfAndMitteilungen())
