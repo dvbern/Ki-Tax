@@ -237,10 +237,12 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			zahlungspositions.sort(Comparator.comparing(o -> o.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()));
 			for (Zahlungsposition zahlungsposition : zahlungspositions) {
 				sb.append(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().toRangeString()).append(", ");
-				sb.append(zahlungsposition.getBetrag()).append(", ");
-				sb.append(zahlungsposition.getStatus()).append(", ");
-				sb.append("Ausbezahlt am: ").append(zahlungsposition.getZahlung().getZahlungsauftrag().getDatumGeneriert()).append(", ");
-				sb.append(zahlungsposition.isIgnoriert()).append('\n');
+				String trennzeichen = ", \t";
+				sb.append(zahlungsposition.getBetrag()).append(trennzeichen);
+				sb.append(zahlungsposition.getStatus()).append(trennzeichen);
+				sb.append(zahlungsposition.getVerfuegungZeitabschnitt().getZahlungsstatus()).append(trennzeichen);
+				sb.append("Ausbezahlt am: ").append(zahlungsposition.getZahlung().getZahlungsauftrag().getDatumGeneriert()).append(trennzeichen);
+				sb.append("ignoriert=").append(zahlungsposition.isIgnoriert()).append('\n');
 			}
 		}
 		potentielleFehlerList.add(sb.toString());

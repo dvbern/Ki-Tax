@@ -287,7 +287,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@PermitAll
 	public Collection<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer() {
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
-		if (role.isRoleSchulamt()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
+		if (role.isRoleGemeindeOrTS()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
 			return BetreuungsangebotTyp.getSchulamtTypes();
 		}
 		Collection<Institution> institutionenForCurrentBenutzer =
