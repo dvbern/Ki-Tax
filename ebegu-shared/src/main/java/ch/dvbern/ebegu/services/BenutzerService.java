@@ -184,23 +184,15 @@ public interface BenutzerService {
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
-	Collection<Benutzer> getBenutzerBgOrGemeinde();
+	Collection<Benutzer> getAllBenutzerBgOrGemeinde();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin_BG zurueck.
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
-	@Nonnull
-	Collection<Benutzer> getBenutzerBGorAdmin();
-
-	/**
-	 * Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck.
-	 *
-	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
-	 */
-	@Nonnull
-	Collection<Benutzer> getBenutzerSCHorAdminSCH();
+	Collection<Benutzer> getAllBenutzerTsOrGemeinde();
 
 	/**
 	 * @return Liste saemtlicher Gesuchsteller aus der DB

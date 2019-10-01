@@ -962,7 +962,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleJugendamt() && (gesuch.getDossier().getVerantwortlicherBG() == null
+		if (user.getRole().isRoleGemeindeOrBG() && (gesuch.getDossier().getVerantwortlicherBG() == null
 			|| !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
@@ -979,7 +979,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleSchulamt() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
+		if (user.getRole().isRoleGemeindeOrTS() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
 			}

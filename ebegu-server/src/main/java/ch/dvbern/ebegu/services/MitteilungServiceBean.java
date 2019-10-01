@@ -253,6 +253,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 			if (stammdatenOptional.isPresent()) {
 				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
+				// Wir nehmen den Allgemeinen Default, weil wir auf der Mitteilung kein Gesuch haben
+				// und daher nicht wissen, ob es ein reines BG- oder TS-Gesuch ist
 				empfaengerAmt = stammdatenOptional.get().getDefaultBenutzer();
 			}
 		}
@@ -535,10 +537,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate predicateSender = cb.equal(root.get(Mitteilung_.senderTyp), mitteilungTeilnehmerTyp);
 		predicates.add(predicateSender);
 
-		if (currentUserRole.isRoleJugendamt()) {
-			setActiveAndRolePredicates(cb, joinSenderBerechtigungen, predicates, UserRole.getJugendamtRoles());
-		} else if (currentUserRole.isRoleSchulamt()) {
-			setActiveAndRolePredicates(cb, joinSenderBerechtigungen, predicates, UserRole.getSchulamtRoles());
+		if (currentUserRole.isRoleGemeindeOrBG()) {
+			setActiveAndRolePredicates(cb, joinSenderBerechtigungen, predicates, UserRole.getBgAndGemeindeRoles());
+		} else if (currentUserRole.isRoleGemeindeOrTS()) {
+			setActiveAndRolePredicates(cb, joinSenderBerechtigungen, predicates, UserRole.getTsAndGemeindeRoles());
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -1057,7 +1059,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						cb,
 						joinEmpfaengerBerechtigungen,
 						predicates,
-						UserRole.getSchulamtRoles());
+						UserRole.getTsOnlyRoles());
 					break;
 				case GEMEINDE:
 					setActiveAndRolePredicates(
@@ -1186,7 +1188,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 					joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 				Predicate predicateJA =
-					joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtRoles());
+					joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getBgOnlyRoles());
 				Expression<Boolean> isActiveJA = cb.and(predicateActive, predicateJA);
 				Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
 				String sJugendamt =

@@ -101,8 +101,6 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
-import static ch.dvbern.ebegu.enums.UserRole.getJugendamtRoles;
-import static ch.dvbern.ebegu.enums.UserRole.getSchulamtRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -463,22 +461,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<Benutzer> getBenutzerBgOrGemeinde() {
+	public Collection<Benutzer> getAllBenutzerBgOrGemeinde() {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles());
 	}
 
 	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<Benutzer> getBenutzerBGorAdmin() {
-		return getBenutzersOfRoles(getJugendamtRoles());
-	}
-
-	@Nonnull
-	@Override
-	@PermitAll
-	public Collection<Benutzer> getBenutzerSCHorAdminSCH() {
-		return getBenutzersOfRoles(getSchulamtRoles());
+	public Collection<Benutzer> getAllBenutzerTsOrGemeinde() {
+		return getBenutzersOfRoles(getTsAndGemeindeRoles());
 	}
 
 	/**
