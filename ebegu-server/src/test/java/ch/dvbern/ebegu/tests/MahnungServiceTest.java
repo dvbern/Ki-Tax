@@ -199,7 +199,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void fristAblaufTimerZweiteMahnungInPast() {
+	public void fristAblaufTimerZweiteMahnung_Vergangen() {
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 		Gesuch gesuch = createGesuchWithAbgelaufenerMahnung();
 
