@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.HasMandant;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -1055,7 +1056,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institution == null) {
 			return true;
 		}
-		InstitutionStammdaten institutionStammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId());
+		InstitutionStammdaten institutionStammdaten = criteriaQueryHelper.getEntityByUniqueAttribute(
+			InstitutionStammdaten.class,
+			institution,
+			InstitutionStammdaten_.institution
+		).orElse(null);
+		if (institutionStammdaten == null) {
+			return true;
+		}
 		return isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
