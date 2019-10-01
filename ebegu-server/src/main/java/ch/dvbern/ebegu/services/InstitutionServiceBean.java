@@ -259,7 +259,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			return authorizer.isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 		}
 		// Falls das restricted-Flag gesetzt ist, ist nicht einmal lesen erlaubt
-		if (restrictedForSCH && benutzer.getRole().isRoleSchulamtOnly()) {
+		if (restrictedForSCH && benutzer.getRole().isRoleTsOnly()) {
 			return false;
 		}
 		return authorizer.isReadAuthorizationInstitutionStammdaten(institutionStammdaten);
