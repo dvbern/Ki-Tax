@@ -70,7 +70,6 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -124,9 +123,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private InstitutionService institutionService;
-
-	@Inject
-	private InstitutionStammdatenService institutionStammdatenService;
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
