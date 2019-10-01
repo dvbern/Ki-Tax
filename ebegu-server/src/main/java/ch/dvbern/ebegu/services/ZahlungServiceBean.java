@@ -250,7 +250,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
-			if (zeitabschnitt.getZahlungsstatus().isZuBehandelnInZahlungslauf()) {
+			if (zeitabschnitt.getZahlungsstatus().isZuBehandelnInZahlungslauf() || zeitabschnitt.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
 				createZahlungspositionenKorrekturUndNachzahlung(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 			}
 		}
@@ -412,14 +412,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			Zahlung zahlung = findZahlungForInstitution(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
 			createZahlungspositionKorrekturNeuerWert(zeitabschnittNeu, zahlung); // Dies braucht man immer
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
-				// Nur diejenigen Zeitabschnitte "korrigieren", die noch nicht VERRECHNET_KORRIGIERT sind, also noch im Status VERRECHNET
-				if (vorgaengerZeitabschnitt.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET
-					|| vorgaengerZeitabschnitt.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
-					// Fuer die "alten" Verfuegungszeitabschnitte muessen Korrekturbuchungen erstellt werden
-					// Wenn die neuen Zeitabschnitte ignoriert sind, setzen wir die alten Zeitabschnitte auch als ignoriert
-					createZahlungspositionKorrekturAlterWert(vorgaengerZeitabschnitt, zahlung,
-						zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
-				}
+				// Fuer die "alten" Verfuegungszeitabschnitte muessen Korrekturbuchungen erstellt werden
+				// Wenn die neuen Zeitabschnitte ignoriert sind, setzen wir die alten Zeitabschnitte auch als ignoriert
+				createZahlungspositionKorrekturAlterWert(vorgaengerZeitabschnitt, zahlung,
+					zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
 			}
 		} else { // Nachzahlungen bzw. Erstgesuche die rueckwirkend ausbezahlt werden muessen
 			createZahlungsposition(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
@@ -437,10 +433,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		zahlungsposition.setIgnoriert(zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
 		ZahlungspositionStatus status = ZahlungspositionStatus.KORREKTUR;
 		zahlungsposition.setStatus(status);
-		if (!zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend()) {
-			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
-		} else if (zeitabschnittNeu.getZahlungsstatus().isIgnorierend()) {
-			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
+		if (zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend()) {
+			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
+		} else {
+			zeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 		zahlung.getZahlungspositionen().add(zahlungsposition);
 	}
@@ -458,10 +454,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		ZahlungspositionStatus status = ZahlungspositionStatus.KORREKTUR;
 		korrekturPosition.setStatus(status);
 		zahlung.getZahlungspositionen().add(korrekturPosition);
-		if (vorgaengerZeitabschnitt.getZahlungsstatus() == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT) {
-			LOGGER.error("Es wird eine Zahlungsposition auf IGNORIERT_KORRIGIERT gesetzt, die vorher IGNORIERT war! {}", vorgaengerZeitabschnitt.getId());
+		if (vorgaengerZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend()) {
 			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
-		} else { // by default VERRECHNET_KORRIGIERT
+		} else {
 			vorgaengerZeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 	}

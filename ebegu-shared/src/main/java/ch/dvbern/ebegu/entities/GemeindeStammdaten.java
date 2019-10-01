@@ -375,10 +375,10 @@ public class GemeindeStammdaten extends AbstractEntity {
 	 */
 	@Nonnull
 	public Adresse getAdresseForGesuch(@Nonnull Gesuch gesuch) {
-		if (gesuch.hasOnlyBetreuungenOfJugendamt() && bgAdresse != null) {
+		if (bgAdresse != null && gesuch.hasOnlyBetreuungenOfJugendamt()) {
 			return bgAdresse;
 		}
-		if (gesuch.hasOnlyBetreuungenOfSchulamt() && tsAdresse != null) {
+		if (tsAdresse != null && gesuch.hasOnlyBetreuungenOfSchulamt()) {
 			return tsAdresse;
 		}
 		return adresse;
