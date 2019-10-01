@@ -1126,6 +1126,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT: {
+			if (institutionStammdaten.isNew() && !institutionStammdaten.getInstitution().getStatus().isEnabled()) {
+				// Es handelt sich um eine Einladung, dies muss moeglich sein
+				return true;
+			}
 			return false;
 		}
 		case SUPER_ADMIN: {
@@ -1143,6 +1147,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institution == null) {
 			return;
 		}
+		checkMandantMatches(institution);
 		if (!isReadAuthorizationInstitution(institution)) {
 			throwViolation(institution);
 		}
@@ -1153,6 +1158,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institution == null) {
 			return;
 		}
+		checkMandantMatches(institution);
 		if (!isWriteAuthorizationInstitution(institution)) {
 			throwViolation(institution);
 		}
@@ -1163,6 +1169,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institutionStammdaten == null) {
 			return;
 		}
+		checkMandantMatches(institutionStammdaten.getInstitution());
 		if (!isReadAuthorizationInstitutionStammdaten(institutionStammdaten)) {
 			throwViolation(institutionStammdaten);
 		}
@@ -1173,6 +1180,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institutionStammdaten == null) {
 			return;
 		}
+		checkMandantMatches(institutionStammdaten.getInstitution());
 		if (!isWriteAuthorizationInstitutionStammdaten(institutionStammdaten)) {
 			throwViolation(institutionStammdaten);
 		}
