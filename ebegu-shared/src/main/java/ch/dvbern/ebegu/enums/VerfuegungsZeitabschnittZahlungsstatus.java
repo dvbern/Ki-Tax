@@ -21,14 +21,19 @@ package ch.dvbern.ebegu.enums;
 public enum VerfuegungsZeitabschnittZahlungsstatus {
 
 	NEU,
+	VERRECHNEND, // Die Zahlung war schon ausbezahlt, wurde aber mit "uebernehmen" gekennzeichnet.
 	VERRECHNET,
 	VERRECHNET_KORRIGIERT, // Die Zahlung war schon ausbezahlt, wurde aber in einem späteren Zahlungslauf korrigiert
-	IGNORIEREND, // Zahlung ist markiert zum Ignorieren aber es wurde noch nicht "ausbezahlt" (d.h. im Excel mit ignoriert exportiert)
-	IGNORIERT, // Zahlung wurde mal als IGNORIEREND markiert und ist auch "ausbezahlt"
-	IGNORIERT_KORRIGIERT; // Die Zahlung war schon ignoriert, wurde aber in einem späteren Zahlungslauf korrigiert
+	IGNORIEREND, 	// Zahlung ist markiert zum Ignorieren aber es wurde noch nicht "ausbezahlt" (d.h. im Excel mit ignoriert exportiert)
+	IGNORIERT, 		// Zahlung wurde bereits einmal ignoriert und muss daher auch künftig ignoriert werden
+	IGNORIERT_KORRIGIERT; // Die Zahlung war schon ignoriert, wurde aber in einem späteren Zahlungslauf korrigiert (und muss weiterhin ignoriert werden)
 
 	public boolean isNeu() {
 		return NEU == this;
+	}
+
+	public boolean isVerrechnend() {
+		return VERRECHNEND == this;
 	}
 
 	public boolean isVerrechnet() {
@@ -47,7 +52,15 @@ public enum VerfuegungsZeitabschnittZahlungsstatus {
 		return isIgnorierend() || isIgnoriert();
 	}
 
+	/**
+	 * Ist diese Instanz eines Verfuegungsabschnittes bereits behandelt?
+	 * -> Alles was nicht ausbezahlt werden soll
+	 */
 	public boolean isBereitsBehandeltInZahlungslauf() {
-		return  !isNeu() && !isIgnorierend();
+		return  !isZuBehandelnInZahlungslauf();
+	}
+
+	public boolean isZuBehandelnInZahlungslauf() {
+		return isNeu() || isVerrechnend() || isIgnorierend();
 	}
 }

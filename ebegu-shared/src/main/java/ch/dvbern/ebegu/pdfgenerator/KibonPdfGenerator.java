@@ -125,7 +125,7 @@ public abstract class KibonPdfGenerator {
 
 	@Nonnull
 	protected List<String> getGemeindeAdresse() {
-		Adresse adresse = gemeindeStammdaten.getAdresse();
+		Adresse adresse = gemeindeStammdaten.getAdresseForGesuch(getGesuch());
 		List<String> gemeindeHeader = Arrays.asList(
 			adresse.getAddressAsString(),
 			""

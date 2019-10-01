@@ -38,7 +38,7 @@ describe('EinladungAbschliessenComponent', () => {
     beforeEach(async(() => {
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
         const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-            ['getInstitutionenForCurrentBenutzer']);
+            ['getInstitutionenReadableForCurrentBenutzer']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['getVisibleRolesForPrincipal']);
@@ -50,7 +50,7 @@ describe('EinladungAbschliessenComponent', () => {
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of({}));

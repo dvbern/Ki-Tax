@@ -848,15 +848,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				setVerantwortliche(usernameJA, usernameSCH, gesuch);
 			} else {
 				// in case of mutation, we take default Verantwortliche and set them only if not set...
-				Optional<GemeindeStammdaten> gemeindeStammdaten =
+				Optional<GemeindeStammdaten> gemeindeStammdatenOptional =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(gesuchId);
 
-				setVerantwortliche(
-					gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null),
-					gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null),
-					gesuch,
-					true,
-					false);
+				Benutzer benutzerBG = null;
+				Benutzer benutzerTS = null;
+				if (gemeindeStammdatenOptional.isPresent()) {
+					GemeindeStammdaten gemeindeStammdaten = gemeindeStammdatenOptional.get();
+					benutzerBG = gemeindeStammdaten.getDefaultBenutzerWithRoleBG().orElse(null);
+					benutzerTS = gemeindeStammdaten.getDefaultBenutzerWithRoleTS().orElse(null);
+				}
+
+				setVerantwortliche(benutzerBG, benutzerTS, gesuch, true, false);
 			}
 
 			// Falls es ein OnlineGesuch war: Das Eingangsdatum setzen
@@ -959,7 +962,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleJugendamt() && (gesuch.getDossier().getVerantwortlicherBG() == null
+		if (user.getRole().isRoleGemeindeOrBG() && (gesuch.getDossier().getVerantwortlicherBG() == null
 			|| !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
@@ -976,7 +979,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleSchulamt() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
+		if (user.getRole().isRoleGemeindeOrTS() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
 			}

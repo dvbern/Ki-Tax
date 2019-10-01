@@ -166,7 +166,7 @@ export default class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.benutzerRS.getBenutzerJAorAdmin().then(userList => {
+        this.benutzerRS.getAllBenutzerBgOrGemeinde().then(userList => {
             antragListController.selectedVerantwortlicherBG = userList.find(
                 user => user.getFullName() === verantwortlicherBGFullname);
         });
@@ -185,7 +185,7 @@ export default class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.benutzerRS.getBenutzerSCHorAdminSCH().then(userList => {
+        this.benutzerRS.getAllBenutzerTsOrGemeinde().then(userList => {
             antragListController.selectedVerantwortlicherTS = userList.find(
                 user => user.getFullName() === verantwortlicherTSFullname);
         });
@@ -200,7 +200,7 @@ export default class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
             if (!Array.isArray(institutionList)) {
                 return;
             }

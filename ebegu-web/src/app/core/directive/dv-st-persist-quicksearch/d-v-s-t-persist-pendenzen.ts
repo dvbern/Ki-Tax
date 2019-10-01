@@ -108,7 +108,7 @@ export default class DVSTPersistPendenzen implements IDirective {
             return;
         }
 
-        this.benutzerRS.getBenutzerJAorAdmin().then(userList => {
+        this.benutzerRS.getAllBenutzerBgOrGemeinde().then(userList => {
             const verantwortlicher = userList.find(user => user.getFullName() === verantwortlicherBGFullname);
             quicksearchListController.selectedVerantwortlicherBG = verantwortlicher;
             quicksearchListController.userChanged(verantwortlicher);
@@ -128,7 +128,7 @@ export default class DVSTPersistPendenzen implements IDirective {
             return;
         }
 
-        this.benutzerRS.getBenutzerSCHorAdminSCH().then(userList => {
+        this.benutzerRS.getAllBenutzerTsOrGemeinde().then(userList => {
             const verantwortlicher = userList.find(user => user.getFullName() === verantwortlicherTSFullname);
             quicksearchListController.selectedVerantwortlicherTS = verantwortlicher;
             quicksearchListController.userChanged(verantwortlicher);
@@ -144,7 +144,7 @@ export default class DVSTPersistPendenzen implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
             quicksearchListController.selectedInstitution = institutionList.find(i => i.name === institution);
         });
     }

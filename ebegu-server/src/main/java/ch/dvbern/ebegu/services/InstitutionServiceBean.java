@@ -181,25 +181,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return persistence.getCriteriaResults(query);
 	}
 
-	@Nonnull
-	@PermitAll
-	private Collection<Institution> getAllInstitutionenForSchulamt() {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		query.select(root.get(InstitutionStammdaten_.institution));
-		query.distinct(true);
-
-		Predicate predSchulamt =
-			root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getSchulamtTypes());
-		Predicate predActive = PredicateHelper.getPredicateDateRangedEntityGueltig(cb, root);
-		Predicate predNoUnknown = PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root);
-
-		query.where(predSchulamt, predActive, predNoUnknown);
-
-		return persistence.getCriteriaResults(query);
-	}
-
 	@Override
 	@Nonnull
 	@PermitAll
@@ -230,15 +211,28 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return typedQuery.getResultList();
 	}
 
+	@Override
+	@Nonnull
+	@RolesAllowed(SUPER_ADMIN)
+	public Collection<Institution> getAllInstitutionenForBatchjobs() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root.get(InstitutionStammdaten_.institution));
+		query.distinct(true);
+		return persistence.getCriteriaResults(query);
+	}
+
 	@Nonnull
 	@PermitAll
-	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer() {
+	private Collection<Institution> getAllInstitutionenForGemeindeBenutzer(boolean editable,
+		boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
 			return institutionStammdatenService.getAllInstitutionStammdaten()
 				.stream()
-				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer))
+				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer, editable, restrictedForSCH))
 				.map(InstitutionStammdaten::getInstitution)
 				.collect(Collectors.toList());
 		}
@@ -247,9 +241,18 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
+	public Collection<Institution> getInstitutionenEditableForCurrentBenutzer(boolean restrictedForSCH) {
+		return getInstitutionenForCurrentBenutzer(true, restrictedForSCH);
+	}
+
+	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Institution> getAllowedInstitutionenForCurrentBenutzer(boolean restrictedForSCH) {
+	public Collection<Institution> getInstitutionenReadableForCurrentBenutzer(boolean restrictedForSCH) {
+		return getInstitutionenForCurrentBenutzer(false, restrictedForSCH);
+	}
+
+	private Collection<Institution> getInstitutionenForCurrentBenutzer(boolean canEdit, boolean restrictedForSCH) {
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
@@ -267,11 +270,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 				}
 				return institutionList;
 			}
-			if (restrictedForSCH && benutzer.getRole().isRoleSchulamt()) {
-				return getAllInstitutionenForSchulamt();
-			}
 			if (benutzer.getRole().isRoleGemeindeabhaengig()) {
-				return getAllInstitutionenForGemeindeBenutzer();
+				return getAllInstitutionenForGemeindeBenutzer(canEdit, restrictedForSCH);
 			}
 			return getAllInstitutionen();
 		}
@@ -291,7 +291,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
 		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public void calculateStammdatenCheckRequired() {
-		final Collection<Institution> allInstitutionen = this.getAllInstitutionen();
+		Collection<Institution> allInstitutionen = getAllInstitutionenForBatchjobs();
 
 		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired().
 		// This is better than only
