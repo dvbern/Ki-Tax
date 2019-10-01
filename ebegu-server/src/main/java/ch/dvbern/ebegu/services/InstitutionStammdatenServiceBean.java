@@ -130,8 +130,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@PermitAll
 	public Optional<InstitutionStammdaten> findInstitutionStammdaten(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
-		InstitutionStammdaten a = persistence.find(InstitutionStammdaten.class, id);
-		return Optional.ofNullable(a);
+		InstitutionStammdaten institutionStammdaten = persistence.find(InstitutionStammdaten.class, id);
+		authorizer.checkReadAuthorizationInstitutionStammdaten(institutionStammdaten);
+		return Optional.ofNullable(institutionStammdaten);
 	}
 
 	@Override
@@ -178,6 +179,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		Objects.requireNonNull(institutionId);
 		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId);
 		if (institutionStammdatenToRemove != null) {
+			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			persistence.remove(institutionStammdatenToRemove);
 		}
 	}
@@ -272,6 +274,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"fetchInstitutionStammdatenByInstitution",
 				institutionId));
+		authorizer.checkReadAuthorizationInstitution(institution);
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,
