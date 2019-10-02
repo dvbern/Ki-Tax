@@ -245,12 +245,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
 
 		Benutzer empfaengerAmt = mitteilung.getDossier().getVerantwortlicherBG();
-		if (empfaengerAmt == null){
+		if (empfaengerAmt == null) {
 			empfaengerAmt = mitteilung.getDossier().getVerantwortlicherTS();
 		}
 		if (empfaengerAmt == null) {
 			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
-			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+			Optional<GemeindeStammdaten> stammdatenOptional =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 			if (stammdatenOptional.isPresent()) {
 				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
 				// Wir nehmen den Allgemeinen Default, weil wir auf der Mitteilung kein Gesuch haben
@@ -326,6 +327,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 		setSenderAndEmpfaenger(mitteilung);
 		authorizer.checkWriteAuthorizationMitteilung(mitteilung);
+		if (mitteilung.isNew()) {
+			Mitteilung alreadyExistEntwurf = getEntwurfForCurrentRolle(mitteilung.getDossier());
+			if (alreadyExistEntwurf != null) {
+				mitteilung.setId(alreadyExistEntwurf.getId());
+				mitteilung.setTimestampErstellt(alreadyExistEntwurf.getTimestampErstellt());
+				Objects.requireNonNull(alreadyExistEntwurf.getUserErstellt(),"User Erstellt cannot be null");
+				mitteilung.setUserErstellt(alreadyExistEntwurf.getUserErstellt());
+			}
+		}
+
 		return persistence.merge(mitteilung);
 	}
 
@@ -771,8 +782,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST,
+		REVISOR, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuungsmitteilung> findNewestBetreuungsmitteilung(@Nonnull String betreuungId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -826,7 +837,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			empfaenger = mitteilung.getDossier().getVerantwortlicherBG();
 		} else {
 			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
-			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+			Optional<GemeindeStammdaten> stammdatenOptional =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 			if (stammdatenOptional.isPresent()) {
 				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
 				empfaenger = stammdatenOptional.get().getDefaultBenutzerBG();
@@ -874,7 +886,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			empfaenger = mitteilung.getDossier().getVerantwortlicherTS();
 		} else {
 			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
-			Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+			Optional<GemeindeStammdaten> stammdatenOptional =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 			if (stammdatenOptional.isPresent()) {
 				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
 				empfaenger = stammdatenOptional.get().getDefaultBenutzerTS();
@@ -902,7 +915,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// convert BetreuungspensumAbweichung to MitteilungPensum
 		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
-		List<BetreuungspensumAbweichung> initialAbweichungen =  betreuung.fillAbweichungen();
+		List<BetreuungspensumAbweichung> initialAbweichungen = betreuung.fillAbweichungen();
 		// (2) Die leere Abschnitte (weder Vertrag noch Abweichung eingegeben) werden entfernt
 		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
