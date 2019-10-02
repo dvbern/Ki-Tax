@@ -701,14 +701,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return betreuung.getInstitutionStammdaten().getInstitution().equals(institution);
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT)) {
-			Traegerschaft traegerschaft = principalBean.getBenutzer().getTraegerschaft();
-			Objects.requireNonNull(
-				traegerschaft,
-				"Traegerschaft des des Sachbearbeiters muss gesetzt sein " + principalBean.getBenutzer());
-			Collection<Institution> institutions =
-				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
-			Institution instToMatch = betreuung.getInstitutionStammdaten().getInstitution();
-			return institutions.stream().anyMatch(instToMatch::equals);
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(principalBean.getBenutzer(), betreuung.getInstitutionStammdaten().getInstitution());
 		}
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_TS, ADMIN_TS)) {
 			return isUserAllowedForGemeinde(gesuch.getDossier().getGemeinde())
@@ -1045,8 +1038,15 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institution == null) {
 			return true;
 		}
-		// Lesend ist der Zugriff immer erlaubt, vorausgesetzt der Mandant stimmt
-		return isMandantMatching(institution);
+		InstitutionStammdaten institutionStammdaten = criteriaQueryHelper.getEntityByUniqueAttribute(
+			InstitutionStammdaten.class,
+			institution,
+			InstitutionStammdaten_.institution
+		).orElse(null);
+		if (institutionStammdaten == null) {
+			return true;
+		}
+		return isReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
 	@Override
@@ -1116,13 +1116,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT: {
-			Traegerschaft traegerschaft = currentBenutzer.getTraegerschaft();
-			Objects.requireNonNull(traegerschaft,
-				"Traegerschaft des des Sachbearbeiters muss gesetzt sein " + currentBenutzer);
-			Collection<Institution> institutions =
-				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
-			return institutions.stream()
-				.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institutionStammdaten.getInstitution()));
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(currentBenutzer, institutionStammdaten.getInstitution());
 		}
 		default: {
 			return false;
@@ -1152,13 +1146,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT: {
-			Traegerschaft traegerschaft = currentBenutzer.getTraegerschaft();
-			Objects.requireNonNull(traegerschaft,
-				"Traegerschaft des des Sachbearbeiters muss gesetzt sein " + currentBenutzer);
-			Collection<Institution> institutions =
-				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
-			return institutions.stream()
-				.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institutionStammdaten.getInstitution()));
+			return isTraegerschaftsBenutzerAuthorizedForInstitution(currentBenutzer, institutionStammdaten.getInstitution());
 		}
 		case ADMIN_GEMEINDE:
 		case SACHBEARBEITER_GEMEINDE:
@@ -1274,5 +1262,15 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	private boolean hasPrincipalName(@Nonnull Benutzer benutzer) {
 		return principalBean.getPrincipal().getName().equalsIgnoreCase(benutzer.getUsername());
+	}
+
+	private boolean isTraegerschaftsBenutzerAuthorizedForInstitution(@Nonnull Benutzer currentBenutzer, @Nonnull Institution institution) {
+		Traegerschaft traegerschaft = currentBenutzer.getTraegerschaft();
+		Objects.requireNonNull(traegerschaft,
+			"Traegerschaft des Sachbearbeiters muss gesetzt sein " + currentBenutzer);
+		Collection<Institution> institutions =
+			institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
+		return institutions.stream()
+			.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institution));
 	}
 }
