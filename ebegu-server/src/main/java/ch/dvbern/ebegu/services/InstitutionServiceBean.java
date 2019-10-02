@@ -92,18 +92,28 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private Persistence persistence;
+
 	@Inject
 	private PrincipalBean principalBean;
+
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
 	@Inject
 	private BenutzerService benutzerService;
+
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
 	@Inject
 	private Event<ExportedEvent> exportedEvent;
+
 	@Inject
 	private InstitutionClientEventConverter institutionClientEventConverter;
+
+	@Inject
+	private Authorizer authorizer;
+
 
 	@Nonnull
 	@Override
@@ -111,7 +121,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
-
+		authorizer.checkWriteAuthorizationInstitution(institution);
 		return persistence.merge(institution);
 	}
 
@@ -122,10 +132,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Institution createInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
-		if (institution.getMandant() == null) {
-			institution.setMandant(requireNonNull(principalBean.getMandant()));
-		}
+		authorizer.checkWriteAuthorizationInstitution(institution);
 
+		institution.setMandant(requireNonNull(principalBean.getMandant()));
 		return persistence.persist(institution);
 	}
 
@@ -134,8 +143,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@PermitAll
 	public Optional<Institution> findInstitution(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
-		Institution a = persistence.find(Institution.class, id);
-		return Optional.ofNullable(a);
+		Institution institution = persistence.find(Institution.class, id);
+		authorizer.checkReadAuthorizationInstitution(institution);
+		return Optional.ofNullable(institution);
 	}
 
 	@Nonnull
@@ -146,6 +156,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Institution institution = findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"activateInstitution",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		authorizer.checkWriteAuthorizationInstitution(institution);
 		institution.setStatus(InstitutionStatus.AKTIV);
 		return updateInstitution(institution);
 	}
@@ -159,6 +170,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		final InstitutionStammdaten institutionStammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 
 		institutionStammdaten.setInactive();
 		final InstitutionStammdaten mergedInstitutionstammdaten = persistence.merge(institutionStammdaten);
@@ -232,12 +244,25 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			Benutzer benutzer = benutzerOptional.get();
 			return institutionStammdatenService.getAllInstitutionStammdaten()
 				.stream()
-				.filter(stammdaten -> stammdaten.isVisibleForGemeindeUser(benutzer, editable, restrictedForSCH))
+				.filter(stammdaten -> isAllowedForMode(stammdaten, benutzer, editable, restrictedForSCH))
 				.map(InstitutionStammdaten::getInstitution)
 				.collect(Collectors.toList());
 		}
 
 		return new ArrayList<>();
+	}
+
+	private boolean isAllowedForMode(
+		@Nonnull InstitutionStammdaten institutionStammdaten, @Nonnull Benutzer benutzer, boolean editMode, boolean restrictedForSCH
+	) {
+		if (editMode) {
+			return authorizer.isWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
+		}
+		// Falls das restricted-Flag gesetzt ist, ist nicht einmal lesen erlaubt
+		if (restrictedForSCH && benutzer.getRole().isRoleTsOnly()) {
+			return false;
+		}
+		return authorizer.isReadAuthorizationInstitutionStammdaten(institutionStammdaten);
 	}
 
 	@Override
@@ -282,9 +307,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION })
 	public BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId) {
-		InstitutionStammdaten allInstStammdaten =
+		InstitutionStammdaten institutionStammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
-		return allInstStammdaten.getBetreuungsangebotTyp();
+		authorizer.checkReadAuthorizationInstitutionStammdaten(institutionStammdaten);
+		return institutionStammdaten.getBetreuungsangebotTyp();
 	}
 
 	@Override
@@ -333,6 +359,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			institutionId));
 
+		authorizer.checkWriteAuthorizationInstitution(institution);
+
 		if (isCheckRequired != institution.isStammdatenCheckRequired()) {
 			institution.setStammdatenCheckRequired(isCheckRequired);
 			updateInstitution(institution);
@@ -349,6 +377,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			new EbeguEntityNotFoundException("removeInstitution",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId)
 		);
+		authorizer.checkWriteAuthorizationInstitution(institution);
 
 		checkForLinkedBerechtigungen(institution);
 		removeInstitutionFromBerechtigungHistory(institution);

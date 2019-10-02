@@ -99,12 +99,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private InstitutionEventConverter institutionEventConverter;
 
+	@Inject
+	private Authorizer authorizer;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
+		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
@@ -126,8 +130,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@PermitAll
 	public Optional<InstitutionStammdaten> findInstitutionStammdaten(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
-		InstitutionStammdaten a = persistence.find(InstitutionStammdaten.class, id);
-		return Optional.ofNullable(a);
+		InstitutionStammdaten institutionStammdaten = persistence.find(InstitutionStammdaten.class, id);
+		authorizer.checkReadAuthorizationInstitutionStammdaten(institutionStammdaten);
+		return Optional.ofNullable(institutionStammdaten);
 	}
 
 	@Override
@@ -174,6 +179,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		Objects.requireNonNull(institutionId);
 		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId);
 		if (institutionStammdatenToRemove != null) {
+			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			persistence.remove(institutionStammdatenToRemove);
 		}
 	}
@@ -268,6 +274,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"fetchInstitutionStammdatenByInstitution",
 				institutionId));
+		authorizer.checkReadAuthorizationInstitution(institution);
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,

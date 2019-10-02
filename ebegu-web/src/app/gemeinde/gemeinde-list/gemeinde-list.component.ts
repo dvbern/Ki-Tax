@@ -25,6 +25,7 @@ import {map, takeUntil} from 'rxjs/operators';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -97,6 +98,9 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     }
 
     public openGemeinde(selected: TSGemeinde): void {
+        if (!this.hatBerechtigungEditieren(selected)) {
+            return;
+        }
         this.gemeinde = angular.copy(selected);
         this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
         return;
@@ -108,6 +112,14 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
 
     public hatBerechtigungHinzufuegen(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public hatBerechtigungEditieren(selected: TSGemeinde): boolean {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            return selected.status === TSGemeindeStatus.AKTIV;
+        }
+        // Alle anderen Rollen, die die Institution sehen, duerfen sie oeffnen
+        return true;
     }
 
     public showNoContentMessage(): boolean {
