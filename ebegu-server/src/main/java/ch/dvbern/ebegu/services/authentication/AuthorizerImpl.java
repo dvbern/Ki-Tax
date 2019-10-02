@@ -1082,9 +1082,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
 				gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
 			}
-			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde vorhanden sein und stimmen
-			Objects.requireNonNull(gemeinde, "Gemeinde muss gesetzt sein");
-			return isUserAllowedForGemeinde(gemeinde);
+			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde muss stimmen, falls vorhanden
+			if (gemeinde != null) {
+				return isUserAllowedForGemeinde(gemeinde);
+			}
 		}
 		return true;
 	}
