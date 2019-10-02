@@ -1073,21 +1073,61 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (!isMandantMatching(institutionStammdaten.getInstitution())) {
 			return false;
 		}
-		// Lesend ist der Zugriff immer erlaubt, ausser es handelt sich um
-		if (institutionStammdaten.getBetreuungsangebotTyp().isSchulamt()) {
-			Gemeinde gemeinde = null;
-			if (institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
-				gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
-			}
-			if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
-				gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
-			}
-			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde muss stimmen, falls vorhanden
-			if (gemeinde != null) {
-				return isUserAllowedForGemeinde(gemeinde);
-			}
+
+		// Lesen duerfen alle Rollen ausser:
+		// - den Institution/Trägerschafts-Rollen: diese duerfen nur ihre eigenen Institutionen lesen
+		// - den Gemeindebenutzer: diese duerfen bei Gemeindeabhaengigen Institionen (i.e. Tagesschulen und
+		// 		Ferieninseln) nur diejenigen ihrer Gemeinde sehen
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		switch (currentBenutzer.getRole()) {
+		case GESUCHSTELLER:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
+		case SUPER_ADMIN: {
+			return true;
 		}
-		return true;
+		case ADMIN_GEMEINDE:
+		case SACHBEARBEITER_GEMEINDE:
+		case ADMIN_BG:
+		case SACHBEARBEITER_BG:
+		case ADMIN_TS:
+		case SACHBEARBEITER_TS:
+		case REVISOR:
+		case STEUERAMT:
+		case JURIST: {
+			if (institutionStammdaten.getBetreuungsangebotTyp().isSchulamt()) {
+				Gemeinde gemeinde = null;
+				if (institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
+					gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
+				}
+				if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+					gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
+				}
+				// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde muss stimmen, falls vorhanden
+				if (gemeinde != null) {
+					return isUserAllowedForGemeinde(gemeinde);
+				}
+			}
+			return true;
+		}
+		case ADMIN_INSTITUTION:
+		case SACHBEARBEITER_INSTITUTION: {
+			return institutionStammdaten.getInstitution().equals(currentBenutzer.getInstitution());
+		}
+		case ADMIN_TRAEGERSCHAFT:
+		case SACHBEARBEITER_TRAEGERSCHAFT: {
+			Traegerschaft traegerschaft = currentBenutzer.getTraegerschaft();
+			Objects.requireNonNull(traegerschaft,
+				"Traegerschaft des des Sachbearbeiters muss gesetzt sein " + currentBenutzer);
+			Collection<Institution> institutions =
+				institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
+			return institutions.stream()
+				.anyMatch(institutionOfCurrentBenutzer -> institutionOfCurrentBenutzer.equals(institutionStammdaten.getInstitution()));
+		}
+		default: {
+			return false;
+		}
+		}
 	}
 
 	@Override
