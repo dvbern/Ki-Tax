@@ -364,9 +364,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 		Mandant mandant = mandantEntity.getMandant();
-		if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
-			if (!mandant.equals(principalBean.getMandant())) {
-				return false;
+		if (principalBean.isLoggedIn()) {
+			if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
+				if (!mandant.equals(principalBean.getMandant())) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -1068,8 +1070,23 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (institutionStammdaten == null) {
 			return true;
 		}
-		// Lesend ist der Zugriff immer erlaubt, vorausgesetzt der Mandant stimmt
-		return isMandantMatching(institutionStammdaten.getInstitution());
+		if (!isMandantMatching(institutionStammdaten.getInstitution())) {
+			return false;
+		}
+		// Lesend ist der Zugriff immer erlaubt, ausser es handelt sich um
+		if (institutionStammdaten.getBetreuungsangebotTyp().isSchulamt()) {
+			Gemeinde gemeinde = null;
+			if (institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
+				gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
+			}
+			if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+				gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
+			}
+			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde vorhanden sein und stimmen
+			Objects.requireNonNull(gemeinde, "Gemeinde muss gesetzt sein");
+			return isUserAllowedForGemeinde(gemeinde);
+		}
+		return true;
 	}
 
 	@Override
