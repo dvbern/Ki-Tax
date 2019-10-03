@@ -3319,7 +3319,7 @@ public class JaxBConverter extends AbstractConverter {
 		// kommen
 		if (jaxBerechtigung.getInstitution() != null && jaxBerechtigung.getInstitution().getId() != null) {
 			final Optional<Institution> institutionFromDB =
-				institutionService.findInstitution(jaxBerechtigung.getInstitution().getId(), true);
+				institutionService.findInstitution(jaxBerechtigung.getInstitution().getId(), false);
 			if (institutionFromDB.isPresent()) {
 				// Institution darf nicht vom Client ueberschrieben werden
 				berechtigung.setInstitution(institutionFromDB.get());

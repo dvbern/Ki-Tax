@@ -364,11 +364,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return true;
 		}
 		Mandant mandant = mandantEntity.getMandant();
-		if (principalBean.isLoggedIn()) {
-			if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
-				if (!mandant.equals(principalBean.getMandant())) {
-					return false;
-				}
+		if (!principalBean.isCallerInRole(SUPER_ADMIN)) {
+			if (!mandant.equals(principalBean.getMandant())) {
+				return false;
 			}
 		}
 		return true;
