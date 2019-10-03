@@ -93,15 +93,6 @@ export class AddInstitutionComponent implements OnInit {
         this.navigateBack();
     }
 
-    public institutionEinladen(): void {
-        if (!this.form.valid) {
-            return;
-        }
-
-        this.errorService.clearAll();
-        this.persistInstitution();
-    }
-
     public institutionErstellen(): void {
         if (!this.form.valid) {
             return;
