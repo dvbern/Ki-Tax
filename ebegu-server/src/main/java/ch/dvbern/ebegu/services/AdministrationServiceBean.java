@@ -210,7 +210,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		}
 		// Es gibt eine Institution
 		if (StringUtils.isNotEmpty(institutionId)) {
-			Optional<Institution> institutionOptional = institutionService.findInstitution(institutionId);
+			Optional<Institution> institutionOptional = institutionService.findInstitution(institutionId, true);
 			if (institutionOptional.isPresent()) {
 				// Institution ist schon bekannt -> updaten
 				listInstitutionen.add(updateInstitution(institutionId, traegerschaftId, institutionsname, institutionsEmail));

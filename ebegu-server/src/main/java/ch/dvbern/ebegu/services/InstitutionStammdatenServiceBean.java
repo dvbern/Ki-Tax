@@ -177,7 +177,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
-		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId);
+		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId, true);
 		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			persistence.remove(institutionStammdatenToRemove);
@@ -269,12 +269,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Nullable
 	@Override
 	@PermitAll
-	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution = institutionService.findInstitution(institutionId)
+	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId, boolean doAuthCheck) {
+		Institution institution = institutionService.findInstitution(institutionId, doAuthCheck)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"fetchInstitutionStammdatenByInstitution",
 				institutionId));
-		authorizer.checkReadAuthorizationInstitution(institution);
+		if (doAuthCheck) {
+			authorizer.checkReadAuthorizationInstitution(institution);
+		}
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,

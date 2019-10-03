@@ -59,7 +59,7 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(institutionService);
 		Institution institution = insertInstitution().getInstitution();
 
-		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
+		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId(), true);
 		assertTrue(institutionOpt.isPresent());
 		final Institution foundInstitution = institutionOpt.get();
 
@@ -78,12 +78,12 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(institutionService);
 		Institution institution = insertInstitution().getInstitution();
 
-		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
+		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId(), true);
 		assertTrue(institutionOpt.isPresent());
 
 		institutionService.removeInstitution(institutionOpt.get().getId());
 
-		Optional<Institution> institutionOpt2 = institutionService.findInstitution(institution.getId());
+		Optional<Institution> institutionOpt2 = institutionService.findInstitution(institution.getId(), true);
 		assertFalse(institutionOpt2.isPresent());
 	}
 
@@ -92,12 +92,12 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(institutionService);
 		Institution institution = insertInstitution().getInstitution();
 
-		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
+		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId(), true);
 		assertTrue(institutionOpt.isPresent());
 		institutionService.setInstitutionInactive(institutionOpt.get().getId());
 
 		final InstitutionStammdaten institutionStammdaten =
-			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId());
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId(), true);
 
 		assertFalse(institutionStammdaten.isActive());
 	}
