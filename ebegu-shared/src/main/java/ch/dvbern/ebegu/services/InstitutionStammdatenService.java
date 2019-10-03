@@ -81,7 +81,7 @@ public interface InstitutionStammdatenService {
 	 * Gibt die Stammdaten dieser Institution zurueck.
 	 * Falls die Institution keine Stammdaten hat gibt sie null zurück, dabei wird keine Ausnahme geworfen.
 	 */
-	InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId);
+	InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId, boolean doAuthCheck);
 
 	/**
 	 * Gibt alle Betreuungsangebotstypen zurueck, welche die Institutionen anbieten, fuer welche der

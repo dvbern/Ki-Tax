@@ -222,7 +222,7 @@ public class InstitutionResource {
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Nonnull @NotNull @Valid JaxInstitutionUpdate update) {
 
-		Institution institution = institutionService.findInstitution(requireNonNull(institutionJAXPId.getId()))
+		Institution institution = institutionService.findInstitution(requireNonNull(institutionJAXPId.getId()), true)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("update", institutionJAXPId.getId()));
 
 		InstitutionStammdaten stammdaten = Optional.ofNullable(update.getStammdaten().getId())
@@ -272,7 +272,7 @@ public class InstitutionResource {
 
 		requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
-		Optional<Institution> optional = institutionService.findInstitution(institutionID);
+		Optional<Institution> optional = institutionService.findInstitution(institutionID, true);
 
 		return optional.map(institution -> converter.institutionToJAX(institution)).orElse(null);
 	}
@@ -354,7 +354,7 @@ public class InstitutionResource {
 
 		requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
-		Institution institution = institutionService.findInstitution(institutionID)
+		Institution institution = institutionService.findInstitution(institutionID, true)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getExternalClients",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

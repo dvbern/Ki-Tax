@@ -31,8 +31,7 @@ public interface InstitutionService {
 
 	/**
 	 * Aktualisiert die Institution in der DB
-	 *
-	 * @param institution Die Institution als DTO
+	 *  @param institution Die Institution als DTO
 	 */
 	@Nonnull
 	Institution updateInstitution(@Nonnull Institution institution);
@@ -50,7 +49,7 @@ public interface InstitutionService {
 	 * @return Institution mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<Institution> findInstitution(@Nonnull String id);
+	Optional<Institution> findInstitution(@Nonnull String id, boolean doAuthCheck);
 
 	/**
 	 * Setzt den Status der Institution auf AKTIV

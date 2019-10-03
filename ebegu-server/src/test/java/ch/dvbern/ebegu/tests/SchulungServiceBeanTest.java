@@ -123,7 +123,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
 			institutionStammdaten.getInstitution().setTraegerschaft(null);
 			institutionStammdaten.getInstitution().setMandant(mandant);
-			if (!institutionService.findInstitution(institutionStammdaten.getInstitution().getId()).isPresent()) {
+			if (!institutionService.findInstitution(institutionStammdaten.getInstitution().getId(), true).isPresent()) {
 				institutionService.createInstitution(institutionStammdaten.getInstitution());
 			}
 			institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);

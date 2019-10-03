@@ -227,13 +227,13 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		removeBenutzer(BENUTZER_FISCH_USERNAME);
 		removeBenutzer(BENUTZER_FORELLE_USERNAME);
 
-		if (institutionService.findInstitution(INSTITUTION_FORELLE_ID).isPresent()) {
+		if (institutionService.findInstitution(INSTITUTION_FORELLE_ID, true).isPresent()) {
 			institutionService.removeInstitution(INSTITUTION_FORELLE_ID);
 		}
-		if (institutionService.findInstitution(INSTITUTION_HECHT_ID).isPresent()) {
+		if (institutionService.findInstitution(INSTITUTION_HECHT_ID, true).isPresent()) {
 			institutionService.removeInstitution(INSTITUTION_HECHT_ID);
 		}
-		if (institutionService.findInstitution(INSTITUTION_LACHS_ID).isPresent()) {
+		if (institutionService.findInstitution(INSTITUTION_LACHS_ID, true).isPresent()) {
 			institutionService.removeInstitution(INSTITUTION_LACHS_ID);
 		}
 		if (traegerschaftService.findTraegerschaft(TRAEGERSCHAFT_FISCH_ID).isPresent()) {
