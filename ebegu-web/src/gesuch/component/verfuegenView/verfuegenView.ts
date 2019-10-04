@@ -202,8 +202,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return;
         }
 
-        const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const direktVerfuegen = !isAngebotKITA || !this.isFragenObIgnorieren() || !this.isMutation()
+        const direktVerfuegen = !this.isFragenObIgnorieren() || !this.isMutation()
             || this.isAlreadyIgnored();
         // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
         if (this.isAlreadyIgnored()) {
