@@ -34,6 +34,8 @@ import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -45,6 +47,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -150,6 +153,19 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		if (roleGemeindeabhaengig) {
 			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
 			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
+		}
+
+		if(principalBean.getBenutzer().getRole().isRoleMandant()){
+			Join<InstitutionStammdaten, Institution> joinInstitution =
+				root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+			Predicate predicateMandant =
+			cb.equal(joinInstitution.get(Institution_.MANDANT), principalBean.getBenutzer().getMandant());
+			predicates.add(predicateMandant);
+		}
+		if(principalBean.getBenutzer().getRole().isRoleTsOnly()){
+			Predicate predicateTagesschuleOnly = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp),
+				BetreuungsangebotTyp.TAGESSCHULE);
+			predicates.add(predicateTagesschuleOnly);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
