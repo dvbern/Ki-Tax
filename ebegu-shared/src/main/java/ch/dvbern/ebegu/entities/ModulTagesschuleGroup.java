@@ -56,13 +56,8 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_inst_stammdaten_tagesschule_id"), nullable = false)
-	private InstitutionStammdatenTagesschule institutionStammdatenTagesschule;
-
-	@NotNull @Nonnull
-	@ManyToOne(optional = false)
-	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_modul_tagesschule_gesuchsperiode_id"))
-	private Gesuchsperiode gesuchsperiode;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_einstellungen_tagesschule_id"), nullable = false)
+	private EinstellungenTagesschule einstellungenTagesschule;
 
 	@Enumerated(value = EnumType.STRING)
 	@NotNull @Nonnull
@@ -148,22 +143,12 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		this.zeitBis = zeitBis;
 	}
 
-	@Nonnull
-	public InstitutionStammdatenTagesschule getInstitutionStammdatenTagesschule() {
-		return institutionStammdatenTagesschule;
+	public EinstellungenTagesschule getEinstellungenTagesschule() {
+		return einstellungenTagesschule;
 	}
 
-	public void setInstitutionStammdatenTagesschule(@Nonnull InstitutionStammdatenTagesschule instStammdaten) {
-		this.institutionStammdatenTagesschule = instStammdaten;
-	}
-
-	@Nonnull
-	public Gesuchsperiode getGesuchsperiode() {
-		return gesuchsperiode;
-	}
-
-	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
-		this.gesuchsperiode = gesuchsperiode;
+	public void setEinstellungenTagesschule(EinstellungenTagesschule einstellungenTagesschule) {
+		this.einstellungenTagesschule = einstellungenTagesschule;
 	}
 
 	@Nonnull
@@ -219,8 +204,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Override
 	public int compareTo(@Nonnull ModulTagesschuleGroup o) {
 		CompareToBuilder builder = new CompareToBuilder();
-		builder.append(this.getInstitutionStammdatenTagesschule(), o.getInstitutionStammdatenTagesschule());
-		builder.append(this.getGesuchsperiode().getId(), o.getGesuchsperiode().getId());
+		builder.append(this.getEinstellungenTagesschule(), o.getEinstellungenTagesschule());
 		builder.append(this.getZeitVon(), o.getZeitVon());
 		builder.append(this.getZeitBis(), o.getZeitBis());
 		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
@@ -229,8 +213,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 
 	public ModulTagesschuleGroup copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		ModulTagesschuleGroup copy = new ModulTagesschuleGroup();
-		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
-		copy.setGesuchsperiode(gesuchsperiode);
+		copy.setEinstellungenTagesschule(this.getEinstellungenTagesschule());
 		copy.setModulTagesschuleName(this.getModulTagesschuleName());
 		copy.setBezeichnung(this.getBezeichnung());
 		copy.setZeitVon(this.getZeitVon());

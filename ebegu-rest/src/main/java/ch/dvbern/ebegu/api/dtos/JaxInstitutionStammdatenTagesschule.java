@@ -15,8 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
@@ -24,14 +24,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
-
 /**
  * DTO fuer InstitutionStammdatenTagesschule
  */
 @XmlRootElement(name = "institutionStammdatenTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDTO {
+public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 6958211446966611467L;
 
@@ -39,10 +37,8 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 	private JaxGemeinde gemeinde;
 
 	@NotNull @Nonnull
-	private List<JaxModulTagesschuleGroup> modulTagesschuleGroups = new ArrayList<>();
+	private Set<JaxEinstellungenTagesschule> einstellungenTagesschule = new HashSet<>();
 
-	@NotNull @Nonnull
-	private ModulTagesschuleTyp modulTagesschuleTyp = ModulTagesschuleTyp.DYNAMISCH;
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
@@ -53,21 +49,11 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 		this.gemeinde = gemeinde;
 	}
 
-	@Nonnull
-	public List<JaxModulTagesschuleGroup> getModulTagesschuleGroups() {
-		return modulTagesschuleGroups;
+	public Set<JaxEinstellungenTagesschule> getEinstellungenTagesschule() {
+		return einstellungenTagesschule;
 	}
 
-	public void setModulTagesschuleGroups(@Nonnull List<JaxModulTagesschuleGroup> modulTagesschuleGroups) {
-		this.modulTagesschuleGroups = modulTagesschuleGroups;
-	}
-
-	@Nonnull
-	public ModulTagesschuleTyp getModulTagesschuleTyp() {
-		return modulTagesschuleTyp;
-	}
-
-	public void setModulTagesschuleTyp(@Nonnull ModulTagesschuleTyp modulTagesschuleTyp) {
-		this.modulTagesschuleTyp = modulTagesschuleTyp;
+	public void setEinstellungenTagesschule(Set<JaxEinstellungenTagesschule> einstellungenTagesschule) {
+		this.einstellungenTagesschule = einstellungenTagesschule;
 	}
 }

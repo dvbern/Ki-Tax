@@ -22,7 +22,6 @@ import TSModulTagesschule from './TSModulTagesschule';
 
 export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
 
-    public gesuchsperiodeId: string;
     public modulTagesschuleName: TSModulTagesschuleName;
     public bezeichnung: string;
     public zeitVon: string;
@@ -52,12 +51,11 @@ export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
     public isSameModul(modulTagesschule: TSModulTagesschuleGroup): boolean {
         return modulTagesschule
             && this.modulTagesschuleName === modulTagesschule.modulTagesschuleName
-            && this.bezeichnung === modulTagesschule.bezeichnung
-            && this.gesuchsperiodeId === modulTagesschule.gesuchsperiodeId;
+            && this.bezeichnung === modulTagesschule.bezeichnung;
     }
 
     public uniqueId(): string {
-        return this.id + this.gesuchsperiodeId + this.modulTagesschuleName;
+        return this.id + this.modulTagesschuleName;
     }
 
     public getZeitraumString(): string {

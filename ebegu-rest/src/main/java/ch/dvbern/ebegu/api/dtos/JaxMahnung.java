@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -41,7 +42,7 @@ public class JaxMahnung extends JaxAbstractDTO {
 	@Nullable
 	private JaxGesuch gesuch;
 
-	@Nullable
+	@Nonnull
 	private MahnungTyp mahnungTyp;
 
 	@Nullable
@@ -67,12 +68,12 @@ public class JaxMahnung extends JaxAbstractDTO {
 		this.gesuch = gesuch;
 	}
 
-	@Nullable
+	@Nonnull
 	public MahnungTyp getMahnungTyp() {
 		return mahnungTyp;
 	}
 
-	public void setMahnungTyp(@Nullable MahnungTyp mahnungTyp) {
+	public void setMahnungTyp(@Nonnull MahnungTyp mahnungTyp) {
 		this.mahnungTyp = mahnungTyp;
 	}
 

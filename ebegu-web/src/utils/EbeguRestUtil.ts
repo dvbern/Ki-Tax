@@ -61,6 +61,7 @@ import TSEinkommensverschlechterungContainer from '../models/TSEinkommensverschl
 import TSEinkommensverschlechterungInfo from '../models/TSEinkommensverschlechterungInfo';
 import TSEinkommensverschlechterungInfoContainer from '../models/TSEinkommensverschlechterungInfoContainer';
 import TSEinstellung from '../models/TSEinstellung';
+import TSEinstellungenTagesschule from '../models/TSEinstellungenTagesschule';
 import TSErweiterteBetreuung from '../models/TSErweiterteBetreuung';
 import TSErweiterteBetreuungContainer from '../models/TSErweiterteBetreuungContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
@@ -1325,14 +1326,12 @@ export default class EbeguRestUtil {
         institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule,
     ): any {
         if (institutionStammdatenTagesschule) {
-            this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenTagesschule,
+            this.abstractEntityToRestObject(restInstitutionStammdatenTagesschule,
                 institutionStammdatenTagesschule);
             restInstitutionStammdatenTagesschule.gemeinde =
                 this.gemeindeToRestObject({}, institutionStammdatenTagesschule.gemeinde);
-            restInstitutionStammdatenTagesschule.modulTagesschuleGroups =
-                this.moduleTagesschuleGroupsArrayToRestObject(institutionStammdatenTagesschule.modulTagesschuleGroups);
-            restInstitutionStammdatenTagesschule.modulTagesschuleTyp =
-                institutionStammdatenTagesschule.modulTagesschuleTyp;
+            restInstitutionStammdatenTagesschule.einstellungenTagesschule =
+                this.einstellungenTagesschuleArrayToRestObject(institutionStammdatenTagesschule.einstellungenTagesschule);
             return restInstitutionStammdatenTagesschule;
         }
         return undefined;
@@ -1343,14 +1342,12 @@ export default class EbeguRestUtil {
         institutionStammdatenTagesschuleFromServer: any,
     ): TSInstitutionStammdatenTagesschule {
         if (institutionStammdatenTagesschuleFromServer) {
-            this.parseDateRangeEntity(institutionStammdatenTagesschuleTS,
+            this.parseAbstractEntity(institutionStammdatenTagesschuleTS,
                 institutionStammdatenTagesschuleFromServer);
             institutionStammdatenTagesschuleTS.gemeinde =
                 this.parseGemeinde(new TSGemeinde(), institutionStammdatenTagesschuleFromServer.gemeinde);
-            institutionStammdatenTagesschuleTS.modulTagesschuleGroups =
-                this.parseModuleTagesschuleGroupsArray(institutionStammdatenTagesschuleFromServer.modulTagesschuleGroups);
-            institutionStammdatenTagesschuleTS.modulTagesschuleTyp =
-                institutionStammdatenTagesschuleFromServer.modulTagesschuleTyp;
+            institutionStammdatenTagesschuleTS.einstellungenTagesschule =
+                this.parseEinstellungenTagesschuleArray(institutionStammdatenTagesschuleFromServer.einstellungenTagesschule);
             return institutionStammdatenTagesschuleTS;
         }
         return undefined;
@@ -3192,6 +3189,55 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public parseEinstellungenTagesschuleArray(data: Array<any>): TSEinstellungenTagesschule[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseEinstellungenTagesschule(new TSEinstellungenTagesschule(), item))
+            : [this.parseEinstellungenTagesschule(new TSEinstellungenTagesschule(), data)];
+    }
+
+    private parseEinstellungenTagesschule(einstellungenTagesschuleTS: TSEinstellungenTagesschule, einstellungFromServer: any
+    ): TSEinstellungenTagesschule {
+        if (einstellungFromServer) {
+            this.parseAbstractEntity(einstellungenTagesschuleTS, einstellungFromServer);
+            einstellungenTagesschuleTS.gesuchsperiodeId = einstellungFromServer.gesuchsperiodeId;
+            einstellungenTagesschuleTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode, einstellungFromServer.gesuchsperiode);
+            einstellungenTagesschuleTS.modulTagesschuleTyp = einstellungFromServer.modulTagesschuleTyp;
+            einstellungenTagesschuleTS.modulTagesschuleGroups =
+                this.parseModuleTagesschuleGroupsArray(einstellungFromServer.modulTagesschuleGroups);
+
+            return einstellungenTagesschuleTS;
+        }
+        return undefined;
+    }
+
+    private einstellungenTagesschuleArrayToRestObject(data: Array<TSEinstellungenTagesschule>): any[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.einstellungenTagesschuleToRestObject({}, item))
+            : [];
+    }
+
+    private einstellungenTagesschuleToRestObject(restEinstellung: any, einstellungTagesschuleTS: TSEinstellungenTagesschule
+    ): any {
+        if (einstellungTagesschuleTS) {
+            this.abstractEntityToRestObject(restEinstellung, einstellungTagesschuleTS);
+            restEinstellung.gesuchsperiodeId = einstellungTagesschuleTS.gesuchsperiodeId;
+            restEinstellung.gesuchsperiode =
+                this.gesuchsperiodeToRestObject({}, einstellungTagesschuleTS.gesuchsperiode);
+            restEinstellung.modulTagesschuleTyp = einstellungTagesschuleTS.modulTagesschuleTyp;
+            restEinstellung.modulTagesschuleGroups =
+                this.moduleTagesschuleGroupsArrayToRestObject(einstellungTagesschuleTS.modulTagesschuleGroups);
+            return restEinstellung;
+        }
+        return undefined;
+    }
+
     public parseModuleTagesschuleGroupsArray(data: Array<any>): TSModulTagesschuleGroup[] {
         if (!data) {
             return [];
@@ -3204,8 +3250,7 @@ export default class EbeguRestUtil {
     private parseModulTagesschuleGroup(modulTagesschuleGroupTS: TSModulTagesschuleGroup, modulGroupFromServer: any
     ): TSModulTagesschuleGroup {
         if (modulGroupFromServer) {
-            this.parseAbstractMutableEntity(modulTagesschuleGroupTS, modulGroupFromServer);
-            modulTagesschuleGroupTS.gesuchsperiodeId = modulGroupFromServer.gesuchsperiodeId;
+            this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
             modulTagesschuleGroupTS.bezeichnung = modulGroupFromServer.bezeichnung;
             modulTagesschuleGroupTS.zeitVon = modulGroupFromServer.zeitVon;
@@ -3232,6 +3277,24 @@ export default class EbeguRestUtil {
             : [];
     }
 
+    private modulTagesschuleGroupToRestObject(restModulGroup: any, modulTagesschuleGroupTS: TSModulTagesschuleGroup
+    ): any {
+        if (modulTagesschuleGroupTS) {
+            this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
+            restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
+            restModulGroup.bezeichnung = modulTagesschuleGroupTS.bezeichnung;
+            restModulGroup.zeitVon = modulTagesschuleGroupTS.zeitVon;
+            restModulGroup.zeitBis = modulTagesschuleGroupTS.zeitBis;
+            restModulGroup.verpflegungskosten = modulTagesschuleGroupTS.verpflegungskosten;
+            restModulGroup.intervall = modulTagesschuleGroupTS.intervall;
+            restModulGroup.wirdPaedagogischBetreut = modulTagesschuleGroupTS.wirdPaedagogischBetreut;
+            restModulGroup.reihenfolge = modulTagesschuleGroupTS.reihenfolge;
+            restModulGroup.module = this.moduleTagesschuleArrayToRestObject(modulTagesschuleGroupTS.module);
+            return restModulGroup;
+        }
+        return undefined;
+    }
+
     private moduleTagesschuleArrayToRestObject(data: Array<TSModulTagesschule>): any[] {
         if (!data) {
             return [];
@@ -3246,25 +3309,6 @@ export default class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restModul, modulTagesschuleTS);
             restModul.wochentag = modulTagesschuleTS.wochentag;
             return restModul;
-        }
-        return undefined;
-    }
-
-    private modulTagesschuleGroupToRestObject(restModulGroup: any, modulTagesschuleGroupTS: TSModulTagesschuleGroup
-    ): any {
-        if (modulTagesschuleGroupTS) {
-            this.abstractMutableEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
-            restModulGroup.gesuchsperiodeId = modulTagesschuleGroupTS.gesuchsperiodeId;
-            restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
-            restModulGroup.bezeichnung = modulTagesschuleGroupTS.bezeichnung;
-            restModulGroup.zeitVon = modulTagesschuleGroupTS.zeitVon;
-            restModulGroup.zeitBis = modulTagesschuleGroupTS.zeitBis;
-            restModulGroup.verpflegungskosten = modulTagesschuleGroupTS.verpflegungskosten;
-            restModulGroup.intervall = modulTagesschuleGroupTS.intervall;
-            restModulGroup.wirdPaedagogischBetreut = modulTagesschuleGroupTS.wirdPaedagogischBetreut;
-            restModulGroup.reihenfolge = modulTagesschuleGroupTS.reihenfolge;
-            restModulGroup.module = this.moduleTagesschuleArrayToRestObject(modulTagesschuleGroupTS.module);
-            return restModulGroup;
         }
         return undefined;
     }

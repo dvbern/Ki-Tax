@@ -41,9 +41,6 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	private static final long serialVersionUID = -1893537808325618626L;
 
 	@NotNull @Nonnull
-	private String gesuchsperiodeId;
-
-	@NotNull @Nonnull
 	private ModulTagesschuleName modulTagesschuleName;
 
 	@NotNull @Nonnull
@@ -68,15 +65,6 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 
 	private Set<JaxModulTagesschule> module = new LinkedHashSet<>();
 
-
-	@Nonnull
-	public String getGesuchsperiodeId() {
-		return gesuchsperiodeId;
-	}
-
-	public void setGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
-		this.gesuchsperiodeId = gesuchsperiodeId;
-	}
 
 	@Nonnull
 	public ModulTagesschuleName getModulTagesschuleName() {

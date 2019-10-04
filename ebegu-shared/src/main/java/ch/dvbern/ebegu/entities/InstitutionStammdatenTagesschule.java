@@ -15,16 +15,14 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,7 +30,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -46,21 +44,16 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 
 	private static final long serialVersionUID = 3991623541799163623L;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenTagesschule")
-	private Set<ModulTagesschuleGroup> modulTagesschuleGroups = new TreeSet<>();
+	private Set<EinstellungenTagesschule> einstellungenTagesschule = new TreeSet<>();
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_ts_gemeinde_id"))
 	private Gemeinde gemeinde;
-
-	@Enumerated(value = EnumType.STRING)
-	@NotNull @Nonnull
-	@Column(nullable = false)
-	private ModulTagesschuleTyp modulTagesschuleTyp = ModulTagesschuleTyp.DYNAMISCH;
 
 
 	public InstitutionStammdatenTagesschule() {
@@ -88,13 +81,13 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 		return builder.toComparison();
 	}
 
-	@Nullable
-	public Set<ModulTagesschuleGroup> getModulTagesschuleGroups() {
-		return modulTagesschuleGroups;
+	@Nonnull
+	public Set<EinstellungenTagesschule> getEinstellungenTagesschule() {
+		return einstellungenTagesschule;
 	}
 
-	public void setModulTagesschuleGroups(@Nullable Set<ModulTagesschuleGroup> modulTagesschuleGroups) {
-		this.modulTagesschuleGroups = modulTagesschuleGroups;
+	public void setEinstellungenTagesschule(@Nonnull Set<EinstellungenTagesschule> einstellungenTagesschule) {
+		this.einstellungenTagesschule = einstellungenTagesschule;
 	}
 
 	@Nonnull
@@ -106,11 +99,15 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 		this.gemeinde = gemeinde;
 	}
 
-	public ModulTagesschuleTyp getModulTagesschuleTyp() {
-		return modulTagesschuleTyp;
-	}
-
-	public void setModulTagesschuleTyp(ModulTagesschuleTyp modulTagesschuleTyp) {
-		this.modulTagesschuleTyp = modulTagesschuleTyp;
+	@Nonnull
+	public List<ModulTagesschuleGroup> extractAllModulTagesschuleGroup() {
+		final List<ModulTagesschuleGroup> list = new ArrayList<>();
+		for (final EinstellungenTagesschule kind : getEinstellungenTagesschule()) {
+			Set<ModulTagesschuleGroup> modulTagesschuleGroups = kind.getModulTagesschuleGroups();
+			if (CollectionUtils.isNotEmpty(modulTagesschuleGroups)) {
+				list.addAll(modulTagesschuleGroups);
+			}
+		}
+		return list;
 	}
 }
