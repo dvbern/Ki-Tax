@@ -230,6 +230,7 @@ public class BetreuungsgutscheinEvaluator {
 		if (ausbezahlteVorgaenger != null) {
 			// Zahlungsstatus aus vorgaenger uebernehmen
 			VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
+			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {

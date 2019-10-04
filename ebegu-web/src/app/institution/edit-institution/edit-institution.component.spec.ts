@@ -22,7 +22,7 @@ describe('EditInstitutionComponent', () => {
     const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
         ['getAllActiveTraegerschaften']);
     const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenForCurrentBenutzer']);
+        ['getInstitutionenReadableForCurrentBenutzer']);
     const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
         ['findInstitutionStammdaten']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
@@ -56,7 +56,7 @@ describe('EditInstitutionComponent', () => {
         }).compileComponents();
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
-        insitutionServiceSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         stammdatenServiceSpy.findInstitutionStammdaten.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});

@@ -41,8 +41,8 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _kategorieMaxEinkommen: boolean;
     private _kategorieKeinPensum: boolean;
     private _zuSpaetEingereicht: boolean;
-    private _sameVerfuegungsdaten: boolean;
-    private _sameVerguenstigung: boolean;
+    private _sameVerfuegteVerfuegungsrelevanteDaten: boolean;
+    private _sameAusbezahlteVerguenstigung: boolean;
 
     public get erwerbspensumGS1(): number {
         return this._erwerbspensumGS1;
@@ -228,20 +228,20 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
         this._zuSpaetEingereicht = value;
     }
 
-    public get sameVerfuegungsdaten(): boolean {
-        return this._sameVerfuegungsdaten;
+    public get sameVerfuegteVerfuegungsrelevanteDaten(): boolean {
+        return this._sameVerfuegteVerfuegungsrelevanteDaten;
     }
 
-    public set sameVerfuegungsdaten(value: boolean) {
-        this._sameVerfuegungsdaten = value;
+    public set sameVerfuegteVerfuegungsrelevanteDaten(value: boolean) {
+        this._sameVerfuegteVerfuegungsrelevanteDaten = value;
     }
 
-    public get sameVerguenstigung(): boolean {
-        return this._sameVerguenstigung;
+    public get sameAusbezahlteVerguenstigung(): boolean {
+        return this._sameAusbezahlteVerguenstigung;
     }
 
-    public set sameVerguenstigung(value: boolean) {
-        this._sameVerguenstigung = value;
+    public set sameAusbezahlteVerguenstigung(value: boolean) {
+        this._sameAusbezahlteVerguenstigung = value;
     }
 
     public getMinimalerElternbeitragGekuerzt(): number {

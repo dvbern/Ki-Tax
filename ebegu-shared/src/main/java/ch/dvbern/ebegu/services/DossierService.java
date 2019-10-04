@@ -99,17 +99,6 @@ public interface DossierService {
 	boolean hasDossierAnyMitteilung(@NotNull Dossier dossier);
 
 	/**
-	 * Logik fuer die Ermittlung des Hauptverantwortlichen:
-	 * (1) Wenn ein JA-Verantwortlicher gesetzt ist, ist dieser der Hauptverantwortlicher
-	 * (2) Wenn kein JA-Verantwortlicher gesetzt ist, aber ein SCH-Verantwortlicher, ist dieser der
-	 * Hauptverantwortlicher
-	 * (3) Wenn noch gar nichts gesetzt ist (z.B. noch gar kein Gesuch erfasst) wird der DefaultVerantwortlicherJA
-	 * zurueckgegeben
-	 */
-	@Nonnull
-	Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Dossier dossier);
-
-	/**
 	 * Setzt den BG-Verantwortlichen auf dem Dossier
 	 */
 	@Nonnull

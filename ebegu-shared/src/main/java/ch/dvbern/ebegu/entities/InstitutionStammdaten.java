@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -301,19 +300,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			&& !stammdaten.getModulTagesschuleGroups().isEmpty();
 	}
 
-	public boolean isVisibleForGemeindeUser(Benutzer benutzer) {
-		if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
-			return true;
-		}
-		Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
-		Gemeinde gemeinde = null;
-		if (getInstitutionStammdatenTagesschule() != null) {
-			gemeinde = getInstitutionStammdatenTagesschule().getGemeinde();
-		}
-		if (getInstitutionStammdatenFerieninsel() != null) {
-			gemeinde = getInstitutionStammdatenFerieninsel().getGemeinde();
-		}
-
-		return gemeinden.contains(gemeinde);
+	@Override
+	public String getMessageForAccessException() {
+		return "bgNummer: " + this.getBetreuungsangebotTyp()
+			+ ", institution: " + this.getInstitution().getMessageForAccessException();
 	}
 }

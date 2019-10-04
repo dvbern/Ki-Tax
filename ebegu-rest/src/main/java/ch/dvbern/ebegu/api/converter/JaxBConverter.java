@@ -1389,6 +1389,7 @@ public class JaxBConverter extends AbstractConverter {
 			.flatMap(id -> traegerschaftService.findTraegerschaft(id))
 			.orElse(null);
 
+		// Traegerschaft darf nicht vom Client ueberschrieben werden
 		institution.setTraegerschaft(traegerschaft);
 
 		return institution;
@@ -2568,7 +2569,6 @@ public class JaxBConverter extends AbstractConverter {
 		AnmeldungTagesschule betreuungToMergeWith = Optional.ofNullable(betreuungJAXP.getId())
 			.flatMap(id -> betreuungService.findAnmeldungTagesschule(id))
 			.orElseGet(AnmeldungTagesschule::new);
-
 		return this.anmeldungTagesschuleToEntity(betreuungJAXP, betreuungToMergeWith);
 	}
 
@@ -2630,7 +2630,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * all containers that existed as entity
 	 * but not in the list of jax, won't be added to the list and are then removed (cascade and orphanremoval)
 	 *
-	 * @param jaxBetPenContainers Betreuungspensen DTOs from Client
+	 * @param jaxBetPenContainers      Betreuungspensen DTOs from Client
 	 * @param existingBetreuungspensen List of currently stored BetreungspensumContainers
 	 */
 	private void betreuungsPensumContainersToEntity(
@@ -3099,8 +3099,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setSameVerfuegungsdaten(zeitabschnitt.isSameVerfuegungsdaten());
-		jaxZeitabschn.setSameVerguenstigung(zeitabschnitt.isSameVerguenstigung());
+		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
+		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.isSameAusbezahlteVerguenstigung());
 
 		return jaxZeitabschn;
 	}
@@ -3137,8 +3137,8 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setKategorieKeinPensum(jaxVerfuegungZeitabschnitt.isKategorieKeinPensum());
 		verfuegungZeitabschnitt.setZuSpaetEingereicht(jaxVerfuegungZeitabschnitt.isZuSpaetEingereicht());
 		verfuegungZeitabschnitt.setZahlungsstatus(jaxVerfuegungZeitabschnitt.getZahlungsstatus());
-		verfuegungZeitabschnitt.setSameVerfuegungsdaten(jaxVerfuegungZeitabschnitt.isSameVerfuegungsdaten());
-		verfuegungZeitabschnitt.setSameVerguenstigung(jaxVerfuegungZeitabschnitt.isSameVerguenstigung());
+		verfuegungZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDaten(jaxVerfuegungZeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
+		verfuegungZeitabschnitt.setSameAusbezahlteVerguenstigung(jaxVerfuegungZeitabschnitt.isSameAusbezahlteVerguenstigung());
 		return verfuegungZeitabschnitt;
 	}
 
@@ -3422,7 +3422,7 @@ public class JaxBConverter extends AbstractConverter {
 		// kommen
 		if (jaxBerechtigung.getInstitution() != null && jaxBerechtigung.getInstitution().getId() != null) {
 			final Optional<Institution> institutionFromDB =
-				institutionService.findInstitution(jaxBerechtigung.getInstitution().getId());
+				institutionService.findInstitution(jaxBerechtigung.getInstitution().getId(), false);
 			if (institutionFromDB.isPresent()) {
 				// Institution darf nicht vom Client ueberschrieben werden
 				berechtigung.setInstitution(institutionFromDB.get());
@@ -3579,7 +3579,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * adds it to the list. Thus all dokumente that existed as entity but not in the list of jax, won't be added to
 	 * the list and then removed (cascade and orphanremoval)
 	 *
-	 * @param jaxDokuments Dokumente DTOs from Client
+	 * @param jaxDokuments      Dokumente DTOs from Client
 	 * @param existingDokumente List of currently stored Dokumente
 	 */
 	private void dokumenteToEntity(
@@ -4370,21 +4370,16 @@ public class JaxBConverter extends AbstractConverter {
 			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
 				.ifPresent(stammdaten::setDefaultBenutzerTS);
 		}
+		if (jaxStammdaten.getDefaultBenutzer() != null) {
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzer);
+		}
 
 		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
 		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
 			.ifPresent(stammdaten::setGemeinde);
 
-		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
-
-		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
-			if (stammdaten.getBeschwerdeAdresse() == null) {
-				stammdaten.setBeschwerdeAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
-		} else {
-			stammdaten.setBeschwerdeAdresse(null);
-		}
+		gemeindeStammdatenAdressenToEntity(jaxStammdaten, stammdaten);
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
@@ -4419,6 +4414,40 @@ public class JaxBConverter extends AbstractConverter {
 		return stammdaten;
 	}
 
+	private void gemeindeStammdatenAdressenToEntity(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
+		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+
+		if (jaxStammdaten.getBgAdresse() != null) {
+			if (stammdaten.getBgAdresse() == null) {
+				stammdaten.setBgAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBgAdresse(), stammdaten.getBgAdresse());
+		} else {
+			stammdaten.setBgAdresse(null);
+		}
+
+		if (jaxStammdaten.getTsAdresse() != null) {
+			if (stammdaten.getTsAdresse() == null) {
+				stammdaten.setTsAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getTsAdresse(), stammdaten.getTsAdresse());
+		} else {
+			stammdaten.setTsAdresse(null);
+		}
+
+		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
+			if (stammdaten.getBeschwerdeAdresse() == null) {
+				stammdaten.setBeschwerdeAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
+		} else {
+			stammdaten.setBeschwerdeAdresse(null);
+		}
+	}
+
 	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getGemeinde());
@@ -4434,12 +4463,12 @@ public class JaxBConverter extends AbstractConverter {
 			.map(Benutzer::getFullName)
 			.collect(Collectors.joining(", ")));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
-		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
+		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
 		// Konfiguration
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
 			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
@@ -4479,6 +4508,7 @@ public class JaxBConverter extends AbstractConverter {
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+
 		if (!stammdaten.isNew()) {
 			if (stammdaten.getDefaultBenutzerBG() != null) {
 				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
@@ -4486,9 +4516,25 @@ public class JaxBConverter extends AbstractConverter {
 			if (stammdaten.getDefaultBenutzerTS() != null) {
 				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
 			}
-			if (stammdaten.getBeschwerdeAdresse() != null) {
-				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			if (stammdaten.getDefaultBenutzer() != null) {
+				jaxStammdaten.setDefaultBenutzer(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzer()));
 			}
+		}
+	}
+
+	private void gemeindeStammdatenAdressenToJax(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
+		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
+		if (stammdaten.getBeschwerdeAdresse() != null) {
+			jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+		}
+		if (stammdaten.getBgAdresse() != null) {
+			jaxStammdaten.setBgAdresse(adresseToJAX(stammdaten.getBgAdresse()));
+		}
+		if (stammdaten.getTsAdresse() != null) {
+			jaxStammdaten.setTsAdresse(adresseToJAX(stammdaten.getTsAdresse()));
 		}
 	}
 

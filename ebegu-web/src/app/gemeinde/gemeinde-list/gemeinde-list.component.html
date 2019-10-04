@@ -59,7 +59,7 @@
                 <ng-container matColumnDef="detail">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde">
-                        <button class="dv-btn dv-btn-sm" (click)="openGemeinde(gemeinde)">
+                        <button class="dv-btn dv-btn-sm" (click)="openGemeinde(gemeinde)" *ngIf="hatBerechtigungEditieren(gemeinde)">
                             <i class="fa fa-eye"></i>
                         </button>
                     </mat-cell>

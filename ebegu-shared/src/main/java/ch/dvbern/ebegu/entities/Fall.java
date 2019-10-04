@@ -143,4 +143,10 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 	public String getPaddedFallnummer() {
 		return StringUtils.leftPad(String.valueOf(this.getFallNummer()), Constants.FALLNUMMER_LENGTH, '0');
 	}
+
+	@Override
+	public String getMessageForAccessException() {
+		return "fallNummer: " + this.getFallNummer()
+			+ ", besitzer: " + (this.getBesitzer() != null ? this.getBesitzer().getUsername() : "null");
+	}
 }

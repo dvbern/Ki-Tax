@@ -32,7 +32,7 @@ describe('InstitutionListComponent', () => {
 
     beforeEach(async(() => {
         const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-            ['getInstitutionenForCurrentBenutzer']);
+            ['getInstitutionenEditableForCurrentBenutzer']);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
@@ -55,7 +55,7 @@ describe('InstitutionListComponent', () => {
             declarations: [InstitutionListComponent],
         }).compileComponents();
 
-        insitutionServiceSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
     }));
 
     beforeEach(() => {

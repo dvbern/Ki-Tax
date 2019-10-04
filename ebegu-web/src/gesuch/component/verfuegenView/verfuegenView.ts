@@ -72,8 +72,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public bemerkungen: string;
 
     public showSchemas: boolean;
-    public sameVerfuegungsdaten: boolean;
-    public sameVerrechneteVerguenstigung: boolean;
+    public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
+    public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
 
@@ -148,8 +148,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private setParamsDependingOnCurrentVerfuegung(): void {
-        this.setSameVerfuegungsdaten();
-        this.setSameVerrechneteVerfuegungdaten();
+        this.setSameVerfuegteVerfuegungsrelevanteDaten();
+        this.setFragenObIgnorieren();
     }
 
     private initDevModeParameter(): void {
@@ -163,30 +163,30 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.form.$setPristine();
     }
 
-    private setSameVerfuegungsdaten(): void {
-        this.sameVerfuegungsdaten = false; // by default
+    private setSameVerfuegteVerfuegungsrelevanteDaten(): void {
+        this.sameVerfuegteVerfuegungsrelevanteDaten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.sameVerfuegungsdaten = this.getVerfuegenToWorkWith().areSameVerfuegungsdaten();
+            this.sameVerfuegteVerfuegungsrelevanteDaten = this.getVerfuegenToWorkWith().areSameVerfuegteVerfuegungsrelevanteDaten();
         }
+    }
+
+    public isSameVerfuegteVerfuegungsrelevanteDaten(): boolean {
+        return this.sameVerfuegteVerfuegungsrelevanteDaten;
     }
 
     /**
      * Checks whether all Abschnitte that are already paid, have the same value of the new abschnitte from
      * the new verfuegung. Returns true if they are the same
      */
-    private setSameVerrechneteVerfuegungdaten(): void {
-        this.sameVerrechneteVerguenstigung = false; // by default
+    private setFragenObIgnorieren(): void {
+        this.fragenObIgnorieren = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.sameVerrechneteVerguenstigung = this.getVerfuegenToWorkWith().isSameVerrechneteVerguenstigung();
+            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
         }
     }
 
-    public isSameVerfuegungsdaten(): boolean {
-        return this.sameVerfuegungsdaten;
-    }
-
-    private isSameVerrechneteVerguenstigung(): boolean {
-        return this.sameVerrechneteVerguenstigung;
+    private isFragenObIgnorieren(): boolean {
+        return this.fragenObIgnorieren;
     }
 
     private isAlreadyIgnored(): boolean {
@@ -202,8 +202,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return;
         }
 
-        const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+        const direktVerfuegen = !this.isFragenObIgnorieren() || !this.isMutation()
             || this.isAlreadyIgnored();
         // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
         if (this.isAlreadyIgnored()) {

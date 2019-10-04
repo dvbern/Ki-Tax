@@ -36,7 +36,7 @@ describe('AddInstitutionComponent', () => {
     let fixture: ComponentFixture<AddInstitutionComponent>;
 
     const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenForCurrentBenutzer']);
+        ['getInstitutionenReadableForCurrentBenutzer']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
     const transitionServiceSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);

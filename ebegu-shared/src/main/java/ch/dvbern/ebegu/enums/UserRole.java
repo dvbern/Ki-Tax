@@ -48,12 +48,20 @@ public enum UserRole {
 		this.rollenAbhaengigkeit = rollenAbhaengigkeit;
 	}
 
-	public boolean isRoleSchulamt() {
-		return ADMIN_TS == this || SACHBEARBEITER_TS == this || isRoleGemeinde();
+	public boolean isRoleBgOnly() {
+		return ADMIN_BG == this || SACHBEARBEITER_BG == this;
 	}
 
-	public boolean isRoleJugendamt() {
-		return ADMIN_BG == this || SACHBEARBEITER_BG == this || isRoleGemeinde();
+	public boolean isRoleTsOnly() {
+		return ADMIN_TS == this || SACHBEARBEITER_TS == this;
+	}
+
+	public boolean isRoleGemeindeOrBG() {
+		return isRoleGemeinde() || isRoleBgOnly();
+	}
+
+	public boolean isRoleGemeindeOrTS() {
+		return isRoleGemeinde() || isRoleTsOnly();
 	}
 
 	public boolean isRoleAnyAdminGemeinde() {
@@ -89,14 +97,14 @@ public enum UserRole {
 	/**
 	 * Returns only the roles of TS
 	 */
-	public static List<UserRole> getSchulamtRoles() {
+	public static List<UserRole> getTsOnlyRoles() {
 		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS);
 	}
 
 	/**
 	 * Returns only the roles of BG
 	 */
-	public static List<UserRole> getJugendamtRoles() {
+	public static List<UserRole> getBgOnlyRoles() {
 		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
 	}
 
