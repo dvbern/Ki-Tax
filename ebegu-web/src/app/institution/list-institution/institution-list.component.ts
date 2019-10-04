@@ -74,7 +74,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForCurrentBenutzer()
+        this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
             .then(insti => {
                 this.dataSource = new MatTableDataSource(insti);
                 this.dataSource.paginator = this.paginator;
@@ -140,15 +140,18 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
      * Institution in question can always open the Institution.
      */
     public openInstitution(institution: TSInstitution): void {
-        if (institution.status !== TSInstitutionStatus.EINGELADEN
-            || this.isCurrentUserAdminForInstitution(institution)
-            || this.isSuperAdmin()
-        ) {
+        if (this.hatBerechtigungEditieren(institution)) {
             this.$state.go('institution.edit', {
                 institutionId: institution.id,
             });
         }
         return;
+    }
+
+    public hatBerechtigungEditieren(institution: TSInstitution): boolean {
+        return institution.status !== TSInstitutionStatus.EINGELADEN
+            || this.isCurrentUserAdminForInstitution(institution)
+            || this.isSuperAdmin();
     }
 
     private isCurrentUserAdminForInstitution(institution: TSInstitution): boolean {

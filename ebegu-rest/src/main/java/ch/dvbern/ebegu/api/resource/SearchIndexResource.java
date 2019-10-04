@@ -235,7 +235,7 @@ public class SearchIndexResource {
 	 */
 	private QuickSearchResultDTO mergeAllowedGesucheWithQuickSearchResult(QuickSearchResultDTO quickSearch, Map<String, Gesuch> gesucheToShow) {
 		boolean isInstOrTraegerschaft = isCurrentUserInstitutionOrTraegerschaft();
-		Collection<Institution> allowedInst = isInstOrTraegerschaft ? institutionService.getAllowedInstitutionenForCurrentBenutzer(false) : null;
+		Collection<Institution> allowedInst = isInstOrTraegerschaft ? institutionService.getInstitutionenReadableForCurrentBenutzer(false) : null;
 
 		for (Iterator<SearchResultEntryDTO> iterator = quickSearch.getResultEntities().iterator(); iterator.hasNext(); ) {
 			SearchResultEntryDTO searchEnry = iterator.next();

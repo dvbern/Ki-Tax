@@ -230,7 +230,7 @@ public class GesuchResource {
 				return completeGesuch;
 			}
 			Collection<Institution> instForCurrBenutzer =
-				institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
+				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 			return cleanGesuchForInstitutionTraegerschaft(completeGesuch, instForCurrBenutzer);
 		}
 		return null; // aus sicherheitsgruenden geben wir null zurueck wenn etwas nicht stimmmt

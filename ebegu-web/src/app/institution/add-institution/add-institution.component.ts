@@ -48,7 +48,6 @@ export class AddInstitutionComponent implements OnInit {
     public traegerschaften: TSTraegerschaft[];
     public institution: TSInstitution = undefined;
     public beguStart: moment.Moment;
-    public beguStartDatumMin: moment.Moment;
     public adminMail: string;
     public selectedGemeinde: TSGemeinde;
     public gemeinden: Array<TSGemeinde>;
@@ -83,7 +82,6 @@ export class AddInstitutionComponent implements OnInit {
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStart = futureMonthBegin;
-        this.beguStartDatumMin = futureMonthBegin;
 
         // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
         if (!this.isBGInstitution) {
@@ -95,36 +93,12 @@ export class AddInstitutionComponent implements OnInit {
         this.navigateBack();
     }
 
-    public institutionEinladen(): void {
-        if (!this.form.valid) {
-            return;
-        }
-
-        this.errorService.clearAll();
-        if (this.isStartDateValid()) {
-            this.persistInstitution();
-        }
-    }
-
     public institutionErstellen(): void {
         if (!this.form.valid) {
             return;
         }
         this.errorService.clearAll();
         this.persistInstitution();
-    }
-
-    private isStartDateValid(): boolean {
-        const day = this.beguStart.format('D');
-        if ('1' !== day) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
-            return false;
-        }
-        if (moment() >= this.beguStart) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FUTURE'));
-            return false;
-        }
-        return true;
     }
 
     private persistInstitution(): void {

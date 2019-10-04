@@ -67,7 +67,7 @@ export class BerechtigungComponent {
         this.institutionId = 'institution-' + this.inputId;
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
 
-        this.institutionen$ = from(this.institutionRS.getInstitutionenForCurrentBenutzer())
+        this.institutionen$ = from(this.institutionRS.getInstitutionenReadableForCurrentBenutzer())
             .pipe(map(BerechtigungComponent.sortByName));
 
         this.traegerschaften$ = this.traegerschaftenForPrincipal$();

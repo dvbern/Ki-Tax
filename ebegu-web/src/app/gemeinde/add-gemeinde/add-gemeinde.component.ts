@@ -30,7 +30,6 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
 @Component({
     selector: 'dv-add-gemeinde',
@@ -43,7 +42,6 @@ export class AddGemeindeComponent implements OnInit {
 
     public gemeinde: TSGemeinde = undefined;
     public adminMail: string = undefined;
-    public beguStartDatumMin: moment.Moment;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
     public maxBFSNummer: number = 6806;
 
@@ -60,7 +58,6 @@ export class AddGemeindeComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
-        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly authServiceRS: AuthServiceRS,
     ) {
     }
@@ -84,10 +81,6 @@ export class AddGemeindeComponent implements OnInit {
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.gemeinde.betreuungsgutscheineStartdatum = futureMonthBegin;
-        this.beguStartDatumMin = futureMonthBegin;
-        this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
-            this.gesuchsperiodeList = response;
-        });
         this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
 
         this.initializeFlags();
@@ -116,7 +109,7 @@ export class AddGemeindeComponent implements OnInit {
         }
 
         this.errorService.clearAll();
-        if (this.isAtLeastOneAngebotSelected() && this.isStartDateValid()) {
+        if (this.isAtLeastOneAngebotSelected()) {
             this.persistGemeinde();
         }
     }
@@ -136,22 +129,6 @@ export class AddGemeindeComponent implements OnInit {
             this.gemeinde.angebotBG || this.gemeinde.angebotTS || this.gemeinde.angebotFI;
         this.showMessageKeinAngebotSelected = !hasAngebot;
         return hasAngebot;
-    }
-
-    private isStartDateValid(): boolean {
-        if (!this.gemeinde.angebotBG) {
-            return true;
-        }
-        const day = this.gemeinde.betreuungsgutscheineStartdatum.format('D');
-        if ('1' !== day) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
-            return false;
-        }
-        if (moment() >= this.gemeinde.betreuungsgutscheineStartdatum) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FUTURE'));
-            return false;
-        }
-        return true;
     }
 
     private persistGemeinde(): void {

@@ -69,12 +69,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	// Zwischenresulate aus DATA-Rules ("Abschnitt")
 
 	@Transient
-	private boolean sameVerfuegungsdaten;
+	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
 	@Transient
-	private boolean sameVerguenstigung;
+	private boolean sameAusbezahlteVerguenstigung;
 
 	@Transient
 	@Nullable
@@ -568,20 +568,20 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
-	public boolean isSameVerfuegungsdaten() {
-		return sameVerfuegungsdaten;
+	public boolean isSameVerfuegteVerfuegungsrelevanteDaten() {
+		return sameVerfuegteVerfuegungsrelevanteDaten;
 	}
 
-	public void setSameVerfuegungsdaten(boolean sameVerfuegungsdaten) {
-		this.sameVerfuegungsdaten = sameVerfuegungsdaten;
+	public void setSameVerfuegteVerfuegungsrelevanteDaten(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
+		this.sameVerfuegteVerfuegungsrelevanteDaten = sameVerfuegteVerfuegungsrelevanteDaten;
 	}
 
-	public boolean isSameVerguenstigung() {
-		return sameVerguenstigung;
+	public boolean isSameAusbezahlteVerguenstigung() {
+		return sameAusbezahlteVerguenstigung;
 	}
 
-	public void setSameVerguenstigung(boolean sameVerguenstigung) {
-		this.sameVerguenstigung = sameVerguenstigung;
+	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
+		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
 	}
 
 	public boolean isAbschnittLiegtNachBEGUStartdatum() {

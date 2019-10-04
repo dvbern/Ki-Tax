@@ -222,7 +222,7 @@ public class InstitutionResource {
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Nonnull @NotNull @Valid JaxInstitutionUpdate update) {
 
-		Institution institution = institutionService.findInstitution(requireNonNull(institutionJAXPId.getId()))
+		Institution institution = institutionService.findInstitution(requireNonNull(institutionJAXPId.getId()), true)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("update", institutionJAXPId.getId()));
 
 		InstitutionStammdaten stammdaten = Optional.ofNullable(update.getStammdaten().getId())
@@ -272,7 +272,7 @@ public class InstitutionResource {
 
 		requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
-		Optional<Institution> optional = institutionService.findInstitution(institutionID);
+		Optional<Institution> optional = institutionService.findInstitution(institutionID, true);
 
 		return optional.map(institution -> converter.institutionToJAX(institution)).orElse(null);
 	}
@@ -303,15 +303,28 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Find and return a list of all Institutionen of the currently logged in Benutzer. Retruns " +
+	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. Retruns " +
 		"all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
-	@Path("/currentuser")
+	@Path("/editable/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitution> getAllowedInstitutionenForCurrentBenutzer() {
-		return institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
+	public List<JaxInstitution> getInstitutionenEditableForCurrentBenutzer() {
+		return institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
+			.map(inst -> converter.institutionToJAX(inst))
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Find and return a list of all readable Institutionen of the currently logged in Benutzer. Retruns " +
+		"all for admins", responseContainer = "List", response = JaxInstitution.class)
+	@Nonnull
+	@GET
+	@Path("/readable/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitution> getInstitutionenReadableForCurrentBenutzer() {
+		return institutionService.getInstitutionenReadableForCurrentBenutzer(true).stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}
@@ -324,7 +337,7 @@ public class InstitutionResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response hasInstitutionenInStatusEingeladenForCurrentBenutzer() {
-		long anzahl = institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
+		long anzahl = institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.filter(inst -> inst.getStatus() == InstitutionStatus.EINGELADEN)
 			.count();
 		return Response.ok(anzahl > 0).build();
@@ -341,7 +354,7 @@ public class InstitutionResource {
 
 		requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
-		Institution institution = institutionService.findInstitution(institutionID)
+		Institution institution = institutionService.findInstitution(institutionID, true)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getExternalClients",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -374,7 +387,7 @@ public class InstitutionResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isStammdatenCheckRequiredForCurrentBenutzer() {
-		long anzahl = institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
+		long anzahl = institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.filter(Institution::isStammdatenCheckRequired)
 			.count();
 		return Response.ok(anzahl > 0).build();

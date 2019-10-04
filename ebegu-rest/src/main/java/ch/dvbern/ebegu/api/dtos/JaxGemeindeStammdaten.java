@@ -41,6 +41,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private String sachbearbeiter;
 	@Nullable
+	private JaxBenutzer defaultBenutzer;
+	@Nullable
 	private JaxBenutzer defaultBenutzerBG; // Der Standardverantwortliche
 	@Nullable
 	private JaxBenutzer defaultBenutzerTS;
@@ -48,6 +50,10 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private JaxGemeinde gemeinde;
 	@NotNull
 	private JaxAdresse adresse;
+	@Nullable
+	private JaxAdresse bgAdresse;
+	@Nullable
+	private JaxAdresse tsAdresse;
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
 	@NotNull
@@ -74,6 +80,7 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private Boolean standardRechtsmittelbelehrung;
 	@Nullable
 	private JaxTextRessource rechtsmittelbelehrung;
+
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -249,5 +256,32 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setRechtsmittelbelehrung(@Nullable JaxTextRessource rechtsmittelbelehrung) {
 		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
+	}
+
+	@Nullable
+	public JaxAdresse getBgAdresse() {
+		return bgAdresse;
+	}
+
+	public void setBgAdresse(@Nullable JaxAdresse bgAdresse) {
+		this.bgAdresse = bgAdresse;
+	}
+
+	@Nullable
+	public JaxAdresse getTsAdresse() {
+		return tsAdresse;
+	}
+
+	public void setTsAdresse(@Nullable JaxAdresse tsAdresse) {
+		this.tsAdresse = tsAdresse;
+	}
+
+	@Nullable
+	public JaxBenutzer getDefaultBenutzer() {
+		return defaultBenutzer;
+	}
+
+	public void setDefaultBenutzer(@Nullable JaxBenutzer defaultBenutzer) {
+		this.defaultBenutzer = defaultBenutzer;
 	}
 }

@@ -46,7 +46,6 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -225,23 +224,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		final Collection<Mitteilung> mitteilungenForCurrentRolle =
 			mitteilungService.getMitteilungenForCurrentRolle(dossier);
 		return !mitteilungenForCurrentRolle.isEmpty();
-	}
-
-	@Nonnull
-	@Override
-	public Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Dossier dossier) {
-		Optional<Benutzer> verantwortlicher = Optional.ofNullable(dossier.getHauptVerantwortlicher());
-
-		if (verantwortlicher.isPresent()) {
-			return verantwortlicher;
-		}
-
-		Optional<GemeindeStammdaten> stammdaten =
-			gemeindeService.getGemeindeStammdatenByGemeindeId(dossier.getGemeinde().getId());
-
-		return stammdaten.isPresent()
-			? Optional.ofNullable(stammdaten.get().getDefaultBenutzerBG())
-			: Optional.empty();
 	}
 
 	@Nonnull

@@ -16,6 +16,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -59,7 +60,6 @@ public class JaxBenutzer implements Serializable {
 
 	@Nonnull
 	private Set<JaxBerechtigung> berechtigungen = new LinkedHashSet<>();
-
 
 	@SuppressFBWarnings(value = "NM_CONFUSING", justification = "Other method is external interface, cant change that")
 	@Nonnull
@@ -177,5 +177,26 @@ public class JaxBenutzer implements Serializable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean equals(@Nullable Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof JaxBenutzer)) {
+			return false;
+		}
+		JaxBenutzer other = (JaxBenutzer) o;
+		//noinspection NonFinalFieldReferenceInEquals
+		return Objects.equals(this.getUsername(), other.getUsername())
+			&& Objects.equals(this.getEmail(), other.getEmail());
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode()
+			+ Objects.hashCode(this.getUsername())
+			+ Objects.hashCode(this.getEmail());
 	}
 }

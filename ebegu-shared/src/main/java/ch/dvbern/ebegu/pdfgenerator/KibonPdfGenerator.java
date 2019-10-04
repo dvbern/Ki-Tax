@@ -125,7 +125,7 @@ public abstract class KibonPdfGenerator {
 
 	@Nonnull
 	protected List<String> getGemeindeAdresse() {
-		Adresse adresse = gemeindeStammdaten.getAdresse();
+		Adresse adresse = gemeindeStammdaten.getAdresseForGesuch(getGesuch());
 		List<String> gemeindeHeader = Arrays.asList(
 			adresse.getAddressAsString(),
 			""
@@ -137,8 +137,8 @@ public abstract class KibonPdfGenerator {
 	private List<String> getGemeindeKontaktdaten() {
 		List<String> gemeindeKontaktdaten = Arrays.asList(
 			translate(ABSENDER_TELEFON, gemeindeStammdaten.getTelefon()),
-			gemeindeStammdaten.getMail(),
-			gemeindeStammdaten.getWebseite(),
+			PdfUtil.printString(gemeindeStammdaten.getMail()),
+			PdfUtil.printString(gemeindeStammdaten.getWebseite()),
 			"",
 			"",
 			gemeindeStammdaten.getGemeinde().getName() + ", " + Constants.DATE_FORMATTER.format(LocalDate.now())

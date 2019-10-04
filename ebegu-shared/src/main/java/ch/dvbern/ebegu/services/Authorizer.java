@@ -30,6 +30,8 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
@@ -212,4 +214,20 @@ public interface Authorizer {
 	 * Prueft, ob der aktuelle Benutzer den uebergebenen Zahlungsauftrag editieren/erstellen darf
 	 */
 	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
+
+	boolean isReadAuthorizationInstitution(@Nullable Institution institution);
+
+	boolean isWriteAuthorizationInstitution(@Nullable Institution institution);
+
+	boolean isReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
+
+	boolean isWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
+
+	void checkReadAuthorizationInstitution(@Nullable Institution institution);
+
+	void checkWriteAuthorizationInstitution(@Nullable Institution institution);
+
+	void checkReadAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
+
+	void checkWriteAuthorizationInstitutionStammdaten(@Nullable InstitutionStammdaten institutionStammdaten);
 }

@@ -65,6 +65,9 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -92,6 +95,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
 	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class VerfuegungServiceBean extends AbstractBaseService implements VerfuegungService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungServiceBean.class);
 
 	@Inject
 	private Persistence persistence;
@@ -183,35 +188,50 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					Optional<VerfuegungZeitabschnitt> zeitabschnittSameGueltigkeitSameBetrag = VerfuegungUtil.findZeitabschnittSameGueltigkeitSameBetrag
 						(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung, verfuegungZeitabschnittNeu);
 
-					if (zeitabschnittSameGueltigkeitSameBetrag.isPresent()) {
-						// Es hat ueberhaupt nichts geaendert seit dem letztem Gesuch. Falls es schon verrechnet war, bleibt
-						// es somit verrechnet. Sonst neu oder ignoriert wenn der Benutzer es ignorieren will oder wenn ein
-						// Abschnitt bereits ignoriert wurde. Wenn es ignorierend war muss es Ignorierend sein
-						if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung)) {
-							if (isThereAnyIgnoriert(vorgaengerAusbezahlteVerfuegung)) {
-								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
-							} else {
-								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
-							}
+					// Folgende Informationen werden fuer die Berechnung des Status benoetigt:
+					boolean sameGueltigkeitSameBetrag = zeitabschnittSameGueltigkeitSameBetrag.isPresent();
+					boolean zeitraumBereitsVerrechnet = areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung); // Alles ausser NEU
+					boolean voraengerIgnoriertUndAusbezahlt = isThereAnyIgnoriert(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung);
+
+					LOG.debug("Verfüge {}, sameGueltigkeitSameBetrag={}, zeitraumBereitsVerrechnet={}, voraengerIgnoriertUndAusbezahlt={}",
+						verfuegungZeitabschnittNeu.getGueltigkeit().toRangeString(), sameGueltigkeitSameBetrag, zeitraumBereitsVerrechnet,
+						voraengerIgnoriertUndAusbezahlt);
+
+					// Es gelten folgende Regeln:
+					// - Wenn ein Zeitraum bereits einmal ignoriert und ausbezahlt wurde, muss er auch kuenftig immer ausbezahlt werden
+					// - Wenn ein Zeitraum noch nie verrechnet wurde, erhaelt er den Status neu
+					// - Wenn der Zeitraum verrechnet wurde -> VERRECHNEND (wir muessen nochmals auszahlen), *ausser* es wurde
+					// 		das "ignorieren" Flag gesetzt -> IGNORIEREND
+					// 		=> Wenn der Betrag nicht geändert hat, sollten wir nicht auf IGNORIEREND setzen, egal wie das Flag war.
+					// 		Wichtig ist, dass auf dieser Verfuegung (die noch nicht ausbezahlt war) nie ein "behandelter" Status gesetzt wird
+					//		da wir sonst bei einer weiteren Mutation die falsche Vorgängerverfügung verwenden!
+					if (voraengerIgnoriertUndAusbezahlt) {
+						verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
+					} else if (!zeitraumBereitsVerrechnet) {
+						verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
+					} else if (!sameGueltigkeitSameBetrag) {
+						// Wenn der Betrag und die Gueltigkeit gleich bleibt: Wir wurden gar nicht gefragt, ob wir
+						// ignorieren wollen -> wir lassen den letzten bekannten Status!
+						if (ignorieren ) {
+							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
 						} else {
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
+							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
 						}
-					} else { // we only check the status if there has been any verrechnete zeitabschnitt. Otherwise NEU
-						// Wenn der alte Abschnitt VERRECHNET war und das Flag ignoriert -> IGNORIEREND
-							if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung)) {
-							// Es war schon verrechnet: Die neuen Zeitabschnitte muessen entweder ignoriert oder korrigiert werden
-							if (ignorieren || isThereAnyIgnoriert(vorgaengerAusbezahlteVerfuegung)) {
-								// zeitabschnitte werden immer ignoriert wenn der Benutzer es ignorieren will oder wenn ein Abschnitt bereits ignoriert wurde
-								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
-							} else {
-								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
-							}
-						} else {
-							// Es war noch nicht verrechnet: Wir muessen es *auf jeden Fall* verrechnen. Das ignorieren bezieht sich nur auf
-							// bereits vergangene Auszahlungen. Wir ignorieren die *Korrekturen* und nicht die Daten an sich.
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
+					} else  {
+						// Es war verrechnet UND derselbe Betrag. Wir muessen den Status trotzdem auf etwas "nicht-behandeltes"
+						// zuruecksetzen!
+						if (verfuegungZeitabschnittNeu.getZahlungsstatus().isVerrechnet()) {
+							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
 						}
 					}
+
+					VerfuegungZeitabschnitt vorgaener = CollectionUtils.isNotEmpty(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung) ?
+						zeitabschnitteOnVorgaengerAusbezahlteVerfuegung.get(0) : null;
+					VerfuegungsZeitabschnittZahlungsstatus statusVorgaenger = vorgaener != null ? vorgaener.getZahlungsstatus() : null;
+					LOG.debug("Zeitabschnitt {} VORHER={} NEU={}",
+						verfuegungZeitabschnittNeu.getGueltigkeit().toRangeString(),
+						statusVorgaenger,
+						verfuegungZeitabschnittNeu.getZahlungsstatus());
 				}
 			}
 		}
@@ -222,9 +242,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.allMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf());
 	}
 
-	private boolean isThereAnyIgnoriert(@Nonnull Verfuegung verfuegung) {
-		return verfuegung.getZeitabschnitte().stream()
-			.anyMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend());
+	private boolean isThereAnyIgnoriert(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		return zeitabschnitte.stream()
+			.anyMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriert());
 	}
 
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
