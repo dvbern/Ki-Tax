@@ -23,6 +23,7 @@ import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSDokument from '../../../models/TSDokument';
 import TSDokumentGrund from '../../../models/TSDokumentGrund';
 import TSGesuch from '../../../models/TSGesuch';
@@ -144,6 +145,10 @@ export class KommentarViewController {
         }
     }
 
+    public isPapiergesuch(): boolean {
+        return this.getGesuch().eingangsart === TSEingangsart.PAPIER;
+    }
+
     public hasPapiergesuch(): boolean {
         return !!(this.dokumentePapiergesuch
             && this.dokumentePapiergesuch.dokumente
@@ -248,7 +253,7 @@ export class KommentarViewController {
     public freigebenSTV(): void {
         this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'ZURUECK_AN_GEMEINDE_TITLE',
-            deleteText: 'ZURUCK_AN_GEMEINDE',
+            deleteText: 'ZURUECK_AN_GEMEINDE',
             parentController: undefined,
             elementID: undefined,
         }).then(() => {

@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.MahnungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.hibernate.Hibernate;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -58,7 +60,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		bern = TestDataUtil.getGemeindeBern(persistence);
+		bern = TestDataUtil.getGemeindeParis(persistence);
 		TestDataUtil.createGemeindeStammdaten(bern, persistence);
 	}
 
@@ -176,17 +178,20 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void fristAblaufTimerZweiteMahnungInFuture() {
+	public void fristAblaufTimerZweiteMahnung_Zukuenftig() {
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 		Gesuch gesuch = createGesuchWithAbgelaufenerMahnung();
 
 		mahnungService.fristAblaufTimer();
 		gesuch = persistence.find(Gesuch.class, gesuch.getId()); // needed because the method fristAblaufTimer has persisted it
 
-		Assert.assertEquals(AntragStatus.ERSTE_MAHNUNG_ABGELAUFEN, persistence.find(Gesuch.class, gesuch.getId()).getStatus());
+		Assert.assertEquals(AntragStatus.ERSTE_MAHNUNG_ABGELAUFEN, gesuch.getStatus());
 
 		gesuch.setStatus(AntragStatus.ZWEITE_MAHNUNG);
 		gesuch = persistence.merge(gesuch);
+		if(!Hibernate.isInitialized(gesuch.getKindContainers())){ //problem with lazy loading and transaction.disabled
+			gesuch.setKindContainers(Collections.emptySet());
+		}
 		Mahnung secondMahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch,
 			LocalDate.now().plusWeeks(1), 3));
 
@@ -194,22 +199,25 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		gesuch = persistence.find(Gesuch.class, gesuch.getId()); // needed because the method fristAblaufTimer has persisted it
 		secondMahnung = persistence.find(Mahnung.class, secondMahnung.getId());
 
-		Assert.assertEquals(AntragStatus.ZWEITE_MAHNUNG, persistence.find(Gesuch.class, gesuch.getId()).getStatus());
+		Assert.assertEquals(AntragStatus.ZWEITE_MAHNUNG, gesuch.getStatus());
 		Assert.assertFalse(secondMahnung.getAbgelaufen());
 	}
 
 	@Test
-	public void fristAblaufTimerZweiteMahnungInPast() {
+	public void fristAblaufTimerZweiteMahnung_Vergangen() {
 		TestDataUtil.createAndPersistTraegerschaftBenutzer(persistence);
 		Gesuch gesuch = createGesuchWithAbgelaufenerMahnung();
 
 		mahnungService.fristAblaufTimer();
 		gesuch = persistence.find(Gesuch.class, gesuch.getId()); // needed because the method fristAblaufTimer has persisted it
 
-		Assert.assertEquals(AntragStatus.ERSTE_MAHNUNG_ABGELAUFEN, persistence.find(Gesuch.class, gesuch.getId()).getStatus());
+		Assert.assertEquals(AntragStatus.ERSTE_MAHNUNG_ABGELAUFEN, gesuch.getStatus());
 
 		gesuch.setStatus(AntragStatus.ZWEITE_MAHNUNG);
 		gesuch = persistence.merge(gesuch);
+		if(!Hibernate.isInitialized(gesuch.getKindContainers())){ //problem with lazy loading and transaction.disabled
+			gesuch.setKindContainers(Collections.emptySet());
+		}
 		Mahnung secondMahnung = mahnungService.createMahnung(TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch,
 			LocalDate.now().minusDays(1), 3));
 
@@ -217,7 +225,7 @@ public class MahnungServiceTest extends AbstractEbeguLoginTest {
 		gesuch = persistence.find(Gesuch.class, gesuch.getId()); // needed because the method fristAblaufTimer has persisted it
 		secondMahnung = persistence.find(Mahnung.class, secondMahnung.getId());
 
-		Assert.assertEquals(AntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN, persistence.find(Gesuch.class, gesuch.getId()).getStatus());
+		Assert.assertEquals(AntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN, gesuch.getStatus());
 		Assert.assertTrue(secondMahnung.getAbgelaufen());
 	}
 

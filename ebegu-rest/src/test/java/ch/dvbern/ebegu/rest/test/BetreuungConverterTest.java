@@ -65,7 +65,6 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	@Test
 	public void convertPersistedTestEntityToJax() {
-		loginAsSachbearbeiterJA();
 		Betreuung betreuung = insertNewEntity(false);
 		JaxBetreuung jaxBetr = this.converter.betreuungToJAX(betreuung);
 		Betreuung betrToEntity = this.converter.betreuungToEntity(jaxBetr, new Betreuung());
@@ -116,7 +115,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(
 			persistence,
-			TestDataUtil.getGemeindeBern(persistence),
+			TestDataUtil.getGemeindeParis(persistence),
 			null,
 			gesuchsperiode);
 		kind.setGesuch(gesuch);

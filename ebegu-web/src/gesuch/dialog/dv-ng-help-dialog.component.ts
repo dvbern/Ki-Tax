@@ -16,7 +16,9 @@
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {KiBonGuidedTourService} from '../../app/kibonTour/service/KiBonGuidedTourService';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 /**
  * This component shows a Help Dialog with all contact details and a Link to the user manual
@@ -27,11 +29,19 @@ import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
 })
 export class DvNgHelpDialogComponent {
 
+    public hasRoleGemeinde: boolean = false;
+    public hasRoleInstitution: boolean = false;
+    public hasRoleMandant: boolean = false;
+
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
         private readonly dialogSupport: MatDialog,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
+        this.hasRoleGemeinde = this.isGemeinde();
+        this.hasRoleInstitution = this.isInstitution();
+        this.hasRoleMandant = this.isMandant();
     }
 
     public close(): void {
@@ -48,4 +58,15 @@ export class DvNgHelpDialogComponent {
         this.kibonGuidedTourService.emit();
     }
 
+    private isGemeinde(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantRoles()));
+    }
+
+    private isInstitution(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles().concat(TSRoleUtil.getMandantRoles()));
+    }
+
+    private isMandant(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
 }

@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,7 +50,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_institution_stammdaten_adresse_id"),
-		@UniqueConstraint(columnNames = "institution_id", name= "UK_institution_stammdaten_institution_id")
+		@UniqueConstraint(columnNames = "institution_id", name = "UK_institution_stammdaten_institution_id")
 	},
 	indexes = {
 		@Index(name = "IX_institution_stammdaten_gueltig_ab", columnList = "gueltigAb"),
@@ -62,43 +61,38 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -8403411439882700618L;
 
-
-	@Enumerated(EnumType.STRING)
-	@NotNull
-	@Nonnull
 	@Column(nullable = false)
-	private BetreuungsangebotTyp betreuungsangebotTyp;
+	@Nonnull
+	@Enumerated(EnumType.STRING)
+	private @NotNull BetreuungsangebotTyp betreuungsangebotTyp;
 
-	@NotNull
-	@OneToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_institution_id"), nullable = false)
-	private Institution institution;
+	@OneToOne(optional = false)
+	private @NotNull Institution institution;
 
-	@NotNull
+	@Column(nullable = false)
+	private @NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = false)
-	private String mail;
+	String mail;
 
-	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
-	private String telefon;
-
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String webseite;
+	private @Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	String telefon;
 
+	@Column(nullable = true)
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String oeffnungszeiten;
+	private @Size(max = DB_DEFAULT_MAX_LENGTH) String webseite;
 
-	@NotNull
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Column(nullable = true)
+	@Nullable
+	private @Size(max = DB_DEFAULT_MAX_LENGTH) String oeffnungszeiten;
+
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
-	private Adresse adresse;
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Nonnull
+	private @NotNull Adresse adresse = new Adresse();
 
 	@Column(nullable = false)
 	private boolean sendMailWennOffenePendenzen = true;
@@ -119,6 +113,10 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	private InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel;
 
 	public InstitutionStammdaten() {
+	}
+
+	public InstitutionStammdaten(@Nonnull Institution institution) {
+		this.institution = institution;
 	}
 
 	@Nonnull
@@ -153,7 +151,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		return institutionStammdatenBetreuungsgutscheine;
 	}
 
-	public void setInstitutionStammdatenBetreuungsgutscheine(@Nullable InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine) {
+	public void setInstitutionStammdatenBetreuungsgutscheine(
+		@Nullable InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine) {
 		this.institutionStammdatenBetreuungsgutscheine = institutionStammdatenBetreuungsgutscheine;
 	}
 
@@ -162,7 +161,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		return institutionStammdatenTagesschule;
 	}
 
-	public void setInstitutionStammdatenTagesschule(@Nullable InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+	public void setInstitutionStammdatenTagesschule(
+		@Nullable InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
 		this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
 	}
 
@@ -171,7 +171,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		return institutionStammdatenFerieninsel;
 	}
 
-	public void setInstitutionStammdatenFerieninsel(@Nullable InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
+	public void setInstitutionStammdatenFerieninsel(
+		@Nullable InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
@@ -227,7 +228,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	}
 
 	/**
-	 * If the Institutionstammdaten isActive() it sets the Institutionstammdaten.gueltigkeit.bis to the day of yesterday.
+	 * If the Institutionstammdaten isActive() it sets the Institutionstammdaten.gueltigkeit.bis to the day of
+	 * yesterday.
 	 * If it is already inactive there is no need to set it inactive again.
 	 */
 	public void setInactive() {
@@ -255,9 +257,15 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
 			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
 			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse()) &&
-			EbeguUtil.isSameObject(getInstitutionStammdatenBetreuungsgutscheine(), otherInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()) &&
-			EbeguUtil.isSameObject(getInstitutionStammdatenTagesschule(), otherInstStammdaten.getInstitutionStammdatenTagesschule()) &&
-			EbeguUtil.isSameObject(getInstitutionStammdatenFerieninsel(), otherInstStammdaten.getInstitutionStammdatenFerieninsel());
+			EbeguUtil.isSameObject(
+				getInstitutionStammdatenBetreuungsgutscheine(),
+				otherInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()) &&
+			EbeguUtil.isSameObject(
+				getInstitutionStammdatenTagesschule(),
+				otherInstStammdaten.getInstitutionStammdatenTagesschule()) &&
+			EbeguUtil.isSameObject(
+				getInstitutionStammdatenFerieninsel(),
+				otherInstStammdaten.getInstitutionStammdatenFerieninsel());
 	}
 
 	@Nullable
@@ -285,35 +293,16 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	}
 
 	public boolean isTagesschuleActivatable() {
-		final InstitutionStammdatenTagesschule institutionStammdatenTagesschule = this.getInstitutionStammdatenTagesschule();
-		return institutionStammdatenTagesschule != null
-			&& institutionStammdatenTagesschule.getModuleTagesschule() != null
-			&& !institutionStammdatenTagesschule.getModuleTagesschule().isEmpty();
+		final InstitutionStammdatenTagesschule stammdaten = this.getInstitutionStammdatenTagesschule();
+
+		return stammdaten != null
+			&& stammdaten.getModuleTagesschule() != null
+			&& !stammdaten.getModuleTagesschule().isEmpty();
 	}
 
-	public boolean isVisibleForGemeindeUser(Benutzer benutzer, boolean canEdit, boolean restrictedForSCH) {
-		if (benutzer.getRole().isRoleGemeindeabhaengig()) {
-			if (getBetreuungsangebotTyp().isKita() || getBetreuungsangebotTyp().isTagesfamilien()) {
-				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch Gemeinde-Benutzer,
-				// ausser das restrictedForSCH Flag ist gesetzt und es ist ein TS-Benutzer
-				if (restrictedForSCH && benutzer.getRole().isRoleSchulamtOnly()) {
-					return false;
-				}
-				return !canEdit;
-			}
-			Set<Gemeinde> gemeinden = benutzer.extractGemeindenForUser();
-			Gemeinde gemeinde = null;
-			if (getInstitutionStammdatenTagesschule() != null) {
-				gemeinde = getInstitutionStammdatenTagesschule().getGemeinde();
-			}
-			if (getInstitutionStammdatenFerieninsel() != null) {
-				gemeinde = getInstitutionStammdatenFerieninsel().getGemeinde();
-			}
-			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde muss stimmen
-			if (gemeinde != null) {
-				return gemeinden.contains(gemeinde);
-			}
-		}
-		return false;
+	@Override
+	public String getMessageForAccessException() {
+		return "bgNummer: " + this.getBetreuungsangebotTyp()
+			+ ", institution: " + this.getInstitution().getMessageForAccessException();
 	}
 }

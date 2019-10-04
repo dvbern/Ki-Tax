@@ -287,15 +287,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private void updateVerantwortliche(@Nonnull Gesuch mergedGesuch, @Nonnull AbstractPlatz mergedBetreuung, boolean isAnmeldungSchulamtAusgeloest, boolean isNew) {
 		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), isAnmeldungSchulamtAusgeloest, isNew)) {
-			Optional<GemeindeStammdaten> gemeindeStammdaten =
+			Optional<GemeindeStammdaten> gemeindeStammdatenOptional =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(mergedGesuch
 					.getDossier()
 					.getGemeinde()
 					.getId());
 
-			Benutzer benutzerBG = gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null);
-			Benutzer benutzerTS = gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null);
-
+			Benutzer benutzerBG = null;
+			Benutzer benutzerTS = null;
+			if (gemeindeStammdatenOptional.isPresent()) {
+				GemeindeStammdaten gemeindeStammdaten = gemeindeStammdatenOptional.get();
+				benutzerBG = gemeindeStammdaten.getDefaultBenutzerWithRoleBG().orElse(null);
+				benutzerTS = gemeindeStammdaten.getDefaultBenutzerWithRoleTS().orElse(null);
+			}
 			gesuchService.setVerantwortliche(benutzerBG, benutzerTS, mergedBetreuung.extractGesuch(), true, true);
 		}
 	}
@@ -778,7 +782,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
 
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
-		if (role.isRoleSchulamt()) {
+		if (role.isRoleGemeindeOrTS()) {
 			return Collections.EMPTY_LIST;
 		}
 
@@ -788,7 +792,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (role.isRoleSchulamt()) {
+		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(Betreuung_.betreuungsstatus)
 				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
 		} else { // for Institution or Traegerschaft. by default
@@ -834,7 +838,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (role.isRoleSchulamt()) {
+		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
 				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
 		} else { // for Institution or Traegerschaft. by default
@@ -859,7 +863,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleSchulamt()) {
+		if (role.isRoleGemeindeOrTS()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
 				(AntragStatus.FOR_ADMIN_ROLE));
@@ -892,7 +896,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (role.isRoleSchulamt()) {
+		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
 				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
 		} else { // for Institution or Traegerschaft. by default
@@ -917,7 +921,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleSchulamt()) {
+		if (role.isRoleGemeindeOrTS()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
 				(AntragStatus.FOR_ADMIN_ROLE));

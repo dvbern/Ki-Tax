@@ -530,7 +530,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten();
 		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
 		if (beschwerdeAdresse == null) {
-			beschwerdeAdresse = stammdaten.getAdresse();
+			beschwerdeAdresse = stammdaten.getAdresseForGesuch(getGesuch());
 		}
 
 		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());

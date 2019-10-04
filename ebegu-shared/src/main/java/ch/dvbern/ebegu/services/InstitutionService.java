@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
@@ -30,8 +31,7 @@ public interface InstitutionService {
 
 	/**
 	 * Aktualisiert die Institution in der DB
-	 *
-	 * @param institution Die Institution als DTO
+	 *  @param institution Die Institution als DTO
 	 */
 	@Nonnull
 	Institution updateInstitution(@Nonnull Institution institution);
@@ -45,11 +45,11 @@ public interface InstitutionService {
 	Institution createInstitution(@Nonnull Institution institution);
 
 	/**
-	 * @param key PK (id) der Institution
+	 * @param id PK (id) der Institution
 	 * @return Institution mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<Institution> findInstitution(@Nonnull String id);
+	Optional<Institution> findInstitution(@Nonnull String id, boolean doAuthCheck);
 
 	/**
 	 * Setzt den Status der Institution auf AKTIV
@@ -121,4 +121,6 @@ public interface InstitutionService {
 	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
 	 */
 	void removeInstitution(@Nonnull String institutionId);
+
+	void saveExternalClients(@Nonnull Institution institution, @Nonnull Collection<ExternalClient> externalClients);
 }

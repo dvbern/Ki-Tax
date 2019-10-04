@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2019.12.3</version>
+    <version>2019.13.0</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -362,6 +362,16 @@
                 <artifactId>openpdf</artifactId>
                 <groupId>com.github.librepdf</groupId>
                 <version>1.2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.dvbern.kibon</groupId>
+                <artifactId>kibon-exchange-api-commons</artifactId>
+                <version>1.0.0-rc1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>2.3.0</version>
             </dependency>
             <!-- endregion -->
 

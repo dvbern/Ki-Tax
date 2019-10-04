@@ -87,6 +87,7 @@ export class DVMitteilungListController implements IOnInit {
     public allMitteilungen: Array<TSMitteilung>;
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
+    public isLoaded: boolean = true;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
@@ -162,6 +163,7 @@ export class DVMitteilungListController implements IOnInit {
         }
 
         const entwurfHandler = (entwurf: TSMitteilung) => {
+            this.isLoaded = true;
             if (entwurf) {
                 this.currentMitteilung = entwurf;
             } else {
@@ -225,14 +227,14 @@ export class DVMitteilungListController implements IOnInit {
      * Wenn das Formular leer ist, wird der Entwurf geloescht (falls er bereits existiert)
      */
     public saveEntwurf(): IPromise<TSMitteilung> {
-        if (this.form.$dirty && !this.isMitteilungEmpty()) {
+        if (this.form.$dirty && !this.isMitteilungEmpty() && this.isLoaded) {
+            this.isLoaded = false;
             return this.mitteilungRS.saveEntwurf(this.getCurrentMitteilung())
                 .then(() => this.reloadEntwurfAndMitteilungen())
                 .finally(() => {
                     this.form.$setPristine();
                     this.form.$setUntouched();
                 });
-
         }
         if (this.isMitteilungEmpty() && !this.currentMitteilung.isNew() && this.currentMitteilung.id) {
             return this.mitteilungRS.removeEntwurf(this.getCurrentMitteilung()).then(() => {
@@ -468,5 +470,9 @@ export class DVMitteilungListController implements IOnInit {
 
     private isBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
         return mitteilung instanceof TSBetreuungsmitteilung;
+    }
+
+    public isCurrentUserAmt(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 }

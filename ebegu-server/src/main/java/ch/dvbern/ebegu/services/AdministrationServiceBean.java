@@ -210,7 +210,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		}
 		// Es gibt eine Institution
 		if (StringUtils.isNotEmpty(institutionId)) {
-			Optional<Institution> institutionOptional = institutionService.findInstitution(institutionId);
+			Optional<Institution> institutionOptional = institutionService.findInstitution(institutionId, true);
 			if (institutionOptional.isPresent()) {
 				// Institution ist schon bekannt -> updaten
 				listInstitutionen.add(updateInstitution(institutionId, traegerschaftId, institutionsname, institutionsEmail));
@@ -227,7 +227,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 
 	private String insertInstitution(String id, String traegerschaftId, String institutionsname, String institutionsEmail) {
 		String sb = "INSERT INTO institution "
-			+ "(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, mandant_id, traegerschaft_id, active, mail) "
+			+ "(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, mandant_id, traegerschaft_id, active, event_published, mail) "
 			+ "VALUES ("
 			+ '\'' + id + "', "    // id
 			+ "'2016-01-01 00:00:00', "        // timestamp_erstellt
@@ -239,6 +239,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 			+ '\'' + MANDANT_ID_BERN + "', "    // mandant_id,
 			+ toStringOrNull(traegerschaftId) + ", " // name
 			+ "true, " // active
+			+ "false, " // event_published
 			+ toStringOrNull(institutionsEmail) // mail
 			+ ");";
 		return sb;

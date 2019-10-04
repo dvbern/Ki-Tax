@@ -142,13 +142,13 @@ export class VerantwortlicherselectController implements IController {
     }
 
     private updateSchulamtUserList(): void {
-        this.benutzerRS.getBenutzerSCHorAdminSCH().then(response => {
+        this.benutzerRS.getBenutzerTsOrGemeindeForGemeinde(this.gemeindeId).then(response => {
             this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
         });
     }
 
     private updateJugendAmtUserList(): void {
-        this.benutzerRS.getBenutzerJAorAdmin().then(response => {
+        this.benutzerRS.getBenutzerBgOrGemeindeForGemeinde(this.gemeindeId).then(response => {
             this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
         });
     }

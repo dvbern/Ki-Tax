@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,26 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+import TSExternalClient from './TSExternalClient';
 
-import javax.annotation.Nonnull;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
-import ch.dvbern.ebegu.entities.Gemeinde;
-
-public class CheckGemeindeValidator implements ConstraintValidator<CheckGemeinde, Gemeinde> {
-
-	@Override
-	public void initialize(@Nonnull CheckGemeinde gemeinde) {
-		// nop
-	}
-
-	@Override
-	public boolean isValid(
-		@Nonnull Gemeinde instance,
-		@Nonnull ConstraintValidatorContext context) {
-
-		return instance.getBetreuungsgutscheineStartdatum().getDayOfMonth() == 1;
-	}
+export default class TSExternalClientAssignment {
+    public availableClients: TSExternalClient[] = [];
+    public assignedClients: TSExternalClient[] = [];
 }

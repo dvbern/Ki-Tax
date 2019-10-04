@@ -54,7 +54,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchAllowedGemeindeAdmin() {
 		loginAsAdmin();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_PARIS_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationGesuchAllowed(gesuch, "The Admin can see the Gesuch because it belongs to his Gemeinde");
 	}
@@ -64,7 +64,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchNotAllowedGemeindeAdmin() {
 		loginAsAdmin();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_LONDON_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Admin cannot see the Gesuch because it doesn't belong to his Gemeinde");
 	}
@@ -74,7 +74,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchNotGemeindeAbhaengig() throws LoginException {
 		loginAsSuperadmin();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_LONDON_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationGesuchAllowed(gesuch, "SuperAdmin can see all Gemeinde");
 	}
@@ -84,7 +84,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchAllowedGemeindeJurist() {
 		loginAsAdmin();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_PARIS_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		loginAsJurist();
 		checkReadAuthorizationGesuchAllowed(gesuch, "The Jurist can see the Gesuch because it belongs to his Gemeinde");
@@ -95,7 +95,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchNotAllowedGemeindeJurist() {
 		loginAsAdmin();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_LONDON_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		loginAsJurist();
 		checkReadAuthorizationGesuchNotAllowed(gesuch, "The Jurist cannot see the Gesuch because it doesn't belong to his Gemeinde");
@@ -106,7 +106,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchAllowedGemeindeSchulamt() {
 		loginAsSchulamt();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_PARIS_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationGesuchAllowed(gesuch, "The SCH-User can see the Gesuch because it belongs to his Gemeinde");
 	}
@@ -116,7 +116,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	public void testIsReadAuthorizedGesuchNotAllowedGemeindeSchulamt() {
 		loginAsSchulamt();
 
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_LONDON_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationGesuchNotAllowed(gesuch, "The SCH-User cannot see the Gesuch because it doesn't belong to his Gemeinde");
 	}
@@ -125,7 +125,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	public void testIsReadAuthorizedGesuchAllowedGemeindeSteueramt() {
 		loginAsAdmin();
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_PARIS_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		gesuch.setStatus(AntragStatus.PRUEFUNG_STV);
 		persistence.merge(gesuch);
@@ -137,7 +137,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	public void testIsReadAuthorizedGesuchNotAllowedGemeindeSteueramt() {
 		loginAsAdmin();
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_LONDON_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		gesuch.setStatus(AntragStatus.PRUEFUNG_STV);
 		persistence.merge(gesuch);
@@ -176,7 +176,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	public void testIsReadAuthorizedFallAllowedGemeindeAdmin() {
 		loginAsAdmin();
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_PARIS_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationFallAllowed(gesuch, "The JA-User should be able to see the Fall because it has at least one Dossier of his Gemeinde");
 	}
@@ -185,7 +185,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	public void testIsReadAuthorizedFallNotAllowedGemeindeAdmin() {
 		loginAsAdmin();
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_OSTERMUNDIGEN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_LONDON_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationFallNotAllowed(gesuch, "The JA-User shouldn't be able to see the Fall because it hasn't got any Dossier of his Gemeinde");
 	}
@@ -194,7 +194,7 @@ public class AuthorizerTest extends AbstractEbeguLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	public void testIsReadAuthorizedFallAllowedNotGemeindeAbhaengig() throws LoginException {
 		loginAsSuperadmin();
-		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_PARIS_ID);
 		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 		checkReadAuthorizationFallAllowed(gesuch, "The Superadmin should be able to see all Faelle");
 	}

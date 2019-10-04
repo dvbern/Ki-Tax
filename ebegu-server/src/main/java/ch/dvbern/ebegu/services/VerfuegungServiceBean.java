@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -53,6 +54,8 @@ import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
@@ -125,6 +128,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Inject
 	private MailService mailService;
 
+	@Inject
+	private Event<ExportedEvent> event;
+
+	@Inject
+	private VerfuegungEventConverter verfuegungEventConverter;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
@@ -136,6 +145,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Dokument erstellen
 		Betreuung betreuung = persistedVerfuegung.getBetreuung();
 		generateVerfuegungDokument(betreuung);
+
+		event.fire(verfuegungEventConverter.of(persistedVerfuegung));
 
 		mailService.sendInfoBetreuungVerfuegt(betreuung);
 		return persistedVerfuegung;

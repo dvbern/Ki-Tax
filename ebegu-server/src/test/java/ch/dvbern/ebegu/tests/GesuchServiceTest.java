@@ -202,7 +202,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void removeGesuchTest() {
 		Assert.assertNotNull(gesuchService);
-		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
+		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);

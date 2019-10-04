@@ -36,7 +36,6 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validators.CheckGemeinde;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -55,7 +54,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
 	}
 )
-@CheckGemeinde
 public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable {
 
 	private static final long serialVersionUID = -6976259296646006855L;

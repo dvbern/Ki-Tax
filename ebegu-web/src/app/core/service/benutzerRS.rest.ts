@@ -38,22 +38,32 @@ export default class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerBgOrGemeinde(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde`);
+    public getBenutzerBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
+        return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
     /**
-     * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin_BG zurueck.
+     * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
+     * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerJAorAdmin(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/JAorAdmin`);
+    public getBenutzerTsOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
+        return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/${encodeURIComponent(gemeindeId)}`);
     }
 
     /**
-     * Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck.
+     * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
+     * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
-    public getBenutzerSCHorAdminSCH(): IPromise<TSBenutzer[]> {
-        return this.getBenutzer(`${this.serviceURL}/SCHorAdmin`);
+    public getAllBenutzerBgOrGemeinde(): IPromise<TSBenutzer[]> {
+        return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/all`);
+    }
+
+    /**
+     * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
+     * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
+     */
+    public getAllBenutzerTsOrGemeinde(): IPromise<TSBenutzer[]> {
+        return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/all`);
     }
 
     public getAllGesuchsteller(): IPromise<TSBenutzer[]> {
