@@ -119,7 +119,7 @@ describe('pendenzenBetreuungenListView', () => {
     function mockRestCalls(): void {
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         $httpBackend.when('GET', '/ebegu/api/v1/institutionen').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/institutionen/currentuser').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/institutionen/readable/currentuser').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/currentuser').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/benutzer').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});

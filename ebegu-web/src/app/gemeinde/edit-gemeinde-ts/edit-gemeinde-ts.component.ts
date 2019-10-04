@@ -15,9 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {Observable} from 'rxjs';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 
 @Component({
@@ -31,6 +32,9 @@ export class EditGemeindeComponentTS implements OnInit {
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
+    @Input() public altTSAdresse: boolean;
+
+    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public constructor(
     ) {
@@ -40,5 +44,13 @@ export class EditGemeindeComponentTS implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
+    }
+
+    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
+        return b1 && b2 ? b1.username === b2.username : b1 === b2;
+    }
+
+    public altTSAdresseHasChange(newVal: boolean): void {
+        this.altTSAdresseChange.emit(newVal);
     }
 }

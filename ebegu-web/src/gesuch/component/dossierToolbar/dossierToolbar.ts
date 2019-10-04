@@ -653,6 +653,9 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public openAlleVerfuegungen(): void {
+        if (!this.dossier) {
+            return;
+        }
         this.$state.go('alleVerfuegungen.view', {
             dossierId: this.dossier.id,
         });

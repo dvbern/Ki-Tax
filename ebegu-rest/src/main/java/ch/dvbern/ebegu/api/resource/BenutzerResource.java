@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,14 +45,17 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -85,6 +89,9 @@ public class BenutzerResource {
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -127,48 +134,76 @@ public class BenutzerResource {
 		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
-	@Path("/BgOrGemeinde")
+	@Path("/BgOrGemeinde/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerBgOrGemeinde() {
-		return benutzerService.getBenutzerBgOrGemeinde().stream()
+	public List<JaxBenutzer> getAllBenutzerBgOrGemeinde() {
+		return benutzerService.getAllBenutzerBgOrGemeinde().stream()
 			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG zurueck",
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
+		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
 		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
-	@Path("/JAorAdmin")
+	@Path("/BgOrGemeinde/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS,
-		ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerJAorAdmin() {
-		return benutzerService.getBenutzerBGorAdmin().stream()
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxBenutzer> getBenutzerBgOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		Objects.requireNonNull(gemeindeJAXPId.getId());
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).
+			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		return benutzerService.getBenutzerBgOrGemeinde(gemeinde).stream()
 			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_TS oder SACHBEARBEITER_TS zurueck",
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
+		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
 		responseContainer = "List",
 		response = JaxBenutzer.class)
 	@Nonnull
 	@GET
-	@Path("/SCHorAdmin")
+	@Path("/TsOrGemeinde/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
-		ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT,
-		JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxBenutzer> getBenutzerSCHorAdminSCH() {
-		return benutzerService.getBenutzerSCHorAdminSCH().stream()
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxBenutzer> getAllBenutzerTsOrGemeinde() {
+		return benutzerService.getAllBenutzerTsOrGemeinde().stream()
+			.map(converter::benutzerToJaxBenutzer)
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
+		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
+		responseContainer = "List",
+		response = JaxBenutzer.class)
+	@Nonnull
+	@GET
+	@Path("/TsOrGemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxBenutzer> getBenutzerTsOrGemeindeForGemeinde(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		Objects.requireNonNull(gemeindeJAXPId.getId());
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).
+			orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		return benutzerService.getBenutzerTsOrGemeinde(gemeinde).stream()
 			.map(converter::benutzerToJaxBenutzer)
 			.collect(Collectors.toList());
 	}

@@ -69,7 +69,6 @@
                             <input class="dv-mat-datepicker" type="text"
                                    name="begu_start" id="begu_start_ID"
                                    [(ngModel)]="beguStart"
-                                   [min]="beguStartDatumMin"
                                    [matDatepicker]="begu_start"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
                                    required>
@@ -135,7 +134,7 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <button *ngIf="isBGInstitution" (click)="institutionEinladen()" class="dv-btn next-button">
+            <button *ngIf="isBGInstitution" (click)="institutionErstellen()" class="dv-btn next-button">
                 <span translate>EINLADUNG_SENDEN</span>
             </button>
 

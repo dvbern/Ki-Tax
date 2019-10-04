@@ -30,6 +30,7 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
@@ -58,6 +59,8 @@ export class EditGemeindeComponent implements OnInit {
     public editMode: boolean = false;
     public tageschuleEnabledForMandant: boolean;
     public currentTab: number;
+    public altBGAdresse: boolean;
+    public altTSAdresse: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -94,21 +97,37 @@ export class EditGemeindeComponent implements OnInit {
     private loadStammdaten(): void {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
-                if (stammdaten.adresse === undefined) {
+                this.initializeEmptyUnrequiredFields(stammdaten);
+                if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
                     stammdaten.adresse = new TSAdresse();
-                }
-                if (stammdaten.beschwerdeAdresse === undefined) {
-                    stammdaten.beschwerdeAdresse = new TSAdresse();
-                }
-                if (!stammdaten.rechtsmittelbelehrung) {
-                    stammdaten.rechtsmittelbelehrung = new TSTextRessource();
                 }
                 if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
                     this.beguStartStr = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
                 }
                 return stammdaten;
             }));
+    }
+
+    private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
+        this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+        if (EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
+            stammdaten.beschwerdeAdresse = new TSAdresse();
+        }
+        if (EbeguUtil.isNullOrUndefined(stammdaten.bgAdresse)) {
+            this.altBGAdresse = false;
+            stammdaten.bgAdresse = new TSAdresse();
+        } else {
+            this.altBGAdresse = true;
+        }
+        if (EbeguUtil.isNullOrUndefined(stammdaten.tsAdresse)) {
+            this.altTSAdresse = false;
+            stammdaten.tsAdresse = new TSAdresse();
+        } else {
+            this.altTSAdresse = true;
+        }
+        if (!stammdaten.rechtsmittelbelehrung) {
+            stammdaten.rechtsmittelbelehrung = new TSTextRessource();
+        }
     }
 
     public getHeaderTitle(gemeinde: TSGemeinde): string {
@@ -141,14 +160,8 @@ export class EditGemeindeComponent implements OnInit {
             this.setViewMode();
 
             this.errorService.clearAll();
-            if (this.keineBeschwerdeAdresse) {
-                // Reset Beschwerdeadresse if not used
-                stammdaten.beschwerdeAdresse = undefined;
-            }
-            if (stammdaten.standardRechtsmittelbelehrung) {
-                // reset custom Rechtsmittelbelehrung if checkbox not checked
-                stammdaten.rechtsmittelbelehrung = undefined;
-            }
+
+            this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
                 if (this.fileToUpload) {
@@ -158,10 +171,30 @@ export class EditGemeindeComponent implements OnInit {
                     return;
                 }
             });
-            if (stammdaten.beschwerdeAdresse === undefined) {
-                stammdaten.beschwerdeAdresse = new TSAdresse();
-            }
+
+            // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
+            // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!
+            this.initializeEmptyUnrequiredFields(stammdaten);
         });
+    }
+
+    private setEmptyUnrequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
+        if (this.keineBeschwerdeAdresse) {
+            // Reset Beschwerdeadresse if not used
+            stammdaten.beschwerdeAdresse = undefined;
+        }
+        if (!this.altBGAdresse) {
+            // Reset BGAdresse if not used
+            stammdaten.bgAdresse = undefined;
+        }
+        if (!this.altTSAdresse) {
+            // Reset BGAdresse if not used
+            stammdaten.tsAdresse = undefined;
+        }
+        if (stammdaten.standardRechtsmittelbelehrung) {
+            // reset custom Rechtsmittelbelehrung if checkbox not checked
+            stammdaten.rechtsmittelbelehrung = undefined;
+        }
     }
 
     private persistLogo(file: File): void {
@@ -262,5 +295,9 @@ export class EditGemeindeComponent implements OnInit {
             err => {
                 LOG.error(err);
             });
+    }
+
+    public isGemeindeEditable(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
     }
 }

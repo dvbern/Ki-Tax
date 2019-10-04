@@ -47,6 +47,7 @@
                                        ng-model="vm.getCurrentMitteilung().subject"
                                        dv-max-length
                                        class="form-control input-dv"
+                                       autocomplete="off"
                                        ng-blur="vm.saveEntwurf()" required>
                                 <dv-error-messages input-id="subject_ID" for="vm.form.subject.$error"
                                                    class="error"></dv-error-messages>
@@ -62,6 +63,7 @@
                                 <textarea aria-describedby="message-error" md-no-autogrow
                                           class="form-control message-textarea" rows="4" id="message"
                                           maxlength="4000"
+                                          autocomplete="off"
                                           ng-model="vm.getCurrentMitteilung().message"
                                           ng-blur="vm.saveEntwurf()" required name="message">
                             </textarea>

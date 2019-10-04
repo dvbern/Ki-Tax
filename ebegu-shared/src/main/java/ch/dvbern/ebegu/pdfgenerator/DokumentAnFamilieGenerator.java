@@ -114,7 +114,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	@Nullable
 	private String getSachbearbeiterSigniert() {
-		Benutzer hauptVerantwortlicher = getGesuch().getDossier().getHauptVerantwortlicher();
+		Benutzer hauptVerantwortlicher = getGesuch().getVerantwortlicherAccordingToBetreuungen();
 		return hauptVerantwortlicher != null ? translate(SIGNIERT, hauptVerantwortlicher.getFullName()) : null;
 	}
 

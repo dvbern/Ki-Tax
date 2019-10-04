@@ -114,6 +114,10 @@ public class PrincipalBean {
 		return userRole;
 	}
 
+	public boolean isLoggedIn() {
+		return !"anonymous".equalsIgnoreCase(getPrincipal().getName());
+	}
+
 	@Nonnull
 	public Principal getPrincipal() {
 		return principal;

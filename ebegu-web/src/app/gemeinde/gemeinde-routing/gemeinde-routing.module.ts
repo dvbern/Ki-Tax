@@ -53,7 +53,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/edit/:gemeindeId/:isRegistering',
         component: EditGemeindeComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
+            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole().concat(TSRoleUtil.getMandantRoles()),
         },
         params: {
             isRegistering: {

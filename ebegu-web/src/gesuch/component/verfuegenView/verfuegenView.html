@@ -228,7 +228,7 @@
                 </div>
 
 
-                <div class="row marginTop20" ng-show="vm.isSameVerfuegungsdaten()">
+                <div class="row marginTop20" ng-show="vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
                     <div class="col-md-12">
                         <div class="well well-status-warten">
                             <span data-translate="IDENTISCHE_BERECHNUNG"></span>
@@ -242,16 +242,16 @@
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                         <dv-loading-button type="submit"
                                            button-click="vm.save()"
-                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()">
+                                           ng-if="!vm.isSameVerfuegteVerfuegungsrelevanteDaten() && vm.showVerfuegen()">
                             <span class="uppercase" data-translate="VERFUEGEN"></span>
                         </dv-loading-button>
                         <dv-loading-button type="submit"
                                            button-click="vm.nichtEintreten()"
-                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
+                                           ng-if="!vm.isSameVerfuegteVerfuegungsrelevanteDaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
                             <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
                         <span class="ie11-fix"
-                              ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
+                              ng-show="!vm.isSameVerfuegteVerfuegungsrelevanteDaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
@@ -260,13 +260,13 @@
                                 <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
                             </dv-loading-button>
                         </span>
-                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
                                 <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </span>
-                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
                             <dv-loading-button type="submit" button-click="vm.save()">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>

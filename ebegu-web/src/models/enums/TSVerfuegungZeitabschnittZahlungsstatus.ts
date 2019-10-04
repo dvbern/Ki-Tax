@@ -18,5 +18,16 @@ export enum TSVerfuegungZeitabschnittZahlungsstatus {
     VERRECHNET = 'VERRECHNET',
     VERRECHNET_KORRIGIERT = 'VERRECHNET_KORRIGIERT',
     IGNORIERT = 'IGNORIERT',
-    IGNORIEREND = 'IGNORIEREND'
+    IGNORIEREND = 'IGNORIEREND',
+    VERRECHNEND = 'VERRECHNEND',
+    IGNORIERT_KORRIGIERT = 'IGNORIERT_KORRIGIERT',
+}
+
+export function getZahlungsstatusAlreadyHandeledInZahlungsauftrag(): Array<TSVerfuegungZeitabschnittZahlungsstatus> {
+    return [
+        TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET,
+        TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT,
+        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT,
+        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT,
+    ];
 }

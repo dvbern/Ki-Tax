@@ -248,7 +248,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Nonnull
 	private Benutzer getVerantwortlicher(@Nonnull Gesuch gesuch) {
-		final Benutzer dossierVerantwortlicher = gesuch.getDossier().getHauptVerantwortlicher();
+		final Benutzer dossierVerantwortlicher = gesuch.getVerantwortlicherAccordingToBetreuungen();
 		if (dossierVerantwortlicher != null) {
 			return dossierVerantwortlicher;
 		}
@@ -260,14 +260,12 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					gesuch.getDossier().getGemeinde().getId()));
 
-		if (gemeindeStammdaten.getDefaultBenutzerBG() == null) {
-			throw new EbeguEntityNotFoundException(
+		Benutzer defaultBenutzerForGesuch = gemeindeStammdaten.getDefaultBenutzerForGesuch(gesuch)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getVerantwortlicher",
 				ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
-				gemeindeStammdaten);
-		}
-
-		return gemeindeStammdaten.getDefaultBenutzerBG();
+				gemeindeStammdaten));
+		return defaultBenutzerForGesuch;
 	}
 
 	@Override

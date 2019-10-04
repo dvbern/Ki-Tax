@@ -36,7 +36,7 @@ describe('BerechtigungComponent', () => {
     let fixture: ComponentFixture<BerechtigungComponent>;
 
     const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
-        ['getInstitutionenForCurrentBenutzer']);
+        ['getInstitutionenReadableForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
@@ -50,7 +50,7 @@ describe('BerechtigungComponent', () => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
+        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
 
@@ -83,7 +83,7 @@ describe('BerechtigungComponent', () => {
 
     it('should load institutionen', () => {
         fixture.detectChanges();
-        expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
+        expect(insitutionSpy.getInstitutionenReadableForCurrentBenutzer).toHaveBeenCalled();
     });
 
     it('should load traegerschaften for role ADMIN_TRAEGERSCHAFT', () => {

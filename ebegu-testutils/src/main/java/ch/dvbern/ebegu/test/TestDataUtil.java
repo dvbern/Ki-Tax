@@ -1301,6 +1301,7 @@ public final class TestDataUtil {
 		@Nonnull Benutzer verantwortlicherBG) {
 
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		stammdaten.setDefaultBenutzer(verantwortlicherBG);
 		stammdaten.setDefaultBenutzerBG(verantwortlicherBG);
 		stammdaten.setDefaultBenutzerTS(verantwortlicherTS);
 		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));

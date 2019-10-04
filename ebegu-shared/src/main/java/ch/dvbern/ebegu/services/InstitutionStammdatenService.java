@@ -47,7 +47,14 @@ public interface InstitutionStammdatenService {
 	/**
 	 * @return Aller InstitutionStammdaten aus der DB.
 	 */
+	@Nonnull
 	Collection<InstitutionStammdaten> getAllInstitutionStammdaten();
+
+	/**
+	 * @return Aller InstitutionStammdaten aus der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+	 */
+	@Nonnull
+	Collection<InstitutionStammdaten> getAllInstitonStammdatenForBatchjobs();
 
 	/**
 	 * totally removes a InstitutionStammdaten from the Database. It takes the InstitutionStammdaten based on the given Institution ID
@@ -74,7 +81,7 @@ public interface InstitutionStammdatenService {
 	 * Gibt die Stammdaten dieser Institution zurueck.
 	 * Falls die Institution keine Stammdaten hat gibt sie null zurück, dabei wird keine Ausnahme geworfen.
 	 */
-	InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId);
+	InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId, boolean doAuthCheck);
 
 	/**
 	 * Gibt alle Betreuungsangebotstypen zurueck, welche die Institutionen anbieten, fuer welche der
