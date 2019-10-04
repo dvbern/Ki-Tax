@@ -17,8 +17,6 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +43,7 @@ public abstract class AbstractBGRechner {
 		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
 		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
-		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisse();
+		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
