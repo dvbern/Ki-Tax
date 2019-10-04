@@ -45,7 +45,7 @@ public abstract class AbstractBGRechner {
 		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
 		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
-		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
+		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisse();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
