@@ -2443,20 +2443,27 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
 		betreuung.setKeineDetailinformationen(betreuungJAXP.isKeineDetailinformationen());
+		// Die korrekten EinstellungenTagesschule ermitteln fuer diese Betreuung
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
+		Objects.requireNonNull(institutionStammdatenTagesschule);
+		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode());
+		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode().getId());
+		EinstellungenTagesschule einstellungenTagesschule = getEinstellungenTagesschule(institutionStammdatenTagesschule,
+			betreuungJAXP.getGesuchsperiode().getId());
 		if (betreuungJAXP.getBelegungTagesschule() != null) {
 			requireNonNull(
-				betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule(),
+				institutionStammdatenTagesschule,
 				"InstitutionsStammdatenTagesschule muessen gesetzt sein");
 			if (betreuung.getBelegungTagesschule() != null) {
 				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
 					betreuungJAXP.getBelegungTagesschule(),
 					betreuung.getBelegungTagesschule(),
-					betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule()));
+					einstellungenTagesschule));
 			} else {
 				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
 					betreuungJAXP.getBelegungTagesschule(),
 					new BelegungTagesschule(),
-					betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule()));
+					einstellungenTagesschule));
 			}
 		} else {
 			betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
@@ -2465,6 +2472,19 @@ public class JaxBConverter extends AbstractConverter {
 				null));
 		}
 		return betreuung;
+	}
+
+	@Nullable
+	private EinstellungenTagesschule getEinstellungenTagesschule(
+		@Nonnull InstitutionStammdatenTagesschule stammdatenTagesschule,
+		@Nonnull String gesuchsperiodeId
+	) {
+		for (EinstellungenTagesschule einstellungenTagesschule : stammdatenTagesschule.getEinstellungenTagesschule()) {
+			if (gesuchsperiodeId.equals(einstellungenTagesschule.getGesuchsperiode().getId())) {
+				return einstellungenTagesschule;
+			}
+		}
+		return null;
 	}
 
 	@Nonnull
@@ -2600,31 +2620,27 @@ public class JaxBConverter extends AbstractConverter {
 	private BelegungTagesschule belegungTagesschuleToEntity(
 		@Nullable JaxBelegungTagesschule belegungTagesschuleJAXP,
 		@Nonnull BelegungTagesschule belegungTagesschule,
-		@Nullable InstitutionStammdatenTagesschule instStammdatenTagesschule) {
+		@Nullable EinstellungenTagesschule einstellungenTagesschule) {
 
-		if (belegungTagesschuleJAXP != null && instStammdatenTagesschule != null) {
+		if (belegungTagesschuleJAXP != null && einstellungenTagesschule != null) {
 			convertAbstractVorgaengerFieldsToEntity(belegungTagesschuleJAXP, belegungTagesschule);
 
-			throw new EbeguRuntimeException("belegungTagesschuleToEntity", "Not yet implemented");
-//			if (instStammdatenTagesschule.getModulTagesschuleGroups() != null) {
-//
-//				final Set<ModulTagesschule> convertedModule = new HashSet<>();
-//				instStammdatenTagesschule.getModulTagesschuleGroups().forEach(group -> {
-//					Set<ModulTagesschule> convertedSet = moduleTagesschuleListToEntity(belegungTagesschuleJAXP.getModuleTagesschule(),
-//						group.getModule(), instStammdatenTagesschule);
-//					if (convertedSet != null) {
-//						convertedModule.addAll(convertedSet);
-//					}
-//				});
-//				// change the existing collection to reflect changes
-//				// Already tested: All existing module of the list remain as they were, that means their data are
-//				// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
-//				belegungTagesschule.getModuleTagesschule().clear();
-//				belegungTagesschule.getModuleTagesschule().addAll(convertedModule);
-//			}
-//			belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
-//			return belegungTagesschule;
+			final Set<ModulTagesschule> convertedModule = new HashSet<>();
+			einstellungenTagesschule.getModulTagesschuleGroups().forEach(group -> {
+				Set<ModulTagesschule> convertedSet = moduleTagesschuleListToEntity(belegungTagesschuleJAXP.getModuleTagesschule(),
+					group.getModule(), einstellungenTagesschule);
+				if (convertedSet != null) {
+					convertedModule.addAll(convertedSet);
+				}
+			});
+			// change the existing collection to reflect changes
+			// Already tested: All existing module of the list remain as they were, that means their data are
+			// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
+			belegungTagesschule.getModuleTagesschule().clear();
+			belegungTagesschule.getModuleTagesschule().addAll(convertedModule);
 
+			belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
+			return belegungTagesschule;
 		}
 		return null;
 	}
