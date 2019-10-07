@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import EbeguUtil from '../utils/EbeguUtil';
+import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
@@ -31,6 +33,13 @@ export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
     public wirdPaedagogischBetreut: boolean;
     public reihenfolge: number;
     public module: Array<TSModulTagesschule>;
+
+    // Zum einfacheren Handling: Pro Tag ein fixes Modul erstellen
+    public tempModulMonday: TSModulTagesschule;
+    public tempModulTuesday: TSModulTagesschule;
+    public tempModulWednesday: TSModulTagesschule;
+    public tempModulThursday: TSModulTagesschule;
+    public tempModulFriday: TSModulTagesschule;
 
     public constructor(
         modulTagesschuleName?: TSModulTagesschuleName,
@@ -63,5 +72,65 @@ export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
             return this.zeitVon + ' - ' + this.zeitBis;
         }
         return '';
+    }
+
+    public initializeTempModule(): void {
+        // Alle die aktuell gesetzt sind, werden als angeboten initialisiert
+        if (EbeguUtil.isNotNullOrUndefined(this.module)) {
+            for (const modul of this.module) {
+                if (TSDayOfWeek.MONDAY === modul.wochentag) {
+                    this.tempModulMonday = modul;
+                    this.tempModulMonday.angeboten = true;
+                }
+                if (TSDayOfWeek.TUESDAY === modul.wochentag) {
+                    this.tempModulTuesday = modul;
+                    this.tempModulTuesday.angeboten = true;
+                }
+                if (TSDayOfWeek.WEDNESDAY === modul.wochentag) {
+                    this.tempModulWednesday = modul;
+                    this.tempModulWednesday.angeboten = true;
+                }
+                if (TSDayOfWeek.THURSDAY === modul.wochentag) {
+                    this.tempModulThursday = modul;
+                    this.tempModulThursday.angeboten = true;
+                }
+                if (TSDayOfWeek.FRIDAY === modul.wochentag) {
+                    this.tempModulFriday = modul;
+                    this.tempModulFriday.angeboten = true;
+                }
+            }
+        }
+        // Alle die jetzt noch nicht gesetzt sind, müssen neu erstellt werden (nicht angeboten)
+        if (EbeguUtil.isNullOrUndefined(this.tempModulMonday)){
+            this.tempModulMonday = TSModulTagesschule.create(TSDayOfWeek.MONDAY);
+        }
+        if (EbeguUtil.isNullOrUndefined(this.tempModulTuesday)){
+            this.tempModulTuesday = TSModulTagesschule.create(TSDayOfWeek.TUESDAY);
+        }
+        if (EbeguUtil.isNullOrUndefined(this.tempModulWednesday)){
+            this.tempModulWednesday = TSModulTagesschule.create(TSDayOfWeek.WEDNESDAY);
+        }
+        if (EbeguUtil.isNullOrUndefined(this.tempModulThursday)){
+            this.tempModulThursday = TSModulTagesschule.create(TSDayOfWeek.THURSDAY);
+        }
+        if (EbeguUtil.isNullOrUndefined(this.tempModulFriday)){
+            this.tempModulFriday = TSModulTagesschule.create(TSDayOfWeek.FRIDAY);
+        }
+        console.error('module initialized');
+    }
+
+    public applyTempModule(): void {
+        this.module = [];
+        this.applyModulIfAngeboten(this.tempModulMonday);
+        this.applyModulIfAngeboten(this.tempModulTuesday);
+        this.applyModulIfAngeboten(this.tempModulWednesday);
+        this.applyModulIfAngeboten(this.tempModulThursday);
+        this.applyModulIfAngeboten(this.tempModulFriday);
+    }
+
+    private applyModulIfAngeboten(modulToEvaluate: TSModulTagesschule): void {
+        if (modulToEvaluate.angeboten) {
+            this.module.push(modulToEvaluate);
+        }
     }
 }

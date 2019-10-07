@@ -3202,7 +3202,6 @@ export default class EbeguRestUtil {
     ): TSEinstellungenTagesschule {
         if (einstellungFromServer) {
             this.parseAbstractEntity(einstellungenTagesschuleTS, einstellungFromServer);
-            einstellungenTagesschuleTS.gesuchsperiodeId = einstellungFromServer.gesuchsperiodeId;
             einstellungenTagesschuleTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode, einstellungFromServer.gesuchsperiode);
             einstellungenTagesschuleTS.modulTagesschuleTyp = einstellungFromServer.modulTagesschuleTyp;
@@ -3227,7 +3226,6 @@ export default class EbeguRestUtil {
     ): any {
         if (einstellungTagesschuleTS) {
             this.abstractEntityToRestObject(restEinstellung, einstellungTagesschuleTS);
-            restEinstellung.gesuchsperiodeId = einstellungTagesschuleTS.gesuchsperiodeId;
             restEinstellung.gesuchsperiode =
                 this.gesuchsperiodeToRestObject({}, einstellungTagesschuleTS.gesuchsperiode);
             restEinstellung.modulTagesschuleTyp = einstellungTagesschuleTS.modulTagesschuleTyp;

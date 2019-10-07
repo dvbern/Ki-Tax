@@ -17,9 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {getTSModulTagesschuleIntervallValues, TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
-import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 import EbeguUtil from '../../../utils/EbeguUtil';
 
@@ -35,48 +33,12 @@ export class EditModulTagesschuleComponent implements OnInit {
     @Input() public modulTagesschuleGroup: TSModulTagesschuleGroup;
     @Output() callback = new EventEmitter<TSModulTagesschuleGroup>();
 
-    public modulMontag: TSModulTagesschule;
-    public modulDienstag: TSModulTagesschule;
-    public modulMittwoch: TSModulTagesschule;
-    public modulDonnerstag: TSModulTagesschule;
-    public modulFreitag: TSModulTagesschule;
-
     public constructor(
     ) {
     }
 
-
-
     public ngOnInit(): void {
-        // Alle die aktuell gesetzt sind, werden als angeboten initialisiert
-        for (const modul of this.modulTagesschuleGroup.module) {
-            EditModulTagesschuleComponent.initializeModulIfAngeboten(TSDayOfWeek.MONDAY, modul, this.modulMontag);
-            EditModulTagesschuleComponent.initializeModulIfAngeboten(TSDayOfWeek.TUESDAY, modul, this.modulDienstag);
-            EditModulTagesschuleComponent.initializeModulIfAngeboten(TSDayOfWeek.WEDNESDAY, modul, this.modulMittwoch);
-            EditModulTagesschuleComponent.initializeModulIfAngeboten(TSDayOfWeek.THURSDAY, modul, this.modulDonnerstag);
-            EditModulTagesschuleComponent.initializeModulIfAngeboten(TSDayOfWeek.FRIDAY, modul, this.modulFreitag);
-        }
-        // Alle die jetzt noch nicht gesetzt sind, müssen neu erstellt werden (nicht angeboten)
-        EditModulTagesschuleComponent.initalizeModulIfNichtAngeboten(TSDayOfWeek.MONDAY, this.modulMontag);
-        EditModulTagesschuleComponent.initalizeModulIfNichtAngeboten(TSDayOfWeek.TUESDAY, this.modulDienstag);
-        EditModulTagesschuleComponent.initalizeModulIfNichtAngeboten(TSDayOfWeek.WEDNESDAY, this.modulMittwoch);
-        EditModulTagesschuleComponent.initalizeModulIfNichtAngeboten(TSDayOfWeek.THURSDAY, this.modulDonnerstag);
-        EditModulTagesschuleComponent.initalizeModulIfNichtAngeboten(TSDayOfWeek.FRIDAY, this.modulFreitag);
-    }
-
-    private static initializeModulIfAngeboten(day: TSDayOfWeek, modulToEvaluate: TSModulTagesschule, modulToInitialize: TSModulTagesschule) {
-        if (modulToEvaluate.wochentag === day) {
-            modulToInitialize = modulToEvaluate;
-            modulToInitialize.angeboten = true;
-        }
-    }
-
-    private static initalizeModulIfNichtAngeboten(day: TSDayOfWeek, modulToInitialize: TSModulTagesschule) {
-        if (EbeguUtil.isNullOrUndefined(modulToInitialize)) {
-            modulToInitialize = new TSModulTagesschule();
-            modulToInitialize.wochentag = day;
-            modulToInitialize.angeboten = false;
-        }
+        this.modulTagesschuleGroup.initializeTempModule();
     }
 
     public getModulTagesschuleIntervallOptions(): Array<TSModulTagesschuleIntervall> {
@@ -84,12 +46,6 @@ export class EditModulTagesschuleComponent implements OnInit {
     }
 
     public apply(): void {
-        this.modulTagesschuleGroup.module = [];
-        this.applyModulIfAngeboten(this.modulMontag);
-        this.applyModulIfAngeboten(this.modulDienstag);
-        this.applyModulIfAngeboten(this.modulMittwoch);
-        this.applyModulIfAngeboten(this.modulDonnerstag);
-        this.applyModulIfAngeboten(this.modulFreitag);
         if (this.isValid()) {
             this.callback.emit(this.modulTagesschuleGroup);
         } else {
@@ -97,13 +53,8 @@ export class EditModulTagesschuleComponent implements OnInit {
         }
     }
 
-    private applyModulIfAngeboten(modul: TSModulTagesschule): void {
-        if (modul.angeboten) {
-            this.modulTagesschuleGroup.module.push(modul);
-        }
-    }
-
     private isValid(): boolean {
+        this.modulTagesschuleGroup.applyTempModule();
         return EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.modulTagesschuleName)
             && EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.bezeichnung)
             && EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.zeitVon)

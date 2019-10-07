@@ -23,6 +23,18 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
     public angeboten: boolean;
 
+    constructor() {
+        super();
+    }
+
+    public static create(wochentag: TSDayOfWeek): TSModulTagesschule {
+        const modul = new TSModulTagesschule();
+        modul.wochentag = wochentag;
+        modul.angeboten = false;
+        modul.angemeldet = false;
+        return modul;
+    }
+
     /**
      * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
      * Die ZeitVon und ZeitBis spielt keine Rolle in diesem Fall, da so Module unterschiedlichen Institutionen
