@@ -22,11 +22,20 @@
                 <p translate>ONBOARDING_SUBTITLE</p>
                 <div class="onboarding-information">
                     <div class="information-icons">
-                        <i class="fa fa-file"></i>
+                        <i class="fa fa-globe"></i>
                     </div>
                     <div class="information-text">
-                        <p translate>{{placeholder1}}</p>
-                        <h4 translate>{{description1}}</h4>
+                        <!-- translate>{{placeholder1}}</p-->
+                        <h4 [innerHTML]="description1 | translate"></h4>
+                    </div>
+                </div>
+                <div class="onboarding-information">
+                    <div class="information-icons">
+                        <i class="fa fa-home"></i>
+                    </div>
+                    <div class="information-text">
+                        <!--p translate>{{placeholder2}}</p-->
+                        <h4 [innerHTML]="description2 | translate"></h4>
                     </div>
                 </div>
                 <div class="onboarding-information">
@@ -34,26 +43,15 @@
                         <i class="fa fa-cogs"></i>
                     </div>
                     <div class="information-text">
-                        <p translate>{{placeholder2}}</p>
-                        <h4 translate>{{description2}}</h4>
+                        <h4 [innerHTML]="description3 | translate"></h4>
                     </div>
                 </div>
                 <div class="onboarding-information">
                     <div class="information-icons">
-                        <i class="fa fa-eye"></i>
+                        <i class="fa fa-file"></i>
                     </div>
                     <div class="information-text">
-                        <p translate>{{placeholder3}}</p>
-                        <h4 translate>{{description3}}</h4>
-                    </div>
-                </div>
-                <div class="onboarding-information">
-                    <div class="information-icons">
-                        <i class="fa fa-euro"></i>
-                    </div>
-                    <div class="information-text">
-                        <p translate>{{placeholder4}}</p>
-                        <h4 translate>{{description4}}</h4>
+                        <h4 [innerHTML]="description4 | translate"></h4>
                     </div>
                 </div>
             </div>

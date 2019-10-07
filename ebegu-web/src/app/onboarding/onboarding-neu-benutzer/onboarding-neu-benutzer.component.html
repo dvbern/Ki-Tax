@@ -22,7 +22,6 @@
            uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
         <br/>
         <h1 translate>ONBOARDING_NEU_BENUTZER</h1>
-        <p translate>ONBOARDING_NEU_INTRO</p>
 
         <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
             <div class="neu-bg-checkbox">
@@ -83,5 +82,14 @@
                 </div>
             </div>
         </form>
+        <br/>
+        <br/>
+        <div style="text-align: center">
+        <a href=""
+           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEM_LINK</a>
+        <br/>
+        <a href=""
+           uiSref="onboarding.infokitag" translate>ONBOARDING_INFO_KITAG_LINK</a>
+        </div>
     </div>
 </div>

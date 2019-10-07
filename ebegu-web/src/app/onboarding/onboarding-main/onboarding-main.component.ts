@@ -27,13 +27,9 @@ const LOG = LogFactory.createLog('OnboardingMainComponent');
     styleUrls: ['./onboarding-main.component.less', '../onboarding.less'],
 })
 export class OnboardingMainComponent {
-    public placeholder1: string = 'ONBOARDING_MAIN_PH1';
     public description1: string = 'ONBOARDING_MAIN_DESC1';
-    public placeholder2: string = 'ONBOARDING_MAIN_PH2';
     public description2: string = 'ONBOARDING_MAIN_DESC2';
-    public placeholder3: string = 'ONBOARDING_MAIN_PH3';
     public description3: string = 'ONBOARDING_MAIN_DESC3';
-    public placeholder4: string = 'ONBOARDING_MAIN_PH4';
     public description4: string = 'ONBOARDING_MAIN_DESC4';
     public splittedScreen: boolean = true;
 
@@ -51,18 +47,6 @@ export class OnboardingMainComponent {
         }, err => LOG.error(err));
         this.onboardingPlaceholderService.description4$.subscribe(updatedDescription4 => {
             this.description4 = updatedDescription4;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder1$.subscribe(updatedPlaceholder1 => {
-            this.placeholder1 = updatedPlaceholder1;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder2$.subscribe(updatedPlaceholder2 => {
-            this.placeholder2 = updatedPlaceholder2;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder3$.subscribe(updatedPlaceholder3 => {
-            this.placeholder3 = updatedPlaceholder3;
-        }, err => LOG.error(err));
-        this.onboardingPlaceholderService.placeholder4$.subscribe(updatedPlaceholder4 => {
-            this.placeholder4 = updatedPlaceholder4;
         }, err => LOG.error(err));
         this.onboardingPlaceholderService.splittedScreen$.subscribe(updatedSplittedScreen => {
             this.splittedScreen = updatedSplittedScreen;

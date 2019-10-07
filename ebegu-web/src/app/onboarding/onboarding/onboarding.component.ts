@@ -30,13 +30,9 @@ export class OnboardingComponent implements OnInit {
 
     @Input() public showLogin: boolean = true;
 
-    private readonly placeholder1: string = 'ONBOARDING_MAIN_PH1';
     private readonly description1: string = 'ONBOARDING_MAIN_DESC1';
-    private readonly placeholder2: string = 'ONBOARDING_MAIN_PH2';
     private readonly description2: string = 'ONBOARDING_MAIN_DESC2';
-    private readonly placeholder3: string = 'ONBOARDING_MAIN_PH3';
     private readonly description3: string = 'ONBOARDING_MAIN_DESC3';
-    private readonly placeholder4: string = 'ONBOARDING_MAIN_PH4';
     private readonly description4: string = 'ONBOARDING_MAIN_DESC4';
     public isDummyMode$: Observable<boolean>;
 
@@ -50,13 +46,9 @@ export class OnboardingComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.onboardingPlaceholderService.setPlaceholder1(this.translate.instant(this.placeholder1));
         this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
-        this.onboardingPlaceholderService.setPlaceholder2(this.translate.instant(this.placeholder2));
         this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
-        this.onboardingPlaceholderService.setPlaceholder3(this.translate.instant(this.placeholder3));
         this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
-        this.onboardingPlaceholderService.setPlaceholder4(this.translate.instant(this.placeholder4));
         this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
     }
 }
