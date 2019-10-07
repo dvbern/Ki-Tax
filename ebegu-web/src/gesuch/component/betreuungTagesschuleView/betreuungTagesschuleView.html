@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="dv-ebegu-calendar__row--tagesschule"
-                        ng-repeat="group in vm.modulGroups track by group.uniqueId()">
+                        ng-repeat="group in vm.modulGroups track by group.identifier">
                         <!-- Gruppe (Name und Zeit) -->
                         <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
                             <span class="dv-ebegu-calendar__module-name" ng-bind="group.modulTagesschuleName | translate"></span>

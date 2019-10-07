@@ -173,20 +173,22 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return;
         }
         const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
-        const groupsOfTagesschule =
-            this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups;
-        for (const groupTagesschule of groupsOfTagesschule) {
-            this.initializeGroup(groupTagesschule);
-            const moduleOfGroup = groupTagesschule.module;
-            for (const modulOfGroup of moduleOfGroup) {
-                for (const angMod of moduleAngemeldet) {
-                    if (angMod.isSameModul(modulOfGroup)) {
-                        modulOfGroup.angemeldet = true;
-                    }
-                }
-            }
-        }
-        this.modulGroups = groupsOfTagesschule;
+        //TODO (hefr) implement
+        // const groupsOfTagesschule =
+        //     this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups;
+        // for (const groupTagesschule of groupsOfTagesschule) {
+        //     this.initializeGroup(groupTagesschule);
+        //     const moduleOfGroup = groupTagesschule.module;
+        //     for (const modulOfGroup of moduleOfGroup) {
+        //         for (const angMod of moduleAngemeldet) {
+        //             if (angMod.isSameModul(modulOfGroup)) {
+        //                 modulOfGroup.angemeldet = true;
+        //             }
+        //         }
+        //     }
+        // }
+        // this.modulGroups = groupsOfTagesschule;
+        this.modulGroups = [];
     }
 
     private initializeGroup(group: TSModulTagesschuleGroup): void {
