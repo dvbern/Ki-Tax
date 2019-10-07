@@ -172,8 +172,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         ) {
             return;
         }
-        const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
-        //TODO (hefr) implement
+        // const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
+        // TODO (hefr) implement
         // const groupsOfTagesschule =
         //     this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups;
         // for (const groupTagesschule of groupsOfTagesschule) {

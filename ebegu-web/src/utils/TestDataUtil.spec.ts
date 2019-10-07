@@ -299,7 +299,6 @@ export default class TestDataUtil {
 
     public static createModulTagesschuleGroup(): TSModulTagesschuleGroup {
         const tsModul = new TSModulTagesschuleGroup();
-        tsModul.gesuchsperiodeId = undefined;
         return tsModul;
     }
 

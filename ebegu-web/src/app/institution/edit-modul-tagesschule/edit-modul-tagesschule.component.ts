@@ -31,7 +31,7 @@ export class EditModulTagesschuleComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     @Input() public modulTagesschuleGroup: TSModulTagesschuleGroup;
-    @Output() callback = new EventEmitter<TSModulTagesschuleGroup>();
+    @Output() public readonly callback = new EventEmitter<TSModulTagesschuleGroup>();
 
     public patternHoursAndMinutes: '[0-9]{1,2}:[0-9]{1,2}';
 
@@ -60,4 +60,3 @@ export class EditModulTagesschuleComponent implements OnInit {
         }
     }
 }
-

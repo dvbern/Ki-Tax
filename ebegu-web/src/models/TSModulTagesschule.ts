@@ -23,7 +23,7 @@ export default class TSModulTagesschule extends TSAbstractEntity {
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
     public angeboten: boolean;
 
-    constructor() {
+    public constructor() {
         super();
     }
 

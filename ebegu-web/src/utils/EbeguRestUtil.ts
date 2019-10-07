@@ -3198,12 +3198,13 @@ export default class EbeguRestUtil {
             : [this.parseEinstellungenTagesschule(new TSEinstellungenTagesschule(), data)];
     }
 
-    private parseEinstellungenTagesschule(einstellungenTagesschuleTS: TSEinstellungenTagesschule, einstellungFromServer: any
+    private parseEinstellungenTagesschule(
+        einstellungenTagesschuleTS: TSEinstellungenTagesschule, einstellungFromServer: any
     ): TSEinstellungenTagesschule {
         if (einstellungFromServer) {
             this.parseAbstractEntity(einstellungenTagesschuleTS, einstellungFromServer);
             einstellungenTagesschuleTS.gesuchsperiode =
-                this.parseGesuchsperiode(new TSGesuchsperiode, einstellungFromServer.gesuchsperiode);
+                this.parseGesuchsperiode(new TSGesuchsperiode(), einstellungFromServer.gesuchsperiode);
             einstellungenTagesschuleTS.modulTagesschuleTyp = einstellungFromServer.modulTagesschuleTyp;
             einstellungenTagesschuleTS.modulTagesschuleGroups =
                 this.parseModuleTagesschuleGroupsArray(einstellungFromServer.modulTagesschuleGroups);
@@ -3222,7 +3223,8 @@ export default class EbeguRestUtil {
             : [];
     }
 
-    private einstellungenTagesschuleToRestObject(restEinstellung: any, einstellungTagesschuleTS: TSEinstellungenTagesschule
+    private einstellungenTagesschuleToRestObject(
+        restEinstellung: any, einstellungTagesschuleTS: TSEinstellungenTagesschule
     ): any {
         if (einstellungTagesschuleTS) {
             this.abstractEntityToRestObject(restEinstellung, einstellungTagesschuleTS);

@@ -287,6 +287,24 @@ export default class EbeguUtil {
         return translate.instant('DEUTSCH');
     }
 
+    public static replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
+        const index = EbeguUtil.getIndexOfElementwithID(element, list);
+        if (index > -1) {
+            list[index] = element;
+            EbeguUtil.handleSmarttablesUpdateBug(list);
+        } else {
+            list.push(element);
+        }
+    }
+
+    public static removeElementFromList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
+        const index = EbeguUtil.getIndexOfElementwithID(element, list);
+        if (index > -1) {
+            list.splice(index, 1);
+            EbeguUtil.handleSmarttablesUpdateBug(list);
+        }
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
@@ -415,23 +433,5 @@ export default class EbeguUtil {
             }
         }
         return text;
-    }
-
-    public static replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
-        const index = EbeguUtil.getIndexOfElementwithID(element, list);
-        if (index > -1) {
-            list[index] = element;
-            EbeguUtil.handleSmarttablesUpdateBug(list);
-        } else {
-            list.push(element);
-        }
-    }
-
-    public static removeElementFromList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
-        const index = EbeguUtil.getIndexOfElementwithID(element, list);
-        if (index > -1) {
-            list.splice(index, 1);
-            EbeguUtil.handleSmarttablesUpdateBug(list);
-        }
     }
 }
