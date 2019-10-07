@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,10 +33,12 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -125,5 +129,17 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 
 	public void setModulTagesschuleTyp(ModulTagesschuleTyp modulTagesschuleTyp) {
 		this.modulTagesschuleTyp = modulTagesschuleTyp;
+	}
+
+	@Transient
+	@Nonnull
+	public List<ModulTagesschule> extractAllModulTagesschule() {
+		final List<ModulTagesschule> list = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(getModulTagesschuleGroups())) {
+			for (final ModulTagesschuleGroup kind : getModulTagesschuleGroups()) {
+				list.addAll(kind.getModule());
+			}
+		}
+		return list;
 	}
 }

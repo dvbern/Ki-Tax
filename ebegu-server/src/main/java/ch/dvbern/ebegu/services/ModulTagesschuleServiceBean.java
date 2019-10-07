@@ -25,10 +25,10 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -84,16 +84,15 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode
 	) {
-		Collection<ModulTagesschuleGroup> groupsOfLastGP =
+		Collection<EinstellungenTagesschule> groupsOfLastGP =
 			criteriaQueryHelper.getEntitiesByAttribute(
-				ModulTagesschuleGroup.class, lastGesuchsperiode, ModulTagesschuleGroup_.gesuchsperiode);
+				EinstellungenTagesschule.class, lastGesuchsperiode, EinstellungenTagesschule_.gesuchsperiode);
 		groupsOfLastGP
 			.forEach(lastGPGroup -> {
-				lastGPGroup.getModule().forEach(lastModul -> {
+				lastGPGroup.extractAllModulTagesschule().forEach(lastModul -> {
 					ModulTagesschule newModul = lastModul.copyForGesuchsperiode(gesuchsperiodeToCreate);
 					saveModul(newModul);
 				});
-
 			});
 	}
 }
