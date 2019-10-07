@@ -14,9 +14,9 @@
  */
 
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSAbstractEntity from './TSAbstractEntity';
 
-export default class TSModulTagesschule extends TSAbstractMutableEntity {
+export default class TSModulTagesschule extends TSAbstractEntity {
 
     public wochentag: TSDayOfWeek;
 

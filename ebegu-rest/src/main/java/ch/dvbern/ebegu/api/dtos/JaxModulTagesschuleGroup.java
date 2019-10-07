@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
@@ -34,7 +33,6 @@ import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 /**
  * DTO fuer Module fuer die Tagesschulen
  */
-@XmlRootElement(name = "modulTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 

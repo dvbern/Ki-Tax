@@ -417,15 +417,20 @@ export default class EbeguUtil {
         return text;
     }
 
-    public replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[], wasNew: boolean): void {
-        if (wasNew) {
-            list.push(element);
-            return;
-        }
-
+    public static replaceElementInList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
         const index = EbeguUtil.getIndexOfElementwithID(element, list);
         if (index > -1) {
             list[index] = element;
+            EbeguUtil.handleSmarttablesUpdateBug(list);
+        } else {
+            list.push(element);
+        }
+    }
+
+    public static removeElementFromList(element: TSAbstractEntity, list: TSAbstractEntity[]): void {
+        const index = EbeguUtil.getIndexOfElementwithID(element, list);
+        if (index > -1) {
+            list.splice(index, 1);
             EbeguUtil.handleSmarttablesUpdateBug(list);
         }
     }

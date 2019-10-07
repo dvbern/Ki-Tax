@@ -1282,7 +1282,7 @@ export default class EbeguRestUtil {
         institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel,
     ): any {
         if (institutionStammdatenFerieninsel) {
-            this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenFerieninsel,
+            this.abstractEntityToRestObject(restInstitutionStammdatenFerieninsel,
                 institutionStammdatenFerieninsel);
             restInstitutionStammdatenFerieninsel.gemeinde =
                 this.gemeindeToRestObject({}, institutionStammdatenFerieninsel.gemeinde);
@@ -1304,7 +1304,7 @@ export default class EbeguRestUtil {
         institutionStammdatenFerieninselFromServer: any,
     ): TSInstitutionStammdatenFerieninsel {
         if (institutionStammdatenFerieninselFromServer) {
-            this.parseDateRangeEntity(institutionStammdatenFerieninselTS,
+            this.parseAbstractEntity(institutionStammdatenFerieninselTS,
                 institutionStammdatenFerieninselFromServer);
             institutionStammdatenFerieninselTS.gemeinde =
                 this.parseGemeinde(new TSGemeinde(), institutionStammdatenFerieninselFromServer.gemeinde);
@@ -3182,7 +3182,7 @@ export default class EbeguRestUtil {
 
     private parseModulTagesschule(modulTagesschuleTS: TSModulTagesschule, modulFromServer: any): TSModulTagesschule {
         if (modulFromServer) {
-            this.parseAbstractMutableEntity(modulTagesschuleTS, modulFromServer);
+            this.parseAbstractEntity(modulTagesschuleTS, modulFromServer);
             modulTagesschuleTS.wochentag = modulFromServer.wochentag;
             return modulTagesschuleTS;
         }

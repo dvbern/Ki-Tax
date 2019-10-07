@@ -21,12 +21,10 @@ import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * DTO fuer Module fuer die Tagesschulen
  */
-@XmlRootElement(name = "modulTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxModulTagesschule extends JaxAbstractDTO {
 

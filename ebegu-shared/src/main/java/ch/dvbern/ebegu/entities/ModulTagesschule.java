@@ -94,9 +94,8 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 		return builder.toComparison();
 	}
 
-	public ModulTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+	public ModulTagesschule copyForGesuchsperiode() {
 		ModulTagesschule copy = new ModulTagesschule();
-		copy.setModulTagesschuleGroup(this.getModulTagesschuleGroup().copyForGesuchsperiode(gesuchsperiode));
 		copy.setWochentag(this.getWochentag());
 		return copy;
 	}

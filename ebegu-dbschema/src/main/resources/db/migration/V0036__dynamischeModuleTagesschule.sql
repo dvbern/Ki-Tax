@@ -115,3 +115,18 @@ alter table modul_tagesschule_group
 	add constraint FK_modul_tagesschule_einstellungen_tagesschule_id
 foreign key (einstellungen_tagesschule_id)
 references einstellungen_tagesschule (id);
+
+# Die spezifischen InstitutionsStammdaten muessen nicht zeitabhaengig sein, die "normalen" sind es schon
+alter table institution_stammdaten_ferieninsel drop vorgaenger_id;
+alter table institution_stammdaten_ferieninsel drop gueltig_ab;
+alter table institution_stammdaten_ferieninsel drop gueltig_bis;
+alter table institution_stammdaten_ferieninsel_aud drop vorgaenger_id;
+alter table institution_stammdaten_ferieninsel_aud drop gueltig_ab;
+alter table institution_stammdaten_ferieninsel_aud drop gueltig_bis;
+
+alter table institution_stammdaten_tagesschule drop vorgaenger_id;
+alter table institution_stammdaten_tagesschule drop gueltig_ab;
+alter table institution_stammdaten_tagesschule drop gueltig_bis;
+alter table institution_stammdaten_tagesschule_aud drop vorgaenger_id;
+alter table institution_stammdaten_tagesschule_aud drop gueltig_ab;
+alter table institution_stammdaten_tagesschule_aud drop gueltig_bis;

@@ -39,7 +39,7 @@
                    #zeitVon="ngModel"
                    [(ngModel)]="modulTagesschuleGroup.zeitVon"
                    [required]="modulTagesschuleGroup.zeitBis"
-                   placeholder="HH:mm">
+                   placeholder="HH:mm" [pattern]="patternHoursAndMinutes">
             <dv-error-messages [errorObject]="zeitVon.errors"
                                inputId="zeitVon"></dv-error-messages>
         </div>
@@ -51,7 +51,7 @@
                    #zeitBis="ngModel"
                    [(ngModel)]="modulTagesschuleGroup.zeitBis"
                    [required]="modulTagesschuleGroup.zeitVon"
-                   placeholder="HH:mm">
+                   placeholder="HH:mm" [pattern]="patternHoursAndMinutes">
             <dv-error-messages [errorObject]="zeitBis.errors"
                                inputId="zeitBis"></dv-error-messages>
         </div>

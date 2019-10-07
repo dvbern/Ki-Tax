@@ -17,13 +17,10 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +30,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -60,7 +56,7 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_einstellungen_ts_gesuchsperiode_id"))
 	private Gesuchsperiode gesuchsperiode;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "einstellungenTagesschule")
@@ -113,12 +109,12 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<ModulTagesschuleGroup> getModulTagesschuleGroups() {
 		return modulTagesschuleGroups;
 	}
 
-	public void setModulTagesschuleGroups(@Nullable Set<ModulTagesschuleGroup> modulTagesschuleGroups) {
+	public void setModulTagesschuleGroups(@Nonnull Set<ModulTagesschuleGroup> modulTagesschuleGroups) {
 		this.modulTagesschuleGroups = modulTagesschuleGroups;
 	}
 
@@ -131,15 +127,20 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		this.modulTagesschuleTyp = modulTagesschuleTyp;
 	}
 
-	@Transient
 	@Nonnull
-	public List<ModulTagesschule> extractAllModulTagesschule() {
-		final List<ModulTagesschule> list = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(getModulTagesschuleGroups())) {
-			for (final ModulTagesschuleGroup kind : getModulTagesschuleGroups()) {
-				list.addAll(kind.getModule());
-			}
+	public EinstellungenTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		EinstellungenTagesschule copy = new EinstellungenTagesschule();
+		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
+		copy.setGesuchsperiode(gesuchsperiode);
+		copy.setModulTagesschuleTyp(this.getModulTagesschuleTyp());
+		if (CollectionUtils.isNotEmpty(this.getModulTagesschuleGroups())) {
+			copy.setModulTagesschuleGroups(new TreeSet<>());
+			this.getModulTagesschuleGroups().forEach(group -> {
+				ModulTagesschuleGroup newGroup = group.copyForGesuchsperiode();
+				copy.getModulTagesschuleGroups().add(newGroup);
+				newGroup.setEinstellungenTagesschule(copy);
+			});
 		}
-		return list;
+		return copy;
 	}
 }

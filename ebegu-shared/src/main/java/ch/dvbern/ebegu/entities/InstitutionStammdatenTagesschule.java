@@ -40,7 +40,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity implements Comparable<InstitutionStammdatenTagesschule> {
+public class InstitutionStammdatenTagesschule extends AbstractEntity implements Comparable<InstitutionStammdatenTagesschule> {
 
 	private static final long serialVersionUID = 3991623541799163623L;
 

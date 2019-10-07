@@ -37,7 +37,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class InstitutionStammdatenFerieninsel extends AbstractDateRangedEntity implements Comparable<InstitutionStammdatenFerieninsel> {
+public class InstitutionStammdatenFerieninsel extends AbstractEntity implements Comparable<InstitutionStammdatenFerieninsel> {
 
 	private static final long serialVersionUID = 3991623541799162523L;
 

@@ -47,33 +47,34 @@
         <h1 translate>INSTITUTION_ST_MODULE</h1>
     </div>
 </div>
-<div class="row" *ngIf="editMode">
-    <div class="col-md-6">
-        <div class="form-group">
-            <label translate for="typ">MODUL_CREATION_TYP</label>
-            <mat-select id="typ" name="typ" class="form-control"
-                [(ngModel)]="stammdaten.institutionStammdatenTagesschule.modulTagesschuleTyp"
-                (selectionChange)="changeModulTagesschuleTyp()">
-                <mat-option *ngFor="let option of getModulTagesschuleTypen()"
-                            [value]="option">{{option | translate}} </mat-option>
-            </mat-select>
-        </div>
-    </div>
-</div>
 
 <dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true">
     <dv-accordion-tab
-        *ngFor="let gp of gesuchsperiodenList; trackBy:gp?.id; let i = index"
+        *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule; trackBy:einstellungGP?.id; let i = index"
         [tabid]="i">
         <tab-title>
             <div class="message-header">
-                <p class="fa fa-angle-right"></p>{{gp.gesuchsperiodeString}}
+                <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
             </div>
         </tab-title>
         <tab-body>
             <div *ngIf="!showModulDetail">
-                <table
-                       class="table fixedtable table-hover" title="Title">
+
+                <div class="row" *ngIf="editMode">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label translate for="typ">MODUL_CREATION_TYP</label>
+                            <mat-select id="typ" name="typ" class="form-control"
+                                        [(ngModel)]="einstellungGP.modulTagesschuleTyp"
+                                        (selectionChange)="changeModulTagesschuleTyp(einstellungGP)">
+                                <mat-option *ngFor="let option of getModulTagesschuleTypen()"
+                                            [value]="option">{{option | translate}} </mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table fixedtable table-hover" title="Title">
                     <thead>
                     <tr>
                         <th translate>MODUL_BEZEICHNUNG</th>
@@ -86,7 +87,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let group of getGroupsPerGesuchsperiode(gp.id); trackBy:group?.uniqueId()">
+                    <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:group?.identifier()"
+                        (click)="editModulTagesschuleGroup(group)">
                         <td title="{{group.bezeichnung}}">
                             {{group.bezeichnung}}
                         </td>
@@ -99,8 +101,8 @@
                         <td title="{{getWochentageAsString(group)}}">
                             {{getWochentageAsString(group)}}
                         </td>
-                        <td title="{{group.intervall}}">
-                            {{group.intervall}}
+                        <td title="{{group.intervall | translate}}">
+                            {{group.intervall | translate}}
                         </td>
                         <td *ngIf="editMode">
                             <button type="button" (click)="editModulTagesschuleGroup(group)">
@@ -116,7 +118,7 @@
                     </tbody>
                 </table>
 
-                <button *ngIf="editMode && !isModulTagesschuleTypScolaris()" type="button" (click)="addModulTagesschuleGroup(gp.id)"  class="dv-btn">
+                <button *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)" type="button" (click)="addModulTagesschuleGroup()" class="dv-btn">
                     <i class="fa fa-lg fa-plus-circle"></i>
                     <span translate>MODUL_HINZUFUEGEN</span>
                 </button>
@@ -126,7 +128,7 @@
             <div *ngIf="showModulDetail">
 				<dv-edit-modul-tagesschule
 					[(modulTagesschuleGroup)]="groupToEdit"
-                    (callback)="applyModulTagesschuleGroup($event)">
+                    (callback)="applyModulTagesschuleGroup(einstellungGP, $event)">
 				</dv-edit-modul-tagesschule>
             </div>
 

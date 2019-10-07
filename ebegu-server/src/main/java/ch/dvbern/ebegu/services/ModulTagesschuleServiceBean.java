@@ -84,15 +84,12 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode
 	) {
-		Collection<EinstellungenTagesschule> groupsOfLastGP =
+		Collection<EinstellungenTagesschule> lastEinstellungenTagesschule =
 			criteriaQueryHelper.getEntitiesByAttribute(
 				EinstellungenTagesschule.class, lastGesuchsperiode, EinstellungenTagesschule_.gesuchsperiode);
-		groupsOfLastGP
-			.forEach(lastGPGroup -> {
-				lastGPGroup.extractAllModulTagesschule().forEach(lastModul -> {
-					ModulTagesschule newModul = lastModul.copyForGesuchsperiode(gesuchsperiodeToCreate);
-					saveModul(newModul);
-				});
-			});
+		lastEinstellungenTagesschule.forEach(lastEinstellung -> {
+			EinstellungenTagesschule newEinstellung = lastEinstellung.copyForGesuchsperiode(gesuchsperiodeToCreate);
+			persistence.merge(newEinstellung);
+		});
 	}
 }

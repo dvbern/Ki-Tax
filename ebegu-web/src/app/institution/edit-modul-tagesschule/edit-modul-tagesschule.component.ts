@@ -33,6 +33,8 @@ export class EditModulTagesschuleComponent implements OnInit {
     @Input() public modulTagesschuleGroup: TSModulTagesschuleGroup;
     @Output() callback = new EventEmitter<TSModulTagesschuleGroup>();
 
+    public patternHoursAndMinutes: '[0-9]{1,2}:[0-9]{1,2}';
+
     public constructor(
     ) {
     }
@@ -46,21 +48,16 @@ export class EditModulTagesschuleComponent implements OnInit {
     }
 
     public apply(): void {
-        if (this.isValid()) {
+        this.modulTagesschuleGroup.applyTempModule();
+        if (EbeguUtil.isNullOrUndefined(this.modulTagesschuleGroup.identifier)) {
+            this.modulTagesschuleGroup.identifier = TSModulTagesschuleGroup.createIdentifier();
+        }
+        if (this.modulTagesschuleGroup.isValid()) {
+            this.modulTagesschuleGroup.validated =  true;
             this.callback.emit(this.modulTagesschuleGroup);
         } else {
             this.ngOnInit();
         }
-    }
-
-    private isValid(): boolean {
-        this.modulTagesschuleGroup.applyTempModule();
-        return EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.modulTagesschuleName)
-            && EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.bezeichnung)
-            && EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.zeitVon)
-            && EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.zeitBis)
-            && EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleGroup.intervall)
-            && this.modulTagesschuleGroup.module.length > 0;
     }
 }
 

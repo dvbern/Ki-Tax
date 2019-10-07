@@ -19,10 +19,10 @@ import EbeguUtil from '../utils/EbeguUtil';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSAbstractEntity from './TSAbstractEntity';
 import TSModulTagesschule from './TSModulTagesschule';
 
-export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
+export default class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     public modulTagesschuleName: TSModulTagesschuleName;
     public identifier: string;
@@ -36,11 +36,13 @@ export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
     public module: Array<TSModulTagesschule>;
 
     // Zum einfacheren Handling: Pro Tag ein fixes Modul erstellen
+    // Dies wird nicht zum Server synchronisiert
     public tempModulMonday: TSModulTagesschule;
     public tempModulTuesday: TSModulTagesschule;
     public tempModulWednesday: TSModulTagesschule;
     public tempModulThursday: TSModulTagesschule;
     public tempModulFriday: TSModulTagesschule;
+    public validated = false;
 
     public constructor(
         modulTagesschuleName?: TSModulTagesschuleName,
@@ -133,5 +135,19 @@ export default class TSModulTagesschuleGroup extends TSAbstractMutableEntity {
         if (modulToEvaluate.angeboten) {
             this.module.push(modulToEvaluate);
         }
+    }
+
+    public static createIdentifier(): string {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+
+    public isValid(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.modulTagesschuleName)
+            && EbeguUtil.isNotNullOrUndefined(this.identifier)
+            && EbeguUtil.isNotNullOrUndefined(this.bezeichnung)
+            && EbeguUtil.isNotNullOrUndefined(this.zeitVon)
+            && EbeguUtil.isNotNullOrUndefined(this.zeitBis)
+            && EbeguUtil.isNotNullOrUndefined(this.intervall)
+            && this.module.length > 0;
     }
 }

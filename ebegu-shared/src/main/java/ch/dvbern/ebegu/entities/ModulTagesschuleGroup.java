@@ -19,9 +19,9 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -42,6 +42,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 import ch.dvbern.ebegu.validators.CheckTimeRange;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -100,7 +101,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
 	@OrderBy("wochentag")
-	private Set<ModulTagesschule> module = new LinkedHashSet<>();
+	private Set<ModulTagesschule> module = new TreeSet<>();
 
 
 	@Override
@@ -225,20 +226,25 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		return builder.toComparison();
 	}
 
-	public ModulTagesschuleGroup copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+	public ModulTagesschuleGroup copyForGesuchsperiode() {
 		ModulTagesschuleGroup copy = new ModulTagesschuleGroup();
 		copy.setModulTagesschuleName(this.getModulTagesschuleName());
-		if (ModulTagesschuleName.DYNAMISCH.equals(this.getModulTagesschuleName())) {
-			copy.setIdentifier(UUID.randomUUID().toString());
-		} else {
-			copy.setIdentifier(this.getModulTagesschuleName().name());
-		}
+		copy.setIdentifier(UUID.randomUUID().toString());
 		copy.setBezeichnung(this.getBezeichnung());
 		copy.setZeitVon(this.getZeitVon());
 		copy.setZeitBis(this.getZeitBis());
 		copy.setVerpflegungskosten(this.getVerpflegungskosten());
 		copy.setIntervall(this.getIntervall());
 		copy.setWirdPaedagogischBetreut(this.isWirdPaedagogischBetreut());
+		copy.setReihenfolge(this.getReihenfolge());
+		if (CollectionUtils.isNotEmpty(this.getModule())) {
+			copy.setModule(new TreeSet<>());
+			this.getModule().forEach(modul -> {
+				ModulTagesschule newModul = modul.copyForGesuchsperiode();
+				copy.getModule().add(newModul);
+				newModul.setModulTagesschuleGroup(copy);
+			});
+		}
 		return copy;
 	}
 }
