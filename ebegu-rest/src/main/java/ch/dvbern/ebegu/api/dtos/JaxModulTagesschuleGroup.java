@@ -44,6 +44,9 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	private ModulTagesschuleName modulTagesschuleName;
 
 	@NotNull @Nonnull
+	private String identifier;
+
+	@NotNull @Nonnull
 	private String bezeichnung;
 
 	@NotNull @Nonnull
@@ -91,6 +94,14 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 
 	public void setZeitBis(@Nonnull String bis) {
 		this.zeitBis = bis;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	@Nonnull

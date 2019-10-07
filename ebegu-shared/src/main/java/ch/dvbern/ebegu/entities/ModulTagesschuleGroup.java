@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,6 +64,10 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private ModulTagesschuleName modulTagesschuleName = ModulTagesschuleName.DYNAMISCH;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private String identifier;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -151,6 +156,14 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		this.einstellungenTagesschule = einstellungenTagesschule;
 	}
 
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+
 	@Nonnull
 	public String getBezeichnung() {
 		return bezeichnung;
@@ -205,6 +218,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	public int compareTo(@Nonnull ModulTagesschuleGroup o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getEinstellungenTagesschule(), o.getEinstellungenTagesschule());
+		builder.append(this.getIdentifier(), o.getIdentifier());
 		builder.append(this.getZeitVon(), o.getZeitVon());
 		builder.append(this.getZeitBis(), o.getZeitBis());
 		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
@@ -213,8 +227,12 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 
 	public ModulTagesschuleGroup copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		ModulTagesschuleGroup copy = new ModulTagesschuleGroup();
-		copy.setEinstellungenTagesschule(this.getEinstellungenTagesschule());
 		copy.setModulTagesschuleName(this.getModulTagesschuleName());
+		if (ModulTagesschuleName.DYNAMISCH.equals(this.getModulTagesschuleName())) {
+			copy.setIdentifier(UUID.randomUUID().toString());
+		} else {
+			copy.setIdentifier(this.getModulTagesschuleName().name());
+		}
 		copy.setBezeichnung(this.getBezeichnung());
 		copy.setZeitVon(this.getZeitVon());
 		copy.setZeitBis(this.getZeitBis());

@@ -22,9 +22,7 @@ import TSModulTagesschuleGroup from './TSModulTagesschuleGroup';
 
 export default class TSEinstellungenTagesschule extends TSAbstractEntity {
 
-    public gesuchsperiodeId: string;
     public gesuchsperiode: TSGesuchsperiode;
     public modulTagesschuleTyp: TSModulTagesschuleTyp;
     public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
-
 }

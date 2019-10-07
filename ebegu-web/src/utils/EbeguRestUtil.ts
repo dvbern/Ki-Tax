@@ -3250,6 +3250,7 @@ export default class EbeguRestUtil {
         if (modulGroupFromServer) {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
+            modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
             modulTagesschuleGroupTS.bezeichnung = modulGroupFromServer.bezeichnung;
             modulTagesschuleGroupTS.zeitVon = modulGroupFromServer.zeitVon;
             modulTagesschuleGroupTS.zeitBis = modulGroupFromServer.zeitBis;
@@ -3280,6 +3281,7 @@ export default class EbeguRestUtil {
         if (modulTagesschuleGroupTS) {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
+            restModulGroup.identifier = modulTagesschuleGroupTS.identifier;
             restModulGroup.bezeichnung = modulTagesschuleGroupTS.bezeichnung;
             restModulGroup.zeitVon = modulTagesschuleGroupTS.zeitVon;
             restModulGroup.zeitBis = modulTagesschuleGroupTS.zeitBis;
@@ -3304,7 +3306,7 @@ export default class EbeguRestUtil {
 
     private modulTagesschuleToRestObject(restModul: any, modulTagesschuleTS: TSModulTagesschule): any {
         if (modulTagesschuleTS) {
-            this.abstractMutableEntityToRestObject(restModul, modulTagesschuleTS);
+            this.abstractEntityToRestObject(restModul, modulTagesschuleTS);
             restModul.wochentag = modulTagesschuleTS.wochentag;
             return restModul;
         }

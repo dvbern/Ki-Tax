@@ -42,12 +42,10 @@ export default class TSModulTagesschule extends TSAbstractMutableEntity {
      */
     public isSameModul(modulTagesschule: TSModulTagesschule): boolean {
         return modulTagesschule
-            && this.id === modulTagesschule.id
             && this.wochentag === modulTagesschule.wochentag;
     }
 
     public uniqueId(): string {
-        return this.id
-            + this.wochentag;
+        return this.wochentag;
     }
 }
