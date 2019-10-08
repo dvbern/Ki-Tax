@@ -46,6 +46,8 @@ import org.hibernate.envers.Audited;
 @Entity
 public class EinstellungenTagesschule extends AbstractEntity implements Comparable<EinstellungenTagesschule> {
 
+	private static final long serialVersionUID = -3095520370997020676L;
+
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einstellungen_ts_inst_stammdaten_tagesschule_id"), nullable = false)
