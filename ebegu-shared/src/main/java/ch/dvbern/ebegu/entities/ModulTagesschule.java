@@ -39,7 +39,6 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 
 	private static final long serialVersionUID = -8403411439182708718L;
 
-
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_modul_tagesschule_modul_tagesschule_group_id"), nullable = false)
@@ -80,7 +79,6 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 		if (!(other instanceof ModulTagesschule)) {
 			return false;
 		}
-
 		final ModulTagesschule otherModulTagesschule = (ModulTagesschule) other;
 		return getModulTagesschuleGroup().isSame(otherModulTagesschule.getModulTagesschuleGroup()) &&
 			getWochentag() == otherModulTagesschule.getWochentag();

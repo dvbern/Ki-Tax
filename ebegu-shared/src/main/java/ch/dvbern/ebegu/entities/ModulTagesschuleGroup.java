@@ -47,7 +47,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 /**
- * Entity for the Module of the Tageschulangebote.
+ * Entity for the ModulGroups of the Tageschulangebote.
  */
 @CheckTimeRange
 @Audited

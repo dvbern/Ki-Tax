@@ -1478,7 +1478,6 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(convertedIsBG);
 		}
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
-
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch
 			// nicht vorhanden, erzeugt werden
 			InstitutionStammdatenTagesschule isTS =
