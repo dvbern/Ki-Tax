@@ -19,13 +19,14 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
-import TSGemeinde from '../../../models/TSGemeinde';
+import TSGemeindeRegistrierung from '../../../models/TSGemeindeRegistrierung';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
@@ -40,9 +41,11 @@ const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSBenutzer>;
-    public gemeinden$: Array<Observable<TSGemeinde>>;
+    public gemeindenAndVerbund$: Observable<TSGemeindeRegistrierung[]>;
+    private gemeindenAndVerbund: TSGemeindeRegistrierung[];
 
     private readonly gemeindenId: string; // Parameter aus URL
+    private readonly gemeindeBGId: string;
 
     public constructor(
         private readonly transition: Transition,
@@ -53,14 +56,13 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
         this.gemeindenId = this.transition.params().gemeindenId;
+        this.gemeindeBGId = this.transition.params().gemeindeBGId;
     }
 
     public ngOnInit(): void {
         const gemeindenIdList = this.gemeindenId.split(',');
-        this.gemeinden$ = [];
-        gemeindenIdList.forEach(gemeindeId => {
-            this.gemeinden$.push(from(this.gemeindeRS.findGemeinde(gemeindeId)));
-        });
+        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenIdList)).pipe(map(
+            tsGemeindeRegistrierung => this.gemeindenAndVerbund = tsGemeindeRegistrierung));
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -74,11 +76,20 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        const gemeindenIdList = this.gemeindenId.split(',');
-        const firstGemeinde = gemeindenIdList.pop();
-        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeinde).then((dossier: TSDossier) => {
-            gemeindenIdList.forEach(gemeindeId => {
-                this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
+
+        let gemeindenAdded: String[] = [];
+        const firstGemeinde = this.gemeindenAndVerbund.pop();
+        const firstGemeindeId = firstGemeinde.verbundId !== null ? firstGemeinde.verbundId : firstGemeinde.id;
+        gemeindenAdded.push(firstGemeindeId);
+        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
+            this.gemeindenAndVerbund.forEach(tsGemeindeRegistrierung => {
+                let gemeindeId;
+                tsGemeindeRegistrierung.verbundId !== null ? gemeindeId = tsGemeindeRegistrierung.verbundId : gemeindeId = tsGemeindeRegistrierung.id;
+
+                if (gemeindenAdded.indexOf(gemeindeId) === -1) {
+                    this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
+                    gemeindenAdded.push(gemeindeId);
+                }
             });
             this.stateService.go('gesuchsteller.dashboard', {
                 dossierId: dossier.id,

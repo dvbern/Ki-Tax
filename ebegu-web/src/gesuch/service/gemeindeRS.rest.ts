@@ -26,6 +26,7 @@ import TSBenutzer from '../../models/TSBenutzer';
 import TSBfsGemeinde from '../../models/TSBfsGemeinde';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
+import TSGemeindeRegistrierung from '../../models/TSGemeindeRegistrierung';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -195,5 +196,12 @@ export default class GemeindeRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
             return response.data;
         });
+    }
+
+    public getGemeindenRegistrierung(gemeindeId: string, gemeindeTSId: string[]): IPromise<TSGemeindeRegistrierung[]> {
+        let gemeindenTSId: string = "";
+        gemeindeTSId.forEach( id => (gemeindenTSId.length > 0 ? gemeindenTSId += "," + encodeURIComponent(id) : gemeindenTSId += encodeURIComponent(id)));
+        return this.$http.get(`${this.serviceURL}/gemeindeRegistrierung/${gemeindeId.length !== 0? encodeURIComponent(gemeindeId) : null}/${gemeindenTSId.length !== 0? encodeURIComponent(gemeindenTSId) : null}`)
+            .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
 }

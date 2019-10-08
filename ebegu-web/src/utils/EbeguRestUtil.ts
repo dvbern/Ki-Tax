@@ -85,6 +85,7 @@ import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationCon
 import TSFinanzModel from '../models/TSFinanzModel';
 import TSGemeinde from '../models/TSGemeinde';
 import TSGemeindeKonfiguration from '../models/TSGemeindeKonfiguration';
+import TSGemeindeRegistrierung from '../models/TSGemeindeRegistrierung';
 import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
@@ -3403,4 +3404,25 @@ export default class EbeguRestUtil {
         return publicAppConfigTS;
 
     }
+
+    public parseGemeindeRegistrierungList(data: unknown) : TSGemeindeRegistrierung[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGemeindeRegistrierung(new TSGemeindeRegistrierung(), item))
+            : [this.parseGemeindeRegistrierung(new TSGemeindeRegistrierung(), data)];
+    }
+
+    private parseGemeindeRegistrierung(gemeindeRegistrierungTS: TSGemeindeRegistrierung, gemeindeRegistrierung: any) {
+        if (gemeindeRegistrierung) {
+            gemeindeRegistrierungTS.id = gemeindeRegistrierung.id;
+            gemeindeRegistrierungTS.name = gemeindeRegistrierung.name;
+            gemeindeRegistrierungTS.verbundId = gemeindeRegistrierung.verbundId;
+            gemeindeRegistrierungTS.verbundName = gemeindeRegistrierung.verbundName;
+            return gemeindeRegistrierungTS;
+        }
+        return undefined;
+    }
 }
+

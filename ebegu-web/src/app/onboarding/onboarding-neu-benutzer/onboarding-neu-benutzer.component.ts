@@ -64,13 +64,13 @@ export class OnboardingNeuBenutzerComponent {
             return;
         }
         const listIds: string[] = [];
-        listIds.push(this.gemeinde.id);
+        //listIds.push(this.gemeinde.id);
         this._gemeindeList.forEach(gemeinde => {
             if (listIds.indexOf(gemeinde.id) === -1) {
                 listIds.push(gemeinde.id);
             }
         });
-        this.stateService.go(this.nextState, {gemeindenId: listIds});
+        this.stateService.go(this.nextState, {gemeindeBGId: this.gemeinde !== undefined ? this.gemeinde.id : null ,gemeindenId: listIds});
     }
 
     public set gemeindeList(value: Array<TSGemeinde>) {

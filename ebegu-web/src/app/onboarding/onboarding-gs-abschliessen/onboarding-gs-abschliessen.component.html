@@ -33,9 +33,9 @@
                 </div>
                 <div class="onboarding-gs-gemeinde-content" >
                     <span
-                        *ngFor="let gemeinde$ of gemeinden$ ; first as isFirst">
+                        *ngFor="let gemVerbund of gemeindenAndVerbund$ | async ; first as isFirst">
                         <b *ngIf="!isFirst">,</b>
-                        {{(gemeinde$ | async)?.name}}</span>
+                        {{gemVerbund.name}} ({{gemVerbund.verbundName}})</span>
                 </div>
             </div>
             <button type="submit"

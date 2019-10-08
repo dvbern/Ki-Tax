@@ -18,11 +18,15 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -30,6 +34,7 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -51,6 +56,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeRegistrierung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
@@ -423,5 +429,64 @@ public class GemeindeResource {
 			.filter(inst -> inst.getStatus() == GemeindeStatus.EINGELADEN)
 			.count();
 		return Response.ok(anzahl > 0).build();
+	}
+
+	@ApiOperation(value = "Returns GemeindeVerbund when already registred", responseContainer = "Collection",
+		response = JaxBfsGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/gemeindeRegistrierung/{gemeindeId}/{gemeindenTSId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeindeRegistrierung> getGemeindenRegistrierung(@Nullable @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nullable @PathParam("gemeindenTSId") String gemeindenTSIdList) {
+		List<JaxGemeindeRegistrierung> gemeindeRegistrierungList = new ArrayList<>();
+		if(gemeindeJAXPId != null ){
+
+			String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+			if(!gemeindeId.equals("null")) {
+				Gemeinde gemeindeBG =
+					gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"findGemeinde",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+				JaxGemeindeRegistrierung gemeindeRegistrierungBG = new JaxGemeindeRegistrierung();
+				gemeindeRegistrierungBG.setId(gemeindeId);
+				gemeindeRegistrierungBG.setName(gemeindeBG.getName());
+				gemeindeRegistrierungList.add(gemeindeRegistrierungBG);
+			}
+		}
+
+		if(gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")){
+			String[] gemeindenTSList = gemeindenTSIdList.split(",");
+			for(String gemeindeTSId : gemeindenTSList){
+				Gemeinde gemeindeTS =
+					gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"findGemeinde",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+
+				Gemeinde gemeindeTSVerbund =
+					gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
+
+				JaxGemeindeRegistrierung gemeindeRegistrierungTS = new JaxGemeindeRegistrierung();
+				gemeindeRegistrierungTS.setId(gemeindeTSId);
+				gemeindeRegistrierungTS.setName(gemeindeTS.getName());
+				if(gemeindeTSVerbund != null && gemeindeTSVerbund.isAngebotTS()){
+					gemeindeRegistrierungTS.setVerbundId(gemeindeTSVerbund.getId());
+					gemeindeRegistrierungTS.setVerbundName(gemeindeTSVerbund.getName());
+				}
+				gemeindeRegistrierungList.add(gemeindeRegistrierungTS);
+			}
+		}
+
+		Set<JaxGemeindeRegistrierung> sortedSet = new TreeSet<>((o1, o2) -> {
+			if(o1.getId().equalsIgnoreCase(o2.getId()) && o1.getVerbundId() == null && o2.getVerbundId() == null){
+				return 0;
+			}
+			return 1;
+		});
+		sortedSet.addAll(gemeindeRegistrierungList);
+		gemeindeRegistrierungList = new ArrayList<>(sortedSet);
+		return gemeindeRegistrierungList;
 	}
 }

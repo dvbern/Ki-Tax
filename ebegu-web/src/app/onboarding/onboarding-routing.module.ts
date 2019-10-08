@@ -83,7 +83,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.gesuchsteller.registration',
-        url: '/registration/{gemeindenId}',
+        url: '/registration/:gemeindeBGId/{gemeindenId}',
         component: OnboardingGsAbschliessenComponent,
     },
     {
