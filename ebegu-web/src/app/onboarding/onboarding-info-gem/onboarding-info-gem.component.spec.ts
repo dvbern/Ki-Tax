@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,34 +19,32 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingComponent} from './onboarding.component';
+import {OnboardingInfoGemComponent} from './onboarding-info-gem.component';
 
-describe('OnboardingComponent', () => {
-    let component: OnboardingComponent;
-    let fixture: ComponentFixture<OnboardingComponent>;
+describe('OnboardingInfoGemComponent', () => {
+    let component: OnboardingInfoGemComponent;
+    let fixture: ComponentFixture<OnboardingInfoGemComponent>;
 
-    const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+    const i18nServiceSpy =
+        jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
-
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingComponent],
+            declarations: [OnboardingInfoGemComponent],
             providers: [
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
@@ -55,12 +53,16 @@ describe('OnboardingComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingComponent);
+        fixture = TestBed.createComponent(OnboardingInfoGemComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should load all active Gemeinden', () => {
+        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
     });
 });

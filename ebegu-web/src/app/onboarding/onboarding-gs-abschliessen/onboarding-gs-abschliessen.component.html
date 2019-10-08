@@ -17,7 +17,7 @@
 
 <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
 
-    <div class="onboarding-subtitle" translate>EINLADUNG_ABSCHLIESSEN</div>
+    <div class="onboarding-subtitle-sc" translate>EINLADUNG_ABSCHLIESSEN</div>
 
     <div class="onboarding-gs-container">
 
@@ -31,8 +31,11 @@
                             translate>ONBOARDING_GS_GEMEINDE_AENDERN
                     </button>
                 </div>
-                <div class="onboarding-gs-gemeinde-content">
-                    <span>{{(gemeinde$ | async)?.name}}</span>
+                <div class="onboarding-gs-gemeinde-content" >
+                    <span
+                        *ngFor="let gemeinde$ of gemeinden$ ; first as isFirst">
+                        <b *ngIf="!isFirst">,</b>
+                        {{(gemeinde$ | async)?.name}}</span>
                 </div>
             </div>
             <button type="submit"
