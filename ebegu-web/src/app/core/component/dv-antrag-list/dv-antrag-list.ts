@@ -292,10 +292,10 @@ export class DVAntragListController implements IController {
         this.selectedInstitutionName = this.selectedInstitution ? this.selectedInstitution.name : null;
     }
 
-    public getAntragTypBezeichnung(antrag: TSAntragDTO) {
-        let bezeichnung: string = this.$translate.instant(antrag.antragTyp);
+    public getAntragTypBezeichnung(antrag: TSAntragDTO): string {
+        let bezeichnung = this.$translate.instant(antrag.antragTyp);
         if (antrag.laufnummer && antrag.laufnummer > 0) {
-            bezeichnung = bezeichnung +  ' ' + antrag.laufnummer;
+            bezeichnung = `${bezeichnung} ${antrag.laufnummer}`;
         }
         return bezeichnung;
     }
