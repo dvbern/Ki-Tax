@@ -24,8 +24,22 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
+import {OnboardingInfoGemComponent} from './onboarding-info-gem/onboarding-info-gem.component';
+import {OnboardingInfoKitagComponent} from './onboarding-info-kitag/onboarding-info-kitag.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
+import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
+import {MandantRS} from '../core/service/mandantRS.rest';
+
+const mandantBernId = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+
+const tsEnabledResolver = [
+    'MandantRS', (mandantRS: MandantRS) => {
+       return mandantRS.findMandant(mandantBernId).then((result: { angebotTS: any; }) => {
+           return result.angebotTS;
+        });
+    },
+];
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -52,7 +66,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.be-login',
-        url: '/{gemeindeId:[0-9a-fA-F\-]{36}}',
+        url: '/{gemeindenId}',
         component: OnboardingBeLoginComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
@@ -69,16 +83,43 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.gesuchsteller.registration',
-        url: '/registration/{gemeindeId:[0-9a-fA-F\-]{36}}',
+        url: '/registration/{gemeindenId}',
         component: OnboardingGsAbschliessenComponent,
     },
     {
         name: 'onboarding.gesuchsteller.registration-incomplete',
         url: '/registration-abschliessen',
-        component: OnboardingComponent,
+        component: OnboardingNeuBenutzerComponent,
         resolve: {
+            isTSAngebotEnabled: tsEnabledResolver,
             nextState: () => 'onboarding.gesuchsteller.registration',
-            showLogin: () => false,
+        },
+    },
+    {
+        name: 'onboarding.neubenutzer',
+        url: '/neu-benutzer',
+        component: OnboardingNeuBenutzerComponent,
+        resolve: {
+            isTSAngebotEnabled: tsEnabledResolver,
+        },
+        data: {
+            roles: [TSRole.ANONYMOUS],
+        },
+    },
+    {
+        name: 'onboarding.infogemeinde',
+        url: '/info-gemeinde',
+        component: OnboardingInfoGemComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS],
+        },
+    },
+    {
+        name: 'onboarding.infokitag',
+        url: '/info-kitag',
+        component: OnboardingInfoKitagComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS],
         },
     },
 ];

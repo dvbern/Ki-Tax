@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,32 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import (reference) '../../../../style/variables.less';
+.testdaten-checkbox {
+    margin-top: 2rem;
+    //text-align: center;
 
-.language-selector {
-    text-align: center;
-    height: 100%;
-    position: relative;
-    right: 0;
-    top: 0;
-    padding-right: 2rem;
-
-    .language-button {
-        border: 0;
-        background: transparent;
-        text-align: center;
-        height: 100%;
-        position: relative;
-        right: 0;
-        top: 0;
-        a {
-            color: red;
-            height: 17px;
-            width: 129px;
-            font-family: "Open Sans";
-            font-size: 12px;
-            letter-spacing: 1.5px;
-            line-height: 17px;
-        }
+    ::ng-deep .mat-checkbox-label {
+        font-size: 14px;
+        letter-spacing: 1px;
+        line-height: 19px;
+        color: #222222;
+        font-family: "Open Sans";
     }
+}
+
+.input-freetext{
+    border-radius: 0px;
+    border-width: 2px;
+    border-style: solid;
+    margin-top: 1rem;
+    width: auto;
 }

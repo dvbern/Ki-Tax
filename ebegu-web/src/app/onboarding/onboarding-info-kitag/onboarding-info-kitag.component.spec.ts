@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,36 +18,28 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
-import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingComponent} from './onboarding.component';
+import {OnboardingInfoKitagComponent} from './onboarding-info-kitag.component';
 
-describe('OnboardingComponent', () => {
-    let component: OnboardingComponent;
-    let fixture: ComponentFixture<OnboardingComponent>;
+describe('OnboardingInfoKitagComponent', () => {
+    let component: OnboardingInfoKitagComponent;
+    let fixture: ComponentFixture<OnboardingInfoKitagComponent>;
 
-    const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
-    const i18nServiceSpy = jasmine
-        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const i18nServiceSpy =
+        jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
-
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingComponent],
-            providers: [
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+            declarations: [OnboardingInfoKitagComponent],
+            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -55,7 +47,7 @@ describe('OnboardingComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingComponent);
+        fixture = TestBed.createComponent(OnboardingInfoKitagComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
