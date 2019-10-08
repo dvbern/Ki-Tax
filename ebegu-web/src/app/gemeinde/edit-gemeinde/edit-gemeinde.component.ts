@@ -30,6 +30,7 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
@@ -294,5 +295,9 @@ export class EditGemeindeComponent implements OnInit {
             err => {
                 LOG.error(err);
             });
+    }
+
+    public isGemeindeEditable(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
     }
 }

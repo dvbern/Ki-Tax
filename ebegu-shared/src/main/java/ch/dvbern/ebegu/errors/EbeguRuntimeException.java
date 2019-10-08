@@ -86,6 +86,20 @@ public class EbeguRuntimeException extends RuntimeException {
 	}
 
 	public EbeguRuntimeException(
+		@Nonnull KibonLogLevel logLevel,
+		@Nullable String methodeName,
+		@Nonnull String message,
+		@Nonnull Serializable... messageArgs) {
+
+		super(message);
+		this.logLevel = logLevel;
+		this.methodName = methodeName;
+		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		this.errorCodeEnum = null;
+		this.customMessage = null;
+	}
+
+	public EbeguRuntimeException(
 		@Nullable String methodeName,
 		@Nullable String message,
 		@Nullable Throwable cause,

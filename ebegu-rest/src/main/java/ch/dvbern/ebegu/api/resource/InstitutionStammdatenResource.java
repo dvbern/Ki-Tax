@@ -158,7 +158,7 @@ public class InstitutionStammdatenResource {
 		Objects.requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
 		InstitutionStammdaten stammdaten =
-			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionID);
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionID, true);
 		return null == stammdaten ? null : converter.institutionStammdatenToJAX(stammdaten);
 	}
 

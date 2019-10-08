@@ -447,8 +447,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        const tagesschule = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
-        const angemeldeteModule = angular.copy(tagesschule);
+        const moduleTagesschule = EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel().belegungTagesschule)
+            ? this.getBetreuungModel().belegungTagesschule.moduleTagesschule
+            : undefined;
+        if (!moduleTagesschule) {
+            return; // Es gibt nichts zu kopieren
+        }
+        const angemeldeteModule = angular.copy(moduleTagesschule);
         this.getBetreuungModel().belegungTagesschule.moduleTagesschule =
             angular.copy(stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
 

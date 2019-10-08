@@ -73,7 +73,7 @@ public class InstitutionResourceTest {
 
 		Institution institution = new Institution();
 		institution.setId(institutionId);
-		EasyMock.expect(institutionService.findInstitution(institutionId))
+		EasyMock.expect(institutionService.findInstitution(institutionId, true))
 			.andReturn(Optional.of(institution));
 
 		// Stammdaten belog to another Institution
@@ -102,7 +102,7 @@ public class InstitutionResourceTest {
 
 		Institution institution = new Institution();
 		institution.setId(institutionId);
-		EasyMock.expect(institutionService.findInstitution(institutionId))
+		EasyMock.expect(institutionService.findInstitution(institutionId, true))
 			.andReturn(Optional.of(institution));
 
 		converter.institutionStammdatenToEntity(EasyMock.anyObject(), EasyMock.anyObject());

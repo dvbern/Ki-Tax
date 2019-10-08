@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,26 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+.testdaten-checkbox {
+    margin-top: 2rem;
+    //text-align: center;
 
-import javax.annotation.Nonnull;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+    ::ng-deep .mat-checkbox-label {
+        font-size: 14px;
+        letter-spacing: 1px;
+        line-height: 19px;
+        color: #222222;
+        font-family: "Open Sans";
+    }
+}
 
-import ch.dvbern.ebegu.entities.Gemeinde;
-
-public class CheckGemeindeValidator implements ConstraintValidator<CheckGemeinde, Gemeinde> {
-
-	@Override
-	public void initialize(@Nonnull CheckGemeinde gemeinde) {
-		// nop
-	}
-
-	@Override
-	public boolean isValid(
-		@Nonnull Gemeinde instance,
-		@Nonnull ConstraintValidatorContext context) {
-
-		return instance.getBetreuungsgutscheineStartdatum().getDayOfMonth() == 1;
-	}
+.input-freetext{
+    border-radius: 0px;
+    border-width: 2px;
+    border-style: solid;
+    margin-top: 1rem;
+    width: auto;
 }

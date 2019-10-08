@@ -113,6 +113,7 @@ import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -886,7 +887,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			if (gesuch.getTyp() != AntragTyp.ERSTGESUCH
 					|| Eingangsart.ONLINE != gesuch.getEingangsart()
 					|| gesuch.getStatus() != AntragStatus.FREIGABEQUITTUNG) {
-				throw new EbeguRuntimeException("antragZurueckziehen", "Only Online Erstgesuche can be reverted");
+				throw new EbeguRuntimeException(KibonLogLevel.NONE, "antragZurueckziehen", "Only Online Erstgesuche can be reverted");
 			}
 
 			LOG.warn("Freigabe des Gesuchs {} wurde zurückgezogen", gesuch.getJahrFallAndGemeindenummer());
@@ -962,7 +963,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleJugendamt() && (gesuch.getDossier().getVerantwortlicherBG() == null
+		if (user.getRole().isRoleGemeindeOrBG() && (gesuch.getDossier().getVerantwortlicherBG() == null
 			|| !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherBG(gesuch.getDossier().getId(), user);
@@ -979,7 +980,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		if (user.getRole().isRoleSchulamt() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
+		if (user.getRole().isRoleGemeindeOrTS() && (gesuch.getDossier().getVerantwortlicherTS() == null || !onlyIfNotSet)) {
 			if (persist) {
 				dossierService.setVerantwortlicherTS(gesuch.getDossier().getId(), user);
 			}

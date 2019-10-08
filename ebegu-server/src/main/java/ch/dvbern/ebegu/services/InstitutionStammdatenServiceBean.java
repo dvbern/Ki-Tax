@@ -99,12 +99,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private InstitutionEventConverter institutionEventConverter;
 
+	@Inject
+	private Authorizer authorizer;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
+		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
 
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
@@ -126,8 +130,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@PermitAll
 	public Optional<InstitutionStammdaten> findInstitutionStammdaten(@Nonnull final String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
-		InstitutionStammdaten a = persistence.find(InstitutionStammdaten.class, id);
-		return Optional.ofNullable(a);
+		InstitutionStammdaten institutionStammdaten = persistence.find(InstitutionStammdaten.class, id);
+		authorizer.checkReadAuthorizationInstitutionStammdaten(institutionStammdaten);
+		return Optional.ofNullable(institutionStammdaten);
 	}
 
 	@Override
@@ -172,8 +177,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
-		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId);
+		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId, true);
 		if (institutionStammdatenToRemove != null) {
+			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			persistence.remove(institutionStammdatenToRemove);
 		}
 	}
@@ -263,11 +269,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Nullable
 	@Override
 	@PermitAll
-	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution = institutionService.findInstitution(institutionId)
+	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId, boolean doAuthCheck) {
+		Institution institution = institutionService.findInstitution(institutionId, doAuthCheck)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"fetchInstitutionStammdatenByInstitution",
 				institutionId));
+		if (doAuthCheck) {
+			authorizer.checkReadAuthorizationInstitution(institution);
+		}
 
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,
@@ -280,7 +289,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@PermitAll
 	public Collection<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer() {
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
-		if (role.isRoleSchulamt()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
+		if (role.isRoleGemeindeOrTS()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben
 			return BetreuungsangebotTyp.getSchulamtTypes();
 		}
 		Collection<Institution> institutionenForCurrentBenutzer =

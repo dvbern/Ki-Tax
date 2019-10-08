@@ -241,8 +241,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private isThereAnyAnmeldung(): boolean {
-        return this.getBetreuungModel().belegungTagesschule.moduleTagesschule
-            .filter(modul => modul.angemeldet).length > 0;
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
+        if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
+            return moduleTagessule
+                .filter(modul => modul.angemeldet).length > 0;
+        }
+        return false;
     }
 
     public getModulName(modulName: TSModulTagesschuleName): string {
