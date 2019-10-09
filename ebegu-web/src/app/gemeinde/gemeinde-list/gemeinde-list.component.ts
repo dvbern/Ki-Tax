@@ -115,7 +115,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     }
 
     public hatBerechtigungEditieren(selected: TSGemeinde): boolean {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             return selected.status === TSGemeindeStatus.AKTIV;
         }
         // Alle anderen Rollen, die die Institution sehen, duerfen sie oeffnen

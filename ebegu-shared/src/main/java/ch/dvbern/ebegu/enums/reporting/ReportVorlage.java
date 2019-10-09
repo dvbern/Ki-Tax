@@ -182,7 +182,8 @@ public enum ReportVorlage {
 			return vorlage == VORLAGE_REPORT_GESUCH_STICHTAG_DE || vorlage == VORLAGE_REPORT_GESUCH_STICHTAG_FR
 				|| vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM_DE || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM_FR
 				|| vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_GESUCHSTELLER
-				|| vorlage == VORLAGE_REPORT_BENUTZER || vorlage == VORLAGE_REPORT_MASSENVERSAND;
+				|| vorlage == VORLAGE_REPORT_BENUTZER || vorlage == VORLAGE_REPORT_MASSENVERSAND
+				|| vorlage == VORLAGE_REPORT_INSTITUTIONEN;
 		}
 
 		return UserRole.GESUCHSTELLER != role && UserRole.STEUERAMT != role && UserRole.JURIST != role;
