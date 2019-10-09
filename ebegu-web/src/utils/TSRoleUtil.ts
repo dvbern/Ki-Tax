@@ -321,6 +321,10 @@ export class TSRoleUtil {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
     }
 
+    public static getMandantOnlyRoles(): ReadonlyArray<TSRole> {
+        return [TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+    }
+
     public static getJugendamtAndSchulamtRole(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
