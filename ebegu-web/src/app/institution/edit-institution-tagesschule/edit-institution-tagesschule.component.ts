@@ -113,7 +113,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        const index = EbeguUtil.getIndexOfElementwithID(group, einstellungenTagesschule.modulTagesschuleGroups);
+        const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
         if (index > -1) {
             einstellungenTagesschule.modulTagesschuleGroups.splice(index, 1);
         }
@@ -123,8 +123,23 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        EbeguUtil.replaceElementInList(group, einstellungenTagesschule.modulTagesschuleGroups);
+        const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
+        if (index > -1) {
+            einstellungenTagesschule.modulTagesschuleGroups[index] = group;
+        } else {
+            einstellungenTagesschule.modulTagesschuleGroups.push(group);
+        }
         this.showModulDetail = false;
+    }
+
+    public getIndexOfElementwithIdentifier(entityToSearch: TSModulTagesschuleGroup, listToSearchIn: Array<TSModulTagesschuleGroup>): number {
+        const idToSearch = entityToSearch.identifier;
+        for (let i = 0; i < listToSearchIn.length; i++) {
+            if (listToSearchIn[i].identifier === idToSearch) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public getModulTagesschuleTypen(): TSModulTagesschuleTyp[] {
