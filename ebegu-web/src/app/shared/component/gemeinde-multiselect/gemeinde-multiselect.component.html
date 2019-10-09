@@ -17,7 +17,7 @@
 
 
 <div *ngIf="allowedMap$ | async as allowedGemeinden" class="form-group">
-    <label [for]="id" translate>GEMEINDEN</label>
+    <label *ngIf="showLabel" [for]="id" translate>GEMEINDEN</label>
     <mat-select class="form-control"
                 [ngModel]="selected"
                 [name]="inputId"

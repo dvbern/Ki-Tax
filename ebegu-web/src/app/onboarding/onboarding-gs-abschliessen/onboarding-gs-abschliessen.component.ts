@@ -27,6 +27,7 @@ import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 
@@ -39,9 +40,9 @@ const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSBenutzer>;
-    public gemeinde$: Observable<TSGemeinde>;
+    public gemeinden$: Array<Observable<TSGemeinde>>;
 
-    private readonly gemeindeId: string; // Parameter aus URL
+    private readonly gemeindenId: string; // Parameter aus URL
 
     public constructor(
         private readonly transition: Transition,
@@ -49,21 +50,36 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         public readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
         private readonly dossierRS: DossierRS,
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
-
-        this.gemeindeId = this.transition.params().gemeindeId;
+        this.gemeindenId = this.transition.params().gemeindenId;
     }
 
     public ngOnInit(): void {
-        this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
+        const gemeindenIdList = this.gemeindenId.split(',');
+        this.gemeinden$ = [];
+        gemeindenIdList.forEach(gemeindeId => {
+            this.gemeinden$.push(from(this.gemeindeRS.findGemeinde(gemeindeId)));
+        });
         this.user$ = this.authServiceRS.principal$;
+
+        if (this.stateService.transition) {
+            this.onboardingPlaceholderService.setSplittedScreen(true);
+        } else {
+            this.onboardingPlaceholderService.setSplittedScreen(false);
+        }
     }
 
     public onSubmit(form: NgForm): void {
         if (!form.valid) {
             return;
         }
-        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
+        const gemeindenIdList = this.gemeindenId.split(',');
+        const firstGemeinde = gemeindenIdList.pop();
+        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeinde).then((dossier: TSDossier) => {
+            gemeindenIdList.forEach(gemeindeId => {
+                this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
+            });
             this.stateService.go('gesuchsteller.dashboard', {
                 dossierId: dossier.id,
             });
@@ -73,9 +89,11 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
     public changeGemeinde(): void {
         switch (this.authServiceRS.getPrincipalRole()) {
             case TSRole.GESUCHSTELLER:
+                this.onboardingPlaceholderService.setSplittedScreen(true);
                 this.stateService.go('onboarding.gesuchsteller.registration-incomplete');
                 break;
             case TSRole.ANONYMOUS:
+                this.onboardingPlaceholderService.setSplittedScreen(true);
                 this.stateService.go('onboarding.start');
                 break;
             default:
