@@ -44,7 +44,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
     public gemeindenAndVerbund$: Observable<TSGemeindeRegistrierung[]>;
     private gemeindenAndVerbund: TSGemeindeRegistrierung[];
 
-    private readonly gemeindenId: string; // Parameter aus URL
+    private readonly gemeindenTSIds: string; // Parameter aus URL
     private readonly gemeindeBGId: string;
 
     public constructor(
@@ -55,13 +55,13 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         private readonly dossierRS: DossierRS,
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
-        this.gemeindenId = this.transition.params().gemeindenId;
+        this.gemeindenTSIds = this.transition.params().gemeindenId;
         this.gemeindeBGId = this.transition.params().gemeindeBGId;
     }
 
     public ngOnInit(): void {
-        const gemeindenIdList = this.gemeindenId.split(',');
-        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenIdList))
+        const gemeindenTSIdList = this.gemeindenTSIds.split(',');
+        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList))
             .pipe(map(tsGemeindeRegistrierung => this.gemeindenAndVerbund = tsGemeindeRegistrierung));
         this.user$ = this.authServiceRS.principal$;
 
@@ -77,6 +77,8 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
             return;
         }
 
+        // Die erste Gemeinde muss speziell behandelt werden: Fuer diese muss sichergestellt werden, dass das
+        // Dossier und der Fall erstellt werden, bevor die weiteren Gemeinden asynchron und parallel erstellt werden
         const gemeindenAdded: string[] = [];
         const firstGemeinde = this.gemeindenAndVerbund.pop();
         const firstGemeindeId = firstGemeinde.verbundId !== null ? firstGemeinde.verbundId : firstGemeinde.id;
