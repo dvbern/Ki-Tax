@@ -67,12 +67,12 @@
                         <div class="dv-ebegu-calendar__wrapper">
                             <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
 
-                                <div ng-repeat="mod in group.module track by mod.uniqueId()">
+                                <div ng-repeat="mod in group.module track by mod.id">
                                     <!-- TODO Reviewer: Sobald ich die Klasse hinzufüge, geht es nicht mehr!
                                     class="dv-ebegu-calendar--tagesschule"
                                     -->
                                     <md-checkbox
-                                        name="modul_{{mod.uniqueId()}}_{{mod.wochentag}}"
+                                        name="modul_{{mod.id}}"
                                         ng-model="mod.angemeldet"
                                         aria-label="Modul {{group.modulTagesschuleName | translate}} {{mod.wochentag | translate}}"
                                         ng-disabled="!mod.angeboten || vm.isFreigabequittungAusstehend()">

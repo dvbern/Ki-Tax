@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output,
 import {NgForm} from '@angular/forms';
 import {getTSModulTagesschuleIntervallValues, TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
-import EbeguUtil from '../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-edit-modul-tagesschule',
@@ -49,9 +48,6 @@ export class EditModulTagesschuleComponent implements OnInit {
 
     public apply(): void {
         this.modulTagesschuleGroup.applyTempModule();
-        if (EbeguUtil.isNullOrUndefined(this.modulTagesschuleGroup.identifier)) {
-            this.modulTagesschuleGroup.identifier = TSModulTagesschuleGroup.createIdentifier();
-        }
         if (this.modulTagesschuleGroup.isValid()) {
             this.modulTagesschuleGroup.validated =  true;
             this.callback.emit(this.modulTagesschuleGroup);

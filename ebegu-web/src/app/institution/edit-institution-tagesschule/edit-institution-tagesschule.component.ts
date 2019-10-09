@@ -113,7 +113,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        EbeguUtil.removeElementFromList(group, einstellungenTagesschule.modulTagesschuleGroups);
+        const index = EbeguUtil.getIndexOfElementwithID(group, einstellungenTagesschule.modulTagesschuleGroups);
+        if (index > -1) {
+            einstellungenTagesschule.modulTagesschuleGroups.splice(index, 1);
+        }
     }
 
     public applyModulTagesschuleGroup(
@@ -201,7 +204,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = modulname;
         group.bezeichnung = this.translate.instant(modulname);
-        group.identifier = TSModulTagesschuleGroup.createIdentifier();
         group.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
         group.wirdPaedagogischBetreut = true;
         group.module = [];

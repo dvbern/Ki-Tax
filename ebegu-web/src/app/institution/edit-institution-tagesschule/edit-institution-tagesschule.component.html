@@ -83,38 +83,36 @@
                         <th translate>MODUL_VERFUEGBAR</th>
                         <th translate>MODUL_INTERVALL</th>
                         <th *ngIf="editMode"></th>
-                        <th *ngIf="editMode"></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:group?.identifier()"
-                        (click)="editModulTagesschuleGroup(group)">
-                        <td title="{{group.bezeichnung}}">
-                            {{group.bezeichnung}}
-                        </td>
-                        <td title="{{group.getZeitraumString()}}">
-                            {{group.getZeitraumString()}}
-                        </td>
-                        <td title="{{group.verpflegungskosten}}">
-                            {{group.verpflegungskosten}}
-                        </td>
-                        <td title="{{getWochentageAsString(group)}}">
-                            {{getWochentageAsString(group)}}
-                        </td>
-                        <td title="{{group.intervall | translate}}">
-                            {{group.intervall | translate}}
-                        </td>
-                        <td *ngIf="editMode">
-                            <button type="button" (click)="editModulTagesschuleGroup(group)">
-                                <i class="fa fa-lg fa-arrow-right"></i>
-                            </button>
-                        </td>
-                        <td *ngIf="editMode">
-                            <button type="button" (click)="removeModulTagesschuleGroup(group)">
-                                <i class="fa fa-lg fa-trash-o"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length > 0">
+						<tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:group?.identifier()">
+							<td title="{{group.bezeichnung}}" (click)="editModulTagesschuleGroup(group)">
+								{{group.bezeichnung}}
+							</td>
+							<td title="{{group.getZeitraumString()}}" (click)="editModulTagesschuleGroup(group)">
+								{{group.getZeitraumString()}}
+							</td>
+							<td title="{{group.verpflegungskosten}}" (click)="editModulTagesschuleGroup(group)">
+								{{group.verpflegungskosten}}
+							</td>
+							<td title="{{getWochentageAsString(group)}}" (click)="editModulTagesschuleGroup(group)">
+								{{getWochentageAsString(group)}}
+							</td>
+							<td title="{{group.intervall | translate}}" (click)="editModulTagesschuleGroup(group)">
+								{{group.intervall | translate}}
+							</td>
+							<td *ngIf="editMode">
+								<button type="button" (click)="removeModulTagesschuleGroup(einstellungGP, group)">
+									<i class="fa fa-lg fa-trash-o"></i>
+								</button>
+							</td>
+						</tr>
+                    </tbody>
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length === 0">
+						<tr>
+							<td colspan="6" class="empty-table" translate>KEIN_EINTRAG</td>
+						</tr>
                     </tbody>
                 </table>
 

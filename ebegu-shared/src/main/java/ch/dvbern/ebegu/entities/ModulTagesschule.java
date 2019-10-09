@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.DayOfWeek;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -82,6 +83,27 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 		final ModulTagesschule otherModulTagesschule = (ModulTagesschule) other;
 		return getModulTagesschuleGroup().isSame(otherModulTagesschule.getModulTagesschuleGroup()) &&
 			getWochentag() == otherModulTagesschule.getWochentag();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof ModulTagesschule)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		ModulTagesschule that = (ModulTagesschule) o;
+		return Objects.equals(this.getModulTagesschuleGroup(), that.getModulTagesschuleGroup()) &&
+			this.getWochentag() == that.getWochentag();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), getModulTagesschuleGroup(), getWochentag());
 	}
 
 	@Override

@@ -53,26 +53,7 @@ export default class TSModulTagesschuleGroup extends TSAbstractEntity {
         this.modulTagesschuleName = modulTagesschuleName;
         this.zeitVon = zeitVon;
         this.zeitBis = zeitBis;
-    }
-
-    public static createIdentifier(): string {
-        // tslint:disable-next-line:no-magic-numbers tslint:disable-next-line:no-bitwise
-        return (((1 + Math.random()) * 0x10000) || 0).toString(16).substring(1);
-    }
-
-    /**
-     * Prueft ob beide Module gleich sind. Sie sind glech wenn wochentag und modulTagesschuleName gleich sind.
-     * Die ZeitVon und ZeitBis spielt keine Rolle in diesem Fall, da so Module unterschiedlichen Institutionen
-     * verglichen werden koennen.
-     */
-    public isSameModul(modulTagesschule: TSModulTagesschuleGroup): boolean {
-        return modulTagesschule
-            && this.modulTagesschuleName === modulTagesschule.modulTagesschuleName
-            && this.identifier === modulTagesschule.identifier;
-    }
-
-    public uniqueId(): string {
-        return this.modulTagesschuleName + this.identifier;
+        this.identifier = EbeguUtil.generateRandomName(36);
     }
 
     public getZeitraumString(): string {

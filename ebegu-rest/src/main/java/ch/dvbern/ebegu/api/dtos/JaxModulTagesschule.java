@@ -16,11 +16,14 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.DayOfWeek;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import ch.dvbern.ebegu.entities.ModulTagesschule;
 
 /**
  * DTO fuer Module fuer die Tagesschulen
@@ -41,5 +44,25 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 
 	public void setWochentag(@Nonnull DayOfWeek wochentag) {
 		this.wochentag = wochentag;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof ModulTagesschule)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		ModulTagesschule that = (ModulTagesschule) o;
+		return getWochentag() == that.getWochentag();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), getWochentag());
 	}
 }
