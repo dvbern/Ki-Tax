@@ -35,7 +35,9 @@
                     <span
                         *ngFor="let gemVerbund of gemeindenAndVerbund$ | async ; first as isFirst">
                         <b *ngIf="!isFirst">,</b>
-                        {{gemVerbund.name}} ({{gemVerbund.verbundName}})</span>
+                        {{gemVerbund.name}}
+                        <ng-container *ngIf="gemVerbund.verbundId !== null">({{gemVerbund.verbundName}})
+                        </ng-container></span>
                 </div>
             </div>
             <button type="submit"

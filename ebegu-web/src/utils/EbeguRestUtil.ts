@@ -3405,7 +3405,7 @@ export default class EbeguRestUtil {
 
     }
 
-    public parseGemeindeRegistrierungList(data: unknown) : TSGemeindeRegistrierung[] {
+    public parseGemeindeRegistrierungList(data: unknown): TSGemeindeRegistrierung[] {
         if (!data) {
             return [];
         }
@@ -3414,7 +3414,8 @@ export default class EbeguRestUtil {
             : [this.parseGemeindeRegistrierung(new TSGemeindeRegistrierung(), data)];
     }
 
-    private parseGemeindeRegistrierung(gemeindeRegistrierungTS: TSGemeindeRegistrierung, gemeindeRegistrierung: any) {
+    private parseGemeindeRegistrierung(gemeindeRegistrierungTS: TSGemeindeRegistrierung,
+                                       gemeindeRegistrierung: any): TSGemeindeRegistrierung {
         if (gemeindeRegistrierung) {
             gemeindeRegistrierungTS.id = gemeindeRegistrierung.id;
             gemeindeRegistrierungTS.name = gemeindeRegistrierung.name;
@@ -3425,4 +3426,3 @@ export default class EbeguRestUtil {
         return undefined;
     }
 }
-

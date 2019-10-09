@@ -61,8 +61,8 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public ngOnInit(): void {
         const gemeindenIdList = this.gemeindenId.split(',');
-        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenIdList)).pipe(map(
-            tsGemeindeRegistrierung => this.gemeindenAndVerbund = tsGemeindeRegistrierung));
+        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenIdList))
+            .pipe(map(tsGemeindeRegistrierung => this.gemeindenAndVerbund = tsGemeindeRegistrierung));
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -77,14 +77,15 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
             return;
         }
 
-        let gemeindenAdded: String[] = [];
+        const gemeindenAdded: string[] = [];
         const firstGemeinde = this.gemeindenAndVerbund.pop();
         const firstGemeindeId = firstGemeinde.verbundId !== null ? firstGemeinde.verbundId : firstGemeinde.id;
         gemeindenAdded.push(firstGemeindeId);
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
             this.gemeindenAndVerbund.forEach(tsGemeindeRegistrierung => {
                 let gemeindeId;
-                tsGemeindeRegistrierung.verbundId !== null ? gemeindeId = tsGemeindeRegistrierung.verbundId : gemeindeId = tsGemeindeRegistrierung.id;
+                tsGemeindeRegistrierung.verbundId !== null ?
+                    gemeindeId = tsGemeindeRegistrierung.verbundId : gemeindeId = tsGemeindeRegistrierung.id;
 
                 if (gemeindenAdded.indexOf(gemeindeId) === -1) {
                     this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);

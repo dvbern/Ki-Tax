@@ -176,7 +176,8 @@ export default class GemeindeRS implements IEntityRS {
         let result: IPromise<any>;
         result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
-            headers: {'Content-Type': undefined}})
+            headers: {'Content-Type': undefined}
+        })
             .then((response: any) => {
                 this.$log.debug('Upload Gemeinde Logo ', response.data);
                 return response.data;
@@ -199,9 +200,13 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     public getGemeindenRegistrierung(gemeindeId: string, gemeindeTSId: string[]): IPromise<TSGemeindeRegistrierung[]> {
-        let gemeindenTSId: string = "";
-        gemeindeTSId.forEach( id => (gemeindenTSId.length > 0 ? gemeindenTSId += "," + encodeURIComponent(id) : gemeindenTSId += encodeURIComponent(id)));
-        return this.$http.get(`${this.serviceURL}/gemeindeRegistrierung/${gemeindeId.length !== 0? encodeURIComponent(gemeindeId) : null}/${gemeindenTSId.length !== 0? encodeURIComponent(gemeindenTSId) : null}`)
+        let gemeindenTSId = '';
+        gemeindeTSId.forEach(
+            id => (gemeindenTSId.length > 0 ? gemeindenTSId += ',' + encodeURIComponent(id)
+                : gemeindenTSId += encodeURIComponent(id)));
+        return this.$http.get(`${this.serviceURL}/gemeindeRegistrierung/${gemeindeId.length !== 0 ?
+            encodeURIComponent(gemeindeId) : null}/${gemeindenTSId.length !== 0 ?
+            encodeURIComponent(gemeindenTSId) : null}`)
             .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
 }
