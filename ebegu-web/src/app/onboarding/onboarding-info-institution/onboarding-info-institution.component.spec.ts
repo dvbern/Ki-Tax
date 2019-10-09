@@ -18,34 +18,28 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
-import {of} from 'rxjs';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingInfoGemComponent} from './onboarding-info-gem.component';
+import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution.component';
 
-describe('OnboardingInfoGemComponent', () => {
-    let component: OnboardingInfoGemComponent;
-    let fixture: ComponentFixture<OnboardingInfoGemComponent>;
+describe('OnboardingInfoInstitutionComponent', () => {
+    let component: OnboardingInfoInstitutionComponent;
+    let fixture: ComponentFixture<OnboardingInfoInstitutionComponent>;
 
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
     const i18nServiceSpy =
         jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingInfoGemComponent],
-            providers: [
-                {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+            declarations: [OnboardingInfoInstitutionComponent],
+            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -53,16 +47,12 @@ describe('OnboardingInfoGemComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingInfoGemComponent);
+        fixture = TestBed.createComponent(OnboardingInfoInstitutionComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('should load all active Gemeinden', () => {
-        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
     });
 });

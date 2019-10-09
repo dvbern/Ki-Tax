@@ -21,8 +21,8 @@ import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-lo
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingRoutingModule} from './onboarding-routing.module';
 import { OnboardingNeuBenutzerComponent } from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
-import { OnboardingInfoGemComponent } from './onboarding-info-gem/onboarding-info-gem.component';
-import { OnboardingInfoKitagComponent } from './onboarding-info-kitag/onboarding-info-kitag.component';
+import { OnboardingInfoGemeindeComponent } from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
+import { OnboardingInfoInstitutionComponent } from './onboarding-info-institution/onboarding-info-institution.component';
 
 @NgModule({
     imports: [
@@ -35,8 +35,8 @@ import { OnboardingInfoKitagComponent } from './onboarding-info-kitag/onboarding
         OnboardingMainComponent,
         OnboardingGsAbschliessenComponent,
         OnboardingNeuBenutzerComponent,
-        OnboardingInfoGemComponent,
-        OnboardingInfoKitagComponent,
+        OnboardingInfoGemeindeComponent,
+        OnboardingInfoInstitutionComponent,
     ],
 })
 class OnboardingModule {

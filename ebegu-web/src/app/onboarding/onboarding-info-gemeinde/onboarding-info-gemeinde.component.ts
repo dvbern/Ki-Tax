@@ -18,29 +18,42 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import {from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSGemeinde from '../../../models/TSGemeinde';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
-    selector: 'dv-onboarding-info-kitag',
-    templateUrl: './onboarding-info-kitag.component.html',
-    styleUrls: ['./onboarding-info-kitag.component.less', '../onboarding.less'],
+    selector: 'dv-onboarding-info-gem',
+    templateUrl: './onboarding-info-gemeinde.component.html',
+    styleUrls: ['./onboarding-info-gemeinde.component.less', '../onboarding.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OnboardingInfoKitagComponent implements OnInit {
-    private readonly description1: string = 'ONBOARDING_KITAG_DESC1';
-    private readonly description2: string = 'ONBOARDING_KITAG_DESC2';
-    private readonly description3: string = 'ONBOARDING_KITAG_DESC3';
-    private readonly description4: string = 'ONBOARDING_KITAG_DESC4';
+export class OnboardingInfoGemeindeComponent implements OnInit {
+    private readonly description1: string = 'ONBOARDING_GEMEINDE_DESC1';
+    private readonly description2: string = 'ONBOARDING_GEMEINDE_DESC2';
+    private readonly description3: string = 'ONBOARDING_GEMEINDE_DESC3';
+    private readonly description4: string = 'ONBOARDING_GEMEINDE_DESC4';
     private readonly subjectText: string = 'ONBOARDING_MAIL_SUBJECT';
-    private readonly emailBody: string = 'ONBOARDING_MAIL_KITAG_BODY';
+    private readonly emailBody: string = 'ONBOARDING_MAIL_GEMEINDE_BODY';
     private readonly emailEnd: string = 'ONBOARDING_MAIL_BODY_END';
 
     public testZugangBeantragen: boolean;
-    public kitagName: string;
+    public gemeinden$: Observable<TSGemeinde[]>;
+    public gemeinde?: TSGemeinde;
 
     public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
                        private readonly translate: TranslateService,
+                       private readonly gemeindeRS: GemeindeRS,
     ) {
+        this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
+            .pipe(map(gemeinden => {
+                gemeinden.sort(EbeguUtil.compareByName);
+
+                return gemeinden;
+            }));
     }
 
     public ngOnInit(): void {
@@ -54,14 +67,11 @@ export class OnboardingInfoKitagComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        const space = ' ';
-        const punkt = '.';
         const mailto = 'mailto:support@kibon.ch&subject=';
         const emailBody = '&body=';
         const zeilenUmbruch = '%0D%0A%0D%0A';
-        const bodyText: string = this.translate.instant(this.emailBody);
+        const body: string = this.translate.instant(this.emailBody, {gemeinde: this.gemeinde.name});
         const subject: string = this.translate.instant(this.subjectText);
-        const body = bodyText + space + this.kitagName + punkt;
         const endBody: string = this.translate.instant(this.emailEnd);
         window.location.href = mailto + subject + emailBody + body + zeilenUmbruch + endBody;
     }
