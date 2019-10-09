@@ -20,7 +20,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import {getTSModulTagesschuleTypen, TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
@@ -103,8 +103,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     public editModulTagesschuleGroup(group: TSModulTagesschuleGroup): void {
-        this.groupToEdit = group;
-        this.showModulDetail = true;
+        if (this.editMode) {
+            this.groupToEdit = group;
+            this.showModulDetail = true;
+        }
     }
 
     public removeModulTagesschuleGroup(
@@ -234,12 +236,11 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     public getWochentageAsString(group: TSModulTagesschuleGroup): string {
-        let wochentageAsString = '';
-        group.module.forEach(mod => {
-            const tag: string = this.translate.instant(mod.wochentag + '_SHORT');
-            // tslint:disable-next-line:prefer-template
-            wochentageAsString = wochentageAsString + tag + ' ';
-        });
-        return wochentageAsString;
+        return group.module
+            .map((gem: TSModulTagesschule) => gem.wochentag)
+            .map(ordinal => getWeekdaysValues().indexOf(ordinal))
+            .sort()
+            .map((tag: number) => this.translate.instant(getWeekdaysValues()[tag] + '_SHORT'))
+            .join(', ');
     }
 }

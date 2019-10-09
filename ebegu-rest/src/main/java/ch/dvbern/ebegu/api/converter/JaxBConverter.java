@@ -1829,13 +1829,13 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	private LocalTime hoursAndMinutesToDate(@Nonnull String hoursAndMinutes) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("H:mm");
 		LocalTime time = LocalTime.parse(hoursAndMinutes, dateTimeFormatter);
 		return time;
 	}
 
 	private String dateToHoursAndMinutes(@Nonnull LocalTime date) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("H:mm");
 		String format = date.format(dateTimeFormatter);
 		return format;
 	}
