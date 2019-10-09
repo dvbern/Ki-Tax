@@ -145,32 +145,23 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
 
-		boolean roleGemeindeabhaengig = principalBean.getBenutzer().getRole().isRoleGemeindeabhaengig();
+		Benutzer currentBenutzer = principalBean.getBenutzer();
+		boolean roleGemeindeabhaengig = currentBenutzer.getRole().isRoleGemeindeabhaengig();
 		if (roleGemeindeabhaengig) {
 			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
 			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 		}
 
-		if(principalBean.getBenutzer().getRole().isRoleMandant()){
-			Join<InstitutionStammdaten, Institution> joinInstitution =
-				root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
-			Predicate predicateMandant =
-			cb.equal(joinInstitution.get(Institution_.MANDANT), principalBean.getBenutzer().getMandant());
-			predicates.add(predicateMandant);
-		}
-		if(principalBean.getBenutzer().getRole().isRoleTsOnly()){
-			Predicate predicateTagesschuleOnly = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp),
-				BetreuungsangebotTyp.TAGESSCHULE);
-			predicates.add(predicateTagesschuleOnly);
-		}
+		Predicate predicateMandant = PredicateHelper.getPredicateMandant(cb, joinInstitution.get(Institution_.mandant), currentBenutzer);
+		predicates.add(predicateMandant);
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
-		Benutzer currentBenutzer = principalBean.getBenutzer();
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		if (roleGemeindeabhaengig) {
 			typedQuery.setParameter(GEMEINDEN, currentBenutzer.extractGemeindenForUser());

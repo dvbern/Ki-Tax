@@ -1932,10 +1932,24 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private List<InstitutionenDataRow> getReportDataInstitutionen(@Nonnull Locale locale) {
-		benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getReportDataInstitutionen", NO_USER_IS_LOGGED_IN));
 
-		return convertToInstitutionenDataRow(institutionStammdatenService.getAllInstitutionStammdaten(), locale);
+		Collection<InstitutionStammdaten> stammdaten = institutionStammdatenService.getAllInstitutionStammdaten()
+			.stream()
+			.filter(institution -> isCurrentBenutzerZustaendigForInstitution(currentBenutzer, institution))
+			.collect(Collectors.toList());
+		return convertToInstitutionenDataRow(stammdaten, locale);
+	}
+
+	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer, @Nonnull InstitutionStammdaten institution) {
+		if (currentBenutzer.getRole().isRoleTsOnly()) {
+			return institution.getBetreuungsangebotTyp().isSchulamt();
+		}
+		if (currentBenutzer.getRole().isRoleBgOnly()) {
+			return institution.getBetreuungsangebotTyp().isJugendamt();
+		}
+		return true;
 	}
 
 	@Nonnull
