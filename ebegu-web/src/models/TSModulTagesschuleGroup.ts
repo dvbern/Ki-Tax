@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
@@ -53,7 +54,7 @@ export default class TSModulTagesschuleGroup extends TSAbstractEntity {
         this.modulTagesschuleName = modulTagesschuleName;
         this.zeitVon = zeitVon;
         this.zeitBis = zeitBis;
-        this.identifier = EbeguUtil.generateRandomName(36);
+        this.identifier = EbeguUtil.generateRandomName(CONSTANTS.ID_LENGTH);
     }
 
     public getZeitraumString(): string {
