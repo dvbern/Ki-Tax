@@ -24,21 +24,22 @@
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label translate for="bezeichnung">MODUL_BEZEICHNUNG</label>
+            <label translate for="bezeichnung" class="required">MODUL_BEZEICHNUNG</label>
             <input id="bezeichnung" type="text" name="bezeichnung"
                    #bezeichnung="ngModel"
-                   [(ngModel)]="modulTagesschuleGroup.bezeichnung">
+                   [(ngModel)]="modulTagesschuleGroup.bezeichnung"
+                   required>
             <dv-error-messages [errorObject]="bezeichnung.errors"
                                inputId="bezeichnung"></dv-error-messages>
         </div>
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label translate for="zeitVon">MODUL_VON</label>
+            <label translate for="zeitVon" class="required">MODUL_VON</label>
             <input id="zeitVon" type="text" name="zeitVon"
                    #zeitVon="ngModel"
                    [(ngModel)]="modulTagesschuleGroup.zeitVon"
-                   [required]="modulTagesschuleGroup.zeitBis"
+                   required
                    placeholder="HH:mm" [pattern]="patternHoursAndMinutes">
             <dv-error-messages [errorObject]="zeitVon.errors"
                                inputId="zeitVon"></dv-error-messages>
@@ -46,11 +47,11 @@
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label translate for="zeitBis">MODUL_BIS</label>
+            <label translate for="zeitBis" class="required">MODUL_BIS</label>
             <input id="zeitBis" type="text" name="zeitBis"
                    #zeitBis="ngModel"
                    [(ngModel)]="modulTagesschuleGroup.zeitBis"
-                   [required]="modulTagesschuleGroup.zeitVon"
+                   required
                    placeholder="HH:mm" [pattern]="patternHoursAndMinutes">
             <dv-error-messages [errorObject]="zeitBis.errors"
                                inputId="zeitBis"></dv-error-messages>
@@ -119,7 +120,7 @@
     </div>
     <div class="col-md-3">
         <div class="form-group">
-            <label translate for="intervall">MODUL_INTERVALL</label>
+            <label translate for="intervall" class="required">MODUL_INTERVALL</label>
             <mat-select [(ngModel)]="modulTagesschuleGroup.intervall"
                         #intervall="ngModel" id="intervall"
                         name="intervall" class="form-control" required>
