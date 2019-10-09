@@ -51,13 +51,13 @@ public class JaxModulTagesschule extends JaxAbstractDTO {
 		if (this == o) {
 			return true;
 		}
-		if (!(o instanceof ModulTagesschule)) {
+		if (!(o instanceof JaxModulTagesschule)) {
 			return false;
 		}
 		if (!super.equals(o)) {
 			return false;
 		}
-		ModulTagesschule that = (ModulTagesschule) o;
+		JaxModulTagesschule that = (JaxModulTagesschule) o;
 		return getWochentag() == that.getWochentag();
 	}
 
