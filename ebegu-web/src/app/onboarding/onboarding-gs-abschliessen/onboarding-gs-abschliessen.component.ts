@@ -26,6 +26,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeindeRegistrierung from '../../../models/TSGemeindeRegistrierung';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
@@ -59,7 +60,8 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public ngOnInit(): void {
         const gemeindenTSIdList = this.gemeindenTSIds.split(',');
-        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList));
+        this.gemeindenAndVerbund$ = from(this.gemeindeRS
+            .getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList));
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -82,19 +84,19 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
             gemList.forEach(tsGemeindeRegistrierung => {
                 // Das Dossier wird für den Verbund erstellt, falls einer vorhanden ist, sonst für die Gemeinde
-				let gemeindeIdForDossier = tsGemeindeRegistrierung.verbundId == null ?
+                const gemeindeIdForDossier = EbeguUtil.isNullOrUndefined(tsGemeindeRegistrierung.verbundId) ?
                     tsGemeindeRegistrierung.id : tsGemeindeRegistrierung.verbundId;
                 // In der Liste sind jetzt immer noch Duplikate, im Sinne von
-                // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur 1 Dossier (für Verbund 1)
-                // erstellt werden
-				if (gemeindenAdded.indexOf(gemeindeIdForDossier) === -1) {
-					this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeIdForDossier);
-					gemeindenAdded.push(gemeindeIdForDossier);
-				}
-			});
-			this.stateService.go('gesuchsteller.dashboard', {
-				dossierId: dossier.id,
-			});
+                // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur
+                // 1 Dossier (für Verbund 1) erstellt werden
+                if (gemeindenAdded.indexOf(gemeindeIdForDossier) === -1) {
+                    this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeIdForDossier);
+                    gemeindenAdded.push(gemeindeIdForDossier);
+                }
+            });
+            this.stateService.go('gesuchsteller.dashboard', {
+                dossierId: dossier.id,
+            });
         });
     }
 
