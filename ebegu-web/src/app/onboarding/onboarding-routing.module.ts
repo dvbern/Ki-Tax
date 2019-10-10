@@ -24,8 +24,8 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
-import {OnboardingInfoGemComponent} from './onboarding-info-gem/onboarding-info-gem.component';
-import {OnboardingInfoKitagComponent} from './onboarding-info-kitag/onboarding-info-kitag.component';
+import {OnboardingInfoGemeindeComponent} from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
+import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/onboarding-info-institution.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
@@ -83,7 +83,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.gesuchsteller.registration',
-        url: '/registration/{gemeindenId}',
+        url: '/registration/:gemeindeBGId/{gemeindenId}',
         component: OnboardingGsAbschliessenComponent,
     },
     {
@@ -109,15 +109,15 @@ const states: Ng2StateDeclaration[] = [
     {
         name: 'onboarding.infogemeinde',
         url: '/info-gemeinde',
-        component: OnboardingInfoGemComponent,
+        component: OnboardingInfoGemeindeComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
         },
     },
     {
-        name: 'onboarding.infokitag',
-        url: '/info-kitag',
-        component: OnboardingInfoKitagComponent,
+        name: 'onboarding.infoinstitution',
+        url: '/info-institution',
+        component: OnboardingInfoInstitutionComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
         },
