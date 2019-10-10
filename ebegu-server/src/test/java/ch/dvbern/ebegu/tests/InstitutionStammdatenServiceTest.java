@@ -75,6 +75,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		InstitutionStammdaten persistedInstStammdaten = institutionStammdatenOptional.get();
 		Assert.assertEquals(insertedInstitutionStammdaten.extractIban(), persistedInstStammdaten.extractIban());
 
+		Assert.assertNotNull(persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine());
 		persistedInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine().setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
 		InstitutionStammdaten updatedInstitutionStammdaten = institutionStammdatenService.saveInstitutionStammdaten(persistedInstStammdaten);
 		Assert.assertEquals(persistedInstStammdaten.extractIban(), updatedInstitutionStammdaten.extractIban());
@@ -192,7 +193,7 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 
 	private InstitutionStammdaten insertInstitutionStammdaten() {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
-		persistence.persist(institutionStammdaten.getInstitution().getMandant());
+		institutionStammdaten.getInstitution().setMandant(getDummySuperadmin().getMandant());
 		persistence.persist(institutionStammdaten.getInstitution().getTraegerschaft());
 		persistence.persist(institutionStammdaten.getInstitution());
 		persistence.persist(institutionStammdaten.getAdresse());
