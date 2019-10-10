@@ -15,11 +15,11 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+<form #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
 
     <div class="onboarding-subtitle-sc" translate>EINLADUNG_ABSCHLIESSEN</div>
 
-    <div class="onboarding-gs-container">
+    <div class="onboarding-gs-container"  *ngIf="gemeindenAndVerbund$ | async as gemVerbundList">
 
         <div class="onboarding-gs-gemeinde">
             <div>
@@ -33,13 +33,15 @@
                 </div>
                 <div class="onboarding-gs-gemeinde-content" >
                     <span
-                        *ngFor="let gemeinde$ of gemeinden$ ; first as isFirst">
+                        *ngFor="let gemVerbund of gemVerbundList ; first as isFirst">
                         <b *ngIf="!isFirst">,</b>
-                        {{(gemeinde$ | async)?.name}}</span>
+                        {{gemVerbund.name}}
+                        <ng-container *ngIf="gemVerbund.verbundId !== null">({{gemVerbund.verbundName}})
+                        </ng-container></span>
                 </div>
             </div>
             <button type="submit"
-                    (debounceClick)="createDossier()"
+                    (click)="createDossier(form, gemVerbundList)"
                     class="dv-btn onboarding-gs-abschliessen"
                     translate>EINLADUNG_ABSCHLIESSEN
             </button>
