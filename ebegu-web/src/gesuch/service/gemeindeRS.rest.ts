@@ -202,13 +202,16 @@ export default class GemeindeRS implements IEntityRS {
 
     public getGemeindenRegistrierung(gemeindeBGId: string, gemeindenTSIds: string[]
     ): IPromise<TSGemeindeRegistrierung[]> {
-        const gemeindeBGIdOrNull = EbeguUtil.isNotNullOrUndefined(gemeindeBGId)
+        const gemeindeBGIdOrNull = gemeindeBGId.length !== 0
             ? encodeURIComponent(gemeindeBGId)
             : null;
-        const gemeindenTSIdOrNull = EbeguUtil.isNotNullOrUndefined(gemeindenTSIds)
-            ? encodeURIComponent(gemeindenTSIds.join(','))
-            : null;
-        return this.$http.get(`${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${gemeindenTSIdOrNull}`)
+        let gemeindenTSIdOrNull = "";
+        gemeindenTSIds.forEach(
+            id => (gemeindenTSIdOrNull.length > 0 ?
+                gemeindenTSIdOrNull += "," + encodeURIComponent(id)
+                : gemeindenTSIdOrNull += encodeURIComponent(id)));
+        return this.$http.get(`${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${gemeindenTSIdOrNull.length !== 0 ?
+            encodeURIComponent(gemeindenTSIdOrNull) : null}`)
             .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
 }

@@ -66,7 +66,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'onboarding.be-login',
-        url: '/{gemeindenId}',
+        url: '/:gemeindeBGId/{gemeindenId}',
         component: OnboardingBeLoginComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
