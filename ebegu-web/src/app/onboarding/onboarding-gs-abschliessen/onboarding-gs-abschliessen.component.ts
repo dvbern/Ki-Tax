@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -42,7 +41,6 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSBenutzer>;
     public gemeindenAndVerbund$: Observable<TSGemeindeRegistrierung[]>;
-    private gemeindenAndVerbund: TSGemeindeRegistrierung[];
 
     private readonly gemeindenTSIds: string; // Parameter aus URL
     private readonly gemeindeBGId: string;
@@ -61,8 +59,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public ngOnInit(): void {
         const gemeindenTSIdList = this.gemeindenTSIds.split(',');
-        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList))
-            .pipe(map(tsGemeindeRegistrierung => this.gemeindenAndVerbund = tsGemeindeRegistrierung));
+        this.gemeindenAndVerbund$ = from(this.gemeindeRS.getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList));
         this.user$ = this.authServiceRS.principal$;
 
         if (this.stateService.transition) {
@@ -72,31 +69,32 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         }
     }
 
-    public onSubmit(form: NgForm): void {
+    public createDossier(form: NgForm, gemList: TSGemeindeRegistrierung[]): void {
         if (!form.valid) {
             return;
         }
-
         // Die erste Gemeinde muss speziell behandelt werden: Fuer diese muss sichergestellt werden, dass das
         // Dossier und der Fall erstellt werden, bevor die weiteren Gemeinden asynchron und parallel erstellt werden
         const gemeindenAdded: string[] = [];
-        const firstGemeinde = this.gemeindenAndVerbund.pop();
+        const firstGemeinde = gemList.pop();
         const firstGemeindeId = firstGemeinde.verbundId !== null ? firstGemeinde.verbundId : firstGemeinde.id;
         gemeindenAdded.push(firstGemeindeId);
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
-            this.gemeindenAndVerbund.forEach(tsGemeindeRegistrierung => {
-                let gemeindeId;
-                tsGemeindeRegistrierung.verbundId !== null ?
-                    gemeindeId = tsGemeindeRegistrierung.verbundId : gemeindeId = tsGemeindeRegistrierung.id;
-
-                if (gemeindenAdded.indexOf(gemeindeId) === -1) {
-                    this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeId);
-                    gemeindenAdded.push(gemeindeId);
-                }
-            });
-            this.stateService.go('gesuchsteller.dashboard', {
-                dossierId: dossier.id,
-            });
+            gemList.forEach(tsGemeindeRegistrierung => {
+                // Das Dossier wird für den Verbund erstellt, falls einer vorhanden ist, sonst für die Gemeinde
+				let gemeindeIdForDossier = tsGemeindeRegistrierung.verbundId == null ?
+                    tsGemeindeRegistrierung.id : tsGemeindeRegistrierung.verbundId;
+                // In der Liste sind jetzt immer noch Duplikate, im Sinne von
+                // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur 1 Dossier (für Verbund 1)
+                // erstellt werden
+				if (gemeindenAdded.indexOf(gemeindeIdForDossier) === -1) {
+					this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeIdForDossier);
+					gemeindenAdded.push(gemeindeIdForDossier);
+				}
+			});
+			this.stateService.go('gesuchsteller.dashboard', {
+				dossierId: dossier.id,
+			});
         });
     }
 

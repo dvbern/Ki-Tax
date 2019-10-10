@@ -24,8 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -436,26 +434,30 @@ public class GemeindeResource {
 	@Path("/gemeindeRegistrierung/{gemeindeId}/{gemeindenTSId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGemeindeRegistrierung> getGemeindenRegistrierung(@Nullable @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+	public List<JaxGemeindeRegistrierung> getGemeindenRegistrierung(@Nullable @PathParam("gemeindeId") JaxId gemeindeBGJAXPId,
 		@Nullable @PathParam("gemeindenTSId") String gemeindenTSIdList) {
 		List<JaxGemeindeRegistrierung> gemeindeRegistrierungList = new ArrayList<>();
-		if(gemeindeJAXPId != null ){
 
-			String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-			if(!gemeindeId.equals("null")) {
+		// BG-Gemeinde: Es kann nur 1 geben. Falls sie gesetzt ist, darf sie für TS nicht ein zweites Mal hinzugefügt werden
+		String gemeindeBGId = null;
+
+		if (gemeindeBGJAXPId != null ){
+			gemeindeBGId = converter.toEntityId(gemeindeBGJAXPId);
+			if(!gemeindeBGId.equals("null")) {
+				String finalGemeindeBGId = gemeindeBGId;
 				Gemeinde gemeindeBG =
-					gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+					gemeindeService.findGemeinde(gemeindeBGId).orElseThrow(() -> new EbeguEntityNotFoundException(
 						"findGemeinde",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, finalGemeindeBGId));
 
 				JaxGemeindeRegistrierung gemeindeRegistrierungBG = new JaxGemeindeRegistrierung();
-				gemeindeRegistrierungBG.setId(gemeindeId);
+				gemeindeRegistrierungBG.setId(gemeindeBGId);
 				gemeindeRegistrierungBG.setName(gemeindeBG.getName());
 				gemeindeRegistrierungList.add(gemeindeRegistrierungBG);
 			}
 		}
 
-		if(gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")){
+		if (gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")){
 			String[] gemeindenTSList = gemeindenTSIdList.split(",");
 			for(String gemeindeTSId : gemeindenTSList){
 				Gemeinde gemeindeTS =
@@ -465,6 +467,12 @@ public class GemeindeResource {
 
 				Gemeinde gemeindeTSVerbund =
 					gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
+
+				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde sowohl für BG wie auch
+				// für TS ausgewählt wurde. Fall diese Gemeinde für TS keinem Verbund angehört, muss sie nicht ein zweites Mal hinzugefügt werden
+				if (gemeindeBGId != null && gemeindeBGId.equals(gemeindeTSId) && gemeindeTSVerbund == null) {
+					continue;
+				}
 
 				JaxGemeindeRegistrierung gemeindeRegistrierungTS = new JaxGemeindeRegistrierung();
 				gemeindeRegistrierungTS.setId(gemeindeTSId);
@@ -476,15 +484,6 @@ public class GemeindeResource {
 				gemeindeRegistrierungList.add(gemeindeRegistrierungTS);
 			}
 		}
-
-		Set<JaxGemeindeRegistrierung> sortedSet = new TreeSet<>((o1, o2) -> {
-			if(o1.getId().equalsIgnoreCase(o2.getId()) && o1.getVerbundId() == null && o2.getVerbundId() == null){
-				return 0;
-			}
-			return 1;
-		});
-		sortedSet.addAll(gemeindeRegistrierungList);
-		gemeindeRegistrierungList = new ArrayList<>(sortedSet);
 		return gemeindeRegistrierungList;
 	}
 }
