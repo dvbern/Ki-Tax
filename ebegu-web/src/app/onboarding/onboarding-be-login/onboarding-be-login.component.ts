@@ -26,10 +26,10 @@ import {Transition} from '@uirouter/core';
 })
 export class OnboardingBeLoginComponent {
 
-    public readonly gemeindeId: string;
+    public readonly gemeindenId: string;
 
     public constructor(private readonly transition: Transition) {
-        this.gemeindeId = this.transition.params().gemeindeId;
+        this.gemeindenId = this.transition.params().gemeindenId;
     }
 
 }
