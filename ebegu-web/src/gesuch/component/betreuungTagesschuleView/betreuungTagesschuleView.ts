@@ -25,6 +25,7 @@ import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutat
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import TSBetreuung from '../../../models/TSBetreuung';
+import TSEinstellungenTagesschule from '../../../models/TSEinstellungenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 import DateUtil from '../../../utils/DateUtil';
@@ -172,23 +173,29 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         ) {
             return;
         }
-        // const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
-        // TODO (hefr) implement
-        // const groupsOfTagesschule =
-        //     this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.modulTagesschuleGroups;
-        // for (const groupTagesschule of groupsOfTagesschule) {
-        //     this.initializeGroup(groupTagesschule);
-        //     const moduleOfGroup = groupTagesschule.module;
-        //     for (const modulOfGroup of moduleOfGroup) {
-        //         for (const angMod of moduleAngemeldet) {
-        //             if (angMod.isSameModul(modulOfGroup)) {
-        //                 modulOfGroup.angemeldet = true;
-        //             }
-        //         }
-        //     }
-        // }
-        // this.modulGroups = groupsOfTagesschule;
-        this.modulGroups = [];
+        const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
+        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule();
+        for (const groupTagesschule of moduleAngeboten) {
+            this.initializeGroup(groupTagesschule);
+            const moduleOfGroup = groupTagesschule.getModuleOrdered();
+            for (const modulOfGroup of moduleOfGroup) {
+                for (const angMod of moduleAngemeldet) {
+                    if (angMod.id === modulOfGroup.id) {
+                        modulOfGroup.angemeldet = true;
+                    }
+                }
+            }
+        }
+        this.modulGroups = moduleAngeboten;
+    }
+
+    private loadAngeboteneModuleForTagesschule(): TSModulTagesschuleGroup[] {
+        const tsEinstellungenTagesschule =
+            this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+            .filter((einstellung: TSEinstellungenTagesschule) =>
+                einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
+            .pop();
+        return tsEinstellungenTagesschule.modulTagesschuleGroups;
     }
 
     private initializeGroup(group: TSModulTagesschuleGroup): void {

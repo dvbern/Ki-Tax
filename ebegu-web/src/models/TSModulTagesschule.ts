@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
+import EbeguUtil from '../utils/EbeguUtil';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
 import TSAbstractEntity from './TSAbstractEntity';
 
@@ -22,9 +24,11 @@ export default class TSModulTagesschule extends TSAbstractEntity {
 
     public angemeldet: boolean; // Transient, wird nicht auf Server synchronisiert, bzw. nur die mit angemeldet=true
     public angeboten: boolean;
+    public identifier: string;
 
     public constructor() {
         super();
+        this.identifier = EbeguUtil.generateRandomName(CONSTANTS.ID_LENGTH);
     }
 
     public static create(wochentag: TSDayOfWeek): TSModulTagesschule {
