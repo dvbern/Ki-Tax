@@ -34,6 +34,7 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
@@ -49,8 +50,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     @Input() public editMode: boolean = false;
 
     public gemeindeList: TSGemeinde[] = [];
-    public showModulDetail: boolean = false;
-    public groupToEdit: TSModulTagesschuleGroup = undefined;
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -96,16 +95,32 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return result;
     }
 
-    public addModulTagesschuleGroup(): void {
-        this.groupToEdit = new TSModulTagesschuleGroup();
-        this.groupToEdit.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
-        this.showModulDetail = true;
+    public addModulTagesschuleGroup(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        const group = new TSModulTagesschuleGroup();
+        group.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
+        this.openModul(einstellungenTagesschule, group);
     }
 
-    public editModulTagesschuleGroup(group: TSModulTagesschuleGroup): void {
+    public editModulTagesschuleGroup(
+        einstellungenTagesschule: TSEinstellungenTagesschule,
+        group: TSModulTagesschuleGroup
+    ): void {
+        this.openModul(einstellungenTagesschule, group);
+    }
+
+    private openModul(
+        einstellungenTagesschule: TSEinstellungenTagesschule,
+        group: TSModulTagesschuleGroup
+    ): void {
         if (this.editMode) {
-            this.groupToEdit = group;
-            this.showModulDetail = true;
+            const dialogConfig = new MatDialogConfig();
+            dialogConfig.data = {modulTagesschuleGroup: group};
+            // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
+            this.dialog.open(ModulTagesschuleDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
+                if (EbeguUtil.isNotNullOrUndefined(result)) {
+                    this.applyModulTagesschuleGroup(einstellungenTagesschule, result);
+                }
+            });
         }
     }
 
@@ -129,10 +144,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         } else {
             einstellungenTagesschule.modulTagesschuleGroups.push(group);
         }
-        this.showModulDetail = false;
+        EbeguUtil.handleSmarttablesUpdateBug(einstellungenTagesschule.modulTagesschuleGroups);
     }
 
     public getIndexOfElementwithIdentifier(entityToSearch: TSModulTagesschuleGroup, listToSearchIn: Array<TSModulTagesschuleGroup>): number {
+        if (EbeguUtil.isNullOrUndefined(entityToSearch)) {
+            return -1;
+        }
         const idToSearch = entityToSearch.identifier;
         for (let i = 0; i < listToSearchIn.length; i++) {
             if (listToSearchIn[i].identifier === idToSearch) {

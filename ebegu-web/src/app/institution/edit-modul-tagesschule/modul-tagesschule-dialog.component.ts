@@ -15,44 +15,52 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {getTSModulTagesschuleIntervallValues, TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
-    selector: 'dv-edit-modul-tagesschule',
-    templateUrl: './edit-modul-tagesschule.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'modul-tagesschule-dialog',
+    templateUrl: './modul-tagesschule-dialog.template.html',
+    styleUrls: ['./modul-tagesschule-dialog.component.less'],
 })
-export class EditModulTagesschuleComponent implements OnInit {
+export class ModulTagesschuleDialogComponent {
 
     @ViewChild(NgForm) public form: NgForm;
 
-    @Input() public modulTagesschuleGroup: TSModulTagesschuleGroup;
-    @Output() public readonly callback = new EventEmitter<TSModulTagesschuleGroup>();
+    public modulTagesschuleGroup: TSModulTagesschuleGroup;
 
     public patternHoursAndMinutes: '[0-9]{1,2}:[0-9]{1,2}';
 
+
     public constructor(
+        private readonly dialogRef: MatDialogRef<ModulTagesschuleDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) data: any,
     ) {
+        this.modulTagesschuleGroup = data.modulTagesschuleGroup;
     }
 
     public ngOnInit(): void {
         this.modulTagesschuleGroup.initializeTempModule();
     }
 
-    public getModulTagesschuleIntervallOptions(): Array<TSModulTagesschuleIntervall> {
-        return getTSModulTagesschuleIntervallValues();
-    }
-
-    public apply(): void {
+    public save(): void {
         this.modulTagesschuleGroup.applyTempModule();
         if (this.modulTagesschuleGroup.isValid()) {
             this.modulTagesschuleGroup.validated =  true;
-            this.callback.emit(this.modulTagesschuleGroup);
+            this.dialogRef.close(this.modulTagesschuleGroup);
         } else {
             this.ngOnInit();
         }
+    }
+
+    public close(): void {
+        this.dialogRef.close();
+    }
+
+    public getModulTagesschuleIntervallOptions(): Array<TSModulTagesschuleIntervall> {
+        return getTSModulTagesschuleIntervallValues();
     }
 }
