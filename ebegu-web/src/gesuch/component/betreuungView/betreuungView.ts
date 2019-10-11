@@ -254,6 +254,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = false;
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
+        tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
         return tsBetreuung;
     }
@@ -366,6 +367,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         }
         this.errorService.clearAll();
+        console.info('this.model.gesuchsperiode', this.model.gesuchsperiode);
+        this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        console.info('this.model.gesuchsperiode', this.model.gesuchsperiode);
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
             this.gesuchModelManager.handleErweiterteBetreuung();
@@ -436,7 +440,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    public anmeldenSchulamt(): void {
+    public anmeldenSchulamt(): void { //TODO (her)
         if (this.direktAnmeldenSchulamt()) {
             this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
                 GESUCH_BETREUUNGEN,
