@@ -134,14 +134,11 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
             return;
         }
-
         if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
             this.showMutiert = true;
             this.aktuellGueltig = false;
-
             return;
         }
-
         if (this.getBetreuungModel().anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
             this.showNochNichtFreigegeben = true;
             this.aktuellGueltig = false;
@@ -291,14 +288,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 .filter(modul => modul.angemeldet).length > 0;
         }
         return false;
-    }
-
-    public getModulName(group: TSModulTagesschuleGroup): string {
-        return this.$translate.instant(group.modulTagesschuleName) + this.getModulTimeAsString(group);
-    }
-
-    public getModulTimeAsStringViaName(group: TSModulTagesschuleGroup): string {
-        return this.getModulTimeAsString(group);
     }
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
