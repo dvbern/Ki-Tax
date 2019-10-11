@@ -15,24 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+package ch.dvbern.ebegu.enums;
 
-@Component({
-    selector: 'dv-edit-institution-ferieninsel',
-    templateUrl: './edit-institution-ferieninsel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
-})
+/**
+ * Enum fuer the Intervalle of the ModulTagesschule for Tagesschule.
+ */
+public enum ModulTagesschuleIntervall {
 
-export class EditInstitutionFerieninselComponent {
-
-    @Input() public stammdaten: TSInstitutionStammdaten;
-    @Input() public editMode: boolean;
-
-    public constructor(
-    ) {
-    }
+	WOECHENTLICH,
+	WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN
 
 }

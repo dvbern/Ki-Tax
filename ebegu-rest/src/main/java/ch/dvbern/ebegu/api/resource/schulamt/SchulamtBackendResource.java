@@ -185,7 +185,7 @@ public class SchulamtBackendResource {
 		betreuung.getBelegungTagesschule()
 			.getModuleTagesschule()
 			.forEach(modulTagesschule -> anmeldungen.add(new JaxExternalModul(modulTagesschule
-				.getWochentag(), JaxExternalModulName.valueOf(modulTagesschule.getModulTagesschuleName().name())))
+				.getWochentag(), JaxExternalModulName.valueOf(modulTagesschule.getModulTagesschuleGroup().getModulTagesschuleName().name())))
 			);
 		return new JaxExternalAnmeldungTagesschule(
 			betreuung.getBGNummer(),

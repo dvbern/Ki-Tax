@@ -72,3 +72,6 @@ INSERT INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, u
 
 update mandant set angebotts = true;
 update mandant set angebotfi = true;
+
+update gemeinde set angebotts = true;
+update gemeinde set angebotfi = true;

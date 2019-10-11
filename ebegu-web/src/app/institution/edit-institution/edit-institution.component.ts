@@ -225,8 +225,12 @@ export class EditInstitutionComponent implements OnInit {
             EbeguUtil.selectFirstInvalid();
             return;
         }
-
         this.errorService.clearAll();
+        if (!this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_MODULE_INVALID'));
+            return;
+        }
+
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
         }

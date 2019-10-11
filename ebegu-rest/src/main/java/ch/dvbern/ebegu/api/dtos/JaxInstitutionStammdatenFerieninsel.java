@@ -30,7 +30,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @XmlRootElement(name = "institutionStammdatenFerieninsel")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxInstitutionStammdatenFerieninsel extends JaxAbstractDateRangedDTO {
+public class JaxInstitutionStammdatenFerieninsel extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 6958218086966611467L;
 

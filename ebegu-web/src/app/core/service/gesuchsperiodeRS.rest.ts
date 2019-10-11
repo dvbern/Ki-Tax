@@ -14,13 +14,15 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
+import GlobalCacheService from '../../../gesuch/service/globalCacheService';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class GesuchsperiodeRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q', 'GlobalCacheService'];
     public serviceURL: string;
 
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
@@ -32,6 +34,7 @@ export default class GesuchsperiodeRS {
         public ebeguRestUtil: EbeguRestUtil,
         public log: ILogService,
         private readonly $q: IQService,
+        private readonly globalCacheService: GlobalCacheService,
     ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }
@@ -67,7 +70,8 @@ export default class GesuchsperiodeRS {
     }
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/active`).then(response => {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GESUCHSPERIODEN_ACTIVE);
+        return this.http.get(`${this.serviceURL}/active`, {cache}).then(response => {
             const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.activeGesuchsperiodenList;

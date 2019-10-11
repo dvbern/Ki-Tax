@@ -15,24 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+export enum TSModulTagesschuleIntervall {
+    WOECHENTLICH = 'WOECHENTLICH',
+    WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN = 'WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN',
+}
 
-@Component({
-    selector: 'dv-edit-institution-ferieninsel',
-    templateUrl: './edit-institution-ferieninsel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
-})
-
-export class EditInstitutionFerieninselComponent {
-
-    @Input() public stammdaten: TSInstitutionStammdaten;
-    @Input() public editMode: boolean;
-
-    public constructor(
-    ) {
-    }
-
+export function getTSModulTagesschuleIntervallValues(): Array<TSModulTagesschuleIntervall> {
+    return [
+        TSModulTagesschuleIntervall.WOECHENTLICH,
+        TSModulTagesschuleIntervall.WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN,
+    ];
 }

@@ -25,7 +25,8 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
-    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, isJugendamt,
+    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
+    isJugendamt,
     TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -378,7 +379,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             if (exception[0].errorCodeEnum === 'ERROR_DUPLICATE_BETREUUNG') {
                 this.isDuplicated = true;
                 this.model.betreuungsstatus = oldStatus;
-                this.copyModuleToBelegung();
             } else {
                 this.isSavingData = false;
                 this.model.betreuungsstatus = oldStatus;
@@ -434,40 +434,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 betreuungModel.belegungTagesschule.moduleTagesschule
                     .filter(modul => modul.angemeldet);
         }
-    }
-
-    /**
-     * Kopiert alle Module der ausgewaehlten Tagesschule in die Belegung, sodass man direkt in die Belegung die Module
-     * auswaehlen kann.
-     */
-    public copyModuleToBelegung(): void {
-        const stammdaten = this.getBetreuungModel().institutionStammdaten;
-        if (!(stammdaten && stammdaten.institutionStammdatenTagesschule
-            && stammdaten.institutionStammdatenTagesschule.moduleTagesschule)) {
-            return;
-        }
-
-        const moduleTagesschule = EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel().belegungTagesschule)
-            ? this.getBetreuungModel().belegungTagesschule.moduleTagesschule
-            : undefined;
-        if (!moduleTagesschule) {
-            return; // Es gibt nichts zu kopieren
-        }
-        const angemeldeteModule = angular.copy(moduleTagesschule);
-        this.getBetreuungModel().belegungTagesschule.moduleTagesschule =
-            angular.copy(stammdaten.institutionStammdatenTagesschule.moduleTagesschule);
-
-        if (!angemeldeteModule) {
-            return;
-        }
-
-        angemeldeteModule.forEach(angemeldetesModul => {
-            this.getBetreuungModel().belegungTagesschule.moduleTagesschule.forEach(instModul => {
-                if (angemeldetesModul.isSameModul(instModul)) {
-                    instModul.angemeldet = true;
-                }
-            });
-        });
     }
 
     public anmeldenSchulamt(): void {

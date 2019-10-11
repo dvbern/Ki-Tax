@@ -15,24 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import {TSModulTagesschuleTyp} from './enums/TSModulTagesschuleTyp';
+import TSAbstractEntity from './TSAbstractEntity';
+import TSGesuchsperiode from './TSGesuchsperiode';
+import TSModulTagesschuleGroup from './TSModulTagesschuleGroup';
 
-@Component({
-    selector: 'dv-edit-institution-ferieninsel',
-    templateUrl: './edit-institution-ferieninsel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
-})
+export default class TSEinstellungenTagesschule extends TSAbstractEntity {
 
-export class EditInstitutionFerieninselComponent {
-
-    @Input() public stammdaten: TSInstitutionStammdaten;
-    @Input() public editMode: boolean;
-
-    public constructor(
-    ) {
-    }
-
+    public gesuchsperiode: TSGesuchsperiode;
+    public modulTagesschuleTyp: TSModulTagesschuleTyp;
+    public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
 }

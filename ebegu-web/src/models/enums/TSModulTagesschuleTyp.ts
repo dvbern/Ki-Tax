@@ -15,24 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+export enum TSModulTagesschuleTyp {
+    DYNAMISCH = 'DYNAMISCH',
+    SCOLARIS = 'SCOLARIS',
+}
 
-@Component({
-    selector: 'dv-edit-institution-ferieninsel',
-    templateUrl: './edit-institution-ferieninsel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
-})
-
-export class EditInstitutionFerieninselComponent {
-
-    @Input() public stammdaten: TSInstitutionStammdaten;
-    @Input() public editMode: boolean;
-
-    public constructor(
-    ) {
-    }
-
+export function getTSModulTagesschuleTypen(): Array<TSModulTagesschuleTyp> {
+    return [
+        TSModulTagesschuleTyp.DYNAMISCH,
+        TSModulTagesschuleTyp.SCOLARIS,
+    ];
 }
