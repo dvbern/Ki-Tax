@@ -114,16 +114,17 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        if (this.editMode) {
-            const dialogConfig = new MatDialogConfig();
-            dialogConfig.data = {modulTagesschuleGroup: group};
-            // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
-            this.dialog.open(ModulTagesschuleDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
-                if (EbeguUtil.isNotNullOrUndefined(result)) {
-                    this.applyModulTagesschuleGroup(einstellungenTagesschule, result);
-                }
-            });
+        if (!this.editMode) {
+            return;
         }
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {modulTagesschuleGroup: group};
+        // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
+        this.dialog.open(ModulTagesschuleDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
+            if (EbeguUtil.isNotNullOrUndefined(result)) {
+                this.applyModulTagesschuleGroup(einstellungenTagesschule, result);
+            }
+        });
     }
 
     public removeModulTagesschuleGroup(

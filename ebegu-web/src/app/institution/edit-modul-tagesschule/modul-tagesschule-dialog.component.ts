@@ -35,7 +35,6 @@ export class ModulTagesschuleDialogComponent {
 
     public patternHoursAndMinutes: '[0-9]{1,2}:[0-9]{1,2}';
 
-
     public constructor(
         private readonly dialogRef: MatDialogRef<ModulTagesschuleDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,

@@ -17,7 +17,7 @@
 
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import EbeguUtil from '../utils/EbeguUtil';
-import {mapSortedByDayOfWeek, TSDayOfWeek} from './enums/TSDayOfWeek';
+import {MAP_SORTED_BY_DAY_OF_WEEK, TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import TSAbstractEntity from './TSAbstractEntity';
@@ -147,12 +147,13 @@ export default class TSModulTagesschuleGroup extends TSAbstractEntity {
      * Sortiert die Module dieser Group nach Wochentag und gibt sie zurück.
      */
     public getModuleOrdered(): TSModulTagesschule[] {
-        this.module = this.module
-            .sort((a, b) => {
-                const indexOfA = mapSortedByDayOfWeek.get(a.wochentag);
-                const indexOfB = mapSortedByDayOfWeek.get(b.wochentag);
-                return indexOfA.toString().localeCompare(indexOfB.toString())
+        const sorted = this.module;
+        sorted.sort((a, b) => {
+                const indexOfA = MAP_SORTED_BY_DAY_OF_WEEK.get(a.wochentag);
+                const indexOfB = MAP_SORTED_BY_DAY_OF_WEEK.get(b.wochentag);
+                return indexOfA.toString().localeCompare(indexOfB.toString());
             });
+        this.module = sorted;
         return this.module;
     }
 }

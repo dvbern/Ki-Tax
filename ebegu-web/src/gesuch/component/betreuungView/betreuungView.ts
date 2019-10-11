@@ -440,7 +440,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    public anmeldenSchulamt(): void { //TODO (her)
+    public anmeldenSchulamt(): void {
         if (this.direktAnmeldenSchulamt()) {
             this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
                 GESUCH_BETREUUNGEN,
