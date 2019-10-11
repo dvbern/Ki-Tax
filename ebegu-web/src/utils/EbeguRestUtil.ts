@@ -3254,7 +3254,10 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
             modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
-            modulTagesschuleGroupTS.bezeichnung = modulGroupFromServer.bezeichnung;
+            if (modulGroupFromServer.bezeichnung) {
+                modulTagesschuleGroupTS.bezeichnung = this.parseTextRessource(
+                    new TSTextRessource(), modulGroupFromServer.rechtsmittelbelehrung);
+            }
             modulTagesschuleGroupTS.zeitVon = modulGroupFromServer.zeitVon;
             modulTagesschuleGroupTS.zeitBis = modulGroupFromServer.zeitBis;
             modulTagesschuleGroupTS.verpflegungskosten = modulGroupFromServer.verpflegungskosten;
@@ -3285,7 +3288,9 @@ export default class EbeguRestUtil {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
             restModulGroup.identifier = modulTagesschuleGroupTS.identifier;
-            restModulGroup.bezeichnung = modulTagesschuleGroupTS.bezeichnung;
+            if (modulTagesschuleGroupTS.bezeichnung) {
+                restModulGroup.bezeichnung = this.textRessourceToRestObject({}, modulTagesschuleGroupTS.bezeichnung);
+            }
             restModulGroup.zeitVon = modulTagesschuleGroupTS.zeitVon;
             restModulGroup.zeitBis = modulTagesschuleGroupTS.zeitBis;
             restModulGroup.verpflegungskosten = modulTagesschuleGroupTS.verpflegungskosten;

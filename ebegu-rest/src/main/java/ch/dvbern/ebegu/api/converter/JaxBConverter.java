@@ -1741,7 +1741,8 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschuleGroup.setEinstellungenTagesschule(einstellungenTagesschule);
 		modulTagesschuleGroup.setModulTagesschuleName(jaxModulTagesschuleGroup.getModulTagesschuleName());
 		modulTagesschuleGroup.setIdentifier(jaxModulTagesschuleGroup.getIdentifier());
-		modulTagesschuleGroup.setBezeichnung(jaxModulTagesschuleGroup.getBezeichnung());
+		modulTagesschuleGroup.setBezeichnung(textRessourceToEntity(
+			jaxModulTagesschuleGroup.getBezeichnung(), modulTagesschuleGroup.getBezeichnung()));
 		modulTagesschuleGroup.setZeitVon(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitVon()));
 		modulTagesschuleGroup.setZeitBis(hoursAndMinutesToDate(jaxModulTagesschuleGroup.getZeitBis()));
 		modulTagesschuleGroup.setVerpflegungskosten(jaxModulTagesschuleGroup.getVerpflegungskosten());
@@ -3065,7 +3066,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(modulTagesschuleGroup, jaxModulTagesschuleGroup);
 		jaxModulTagesschuleGroup.setModulTagesschuleName(modulTagesschuleGroup.getModulTagesschuleName());
 		jaxModulTagesschuleGroup.setIdentifier(modulTagesschuleGroup.getIdentifier());
-		jaxModulTagesschuleGroup.setBezeichnung(modulTagesschuleGroup.getBezeichnung());
+		jaxModulTagesschuleGroup.setBezeichnung(textRessourceToJAX(modulTagesschuleGroup.getBezeichnung()));
 		jaxModulTagesschuleGroup.setZeitVon(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitVon()));
 		jaxModulTagesschuleGroup.setZeitBis(dateToHoursAndMinutes(modulTagesschuleGroup.getZeitBis()));
 		jaxModulTagesschuleGroup.setVerpflegungskosten(modulTagesschuleGroup.getVerpflegungskosten());

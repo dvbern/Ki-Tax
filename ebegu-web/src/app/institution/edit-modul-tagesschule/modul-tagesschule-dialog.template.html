@@ -24,21 +24,32 @@
 <div *ngIf="modulTagesschuleGroup">
 
     <div class="row" class="dv-content">
-        <div class="col-md-3">
+        <div class="col-md-6" *ngIf="!isModulErfassungDynamisch()">
             <div class="form-group">
                 <label translate>MODUL_NAME</label>
                 {{modulTagesschuleGroup.modulTagesschuleName}}
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3" *ngIf="isModulErfassungDynamisch()">
             <div class="form-group">
-                <label translate for="bezeichnung" class="required">MODUL_BEZEICHNUNG</label>
-                <input id="bezeichnung" type="text" name="bezeichnung"
-                       #bezeichnung="ngModel"
-                       [(ngModel)]="modulTagesschuleGroup.bezeichnung"
+                <label translate for="bezeichnungDe" class="required">MODUL_BEZEICHNUNG_DE</label>
+                <input id="bezeichnungDe" type="text" name="bezeichnungDe"
+                       #bezeichnungDe="ngModel"
+                       [(ngModel)]="modulTagesschuleGroup.bezeichnung.textDeutsch"
                        required>
-                <dv-error-messages [errorObject]="bezeichnung.errors"
-                                   inputId="bezeichnung"></dv-error-messages>
+                <dv-error-messages [errorObject]="bezeichnungDe.errors"
+                                   inputId="bezeichnungDe"></dv-error-messages>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="isModulErfassungDynamisch()">
+            <div class="form-group">
+                <label translate for="bezeichnungFr" class="required">MODUL_BEZEICHNUNG_FR</label>
+                <input id="bezeichnungFr" type="text" name="bezeichnungFr"
+                       #bezeichnungFr="ngModel"
+                       [(ngModel)]="modulTagesschuleGroup.bezeichnung.textFranzoesisch"
+                       required>
+                <dv-error-messages [errorObject]="bezeichnungFr.errors"
+                                   inputId="bezeichnungFr"></dv-error-messages>
             </div>
         </div>
         <div class="col-md-3">

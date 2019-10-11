@@ -45,7 +45,7 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	private String identifier;
 
 	@NotNull @Nonnull
-	private String bezeichnung;
+	private JaxTextRessource bezeichnung;
 
 	@NotNull @Nonnull
 	private String zeitVon;
@@ -103,11 +103,11 @@ public class JaxModulTagesschuleGroup extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public String getBezeichnung() {
+	public JaxTextRessource getBezeichnung() {
 		return bezeichnung;
 	}
 
-	public void setBezeichnung(@Nonnull String bezeichnung) {
+	public void setBezeichnung(@Nonnull JaxTextRessource bezeichnung) {
 		this.bezeichnung = bezeichnung;
 	}
 

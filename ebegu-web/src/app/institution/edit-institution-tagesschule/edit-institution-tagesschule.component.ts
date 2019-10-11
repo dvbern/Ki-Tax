@@ -30,6 +30,7 @@ import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
+import TSTextRessource from '../../../models/TSTextRessource';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -98,6 +99,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     public addModulTagesschuleGroup(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
+        group.bezeichnung = new TSTextRessource();
         this.openModul(einstellungenTagesschule, group);
     }
 

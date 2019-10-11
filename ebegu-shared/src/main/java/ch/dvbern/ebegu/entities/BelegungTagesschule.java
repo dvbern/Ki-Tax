@@ -20,8 +20,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -29,10 +32,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.EnumAbholungTagesschule;
+import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entity for the Belegung of the Tageschulangebote in a Betreuung.
@@ -63,6 +71,24 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	@NotNull
 	@Column(nullable = false)
 	private LocalDate eintrittsdatum;
+
+	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Nullable
+	@Column
+	private String planKlasse;
+
+	@Enumerated(EnumType.STRING)
+	@Nullable
+	@Column
+	private EnumAbholungTagesschule abholungTagesschule;
+
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String bemerkung;
+
+	@Column(nullable = false)
+	private boolean abweichungZweitesSemester = false;
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -98,12 +124,51 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		this.eintrittsdatum = eintrittsdatum;
 	}
 
+	@Nullable
+	public String getPlanKlasse() {
+		return planKlasse;
+	}
+
+	public void setPlanKlasse(@Nullable String planKlasse) {
+		this.planKlasse = planKlasse;
+	}
+
+	@Nullable
+	public EnumAbholungTagesschule getAbholungTagesschule() {
+		return abholungTagesschule;
+	}
+
+	public void setAbholungTagesschule(@Nullable EnumAbholungTagesschule abholungTagesschule) {
+		this.abholungTagesschule = abholungTagesschule;
+	}
+
+	@Nullable
+	public String getBemerkung() {
+		return bemerkung;
+	}
+
+	public void setBemerkung(@Nullable String bemerkung) {
+		this.bemerkung = bemerkung;
+	}
+
+	public boolean isAbweichungZweitesSemester() {
+		return abweichungZweitesSemester;
+	}
+
+	public void setAbweichungZweitesSemester(boolean abweichungZweitesSemester) {
+		this.abweichungZweitesSemester = abweichungZweitesSemester;
+	}
+
 	@Nonnull
 	public BelegungTagesschule copyBelegungTagesschule(@Nonnull BelegungTagesschule target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setEintrittsdatum(LocalDate.from(eintrittsdatum));
+			target.setPlanKlasse(this.getPlanKlasse());
+			target.setAbholungTagesschule(this.abholungTagesschule);
+			target.setBemerkung(this.getBemerkung());
+			target.setAbweichungZweitesSemester(this.abweichungZweitesSemester);
 			// Don't copy them, because it's a ManyToMany relation
 			target.getModuleTagesschule().clear();
 			target.getModuleTagesschule().addAll(moduleTagesschule);

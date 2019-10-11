@@ -1688,6 +1688,8 @@
     "INSTITUTION_STATUS_KONFIGURATION": "Konfiguration",
     "MODUL_NAME": "Name in externem System",
     "MODUL_BEZEICHNUNG": "Bezeichnung",
+    "MODUL_BEZEICHNUNG_DE": "Bezeichnung Deutsch",
+    "MODUL_BEZEICHNUNG_FR": "Bezeichnung Französisch",
     "MODUL_VON": "Von",
     "MODUL_BIS": "Bis",
     "MODUL_ZEITRAUM": "Von - Bis",

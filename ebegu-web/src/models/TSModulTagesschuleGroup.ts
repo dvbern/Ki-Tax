@@ -22,12 +22,13 @@ import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import TSAbstractEntity from './TSAbstractEntity';
 import TSModulTagesschule from './TSModulTagesschule';
+import TSTextRessource from './TSTextRessource';
 
 export default class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     public modulTagesschuleName: TSModulTagesschuleName;
     public identifier: string;
-    public bezeichnung: string;
+    public bezeichnung: TSTextRessource;
     public zeitVon: string;
     public zeitBis: string;
     public verpflegungskosten: number;

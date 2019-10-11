@@ -19,6 +19,7 @@ import {Component, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {getTSModulTagesschuleIntervallValues, TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
+import {TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
@@ -62,5 +63,9 @@ export class ModulTagesschuleDialogComponent {
 
     public getModulTagesschuleIntervallOptions(): Array<TSModulTagesschuleIntervall> {
         return getTSModulTagesschuleIntervallValues();
+    }
+
+    public isModulErfassungDynamisch(): boolean {
+        return TSModulTagesschuleName.DYNAMISCH === this.modulTagesschuleGroup.modulTagesschuleName;
     }
 }
