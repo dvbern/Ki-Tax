@@ -304,4 +304,43 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		List<Long> registeredBfsNummern = persistence.getCriteriaResults(query);
 		return registeredBfsNummern;
 	}
+
+	@Nonnull
+	@Override
+	public Optional<Gemeinde> findRegistredGemeindeVerbundIfExist(@Nonnull Long gemeindeBfsNummer) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+
+		Predicate predicateBFS = cb.equal(root.get(BfsGemeinde_.bfsNummer), gemeindeBfsNummer);
+		query.where(predicateBFS);
+		query.select(root.get(BfsGemeinde_.verbund).get(BfsGemeinde_.bfsNummer));
+		Long gemeindeVerbundBfsNummer = persistence.getCriteriaSingleResult(query);
+		if(gemeindeVerbundBfsNummer == null){
+			return Optional.empty();
+		}
+
+		return getAktiveGemeindeByBFSNummer(gemeindeVerbundBfsNummer);
+	}
+
+	@Nonnull
+	private Optional<Gemeinde> getAktiveGemeindeByBFSNummer(@Nonnull Long bfsNummer) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		// Status muss aktiv sein
+		Predicate predicateStatusActive = cb.equal(root.get(Gemeinde_.status), GemeindeStatus.AKTIV);
+		predicates.add(predicateStatusActive);
+
+		//BfsNummer muss gesetzt sein
+		Predicate predicateBfsNummer = cb.equal(root.get(Gemeinde_.bfsNummer), bfsNummer);
+		predicates.add(predicateBfsNummer);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		Gemeinde gemeinde = persistence.getCriteriaSingleResult(query);
+
+		return Optional.ofNullable(gemeinde);
+	}
 }

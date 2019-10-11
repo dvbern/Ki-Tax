@@ -27,9 +27,11 @@ import {Transition} from '@uirouter/core';
 export class OnboardingBeLoginComponent {
 
     public readonly gemeindenId: string;
+    public readonly gemeindeBGId: string;
 
     public constructor(private readonly transition: Transition) {
         this.gemeindenId = this.transition.params().gemeindenId;
+        this.gemeindeBGId = this.transition.params().gemeindeBGId;
     }
 
 }

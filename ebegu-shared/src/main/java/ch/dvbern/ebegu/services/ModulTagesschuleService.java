@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 
 /**
@@ -51,4 +52,10 @@ public interface ModulTagesschuleService {
 	 */
 	void removeModul(@Nonnull String modulTagesschuleId);
 
+	/**
+	 * Kopiert alle vorhandenen ModulTagesschule zur neuen Gesuchsperiode
+	 */
+	void copyModuleTagesschuleToNewGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
+		@Nonnull Gesuchsperiode lastGesuchsperiode);
 }

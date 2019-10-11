@@ -18,28 +18,34 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingInfoKitagComponent} from './onboarding-info-kitag.component';
+import {OnboardingInfoGemeindeComponent} from './onboarding-info-gemeinde.component';
 
-describe('OnboardingInfoKitagComponent', () => {
-    let component: OnboardingInfoKitagComponent;
-    let fixture: ComponentFixture<OnboardingInfoKitagComponent>;
+describe('OnboardingInfoGemComponent', () => {
+    let component: OnboardingInfoGemeindeComponent;
+    let fixture: ComponentFixture<OnboardingInfoGemeindeComponent>;
 
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
     const i18nServiceSpy =
         jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingInfoKitagComponent],
-            providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+            declarations: [OnboardingInfoGemeindeComponent],
+            providers: [
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -47,12 +53,16 @@ describe('OnboardingInfoKitagComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingInfoKitagComponent);
+        fixture = TestBed.createComponent(OnboardingInfoGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should load all active Gemeinden', () => {
+        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
     });
 });

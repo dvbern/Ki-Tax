@@ -45,9 +45,7 @@ import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSInstitution from '../models/TSInstitution';
 import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
-import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
 import {TSMandant} from '../models/TSMandant';
-import TSModulTagesschule from '../models/TSModulTagesschule';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
@@ -345,13 +343,6 @@ describe('EbeguRestUtil', () => {
             it('should transform TSInstitutionStammdaten to REST object and back', () => {
                 const myInstitution = createInstitution();
                 const myAdress = createAdresse();
-                const tsInstStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
-                const tsModul = new TSModulTagesschule();
-                TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
-                tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
-                tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
-                tsInstStammdatenTagesschule.gemeinde = undefined;
-                TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
                 const myInstitutionStammdaten = new TSInstitutionStammdaten();
                 myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine = new TSInstitutionStammdatenBetreuungsgutscheine();
                 myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine.iban = 'my-iban';
@@ -361,7 +352,6 @@ describe('EbeguRestUtil', () => {
                 myInstitutionStammdaten.mail = 'my-mail';
                 myInstitutionStammdaten.telefon = 'my-phone';
                 myInstitutionStammdaten.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today());
-                myInstitutionStammdaten.institutionStammdatenTagesschule = tsInstStammdatenTagesschule;
 
                 TestDataUtil.setAbstractMutableFieldsUndefined(myInstitutionStammdaten);
                 TestDataUtil.setAbstractFieldsUndefined(myInstitutionStammdaten.institutionStammdatenBetreuungsgutscheine);
@@ -380,11 +370,6 @@ describe('EbeguRestUtil', () => {
                 expect(restInstitutionStammdaten.betreuungsangebotTyp)
                     .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule.length).toBe(1);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag)
-                    .toBeUndefined();
 
                 const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                     restInstitutionStammdaten);

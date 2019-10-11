@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +52,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeRegistrierung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
@@ -423,5 +425,65 @@ public class GemeindeResource {
 			.filter(inst -> inst.getStatus() == GemeindeStatus.EINGELADEN)
 			.count();
 		return Response.ok(anzahl > 0).build();
+	}
+
+	@ApiOperation(value = "Returns GemeindeVerbund when already registred", responseContainer = "Collection",
+		response = JaxBfsGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/gemeindeRegistrierung/{gemeindeId}/{gemeindenTSId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeindeRegistrierung> getGemeindenRegistrierung(@Nullable @PathParam("gemeindeId") JaxId gemeindeBGJAXPId,
+		@Nullable @PathParam("gemeindenTSId") String gemeindenTSIdList) {
+		List<JaxGemeindeRegistrierung> gemeindeRegistrierungList = new ArrayList<>();
+
+		// BG-Gemeinde: Es kann nur 1 geben. Falls sie gesetzt ist, darf sie für TS nicht ein zweites Mal hinzugefügt werden
+		String gemeindeBGId = null;
+
+		if (gemeindeBGJAXPId != null ){
+			gemeindeBGId = converter.toEntityId(gemeindeBGJAXPId);
+			if(!gemeindeBGId.equals("null")) {
+				String finalGemeindeBGId = gemeindeBGId;
+				Gemeinde gemeindeBG =
+					gemeindeService.findGemeinde(gemeindeBGId).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"findGemeinde",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, finalGemeindeBGId));
+
+				JaxGemeindeRegistrierung gemeindeRegistrierungBG = new JaxGemeindeRegistrierung();
+				gemeindeRegistrierungBG.setId(gemeindeBGId);
+				gemeindeRegistrierungBG.setName(gemeindeBG.getName());
+				gemeindeRegistrierungList.add(gemeindeRegistrierungBG);
+			}
+		}
+
+		if (gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")){
+			String[] gemeindenTSList = gemeindenTSIdList.split(",");
+			for(String gemeindeTSId : gemeindenTSList){
+				Gemeinde gemeindeTS =
+					gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"findGemeinde",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+
+				Gemeinde gemeindeTSVerbund =
+					gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
+
+				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde sowohl für BG wie auch
+				// für TS ausgewählt wurde. Fall diese Gemeinde für TS keinem Verbund angehört, muss sie nicht ein zweites Mal hinzugefügt werden
+				if (gemeindeBGId != null && gemeindeBGId.equals(gemeindeTSId) && gemeindeTSVerbund == null) {
+					continue;
+				}
+
+				JaxGemeindeRegistrierung gemeindeRegistrierungTS = new JaxGemeindeRegistrierung();
+				gemeindeRegistrierungTS.setId(gemeindeTSId);
+				gemeindeRegistrierungTS.setName(gemeindeTS.getName());
+				if(gemeindeTSVerbund != null && gemeindeTSVerbund.isAngebotTS()){
+					gemeindeRegistrierungTS.setVerbundId(gemeindeTSVerbund.getId());
+					gemeindeRegistrierungTS.setVerbundName(gemeindeTSVerbund.getName());
+				}
+				gemeindeRegistrierungList.add(gemeindeRegistrierungTS);
+			}
+		}
+		return gemeindeRegistrierungList;
 	}
 }
