@@ -2452,8 +2452,8 @@ public class JaxBConverter extends AbstractConverter {
 			betreuungJAXP.getGesuchsperiode().getId());
 		if (betreuungJAXP.getBelegungTagesschule() != null) {
 			requireNonNull(
-				institutionStammdatenTagesschule,
-				"InstitutionsStammdatenTagesschule muessen gesetzt sein");
+				einstellungenTagesschule,
+				"EinstellungTagesschule muessen gesetzt sein");
 			if (betreuung.getBelegungTagesschule() != null) {
 				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
 					betreuungJAXP.getBelegungTagesschule(),
@@ -2466,10 +2466,7 @@ public class JaxBConverter extends AbstractConverter {
 					einstellungenTagesschule));
 			}
 		} else {
-			betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-				betreuungJAXP.getBelegungTagesschule(),
-				new BelegungTagesschule(),
-				null));
+			betreuung.setBelegungTagesschule(null);
 		}
 		return betreuung;
 	}
@@ -2616,13 +2613,12 @@ public class JaxBConverter extends AbstractConverter {
 		return erweiterteBetreuung;
 	}
 
-	@Nullable
-	private BelegungTagesschule belegungTagesschuleToEntity(
-		@Nullable JaxBelegungTagesschule belegungTagesschuleJAXP,
-		@Nonnull BelegungTagesschule belegungTagesschule,
-		@Nullable EinstellungenTagesschule einstellungenTagesschule) {
 
-		if (belegungTagesschuleJAXP != null && einstellungenTagesschule != null) {
+	private BelegungTagesschule belegungTagesschuleToEntity(
+		@Nonnull JaxBelegungTagesschule belegungTagesschuleJAXP,
+		@Nonnull BelegungTagesschule belegungTagesschule,
+		@Nonnull EinstellungenTagesschule einstellungenTagesschule) {
+
 			convertAbstractVorgaengerFieldsToEntity(belegungTagesschuleJAXP, belegungTagesschule);
 
 			final Set<ModulTagesschule> convertedModule = new HashSet<>();
@@ -2641,8 +2637,6 @@ public class JaxBConverter extends AbstractConverter {
 
 			belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
 			return belegungTagesschule;
-		}
-		return null;
 	}
 
 	@Nonnull
