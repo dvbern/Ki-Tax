@@ -19,45 +19,89 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
  * DTO fuer Daten der Belegungen.
  */
-@XmlRootElement(name = "belegungTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxBelegungTagesschule extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1297972380574937397L;
 
-	@NotNull
-	private Set<JaxModulTagesschule> moduleTagesschule = new LinkedHashSet<>();
+	@NotNull @Nonnull
+	private Set<JaxBelegungTagesschuleModul> belegungTagesschuleModule = new LinkedHashSet<>();
 
 	@NotNull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate eintrittsdatum;
 
-	public Set<JaxModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	@NotNull @Nonnull
+	private String planKlasse;
+
+	@NotNull @Nonnull
+	private AbholungTagesschule abholungTagesschule;
+
+	@Nullable
+	private String bemerkung;
+
+	private boolean abweichungZweitesSemester = false;
+
+
+	public Set<JaxBelegungTagesschuleModul> getBelegungTagesschuleModule() {
+		return belegungTagesschuleModule;
 	}
 
-	public void setModuleTagesschule(Set<JaxModulTagesschule> moduleTagesschule) {
-		this.moduleTagesschule = moduleTagesschule;
+	public void setBelegungTagesschuleModule(Set<JaxBelegungTagesschuleModul> belegungTagesschuleModule) {
+		this.belegungTagesschuleModule = belegungTagesschuleModule;
 	}
 
-	@NotNull
 	public LocalDate getEintrittsdatum() {
 		return eintrittsdatum;
 	}
 
-	public void setEintrittsdatum(@NotNull LocalDate eintrittsdatum) {
+	public void setEintrittsdatum(LocalDate eintrittsdatum) {
 		this.eintrittsdatum = eintrittsdatum;
 	}
 
+	public String getPlanKlasse() {
+		return planKlasse;
+	}
+
+	public void setPlanKlasse(String planKlasse) {
+		this.planKlasse = planKlasse;
+	}
+
+	public AbholungTagesschule getAbholungTagesschule() {
+		return abholungTagesschule;
+	}
+
+	public void setAbholungTagesschule(AbholungTagesschule abholungTagesschule) {
+		this.abholungTagesschule = abholungTagesschule;
+	}
+
+	@Nullable
+	public String getBemerkung() {
+		return bemerkung;
+	}
+
+	public void setBemerkung(@Nullable String bemerkung) {
+		this.bemerkung = bemerkung;
+	}
+
+	public boolean isAbweichungZweitesSemester() {
+		return abweichungZweitesSemester;
+	}
+
+	public void setAbweichungZweitesSemester(boolean abweichungZweitesSemester) {
+		this.abweichungZweitesSemester = abweichungZweitesSemester;
+	}
 }

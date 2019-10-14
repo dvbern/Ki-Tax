@@ -28,7 +28,7 @@ export default class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     public modulTagesschuleName: TSModulTagesschuleName;
     public identifier: string;
-    public bezeichnung: TSTextRessource;
+    public bezeichnung: TSTextRessource = new TSTextRessource();
     public zeitVon: string;
     public zeitBis: string;
     public verpflegungskosten: number;

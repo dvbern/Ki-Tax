@@ -77,7 +77,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@NotNull @Nonnull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_bezeichnung_id"))
-	private TextRessource bezeichnung;
+	private TextRessource bezeichnung = new TextRessource();
 
 	@NotNull @Nonnull
 	@Column(nullable = false)

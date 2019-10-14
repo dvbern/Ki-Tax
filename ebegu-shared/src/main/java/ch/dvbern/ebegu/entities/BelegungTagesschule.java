@@ -21,21 +21,17 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.validation.Valid;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.EnumAbholungTagesschule;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -51,22 +47,9 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -8403435739182708718L;
 
-	@NotNull
-	@Valid
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "belegungTagesschule")
 	@SortNatural
-	@ManyToMany
-	// es darf nicht cascadeAll sein, da sonst die Module geloescht werden, wenn die Belegung geloescht wird, obwohl das Modul eigentlich zur Institutione gehoert
-	@JoinTable(
-		joinColumns = @JoinColumn(name = "belegung_tagesschule_id", nullable = false),
-		inverseJoinColumns = @JoinColumn(name = "module_tagesschule_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_belegung_tagesschule_belegung_tagesschule_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_belegung_tagesschule_module_tagesschule_id"),
-		indexes = {
-			@Index(name = "IX_belegung_tagesschule_belegung_tagesschule_id", columnList = "belegung_tagesschule_id"),
-			@Index(name = "IX_belegung_tagesschule_module_tagesschule_id", columnList = "module_tagesschule_id"),
-		}
-	)
-	private Set<ModulTagesschule> moduleTagesschule = new TreeSet<>();
+	private Set<BelegungTagesschuleModul> belegungTagesschuleModule = new TreeSet<>();
 
 	@NotNull
 	@Column(nullable = false)
@@ -80,7 +63,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	@Enumerated(EnumType.STRING)
 	@Nullable
 	@Column
-	private EnumAbholungTagesschule abholungTagesschule;
+	private AbholungTagesschule abholungTagesschule;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -106,13 +89,12 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		return true;
 	}
 
-	@NotNull
-	public Set<ModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	public Set<BelegungTagesschuleModul> getBelegungTagesschuleModule() {
+		return belegungTagesschuleModule;
 	}
 
-	public void setModuleTagesschule(@NotNull Set<ModulTagesschule> module) {
-		this.moduleTagesschule = module;
+	public void setBelegungTagesschuleModule(Set<BelegungTagesschuleModul> belegungTagesschuleModule) {
+		this.belegungTagesschuleModule = belegungTagesschuleModule;
 	}
 
 	@NotNull
@@ -134,11 +116,11 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public EnumAbholungTagesschule getAbholungTagesschule() {
+	public AbholungTagesschule getAbholungTagesschule() {
 		return abholungTagesschule;
 	}
 
-	public void setAbholungTagesschule(@Nullable EnumAbholungTagesschule abholungTagesschule) {
+	public void setAbholungTagesschule(@Nullable AbholungTagesschule abholungTagesschule) {
 		this.abholungTagesschule = abholungTagesschule;
 	}
 
@@ -159,6 +141,11 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		this.abweichungZweitesSemester = abweichungZweitesSemester;
 	}
 
+	public boolean addBelegungTagesschuleModul(final BelegungTagesschuleModul modulToAdd) {
+		return !belegungTagesschuleModule.contains(modulToAdd) &&
+			belegungTagesschuleModule.add(modulToAdd);
+	}
+
 	@Nonnull
 	public BelegungTagesschule copyBelegungTagesschule(@Nonnull BelegungTagesschule target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
@@ -169,9 +156,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 			target.setAbholungTagesschule(this.abholungTagesschule);
 			target.setBemerkung(this.getBemerkung());
 			target.setAbweichungZweitesSemester(this.abweichungZweitesSemester);
-			// Don't copy them, because it's a ManyToMany relation
-			target.getModuleTagesschule().clear();
-			target.getModuleTagesschule().addAll(moduleTagesschule);
+			copyBelegungTagesschuleModul(target, copyType);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -179,5 +164,12 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 			break;
 		}
 		return target;
+	}
+
+	private void copyBelegungTagesschuleModul(@Nonnull BelegungTagesschule target, @Nonnull AntragCopyType copyType) {
+		for (BelegungTagesschuleModul erwerbspensumContainer : this.getBelegungTagesschuleModule()) {
+			BelegungTagesschuleModul belegungTagesschuleModul = erwerbspensumContainer.copyBelegungTagesschuleModul(new BelegungTagesschuleModul(), copyType);
+			target.addBelegungTagesschuleModul(belegungTagesschuleModul);
+		}
 	}
 }

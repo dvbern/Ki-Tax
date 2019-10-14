@@ -1725,5 +1725,13 @@
     "KORREKTURZAHLUNG_NO_CASE_2": "Bei einer rückwirkenden Senkung des Anspruchs",
     "KORREKTURZAHLUNG_NO_CASE_3": "Bei einer rückwirkenden Aufhebung des Betreuungsgutscheins",
     "KORREKTURZAHLUNG_INSTITUTION_HINT": "Info: Hat sich rückwirkend sowohl das vereinbarte Betreuungspensum, wie auch das massgebende Einkommen oder der Anspruch geändert, ist es in der Regel sinnvoll Rückforderungen ausserhalb von kiBon über die Eltern und Rückerstattungen über kiBon an die Institutionen umzusetzen. In beiden Fällen empfiehlt sich die Rücksprache mit der Institution",
+    "PLANKLASSE": "(Plan)Klasse",
+    "PLANKLASSE_INFO": "Bitte tragen Sie hier die künftige Klasse, die Ihr Kind im neuen Schuljahr besuchen wird, ein. Wenn dies noch nicht bekannt ist, tragen Sie bitte die aktuelle Klasse ein.",
+    "ABHOLUNG_AUS_TAGESSCHULE": "Abholung aus der Tagesschule",
+    "ABHOLUNG": "Mein/Unser Kind wird nach der Tagesschule abgeholt",
+    "ALLEINE_NACH_HAUSE": "Mein/Unser Kind darf alleine nach Hause",
+    "BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX": "Benötigt Ihr Kind im 2. Semester andere Betreuungszeiten, weil sich der Stundenplan ändert?",
+    "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Bitte Änderung der Betreuungszeiten oder allfällige Fragen/Anmerkungen hier angeben",
+    "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

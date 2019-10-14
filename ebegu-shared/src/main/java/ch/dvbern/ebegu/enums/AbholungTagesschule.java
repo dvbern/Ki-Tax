@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.enums;
 /**
  * Enum fuer Feld AbholungTagesschule
  */
-public enum EnumAbholungTagesschule {
+public enum AbholungTagesschule {
 
 	ABHOLUNG,
 	ALLEINE_NACH_HAUSE

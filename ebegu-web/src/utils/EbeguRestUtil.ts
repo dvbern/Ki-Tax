@@ -41,6 +41,7 @@ import TSBatchJobInformation from '../models/TSBatchJobInformation';
 import TSBelegungFerieninsel from '../models/TSBelegungFerieninsel';
 import TSBelegungFerieninselTag from '../models/TSBelegungFerieninselTag';
 import TSBelegungTagesschule from '../models/TSBelegungTagesschule';
+import TSBelegungTagesschuleModul from '../models/TSBelegungTagesschuleModul';
 import TSBenutzer from '../models/TSBenutzer';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSBerechtigungHistory from '../models/TSBerechtigungHistory';
@@ -3256,7 +3257,7 @@ export default class EbeguRestUtil {
             modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
             if (modulGroupFromServer.bezeichnung) {
                 modulTagesschuleGroupTS.bezeichnung = this.parseTextRessource(
-                    new TSTextRessource(), modulGroupFromServer.rechtsmittelbelehrung);
+                    new TSTextRessource(), modulGroupFromServer.bezeichnung);
             }
             modulTagesschuleGroupTS.zeitVon = modulGroupFromServer.zeitVon;
             modulTagesschuleGroupTS.zeitBis = modulGroupFromServer.zeitBis;
@@ -3327,8 +3328,12 @@ export default class EbeguRestUtil {
     ): TSBelegungTagesschule {
         if (belegungFromServer) {
             this.parseAbstractMutableEntity(belegungTS, belegungFromServer);
-            belegungTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungFromServer.moduleTagesschule);
+            belegungTS.belegungTagesschuleModule = this.parseBelegungTagesschuleModulList(belegungFromServer.belegungTagesschuleModule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
+            belegungTS.abholungTagesschule = belegungFromServer.abholungTagesschule;
+            belegungTS.planKlasse = belegungFromServer.planKlasse;
+            belegungTS.abweichungZweitesSemester = belegungFromServer.abweichungZweitesSemester;
+            belegungTS.bemerkung = belegungFromServer.bemerkung;
             return belegungTS;
         }
         return undefined;
@@ -3337,9 +3342,53 @@ export default class EbeguRestUtil {
     private belegungTagesschuleToRestObject(restBelegung: any, belegungTS: TSBelegungTagesschule): any {
         if (belegungTS) {
             this.abstractMutableEntityToRestObject(restBelegung, belegungTS);
-            restBelegung.moduleTagesschule = this.moduleTagesschuleArrayToRestObject(belegungTS.moduleTagesschule);
+            restBelegung.belegungTagesschuleModule = this.belegungTagesschuleModulArrayToRestObject(belegungTS.belegungTagesschuleModule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
+            restBelegung.abholungTagesschule = belegungTS.abholungTagesschule;
+            restBelegung.planKlasse = belegungTS.planKlasse;
+            restBelegung.abweichungZweitesSemester = belegungTS.abweichungZweitesSemester;
+            restBelegung.bemerkung = belegungTS.bemerkung;
             return restBelegung;
+        }
+        return undefined;
+    }
+
+    public parseBelegungTagesschuleModulList(data: any): TSBelegungTagesschuleModul[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBelegungTagesschuleModul(new TSBelegungTagesschuleModul(), item))
+            : [this.parseBelegungTagesschuleModul(new TSBelegungTagesschuleModul(), data)];
+    }
+
+    private parseBelegungTagesschuleModul(
+        belegungModulTS: TSBelegungTagesschuleModul,
+        belegungModulFromServer: any,
+    ): TSBelegungTagesschuleModul {
+        if (belegungModulFromServer) {
+            this.parseAbstractEntity(belegungModulTS, belegungModulFromServer);
+            // belegungModulTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungModulFromServer.moduleTagesschule);
+            belegungModulTS.intervall = belegungModulFromServer.intervall;
+            return belegungModulTS;
+        }
+        return undefined;
+    }
+
+    private belegungTagesschuleModulArrayToRestObject(data: Array<TSBelegungTagesschuleModul>): any[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.belegungTagesschuleModulToRestObject({}, item))
+            : [];
+    }
+
+    private belegungTagesschuleModulToRestObject(restBelegungModul: any, belegungModulTS: TSBelegungTagesschuleModul): any {
+        if (belegungModulTS) {
+            this.abstractEntityToRestObject(restBelegungModul, belegungModulTS);
+            restBelegungModul.intervall = belegungModulTS.intervall;
+            return restBelegungModul;
         }
         return undefined;
     }

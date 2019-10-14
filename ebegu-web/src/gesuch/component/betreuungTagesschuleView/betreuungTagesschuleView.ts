@@ -20,10 +20,14 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
+import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import TSBelegungTagesschuleModul from '../../../models/TSBelegungTagesschuleModul';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSEinstellungenTagesschule from '../../../models/TSEinstellungenTagesschule';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
@@ -82,6 +86,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'I18nServiceRSRest',
     ];
 
     public onSave: () => void;
@@ -113,6 +118,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
 
         super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS,
@@ -170,14 +176,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         ) {
             return;
         }
-        const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
+        const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
         const moduleAngeboten = this.loadAngeboteneModuleForTagesschule();
         for (const groupTagesschule of moduleAngeboten) {
             this.initializeGroup(groupTagesschule);
             const moduleOfGroup = groupTagesschule.getModuleOrdered();
             for (const modulOfGroup of moduleOfGroup) {
                 for (const angMod of moduleAngemeldet) {
-                    if (angMod.id === modulOfGroup.id) {
+                    if (angMod.modulTagesschule.id === modulOfGroup.id) {
                         modulOfGroup.angemeldet = true;
                     }
                 }
@@ -192,6 +198,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             .filter((einstellung: TSEinstellungenTagesschule) =>
                 einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
             .pop();
+        if (!tsEinstellungenTagesschule) {
+            return [];
+        }
         return tsEinstellungenTagesschule.modulTagesschuleGroups;
     }
 
@@ -226,6 +235,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             && !this.getBetreuungModel().keineDetailinformationen;
     }
 
+    public hasTagesschuleAnyModulGroupDefined() {
+        return EbeguUtil.isNotNullOrUndefined(this.modulGroups) && this.modulGroups.length > 0;
+    }
+
     public getButtonTextSpeichern(): string {
         return this.direktAnmeldenSchulamt() ? 'ANMELDEN_TAGESSCHULE' : 'SPEICHERN';
     }
@@ -235,15 +248,17 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
      * die Betreuung zurueckgeschrieben werden
      */
     private preSave(): void {
-        const anmeldungen: TSModulTagesschule[] = [];
+        const anmeldungen: TSBelegungTagesschuleModul[] = [];
         for (const group of this.modulGroups) {
             for (const mod of group.module) {
                 if (mod.angemeldet) {
-                    anmeldungen.push(mod);
+                    const modul = new TSBelegungTagesschuleModul();
+                    modul.modulTagesschule = mod;
+                    anmeldungen.push(modul);
                 }
             }
         }
-        this.getBetreuungModel().belegungTagesschule.moduleTagesschule = anmeldungen;
+        this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule = anmeldungen;
     }
 
     /**
@@ -282,12 +297,19 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private isThereAnyAnmeldung(): boolean {
-        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.moduleTagesschule;
+        const moduleTagessule = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
         if (EbeguUtil.isNotNullOrUndefined(moduleTagessule)) {
             return moduleTagessule
-                .filter(modul => modul.angemeldet).length > 0;
+                .filter(modul => modul.modulTagesschule.angemeldet).length > 0;
         }
         return false;
+    }
+
+    public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
+        if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
+            return group.bezeichnung.textFranzoesisch;
+        }
+        return group.bezeichnung.textDeutsch;
     }
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
@@ -311,5 +333,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public isTageschulenAnmeldungAktiv(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
+    }
+
+    public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
+        return getTSAbholungTagesschuleValues();
     }
 }
