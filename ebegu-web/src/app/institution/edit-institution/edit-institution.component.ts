@@ -226,7 +226,8 @@ export class EditInstitutionComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        if (!this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
+        if (this.componentTagesschule
+                && !this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_MODULE_INVALID'));
             return;
         }
