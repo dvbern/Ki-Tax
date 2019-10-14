@@ -109,7 +109,7 @@ public class Benutzer extends AbstractMutableEntity {
 
 	@Formula("concat(vorname, ' ', nachname)")
 	@NotAudited
-	private String fullname;
+	private String fullName;
 
 	@NotNull
 	@Column(nullable = false)
@@ -168,12 +168,10 @@ public class Benutzer extends AbstractMutableEntity {
 		this.vorname = vorname;
 	}
 
-	public String getFullname() {
-		return fullname;
-	}
-
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+	// TODO Achtung HEFR: Hier war bei der alten Methode ein Nullcheck drin, den brauchen wir aber nicht, da vor und
+	//  nachname nicht nullable sind auf der DB
+	public String getFullName() {
+		return fullName;
 	}
 
 	public String getEmail() {
@@ -216,14 +214,6 @@ public class Benutzer extends AbstractMutableEntity {
 
 	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
-	}
-
-	@Nonnull
-	@Deprecated
-	// es sollte das Property fullname verwendet werden, das ist jedoch nicht nullsafe
-	public String getFullName() {
-		return (this.vorname != null ? this.vorname : "") + ' '
-			+ (this.nachname != null ? this.nachname : "");
 	}
 
 	@Override
