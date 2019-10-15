@@ -256,7 +256,7 @@
                 </dv-edit-institution-betreuungsgutscheine>
             </div>
 
-            <div *ngIf="isTagesschule() && stammdaten">
+            <div *ngIf="isTagesschule() && stammdaten && stammdaten.institutionStammdatenTagesschule">
                 <dv-edit-institution-tagesschule
                     [stammdaten]="stammdaten"
                     [editMode]="editMode">
