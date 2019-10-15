@@ -99,27 +99,61 @@
                         </div>
                     </div>
                     <div class="dv-ebegu-calendar__row--tagesschule"
-                        ng-repeat="group in vm.modulGroups track by group.identifier">
+                        ng-repeat="group in vm.modulGroups track by group.group.identifier">
                         <!-- Gruppe (Name und Zeit) -->
                         <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
-                            <span class="dv-ebegu-calendar__module-name" ng-bind="vm.getModulBezeichnungInLanguage(group)"></span>
+                            <span class="dv-ebegu-calendar__module-name" ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
                             <span class="dv-ebegu-calendar__module-time"
-                                  ng-bind="vm.getModulTimeAsString(group)"></span>
+                                  ng-bind="vm.getModulTimeAsString(group.group)"></span>
                         </div>
                         <div class="dv-ebegu-calendar__wrapper">
                             <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
 
-                                <div ng-repeat="mod in group.module track by mod.identifier">
+                                <div ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
 
                                     <!-- TODO Reviewer: Sobald ich die Klasse hinzufüge, geht es nicht mehr!
                                     class="dv-ebegu-calendar--tagesschule"
                                     -->
-                                    <md-checkbox
-                                        name="modul_{{mod.identifier}}"
-                                        ng-model="mod.angemeldet"
-                                        aria-label="Modul {{group.bezeichnung}} {{mod.wochentag | translate}}"
-                                        ng-disabled="!mod.angeboten || vm.isFreigabequittungAusstehend()">
-                                    </md-checkbox>
+                                    <md-menu>
+                                        <md-checkbox
+                                            name="modul_{{mod.modulTagesschule.identifier}}"
+                                            ng-model="mod.modulTagesschule.angemeldet"
+                                            aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                            ng-disabled="!vm.isModuleEditable(mod)"
+                                            ng-click="vm.openMenu(mod, group, $mdMenu, $event)">
+                                        </md-checkbox>
+                                        {{mod.intervall | translate}}
+
+
+                                        <md-menu-content width="4">
+                                            <md-menu-item ng-repeat="interval in vm.getIntervalle()">
+                                                <md-button ng-click="vm.setIntervall(mod, interval)">
+                                                    <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                                                    {{interval | translate}}
+                                                </md-button>
+                                            </md-menu-item>
+
+                                            <!--<md-menu-item>-->
+                                                <!--<md-button ng-click="ctrl.redial($event)">-->
+                                                    <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                                                    <!--Redial-->
+                                                <!--</md-button>-->
+                                            <!--</md-menu-item>-->
+                                            <!--<md-menu-item>-->
+                                                <!--<md-button disabled="disabled" ng-click="ctrl.checkVoicemail()">-->
+                                                    <!--<md-icon md-svg-icon="call:voicemail"></md-icon>-->
+                                                    <!--Check voicemail-->
+                                                <!--</md-button>-->
+                                            <!--</md-menu-item>-->
+                                            <!--<md-menu-divider></md-menu-divider>-->
+                                            <!--<md-menu-item>-->
+                                                <!--<md-button ng-click="ctrl.toggleNotifications()">-->
+                                                    <!--<md-icon md-svg-icon="social:notifications-{{ctrl.notificationsEnabled ? 'off' : 'on'}}"></md-icon>-->
+                                                    <!--{{ctrl.notificationsEnabled ? 'Disable' : 'Enable' }} notifications-->
+                                                <!--</md-button>-->
+                                            <!--</md-menu-item>-->
+                                        </md-menu-content>
+                                    </md-menu>
                                 </div>
                             </div>
                         </div>

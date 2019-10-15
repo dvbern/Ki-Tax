@@ -1708,6 +1708,7 @@
     "MODUL_TYP_SCOLARIS_INFO": "Achtung: Alle bereits vorhandenen Module werden gelöscht!",
     "WOECHENTLICH": "Wöchentlich",
     "WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN": "Wöchentlich oder alle zwei Wochen",
+    "ALLE_ZWEI_WOCHEN": "Alle zwei Wochen",
     "ERROR_MODULE_INVALID": "Ein oder mehrere Module sind nicht vollständig. Bitte überprüfen Sie die Angaben",
     "EWP_ZUSCHLAG_OVERRIDE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren",
     "EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE": "Kantonalen Zuschlag von {{valueMandant}}% (ASIV Art 34h) bei der Anspruchsberechnung reduzieren auf {{value}}%",

@@ -248,12 +248,20 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         return this.isAngebot(TSBetreuungsangebotTyp.KITA);
     }
 
+    public isAngebotTagesfamilien(): boolean {
+        return this.isAngebot(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+    }
+
     public isAngebotTagesschule(): boolean {
         return this.isAngebot(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
 
     public isAngebotFerieninsel(): boolean {
         return this.isAngebot(TSBetreuungsangebotTyp.FERIENINSEL);
+    }
+
+    public isAngebotBetreuungsgutschein(): boolean {
+        return this.isAngebotKITA() || this.isAngebotTagesfamilien();
     }
 
     public isAngebotSchulamt(): boolean {
