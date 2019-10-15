@@ -51,8 +51,10 @@ import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.search.annotations.Field;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -104,6 +106,10 @@ public class Benutzer extends AbstractMutableEntity {
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Field
 	private String vorname = null;
+
+	@Formula("concat(vorname, ' ', nachname)")
+	@NotAudited
+	private String fullName;
 
 	@NotNull
 	@Column(nullable = false)
@@ -162,6 +168,12 @@ public class Benutzer extends AbstractMutableEntity {
 		this.vorname = vorname;
 	}
 
+	// TODO Achtung HEFR: Hier war bei der alten Methode ein Nullcheck drin, den brauchen wir aber nicht, da vor und
+	//  nachname nicht nullable sind auf der DB
+	public String getFullName() {
+		return fullName;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -202,12 +214,6 @@ public class Benutzer extends AbstractMutableEntity {
 
 	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
-	}
-
-	@Nonnull
-	public String getFullName() {
-		return (this.vorname != null ? this.vorname : "") + ' '
-			+ (this.nachname != null ? this.nachname : "");
 	}
 
 	@Override
