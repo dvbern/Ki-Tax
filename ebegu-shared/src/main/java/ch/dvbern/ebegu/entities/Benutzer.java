@@ -168,8 +168,7 @@ public class Benutzer extends AbstractMutableEntity {
 		this.vorname = vorname;
 	}
 
-	// TODO Achtung HEFR: Hier war bei der alten Methode ein Nullcheck drin, den brauchen wir aber nicht, da vor und
-	//  nachname nicht nullable sind auf der DB
+	@Nonnull
 	public String getFullName() {
 		return fullName;
 	}
