@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,5 +54,26 @@ public class JaxBelegungTagesschuleModul extends JaxAbstractDTO {
 
 	public void setModulTagesschule(@Nonnull JaxModulTagesschule modulTagesschule) {
 		this.modulTagesschule = modulTagesschule;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof JaxBelegungTagesschuleModul)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		JaxBelegungTagesschuleModul that = (JaxBelegungTagesschuleModul) o;
+		return this.getIntervall() == that.getIntervall()
+			&& Objects.equals(this.getModulTagesschule(), that.getModulTagesschule());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), getIntervall(), getModulTagesschule());
 	}
 }

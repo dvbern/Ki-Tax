@@ -363,7 +363,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // fuer Tagesschule werden keine Betreuungspensum benoetigt, deswegen löschen wir sie vor dem Speichern
             this.getBetreuungModel().betreuungspensumContainers = [];
             if (this.isTagesschule()) {
-                this.filterOnlyAngemeldeteModule();
+                //TODO (hefr) brauchts das???
+                // this.filterOnlyAngemeldeteModule();
             }
         }
         this.errorService.clearAll();
@@ -420,24 +421,24 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Tagesschuleanmeldung aktiv ist.
      */
     public filterOnlyAngemeldeteModule(): void {
-        const betreuungModel = this.getBetreuungModel();
-        if (!(this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
-            betreuungModel.belegungTagesschule && betreuungModel.belegungTagesschule.moduleTagesschule)) {
-            return;
-        }
-        if (this.moduleBackup === undefined
-            && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
-            this.moduleBackup = betreuungModel.belegungTagesschule.moduleTagesschule
-                .filter(modul => modul.angemeldet);
-            betreuungModel.belegungTagesschule.moduleTagesschule = this.moduleBackup;
-        } else if (this.moduleBackup !== undefined
-            && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
-            betreuungModel.belegungTagesschule.moduleTagesschule = this.moduleBackup;
-        } else {
-            betreuungModel.belegungTagesschule.moduleTagesschule =
-                betreuungModel.belegungTagesschule.moduleTagesschule
-                    .filter(modul => modul.angemeldet);
-        }
+        // const betreuungModel = this.getBetreuungModel();
+        // if (!(this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
+        //     betreuungModel.belegungTagesschule && betreuungModel.belegungTagesschule.moduleTagesschule)) {
+        //     return;
+        // }
+        // if (this.moduleBackup === undefined
+        //     && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
+        //     this.moduleBackup = betreuungModel.belegungTagesschule.moduleTagesschule
+        //         .filter(modul => modul.angemeldet);
+        //     betreuungModel.belegungTagesschule.moduleTagesschule = this.moduleBackup;
+        // } else if (this.moduleBackup !== undefined
+        //     && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
+        //     betreuungModel.belegungTagesschule.moduleTagesschule = this.moduleBackup;
+        // } else {
+        //     betreuungModel.belegungTagesschule.moduleTagesschule =
+        //         betreuungModel.belegungTagesschule.moduleTagesschule
+        //             .filter(modul => modul.angemeldet);
+        // }
     }
 
     public anmeldenSchulamt(): void {

@@ -24,6 +24,7 @@ import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
+import {TSBelegungTagesschuleModulIntervall} from '../../../models/enums/TSBelegungTagesschuleModulIntervall';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
@@ -250,11 +251,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     private preSave(): void {
         const anmeldungen: TSBelegungTagesschuleModul[] = [];
         for (const group of this.modulGroups) {
-            for (const mod of group.module) {
-                if (mod.angemeldet) {
-                    const modul = new TSBelegungTagesschuleModul();
-                    modul.modulTagesschule = mod;
-                    anmeldungen.push(modul);
+            for (const modul of group.module) {
+                if (modul.angemeldet) {
+                    const belegungModul = new TSBelegungTagesschuleModul();
+                    belegungModul.modulTagesschule = modul;
+                    // TODO (hefr) Achtung, das Intervall muss ausgewählt werden können
+                    belegungModul.intervall = TSBelegungTagesschuleModulIntervall.WOECHENTLICH;
+                    anmeldungen.push(belegungModul);
                 }
             }
         }

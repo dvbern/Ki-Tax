@@ -3370,6 +3370,7 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(belegungModulTS, belegungModulFromServer);
             // belegungModulTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungModulFromServer.moduleTagesschule);
             belegungModulTS.intervall = belegungModulFromServer.intervall;
+            belegungModulTS.modulTagesschule = this.parseModulTagesschule(new TSModulTagesschule(), belegungModulFromServer.modulTagesschule);
             return belegungModulTS;
         }
         return undefined;
@@ -3388,6 +3389,7 @@ export default class EbeguRestUtil {
         if (belegungModulTS) {
             this.abstractEntityToRestObject(restBelegungModul, belegungModulTS);
             restBelegungModul.intervall = belegungModulTS.intervall;
+            restBelegungModul.modulTagesschule = this.modulTagesschuleToRestObject({}, belegungModulTS.modulTagesschule);
             return restBelegungModul;
         }
         return undefined;

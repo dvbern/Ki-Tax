@@ -20,7 +20,7 @@ import TSBelegungTagesschuleModul from './TSBelegungTagesschuleModul';
 
 export default class TSBelegungTagesschule extends TSAbstractMutableEntity {
 
-    public belegungTagesschuleModule: TSBelegungTagesschuleModul[] = [];
+    public belegungTagesschuleModule: Array<TSBelegungTagesschuleModul> = [];
     public eintrittsdatum: moment.Moment;
     public planKlasse: string;
     public abholungTagesschule: TSAbholungTagesschule;

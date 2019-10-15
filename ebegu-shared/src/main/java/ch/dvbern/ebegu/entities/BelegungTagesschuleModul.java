@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -105,5 +107,22 @@ public class BelegungTagesschuleModul extends AbstractEntity implements Comparab
 		builder.append(this.getModulTagesschule(), o.getModulTagesschule());
 		builder.append(this.getIntervall(), o.getIntervall());
 		return builder.toComparison();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof BelegungTagesschuleModul)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		BelegungTagesschuleModul that = (BelegungTagesschuleModul) o;
+		return Objects.equals(this.getModulTagesschule(), that.getModulTagesschule()) &&
+			Objects.equals(this.getModulTagesschule().getModulTagesschuleGroup(), that.getModulTagesschule().getModulTagesschuleGroup()) &&
+			this.getIntervall() == that.getIntervall();
 	}
 }

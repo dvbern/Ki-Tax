@@ -2625,7 +2625,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final Set<BelegungTagesschuleModul> convertedBelegungTagesschuleModule =
 			belegungTagesschuleModulListToEntity(belegungTagesschuleJAXP.getBelegungTagesschuleModule(),
-				belegungTagesschule.getBelegungTagesschuleModule());
+				belegungTagesschule.getBelegungTagesschuleModule(), belegungTagesschule);
 		belegungTagesschule.getBelegungTagesschuleModule().clear();
 		belegungTagesschule.getBelegungTagesschuleModule().addAll(convertedBelegungTagesschuleModule);
 
@@ -2639,18 +2639,21 @@ public class JaxBConverter extends AbstractConverter {
 
 	public BelegungTagesschuleModul belegungTagesschuleModulToEntity(
 		@Nonnull JaxBelegungTagesschuleModul belegungTagesschuleModulJAXP,
-		@Nonnull BelegungTagesschuleModul belegungTagesschuleModul
+		@Nonnull BelegungTagesschuleModul belegungTagesschuleModul,
+		@Nonnull BelegungTagesschule parent
 	) {
 		belegungTagesschuleModul.setIntervall(belegungTagesschuleModulJAXP.getIntervall());
-		belegungTagesschuleModul.setModulTagesschule(modulTagesschuleToEntity(
-			belegungTagesschuleModulJAXP.getModulTagesschule(), belegungTagesschuleModul.getModulTagesschule()));
+		belegungTagesschuleModul.setModulTagesschule(
+			persistence.find(ModulTagesschule.class, belegungTagesschuleModulJAXP.getModulTagesschule().getId()));
+		belegungTagesschuleModul.setBelegungTagesschule(parent);
 		return belegungTagesschuleModul;
 	}
 
 	@Nonnull
 	private Set<BelegungTagesschuleModul> belegungTagesschuleModulListToEntity(
 		@Nonnull Set<JaxBelegungTagesschuleModul> jaxBelegungTagesschuleModulList,
-		@Nonnull Set<BelegungTagesschuleModul> belegungTagesschuleModulList) {
+		@Nonnull Set<BelegungTagesschuleModul> belegungTagesschuleModulList,
+		@Nonnull BelegungTagesschule parent) {
 
 		final Set<BelegungTagesschuleModul> convertedBelegungTagesschuleModule = new TreeSet<>();
 		for (final JaxBelegungTagesschuleModul jaxBelegungTagesschuleModul : jaxBelegungTagesschuleModulList) {
@@ -2659,7 +2662,7 @@ public class JaxBConverter extends AbstractConverter {
 				.filter(existingBelegungModul -> existingBelegungModul.getId().equals(jaxBelegungTagesschuleModul.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
 				.orElseGet(BelegungTagesschuleModul::new);
-			final BelegungTagesschuleModul belegungModulToAdd = belegungTagesschuleModulToEntity(jaxBelegungTagesschuleModul, belegungModulToMergeWith);
+			final BelegungTagesschuleModul belegungModulToAdd = belegungTagesschuleModulToEntity(jaxBelegungTagesschuleModul, belegungModulToMergeWith, parent);
 			final boolean added = convertedBelegungTagesschuleModule.add(belegungModulToAdd);
 			if (!added) {
 				LOGGER.warn("dropped duplicate BelegungTagesschuleModul {}", belegungModulToAdd);
@@ -3063,7 +3066,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nullable
-	public JaxBelegungTagesschuleModul belegungTagesschuleModulToJax(@Nullable BelegungTagesschuleModul modulTagesschule) {
+	private JaxBelegungTagesschuleModul belegungTagesschuleModulToJax(@Nullable BelegungTagesschuleModul modulTagesschule) {
 		if (modulTagesschule == null) {
 			return null;
 		}
