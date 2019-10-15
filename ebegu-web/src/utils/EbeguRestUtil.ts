@@ -848,8 +848,8 @@ export default class EbeguRestUtil {
             stammdatenTS.webseite = stammdatenFromServer.webseite;
             stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
             stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
-            stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
-            stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
+            stammdatenTS.benutzerListeBG = this.parseUserList(stammdatenFromServer.benutzerListeBG);
+            stammdatenTS.benutzerListeTS = this.parseUserList(stammdatenFromServer.benutzerListeTS);
             stammdatenTS.konfigurationsListe =
                 this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
             stammdatenTS.kontoinhaber = stammdatenFromServer.kontoinhaber;
