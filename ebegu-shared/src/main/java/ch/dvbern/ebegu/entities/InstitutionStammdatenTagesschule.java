@@ -15,11 +15,12 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -29,6 +30,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -38,20 +40,21 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity implements Comparable<InstitutionStammdatenTagesschule> {
+public class InstitutionStammdatenTagesschule extends AbstractEntity implements Comparable<InstitutionStammdatenTagesschule> {
 
 	private static final long serialVersionUID = 3991623541799163623L;
 
-	@Nullable
+	@Nonnull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenTagesschule")
-	private Set<ModulTagesschule> moduleTagesschule = new TreeSet<>();
+	private Set<EinstellungenTagesschule> einstellungenTagesschule = new TreeSet<>();
 
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_ts_gemeinde_id"))
 	private Gemeinde gemeinde;
+
 
 	public InstitutionStammdatenTagesschule() {
 	}
@@ -78,13 +81,13 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 		return builder.toComparison();
 	}
 
-	@Nullable
-	public Set<ModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	@Nonnull
+	public Set<EinstellungenTagesschule> getEinstellungenTagesschule() {
+		return einstellungenTagesschule;
 	}
 
-	public void setModuleTagesschule(@Nullable Set<ModulTagesschule> moduleTagesschule) {
-		this.moduleTagesschule = moduleTagesschule;
+	public void setEinstellungenTagesschule(@Nonnull Set<EinstellungenTagesschule> einstellungenTagesschule) {
+		this.einstellungenTagesschule = einstellungenTagesschule;
 	}
 
 	@Nonnull
@@ -94,5 +97,17 @@ public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity i
 
 	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nonnull
+	public List<ModulTagesschuleGroup> extractAllModulTagesschuleGroup() {
+		final List<ModulTagesschuleGroup> list = new ArrayList<>();
+		for (final EinstellungenTagesschule kind : getEinstellungenTagesschule()) {
+			Set<ModulTagesschuleGroup> modulTagesschuleGroups = kind.getModulTagesschuleGroups();
+			if (CollectionUtils.isNotEmpty(modulTagesschuleGroups)) {
+				list.addAll(modulTagesschuleGroups);
+			}
+		}
+		return list;
 	}
 }

@@ -45,6 +45,7 @@
                 <!-- TS-Module -->
                 <div class="dv-ebegu-calendar__wrapper-tagesschule" ng-if="vm.isTagesschuleAlreadySelected()">
 
+                    <!-- Header mit Wochentagen -->
                     <div class="dv-ebegu-calendar__row--tagesschule">
                         <div class="dv-ebegu-calendar__wrapper-small-blank"></div>
                         <div class="dv-ebegu-calendar__wrapper">
@@ -56,25 +57,25 @@
                         </div>
                     </div>
                     <div class="dv-ebegu-calendar__row--tagesschule"
-                         ng-repeat="modulName in vm.getModulTagesschuleNameList()">
-                        <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module"
-                             ng-if="vm.isModulDefinedInSelectedTS(modulName, vm.getMonday())">
-                            <span class="dv-ebegu-calendar__module-name" ng-bind="modulName | translate"></span>
+                        ng-repeat="group in vm.modulGroups track by group.identifier">
+                        <!-- Gruppe (Name und Zeit) -->
+                        <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
+                            <span class="dv-ebegu-calendar__module-name" ng-bind="group.modulTagesschuleName | translate"></span>
                             <span class="dv-ebegu-calendar__module-time"
-                                  ng-bind="vm.getModulTimeAsStringViaName(modulName)"></span>
+                                  ng-bind="vm.getModulTimeAsStringViaName(group)"></span>
                         </div>
                         <div class="dv-ebegu-calendar__wrapper">
                             <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
-                                <div
-                                    class="dv-ebegu-calendar__day dv-ebegu-calendar__day--{{$index+1}}"
-                                    ng-if="vm.isModulDefinedInSelectedTS(modulName, vm.getMonday())"
-                                    ng-repeat="weekDay in vm.getWeekDays()">
+
+                                <div ng-repeat="mod in group.module track by mod.id">
+                                    <!-- TODO Reviewer: Sobald ich die Klasse hinzufüge, geht es nicht mehr!
+                                    class="dv-ebegu-calendar--tagesschule"
+                                    -->
                                     <md-checkbox
-                                        class="dv-ebegu-calendar--tagesschule"
-                                        name="modul_{{modulName}}_{{weekDay}}"
-                                        ng-model="vm.getModul(modulName, weekDay).angemeldet"
-                                        aria-label="Modul {{modulName | translate}} {{weekDay | translate}}"
-                                        ng-disabled="!vm.isModulEnabled(modulName, weekDay) || vm.isFreigabequittungAusstehend()">
+                                        name="modul_{{mod.id}}"
+                                        ng-model="mod.angemeldet"
+                                        aria-label="Modul {{group.modulTagesschuleName | translate}} {{mod.wochentag | translate}}"
+                                        ng-disabled="!mod.angeboten || vm.isFreigabequittungAusstehend()">
                                     </md-checkbox>
                                 </div>
                             </div>

@@ -29,6 +29,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 export class EditInstitutionFerieninselComponent {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
+    @Input() public editMode: boolean;
 
     public constructor(
     ) {

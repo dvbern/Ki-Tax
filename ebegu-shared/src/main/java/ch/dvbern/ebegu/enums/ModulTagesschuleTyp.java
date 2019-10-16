@@ -15,20 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+package ch.dvbern.ebegu.enums;
 
-@Component({
-    selector: 'dv-view-institution-ferieninsel',
-    templateUrl: './view-institution-ferieninsel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
-})
-
-export class ViewInstitutionFerieninselComponent {
-
-    @Input() public stammdaten: TSInstitutionStammdaten;
-
-    public constructor(
-    ) {
-    }
+public enum ModulTagesschuleTyp {
+	DYNAMISCH,
+	SCOLARIS,
 }

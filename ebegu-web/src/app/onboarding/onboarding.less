@@ -35,7 +35,7 @@ p {
     text-align: center;
 }
 
-.onboarding-subtitle {
+.onboarding-subtitle-sc{
     font-size: 3.6rem;
     font-weight: bold;
     letter-spacing: 0.193rem;
@@ -44,6 +44,182 @@ p {
     text-align: center;
     text-overflow: ellipsis;
     max-width: 100%;
+    color: white;
+}
+
+.onboarding-subtitle {
+    margin-left: 11vw;
+    margin-right: 11vw;
+    margin-top: 28%;
+    text-align: center;
+    font-size: 3.6rem;
+    font-weight: bold;
+    letter-spacing: 0.193rem;
+    line-height: 4.9rem;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: black;
+}
+
+.onboarding-container-info{
+    margin-left: 11vw;
+    margin-right: 11vw;
+    margin-top: 28%;
+    text-align: left;
+    color: #000000;
+    font-family: "Open Sans";
+    overflow-x: unset;
+
+    .fa-arrow-circle-left {
+        color: red;
+    }
+
+    h1 {
+        font-size: 20px;
+        letter-spacing: 1.38px;
+        line-height: 24px;
+        margin-top: 1rem;
+    }
+
+    p {
+        font-size: 14px;
+        letter-spacing: 1px;
+        line-height: 19px;
+        color: #222222;
+    }
+
+    a {
+        color: red;
+        font-family: "Open Sans";
+        font-size: 12px;
+        letter-spacing: 0.82px;
+        line-height: 17px;
+    }
+}
+
+.onboarding-big-red-button{
+    color: #FFFFFF;
+    font-family: "Open Sans";
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    line-height: 19px;
+    text-align: center;
+    padding: 0 6.5rem 0;
+    height: 6rem;
+    text-transform: uppercase;
+}
+
+.onboarding-red-border-button {
+    margin-bottom: 4rem;
+    padding: 0 12.4rem 0;
+    height: 6rem;
+    border-color: red;
+    background-color: white;
+    border-style: solid;
+    color: red;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    line-height: 19px;
+    text-align: center;
+}
+
+.onboarding-info-gem-padding {
+    padding: 0 1.5rem 0 !important;
+}
+
+.onboarding-nb-gemeinde {
+    &-container {
+        display: flex;
+        flex-flow: column;
+    }
+
+    &-label {
+        width: 26.3rem;
+        margin-bottom: 1.7rem;
+    }
+
+    &-input{
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        &-container {
+            margin-top: 2rem;
+        }
+        &-button{
+            margin-top: 0rem;
+            font-family: "Open Sans";
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            line-height: 19px;
+        }
+        ::ng-deep .mat-select, .mat-option{
+            font-family: "Open Sans";
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            line-height: 19px;
+            border: 2px solid @black;
+        }
+    }
+
+    &-search {
+        margin-bottom: 0;
+        width: 100%;
+
+        &-input {
+            height: 4rem;
+            top: 0.5rem;
+            color: @black;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .dv-select-style-onboarding {
+            border: 2px solid @black;
+            background: @contrast-lightest;
+            width: 100%;
+
+            select {
+                width: calc(100% - 1px);
+                height: calc(3rem - 1px);
+                font-family: "Open Sans";
+                font-size: 14px;
+                letter-spacing: 0.5px;
+                line-height: 19px;
+                //font-weight: normal;
+            }
+
+            &::after {
+                content: " \f002";
+                top: 0.5rem;
+                color: @black;
+            }
+        }
+
+    }
+
+    /deep/ &-auswaehlen {
+        width: auto;
+        text-transform: uppercase;
+        margin-bottom: 4rem;
+        display: block;
+        font-family: "Open Sans";
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        line-height: 19px;
+        // wenn der button fokusiert ist braucht er 2px für den Outline
+    }
+}
+
+.onboarding-info {
+    margin-right: 9vw !important;
+}
+
+.onboarding-info-action {
+    margin-top: 2vh;
+    //text-align: center;
+    line-height: 2.8rem;
 }
 
 @media only screen
@@ -109,12 +285,21 @@ and (max-width: 480px) {
         }
     }
 
+    .mobile-hide{
+        display: none;
+    }
 
+    .onboarding-welcome {
+        margin-top: 8%;
+    }
 
     .onboarding-gs-container{
         flex-direction: column-reverse;
     }
 
+    .onboarding-container-info {
+        margin-top: 8%;
+    }
 }
 
 @media @mq-sm {

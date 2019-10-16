@@ -15,52 +15,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {NgForm} from '@angular/forms';
-import {StateService} from '@uirouter/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
     selector: 'dv-onboarding',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding.component.html',
     styleUrls: ['./onboarding.component.less', '../onboarding.less'],
 })
-export class OnboardingComponent {
+export class OnboardingComponent implements OnInit {
 
-    @Input() public nextState: string = 'onboarding.be-login';
     @Input() public showLogin: boolean = true;
 
-    public gemeinden$: Observable<TSGemeinde[]>;
-    public gemeinde?: TSGemeinde;
-
+    private readonly description1: string = 'ONBOARDING_MAIN_DESC1';
+    private readonly description2: string = 'ONBOARDING_MAIN_DESC2';
+    private readonly description3: string = 'ONBOARDING_MAIN_DESC3';
+    private readonly description4: string = 'ONBOARDING_MAIN_DESC4';
     public isDummyMode$: Observable<boolean>;
 
     public constructor(
-        private readonly gemeindeRS: GemeindeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly stateService: StateService,
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+        private readonly translate: TranslateService,
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
-            .pipe(map(gemeinden => {
-                gemeinden.sort(EbeguUtil.compareByName);
-
-                return gemeinden;
-            }));
-
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
+
     }
 
-    public onSubmit(form: NgForm): void {
-        if (!form.valid) {
-            return;
-        }
-
-        this.stateService.go(this.nextState, {gemeindeId: this.gemeinde.id});
+    public ngOnInit(): void {
+        this.onboardingPlaceholderService.setDescription1(this.translate.instant(this.description1));
+        this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
+        this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
+        this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
     }
 }

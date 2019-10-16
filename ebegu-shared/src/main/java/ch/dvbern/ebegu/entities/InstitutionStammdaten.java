@@ -294,10 +294,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public boolean isTagesschuleActivatable() {
 		final InstitutionStammdatenTagesschule stammdaten = this.getInstitutionStammdatenTagesschule();
-
-		return stammdaten != null
-			&& stammdaten.getModuleTagesschule() != null
-			&& !stammdaten.getModuleTagesschule().isEmpty();
+		return stammdaten != null && !stammdaten.extractAllModulTagesschuleGroup().isEmpty();
 	}
 
 	@Override

@@ -16,6 +16,10 @@
  */
 
 import {Component} from '@angular/core';
+import {LogFactory} from '../../core/logging/LogFactory';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
+
+const LOG = LogFactory.createLog('OnboardingMainComponent');
 
 @Component({
     selector: 'dv-onboarding-main',
@@ -23,4 +27,29 @@ import {Component} from '@angular/core';
     styleUrls: ['./onboarding-main.component.less', '../onboarding.less'],
 })
 export class OnboardingMainComponent {
+    public description1: string = 'ONBOARDING_MAIN_DESC1';
+    public description2: string = 'ONBOARDING_MAIN_DESC2';
+    public description3: string = 'ONBOARDING_MAIN_DESC3';
+    public description4: string = 'ONBOARDING_MAIN_DESC4';
+    public splittedScreen: boolean = true;
+
+    public constructor(
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+    ) {
+        this.onboardingPlaceholderService.description1$.subscribe(updatedDescription1 => {
+            this.description1 = updatedDescription1;
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description2$.subscribe(updatedDescription2 => {
+            this.description2 = updatedDescription2;
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description3$.subscribe(updatedDescription3 => {
+            this.description3 = updatedDescription3;
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.description4$.subscribe(updatedDescription4 => {
+            this.description4 = updatedDescription4;
+        }, err => LOG.error(err));
+        this.onboardingPlaceholderService.splittedScreen$.subscribe(updatedSplittedScreen => {
+            this.splittedScreen = updatedSplittedScreen;
+        }, err => LOG.error(err));
+    }
 }

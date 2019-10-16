@@ -316,19 +316,15 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				predicates.add(cb.like(joinKinder.get(AbstractPersonEntity_.vorname), predicateObjectDto.getKindNameForLike()));
 			}
 			if (predicateObjectDto.getVerantwortlicherBG() != null) {
-				String[] strings = predicateObjectDto.getVerantwortlicherBG().split(" ");
 				predicates.add(
 					cb.and(
-						cb.equal(joinVerantwortlicherBG.get(Benutzer_.vorname), strings[0]),
-						cb.equal(joinVerantwortlicherBG.get(Benutzer_.nachname), strings[1])
+						cb.equal(joinVerantwortlicherBG.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherBG())
 					));
 			}
 			if (predicateObjectDto.getVerantwortlicherTS() != null) {
-				String[] strings = predicateObjectDto.getVerantwortlicherTS().split(" ");
 				predicates.add(
 					cb.and(
-						cb.equal(joinVerantwortlicherTS.get(Benutzer_.vorname), strings[0]),
-						cb.equal(joinVerantwortlicherTS.get(Benutzer_.nachname), strings[1])
+						cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherTS())
 					));
 			}
 		}

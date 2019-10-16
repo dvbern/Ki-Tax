@@ -25,8 +25,10 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
-import TSGemeinde from '../../../models/TSGemeinde';
+import TSGemeindeRegistrierung from '../../../models/TSGemeindeRegistrierung';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 
@@ -39,9 +41,10 @@ const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
     public user$: Observable<TSBenutzer>;
-    public gemeinde$: Observable<TSGemeinde>;
+    public gemeindenAndVerbund$: Observable<TSGemeindeRegistrierung[]>;
 
-    private readonly gemeindeId: string; // Parameter aus URL
+    private readonly gemeindenTSIds: string; // Parameter aus URL
+    private readonly gemeindeBGId: string;
 
     public constructor(
         private readonly transition: Transition,
@@ -49,21 +52,48 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         public readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
         private readonly dossierRS: DossierRS,
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
     ) {
-
-        this.gemeindeId = this.transition.params().gemeindeId;
+        this.gemeindenTSIds = this.transition.params().gemeindenId;
+        this.gemeindeBGId = this.transition.params().gemeindeBGId;
     }
 
     public ngOnInit(): void {
-        this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
+        const gemeindenTSIdList = this.gemeindenTSIds.split(',');
+        this.gemeindenAndVerbund$ = from(this.gemeindeRS
+            .getGemeindenRegistrierung(this.gemeindeBGId, gemeindenTSIdList));
         this.user$ = this.authServiceRS.principal$;
+
+        if (this.stateService.transition) {
+            this.onboardingPlaceholderService.setSplittedScreen(true);
+        } else {
+            this.onboardingPlaceholderService.setSplittedScreen(false);
+        }
     }
 
-    public onSubmit(form: NgForm): void {
+    public createDossier(form: NgForm, gemList: TSGemeindeRegistrierung[]): void {
         if (!form.valid) {
             return;
         }
-        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
+        // Die erste Gemeinde muss speziell behandelt werden: Fuer diese muss sichergestellt werden, dass das
+        // Dossier und der Fall erstellt werden, bevor die weiteren Gemeinden asynchron und parallel erstellt werden
+        const gemeindenAdded: string[] = [];
+        const firstGemeinde = gemList.pop();
+        const firstGemeindeId = firstGemeinde.verbundId !== null ? firstGemeinde.verbundId : firstGemeinde.id;
+        gemeindenAdded.push(firstGemeindeId);
+        this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
+            gemList.forEach(tsGemeindeRegistrierung => {
+                // Das Dossier wird für den Verbund erstellt, falls einer vorhanden ist, sonst für die Gemeinde
+                const gemeindeIdForDossier = EbeguUtil.isNullOrUndefined(tsGemeindeRegistrierung.verbundId) ?
+                    tsGemeindeRegistrierung.id : tsGemeindeRegistrierung.verbundId;
+                // In der Liste sind jetzt immer noch Duplikate, im Sinne von
+                // Gemeinde A (Verbund 1), Gemeinde B (Verbund 1) => für diese Konstellation soll nur
+                // 1 Dossier (für Verbund 1) erstellt werden
+                if (gemeindenAdded.indexOf(gemeindeIdForDossier) === -1) {
+                    this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(gemeindeIdForDossier);
+                    gemeindenAdded.push(gemeindeIdForDossier);
+                }
+            });
             this.stateService.go('gesuchsteller.dashboard', {
                 dossierId: dossier.id,
             });
@@ -73,9 +103,11 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
     public changeGemeinde(): void {
         switch (this.authServiceRS.getPrincipalRole()) {
             case TSRole.GESUCHSTELLER:
+                this.onboardingPlaceholderService.setSplittedScreen(true);
                 this.stateService.go('onboarding.gesuchsteller.registration-incomplete');
                 break;
             case TSRole.ANONYMOUS:
+                this.onboardingPlaceholderService.setSplittedScreen(true);
                 this.stateService.go('onboarding.start');
                 break;
             default:
