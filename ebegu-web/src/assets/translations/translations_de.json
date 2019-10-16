@@ -1734,5 +1734,6 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX": "Benötigt Ihr Kind im 2. Semester andere Betreuungszeiten, weil sich der Stundenplan ändert?",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Bitte Änderung der Betreuungszeiten oder allfällige Fragen/Anmerkungen hier angeben",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
+    "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
