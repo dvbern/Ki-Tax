@@ -192,14 +192,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                 let foundInAngemeldete: boolean = false;
                 for (const angMod of moduleAngemeldet) {
                     if (angMod.modulTagesschule.id === modulOfGroup.id) {
-                        modulOfGroup.angemeldet = true;
-                        let tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
-                        tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
-                        group.module.push(tsBelegungTagesschuleModul);
+                        angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
+                        group.module.push(angMod);
                         foundInAngemeldete = true;
                     }
                 }
                 if (!foundInAngemeldete) {
+                    // Das Modul war bisher nicht ausgewählt, muss aber trotzdem angeboten werden
                     let tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
                         tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
                         group.module.push(tsBelegungTagesschuleModul);

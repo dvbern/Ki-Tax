@@ -362,9 +362,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel() && this.isSchulamt()) {
             // fuer Tagesschule werden keine Betreuungspensum benoetigt, deswegen löschen wir sie vor dem Speichern
             this.getBetreuungModel().betreuungspensumContainers = [];
-            if (this.isTagesschule()) {
-                this.filterOnlyAngemeldeteModule();
-            }
         }
         this.errorService.clearAll();
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
@@ -411,31 +408,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
         this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-    }
-
-    /**
-     * Entfernt alle Module die nicht als angemeldet markiert sind. Nur fuer Gesuchsperiode in denen die
-     * Tagesschuleanmeldung aktiv ist.
-     */
-    public filterOnlyAngemeldeteModule(): void {
-        const betreuungModel = this.getBetreuungModel();
-        if (!(this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung() &&
-            betreuungModel.belegungTagesschule && betreuungModel.belegungTagesschule.belegungTagesschuleModule)) {
-            return;
-        }
-        if (this.moduleBackup === undefined
-            && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
-            this.moduleBackup = betreuungModel.belegungTagesschule.belegungTagesschuleModule
-                .filter(modul => modul.modulTagesschule.angemeldet);
-            betreuungModel.belegungTagesschule.belegungTagesschuleModule = this.moduleBackup;
-        } else if (this.moduleBackup !== undefined
-            && this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
-            betreuungModel.belegungTagesschule.belegungTagesschuleModule = this.moduleBackup;
-        } else {
-            betreuungModel.belegungTagesschule.belegungTagesschuleModule =
-                betreuungModel.belegungTagesschule.belegungTagesschuleModule
-                    .filter(modul => modul.modulTagesschule.angemeldet);
-        }
     }
 
     public anmeldenSchulamt(): void {
@@ -1108,7 +1080,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isFachstelleRequired(): boolean {
-        return this.getErweiterteBetreuungJA()
+        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
             && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)
             && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
     }
