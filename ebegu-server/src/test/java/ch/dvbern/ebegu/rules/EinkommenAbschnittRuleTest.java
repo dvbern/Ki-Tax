@@ -37,7 +37,7 @@ import org.junit.Test;
 public class EinkommenAbschnittRuleTest {
 
 	private static final BigDecimal EINKOMMEN_FINANZIELLE_SITUATION = new BigDecimal("100000");
-	private static final BigDecimal EINKOMMEN_EKV_ABGELEHNT = new BigDecimal("80000");
+	private static final BigDecimal EINKOMMEN_EKV_ABGELEHNT = new BigDecimal("80001");
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN = new BigDecimal("79990");
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN_TIEFER = new BigDecimal("60000");
 
