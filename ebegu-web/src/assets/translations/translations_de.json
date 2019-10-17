@@ -1695,5 +1695,8 @@
     "KORREKTURZAHLUNG_NO_CASE_2": "Bei einer rückwirkenden Senkung des Anspruchs",
     "KORREKTURZAHLUNG_NO_CASE_3": "Bei einer rückwirkenden Aufhebung des Betreuungsgutscheins",
     "KORREKTURZAHLUNG_INSTITUTION_HINT": "Info: Hat sich rückwirkend sowohl das vereinbarte Betreuungspensum, wie auch das massgebende Einkommen oder der Anspruch geändert, ist es in der Regel sinnvoll Rückforderungen ausserhalb von kiBon über die Eltern und Rückerstattungen über kiBon an die Institutionen umzusetzen. In beiden Fällen empfiehlt sich die Rücksprache mit der Institution",
+    "GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE": "Die E-Mail-Adresse {{emailAdresse}} hat bereits eine zugewiesene Rolle (Rolle Gesuchsteller) inklusive einem noch nicht freigegebenen Gesuch.<br> Wollen Sie der Adresse neu die Rolle «{{administratorRolle}}» zuweisen und das Gesuch löschen?",
+    "GESUCHSTELLER_DIALOG_CONFIRM_DELETE": "Wir haben mit {{gesuchstellerName}} Kontakt aufgenommen. {{gesuchstellerName}} hat uns den bestätigt, dass wir die Rollen ändern können",
+    "BESTAETIGEN": "Bestätigen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

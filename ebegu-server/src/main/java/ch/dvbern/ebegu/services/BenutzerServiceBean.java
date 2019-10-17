@@ -71,16 +71,19 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
@@ -335,11 +338,63 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 		}
 
+		checkGesuchstellerHoehreRolleEinladen(benutzer);
+
 		if (benutzer.isNew() && benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
 			throw new EbeguRuntimeException(
 				KibonLogLevel.INFO,
 				benutzer.getUsername(),
 				ErrorCodeEnum.ERROR_BENUTZER_STATUS_NOT_EINGELADEN);
+		}
+	}
+
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	private void checkGesuchstellerHoehreRolleEinladen(@Nonnull Benutzer benutzer){
+		// falls gesuchsteller, und darf einladen
+		if(!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER){
+			//check if Gesuch exist
+			Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
+			if(!fallOpt.isPresent()){
+				//return error code keinen Gesusch, user can be deleted without warning
+				throw new BenutzerExistException(
+					KibonLogLevel.INFO,
+					benutzer.getUsername(),
+					benutzer.getFullName(),
+					ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+			}
+			else{
+				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(fallOpt.get().getId());
+				boolean hasGesuchFreigegeben = false;
+				if(gesuchIdList == null || gesuchIdList.size() == 0){
+					//return error code keinen Gesusch, user can be deleted without warning
+					throw new BenutzerExistException(
+						KibonLogLevel.INFO,
+						benutzer.getUsername(),
+						benutzer.getFullName(),
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+				}
+				for(String id: gesuchIdList){
+					Gesuch gs = gesuchService.findGesuch(id, false).get();
+					if(gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
+						hasGesuchFreigegeben = true;
+						break;
+					}
+				}
+				if(hasGesuchFreigegeben){
+					throw new BenutzerExistException(
+						KibonLogLevel.INFO,
+						benutzer.getUsername(),
+						benutzer.getFullName(),
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH);
+				}
+				else{
+					throw new BenutzerExistException(
+						KibonLogLevel.INFO,
+						benutzer.getUsername(),
+						benutzer.getFullName(),
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH);
+				}
+			}
 		}
 	}
 
