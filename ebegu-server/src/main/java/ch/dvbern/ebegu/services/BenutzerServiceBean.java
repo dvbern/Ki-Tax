@@ -365,7 +365,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			else{
 				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(fallOpt.get().getId());
 				boolean hasGesuchFreigegeben = false;
-				if(gesuchIdList == null || gesuchIdList.size() == 0){
+				if(gesuchIdList.size() == 0){
 					//return error code keinen Gesusch, user can be deleted without warning
 					throw new BenutzerExistException(
 						KibonLogLevel.INFO,

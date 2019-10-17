@@ -163,8 +163,8 @@ export class AddGemeindeComponent implements OnInit {
                             if (answer !== true) {
                                 return;
                             }
-                            this.log.warn("Der Gesuchsteller: " + exception[0].argumentList[1] + " wird einen neuen"
-                                + " Rollen bekommen und seine Gesuch wird gelöscht werden!");
+                            this.log.warn(`Der Gesuchsteller: ${exception[0].argumentList[1]} wird einen neuen`
+                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
                             this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
                                 () => {
                                     this.persistGemeinde();
