@@ -220,9 +220,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private boolean eingeschult;
 
 	@Transient
-	private boolean besondereBeduerfnisse;
-
-	@Transient
 	private boolean besondereBeduerfnisseBestaetigt;
 
 	public VerfuegungZeitabschnitt() {
@@ -274,7 +271,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
 		this.babyTarif = toCopy.babyTarif;
 		this.eingeschult = toCopy.eingeschult;
-		this.besondereBeduerfnisse = toCopy.besondereBeduerfnisse;
 		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 	}
 
@@ -608,14 +604,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.eingeschult = eingeschult;
 	}
 
-	public boolean isBesondereBeduerfnisse() {
-		return besondereBeduerfnisse;
-	}
-
-	public void setBesondereBeduerfnisse(boolean besondereBeduerfnisse) {
-		this.besondereBeduerfnisse = besondereBeduerfnisse;
-	}
-
 	public boolean isBesondereBeduerfnisseBestaetigt() {
 		return besondereBeduerfnisseBestaetigt;
 	}
@@ -755,7 +743,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
-		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
 		this.setBesondereBeduerfnisseBestaetigt(this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
@@ -879,7 +866,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
 			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
-			besondereBeduerfnisse == otherVerfuegungZeitabschnitt.besondereBeduerfnisse &&
 			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
@@ -904,7 +890,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			babyTarif == that.babyTarif &&
 			eingeschult == that.eingeschult &&
-			besondereBeduerfnisse == that.besondereBeduerfnisse &&
 			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
