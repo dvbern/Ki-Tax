@@ -130,15 +130,9 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Nonnull
 	@PermitAll
 	public String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
-		BigDecimal resultExact = FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
-		String sign = MathUtil.isPositive(resultExact) ? "+" : "-";
-		// Fuer die Anzeige im GUI runden wir immer auf die nächste Ganzzahl. Damit wird:
-		// 19.0001 => 20 => nicht akzeptiert
-		// 20.0000 => 20 => nicht akzeptiert
-		// 20.0001 => 21 => akzeptiert
-		// Somit ist das Berechnungresultat dann für die Kunden nachvollziehbar
-		double resultRoundUp = Math.ceil(resultExact.abs().doubleValue());
-		return sign + Double.valueOf(resultRoundUp).intValue();
+		BigDecimal resultGerundet = FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(einkommenJahr, einkommenJahrPlus1);
+		String sign = MathUtil.isPositive(resultGerundet) ? "+" : "-";
+		return sign + resultGerundet.abs().intValue();
 	}
 
 	@Override
