@@ -88,7 +88,7 @@
                     <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length > 0">
 						<tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:group?.identifier()">
 							<td title="{{group.bezeichnung}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                <span>{{group.bezeichnung.textDeutsch}} / {{group.bezeichnung.textFranzoesisch}}</span>
+                                <span>{{getBezeichnung(group)}}</span>
 							</td>
 							<td title="{{group.getZeitraumString()}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
 								{{group.getZeitraumString()}}

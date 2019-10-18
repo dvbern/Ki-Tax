@@ -282,4 +282,11 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             .map((tag: number) => this.translate.instant(getWeekdaysValues()[tag] + '_SHORT'))
             .join(', ');
     }
+
+    public getBezeichnung(group: TSModulTagesschuleGroup): string {
+        if (group.modulTagesschuleName === TSModulTagesschuleName.DYNAMISCH) {
+            return group.bezeichnung.textDeutsch + ' / ' + group.bezeichnung.textFranzoesisch;
+        }
+        return this.translate.instant(group.modulTagesschuleName);
+    }
 }

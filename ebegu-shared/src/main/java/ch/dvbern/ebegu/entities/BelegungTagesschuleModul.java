@@ -125,4 +125,9 @@ public class BelegungTagesschuleModul extends AbstractEntity implements Comparab
 			Objects.equals(this.getModulTagesschule().getModulTagesschuleGroup(), that.getModulTagesschule().getModulTagesschuleGroup()) &&
 			this.getIntervall() == that.getIntervall();
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), getModulTagesschule(), getIntervall());
+	}
 }
