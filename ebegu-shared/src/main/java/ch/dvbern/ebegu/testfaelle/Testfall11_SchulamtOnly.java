@@ -18,7 +18,11 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -69,12 +73,13 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 
 		// Betreuungen
 		// Kind 1: Tagesschule Bern
-		Betreuung betreuungTagesschuleBern = createBetreuung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE, betreuungenBestaetigt);
-		betreuungTagesschuleBern.setKind(kind1);
-		kind1.getBetreuungen().add(betreuungTagesschuleBern);
-		BetreuungspensumContainer betreuungspensumTagiAaregg = createBetreuungspensum(100, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
-		betreuungspensumTagiAaregg.setBetreuung(betreuungTagesschuleBern);
-		betreuungTagesschuleBern.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
+		AnmeldungTagesschule anmeldungTagesschule =
+			createTagesschuleAnmeldung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
+		anmeldungTagesschule.setKind(kind1);
+		Set<AnmeldungTagesschule> anmeldungTSSet = new HashSet();
+		anmeldungTSSet.add(anmeldungTagesschule);
+		kind1.setAnmeldungenTagesschule(anmeldungTSSet);
+
 		// Kind 2: Ferieninsel Guarda
 		Betreuung betreuungFerieninselGuarda = createBetreuung(ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL, betreuungenBestaetigt);
 		betreuungFerieninselGuarda.setKind(kind2);

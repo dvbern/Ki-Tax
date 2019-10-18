@@ -16,8 +16,10 @@
 package ch.dvbern.ebegu.test;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +66,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
@@ -88,11 +91,14 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -120,6 +126,9 @@ import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
+import ch.dvbern.ebegu.enums.ModulTagesschuleName;
+import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -132,6 +141,7 @@ import ch.dvbern.ebegu.testfaelle.TestFall12_Mischgesuch;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
+import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -480,10 +490,162 @@ public final class TestDataUtil {
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleBern() {
-		return createInstitutionStammdaten(
+		return createTagesschuleInstitutionStammdaten(
 			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE,
-			"Tagesschule Bern",
-			BetreuungsangebotTyp.TAGESSCHULE);
+			"Tagesschule Bern"
+			);
+	}
+
+	private static InstitutionStammdaten createTagesschuleInstitutionStammdaten(@Nonnull String id,
+		@Nonnull String name) {
+		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
+		instStammdaten.setId(id);
+		instStammdaten.setMail(TESTMAIL);
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
+		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+		instStammdaten.setInstitution(createDefaultInstitution());
+		instStammdaten.getInstitution().setName(name);
+		instStammdaten.setAdresse(createDefaultAdresse());
+
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = new InstitutionStammdatenTagesschule();
+		institutionStammdatenTagesschule.setGemeinde(createGemeindeParis());
+
+		//modul Tagesschule Group Vormittag
+		ModulTagesschuleGroup vormittag = new ModulTagesschuleGroup();
+		vormittag.setBezeichnung("Vormittag");
+		vormittag.setIntervall(ModulTagesschuleIntervall.WOECHENTLICH);
+		vormittag.setIdentifier("4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuW");
+		vormittag.setModulTagesschuleName(ModulTagesschuleName.DYNAMISCH);
+		vormittag.setVerpflegungskosten(new BigDecimal(3.00));
+		vormittag.setWirdPaedagogischBetreut(false);
+		vormittag.setZeitVon(LocalTime.of(8,0));
+		vormittag.setZeitBis(LocalTime.of(12,0));
+
+		//modul Tagesschule Vormittag
+		Set<ModulTagesschule> modulTSVormittagSet = new HashSet<>();
+
+		ModulTagesschule mondayVormittag = new ModulTagesschule();
+		mondayVormittag.setWochentag(DayOfWeek.MONDAY);
+		mondayVormittag.setModulTagesschuleGroup(vormittag);
+		modulTSVormittagSet.add(mondayVormittag);
+
+		ModulTagesschule tuesdayVormittag = new ModulTagesschule();
+		tuesdayVormittag.setWochentag(DayOfWeek.TUESDAY);
+		tuesdayVormittag.setModulTagesschuleGroup(vormittag);
+		modulTSVormittagSet.add(tuesdayVormittag);
+
+		ModulTagesschule wednesdayVormittag = new ModulTagesschule();
+		wednesdayVormittag.setWochentag(DayOfWeek.WEDNESDAY);
+		wednesdayVormittag.setModulTagesschuleGroup(vormittag);
+		modulTSVormittagSet.add(wednesdayVormittag);
+
+		ModulTagesschule thursdayVormittag = new ModulTagesschule();
+		thursdayVormittag.setWochentag(DayOfWeek.THURSDAY);
+		thursdayVormittag.setModulTagesschuleGroup(vormittag);
+		modulTSVormittagSet.add(thursdayVormittag);
+
+		ModulTagesschule fridayVormittag = new ModulTagesschule();
+		fridayVormittag.setWochentag(DayOfWeek.FRIDAY);
+		fridayVormittag.setModulTagesschuleGroup(vormittag);
+		modulTSVormittagSet.add(fridayVormittag);
+
+		vormittag.setModule(modulTSVormittagSet);
+
+		//modul Tagesschule Group Nachmittag
+		ModulTagesschuleGroup nachmittag = new ModulTagesschuleGroup();
+		nachmittag.setBezeichnung("nachmittag");
+		nachmittag.setIntervall(ModulTagesschuleIntervall.WOECHENTLICH);
+		nachmittag.setIdentifier("4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuW");
+		nachmittag.setModulTagesschuleName(ModulTagesschuleName.DYNAMISCH);
+		nachmittag.setWirdPaedagogischBetreut(false);
+		nachmittag.setZeitVon(LocalTime.of(13,0));
+		nachmittag.setZeitBis(LocalTime.of(16,0));
+
+		//modul Tagesschule Nachmittag
+		Set<ModulTagesschule> modulTSNachmittagSet = new HashSet<>();
+
+		ModulTagesschule mondayNachmittag = new ModulTagesschule();
+		mondayNachmittag.setWochentag(DayOfWeek.MONDAY);
+		mondayNachmittag.setModulTagesschuleGroup(nachmittag);
+		modulTSNachmittagSet.add(mondayNachmittag);
+
+		ModulTagesschule tuesdayNachmittag = new ModulTagesschule();
+		tuesdayNachmittag.setWochentag(DayOfWeek.TUESDAY);
+		tuesdayNachmittag.setModulTagesschuleGroup(nachmittag);
+		modulTSNachmittagSet.add(tuesdayNachmittag);
+
+		ModulTagesschule thursdayNachmittag = new ModulTagesschule();
+		thursdayNachmittag.setWochentag(DayOfWeek.THURSDAY);
+		thursdayNachmittag.setModulTagesschuleGroup(nachmittag);
+		modulTSNachmittagSet.add(thursdayNachmittag);
+
+		ModulTagesschule fridayNachmittag = new ModulTagesschule();
+		fridayNachmittag.setWochentag(DayOfWeek.FRIDAY);
+		fridayNachmittag.setModulTagesschuleGroup(nachmittag);
+		modulTSNachmittagSet.add(fridayNachmittag);
+
+		nachmittag.setModule(modulTSNachmittagSet);
+
+		//modul Tagesschule Group Mittag
+		ModulTagesschuleGroup mittag = new ModulTagesschuleGroup();
+		mittag.setBezeichnung("mittag");
+		mittag.setIntervall(ModulTagesschuleIntervall.WOECHENTLICH);
+		mittag.setIdentifier("4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuW");
+		mittag.setModulTagesschuleName(ModulTagesschuleName.DYNAMISCH);
+		mittag.setVerpflegungskosten(new BigDecimal(10.00));
+		mittag.setWirdPaedagogischBetreut(false);
+		mittag.setZeitVon(LocalTime.of(12,0));
+		mittag.setZeitBis(LocalTime.of(13,0));
+
+		//modul Tagesschule Mittag
+		Set<ModulTagesschule> modulTSMittagSet = new HashSet<>();
+
+		ModulTagesschule mondayMittag = new ModulTagesschule();
+		mondayMittag.setWochentag(DayOfWeek.MONDAY);
+		mondayMittag.setModulTagesschuleGroup(mittag);
+		modulTSMittagSet.add(mondayMittag);
+
+		ModulTagesschule tuesdayMittag = new ModulTagesschule();
+		tuesdayMittag.setWochentag(DayOfWeek.TUESDAY);
+		tuesdayMittag.setModulTagesschuleGroup(mittag);
+		modulTSMittagSet.add(tuesdayMittag);
+
+		ModulTagesschule thursdayMittag = new ModulTagesschule();
+		thursdayMittag.setWochentag(DayOfWeek.THURSDAY);
+		thursdayMittag.setModulTagesschuleGroup(mittag);
+		modulTSMittagSet.add(thursdayMittag);
+
+		ModulTagesschule fridayMittag = new ModulTagesschule();
+		fridayMittag.setWochentag(DayOfWeek.FRIDAY);
+		fridayMittag.setModulTagesschuleGroup(mittag);
+		modulTSMittagSet.add(fridayMittag);
+
+		mittag.setModule(modulTSMittagSet);
+
+		//Einstellungen Tagesschule
+		EinstellungenTagesschule einstellungenTagesschule = new EinstellungenTagesschule();
+		einstellungenTagesschule.setGesuchsperiode(createGesuchsperiode1718());
+		einstellungenTagesschule.setModulTagesschuleTyp(ModulTagesschuleTyp.DYNAMISCH);
+		einstellungenTagesschule.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschule);
+
+		vormittag.setEinstellungenTagesschule(einstellungenTagesschule);
+		nachmittag.setEinstellungenTagesschule(einstellungenTagesschule);
+		mittag.setEinstellungenTagesschule(einstellungenTagesschule);
+
+		Set<ModulTagesschuleGroup> modulTSGroupSet = new HashSet<>();
+		modulTSGroupSet.add(vormittag);
+		modulTSGroupSet.add(mittag);
+		modulTSGroupSet.add(nachmittag);
+
+		einstellungenTagesschule.setModulTagesschuleGroups(modulTSGroupSet);
+
+		Set<EinstellungenTagesschule> einstellungenTagesschuleSet = new HashSet<>();
+		einstellungenTagesschuleSet.add(einstellungenTagesschule);
+		institutionStammdatenTagesschule.setEinstellungenTagesschule(einstellungenTagesschuleSet);
+
+		instStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschule);
+
+		return instStammdaten;
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenFerieninselGuarda() {
@@ -860,6 +1022,18 @@ public final class TestDataUtil {
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
+		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		return gesuch;
+	}
+
+	public static Gesuch createTestfall11_SchulamtOnly(){
+		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
+		Testfall11_SchulamtOnly testfall = new Testfall11_SchulamtOnly(TestDataUtil.createGesuchsperiode1718(),
+			insttStammdaten);
+		testfall.createGesuch(LocalDate.of(2017, Month.MARCH, 25));
+		Gesuch gesuch = testfall.fillInGesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		return gesuch;
 	}
