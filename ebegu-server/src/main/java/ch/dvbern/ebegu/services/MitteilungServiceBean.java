@@ -1049,11 +1049,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// empfaenger
 			if (predicateObjectDto.getEmpfaenger() != null) {
-				String[] strings = predicateObjectDto.getEmpfaenger().split(" ");
 				predicates.add(
 					cb.and(
-						cb.equal(joinEmpfaenger.get(Benutzer_.vorname), strings[0]),
-						cb.equal(joinEmpfaenger.get(Benutzer_.nachname), strings[1])
+						cb.equal(joinEmpfaenger.get(Benutzer_.fullName), predicateObjectDto.getEmpfaenger())
 					));
 			}
 			// empfaengerAmt

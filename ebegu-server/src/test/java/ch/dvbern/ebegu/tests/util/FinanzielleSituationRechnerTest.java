@@ -18,38 +18,27 @@ package ch.dvbern.ebegu.tests.util;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.persistence.UsingDataSet;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Tests fuer FinanzielleSituationRechner
  */
-@RunWith(Arquillian.class)
-@UsingDataSet("datasets/empty.xml")
-@Transactional(TransactionMode.DISABLED)
-public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
+public class FinanzielleSituationRechnerTest {
 
 	private static final BigDecimal EINKOMMEN_FINANZIELLE_SITUATION = new BigDecimal("100000");
-	private static final BigDecimal EINKOMMEN_EKV_ABGELEHNT = new BigDecimal("80000");
+	private static final BigDecimal EINKOMMEN_EKV_ABGELEHNT = new BigDecimal("80001");
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN = new BigDecimal("79990");
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN_2 = new BigDecimal("79000");
 
-	@Inject
-	private FinanzielleSituationRechner finSitRechner;
+	private FinanzielleSituationRechner finSitRechner = new FinanzielleSituationRechner();
 
 	@Test
 	public void testPositiverDurschnittlicherGewinn() {
@@ -118,13 +107,16 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ABGELEHNT, true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
+		BigDecimal differenzJahr1 = FinanzielleSituationRechner.calculateProzentualeDifferenz(EINKOMMEN_FINANZIELLE_SITUATION, EINKOMMEN_EKV_ABGELEHNT);
+
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
 
-		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
+		Assert.assertEquals("EKV abgelehnt, Differenz " + differenzJahr1,
+			EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
-		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
+		Assert.assertEquals("Keine EVK 2 erfasst", EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
 
@@ -157,13 +149,16 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
+		BigDecimal differenzJahr1 = FinanzielleSituationRechner.calculateProzentualeDifferenz(EINKOMMEN_FINANZIELLE_SITUATION, EINKOMMEN_EKV_ABGELEHNT);
+		BigDecimal differenzJahr2 = FinanzielleSituationRechner.calculateProzentualeDifferenz(EINKOMMEN_FINANZIELLE_SITUATION, EINKOMMEN_EKV_ANGENOMMEN);
+
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
 
-		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
+		Assert.assertEquals("Differenz: " + differenzJahr1, EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
-		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
+		Assert.assertEquals("Differenz: " + differenzJahr2, EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
 
@@ -248,5 +243,25 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
+	}
+
+	@Test
+	public void getCalculatedProzentualeDifferenzRounded() {
+		Assert.assertEquals(MathUtil.GANZZAHL.from(-19),
+			FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(BigDecimal.valueOf(181760), BigDecimal.valueOf(146874)));
+		Assert.assertEquals(MathUtil.GANZZAHL.from(-22),
+			FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(BigDecimal.valueOf(181760), BigDecimal.valueOf(140668)));
+		Assert.assertEquals(MathUtil.GANZZAHL.from(-20),
+			FinanzielleSituationRechner.getCalculatedProzentualeDifferenzRounded(BigDecimal.valueOf(181760), BigDecimal.valueOf(144336)));
+	}
+
+	@Test
+	public void calculateProzentualeDifferenz() {
+		Assert.assertEquals(-19.193d,
+			FinanzielleSituationRechner.calculateProzentualeDifferenz(BigDecimal.valueOf(181760), BigDecimal.valueOf(146874)).doubleValue(), 0.01d);
+		Assert.assertEquals(-22.6d,
+			FinanzielleSituationRechner.calculateProzentualeDifferenz(BigDecimal.valueOf(181760), BigDecimal.valueOf(140668)).doubleValue(), 0.01d);
+		Assert.assertEquals(-20.58d,
+			FinanzielleSituationRechner.calculateProzentualeDifferenz(BigDecimal.valueOf(181760), BigDecimal.valueOf(144336)).doubleValue(), 0.01d);
 	}
 }
