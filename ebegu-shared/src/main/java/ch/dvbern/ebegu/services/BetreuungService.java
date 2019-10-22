@@ -205,4 +205,17 @@ public interface BetreuungService {
 	 * Sendet eine E-Mail an alle Institutionen die aktuell offene Pendenzen haben.
 	 */
 	void sendInfoOffenePendenzenInstitution();
+
+	/**
+	 * entfernt eine Anmeldung aus der Database
+	 *
+	 * @param betreuungId Id der Betreuung zu entfernen
+	 */
+	void removeAnmeldung(@Nonnull String anmeldungId);
+
+	/**
+	 * entfernt eine Anmeldung aus der Databse. Um diese Methode aufzurufen muss man sich vorher vergewissern, dass die
+	 * Anmeldung existiert
+	 */
+	void removeAnmeldung(@Nonnull AbstractAnmeldung anmeldung);
 }
