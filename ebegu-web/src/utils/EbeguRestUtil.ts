@@ -3328,7 +3328,8 @@ export default class EbeguRestUtil {
     ): TSBelegungTagesschule {
         if (belegungFromServer) {
             this.parseAbstractMutableEntity(belegungTS, belegungFromServer);
-            belegungTS.belegungTagesschuleModule = this.parseBelegungTagesschuleModulList(belegungFromServer.belegungTagesschuleModule);
+            belegungTS.belegungTagesschuleModule =
+                this.parseBelegungTagesschuleModulList(belegungFromServer.belegungTagesschuleModule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
             belegungTS.abholungTagesschule = belegungFromServer.abholungTagesschule;
             belegungTS.planKlasse = belegungFromServer.planKlasse;
@@ -3342,7 +3343,8 @@ export default class EbeguRestUtil {
     private belegungTagesschuleToRestObject(restBelegung: any, belegungTS: TSBelegungTagesschule): any {
         if (belegungTS) {
             this.abstractMutableEntityToRestObject(restBelegung, belegungTS);
-            restBelegung.belegungTagesschuleModule = this.belegungTagesschuleModulArrayToRestObject(belegungTS.belegungTagesschuleModule);
+            restBelegung.belegungTagesschuleModule =
+                this.belegungTagesschuleModulArrayToRestObject(belegungTS.belegungTagesschuleModule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
             restBelegung.abholungTagesschule = belegungTS.abholungTagesschule;
             restBelegung.planKlasse = belegungTS.planKlasse;
@@ -3368,9 +3370,9 @@ export default class EbeguRestUtil {
     ): TSBelegungTagesschuleModul {
         if (belegungModulFromServer) {
             this.parseAbstractEntity(belegungModulTS, belegungModulFromServer);
-            // belegungModulTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungModulFromServer.moduleTagesschule);
             belegungModulTS.intervall = belegungModulFromServer.intervall;
-            belegungModulTS.modulTagesschule = this.parseModulTagesschule(new TSModulTagesschule(), belegungModulFromServer.modulTagesschule);
+            belegungModulTS.modulTagesschule =
+                this.parseModulTagesschule(new TSModulTagesschule(), belegungModulFromServer.modulTagesschule);
             return belegungModulTS;
         }
         return undefined;
@@ -3385,11 +3387,13 @@ export default class EbeguRestUtil {
             : [];
     }
 
-    private belegungTagesschuleModulToRestObject(restBelegungModul: any, belegungModulTS: TSBelegungTagesschuleModul): any {
+    private belegungTagesschuleModulToRestObject(restBelegungModul: any,
+                                                 belegungModulTS: TSBelegungTagesschuleModul): any {
         if (belegungModulTS) {
             this.abstractEntityToRestObject(restBelegungModul, belegungModulTS);
             restBelegungModul.intervall = belegungModulTS.intervall;
-            restBelegungModul.modulTagesschule = this.modulTagesschuleToRestObject({}, belegungModulTS.modulTagesschule);
+            restBelegungModul.modulTagesschule =
+                this.modulTagesschuleToRestObject({}, belegungModulTS.modulTagesschule);
             return restBelegungModul;
         }
         return undefined;

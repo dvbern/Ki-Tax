@@ -286,7 +286,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public getBezeichnung(group: TSModulTagesschuleGroup): string {
         if (group.modulTagesschuleName === TSModulTagesschuleName.DYNAMISCH) {
-            return group.bezeichnung.textDeutsch + ' / ' + group.bezeichnung.textFranzoesisch;
+            return `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
         return this.translate.instant(group.modulTagesschuleName);
     }

@@ -24,7 +24,10 @@ import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {getTSBelegungTagesschuleModulIntervallValues, TSBelegungTagesschuleModulIntervall} from '../../../models/enums/TSBelegungTagesschuleModulIntervall';
+import {
+    getTSBelegungTagesschuleModulIntervallValues,
+    TSBelegungTagesschuleModulIntervall
+} from '../../../models/enums/TSBelegungTagesschuleModulIntervall';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
@@ -189,20 +192,22 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             const group = new TSBelegungTagesschuleModulGroup();
             group.group = groupTagesschule;
             for (const modulOfGroup of moduleOfGroup) {
-                let foundInAngemeldete: boolean = false;
+                let foundInAngemeldete = false;
                 for (const angMod of moduleAngemeldet) {
-                    if (angMod.modulTagesschule.id === modulOfGroup.id) {
-                        angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
-                        group.module.push(angMod);
-                        foundInAngemeldete = true;
+                    if (angMod.modulTagesschule.id !== modulOfGroup.id) {
+                        continue;
                     }
+                    angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
+                    group.module.push(angMod);
+                    foundInAngemeldete = true;
                 }
-                if (!foundInAngemeldete) {
-                    // Das Modul war bisher nicht ausgewählt, muss aber trotzdem angeboten werden
-                    let tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
-                        tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
-                        group.module.push(tsBelegungTagesschuleModul);
+                if (foundInAngemeldete) {
+                    continue;
                 }
+                // Das Modul war bisher nicht ausgewählt, muss aber trotzdem angeboten werden
+                const tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
+                tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
+                group.module.push(tsBelegungTagesschuleModul);
             }
             this.modulGroups.push(group);
         }
@@ -211,9 +216,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     private loadAngeboteneModuleForTagesschule(): TSModulTagesschuleGroup[] {
         const tsEinstellungenTagesschule =
             this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
-            .filter((einstellung: TSEinstellungenTagesschule) =>
-                einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
-            .pop();
+                .filter((einstellung: TSEinstellungenTagesschule) =>
+                    einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
+                .pop();
         if (!tsEinstellungenTagesschule) {
             return [];
         }
@@ -251,7 +256,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             && !this.getBetreuungModel().keineDetailinformationen;
     }
 
-    public hasTagesschuleAnyModulGroupDefined() {
+    public hasTagesschuleAnyModulGroupDefined(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.modulGroups) && this.modulGroups.length > 0;
     }
 
@@ -361,7 +366,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return modul.modulTagesschule.angeboten && this.isAnmeldungEditable();
     }
 
-    public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any, ev: Event): any {
+    public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
+                    ev: Event): any {
         // Der Wert ist im Moment noch nicht gesetzt!
         if (modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
@@ -380,7 +386,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSBelegungTagesschuleModulIntervallValues();
     }
 
-    public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall) {
+    public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
         modul.intervall = intervall;
     }
 }
