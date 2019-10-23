@@ -779,9 +779,10 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testRemoveGesuchResetAnmeldungen() {
 		Gesuch erstgesuch = createSimpleVerfuegtesGesuch();
-
+		Gesuchsperiode gesuchsperiode = erstgesuch.getGesuchsperiode();
 		//add Anmeldungen
-		AnmeldungTagesschule betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
+		AnmeldungTagesschule betreuung =
+			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 		betreuungService.saveAnmeldungTagesschule(betreuung, false);

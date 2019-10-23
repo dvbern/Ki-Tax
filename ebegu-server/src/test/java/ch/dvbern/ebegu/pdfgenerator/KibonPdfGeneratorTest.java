@@ -33,6 +33,8 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
@@ -62,6 +64,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private List<DokumentGrund> benoetigteUnterlagen;
 	private Gesuch gesuch_alleinstehend;
 	private Gesuch gesuch_verheiratet;
+	private Gesuch gesuch_tagesschule;
 
 	private Mahnung mahnung_1_Alleinstehend;
 	private Mahnung mahnung_1_Verheiratet;
@@ -96,6 +99,9 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		mahnung_2_Verheiratet =
 			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_verheiratet, LocalDate.now().plusDays(20), 4);
 		FileUtils.forceMkdir(new File(pfad));
+
+		gesuch_tagesschule = TestDataUtil.createTestfall11_SchulamtOnly();
+		gesuch_tagesschule.getDossier().setVerantwortlicherTS(defaultBenutzer);
 	}
 
 	@Test
@@ -228,6 +234,20 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final MahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
+	}
+
+	@Test
+	public void createAnmeldebestaetigungTSOhneTarif() throws FileNotFoundException, InvoiceGeneratorException {
+		KindContainer kindContainer = gesuch_tagesschule.getKindContainers().iterator().next();
+		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
+			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF,kindContainer,
+			kindContainer.getAnmeldungenTagesschule().iterator().next());
+		generator.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_ohneTarif.pdf"));
+
+		final AnmeldebestaetigungTSPDFGenerator generator2 = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
+			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF,kindContainer,
+			kindContainer.getAnmeldungenTagesschule().iterator().next());
+		generator2.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_mitTarif.pdf"));
 	}
 
 	private Betreuung getFirstBetreuung(@Nonnull Gesuch gesuch) {

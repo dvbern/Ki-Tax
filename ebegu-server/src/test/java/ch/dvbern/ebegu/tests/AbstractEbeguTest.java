@@ -176,11 +176,12 @@ public abstract class AbstractEbeguTest {
 	 * Helper für init. Speichert Traegerschaften, Mandant und Institution in DB
 	 */
 	protected Mandant insertInstitutionen() {
+		final Gesuchsperiode gesuchsperiode = createGesuchsperiode();
 
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		final InstitutionStammdaten institutionStammdatenTagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();
-		final InstitutionStammdaten institutionStammdatenTagesschuleBern = TestDataUtil.createInstitutionStammdatenTagesschuleBern();
+		final InstitutionStammdaten institutionStammdatenTagesschuleBern = TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode);
 		final InstitutionStammdaten institutionStammdatenFerieninselGuarda = TestDataUtil.createInstitutionStammdatenFerieninselGuarda();
 
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
