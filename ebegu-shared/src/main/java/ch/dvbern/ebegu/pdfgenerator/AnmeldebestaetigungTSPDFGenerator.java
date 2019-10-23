@@ -146,7 +146,9 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				gebuhren.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				gebuhren.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				document.add(gebuhren);
-				document.add(createGebuehrenTable());
+				PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+				fillGebuehrenTable(gebuehrenTable);
+				document.add(gebuehrenTable);
 				Paragraph endCommunicationTitle = new Paragraph();
 				endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
 					getPageConfiguration().getFontBold()));
@@ -278,7 +280,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		return table;
 	}
 
-	public PdfPTable createGebuehrenTable() {
+	public PdfPTable createGebuehrenTableHeader(){
 		PdfPTable table = new PdfPTable(6);
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setWidths(new int[] { 30, 30, 30, 30, 30, 30 });
@@ -290,6 +292,10 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(PdfUtil.createTitleCell(translate(GEBUEHR_PRO_STUNDE)));
 		table.addCell(PdfUtil.createTitleCell(translate(VERPFLEGUNGSKOSTEN_PRO_WOCHE)));
 		table.addCell(PdfUtil.createTitleCell(translate(TOTAL_PRO_WOCHE)));
+		return table;
+	}
+
+	public void fillGebuehrenTable(PdfPTable table) {
 
 		int startJahr = this.getGesuch().getGesuchsperiode().getBasisJahr();
 
@@ -342,7 +348,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(new Phrase(CHF + gebuehrProStundeSecondPeriod.toString(), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(CHF + verpflegKostenProWoche.toString(), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(CHF + totalKostenSecondPeriod.toString(), getPageConfiguration().getFont()));
-		return table;
 	}
 
 	private PdfPCell getCellForDay(boolean isSelected) {
