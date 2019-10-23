@@ -20,6 +20,7 @@ import java.time.Month;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -76,7 +77,7 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 		AnmeldungTagesschule anmeldungTagesschule =
 			createTagesschuleAnmeldung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		anmeldungTagesschule.setKind(kind1);
-		Set<AnmeldungTagesschule> anmeldungTSSet = new HashSet();
+		Set<AnmeldungTagesschule> anmeldungTSSet = new TreeSet();
 		anmeldungTSSet.add(anmeldungTagesschule);
 		kind1.setAnmeldungenTagesschule(anmeldungTSSet);
 

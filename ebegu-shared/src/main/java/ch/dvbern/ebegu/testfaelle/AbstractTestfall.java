@@ -21,9 +21,9 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -354,7 +354,7 @@ public abstract class AbstractTestfall {
 		ModulTagesschuleGroup modulTagesschuleGroup = modTSGroupIterator.next();
 		Set<ModulTagesschule> modulTagesschuleSet = modulTagesschuleGroup.getModule();
 
-		Set<ModulTagesschule> modulTagesschuleBelegungSet = new HashSet();
+		Set<ModulTagesschule> modulTagesschuleBelegungSet = new TreeSet();
 		Iterator<ModulTagesschule> modulTagesschuleIterator = modulTagesschuleSet.iterator();
 		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
 		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());

@@ -532,14 +532,14 @@ public final class TestDataUtil {
 		nachmittag.setEinstellungenTagesschule(einstellungenTagesschule);
 		mittag.setEinstellungenTagesschule(einstellungenTagesschule);
 
-		Set<ModulTagesschuleGroup> modulTSGroupSet = new HashSet<>();
+		Set<ModulTagesschuleGroup> modulTSGroupSet = new TreeSet<>();
 		modulTSGroupSet.add(vormittag);
 		modulTSGroupSet.add(mittag);
 		modulTSGroupSet.add(nachmittag);
 
 		einstellungenTagesschule.setModulTagesschuleGroups(modulTSGroupSet);
 
-		Set<EinstellungenTagesschule> einstellungenTagesschuleSet = new HashSet<>();
+		Set<EinstellungenTagesschule> einstellungenTagesschuleSet = new TreeSet<>();
 		einstellungenTagesschuleSet.add(einstellungenTagesschule);
 		institutionStammdatenTagesschule.setEinstellungenTagesschule(einstellungenTagesschuleSet);
 
@@ -565,7 +565,7 @@ public final class TestDataUtil {
 		mtg.setZeitBis(LocalTime.of(stopHour,stopMinute));
 
 		//modul Tagesschule
-		Set<ModulTagesschule> modulTSSet = new HashSet<>();
+		Set<ModulTagesschule> modulTSSet = new TreeSet<>();
 
 		ModulTagesschule monday = new ModulTagesschule();
 		monday.setWochentag(DayOfWeek.MONDAY);
