@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -45,6 +46,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -118,14 +120,18 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			document.add(PdfUtil.createParagraph(translate(ANMELDUNG_BESTAETIGUNG_INTRO_MODULE)));
 			document.add(createBetreuungsangeboteTable());
 			//Bemerkung
-			//if Bemerkung dann display the Bemerkungen TODO Bemerkung noch nicht im DB
-			Paragraph bemerkungTitleParagraph = new Paragraph();
-			bemerkungTitleParagraph.add(new Phrase(translate(BEMERKUNG), getPageConfiguration().getFont()));
-			bemerkungTitleParagraph.setSpacingAfter(0);
-			Paragraph bemerkungParagraph = new Paragraph();
-			bemerkungParagraph.add(new Phrase("- TODO not in database yet", getPageConfiguration().getFont()));
-			document.add(bemerkungTitleParagraph);
-			document.add(bemerkungParagraph);
+			if (anmeldungTagesschule.getBelegungTagesschule() != null &&
+				StringUtils.isNotEmpty(anmeldungTagesschule.getBelegungTagesschule().getBemerkung()))
+			{
+				Paragraph bemerkungTitleParagraph = new Paragraph();
+				bemerkungTitleParagraph.add(new Phrase(translate(BEMERKUNG), getPageConfiguration().getFont()));
+				bemerkungTitleParagraph.setSpacingAfter(0);
+				Paragraph bemerkungParagraph = new Paragraph();
+				bemerkungParagraph.add(new Phrase( "- " + anmeldungTagesschule.getBelegungTagesschule().getBemerkung(),
+					getPageConfiguration().getFont()));
+				document.add(bemerkungTitleParagraph);
+				document.add(bemerkungParagraph);
+			}
 
 			if (art == Art.OHNE_TARIF) {
 				Paragraph bestaetigungOhneTarifParagraph = new Paragraph();
@@ -212,16 +218,16 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(PdfUtil.createTitleCell(translate(DONNERSTAG)));
 		table.addCell(PdfUtil.createTitleCell(translate(FREITAG)));
 
-		if (anmeldungTagesschule.getBelegungTagesschule() != null && anmeldungTagesschule.getBelegungTagesschule().getModuleTagesschule() != null) {
+		if (anmeldungTagesschule.getBelegungTagesschule() != null && anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule() != null) {
 			Map<String, List<ModulTagesschule>> tagesschuleModuleMap = new HashMap();
-			anmeldungTagesschule.getBelegungTagesschule().getModuleTagesschule().forEach(modulTagesschule -> {
+			anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule().forEach(belegungTagesschuleModul -> {
 				List<ModulTagesschule> modulTagesschuleList =
-					tagesschuleModuleMap.get(modulTagesschule.getModulTagesschuleGroup().getId());
+					tagesschuleModuleMap.get(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId());
 				if (modulTagesschuleList == null) {
 					modulTagesschuleList = new ArrayList();
 				}
-				modulTagesschuleList.add(modulTagesschule);
-				tagesschuleModuleMap.put(modulTagesschule.getModulTagesschuleGroup().getId(), modulTagesschuleList);
+				modulTagesschuleList.add(belegungTagesschuleModul.getModulTagesschule());
+				tagesschuleModuleMap.put(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId(), modulTagesschuleList);
 			});
 
 			tagesschuleModuleMap.forEach((k, v) -> {
@@ -255,7 +261,10 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 					}
 				}
 				assert mtg != null;
-				table.addCell(new Phrase(mtg.getBezeichnung(), getPageConfiguration().getFont()));
+				boolean isFrench = "fr".equalsIgnoreCase(sprache.getLanguage());
+				table.addCell(new Phrase(isFrench ? mtg.getBezeichnung().getTextFranzoesisch() :
+					mtg.getBezeichnung().getTextDeutsch(),
+					getPageConfiguration().getFont()));
 				table.addCell(new Phrase(mtg.getZeitVon().format(Constants.HOURS_FORMAT) + "-" + mtg.getZeitBis().format(Constants.HOURS_FORMAT), getPageConfiguration().getFont()));
 				table.addCell(getCellForDay(monday));
 				table.addCell(getCellForDay(tuesday));
@@ -288,8 +297,9 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		int stundenProWoche = 0;
 		int minutesProWoche = 0;
 		BigDecimal verpflegKostenProWoche = new BigDecimal("0.0");
-		for (ModulTagesschule modulTagesschule :
-			anmeldungTagesschule.getBelegungTagesschule().getModuleTagesschule()) {
+		for (BelegungTagesschuleModul belegungTagesschuleModul :
+			anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
+			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
 			int hours = modulTagesschule.getModulTagesschuleGroup().getZeitVon().getHour();
 			int minutes = modulTagesschule.getModulTagesschuleGroup().getZeitVon().getMinute();
 			LocalTime zeitBis = modulTagesschule.getModulTagesschuleGroup().getZeitBis();

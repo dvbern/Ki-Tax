@@ -101,6 +101,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -511,15 +512,25 @@ public final class TestDataUtil {
 		institutionStammdatenTagesschule.setGemeinde(createGemeindeParis());
 
 		//modul Tagesschule Group Vormittag
-		ModulTagesschuleGroup vormittag = createModulTagesschuleGroup("Vormittag", ModulTagesschuleIntervall.WOECHENTLICH,
+		TextRessource vormittagText = new TextRessource();
+		vormittagText.setTextDeutsch("Vormittag");
+		vormittagText.setTextFranzoesisch("Matin");
+		ModulTagesschuleGroup vormittag = createModulTagesschuleGroup(vormittagText ,
+			ModulTagesschuleIntervall.WOECHENTLICH,
 			"4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuX", "3.00", 8, 0, 12,0);
 
 		//modul Tagesschule Group Nachmittag
-		ModulTagesschuleGroup nachmittag = createModulTagesschuleGroup("nachmittag", ModulTagesschuleIntervall.WOECHENTLICH,
+		TextRessource nachmittagText = new TextRessource();
+		nachmittagText.setTextDeutsch("Nachmittag");
+		nachmittagText.setTextFranzoesisch("Après-midi");
+		ModulTagesschuleGroup nachmittag = createModulTagesschuleGroup(nachmittagText, ModulTagesschuleIntervall.WOECHENTLICH,
 			"4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuY", null, 13, 0, 16,0);
 
 		//modul Tagesschule Group Mittag
-		ModulTagesschuleGroup mittag = createModulTagesschuleGroup("mittag", ModulTagesschuleIntervall.WOECHENTLICH,
+		TextRessource mittagText = new TextRessource();
+		mittagText.setTextDeutsch("Mittag");
+		mittagText.setTextFranzoesisch("Midi");
+		ModulTagesschuleGroup mittag = createModulTagesschuleGroup(mittagText, ModulTagesschuleIntervall.WOECHENTLICH,
 			"4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuZ", "10.00", 12, 0, 13,0);
 
 		//Einstellungen Tagesschule
@@ -548,7 +559,7 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
-	private static ModulTagesschuleGroup createModulTagesschuleGroup(@Nonnull String bezeichnung,
+	private static ModulTagesschuleGroup createModulTagesschuleGroup(@Nonnull TextRessource bezeichnung,
 		@Nonnull ModulTagesschuleIntervall intervall, @Nonnull String identifier,@Nullable String verpflegungskosten, @Nonnull int startHour,
 		@Nonnull int startMinute, @Nonnull int stopHour, @Nonnull int stopMinute){
 		ModulTagesschuleGroup mtg = new ModulTagesschuleGroup();

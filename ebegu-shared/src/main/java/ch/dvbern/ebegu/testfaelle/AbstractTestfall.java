@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
@@ -62,6 +63,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -341,6 +343,8 @@ public abstract class AbstractTestfall {
 
 		BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
 		belegungTagesschule.setEintrittsdatum(LocalDate.of(2017, Month.AUGUST, 1));
+		belegungTagesschule.setAbholungTagesschule(AbholungTagesschule.ALLEINE_NACH_HAUSE);
+		belegungTagesschule.setBemerkung("Mein Kind isst kein Fleisch");
 
 		assert anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule() != null;
 		Set<EinstellungenTagesschule> einstellungenTagesschuleSet =
@@ -354,20 +358,26 @@ public abstract class AbstractTestfall {
 		ModulTagesschuleGroup modulTagesschuleGroup = modTSGroupIterator.next();
 		Set<ModulTagesschule> modulTagesschuleSet = modulTagesschuleGroup.getModule();
 
-		Set<ModulTagesschule> modulTagesschuleBelegungSet = new TreeSet();
+		Set<BelegungTagesschuleModul> belegungTagesschuleModulSet = new TreeSet();
 		Iterator<ModulTagesschule> modulTagesschuleIterator = modulTagesschuleSet.iterator();
-		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
-		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
-		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
+		for(int i = 0; i < 3; i++){
+			BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+			belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+			belegungTagesschuleModul.setModulTagesschule(modulTagesschuleIterator.next());
+			belegungTagesschuleModulSet.add(belegungTagesschuleModul);
+		}
 
 		modulTagesschuleGroup = modTSGroupIterator.next();
 		modulTagesschuleSet = modulTagesschuleGroup.getModule();
 		modulTagesschuleIterator = modulTagesschuleSet.iterator();
-		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
-		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
-		modulTagesschuleBelegungSet.add(modulTagesschuleIterator.next());
+		for(int i = 0; i < 3; i++){
+			BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+			belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+			belegungTagesschuleModul.setModulTagesschule(modulTagesschuleIterator.next());
+			belegungTagesschuleModulSet.add(belegungTagesschuleModul);
+		}
 
-		belegungTagesschule.setModuleTagesschule(modulTagesschuleBelegungSet);
+		belegungTagesschule.setBelegungTagesschuleModule(belegungTagesschuleModulSet);
 
 		anmeldungTagesschule.setBelegungTagesschule(belegungTagesschule);
 		return anmeldungTagesschule;
