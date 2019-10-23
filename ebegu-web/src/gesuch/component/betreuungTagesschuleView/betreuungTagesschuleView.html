@@ -119,7 +119,7 @@
                         <div class="dv-ebegu-calendar__wrapper">
                             <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
 
-                                <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1 dv-tagesschule-row-text"
+                                <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
                                      ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
                                     <md-menu>
                                         <md-checkbox
@@ -129,8 +129,8 @@
                                             ng-disabled="!vm.isModuleEditable(mod)"
                                             ng-click="vm.openMenu(mod, group, $mdMenu, $event)"
                                             class="dv-ebegu-calendar--tagesschule">
+                                            <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
                                         </md-checkbox>
-                                        {{mod.intervall | translate}}
                                         <md-menu-content width="4">
                                             <md-menu-item ng-repeat="interval in vm.getIntervalle()">
                                                 <md-button ng-click="vm.setIntervall(mod, interval)">

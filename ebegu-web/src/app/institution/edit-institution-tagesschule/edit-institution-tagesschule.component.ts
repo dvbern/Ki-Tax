@@ -119,6 +119,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         }
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {modulTagesschuleGroup: group};
+        dialogConfig.panelClass = 'dv-mat-dialog-ts';
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
         this.dialog.open(ModulTagesschuleDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
             if (EbeguUtil.isNotNullOrUndefined(result)) {
