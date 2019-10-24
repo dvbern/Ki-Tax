@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -364,6 +365,7 @@ public abstract class AbstractTestfall {
 			BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
 			belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
 			belegungTagesschuleModul.setModulTagesschule(modulTagesschuleIterator.next());
+			belegungTagesschuleModul.setIntervall(BelegungTagesschuleModulIntervall.WOECHENTLICH);
 			belegungTagesschuleModulSet.add(belegungTagesschuleModul);
 		}
 
@@ -374,6 +376,7 @@ public abstract class AbstractTestfall {
 			BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
 			belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
 			belegungTagesschuleModul.setModulTagesschule(modulTagesschuleIterator.next());
+			belegungTagesschuleModul.setIntervall(BelegungTagesschuleModulIntervall.WOECHENTLICH);
 			belegungTagesschuleModulSet.add(belegungTagesschuleModul);
 		}
 
