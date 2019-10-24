@@ -32,6 +32,8 @@ import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxBelegungTagesschuleModul extends JaxAbstractDTO {
 
+	private static final long serialVersionUID = -841132022111944954L;
+
 	@NotNull @Nonnull
 	private BelegungTagesschuleModulIntervall intervall;
 
