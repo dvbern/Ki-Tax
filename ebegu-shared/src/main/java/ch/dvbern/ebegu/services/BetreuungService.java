@@ -207,15 +207,15 @@ public interface BetreuungService {
 	void sendInfoOffenePendenzenInstitution();
 
 	/**
-	 * entfernt eine Anmeldung aus der Database
+	 * entfernt eine Anmeldung aus der Datenbank
 	 *
-	 * @param betreuungId Id der Betreuung zu entfernen
+	 * @param betreuungId Id der zu entfernenden Betreuung
 	 */
 	void removeAnmeldung(@Nonnull String anmeldungId);
 
 	/**
-	 * entfernt eine Anmeldung aus der Databse. Um diese Methode aufzurufen muss man sich vorher vergewissern, dass die
-	 * Anmeldung existiert
+	 * entfernt eine Anmeldung aus der Datenbank. Um diese Methode aufzurufen muss man sich vorher vergewissern, dass
+	 * die Anmeldung existiert
 	 */
 	void removeAnmeldung(@Nonnull AbstractAnmeldung anmeldung);
 }
