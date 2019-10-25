@@ -4,7 +4,7 @@ alter table belegung_tagesschule add if not exists bemerkung varchar(4000);
 alter table belegung_tagesschule add if not exists plan_klasse varchar(255);
 
 alter table belegung_tagesschule_aud add if not exists abholung_tagesschule varchar(255);
-alter table belegung_tagesschule_aud add if not existsabweichung_zweites_semester bit;
+alter table belegung_tagesschule_aud add if not exists abweichung_zweites_semester bit;
 alter table belegung_tagesschule_aud add if not exists bemerkung varchar(4000);
 alter table belegung_tagesschule_aud add if not exists plan_klasse varchar(255);
 
