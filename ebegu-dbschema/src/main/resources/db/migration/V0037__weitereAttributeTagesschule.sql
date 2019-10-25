@@ -17,7 +17,7 @@ delete from ebegu.modul_tagesschule_group_aud;
 delete from ebegu.modul_tagesschule_group;
 
 alter table modul_tagesschule_group_aud drop if exists bezeichnung;
-alter table modul_tagesschule_group_aud if not exists add bezeichnung_id binary(16) not null;
+alter table modul_tagesschule_group_aud add if not exists bezeichnung_id binary(16) not null;
 
 alter table modul_tagesschule_group
 	add constraint UK_bezeichnung_id unique (bezeichnung_id);
