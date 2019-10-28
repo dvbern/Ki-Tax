@@ -174,8 +174,14 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <span class="ebeguH1 required">
-                                    <span data-translate="FAM_ERGAENZENDE_BETREUUNG"></span>
+                                    <span ng-if="vm.hasAngebotBGOnly()"
+                                          data-translate="FAM_ERGAENZENDE_BETREUUNG"></span>
+                                    <span ng-if="vm.hasAngebotTSOnly()"
+                                          data-translate="FAM_ERGAENZENDE_BETREUUNG_TS"></span>
+                                    <span ng-if="vm.hasAngebotBGAndTS()"
+                                          data-translate="FAM_ERGAENZENDE_BETREUUNG_BEIDE"></span>
                                 </span>
+                                <!-- TODO @Franzi warum ist der check anders bei der Text als bei der Checkbox? -->
                                 <span
                                     ng-if="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && vm.hasKindBetreuungen()"
                                     class="inlineHint"

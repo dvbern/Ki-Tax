@@ -173,6 +173,20 @@
                         </dv-input-container>
                     </div>
                 </div>
+                <div class="row marginTop30">
+                    <div class="col-sm-12 dv-input-container-question">
+                        <md-checkbox class="checkbox"
+                                     ng-model="vm.agbTSAkzeptiert"
+                                     name="agbTSAkzeptiert"
+                                     id="agbTSAkzeptiert"
+                                     aria-label="{{'BETREUUNG_TAGESSCHULE_AGB' | translate}}"
+                                     ng-disabled="vm.isGesuchReadonly()"
+                                     ng-required="true">
+                            <span data-translate="BETREUUNG_TAGESSCHULE_AGB"></span>
+                        </md-checkbox>
+                        <dv-error-messages input-id="agbTSAkzeptiert" for="vm.form.agbTSAkzeptiert.$error"></dv-error-messages>
+                    </div>
+                </div>
             </div>
         </div>
 

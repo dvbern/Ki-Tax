@@ -103,6 +103,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
+    public agbTSAkzeptiert: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -182,6 +183,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         ) {
             return;
         }
+        // TODO here are the belegungTagesschule Object empty, dunno why but it's like that for 2019/20 and not 2020/21
         const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
         const moduleAngeboten = this.loadAngeboteneModuleForTagesschule();
 
