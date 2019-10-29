@@ -97,21 +97,19 @@ p {
     }
 }
 
-.onboarding-big-red-button{
+.onboarding-big-red-button {
     color: #FFFFFF;
     font-family: "Open Sans";
     font-size: 14px;
     letter-spacing: 0.5px;
     line-height: 19px;
     text-align: center;
-    padding: 0 6.5rem 0;
     height: 6rem;
     text-transform: uppercase;
 }
 
 .onboarding-red-border-button {
     margin-bottom: 4rem;
-    padding: 0 12.4rem 0;
     height: 6rem;
     border-color: red;
     background-color: white;
@@ -121,6 +119,7 @@ p {
     letter-spacing: 0.5px;
     line-height: 19px;
     text-align: center;
+    text-transform: uppercase;
 }
 
 .onboarding-info-gem-padding {
@@ -235,6 +234,10 @@ and (-webkit-min-device-pixel-ratio: 3), only screen
 and (max-device-width: 640px), only screen
 and (max-device-width: 667px), only screen
 and (max-width: 480px) {
+
+    .onboarding-big-red-button {
+        font-size: 12px;
+    }
 
     .onboarding-gemeinde-container {
         display: flex;
