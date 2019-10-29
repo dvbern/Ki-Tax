@@ -20,6 +20,7 @@ import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -81,5 +82,11 @@ public class KitaRechner extends AbstractBGRechner {
 		@Nonnull Boolean besonderebeduerfnisse) {
 
 		return besonderebeduerfnisse ? parameterDTO.getZuschlagBehinderungProTg() : BigDecimal.ZERO;
+	}
+
+	@Override
+	@Nonnull
+	protected PensumUnits getZeiteinheit() {
+		return PensumUnits.DAYS;
 	}
 }

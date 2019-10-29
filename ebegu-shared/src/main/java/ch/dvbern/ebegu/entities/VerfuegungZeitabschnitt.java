@@ -44,6 +44,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.rules.RuleKey;
@@ -145,6 +146,25 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = false)
 	private int anspruchberechtigtesPensum; // = Anpsruch für diese Kita, bzw. Tageseltern Kleinkinder
 
+	@Transient // until nullability is clear
+	@Nullable
+	@Min(0)
+//	@Column(nullable = true)
+	private BigDecimal verfuegteAnzahlZeiteinheiten;
+
+	@Transient // until nullability is clear
+	@Nullable
+	@Min(0)
+//	@Column(nullable = true)
+	private BigDecimal anspruchsberechtigteAnzahlZeiteinheiten;
+
+	@Transient // until nullability is clear
+	@Nullable
+	@Enumerated(EnumType.STRING)
+//	@Column(nullable = true)
+	private PensumUnits zeiteinheit;
+
+	// TODO unused in kibon -> remove?
 	@Column(nullable = true)
 	private BigDecimal betreuungsstunden = BigDecimal.ZERO;
 
@@ -794,6 +814,33 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public int getAnspruchberechtigtesPensum() {
 		return anspruchberechtigtesPensum;
+	}
+
+	@Nullable
+	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
+		return verfuegteAnzahlZeiteinheiten;
+	}
+
+	public void setVerfuegteAnzahlZeiteinheiten(@Nullable BigDecimal verfuegteAnzahlZeiteinheiten) {
+		this.verfuegteAnzahlZeiteinheiten = verfuegteAnzahlZeiteinheiten;
+	}
+
+	@Nullable
+	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
+		return anspruchsberechtigteAnzahlZeiteinheiten;
+	}
+
+	public void setAnspruchsberechtigteAnzahlZeiteinheiten(@Nullable BigDecimal anspruchsberechtigteAnzahlZeiteinheiten) {
+		this.anspruchsberechtigteAnzahlZeiteinheiten = anspruchsberechtigteAnzahlZeiteinheiten;
+	}
+
+	@Nullable
+	public PensumUnits getZeiteinheit() {
+		return zeiteinheit;
+	}
+
+	public void setZeiteinheit(@Nullable PensumUnits zeiteinheit) {
+		this.zeiteinheit = zeiteinheit;
 	}
 
 	/**
