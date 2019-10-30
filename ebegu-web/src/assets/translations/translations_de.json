@@ -433,6 +433,8 @@
     "UMZUG_LOESCHEN": "Wollen Sie die Umzugsadresse wirklich löschen?",
     "ABWESENHEIT_LOESCHEN": "Wollen Sie die Abwesenheit wirklich löschen?",
     "FAM_ERGAENZENDE_BETREUUNG": "Möchten Sie für das Kind einen Betreuungsgutschein beantragen?",
+    "FAM_ERGAENZENDE_BETREUUNG_TS": "Möchten Sie das Kind für die Tagesschule anmelden?",
+    "FAM_ERGAENZENDE_BETREUUNG_BEIDE": "Möchten Sie für das Kind einen Betreuungsgutschein beantragen oder das Kind für die Tagesschule anmelden?",
     "SPRICHT_AMTSSPRACHE": "Wird in Ihrer Familie {{amtssprache}} gesprochen?",
     "EINSCHULUNG": "Welche Klasse wird Ihr Kind ab August {{jahr}} besuchen?",
     "FACHSTELLE": "Fachstelle",
@@ -1734,6 +1736,7 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX": "Benötigt Ihr Kind im 2. Semester andere Betreuungszeiten, weil sich der Stundenplan ändert?",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Bitte Änderung der Betreuungszeiten oder allfällige Fragen/Anmerkungen hier angeben",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
+    "BETREUUNG_TAGESSCHULE_AGB": "Ich habe<a href='dummy.pdf' target='_blank'> das Merkblatt zur Anmeldung in die Tagesschule gelesen</a> und zur Kenntnis genommen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
