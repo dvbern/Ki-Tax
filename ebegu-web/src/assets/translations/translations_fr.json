@@ -934,7 +934,7 @@
     "BESCHWERDE_HAENGIG": "Recours pendant",
     "BESCHWERDE_ABSCHLIESSEN": "Terminer le recours",
     "GESUCH_ABSCHLIESSEN": "Fermer la demande",
-    "BESCHREIBUNG_GESUCH_ABSCHLIESSEN": "Voulez-vous vraiment conclure votre demande ? Si vous cliquez sur \"oui\", le statut de la demande passe à \"tarif calculé\" et ne peut plus être modifié.",
+    "BESCHREIBUNG_GESUCH_ABSCHLIESSEN": "Voulez-vous vraiment conclure votre demande ? Si vous cliquez sur \"oui\", le statut de la demande passe à \"Tarif calculé\" et ne peut plus être modifié.",
     "ABGESCHLOSSEN": "Terminé",
     "CONFIRM_GESUCH_STATUS_GEPRUEFT": "Voulez-vous vraiment marquer la demande comme \"vérifiée\" ?",
     "CONFIRM_GESUCH_STATUS_VERFUEGEN": "Voulez-vous vraiment démarrer le processus de décision ?",
