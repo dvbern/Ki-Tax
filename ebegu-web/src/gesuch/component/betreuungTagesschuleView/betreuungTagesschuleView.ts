@@ -142,8 +142,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public $onInit(): void {
         this.loadModule();
-        this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
-        this.setErsterSchultag();
+        if (this.betreuung.isEnabled()) {
+            this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
+            this.setErsterSchultag();
+        }
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
             return;
         }
