@@ -404,7 +404,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch schulamtGesuch = persistNewNurSchulamtGesuchEntity(AntragStatus.IN_BEARBEITUNG_GS);
 
-		Assert.assertEquals(1, schulamtGesuch.getKindContainers().size());
+		Assert.assertEquals(2, schulamtGesuch.getKindContainers().size());
 		Assert.assertTrue(schulamtGesuch.hasOnlyBetreuungenOfSchulamt());
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(schulamtGesuch, AntragStatus.FREIGABEQUITTUNG);
 
@@ -1055,18 +1055,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistTestfall11_SchulamtOnly(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
 		wizardStepService.createWizardStepList(gesuch);
-		gesuch.getKindContainers().stream()
-			.flatMap(kindContainer -> {
-				assert kindContainer.getBetreuungen() != null;
-				return kindContainer.getBetreuungen().stream();
-			})
-			.forEach((betreuung)
-				-> {
-				betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
-				persistence.merge(betreuung.getInstitutionStammdaten());
-			});
 		return persistence.merge(gesuch);
 	}
 

@@ -103,6 +103,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
+    public agbTSAkzeptiert: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -141,8 +142,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public $onInit(): void {
         this.loadModule();
-        this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
-        this.setErsterSchultag();
+        if (this.betreuung.isEnabled()) {
+            this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
+            this.setErsterSchultag();
+        }
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
             return;
         }

@@ -708,10 +708,19 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (institution == null) {
 			return false;
 		}
-		return kindContainers.stream()
+		boolean hasBetreuungsKitaTagesfamillie = kindContainers.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.anyMatch(betreuung -> betreuung.getInstitutionStammdaten().getInstitution().equals(institution));
 
+		boolean hasBetreuungsTagesschule = kindContainers.stream()
+			.flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
+			.anyMatch(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getInstitution().equals(institution));
+
+		boolean hasBetreuungsFerienInselt = kindContainers.stream()
+			.flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
+			.anyMatch(anmeldungFerieninsel -> anmeldungFerieninsel.getInstitutionStammdaten().getInstitution().equals(institution));
+
+		return hasBetreuungsKitaTagesfamillie || hasBetreuungsTagesschule || hasBetreuungsFerienInselt;
 	}
 
 	/**
@@ -723,8 +732,16 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		//noinspection SimplifyStreamApiCallChains
 		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.collect(Collectors.toList());
-		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
-			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt());
+
+		List<AnmeldungTagesschule> anmeldungTagesschules =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
+			.collect(Collectors.toList());
+
+		List<AnmeldungFerieninsel> anmeldungFerienInsel =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
+				.collect(Collectors.toList());
+
+		return allBetreuungen.isEmpty() && (!anmeldungTagesschules.isEmpty() || !anmeldungFerienInsel.isEmpty());
 	}
 
 	/**
@@ -736,8 +753,16 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		//noinspection SimplifyStreamApiCallChains
 		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.collect(Collectors.toList());
-		return !allBetreuungen.isEmpty() && allBetreuungen.stream()
-			.allMatch(betreuung -> Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt());
+
+		List<AnmeldungTagesschule> anmeldungTagesschules =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
+				.collect(Collectors.toList());
+
+		List<AnmeldungFerieninsel> anmeldungFerienInsel =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
+				.collect(Collectors.toList());
+
+		return !allBetreuungen.isEmpty() && anmeldungTagesschules.isEmpty() && anmeldungFerienInsel.isEmpty();
 	}
 
 	@Transient
@@ -755,20 +780,21 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	public boolean hasBetreuungOfJugendamt() {
-		return kindContainers.stream()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.anyMatch(betreuung -> {
-				return betreuung.getBetreuungsangebotTyp().isJugendamt();
-			});
+		List<Betreuung> allBetreuungen = kindContainers.stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+			.collect(Collectors.toList());
+		return !allBetreuungen.isEmpty();
 	}
 
 	@Transient
 	public boolean hasBetreuungOfSchulamt() {
-		return kindContainers.stream()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.anyMatch(betreuung -> {
-				return betreuung.getBetreuungsangebotTyp().isSchulamt();
-			});
+		List<AnmeldungTagesschule> anmeldungTagesschules =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenTagesschule().stream())
+				.collect(Collectors.toList());
+
+		List<AnmeldungFerieninsel> anmeldungFerienInsel =
+			kindContainers.stream().flatMap(kindContainer -> kindContainer.getAnmeldungenFerieninsel().stream())
+				.collect(Collectors.toList());
+		return !anmeldungTagesschules.isEmpty() ||!anmeldungFerienInsel.isEmpty();
 	}
 
 	@Nullable
