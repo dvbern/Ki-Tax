@@ -324,8 +324,7 @@ public class InstitutionResource {
 	}
 
 	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "
-		+ "Retruns " +
-		"all for admins", responseContainer = "List", response = JaxInstitution.class)
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
 	@Path("/editable/currentuser")
@@ -338,8 +337,7 @@ public class InstitutionResource {
 	}
 
 	@ApiOperation(value = "Find and return a list of all readable Institutionen of the currently logged in Benutzer. "
-		+ "Retruns " +
-		"all for admins", responseContainer = "List", response = JaxInstitution.class)
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
 	@Path("/readable/currentuser")
