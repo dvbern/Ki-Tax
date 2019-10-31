@@ -934,7 +934,7 @@
     "BESCHWERDE_HAENGIG": "Beschwerde hängig",
     "BESCHWERDE_ABSCHLIESSEN": "Beschwerde abschliessen",
     "GESUCH_ABSCHLIESSEN": "Gesuch abschliessen",
-    "BESCHREIBUNG_GESUCH_ABSCHLIESSEN": "Möchten Sie das Gesuch wirklich abschliessen? Wenn Sie auf Ja klicken, ändert der Status des Gesuches auf \"Schulamt\" und kann nicht bearbeitet werden.",
+    "BESCHREIBUNG_GESUCH_ABSCHLIESSEN": "Möchten Sie das Gesuch wirklich abschliessen? Wenn Sie auf Ja klicken, ändert der Status des Gesuches auf \"Tarif berechnet\" und kann nicht bearbeitet werden.",
     "ABGESCHLOSSEN": "Abgeschlossen",
     "CONFIRM_GESUCH_STATUS_GEPRUEFT": "Möchten Sie das Gesuch wirklich als \"geprüft\" setzen?",
     "CONFIRM_GESUCH_STATUS_VERFUEGEN": "Möchten Sie den Verfügungsprozess wirklich starten?",
