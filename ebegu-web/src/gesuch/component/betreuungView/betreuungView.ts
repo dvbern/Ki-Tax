@@ -347,7 +347,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const ersterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
         // tslint:disable-next-line:early-exit
         if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
-            && DateUtil.today().isBefore(ersterSchultag)
         ) {
             if (!this.getBetreuungModel().belegungTagesschule) {
                 this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
