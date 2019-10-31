@@ -1656,7 +1656,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		return einstellungenTagesschuleSet.stream()
 			.map(this::einstellungenTagesschuleToJAX)
-			.collect(Collectors.toCollection(TreeSet::new));
+			.collect(Collectors.toSet());
 	}
 
 	@Nonnull
