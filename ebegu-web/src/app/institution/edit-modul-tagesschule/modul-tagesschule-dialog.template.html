@@ -36,8 +36,9 @@
                 <input id="bezeichnungDe" type="text" name="bezeichnungDe"
                        #bezeichnungDe="ngModel"
                        [(ngModel)]="modulTagesschuleGroup.bezeichnung.textDeutsch"
+                       class="form-control"
                        required>
-                <dv-error-messages [errorObject]="bezeichnungDe.errors"
+                <dv-error-messages [errorObject]="form.controls.bezeichnungDe?.errors"
                                    inputId="bezeichnungDe"></dv-error-messages>
             </div>
         </div>
@@ -47,8 +48,9 @@
                 <input id="bezeichnungFr" type="text" name="bezeichnungFr"
                        #bezeichnungFr="ngModel"
                        [(ngModel)]="modulTagesschuleGroup.bezeichnung.textFranzoesisch"
+                       class="form-control"
                        required>
-                <dv-error-messages [errorObject]="bezeichnungFr.errors"
+                <dv-error-messages [errorObject]="form.controls.bezeichnungFr?.errors"
                                    inputId="bezeichnungFr"></dv-error-messages>
             </div>
         </div>
@@ -58,9 +60,10 @@
                 <input id="zeitVon" type="text" name="zeitVon"
                        #zeitVon="ngModel"
                        [(ngModel)]="modulTagesschuleGroup.zeitVon"
+                       class="form-control"
                        required
                        placeholder="HH:mm" [pattern]="patternHoursAndMinutes">
-                <dv-error-messages [errorObject]="zeitVon.errors"
+                <dv-error-messages [errorObject]="form.controls.zeitVon?.errors"
                                    inputId="zeitVon"></dv-error-messages>
             </div>
         </div>
@@ -70,9 +73,10 @@
                 <input id="zeitBis" type="text" name="zeitBis"
                        #zeitBis="ngModel"
                        [(ngModel)]="modulTagesschuleGroup.zeitBis"
+                       class="form-control"
                        required
                        placeholder="HH:mm" [pattern]="patternHoursAndMinutes">
-                <dv-error-messages [errorObject]="zeitBis.errors"
+                <dv-error-messages [errorObject]="form.controls.zeitBis?.errors"
                                    inputId="zeitBis"></dv-error-messages>
             </div>
         </div>
@@ -86,7 +90,7 @@
                        #verpflegungskosten="ngModel"
                        [(ngModel)]="modulTagesschuleGroup.verpflegungskosten">
                 <dv-error-messages [errorObject]="verpflegungskosten.errors"
-                                   inputId="verpflegungskostenId"></dv-error-messages>
+                                   inputId="verpflegungskosten"></dv-error-messages>
             </div>
         </div>
         <div class="col-md-3">
@@ -151,7 +155,7 @@
                     <mat-option *ngFor="let option of getModulTagesschuleIntervallOptions()"
                                 [value]="option">{{option | translate}} </mat-option>
                 </mat-select>
-                <dv-error-messages [errorObject]="intervall.errors"
+                <dv-error-messages [errorObject]="form.controls.intervall?.errors"
                                    inputId="intervall"></dv-error-messages>
             </div>
         </div>
@@ -162,7 +166,7 @@
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button type="button" class="dv-btn" (click)="save()" [textContent]="'OK' | translate"></button>
+        <button class="dv-btn" (click)="save()" [textContent]="'OK' | translate"></button>
         <button type="button" class="dv-btn" (click)="close()" [textContent]="'CANCEL' | translate"></button>
     </div>
 </mat-dialog-actions>

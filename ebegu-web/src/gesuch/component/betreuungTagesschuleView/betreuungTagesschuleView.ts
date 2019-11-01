@@ -104,6 +104,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
     public agbTSAkzeptiert: boolean = false;
+    public isAnmeldenClicked: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -242,8 +243,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     private getModulForDay(group: TSModulTagesschuleGroup, day: TSDayOfWeek): TSModulTagesschule {
         for (const modul of group.module) {
-            if (day === modul.wochentag && modul.id !== undefined) {
-                modul.angeboten = true;
+            if (day === modul.wochentag) {
+                if(modul.id !== undefined){
+                    modul.angeboten = true;
+                }
                 return modul;
             }
         }
@@ -287,6 +290,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
      * Diese Methode wird aufgerufen wenn die Anmeldung erfasst oder gespeichert wird.
      */
     public anmelden(): IPromise<any> {
+        this.isAnmeldenClicked = true;
         if (this.form.$valid) {
             // Die Anmeldungen wieder auf die Betreuung schreiben
             this.preSave();
