@@ -243,12 +243,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     private getModulForDay(group: TSModulTagesschuleGroup, day: TSDayOfWeek): TSModulTagesschule {
         for (const modul of group.module) {
-            if (day === modul.wochentag) {
-                if(modul.id !== undefined){
-                    modul.angeboten = true;
-                }
-                return modul;
+            if (day !== modul.wochentag) {
+                continue;
             }
+            if (modul.id !== undefined) {
+                    modul.angeboten = true;
+            }
+            return modul;
         }
         return undefined;
     }
