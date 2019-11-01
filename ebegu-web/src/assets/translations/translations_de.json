@@ -1738,5 +1738,6 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
     "BETREUUNG_TAGESSCHULE_AGB": "Ich habe<a href='dummy.pdf' target='_blank'> das Merkblatt zur Anmeldung in die Tagesschule gelesen</a> und zur Kenntnis genommen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
+    "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

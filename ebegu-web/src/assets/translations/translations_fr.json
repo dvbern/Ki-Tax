@@ -1738,5 +1738,6 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Remarque",
     "BETREUUNG_TAGESSCHULE_AGB": "J'ai lu et accepté<a href='dummy.pdf' target='_blank'> les conditions d'inscriptions à l'école à journée continue</a>",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Il n'y a pas encore de module configuré pour cette école à journée continue",
+    "ERROR_NO_MODUL_SELECTED": "Il faut sélectionner au moins un jour",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

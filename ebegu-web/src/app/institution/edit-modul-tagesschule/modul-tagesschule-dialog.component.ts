@@ -32,6 +32,7 @@ export class ModulTagesschuleDialogComponent {
     @ViewChild(NgForm) public form: NgForm;
 
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
+    public noDaySelected: boolean = false;
 
     public patternHoursAndMinutes: '[0-9]{1,2}:[0-9]{1,2}';
 
@@ -52,6 +53,9 @@ export class ModulTagesschuleDialogComponent {
             this.modulTagesschuleGroup.validated =  true;
             this.dialogRef.close(this.modulTagesschuleGroup);
         } else {
+            if (this.modulTagesschuleGroup.module.length === 0) {
+                this.noDaySelected = true;
+            }
             this.ngOnInit();
         }
     }
