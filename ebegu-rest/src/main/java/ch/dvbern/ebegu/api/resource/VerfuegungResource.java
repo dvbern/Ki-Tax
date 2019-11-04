@@ -152,29 +152,29 @@ public class VerfuegungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxVerfuegung saveVerfuegung(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdParam,
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungIdParam,
 		@Nonnull @NotNull @PathParam("ignorieren") Boolean ignorieren,
 		@Nonnull @NotNull @Valid JaxVerfuegung verfuegungJAXP) {
 
-		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId.getId());
-		if (gesuch.isPresent()) {
-			Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungId.getId());
-			if (betreuung.isPresent()) {
-				Verfuegung verfuegungToMerge = new Verfuegung(betreuung.get());
-				if (verfuegungJAXP.getId() != null) {
-					Optional<Verfuegung> optional = verfuegungService.findVerfuegung(verfuegungJAXP.getId());
-					verfuegungToMerge = optional.orElse(new Verfuegung(betreuung.get()));
-				}
-				Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
+		String gesuchId = gesuchIdParam.getId();
+		String betreuungId = betreuungIdParam.getId();
+		String method = "saveVerfuegung";
 
-				Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(convertedVerfuegung, betreuung.get().getId(), ignorieren);
+		gesuchService.findGesuch(gesuchId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(method, "GesuchId invalid: " + gesuchId));
+		Betreuung betreuung = betreuungService.findBetreuung(betreuungId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(method, "BetreuungId invalid: " + betreuungId));
 
-				return converter.verfuegungToJax(persistedVerfuegung);
-			}
-			throw new EbeguEntityNotFoundException("saveVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID invalid: " + betreuungId.getId());
-		}
-		throw new EbeguEntityNotFoundException("saveVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId.getId());
+		Verfuegung verfuegungToMerge = Optional.ofNullable(verfuegungJAXP.getId())
+			.flatMap(id -> verfuegungService.findVerfuegung(id))
+			.orElseGet(() -> new Verfuegung(betreuung));
+
+		Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
+
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(convertedVerfuegung, betreuungId, ignorieren);
+
+		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
 	@ApiOperation("Schliesst eine Betreuung ab, ohne sie zu verfuegen")
