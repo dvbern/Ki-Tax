@@ -41,10 +41,12 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import static ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil.MESSAGE_HEADER_EVENT_ID;
 import static ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil.MESSAGE_HEADER_EVENT_TYPE;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
 @Stateless
 public class OutboxEventKafkaProducer {
@@ -81,10 +83,9 @@ public class OutboxEventKafkaProducer {
 		}
 
 		Properties props = new Properties();
-		props.setProperty("bootstrap.servers", ebeguConfiguration.getKafkaURL().get());
-		props.setProperty("acks", "all");
-		props.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-		props.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
+		props.setProperty(ACKS_CONFIG, "all");
+		props.setProperty(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
 		Producer<String, byte[]> producer = new KafkaProducer<>(props);
 
