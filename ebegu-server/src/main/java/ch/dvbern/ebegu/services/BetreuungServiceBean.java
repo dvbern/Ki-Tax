@@ -751,7 +751,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public Collection<AbstractPlatz> getPendenzenBetreuungen() {
 		Collection<AbstractPlatz> pendenzen = new ArrayList<>();
 		Collection<Institution> instForCurrBenutzer =
-			institutionService.getInstitutionenReadableForCurrentBenutzer(true);
+			institutionService.getInstitutionenEditableForCurrentBenutzer(true);
 		if (!instForCurrBenutzer.isEmpty()) {
 			pendenzen.addAll(getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
 			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
