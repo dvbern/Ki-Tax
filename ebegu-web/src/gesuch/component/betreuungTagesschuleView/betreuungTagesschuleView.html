@@ -94,6 +94,23 @@
                     </div>
                 </div>
 
+                <div class="row marginTop30" ng-if="vm.erlaeuterung !== null">
+                    <div class="col-sm-12 dv-input-container-big">
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float" data-translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
+                                   for="erlaeuterung_ID">
+                            </label>
+                            <input name="erlaeuterung"
+                                      class="form-control " rows="6"
+                                      id="erlaeuterung_ID"
+                                      ng-model="vm.erlaeuterung"
+                                      ng-disabled="true"
+                                      maxlength="4000">
+                            </input>
+                        </dv-input-container>
+                    </div>
+                </div>
+
                 <!-- TS-Module -->
                 <div class="dv-ebegu-calendar__wrapper-tagesschule" ng-if="vm.isTagesschuleAlreadySelected()">
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,6 +43,8 @@ public class JaxEinstellungenTagesschule extends JaxAbstractDTO {
 	@NotNull @Nonnull
 	private ModulTagesschuleTyp modulTagesschuleTyp = ModulTagesschuleTyp.DYNAMISCH;
 
+	@Nullable
+	private String erlaeuterung;
 
 	public JaxGesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
@@ -65,5 +68,14 @@ public class JaxEinstellungenTagesschule extends JaxAbstractDTO {
 
 	public void setModulTagesschuleTyp(ModulTagesschuleTyp modulTagesschuleTyp) {
 		this.modulTagesschuleTyp = modulTagesschuleTyp;
+	}
+
+	@Nullable
+	public String getErlaeuterung() {
+		return erlaeuterung;
+	}
+
+	public void setErlaeuterung(@Nullable String erlaeuterung) {
+		this.erlaeuterung = erlaeuterung;
 	}
 }

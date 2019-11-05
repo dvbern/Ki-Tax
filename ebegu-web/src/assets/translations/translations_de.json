@@ -1698,6 +1698,7 @@
     "MODUL_VERPFLEGUNG": "Verpflegungskosten in CHF",
     "MODUL_VERFUEGBAR": "Verfügbar am",
     "MODUL_INTERVALL": "Intervall",
+    "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Erläuterung zu den Module hinzufügen",
     "MODUL_PAEDAGOGISCH_BETREUT": "Wird pädagogisch betreut",
     "MODUL_HINZUFUEGEN": "Neues Modul hinzufügen",
     "MODUL_HINZUFUEGEN_SCOLARIS": "Module gemäss Scolaris erstellen",
@@ -1737,6 +1738,7 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Bitte Änderung der Betreuungszeiten oder allfällige Fragen/Anmerkungen hier angeben",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
     "BETREUUNG_TAGESSCHULE_AGB": "Ich habe<a href='dummy.pdf' target='_blank'> das Merkblatt zur Anmeldung in die Tagesschule gelesen</a> und zur Kenntnis genommen",
+    "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Erläuterungen zu den Modulen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
     "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"

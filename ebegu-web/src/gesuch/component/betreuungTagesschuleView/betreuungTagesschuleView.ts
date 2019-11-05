@@ -105,6 +105,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public aktuellGueltig: boolean = true;
     public agbTSAkzeptiert: boolean = false;
     public isAnmeldenClicked: boolean = false;
+    public erlaeuterung: string = null;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -226,6 +227,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         if (!tsEinstellungenTagesschule) {
             return [];
         }
+        this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
         return tsEinstellungenTagesschule.modulTagesschuleGroups;
     }
 

@@ -1698,6 +1698,7 @@
     "MODUL_VERPFLEGUNG": "Frais de repas (en CHF)",
     "MODUL_VERFUEGBAR": "Disponible le",
     "MODUL_INTERVALL": "Intervalle",
+    "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Ajouter une explication pour les modules",
     "MODUL_PAEDAGOGISCH_BETREUT": "Est soigné pédagogiquement",
     "MODUL_HINZUFUEGEN": "Ajouter un nouveau module",
     "MODUL_HINZUFUEGEN_SCOLARIS": "Créer un module selon Scolaris",
@@ -1737,6 +1738,7 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Veuillez entrer vos changements de temps de garde ou vous questions/remarques générales ici",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Remarque",
     "BETREUUNG_TAGESSCHULE_AGB": "J'ai lu et accepté<a href='dummy.pdf' target='_blank'> les conditions d'inscriptions à l'école à journée continue</a>",
+    "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Explications concernant les modules",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Il n'y a pas encore de module configuré pour cette école à journée continue",
     "ERROR_NO_MODUL_SELECTED": "Il faut sélectionner au moins un jour",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"

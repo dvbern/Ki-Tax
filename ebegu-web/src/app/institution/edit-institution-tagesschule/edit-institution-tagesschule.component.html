@@ -119,6 +119,23 @@
                     </tbody>
                 </table>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="md-no-float" translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
+                                   for="erlaeuterung_ID">
+                            </label>
+                            <textarea name="erlaeuterung"
+                                      class="form-control " rows="3"
+                                      id="erlaeuterung_ID"
+                                      [(ngModel)]="einstellungGP.erlaeuterung"
+                                      [disabled]="!editMode"
+                                      maxlength="4000">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <button *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)" type="button"
                         (click)="addModulTagesschuleGroup(einstellungGP)" class="dv-btn dv-btn-operation">
                     <i class="fa fa-lg fa-plus-circle"></i>
