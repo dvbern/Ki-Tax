@@ -144,7 +144,7 @@
                                             ng-model="mod.modulTagesschule.angemeldet"
                                             aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
-                                            ng-click="vm.openMenu(mod, group, $mdMenu, $event)"
+                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
                                             class="dv-ebegu-calendar--tagesschule">
                                             <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
                                         </md-checkbox>

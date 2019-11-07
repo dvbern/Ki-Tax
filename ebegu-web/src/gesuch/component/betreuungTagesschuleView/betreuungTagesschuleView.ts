@@ -378,8 +378,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
                     ev: Event): any {
-        // Der Wert ist im Moment noch nicht gesetzt!
-        if (modul.modulTagesschule.angemeldet) {
+        if (!modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
             modul.intervall = undefined;
             return;
