@@ -76,7 +76,7 @@ public abstract class AbstractBGRechner {
 			parameterDTO,
 			von,
 			bis,
-			MathUtil.DEFAULT.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum()));
+			MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum()));
 
 		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
@@ -88,7 +88,7 @@ public abstract class AbstractBGRechner {
 				MATH.divide(verfuegungZeitabschnitt.getBgPensum(), betreuungspensum);
 		}
 		BigDecimal vollkostenFuerVerguenstigtesPensum =
-			MathUtil.DEFAULT.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
+			MATH.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
 		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
@@ -107,8 +107,8 @@ public abstract class AbstractBGRechner {
 		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 
-		verfuegungZeitabschnitt.setVerfuegteAnzahlZeiteinheiten(verfuegteZeiteinheiten);
-		verfuegungZeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(anspruchsberechtigteZeiteinheiten);
+		verfuegungZeitabschnitt.setVerfuegteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(verfuegteZeiteinheiten));
+		verfuegungZeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten));
 		verfuegungZeitabschnitt.setZeiteinheit(getZeiteinheit());
 
 		return verfuegungZeitabschnitt;
