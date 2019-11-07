@@ -79,12 +79,9 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private InstitutionService instService;
 
 	@Inject
-	private BetreuungService betreuungService;
-
-	@Inject
 	private TestfaelleService testfaelleService;
 
-	private Gesuchsperiode gesuchsperiode;
+	private Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 
 	@Before
 	public void setUp() {
