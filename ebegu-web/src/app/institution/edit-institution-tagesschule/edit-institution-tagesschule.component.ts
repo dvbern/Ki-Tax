@@ -26,7 +26,6 @@ import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../
 import {getTSModulTagesschuleTypen, TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import TSEinstellungenTagesschule from '../../../models/TSEinstellungenTagesschule';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
@@ -34,7 +33,6 @@ import TSTextRessource from '../../../models/TSTextRessource';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
 
 @Component({
@@ -54,7 +52,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
-        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
@@ -62,20 +59,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.gesuchsperiodeRS.getAllActiveGesuchsperioden().then(allGesuchsperioden => {
-            // tslint:disable-next-line:early-exit
-            if (EbeguUtil.isNullOrUndefined(this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule)
-                || this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.length === 0) {
-                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule = [];
-                allGesuchsperioden.forEach((gp: TSGesuchsperiode) => {
-                    const einstellungGP = new TSEinstellungenTagesschule();
-                    einstellungGP.gesuchsperiode = gp;
-                    einstellungGP.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
-                    einstellungGP.modulTagesschuleGroups = [];
-                    this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.push(einstellungGP);
-                });
-            }
-        });
         this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
             this.gemeindeList = allGemeinden;
         });

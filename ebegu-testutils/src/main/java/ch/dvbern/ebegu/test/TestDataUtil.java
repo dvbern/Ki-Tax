@@ -659,6 +659,15 @@ public final class TestDataUtil {
 		return found;
 	}
 
+	public static void saveInstitutionStammdatenTagesschule(@Nonnull Persistence persistence,
+		@Nonnull InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+		InstitutionStammdatenTagesschule foundStammdatenTagesschule =
+			persistence.find(InstitutionStammdatenTagesschule.class, institutionStammdatenTagesschule.getId());
+		if(foundStammdatenTagesschule == null){
+			persistence.merge(institutionStammdatenTagesschule);
+		}
+	}
+
 	@Nonnull
 	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nonnull Institution institution) {
 		saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
@@ -993,6 +1002,22 @@ public final class TestDataUtil {
 		return gesuch;
 	}
 
+	/**
+	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
+	 */
+	public static Gesuch createAndPersistTestfall11_SchulamtOnly(
+		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+
+		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
+		Testfall11_SchulamtOnly testfall = new Testfall11_SchulamtOnly(gesuchsperiode,
+			insttStammdaten);
+		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
+		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+	}
+
 	public static Gesuch createTestgesuchYvonneFeuz() {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
@@ -1121,6 +1146,18 @@ public final class TestDataUtil {
 				if (betreuung.getKind().getKindJA().getPensumFachstelle() != null) {
 					persistence.merge(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 				}
+			}
+			for(AnmeldungTagesschule anmeldungTagesschule: kindContainer.getAnmeldungenTagesschule()){
+				InstitutionStammdaten institutionStammdaten = anmeldungTagesschule.getInstitutionStammdaten();
+				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
+				InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
+					institutionStammdaten.getInstitutionStammdatenTagesschule();
+				assert institutionStammdatenTagesschule != null;
+				saveInstitutionStammdatenTagesschule(persistence, institutionStammdatenTagesschule);
+			}
+			for(AnmeldungFerieninsel anmeldungFerieninsel: kindContainer.getAnmeldungenFerieninsel()){
+				InstitutionStammdaten institutionStammdaten = anmeldungFerieninsel.getInstitutionStammdaten();
+				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
 			}
 		}
 	}

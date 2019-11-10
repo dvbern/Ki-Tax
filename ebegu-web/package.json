@@ -150,6 +150,8 @@
     "@uirouter/core": "^5.0.23",
     "@uirouter/visualizer": "^7.0.0",
     "angular-utf8-base64": "0.0.5",
+    "browserslist": "^4.7.1",
+    "caniuse-lite": "^1.0.30000999",
     "core-js": "~2.5.5",
     "detect-browser": "^3.0.1",
     "iban": "0.0.12",

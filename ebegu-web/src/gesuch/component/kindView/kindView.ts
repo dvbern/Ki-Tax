@@ -350,4 +350,16 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public hasKindBetreuungen(): boolean {
         return this.model.betreuungen && this.model.betreuungen.length > 0;
     }
+
+    public hasAngebotBGOnly(): boolean {
+        return this.getGesuch().dossier.gemeinde.angebotBG && !this.getGesuch().dossier.gemeinde.angebotTS;
+    }
+
+    public hasAngebotTSOnly(): boolean {
+        return this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.angebotBG;
+    }
+
+    public hasAngebotBGAndTS(): boolean {
+        return this.getGesuch().dossier.gemeinde.angebotTS && this.getGesuch().dossier.gemeinde.angebotBG;
+    }
 }

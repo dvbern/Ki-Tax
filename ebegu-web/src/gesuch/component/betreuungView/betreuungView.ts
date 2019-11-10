@@ -347,12 +347,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const ersterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
         // tslint:disable-next-line:early-exit
         if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
-            && DateUtil.today().isBefore(ersterSchultag)
         ) {
             if (!this.getBetreuungModel().belegungTagesschule) {
                 this.getBetreuungModel().belegungTagesschule = new TSBelegungTagesschule();
             }
-            this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
+            if (this.getBetreuungModel().belegungTagesschule.eintrittsdatum === undefined) {
+                this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
+            }
         }
     }
 
@@ -517,12 +518,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private setBetreuungsangebotTypValues(): void {
-        const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
-        const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
                 this.gesuchModelManager.isTagesschulangebotEnabled(),
-                gmdeHasTS,
+                this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
@@ -999,7 +998,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public displayGlobalNavigationButtons(): boolean {
         return !this.isSchulamt() ||
-            (this.isTagesschule() && !this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung());
+            (this.isTagesschule() && !this.checkIfGemeindeOrBetreuungHasTSAnmeldung());
     }
 
     /**
@@ -1007,7 +1006,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * das letzte um die alten Betreuungen zu unterstuetzen.
      */
     public displayModuleTagesschule(): boolean {
-        return this.isTagesschule() && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
+        return this.isTagesschule() && this.checkIfGemeindeOrBetreuungHasTSAnmeldung();
+    }
+
+    private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
+        const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
+        const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
+        const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
+        const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
+        return gmdeHasTS || betreuungIsTS;
     }
 
     /**

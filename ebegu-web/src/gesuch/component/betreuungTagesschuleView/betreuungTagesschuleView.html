@@ -127,7 +127,7 @@
                                             ng-model="mod.modulTagesschule.angemeldet"
                                             aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
-                                            ng-click="vm.openMenu(mod, group, $mdMenu, $event)"
+                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
                                             class="dv-ebegu-calendar--tagesschule">
                                             <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
                                         </md-checkbox>
@@ -171,6 +171,19 @@
                                 </textarea>
                             <dv-error-messages input-id="bemerkung" for="vm.form.bemerkung.$error"></dv-error-messages>
                         </dv-input-container>
+                    </div>
+                </div>
+                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly()">
+                    <div class="col-sm-12 dv-input-container-question">
+                        <md-checkbox class="checkbox"
+                                     ng-model="vm.agbTSAkzeptiert"
+                                     name="agbTSAkzeptiert"
+                                     id="agbTSAkzeptiert"
+                                     aria-label="{{'BETREUUNG_TAGESSCHULE_AGB' | translate}}"
+                                     ng-required="true">
+                            <span data-translate="BETREUUNG_TAGESSCHULE_AGB"></span>
+                        </md-checkbox>
+                        <dv-error-messages input-id="agbTSAkzeptiert" for="vm.form.agbTSAkzeptiert.$error"></dv-error-messages>
                     </div>
                 </div>
             </div>
@@ -249,7 +262,7 @@
 
         <div class="dv-navigation-flex"
              dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+             dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
             <dv-loading-button class="dv-navigation-item"
                                button-click="vm.anmeldungSchulamtUebernehmen()"

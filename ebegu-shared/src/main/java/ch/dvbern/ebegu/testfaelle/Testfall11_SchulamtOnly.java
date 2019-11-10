@@ -80,12 +80,15 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 		kind1.setAnmeldungenTagesschule(anmeldungTSSet);
 
 		// Kind 2: Ferieninsel Guarda
-		Betreuung betreuungFerieninselGuarda = createBetreuung(ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL, betreuungenBestaetigt);
-		betreuungFerieninselGuarda.setKind(kind2);
-		kind2.getBetreuungen().add(betreuungFerieninselGuarda);
-		BetreuungspensumContainer betreuungspensumKitaAaregg = createBetreuungspensum(100, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
-		betreuungspensumKitaAaregg.setBetreuung(betreuungFerieninselGuarda);
-		betreuungFerieninselGuarda.getBetreuungspensumContainers().add(betreuungspensumKitaAaregg);
+		// Betreuung betreuungFerieninselGuarda = createBetreuung(ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL,
+		//	betreuungenBestaetigt);
+		// betreuungFerieninselGuarda.setKind(kind2);
+		// kind2.getBetreuungen().add(betreuungFerieninselGuarda);
+		// BetreuungspensumContainer betreuungspensumKitaAaregg = createBetreuungspensum(100,
+		//	LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1),
+		//	LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
+		// betreuungspensumKitaAaregg.setBetreuung(betreuungFerieninselGuarda);
+		// betreuungFerieninselGuarda.getBetreuungspensumContainers().add(betreuungspensumKitaAaregg);
 
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
