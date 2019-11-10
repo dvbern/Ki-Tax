@@ -33,10 +33,10 @@ public abstract class AbstractBGRechner {
 	protected static final MathUtil MATH = MathUtil.EXACT;
 
 	/**
-	 * Diese Methode fuehrt die Berechnung fuer  die uebergebenen Verfuegungsabschnitte durch.
+	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
 	@Nonnull
-	public VerfuegungZeitabschnitt calculate(
+	public BGCalculationResult calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
@@ -97,21 +97,22 @@ public abstract class AbstractBGRechner {
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
-		// Runden und auf Zeitabschnitt zurückschreiben
-		verfuegungZeitabschnitt.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
+		BGCalculationResult result = new BGCalculationResult();
+
+		result.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
+		result.setVerguenstigungOhneBeruecksichtigungVollkosten(
 			verguenstigungVorVollkostenUndMinimalbetrag);
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(
+		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(
 			verguenstigungVorMinimalbetrag));
-		verfuegungZeitabschnitt.setVerguenstigung(verguenstigung);
-		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
-		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
+		result.setVerguenstigung(verguenstigung);
+		result.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
+		result.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 
-		verfuegungZeitabschnitt.setVerfuegteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(verfuegteZeiteinheiten));
-		verfuegungZeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten));
-		verfuegungZeitabschnitt.setZeiteinheit(getZeiteinheit());
+		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(verfuegteZeiteinheiten));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten));
+		result.setZeiteinheit(getZeiteinheit());
 
-		return verfuegungZeitabschnitt;
+		return result;
 	}
 
 	/**

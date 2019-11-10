@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.outbox.verfuegung;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -32,14 +34,32 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.rechner.AbstractBGRechner;
+import ch.dvbern.ebegu.rechner.BGCalculationResult;
+import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static ch.dvbern.ebegu.rechner.BGRechnerFactory.getRechner;
+import static java.util.Objects.requireNonNull;
 
 @Stateless
-public class VerfuegungEventGenerator {
+@RunAs(UserRoleName.SUPER_ADMIN)
+public class VerfuegungEventGenerator extends AbstractBaseService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungEventGenerator.class);
 
 	@Inject
 	private Persistence persistence;
@@ -75,12 +95,76 @@ public class VerfuegungEventGenerator {
 			.setParameter(statusParam, Betreuungsstatus.VERFUEGT)
 			.getResultList();
 
-		verfuegungen.forEach(verfuegung -> {
-			event.fire(verfuegungEventConverter.of(verfuegung));
+		verfuegungen.stream()
+			.filter(this::withZeiteinheiten)
+			.forEach(verfuegung -> {
+				event.fire(verfuegungEventConverter.of(verfuegung));
 
-			verfuegung.setSkipPreUpdate(true);
-			verfuegung.setEventPublished(true);
-			persistence.merge(verfuegung);
-		});
+				verfuegung.setSkipPreUpdate(true);
+				verfuegung.setEventPublished(true);
+				persistence.merge(verfuegung);
+			});
+	}
+
+	/**
+	 * @return TRUE, when all VerfuegungZeiteinheiten could be updated, FALSE otherwise
+	 */
+	private boolean withZeiteinheiten(@Nonnull Verfuegung verfuegung) {
+		AbstractBGRechner rechner = requireNonNull(getRechner(verfuegung.getBetreuung()));
+		BGRechnerParameterDTO parameterDTO = getParameter(verfuegung);
+
+		boolean allUpdated = verfuegung.getZeitabschnitte().stream()
+			.map(zeitabschnitt -> zeitabschnittWithZeiteinheiten(rechner, parameterDTO, zeitabschnitt))
+			.reduce(true, Boolean::logicalAnd);
+
+		return allUpdated;
+	}
+
+	@Nonnull
+	private BGRechnerParameterDTO getParameter(@Nonnull Verfuegung verfuegung) {
+		Gesuch gesuch = verfuegung.getBetreuung().getKind().getGesuch();
+		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
+		Gemeinde gemeinde = gesuch.extractGemeinde();
+
+		return loadCalculatorParameters(gemeinde, gesuchsperiode);
+	}
+
+	/**
+	 * Updates a VerfuegungZeitabschnitt with the Zeiteinheiten fields.
+	 *
+	 * @return TRUE when the update was performed, FALSE otherwise
+	 */
+	private boolean zeitabschnittWithZeiteinheiten(
+		@Nonnull AbstractBGRechner rechner,
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+
+		BGCalculationResult result = rechner.calculate(zeitabschnitt, parameterDTO);
+		if (hasSameCalculation(result, zeitabschnitt)) {
+			result.toVerfuegungZeitabschnitt(zeitabschnitt);
+			return true;
+		}
+
+		LOG.warn("The calculation result has changed: {} / {}", zeitabschnitt, result);
+		return false;
+	}
+
+	/**
+	 * @return TRUE when all values except the new Zeitenheiten match.
+	 */
+	private boolean hasSameCalculation(
+		@Nonnull BGCalculationResult result,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+
+		return MathUtil.isSame(result.getMinimalerElternbeitrag(), zeitabschnitt.getMinimalerElternbeitrag())
+			&& MathUtil.isSame(
+			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(),
+			zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
+			&& MathUtil.isSame(
+			result.getVerguenstigungOhneBeruecksichtigungVollkosten(),
+			zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten())
+			&& MathUtil.isSame(result.getVerguenstigung(), zeitabschnitt.getVerguenstigung())
+			&& MathUtil.isSame(result.getVollkosten(), zeitabschnitt.getVollkosten())
+			&& MathUtil.isSame(result.getElternbeitrag(), zeitabschnitt.getElternbeitrag());
 	}
 }

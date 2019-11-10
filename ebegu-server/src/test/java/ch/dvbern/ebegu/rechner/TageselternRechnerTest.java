@@ -134,9 +134,9 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 
-		assertThat(calculate, pojo(VerfuegungZeitabschnitt.class)
+		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expected)))
 			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
 			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())

@@ -109,10 +109,8 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			LocalDate.of(2018, Month.SEPTEMBER, 1),
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
 
-		IsPojo<VerfuegungZeitabschnitt> matcher = pojo(VerfuegungZeitabschnitt.class)
-			.where(VerfuegungZeitabschnitt::getBetreuungspensum, comparesEqualTo(BigDecimal.valueOf(100)))
-			.where(VerfuegungZeitabschnitt::getBgPensum, comparesEqualTo(BigDecimal.valueOf(50)))
-			.where(VerfuegungZeitabschnitt::getVollkosten, comparesEqualTo(BigDecimal.valueOf(1000)));
+		IsPojo<BGCalculationResult> matcher = pojo(BGCalculationResult.class)
+			.where(BGCalculationResult::getVollkosten, comparesEqualTo(BigDecimal.valueOf(1000)));
 
 		testWithParams(geburtstagKind, false, false, false, ganzerSeptember, 100, 50, 180607, matcher);
 	}
@@ -150,7 +148,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		int betreuungspensum,
 		int anspruch,
 		int einkommen,
-		@Nonnull Matcher<VerfuegungZeitabschnitt> matcher
+		@Nonnull Matcher<BGCalculationResult> matcher
 	) {
 
 		Verfuegung verfuegung = prepareVerfuegungKita(
@@ -171,14 +169,14 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult result = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 
-		assertThat(calculate, matcher);
+		assertThat(result, matcher);
 	}
 
 	@Nonnull
-	private IsPojo<VerfuegungZeitabschnitt> defaultMatcher(double expectedVerguenstigung) {
-		return pojo(VerfuegungZeitabschnitt.class)
+	private IsPojo<BGCalculationResult> defaultMatcher(double expectedVerguenstigung) {
+		return pojo(BGCalculationResult.class)
 			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expectedVerguenstigung)))
 			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
 			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())

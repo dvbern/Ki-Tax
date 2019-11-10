@@ -144,21 +144,18 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = false)
 	private @Max(100) @Min(0) @NotNull int anspruchberechtigtesPensum;
 
-	@Transient // until nullability is clear
-	@Nullable
-//	@Column(nullable = true)
-	private @Min(0) BigDecimal verfuegteAnzahlZeiteinheiten;
+	@Nonnull
+	@Column(nullable = true) // nullable, because migration is needed
+	private @Min(0) @NotNull BigDecimal verfuegteAnzahlZeiteinheiten = BigDecimal.ZERO;
 
-	@Transient // until nullability is clear
-	@Nullable
-//	@Column(nullable = true)
-	private @Min(0) BigDecimal anspruchsberechtigteAnzahlZeiteinheiten;
+	@Nonnull
+	@Column(nullable = true) // nullable, because migration is needed
+	private @Min(0) @NotNull BigDecimal anspruchsberechtigteAnzahlZeiteinheiten = BigDecimal.ZERO;
 
-	@Transient // until nullability is clear
-	@Nullable
+	@Nonnull
 	@Enumerated(EnumType.STRING)
-//	@Column(nullable = true)
-	private PensumUnits zeiteinheit;
+	@Column(nullable = true, length = Constants.DB_DEFAULT_SHORT_LENGTH) // nullable, because migration is needed
+	private @NotNull PensumUnits zeiteinheit = PensumUnits.DAYS;
 
 	// TODO unused in kibon -> remove?
 	@Column(nullable = true)
@@ -258,6 +255,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.betreuungspensum = toCopy.betreuungspensum;
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.anspruchberechtigtesPensum = toCopy.anspruchberechtigtesPensum;
+		this.verfuegteAnzahlZeiteinheiten = toCopy.verfuegteAnzahlZeiteinheiten;
+		this.anspruchsberechtigteAnzahlZeiteinheiten = toCopy.anspruchsberechtigteAnzahlZeiteinheiten;
+		this.zeiteinheit = toCopy.zeiteinheit;
 		this.betreuungsstunden = toCopy.betreuungsstunden;
 		this.setVollkosten(toCopy.getVollkosten());
 		this.setElternbeitrag(toCopy.getElternbeitrag());
@@ -708,6 +708,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
 
+		this.setVerfuegteAnzahlZeiteinheiten(other.getVerfuegteAnzahlZeiteinheiten()
+			.add(this.verfuegteAnzahlZeiteinheiten));
+		this.setAnspruchsberechtigteAnzahlZeiteinheiten(other.getAnspruchsberechtigteAnzahlZeiteinheiten()
+			.add(this.anspruchsberechtigteAnzahlZeiteinheiten));
+
 		BigDecimal newBetreuungsstunden = BigDecimal.ZERO;
 		if (this.getBetreuungsstunden() != null) {
 			newBetreuungsstunden = newBetreuungsstunden.add(this.getBetreuungsstunden());
@@ -782,6 +787,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
 	}
 
+	@SuppressWarnings("OverloadedVarargsMethod")
 	public void addBemerkung(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull MsgKey msgKey,
@@ -815,36 +821,34 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 * <p>
 	 * Beispiel: Zwei Eltern arbeiten zusammen 140%. In diesem Fall ist das anspruchsberechtigte Pensum 40%.
 	 */
-
 	public int getAnspruchberechtigtesPensum() {
 		return anspruchberechtigtesPensum;
 	}
 
-	@Nullable
+	@Nonnull
 	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
 		return verfuegteAnzahlZeiteinheiten;
 	}
 
-	public void setVerfuegteAnzahlZeiteinheiten(@Nullable BigDecimal verfuegteAnzahlZeiteinheiten) {
+	public void setVerfuegteAnzahlZeiteinheiten(@Nonnull BigDecimal verfuegteAnzahlZeiteinheiten) {
 		this.verfuegteAnzahlZeiteinheiten = verfuegteAnzahlZeiteinheiten;
 	}
 
-	@Nullable
+	@Nonnull
 	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
 		return anspruchsberechtigteAnzahlZeiteinheiten;
 	}
 
-	public void setAnspruchsberechtigteAnzahlZeiteinheiten(
-		@Nullable BigDecimal anspruchsberechtigteAnzahlZeiteinheiten) {
-		this.anspruchsberechtigteAnzahlZeiteinheiten = anspruchsberechtigteAnzahlZeiteinheiten;
+	public void setAnspruchsberechtigteAnzahlZeiteinheiten(@Nonnull BigDecimal zeiteinheiten) {
+		this.anspruchsberechtigteAnzahlZeiteinheiten = zeiteinheiten;
 	}
 
-	@Nullable
+	@Nonnull
 	public PensumUnits getZeiteinheit() {
 		return zeiteinheit;
 	}
 
-	public void setZeiteinheit(@Nullable PensumUnits zeiteinheit) {
+	public void setZeiteinheit(@Nonnull PensumUnits zeiteinheit) {
 		this.zeiteinheit = zeiteinheit;
 	}
 
@@ -941,9 +945,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
-			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
-			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
-			MathUtil.isSame(this.monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten);
+			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
+			Objects.equals(bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
+			MathUtil.isSame(monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten) &&
+			isSameZeiteinheiten(otherVerfuegungZeitabschnitt);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -964,16 +969,22 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			eingeschult == that.eingeschult &&
 			besondereBeduerfnisse == that.besondereBeduerfnisse &&
 			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
-			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			Objects.equals(einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
-			Objects.equals(this.bemerkungen, that.bemerkungen) &&
-			Objects.equals(this.bemerkungenMap, that.bemerkungenMap);
+			Objects.equals(bemerkungen, that.bemerkungen) &&
+			Objects.equals(bemerkungenMap, that.bemerkungenMap);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
 		return thisErwerbspensumGS == null && thatErwerbspensumGS == null
 			|| !(thisErwerbspensumGS == null || thatErwerbspensumGS == null)
 			&& thisErwerbspensumGS.equals(thatErwerbspensumGS);
+	}
+
+	private boolean isSameZeiteinheiten(@Nonnull VerfuegungZeitabschnitt other) {
+		return MathUtil.isSame(verfuegteAnzahlZeiteinheiten, other.verfuegteAnzahlZeiteinheiten) &&
+			MathUtil.isSame(anspruchsberechtigteAnzahlZeiteinheiten, other.anspruchsberechtigteAnzahlZeiteinheiten) &&
+			zeiteinheit == other.zeiteinheit;
 	}
 
 	/**
@@ -996,7 +1007,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
-			MathUtil.isSame(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten);
+			MathUtil.isSame(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
+			isSameZeiteinheiten(that);
 	}
 
 	/**
@@ -1008,7 +1020,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
 			MathUtil.isSame(verguenstigung, that.verguenstigung) &&
 			MathUtil.isSame(getMinimalerElternbeitragGekuerzt(), that.getMinimalerElternbeitragGekuerzt()) &&
-			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
+			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0) &&
+			isSameZeiteinheiten(that);
 	}
 
 	@Override
