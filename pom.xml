@@ -55,7 +55,7 @@
         <version.sentry>1.7.16</version.sentry>
         <version.bouncycastle>1.60</version.bouncycastle>
         <version.jackson>2.9.10.20191020</version.jackson>
-        <version.hamcrest>2.1</version.hamcrest>
+        <version.hamcrest>2.2</version.hamcrest>
         <version.poi>3.17</version.poi>
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
