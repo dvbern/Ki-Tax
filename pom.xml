@@ -54,7 +54,7 @@
         <version.wildfly.container>14.0.1.Final</version.wildfly.container>
         <version.sentry>1.7.16</version.sentry>
         <version.bouncycastle>1.60</version.bouncycastle>
-        <version.jackson>2.9.9</version.jackson>
+        <version.jackson>2.9.10.20191020</version.jackson>
         <version.hamcrest>2.1</version.hamcrest>
         <version.poi>3.17</version.poi>
 
@@ -206,11 +206,6 @@
                 <version>${version.jackson}</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.9.9.3</version>
             </dependency>
             <dependency>
                 <groupId>io.undertow</groupId>
