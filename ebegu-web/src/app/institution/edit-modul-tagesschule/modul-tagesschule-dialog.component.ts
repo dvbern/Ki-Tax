@@ -34,8 +34,6 @@ export class ModulTagesschuleDialogComponent {
     public modulTagesschuleGroup: TSModulTagesschuleGroup;
     public noDaySelected: boolean = false;
 
-    public patternHoursAndMinutes: '[0-9]{1,2}:[0-9]{1,2}';
-
     public constructor(
         private readonly dialogRef: MatDialogRef<ModulTagesschuleDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any,
@@ -49,15 +47,32 @@ export class ModulTagesschuleDialogComponent {
 
     public save(): void {
         this.modulTagesschuleGroup.applyTempModule();
-        if (this.modulTagesschuleGroup.isValid()) {
+
+        if (this.validate()) {
             this.modulTagesschuleGroup.validated =  true;
             this.dialogRef.close(this.modulTagesschuleGroup);
         } else {
             if (this.modulTagesschuleGroup.module.length === 0) {
                 this.noDaySelected = true;
             }
+            else {
+                this.noDaySelected = false;
+            }
             this.ngOnInit();
         }
+    }
+
+    private validate(): boolean {
+        if(!this.form.controls['zeitVon'].valid){
+           return false;
+        }
+        if(!this.form.controls['zeitBis'].valid){
+            return false;
+        }
+        if(!this.form.controls['verpflegungskosten'].valid){
+            return false;
+        }
+        return this.modulTagesschuleGroup.isValid()
     }
 
     public close(): void {

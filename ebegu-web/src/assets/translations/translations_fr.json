@@ -1695,7 +1695,7 @@
     "MODUL_VON": "De",
     "MODUL_BIS": "À",
     "MODUL_ZEITRAUM": "De - À",
-    "MODUL_VERPFLEGUNG": "Frais de repas (en CHF)",
+    "MODUL_VERPFLEGUNG": "Frais de repas",
     "MODUL_VERFUEGBAR": "Disponible le",
     "MODUL_INTERVALL": "Intervalle",
     "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Ajouter une explication pour les modules",
@@ -1741,5 +1741,6 @@
     "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Explications concernant les modules",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Il n'y a pas encore de module configuré pour cette école à journée continue",
     "ERROR_NO_MODUL_SELECTED": "Il faut sélectionner au moins un jour",
+    "IN_CHF_PLACEHOLDER": "en CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

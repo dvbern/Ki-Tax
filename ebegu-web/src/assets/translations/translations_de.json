@@ -1695,7 +1695,7 @@
     "MODUL_VON": "Von",
     "MODUL_BIS": "Bis",
     "MODUL_ZEITRAUM": "Von - Bis",
-    "MODUL_VERPFLEGUNG": "Verpflegungskosten in CHF",
+    "MODUL_VERPFLEGUNG": "Verpflegungskosten",
     "MODUL_VERFUEGBAR": "Verfügbar am",
     "MODUL_INTERVALL": "Intervall",
     "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Erläuterung zu den Modulen hinzufügen",
@@ -1741,5 +1741,6 @@
     "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Erläuterungen zu den Modulen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
     "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
+    "IN_CHF_PLACEHOLDER": "in CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

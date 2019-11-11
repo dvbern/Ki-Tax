@@ -123,11 +123,11 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="md-no-float" translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
-                                   for="erlaeuterung_ID">
+                                   for="erlaeuterung_{{einstellungGP?.id}}">
                             </label>
-                            <textarea name="erlaeuterung"
+                            <textarea name="erlaeuterung_{{einstellungGP?.id}}"
                                       class="form-control " rows="3"
-                                      id="erlaeuterung_ID"
+                                      id="erlaeuterung_{{einstellungGP?.id}}"
                                       [(ngModel)]="einstellungGP.erlaeuterung"
                                       [disabled]="!editMode"
                                       maxlength="4000">
