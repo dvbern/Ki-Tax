@@ -17,7 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	@Transient
-	private Set<Taetigkeit> taetigkeiten = EnumSet.noneOf(Taetigkeit.class);
+	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
 	@Transient
 	private int fachstellenpensum;
