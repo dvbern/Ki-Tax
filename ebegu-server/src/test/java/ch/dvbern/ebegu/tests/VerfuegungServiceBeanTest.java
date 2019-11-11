@@ -98,7 +98,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Verfuegung verfuegung = new Verfuegung(betreuung);
 		verfuegung.setBetreuung(betreuung);
 		betreuung.setVerfuegung(verfuegung);
-		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(verfuegung, betreuung.getId(), false);
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(verfuegung, betreuung.getId(), false, true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);

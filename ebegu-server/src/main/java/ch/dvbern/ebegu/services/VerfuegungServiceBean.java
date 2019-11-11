@@ -138,9 +138,15 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
+	public Verfuegung verfuegen(
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull String betreuungId,
+		boolean ignorieren,
+		boolean sendEmail) {
+
 		setZahlungsstatus(verfuegung, betreuungId, ignorieren);
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.VERFUEGT);
+		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
 
 		// Dokument erstellen
@@ -149,26 +155,34 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		event.fire(verfuegungEventConverter.of(persistedVerfuegung));
 
-		mailService.sendInfoBetreuungVerfuegt(betreuung);
+		if (sendEmail) {
+			mailService.sendInfoBetreuungVerfuegt(betreuung);
+		}
+
 		return persistedVerfuegung;
 	}
 
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public void generateVerfuegungDokument(@Nonnull Betreuung betreuung) {
+	/**
+	 * Generiert das Verfuegungsdokument.
+	 *
+	 * @param betreuung Betreuung, fuer die das Dokument generiert werden soll.
+	 */
+	private void generateVerfuegungDokument(@Nonnull Betreuung betreuung) {
 		try {
-			generatedDokumentService
-				.getVerfuegungDokumentAccessTokenGeneratedDokument(betreuung.extractGesuch(), betreuung, "", true);
+			Gesuch gesuch = betreuung.extractGesuch();
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getVerfuegungDokumentAccessTokenGeneratedDokument(gesuch, betreuung, "", true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException("generateVerfuegungDokument", "Verfuegung-Dokument konnte nicht erstellt werden"
 				+ betreuung.getId(), e);
 		}
 	}
 
-	@SuppressWarnings("LocalVariableNamingConvention")
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
+	/**
+	 * Aendert den Status der Zahlung auf NEU oder IGNORIEREND fuer alle Zahlungen wo etwas korrigiert wurde.
+	 * Wird auf NEU gesetzt wenn ignorieren==false, sonst wird es auf IGNORIEREND gesetzt.
+	 */
+	private void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
 		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
 		Objects.requireNonNull(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
@@ -279,12 +293,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		verfuegung.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.NICHT_EINGETRETEN);
+		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen
 		Betreuung betreuung = verfuegung.getBetreuung();
 		try {
-			generatedDokumentService
-				.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuung, true);
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuung, true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException("nichtEintreten", "Nichteintretensverfuegung-Dokument konnte nicht "
 				+ "erstellt werden" + betreuungId, e);

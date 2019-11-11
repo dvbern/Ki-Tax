@@ -40,23 +40,14 @@ public interface VerfuegungService {
 	 * @param verfuegung Die Verfuegung als DTO
 	 * @param betreuungId Id der Betreuung auf die die verfuegung gespeichet werden soll
 	 * @param ignorieren true wenn die ausbezahlten Zeitabschnitte nicht neu berechnet werden muessen
+	 * @param sendEmail true wenn eine Info EMail versendet werden soll
 	 */
 	@Nonnull
-	Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren);
-
-	/**
-	 * Generiert das Verfuegungsdokument.
-	 *
-	 * @param betreuung Betreuung, fuer die das Dokument generiert werden soll.
-	 */
-	void generateVerfuegungDokument(@Nonnull Betreuung betreuung);
-
-	/**
-	 * Aendert den Status der Zahlung auf NEU oder IGNORIEREND fuer alle Zahlungen wo etwas korrigiert wurde.
-	 * Wird auf NEU gesetzt wenn ignorieren==false, sonst wird es auf IGNORIEREND gesetzt.
-	 */
-	@SuppressWarnings("LocalVariableNamingConvention")
-	void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren);
+	Verfuegung verfuegen(
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull String betreuungId,
+		boolean ignorieren,
+		boolean sendEmail);
 
 	/**
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
@@ -70,9 +61,14 @@ public interface VerfuegungService {
 
 	/**
 	 * Speichert die Verfuegung und setzt die Betreuung in den uebergebenen Status
+	 * @deprecated wird nur noch von integration tests verwendet
 	 */
+	@Deprecated
 	@Nonnull
-	Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, @Nonnull Betreuungsstatus betreuungsstatus);
+	Verfuegung persistVerfuegung(
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull String betreuungId,
+		@Nonnull Betreuungsstatus betreuungsstatus);
 
 	/**
 	 * @param id PK (id) der Verfuegung
@@ -114,10 +110,13 @@ public interface VerfuegungService {
 
 	/**
 	 * Sucht den Zeitabschnitt / die Zeitabschnitte mit demselben Zeitraum auf der Vorgängerverfügung,
-	 * und die verrechnet oder ignoriert sind. Rekursive Methode, die die gegebene Liste mit den richtigen Objekten ausfuellt
+	 * und die verrechnet oder ignoriert sind. Rekursive Methode, die die gegebene Liste mit den richtigen Objekten
+	 * ausfuellt
 	 */
-	void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
-		@Nonnull Betreuung betreuungNeu, @Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
+	void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Betreuung betreuungNeu,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
 
 	/**
 	 * Returns all Zeitabschnitte within the given year that are gueltig
