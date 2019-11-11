@@ -1761,7 +1761,10 @@ public class JaxBConverter extends AbstractConverter {
 				convertedModule.setModulTagesschuleGroup(modulTagesschuleGroup);
 			}
 		}
-		modulTagesschuleGroup.setModule(convertedModules);
+		if(convertedModules != null){
+			modulTagesschuleGroup.getModule().clear();
+			modulTagesschuleGroup.getModule().addAll(convertedModules);
+		}
 
 		return modulTagesschuleGroup;
 	}

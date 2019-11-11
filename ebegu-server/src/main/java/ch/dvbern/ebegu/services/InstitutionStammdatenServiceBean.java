@@ -31,6 +31,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -52,6 +53,8 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -112,13 +115,28 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
 		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
-
 		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
 		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
+		InstitutionStammdaten updatedStammdaten = null;
+		try {
+			updatedStammdaten = persistence.merge(institutionStammdaten);
 
-		InstitutionStammdaten updatedStammdaten = persistence.merge(institutionStammdaten);
-
-		return updatedStammdaten;
+			//we flush the transaction in order to see if there is some constraint violation
+			persistence.getEntityManager().flush();
+			return updatedStammdaten;
+		} catch (PersistenceException e) {
+			String sqlError = e.getCause().getCause().getMessage();
+			//if the FK_belegung_ts_modul_modul_ts constraint is raised then we need to inform the user
+			if(sqlError.contains("FK_belegung_ts_modul_modul_ts")) {
+				throw new EntityExistsException(KibonLogLevel.ERROR, InstitutionStammdaten.class, "Anmeldungen",
+					institutionStammdaten.getId(),
+					ErrorCodeEnum.ERROR_ANMELDUNGEN_EXISTS);
+			}
+			else{
+				//otherwise its an unexpected exception
+				throw e;
+			}
+		}
 	}
 
 	@Override
@@ -145,7 +163,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitution = root.join(InstitutionStammdaten_.institution,
+			JoinType.LEFT);
 		List<Predicate> predicates = new ArrayList<>();
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
@@ -157,7 +176,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 		}
 
-		Predicate predicateMandant = PredicateHelper.getPredicateMandant(cb, joinInstitution.get(Institution_.mandant), currentBenutzer);
+		Predicate predicateMandant = PredicateHelper.getPredicateMandant(cb, joinInstitution.get(Institution_.mandant)
+			, currentBenutzer);
 		predicates.add(predicateMandant);
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -184,7 +204,8 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
-		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId, true);
+		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(institutionId,
+			true);
 		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			persistence.remove(institutionStammdatenToRemove);

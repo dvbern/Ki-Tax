@@ -18,7 +18,10 @@
 import {Component, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {getTSModulTagesschuleIntervallValues, TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
+import {
+    getTSModulTagesschuleIntervallValues,
+    TSModulTagesschuleIntervall
+} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 
@@ -47,32 +50,29 @@ export class ModulTagesschuleDialogComponent {
 
     public save(): void {
         this.modulTagesschuleGroup.applyTempModule();
-
         if (this.validate()) {
-            this.modulTagesschuleGroup.validated =  true;
+            this.modulTagesschuleGroup.validated = true;
             this.dialogRef.close(this.modulTagesschuleGroup);
         } else {
-            if (this.modulTagesschuleGroup.module.length === 0) {
-                this.noDaySelected = true;
-            }
-            else {
-                this.noDaySelected = false;
-            }
+            this.modulTagesschuleGroup.module.length === 0 ? this.noDaySelected = true : this.noDaySelected = false;
             this.ngOnInit();
         }
     }
 
     private validate(): boolean {
-        if(!this.form.controls['zeitVon'].valid){
-           return false;
-        }
-        if(!this.form.controls['zeitBis'].valid){
+        const zeitVon = 'zeitVon';
+        if (!this.form.controls[zeitVon].valid) {
             return false;
         }
-        if(!this.form.controls['verpflegungskosten'].valid){
+        const zeitBis = 'zeitVon';
+        if (!this.form.controls[zeitBis].valid) {
             return false;
         }
-        return this.modulTagesschuleGroup.isValid()
+        const verpflegungskosten = 'verpflegungskosten';
+        if (!this.form.controls[verpflegungskosten].valid) {
+            return false;
+        }
+        return this.modulTagesschuleGroup.isValid();
     }
 
     public close(): void {
