@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,8 +49,9 @@ public class DVDatasourceCheck implements HealthCheck {
 
 		 boolean datasourceWorks = false;
 		if (datasource != null) {
+			Connection connection = null;
 			try {
-				final Connection connection = datasource.getConnection();
+				connection = datasource.getConnection();
 				final String s = connection.nativeSQL("SELECT 1 + 1;");
 				datasourceWorks = s != null;
 				connection.close();
@@ -58,9 +59,17 @@ public class DVDatasourceCheck implements HealthCheck {
 
 			} catch (SQLException e) {
 				LOGGER.warn("Datasource check failed" , e);
+			} finally {
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException ignore) {
+						// ignore
+					}
+				}
 			}
-
 		}
+
 		return HealthCheckResponse.builder().name("dv-datasource-check")
 				.withData("datasource", datasourceWorks)
 				.state(datasourceWorks)

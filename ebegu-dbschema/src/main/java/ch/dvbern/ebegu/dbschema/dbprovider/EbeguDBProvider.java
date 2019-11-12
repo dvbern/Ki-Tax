@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+
 /**
  * Creates the standard ebegu database
  */
@@ -29,7 +31,6 @@ import javax.sql.DataSource;
 public class EbeguDBProvider implements DBProvider {
 
 	public static final String DATASOURCE_JNDI_NAME = "java:/jdbc/ebegu";
-
 
 	@Override
 	public DataSource getDatasource() {
@@ -39,7 +40,7 @@ public class EbeguDBProvider implements DBProvider {
 			return (DataSource) new InitialContext().lookup(DATASOURCE_JNDI_NAME);
 		} catch (NamingException e) {
 			final String msg = ("Database Lookup error (missing datasource '" + DATASOURCE_JNDI_NAME) + "')";
-			throw new RuntimeException(msg, e);
+			throw new EbeguRuntimeException("getDatasource", msg, e);
 		}
 	}
 }
