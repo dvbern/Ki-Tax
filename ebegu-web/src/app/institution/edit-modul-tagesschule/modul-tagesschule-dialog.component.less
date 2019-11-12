@@ -15,51 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 @import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
 
-.input-error {
-    height: 4rem;
-    width: 26.3rem;
+.modul-tagesschule-dialog {
+    height: 25rem;
 }
-
-form:not(.ng-submitted) .input-error /deep/ .error {
-    display: none
-}
-
-.onboarding-login {
-    margin-top: 10vh;
-    text-align: center;
-    line-height: 2.8rem;
-
-    a {
-        color: @red
-    }
-}
-
-:host {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.onboarding-neubenutzer {
-    .neu-bg-checkbox {
-        margin-top: 2rem;
-        margin-left: 0px;
-    }
-
-    .neu-ts-checkbox {
-        margin-top: 0rem;
-        margin-left: 0px;
-    }
-
-    ::ng-deep .mat-checkbox-label {
-        font-size: 14px;
-        letter-spacing: 1px;
-        line-height: 19px;
-        color: #222222;
-        font-family: "Open Sans";
-        white-space: pre-wrap;
-    }
-}
-

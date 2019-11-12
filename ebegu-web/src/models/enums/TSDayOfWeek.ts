@@ -32,3 +32,13 @@ export function getWeekdaysValues(): Array<TSDayOfWeek> {
         TSDayOfWeek.FRIDAY,
     ];
 }
+
+export const MAP_SORTED_BY_DAY_OF_WEEK = new Map<TSDayOfWeek, number>([
+    [TSDayOfWeek.MONDAY, 1],
+    [TSDayOfWeek.TUESDAY, 2],
+    [TSDayOfWeek.WEDNESDAY, 3],
+    [TSDayOfWeek.THURSDAY, 4],
+    [TSDayOfWeek.FRIDAY, 5],
+    [TSDayOfWeek.SATURDAY, 6],
+    [TSDayOfWeek.SUNDAY, 7]
+]);

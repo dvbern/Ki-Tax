@@ -13,18 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSAbholungTagesschule} from './enums/TSAbholungTagesschule';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBelegungTagesschuleModul from './TSBelegungTagesschuleModul';
+package ch.dvbern.ebegu.enums;
 
-export default class TSBelegungTagesschule extends TSAbstractMutableEntity {
+/**
+ * Enum fuer Feld AbholungTagesschule
+ */
+public enum AbholungTagesschule {
 
-    public belegungTagesschuleModule: Array<TSBelegungTagesschuleModul> = [];
-    public eintrittsdatum: moment.Moment;
-    public planKlasse: string;
-    public abholungTagesschule: TSAbholungTagesschule;
-    public bemerkung: string;
-    public abweichungZweitesSemester: boolean;
+	ABHOLUNG,
+	ALLEINE_NACH_HAUSE
 
 }

@@ -38,13 +38,12 @@ export default class TSGemeindeKonfiguration {
     public konfigurationen: TSEinstellung[];
 
     /**
-     * Ein datumFreischaltungTagesschule, das nicht vor dem Gesuchsperiodeanfang liegt, wird als "nicht konfiguriert"
-     * betrachtet. Dies ist so, weil ein datumFreischaltungTagesschule immer vor dem Gesuchsperiodeanfang liegen muss,
-     * damit die Kinder sich rechtzeitig anmelden koennen.
+     * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
+     * Es kann also sein das Kinder sich nach den ersten Schultag anmelden
      */
     public isTagesschulenAnmeldungKonfiguriert(): boolean {
         return this.hasTagesschulenAnmeldung()
-            && (this.konfigTagesschuleAktivierungsdatum.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb)
+            && (this.konfigTagesschuleAktivierungsdatum.isBefore(moment([]))
                 || this.konfigTagesschuleAktivierungsdatum.isSame(moment([])));
     }
 

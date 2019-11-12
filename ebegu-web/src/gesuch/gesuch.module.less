@@ -308,7 +308,6 @@ dv-accordion.ewksubsub {
         left: 0;
         right: 0;
         transform: unset;
-        position: absolute;
         margin: 0;
 
         dv-navigation, .dv-navigation {
@@ -333,12 +332,20 @@ dv-accordion.ewksubsub {
 
     .dv-navigation-flex {
         flex: 1;
-        flex-wrap: wrap-reverse;
 
         .dv-navigation-item {
             padding: .75rem;
         }
     }
+
+    @media only screen
+    and (min-device-width: 320px)
+    and (max-device-width: 700px) {
+        .dv-navigation-flex {
+            flex-wrap: wrap-reverse;
+        }
+    }
+
 
     .dv-navigation--verfuegen-list {
         flex-direction: row;

@@ -15,24 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.testdaten-checkbox {
-    margin-top: 2rem;
-    //text-align: center;
+package ch.dvbern.ebegu.enums;
 
-    ::ng-deep .mat-checkbox-label {
-        font-size: 14px;
-        letter-spacing: 1px;
-        line-height: 19px;
-        color: #222222;
-        font-family: "Open Sans";
-        white-space: pre-wrap;
-    }
-}
+/**
+ * Enum fuer the Intervalle of the ModulTagesschule for Tagesschule.
+ */
+public enum BelegungTagesschuleModulIntervall {
 
-.input-freetext{
-    border-radius: 0px;
-    border-width: 2px;
-    border-style: solid;
-    margin-top: 1rem;
-    width: auto;
+	WOECHENTLICH,
+	ALLE_ZWEI_WOCHEN
+
 }

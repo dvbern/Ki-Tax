@@ -15,24 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.testdaten-checkbox {
-    margin-top: 2rem;
-    //text-align: center;
+import {TSBelegungTagesschuleModulIntervall} from './enums/TSBelegungTagesschuleModulIntervall';
+import TSAbstractEntity from './TSAbstractEntity';
+import TSModulTagesschule from './TSModulTagesschule';
 
-    ::ng-deep .mat-checkbox-label {
-        font-size: 14px;
-        letter-spacing: 1px;
-        line-height: 19px;
-        color: #222222;
-        font-family: "Open Sans";
-        white-space: pre-wrap;
-    }
-}
+export default class TSBelegungTagesschuleModul extends TSAbstractEntity {
 
-.input-freetext{
-    border-radius: 0px;
-    border-width: 2px;
-    border-style: solid;
-    margin-top: 1rem;
-    width: auto;
+    public intervall: TSBelegungTagesschuleModulIntervall;
+    public modulTagesschule: TSModulTagesschule;
+
 }

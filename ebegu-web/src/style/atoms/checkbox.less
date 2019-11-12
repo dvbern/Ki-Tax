@@ -40,7 +40,7 @@
 }
 
 md-checkbox {
-    //float:left;
+    float:left;
     font-size: 0;
     position: relative;
     min-height: 1.7rem;
@@ -154,7 +154,7 @@ md-checkbox.dv-ebegu-calendar {
     left: 0;
     bottom: 0;
     right: 0;
-    //float:left;
+    float:left;
     font-size: 0;
     height: 100%;
     width: 100%;
@@ -277,7 +277,7 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
     left: 0;
     bottom: 0;
     right: 0;
-    //float:left;
+    float:left;
     font-size: 0;
     height: 100%;
     width: 100%;
@@ -295,9 +295,9 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
         }
 
         &:not(.md-checked) .md-icon {
-            background: @contrast-dark;
+            background:@contrast-light;
             &:after {
-                color: @contrast-dark;
+                color: @contrast-light;
             }
         }
 
@@ -307,7 +307,7 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
             }
         }
         .md-icon {
-            background: @contrast-dark;
+            background: @contrast-light;
         }
     }
     &.md-focused, &:focus {
@@ -347,9 +347,10 @@ md-checkbox.dv-ebegu-calendar--tagesschule {
             min-height: 1.7rem;
             display: block;
             margin: 0;
-            padding: 1rem 0;
+            padding: 8rem 0;
             border-bottom: 1px solid @contrast;
             vertical-align: middle;
+            border-bottom: none;
         }
     }
     .md-icon, &:not(.md-checked) .md-icon {
