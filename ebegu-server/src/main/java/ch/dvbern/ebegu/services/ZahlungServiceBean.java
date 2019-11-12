@@ -414,8 +414,19 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
 				// Fuer die "alten" Verfuegungszeitabschnitte muessen Korrekturbuchungen erstellt werden
 				// Wenn die neuen Zeitabschnitte ignoriert sind, setzen wir die alten Zeitabschnitte auch als ignoriert
-				createZahlungspositionKorrekturAlterWert(vorgaengerZeitabschnitt, zahlung,
-					zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
+				// wir muessen noch aufpassen, das dieser Korrektur nicht schon drin ist falls man einen Monat
+				// in mehrer Zeitabschnitten migriert haben.
+				boolean alreadyCorrected = false;
+				for(Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()){
+					if(zahlungsposition.getVerfuegungZeitabschnitt().equals(vorgaengerZeitabschnitt)){
+						alreadyCorrected = true;
+						break;
+					}
+				}
+				if(!alreadyCorrected) {
+					createZahlungspositionKorrekturAlterWert(vorgaengerZeitabschnitt, zahlung,
+						zeitabschnittNeu.getZahlungsstatus().isIgnoriertIgnorierend());
+				}
 			}
 		} else { // Nachzahlungen bzw. Erstgesuche die rueckwirkend ausbezahlt werden muessen
 			createZahlungsposition(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
