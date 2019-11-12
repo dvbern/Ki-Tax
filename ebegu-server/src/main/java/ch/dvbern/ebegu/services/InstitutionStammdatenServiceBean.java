@@ -108,6 +108,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private Authorizer authorizer;
 
+	@SuppressWarnings("PMD.PreserveStackTrace")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
