@@ -418,7 +418,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				// in mehrer Zeitabschnitten migriert haben.
 				boolean alreadyCorrected = false;
 				for(Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()){
-					if(zahlungsposition.getVerfuegungZeitabschnitt() == vorgaengerZeitabschnitt){
+					if(zahlungsposition.getVerfuegungZeitabschnitt().equals(vorgaengerZeitabschnitt)){
 						alreadyCorrected = true;
 						break;
 					}
