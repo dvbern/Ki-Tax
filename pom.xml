@@ -173,6 +173,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.microprofile.health</groupId>
+                <artifactId>microprofile-health-api</artifactId>
+                <version>1.0</version>
+                <!--<scope>provided</scope>-->
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.el-impl</artifactId>
                 <version>${version.org.glassfish.javax.el-impl}</version>
@@ -475,6 +481,11 @@
                 <groupId>ch.dvbern.oss.invoicegenerator</groupId>
                 <artifactId>invoice-generator</artifactId>
                 <version>5.2.0</version>
+            </dependency>
+            <dependency>
+              <groupId>ch.dvbern.oss.healthcheck.gc</groupId>
+              <artifactId>gc-health-check</artifactId>
+              <version>1.0.0</version>
             </dependency>
             <!-- endregion -->
 
