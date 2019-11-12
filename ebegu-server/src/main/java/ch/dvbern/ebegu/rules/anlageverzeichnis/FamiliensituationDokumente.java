@@ -87,9 +87,9 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 	}
 
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Familiensituation dataForDocument1,
-		@Nullable Familiensituation dataForDocument2) {
-		return isDokumentNeeded(dokumentTyp, dataForDocument1);
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Familiensituation familiensituation,
+		@Nullable Familiensituation otherDataNeeded) {
+		return isDokumentNeeded(dokumentTyp, familiensituation);
 	}
 
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")

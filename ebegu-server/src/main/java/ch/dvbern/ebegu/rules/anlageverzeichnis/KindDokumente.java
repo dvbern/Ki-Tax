@@ -77,9 +77,9 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 	}
 
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind dataForDocument1,
-		@Nullable Object dataForDocument2) {
-		return isDokumentNeeded(dokumentTyp, dataForDocument1);
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind,
+		@Nullable Object otherDataNeeded) {
+		return isDokumentNeeded(dokumentTyp, kind);
 	}
 
 }

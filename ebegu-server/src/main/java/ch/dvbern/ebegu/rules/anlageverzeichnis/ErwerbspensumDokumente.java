@@ -172,9 +172,9 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 	}
 
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Erwerbspensum dataForDocument1,
-		@Nullable LocalDate dataForDocument2) {
-		return isDokumentNeeded(dokumentTyp, dataForDocument1);
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Erwerbspensum erwerbspensum,
+		@Nullable LocalDate otherDataNeeded) {
+		return isDokumentNeeded(dokumentTyp, erwerbspensum);
 	}
 
 }
