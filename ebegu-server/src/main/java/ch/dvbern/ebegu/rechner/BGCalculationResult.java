@@ -49,9 +49,9 @@ public class BGCalculationResult {
 	public void toVerfuegungZeitabschnitt(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		zeitabschnitt.setMinimalerElternbeitrag(minimalerElternbeitrag);
 		zeitabschnitt
-			.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
+			.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
 		zeitabschnitt
-			.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungOhneBeruecksichtigungVollkosten);
+			.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungOhneBeruecksichtigungVollkosten);
 		zeitabschnitt.setVerguenstigung(verguenstigung);
 		zeitabschnitt.setVollkosten(vollkosten);
 		zeitabschnitt.setElternbeitrag(elternbeitrag);
