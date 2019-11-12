@@ -193,6 +193,11 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
     }
 
+    public getAllBfsGemeinden(): IPromise<TSBfsGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/allBfs`)
+            .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
+    }
+
     public hasGemeindenInStatusAngemeldet(): IPromise<boolean> {
         return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
             return response.data;
