@@ -93,18 +93,18 @@ public abstract class AbstractBGRechner {
 		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
-		// Resultat
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
-		BGCalculationResult result = new BGCalculationResult();
 
+		// Resultat
+		BGCalculationResult result = new BGCalculationResult();
 		result.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(
-			verguenstigungVorVollkostenUndMinimalbetrag);
+			MathUtil.DEFAULT.from(verguenstigungVorVollkostenUndMinimalbetrag));
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(
 			verguenstigungVorMinimalbetrag));
-		result.setVerguenstigung(verguenstigung);
+		result.setVerguenstigung(MathUtil.DEFAULT.from(verguenstigung));
 		result.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		result.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 
