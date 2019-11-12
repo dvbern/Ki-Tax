@@ -144,10 +144,11 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 	@Override
 	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
 		Familiensituation familiensituation) {
-		if (familiensituation != null) {
-			if (familiensituation.getSozialhilfeBezueger() != null && familiensituation.getSozialhilfeBezueger()) {
-				return false;
-			}
+		if (familiensituation != null &&
+			familiensituation.getSozialhilfeBezueger() != null &&
+			familiensituation.getSozialhilfeBezueger()
+		) {
+			return false;
 		}
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
