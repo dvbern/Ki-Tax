@@ -76,4 +76,10 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 		return kind != null && kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null;
 	}
 
+	@Override
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind dataForDocument1,
+		@Nullable Object dataForDocument2) {
+		return isDokumentNeeded(dokumentTyp, dataForDocument1);
+	}
+
 }

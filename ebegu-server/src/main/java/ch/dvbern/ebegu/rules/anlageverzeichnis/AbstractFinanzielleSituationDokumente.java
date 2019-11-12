@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -31,7 +32,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 /**
  * Gemeinsame Basisklasse zum berechnen der benötigten Dokumente für die Finanzielle Situation und die Einkommensverschlechterung
  */
-abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Object> {
+abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
 
 	void getAllDokumenteGesuchsteller(
 		Set<DokumentGrund> anlageVerzeichnis,
@@ -80,7 +81,14 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	}
 
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation){
+		return isDokumentNeeded(dokumentTyp, abstractFinanzielleSituation, null);
+	}
+
+	@Override
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation, @Nullable Familiensituation familiensituation) {
 		if (abstractFinanzielleSituation != null) {
 			switch (dokumentTyp) {
 			case STEUERVERANLAGUNG:
@@ -88,7 +96,7 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 			case STEUERERKLAERUNG:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() && abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 			case JAHRESLOHNAUSWEISE:
-				return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
+				return isJahresLohnausweisNeeded(abstractFinanzielleSituation, familiensituation);
 			case NACHWEIS_FAMILIENZULAGEN:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
 					abstractFinanzielleSituation.getFamilienzulage() != null &&
@@ -127,7 +135,8 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		return false;
 	}
 
-	protected abstract boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation);
+	protected abstract boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
+		Familiensituation familiensituation);
 
 	protected abstract boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
 

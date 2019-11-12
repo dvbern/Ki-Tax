@@ -38,12 +38,15 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  * Dokumente für FinanzielleSituation:
  * <p>
  * Steuerveranlagung
- * Notwendig, wenn Steuerveranlagung vorhanden. Ist dies der Fall, müssen alle weiteren Belege unter „Finanzielle Situation“ nicht eingereicht werden
- * Bei Verheirateten wird das Dokument unter "Allgemeine Dokumente" angezeigt, bei allen anderen beim jeweiligen Gesuchsteller
+ * Notwendig, wenn Steuerveranlagung vorhanden. Ist dies der Fall, müssen alle weiteren Belege unter „Finanzielle
+ * Situation“ nicht eingereicht werden
+ * Bei Verheirateten wird das Dokument unter "Allgemeine Dokumente" angezeigt, bei allen anderen beim jeweiligen
+ * Gesuchsteller
  * <p>
  * Steuererklärung
  * Notwendig, wenn keine Steuerveranlagung, jedoch Steuererklärung vorhanden
- * Bei Verheirateten wird das Dokument unter "Allgemeine Dokumente" angezeigt, bei allen anderen beim jeweiligen Gesuchsteller
+ * Bei Verheirateten wird das Dokument unter "Allgemeine Dokumente" angezeigt, bei allen anderen beim jeweiligen
+ * Gesuchsteller
  * <p>
  * Jahreslohnausweise
  * Notwendig, wenn keine Veranlagung vorhanden und Nettolohn > 0
@@ -88,11 +91,11 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 		LocalDate stichtag = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr, stichtag);
+		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr, stichtag, familiensituation);
 
 		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag);
+			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag, familiensituation);
 		}
 	}
 
@@ -100,14 +103,15 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 		Set<DokumentGrund> anlageVerzeichnis,
 		@Nullable GesuchstellerContainer gesuchsteller,
 		boolean gemeinsam, int gesuchstellerNumber, int basisJahr,
-		@Nonnull LocalDate stichtag
+		@Nonnull LocalDate stichtag, @Nullable Familiensituation familiensituation
 	) {
 
 		if (gesuchsteller == null || gesuchsteller.getFinanzielleSituationContainer() == null) {
 			return;
 		}
 
-		final FinanzielleSituationContainer finanzielleSituationContainer = gesuchsteller.getFinanzielleSituationContainer();
+		final FinanzielleSituationContainer finanzielleSituationContainer =
+			gesuchsteller.getFinanzielleSituationContainer();
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
 
@@ -125,7 +129,7 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			getDokument(
 				DokumentTyp.JAHRESLOHNAUSWEISE,
 				finanzielleSituationJA,
-				gesuchsteller.extractFullName(),
+				familiensituation,
 				String.valueOf(basisJahr),
 				DokumentGrundPersonType.GESUCHSTELLER,
 				gesuchstellerNumber,
@@ -138,7 +142,13 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 	}
 
 	@Override
-	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
+		Familiensituation familiensituation) {
+		if (familiensituation != null) {
+			if (familiensituation.getSozialhilfeBezueger() != null && familiensituation.getSozialhilfeBezueger()) {
+				return false;
+			}
+		}
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 

@@ -99,7 +99,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 					1,
 					1,
 					basisJahrPlus1,
-					stichtag);
+					stichtag,
+					familiensituation);
 				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 					getAllDokumenteGesuchsteller(
 						anlageVerzeichnis,
@@ -108,7 +109,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 						2,
 						1,
 						basisJahrPlus1,
-						stichtag);
+						stichtag,
+						familiensituation);
 				}
 			}
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
@@ -119,7 +121,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 					1,
 					2,
 					basisJahrPlus2,
-					stichtag);
+					stichtag,
+					familiensituation);
 				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 					getAllDokumenteGesuchsteller(
 						anlageVerzeichnis,
@@ -128,7 +131,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 						2,
 						2,
 						basisJahrPlus2,
-						stichtag);
+						stichtag,
+						familiensituation);
 				}
 			}
 		}
@@ -139,7 +143,7 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 		Set<DokumentGrund> anlageVerzeichnis,
 		@Nullable GesuchstellerContainer gesuchsteller,
 		boolean gemeinsam, int gesuchstellerNumber, int basisJahrPlusNumber, int basisJahr,
-		@Nonnull LocalDate stichtag
+		@Nonnull LocalDate stichtag, @Nullable Familiensituation familiensituation
 	) {
 
 		if (gesuchsteller == null || gesuchsteller.getEinkommensverschlechterungContainer() == null) {
@@ -162,7 +166,7 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 			getDokument(
 				DokumentTyp.JAHRESLOHNAUSWEISE,
 				einkommensverschlechterung,
-				gesuchsteller.extractFullName(),
+				familiensituation,
 				String.valueOf(basisJahr),
 				DokumentGrundPersonType.GESUCHSTELLER,
 				gesuchstellerNumber,
@@ -174,7 +178,13 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 	}
 
 	@Override
-	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
+		Familiensituation familiensituation) {
+		if (familiensituation != null) {
+			if (familiensituation.getSozialhilfeBezueger() != null && familiensituation.getSozialhilfeBezueger()) {
+				return false;
+			}
+		}
 		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
 			Einkommensverschlechterung ekv = (Einkommensverschlechterung) abstractFinanzielleSituation;
 
