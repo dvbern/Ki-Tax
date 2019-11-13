@@ -71,12 +71,39 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 	private VerfuegungEventConverter verfuegungEventConverter;
 
 	/**
+	 * First, add Zeitenheiten fields to all Verfuegungen in the database, then convert to events.
+	 * Reason: when converting to events, we also get vorgänger Verfügung Zeitabschnitte. Thus, the initialisation must
+	 * happen on all Verfügungen, before they are converted.
+	 */
+	@Schedule(info = "Migration-aid, pushes already existing Verfuegungen to outbox", hour = "5", persistent = true)
+	public void migrate() {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Verfuegung> query = cb.createQuery(Verfuegung.class);
+		Root<Verfuegung> root = query.from(Verfuegung.class);
+
+		Predicate isNotPublished = cb.isFalse(root.get(Verfuegung_.eventPublished));
+
+		query.where(isNotPublished);
+
+		List<Verfuegung> verfuegungen = persistence.getEntityManager().createQuery(query)
+			.getResultList();
+
+		verfuegungen.stream()
+			.filter(this::withZeiteinheiten)
+			.forEach(verfuegung -> {
+				verfuegung.setSkipPreUpdate(true);
+				persistence.merge(verfuegung);
+			});
+
+		publishExistingVerfuegungen();
+	}
+
+	/**
 	 * Each new Verfuegung is published to Kafka via the outbox event system. However, there are already Verfuegungn
 	 * in the database which have not been published, because the outbox event system has been added later. Thus,
 	 * fetch all these Verfuegungen and publish them once.
 	 */
-	@Schedule(info = "Migration-aid, pushes already existing Verfuegungen to outbox", hour = "5", persistent = true)
-	public void publishExistingVerfuegungen() {
+	private void publishExistingVerfuegungen() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Verfuegung> query = cb.createQuery(Verfuegung.class);
 		Root<Verfuegung> root = query.from(Verfuegung.class);
@@ -95,15 +122,13 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 			.setParameter(statusParam, Betreuungsstatus.VERFUEGT)
 			.getResultList();
 
-		verfuegungen.stream()
-			.filter(this::withZeiteinheiten)
-			.forEach(verfuegung -> {
-				event.fire(verfuegungEventConverter.of(verfuegung));
+		verfuegungen.forEach(verfuegung -> {
+			event.fire(verfuegungEventConverter.of(verfuegung));
 
-				verfuegung.setSkipPreUpdate(true);
-				verfuegung.setEventPublished(true);
-				persistence.merge(verfuegung);
-			});
+			verfuegung.setSkipPreUpdate(true);
+			verfuegung.setEventPublished(true);
+			persistence.merge(verfuegung);
+		});
 	}
 
 	/**
@@ -116,6 +141,14 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 		boolean allUpdated = verfuegung.getZeitabschnitte().stream()
 			.map(zeitabschnitt -> zeitabschnittWithZeiteinheiten(rechner, parameterDTO, zeitabschnitt))
 			.reduce(true, Boolean::logicalAnd);
+
+		if (!allUpdated) {
+			LOG.warn(
+				"The calculation result has changed: {}/{}/{}",
+				verfuegung.getId(),
+				verfuegung.getBetreuung().getBetreuungsstatus(),
+				verfuegung.getBetreuung().isGueltig());
+		}
 
 		return allUpdated;
 	}
@@ -141,11 +174,12 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 
 		BGCalculationResult result = rechner.calculate(zeitabschnitt, parameterDTO);
 		if (hasSameCalculation(result, zeitabschnitt)) {
-			result.toVerfuegungZeitabschnitt(zeitabschnitt);
+			zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(result.getVerfuegteAnzahlZeiteinheiten());
+			zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(result.getAnspruchsberechtigteAnzahlZeiteinheiten());
+			zeitabschnitt.setZeiteinheit(result.getZeiteinheit());
 			return true;
 		}
 
-		LOG.warn("The calculation result has changed: {} / {}", zeitabschnitt, result);
 		return false;
 	}
 
@@ -156,15 +190,6 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 		@Nonnull BGCalculationResult result,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 
-		return MathUtil.isSame(result.getMinimalerElternbeitrag(), zeitabschnitt.getMinimalerElternbeitrag())
-			&& MathUtil.isSame(
-			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(),
-			zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
-			&& MathUtil.isSame(
-			result.getVerguenstigungOhneBeruecksichtigungVollkosten(),
-			zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten())
-			&& MathUtil.isSame(result.getVerguenstigung(), zeitabschnitt.getVerguenstigung())
-			&& MathUtil.isSame(result.getVollkosten(), zeitabschnitt.getVollkosten())
-			&& MathUtil.isSame(result.getElternbeitrag(), zeitabschnitt.getElternbeitrag());
+		return MathUtil.isSame(result.getMinimalerElternbeitrag(), zeitabschnitt.getMinimalerElternbeitrag());
 	}
 }
