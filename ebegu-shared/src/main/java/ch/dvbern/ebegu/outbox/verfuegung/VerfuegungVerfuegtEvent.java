@@ -22,6 +22,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import org.apache.avro.Schema;
 
 public class VerfuegungVerfuegtEvent implements ExportedEvent {
 
@@ -35,9 +36,13 @@ public class VerfuegungVerfuegtEvent implements ExportedEvent {
 	@Nonnull
 	private final byte[] verfuegung;
 
-	public VerfuegungVerfuegtEvent(@Nonnull String bgNummer, @Nonnull byte[] verfuegung) {
+	@Nonnull
+	private final Schema schema;
+
+	public VerfuegungVerfuegtEvent(@Nonnull String bgNummer, @Nonnull byte[] verfuegung, @Nonnull Schema schema) {
 		this.bgNummer = bgNummer;
 		this.verfuegung = Arrays.copyOf(verfuegung, verfuegung.length);
+		this.schema = schema;
 	}
 
 	@Nonnull
@@ -62,5 +67,11 @@ public class VerfuegungVerfuegtEvent implements ExportedEvent {
 	@Override
 	public byte[] getPayload() {
 		return Arrays.copyOf(verfuegung, verfuegung.length);
+	}
+
+	@Nonnull
+	@Override
+	public Schema getSchema() {
+		return schema;
 	}
 }

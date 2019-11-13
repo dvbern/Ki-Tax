@@ -187,4 +187,7 @@ public interface EbeguConfiguration {
 
 	@Nonnull
 	Optional<String> getKafkaURL();
+
+	@Nonnull
+	String getSchemaRegistryURL();
 }

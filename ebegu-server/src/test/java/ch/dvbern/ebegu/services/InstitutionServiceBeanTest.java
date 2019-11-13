@@ -31,7 +31,9 @@ import ch.dvbern.ebegu.outbox.institutionclient.AbstractInstitutionClientEvent;
 import ch.dvbern.ebegu.outbox.institutionclient.InstitutionClientAddedEvent;
 import ch.dvbern.ebegu.outbox.institutionclient.InstitutionClientEventConverter;
 import ch.dvbern.ebegu.outbox.institutionclient.InstitutionClientRemovedEvent;
+import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
 import com.google.common.collect.Sets;
+import org.apache.avro.Schema;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
@@ -48,6 +50,7 @@ import static org.hamcrest.Matchers.is;
 public class InstitutionServiceBeanTest {
 
 	private static final byte[] MOCK_BYTES = new byte[0];
+	private static final Schema SCHEMA = InstitutionClientEventDTO.getClassSchema();
 
 	@TestSubject
 	private final InstitutionServiceBean institutionService = new InstitutionServiceBean();
@@ -137,7 +140,7 @@ public class InstitutionServiceBeanTest {
 	}
 
 	private void expectRemoval(@Nonnull String institutionId, @Nonnull ExternalClient client) {
-		InstitutionClientRemovedEvent event = new InstitutionClientRemovedEvent(institutionId, MOCK_BYTES);
+		InstitutionClientRemovedEvent event = new InstitutionClientRemovedEvent(institutionId, MOCK_BYTES, SCHEMA);
 
 		EasyMock.expect(institutionClientEventConverter.clientRemovedEventOf(institutionId, client))
 			.andReturn(event);
@@ -146,7 +149,7 @@ public class InstitutionServiceBeanTest {
 	}
 
 	private void expectAddition(@Nonnull String institutionId, @Nonnull ExternalClient client) {
-		InstitutionClientAddedEvent event = new InstitutionClientAddedEvent(institutionId, MOCK_BYTES);
+		InstitutionClientAddedEvent event = new InstitutionClientAddedEvent(institutionId, MOCK_BYTES, SCHEMA);
 
 		EasyMock.expect(institutionClientEventConverter.clientAddedEventOf(institutionId, client))
 			.andReturn(event);

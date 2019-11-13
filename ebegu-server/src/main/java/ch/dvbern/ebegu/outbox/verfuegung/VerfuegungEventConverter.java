@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.outbox.verfuegung;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,10 +36,12 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.outbox.EventConverterUtil;
+import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
@@ -58,9 +63,9 @@ public class VerfuegungEventConverter {
 	@Nonnull
 	public VerfuegungVerfuegtEvent of(@Nonnull Verfuegung verfuegung) {
 		VerfuegungEventDTO dto = toVerfuegungEventDTO(verfuegung);
-		byte[] payload = EventConverterUtil.toJsonB(dto);
+		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload);
+		return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema());
 	}
 
 	@Nonnull
@@ -70,11 +75,10 @@ public class VerfuegungEventConverter {
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
 		Kind kind = betreuung.getKind().getKindJA();
 
-		VerfuegungEventDTO verfuegungDTO = new VerfuegungEventDTO(
-			toKindDTO(kind),
-			toGesuchstellerDTO(gesuchsteller),
-			BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name())
-		);
+		VerfuegungEventDTO verfuegungDTO = new VerfuegungEventDTO();
+		verfuegungDTO.setKind(toKindDTO(kind));
+		verfuegungDTO.setGesuchsteller(toGesuchstellerDTO(gesuchsteller));
+		verfuegungDTO.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()));
 		verfuegungDTO.setRefnr(betreuung.getBGNummer());
 		verfuegungDTO.setInstitutionId(betreuung.getInstitutionStammdaten().getInstitution().getId());
 
@@ -83,7 +87,9 @@ public class VerfuegungEventConverter {
 		verfuegungDTO.setBis(periode.getGueltigBis());
 
 		verfuegungDTO.setVersion(gesuch.getLaufnummer());
-		verfuegungDTO.setVerfuegtAm(requireNonNull(verfuegung.getTimestampErstellt()));
+		LocalDateTime timestampErstellt = verfuegung.getTimestampErstellt();
+		Instant instant = requireNonNull(timestampErstellt).atZone(ZoneId.systemDefault()).toInstant();
+		verfuegungDTO.setVerfuegtAm(instant);
 
 		addZeitabschnitte(verfuegung, verfuegungDTO);
 
@@ -97,6 +103,7 @@ public class VerfuegungEventConverter {
 
 	@Nonnull
 	private GesuchstellerDTO toGesuchstellerDTO(@Nonnull Gesuchsteller gesuchsteller) {
+		//noinspection ConstantConditions
 		return new GesuchstellerDTO(gesuchsteller.getVorname(), gesuchsteller.getNachname(), gesuchsteller.getMail());
 	}
 
@@ -148,12 +155,15 @@ public class VerfuegungEventConverter {
 			zeitabschnitt.getGueltigkeit().getGueltigAb(),
 			zeitabschnitt.getGueltigkeit().getGueltigBis(),
 			zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer(),
-			zeitabschnitt.getBetreuungspensum(),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getBetreuungspensum()),
 			zeitabschnitt.getAnspruchberechtigtesPensum(),
-			zeitabschnitt.getBgPensum(),
-			zeitabschnitt.getVollkosten(),
-			zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(),
-			zeitabschnitt.getMinimalerElternbeitragGekuerzt(),
-			zeitabschnitt.getVerguenstigung());
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getBgPensum()),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVollkosten()),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getMinimalerElternbeitragGekuerzt()),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVerguenstigung()),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten()),
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()),
+			Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()));
 	}
 }

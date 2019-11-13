@@ -17,22 +17,24 @@
 
 package ch.dvbern.ebegu.outbox;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.avro.Schema;
 
-public final class EventConverterUtil {
+@Converter(autoApply = true)
+public class SchemaConverter implements AttributeConverter<Schema, String> {
 
-	private EventConverterUtil() {
-		// util class
+	@Override
+	@Nullable
+	public String convertToDatabaseColumn(@Nullable Schema attribute) {
+		return attribute == null ? null : attribute.toString();
 	}
 
-	public static byte[] toJsonB(@Nonnull Object anything) {
-		try {
-			return ObjectMapperUtil.MAPPER.writeValueAsBytes(anything);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("failed converting to jsonb", e);
-		}
+	@Override
+	@Nullable
+	public Schema convertToEntityAttribute(@Nullable String dbData) {
+		return dbData == null ? null : new Schema.Parser().parse(dbData);
 	}
 }
