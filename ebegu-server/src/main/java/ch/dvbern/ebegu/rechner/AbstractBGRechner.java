@@ -52,7 +52,8 @@ public abstract class AbstractBGRechner {
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensum();
 
 		// Inputdaten validieren
-		checkArguments(von, bis, verfuegungZeitabschnitt.getBgPensum(), massgebendesEinkommen);
+		BigDecimal bgPensum = verfuegungZeitabschnitt.getBgPensum();
+		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
 
 		// Zwischenresultate
 		BigDecimal verguenstigungProZeiteinheit = getVerguenstigungProZeiteinheit(
@@ -66,17 +67,11 @@ public abstract class AbstractBGRechner {
 		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
 
 		BigDecimal verfuegteZeiteinheiten =
-			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
-				parameterDTO,
-				von,
-				bis,
-				verfuegungZeitabschnitt.getBgPensum());
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, bgPensum);
 
-		BigDecimal anspruchsberechtigteZeiteinheiten = getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
-			parameterDTO,
-			von,
-			bis,
-			MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum()));
+		BigDecimal anspruchPensum = MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+		BigDecimal anspruchsberechtigteZeiteinheiten =
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, anspruchPensum);
 
 		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
@@ -85,7 +80,7 @@ public abstract class AbstractBGRechner {
 		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
 		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
 			anteilVerguenstigesPensumAmBetreuungspensum =
-				MATH.divide(verfuegungZeitabschnitt.getBgPensum(), betreuungspensum);
+				MATH.divide(bgPensum, betreuungspensum);
 		}
 		BigDecimal vollkostenFuerVerguenstigtesPensum =
 			MATH.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
@@ -93,18 +88,18 @@ public abstract class AbstractBGRechner {
 		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
-		// Resultat
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
-		BGCalculationResult result = new BGCalculationResult();
 
+		// Resultat
+		BGCalculationResult result = new BGCalculationResult();
 		result.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(
-			verguenstigungVorVollkostenUndMinimalbetrag);
+			MathUtil.DEFAULT.from(verguenstigungVorVollkostenUndMinimalbetrag));
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(
 			verguenstigungVorMinimalbetrag));
-		result.setVerguenstigung(verguenstigung);
+		result.setVerguenstigung(MathUtil.DEFAULT.from(verguenstigung));
 		result.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		result.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 
