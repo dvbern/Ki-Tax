@@ -4493,6 +4493,8 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxStammdaten.getGemeinde().getId());
 		requireNonNull(jaxStammdaten.getAdresse());
 		requireNonNull(jaxStammdaten.getStandardRechtsmittelbelehrung());
+		requireNonNull(jaxStammdaten.getBenachrichtigungBgEmailAuto());
+		requireNonNull(jaxStammdaten.getBenachrichtigungTsEmailAuto());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
@@ -4535,6 +4537,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		stammdaten.setStandardRechtsmittelbelehrung(jaxStammdaten.getStandardRechtsmittelbelehrung());
+		stammdaten.setBenachrichtigungBgEmailAuto(jaxStammdaten.getBenachrichtigungBgEmailAuto());
+		stammdaten.setBenachrichtigungTsEmailAuto(jaxStammdaten.getBenachrichtigungTsEmailAuto());
 
 		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
 			if (stammdaten.getRechtsmittelbelehrung() == null) {
@@ -4626,6 +4630,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
+		jaxStammdaten.setBenachrichtigungBgEmailAuto(stammdaten.getBenachrichtigungBgEmailAuto());
+		jaxStammdaten.setBenachrichtigungTsEmailAuto(stammdaten.getBenachrichtigungTsEmailAuto());
 
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));

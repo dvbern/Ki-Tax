@@ -47,6 +47,8 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public iban: string;
     public standardRechtsmittelbelehrung: boolean;
     public rechtsmittelbelehrung: TSTextRessource;
+    public benachrichtigungBgEmailAuto: boolean;
+    public benachrichtigungTsEmailAuto: boolean;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
 

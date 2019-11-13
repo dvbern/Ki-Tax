@@ -818,6 +818,8 @@ export default class EbeguRestUtil {
             restStammdaten.bic = stammdaten.bic;
             restStammdaten.iban = stammdaten.iban;
             restStammdaten.standardRechtsmittelbelehrung = stammdaten.standardRechtsmittelbelehrung;
+            restStammdaten.benachrichtigungBgEmailAuto = stammdaten.benachrichtigungBgEmailAuto;
+            restStammdaten.benachrichtigungTsEmailAuto = stammdaten.benachrichtigungTsEmailAuto;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -865,6 +867,8 @@ export default class EbeguRestUtil {
             }
             stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
             stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
+            stammdatenTS.benachrichtigungBgEmailAuto = stammdatenFromServer.benachrichtigungBgEmailAuto;
+            stammdatenTS.benachrichtigungTsEmailAuto = stammdatenFromServer.benachrichtigungTsEmailAuto;
 
             return stammdatenTS;
         }

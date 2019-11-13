@@ -80,7 +80,10 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private Boolean standardRechtsmittelbelehrung;
 	@Nullable
 	private JaxTextRessource rechtsmittelbelehrung;
-
+	@NotNull
+	private Boolean benachrichtigungBgEmailAuto;
+	@NotNull
+	private Boolean benachrichtigungTsEmailAuto;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -283,5 +286,23 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setDefaultBenutzer(@Nullable JaxBenutzer defaultBenutzer) {
 		this.defaultBenutzer = defaultBenutzer;
+	}
+
+	@Nonnull
+	public Boolean getBenachrichtigungBgEmailAuto() {
+		return benachrichtigungBgEmailAuto;
+	}
+
+	public void setBenachrichtigungBgEmailAuto(@Nonnull Boolean benachrichtigungBgEmailAuto) {
+		this.benachrichtigungBgEmailAuto = benachrichtigungBgEmailAuto;
+	}
+
+	@Nonnull
+	public Boolean getBenachrichtigungTsEmailAuto() {
+		return benachrichtigungTsEmailAuto;
+	}
+
+	public void setBenachrichtigungTsEmailAuto(@Nonnull Boolean benachrichtigungTsEmailAuto) {
+		this.benachrichtigungTsEmailAuto = benachrichtigungTsEmailAuto;
 	}
 }

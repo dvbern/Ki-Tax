@@ -163,6 +163,14 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rechtsmittelbelehrung_id"))
 	private TextRessource rechtsmittelbelehrung;
 
+	@NotNull
+	@Column(nullable = false)
+	private Boolean benachrichtigungBgEmailAuto = true;
+
+	@NotNull
+	@Column(nullable = false)
+	private Boolean benachrichtigungTsEmailAuto = true;
+
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -434,5 +442,23 @@ public class GemeindeStammdaten extends AbstractEntity {
 			return Optional.ofNullable(defaultBenutzer);
 		}
 		return Optional.empty();
+	}
+
+	@Nonnull
+	public Boolean getBenachrichtigungBgEmailAuto() {
+		return benachrichtigungBgEmailAuto;
+	}
+
+	public void setBenachrichtigungBgEmailAuto(@Nonnull Boolean benachrichtigungBgEmailAuto) {
+		this.benachrichtigungBgEmailAuto = benachrichtigungBgEmailAuto;
+	}
+
+	@Nonnull
+	public Boolean getBenachrichtigungTsEmailAuto() {
+		return benachrichtigungTsEmailAuto;
+	}
+
+	public void setBenachrichtigungTsEmailAuto(@Nonnull Boolean benachrichtigungTsEmailAuto) {
+		this.benachrichtigungTsEmailAuto = benachrichtigungTsEmailAuto;
 	}
 }

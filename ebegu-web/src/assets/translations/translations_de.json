@@ -1738,5 +1738,9 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
     "BETREUUNG_TAGESSCHULE_AGB": "Ich habe<a href='dummy.pdf' target='_blank'> das Merkblatt zur Anmeldung in die Tagesschule gelesen</a> und zur Kenntnis genommen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
+    "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Benachrichtigungen bei Verfügungen automatisch per Email senden",
+    "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Nach Abschluss einer Verfügung wird automatisch eine Bestätigung per Email versendet. Empfohlene Einstellung: An.",
+    "ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN": "Anmeldebestätigungen automatisch per Email senden",
+    "ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP": "Bei einer Anmeldung wird automatisch eine Bestätigung per Email versendet. Empfohlene Einstellung: An",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

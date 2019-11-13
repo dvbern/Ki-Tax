@@ -11,6 +11,7 @@ import {
     MatTabsModule,
 } from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const MATERIAL_MODULES = [
     // MatAutocompleteModule,
@@ -43,7 +44,7 @@ const MATERIAL_MODULES = [
     MatTableModule,
     MatTabsModule,
     // MatToolbarModule,
-    // MatTooltipModule,
+    MatTooltipModule,
     // MatBottomSheetModule
 ];
 

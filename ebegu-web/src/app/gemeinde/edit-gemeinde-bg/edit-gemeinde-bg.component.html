@@ -141,6 +141,19 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
+                    <div class="form-group">
+                        <mat-checkbox id="benachrichtigungBgEmailAuto_id" name="benachrichtigungBgEmailAuto_id"
+                                      [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
+                            <li class="fa fa-info-circle"
+                                matTooltip="{{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
+                                matTooltipPosition="right"></li>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <dv-accordion class="konfigurationList" allow-multiple-sections="true">
                         <dv-accordion-tab
                             *ngFor="let konf of konfigurationsListe; let i = index"
@@ -255,6 +268,20 @@
                     <div class="form-group">
                         <h3 translate>BEGU_START</h3>
                         <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <mat-checkbox id="benachrichtigungBgEmailAutoDisplay_id" name="benachrichtigungBgEmailAutoDisplay_id"
+                                      [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto"
+                                      disabled="true">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
+                            <li class="fa fa-info-circle"
+                                matTooltip="{{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
+                                matTooltipPosition="right"></li>
+                        </mat-checkbox>
                     </div>
                 </div>
             </div>
