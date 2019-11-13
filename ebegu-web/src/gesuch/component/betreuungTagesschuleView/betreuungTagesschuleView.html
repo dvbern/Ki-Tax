@@ -22,13 +22,25 @@
             ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
             	&& !vm.getBetreuungModel().keineDetailinformationen">
 
+            <!-- Warnung, wenn noch keine Module definiert -->
+            <div class="marginTop30"
+                 ng-if="vm.isTagesschuleAlreadySelected()
+                    && !vm.hasTagesschuleAnyModulGroupDefined()">
+                <div class="well well-status-warten">
+                    <i class="fa fa-exclamation" aria-hidden="true"></i>
+                    <span data-translate="TAGESSCHULE_NOCH_KEINE_MODULE"></span>
+                </div>
+            </div>
+
             <!-- Modulauswahl Tagesschule -->
             <div
-                ng-if="vm.isTageschulenAnmeldungAktiv() && vm.isTagesschuleAlreadySelected()">
+                ng-if="vm.isTageschulenAnmeldungAktiv()
+					&& vm.isTagesschuleAlreadySelected()
+					&& vm.hasTagesschuleAnyModulGroupDefined()">
 
                 <!-- Eintrittsdatum -->
                 <div class="row">
-                    <div class="col-sm-12 dv-input-container-small form-group">
+                    <div class="col-sm-12 dv-input-container-small">
                         <label class="md-no-float required" data-translate="EINTRITTSDATUM"
                                for="eintrittsdatum_ID"></label>
                         <dv-datepicker input-id="eintrittsdatum_ID" name="eintrittsdatum"
@@ -39,6 +51,46 @@
                         </dv-datepicker>
                         <dv-error-messages input-id="eintrittsdatum"
                                            for="vm.form.eintrittsdatum.$error"></dv-error-messages>
+                    </div>
+                </div>
+
+                <!-- Planklasse -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float" for="planKlasse_ID">
+                                <span data-translate="PLANKLASSE"> </span>
+                                <dv-tooltip input-id="planKlasse" text="'PLANKLASSE_INFO' | translate"></dv-tooltip>
+                            </label>
+                            <input aria-describedby="planKlasse_ID-error" id="planKlasse_ID"
+                                   type="text" name="planKlasse"
+                                   ng-model="vm.betreuung.belegungTagesschule.planKlasse"
+                                   dv-max-length class="form-control"
+                                   ng-required="vm.isGesuchstellerRole()">
+                            <dv-error-messages input-id="planKlasse"
+                                               for="vm.form.planKlasse.$error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                </div>
+
+                <!-- Abholung aus der Tagesschule -->
+                <div class="row marginTop20">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" ng-class="{'required': vm.isGesuchstellerRole()}" for="abholungTagesschule_ID">
+                                <span data-translate="ABHOLUNG_AUS_TAGESSCHULE"></span>
+                            </label>
+                            <div class="dv-select-style">
+                                <select aria-describedby="abholungTagesschule_ID-error" name="abholungTagesschule" id="abholungTagesschule_ID"
+                                        ng-model="vm.betreuung.belegungTagesschule.abholungTagesschule"
+                                        class="form-control"
+                                        ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
+                                        ng-required="vm.isGesuchstellerRole()">
+                                </select>
+                                <dv-error-messages input-id="abholungTagesschule"
+                                                   for="vm.form.abholungTagesschule.$error"></dv-error-messages>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -57,29 +109,81 @@
                         </div>
                     </div>
                     <div class="dv-ebegu-calendar__row--tagesschule"
-                        ng-repeat="group in vm.modulGroups track by group.identifier">
+                        ng-repeat="group in vm.modulGroups track by group.group.identifier">
                         <!-- Gruppe (Name und Zeit) -->
                         <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
-                            <span class="dv-ebegu-calendar__module-name" ng-bind="group.modulTagesschuleName | translate"></span>
+                            <span class="dv-ebegu-calendar__module-name" ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
                             <span class="dv-ebegu-calendar__module-time"
-                                  ng-bind="vm.getModulTimeAsStringViaName(group)"></span>
+                                  ng-bind="vm.getModulTimeAsString(group.group)"></span>
                         </div>
                         <div class="dv-ebegu-calendar__wrapper">
                             <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
 
-                                <div ng-repeat="mod in group.module track by mod.id">
-                                    <!-- TODO Reviewer: Sobald ich die Klasse hinzufüge, geht es nicht mehr!
-                                    class="dv-ebegu-calendar--tagesschule"
-                                    -->
-                                    <md-checkbox
-                                        name="modul_{{mod.id}}"
-                                        ng-model="mod.angemeldet"
-                                        aria-label="Modul {{group.modulTagesschuleName | translate}} {{mod.wochentag | translate}}"
-                                        ng-disabled="!mod.angeboten || vm.isFreigabequittungAusstehend()">
-                                    </md-checkbox>
+                                <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
+                                     ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
+                                    <md-menu>
+                                        <md-checkbox
+                                            name="modul_{{mod.modulTagesschule.identifier}}"
+                                            ng-model="mod.modulTagesschule.angemeldet"
+                                            aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                            ng-disabled="!vm.isModuleEditable(mod)"
+                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
+                                            class="dv-ebegu-calendar--tagesschule">
+                                            <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
+                                        </md-checkbox>
+                                        <md-menu-content width="4">
+                                            <md-menu-item ng-repeat="interval in vm.getIntervalle()">
+                                                <md-button ng-click="vm.setIntervall(mod, interval)">
+                                                    {{interval | translate}}
+                                                </md-button>
+                                            </md-menu-item>
+                                        </md-menu-content>
+                                    </md-menu>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Abweichung zweites Semester und Bemerkungen -->
+                <div class="row marginTop30">
+                    <div class="col-sm-12 dv-input-container-question">
+                        <md-checkbox class="checkbox marginTop20"
+                                     ng-model="vm.betreuung.belegungTagesschule.abweichungZweitesSemester"
+                                     name="abweichungZweitesSemester"
+                                     id="abweichungZweitesSemester"
+                                     aria-label="{{'BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX' | translate}}"
+                                     ng-disabled="vm.isGesuchReadonly()">
+                            <span data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"></span>
+                        </md-checkbox>
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float" ng-class="{'required': vm.betreuung.belegungTagesschule.abweichungZweitesSemester}"
+                                   data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG" for="bemerkung_ID">
+                            </label>
+                            <p class="inlineHint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
+                            <textarea aria-describedby="bemerkung_ID-error"
+                                      name="bemerkung"
+                                      class="form-control " rows="6"
+                                      id="bemerkung_ID"
+                                      ng-model="vm.betreuung.belegungTagesschule.bemerkung"
+                                      ng-required="vm.betreuung.belegungTagesschule.abweichungZweitesSemester"
+                                      maxlength="4000">
+                                </textarea>
+                            <dv-error-messages input-id="bemerkung" for="vm.form.bemerkung.$error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                </div>
+                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly()">
+                    <div class="col-sm-12 dv-input-container-question">
+                        <md-checkbox class="checkbox"
+                                     ng-model="vm.agbTSAkzeptiert"
+                                     name="agbTSAkzeptiert"
+                                     id="agbTSAkzeptiert"
+                                     aria-label="{{'BETREUUNG_TAGESSCHULE_AGB' | translate}}"
+                                     ng-required="true">
+                            <span data-translate="BETREUUNG_TAGESSCHULE_AGB"></span>
+                        </md-checkbox>
+                        <dv-error-messages input-id="agbTSAkzeptiert" for="vm.form.agbTSAkzeptiert.$error"></dv-error-messages>
                     </div>
                 </div>
             </div>
@@ -158,7 +262,7 @@
 
         <div class="dv-navigation-flex"
              dv-show-element
-             dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+             dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
             <dv-loading-button class="dv-navigation-item"
                                button-click="vm.anmeldungSchulamtUebernehmen()"

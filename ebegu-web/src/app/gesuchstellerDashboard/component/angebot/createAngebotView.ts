@@ -184,9 +184,9 @@ export class CreateAngebotListViewController implements IController {
         if (this.ts) {
             this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
 
-            this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule =
-                this.anmeldungDTO.betreuung.belegungTagesschule.moduleTagesschule
-                    .filter(modul => modul.angemeldet);
+            this.anmeldungDTO.betreuung.belegungTagesschule.belegungTagesschuleModule =
+                this.anmeldungDTO.betreuung.belegungTagesschule.belegungTagesschuleModule
+                    .filter(modul => modul.modulTagesschule.angemeldet);
 
             this.betreuungRS.createAngebot(this.anmeldungDTO).then(() => {
                 this.backToHome('TAGESSCHULE_ANMELDUNG_GESPEICHERT');

@@ -65,6 +65,9 @@ public final class Constants {
 	public static final String SQL_PATTERN_DATE = "yyyy-MM-dd";
 	public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern(SQL_PATTERN_DATE);
 
+	public static final String HOURS_PATTERN = "HH:mm";
+	public static final DateTimeFormatter HOURS_FORMAT = DateTimeFormatter.ofPattern(HOURS_PATTERN);
+
 	public static final String CURRENCY_PATTERN = "#,##0.00";
 	public static final DecimalFormatSymbols SYMBOLS_DE_CH = new DecimalFormatSymbols(new Locale("de", "CH"));
 	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN, SYMBOLS_DE_CH);

@@ -121,7 +121,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
 	ADMIN_TRAEGERSCHAFT,
 	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT,
-	ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 public class BetreuungServiceBean extends AbstractBaseService implements BetreuungService {
 
 	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "betreuung darf nicht null sein";
@@ -659,6 +659,22 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		mailService.sendInfoBetreuungGeloescht(Collections.singletonList(betreuungToRemove));
 	}
 
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
+	public void removeAnmeldung(@Nonnull String anmeldungId) {
+		Objects.requireNonNull(anmeldungId);
+		Optional<? extends AbstractAnmeldung> anmeldungToRemoveOpt = findAnmeldung(anmeldungId);
+		AbstractAnmeldung anmeldungToRemove =
+			anmeldungToRemoveOpt.orElseThrow(() -> new EbeguEntityNotFoundException("removeAnmeldung", ErrorCodeEnum
+				.ERROR_ENTITY_NOT_FOUND, anmeldungId));
+
+		final String gesuchId = anmeldungToRemove.extractGesuch().getId();
+		removeAnmeldung(anmeldungToRemove);
+		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
+	}
+
 	/**
 	 * removes Betreuungsmitteilungen of this Betreuung and removes the relation of all depending Mitteilunges
 	 */
@@ -708,6 +724,26 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
+	public void removeAnmeldung(@Nonnull AbstractAnmeldung anmeldung) {
+		Objects.requireNonNull(anmeldung);
+		final Gesuch gesuch = anmeldung.extractGesuch();
+
+		persistence.remove(anmeldung);
+
+		// the Anmeldung needs to be removed from the object as well
+		gesuch.getKindContainers()
+			.forEach(kind -> kind.getAnmeldungenTagesschule().removeIf(bet -> bet.getId().equalsIgnoreCase(anmeldung.getId())));
+		gesuch.getKindContainers()
+			.forEach(kind -> kind.getAnmeldungenFerieninsel().removeIf(bet -> bet.getId().equalsIgnoreCase(anmeldung.getId())));
+
+		gesuchService.updateBetreuungenStatus(gesuch);
+	}
+
+	@Override
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
@@ -715,7 +751,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public Collection<AbstractPlatz> getPendenzenBetreuungen() {
 		Collection<AbstractPlatz> pendenzen = new ArrayList<>();
 		Collection<Institution> instForCurrBenutzer =
-			institutionService.getInstitutionenReadableForCurrentBenutzer(true);
+			institutionService.getInstitutionenEditableForCurrentBenutzer(true);
 		if (!instForCurrBenutzer.isEmpty()) {
 			pendenzen.addAll(getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
 			pendenzen.addAll(getPendenzenAnmeldungTagesschuleForInstitution((Institution[]) instForCurrBenutzer.toArray(INSTITUTIONS)));
