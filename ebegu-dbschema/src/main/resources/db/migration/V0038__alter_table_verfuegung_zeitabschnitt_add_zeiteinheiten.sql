@@ -19,3 +19,7 @@ ALTER TABLE ebegu.verfuegung_zeitabschnitt_aud
 	ADD COLUMN verfuegte_anzahl_zeiteinheiten            DECIMAL(19, 2) NULL,
 	ADD COLUMN anspruchsberechtigte_anzahl_zeiteinheiten DECIMAL(19, 2) NULL,
 	ADD COLUMN zeiteinheit                               VARCHAR(100)   NULL;
+
+# instead of migrating the assignement, just unsed it: each institution can be assigned to the client manually in the GUI
+DELETE
+FROM institution_external_client;
