@@ -1050,8 +1050,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
         return !this.isSavingData
             && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
-            && ((gesuchsteller && this.isBetreuungsstatusAusstehendOrUnbekannteInstitution())
-                || gemeindeUser);
+            && (gesuchsteller || gemeindeUser);
     }
 
     /**
