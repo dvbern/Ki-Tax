@@ -81,11 +81,4 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 			return false;
 		}
 	}
-
-	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Betreuung betreuung,
-		@Nullable Object otherDataNeeded) {
-		return isDokumentNeeded(dokumentTyp, betreuung);
-	}
-
 }

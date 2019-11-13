@@ -83,12 +83,6 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation){
-		return isDokumentNeeded(dokumentTyp, abstractFinanzielleSituation, null);
-	}
-
-	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation, @Nullable Familiensituation familiensituation) {
 		if (abstractFinanzielleSituation != null) {
 			switch (dokumentTyp) {
 			case STEUERVERANLAGUNG:
@@ -96,7 +90,7 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 			case STEUERERKLAERUNG:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() && abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 			case JAHRESLOHNAUSWEISE:
-				return isJahresLohnausweisNeeded(abstractFinanzielleSituation, familiensituation);
+				return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
 			case NACHWEIS_FAMILIENZULAGEN:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
 					abstractFinanzielleSituation.getFamilienzulage() != null &&
@@ -135,9 +129,17 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		return false;
 	}
 
-	protected abstract boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
-		Familiensituation familiensituation);
+	protected abstract boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
 
-	protected abstract boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
+	protected abstract boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
 
+	protected boolean isSozialhilfeempfaenger(@Nullable Familiensituation familiensituation) {
+		if (familiensituation != null &&
+			familiensituation.getSozialhilfeBezueger() != null &&
+			familiensituation.getSozialhilfeBezueger()
+		) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -110,6 +110,10 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			return;
 		}
 
+		if (isSozialhilfeempfaenger(familiensituation)) {
+			return;
+		}
+
 		final FinanzielleSituationContainer finanzielleSituationContainer =
 			gesuchsteller.getFinanzielleSituationContainer();
 
@@ -142,14 +146,7 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 	}
 
 	@Override
-	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
-		Familiensituation familiensituation) {
-		if (familiensituation != null &&
-			familiensituation.getSozialhilfeBezueger() != null &&
-			familiensituation.getSozialhilfeBezueger()
-		) {
-			return false;
-		}
+	protected boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 
@@ -161,7 +158,7 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 	}
 
 	@Override
-	protected boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
+	protected boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 			switch (minus) {

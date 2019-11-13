@@ -150,6 +150,10 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 			return;
 		}
 
+		if (isSozialhilfeempfaenger(familiensituation)) {
+			return;
+		}
+
 		final EinkommensverschlechterungContainer einkommensverschlechterungContainer =
 			gesuchsteller.getEinkommensverschlechterungContainer();
 		Einkommensverschlechterung einkommensverschlechterung;
@@ -178,14 +182,7 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 	}
 
 	@Override
-	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation,
-		Familiensituation familiensituation) {
-		if (familiensituation != null &&
-			familiensituation.getSozialhilfeBezueger() != null &&
-			familiensituation.getSozialhilfeBezueger()
-		) {
-			return false;
-		}
+	protected boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
 			Einkommensverschlechterung ekv = (Einkommensverschlechterung) abstractFinanzielleSituation;
 
@@ -196,7 +193,7 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 	}
 
 	@Override
-	protected boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
+	protected boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
 		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
 			Einkommensverschlechterung einkommensverschlechterung =
 				(Einkommensverschlechterung) abstractFinanzielleSituation;

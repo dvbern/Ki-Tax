@@ -41,17 +41,13 @@ abstract class AbstractDokumente<T1, T2> {
 
 	public abstract boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable T1 dataForDocument);
 
-	public abstract boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable T1 dataForDocument1,
-		@Nullable T2 dataForDocument2);
-
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable T1 dataForDocument1,
 		@Nullable T2 dataForDocument2,
 		@Nullable LocalDate stichtag
 	) {
-
-		return isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2);
+		return isDokumentNeeded(dokumentTyp, dataForDocument1);
 	}
 
 	void add(@Nullable DokumentGrund dokumentGrund, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
