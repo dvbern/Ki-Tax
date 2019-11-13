@@ -172,6 +172,10 @@ export class ZahlungsauftragViewController implements IController {
             });
     }
 
+    public hasNegativeZahlungen(zahlungsauftrag: TSZahlungsauftrag): boolean {
+        return zahlungsauftrag.zahlungen.reduce((acc, curr) => acc || curr.betragTotalZahlung < 0, false);
+    }
+
     public ausloesen(zahlungsauftragId: string): void {
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: this.$translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),

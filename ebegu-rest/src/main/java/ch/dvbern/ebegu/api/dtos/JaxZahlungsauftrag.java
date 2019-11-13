@@ -58,6 +58,8 @@ public class JaxZahlungsauftrag extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private BigDecimal betragTotalAuftrag;
 
+	private boolean hasNegativeZahlungen;
+
 	@NotNull
 	private JaxGemeinde gemeinde;
 
@@ -112,6 +114,10 @@ public class JaxZahlungsauftrag extends JaxAbstractDateRangedDTO {
 	public void setBetragTotalAuftrag(BigDecimal betragTotalAuftrag) {
 		this.betragTotalAuftrag = betragTotalAuftrag;
 	}
+
+	public boolean getHasNegativeZahlungen() { return this.hasNegativeZahlungen; }
+
+	public void setHasNegativeZahlungen(boolean hasNegativeZahlungen) { this.hasNegativeZahlungen = hasNegativeZahlungen; }
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {

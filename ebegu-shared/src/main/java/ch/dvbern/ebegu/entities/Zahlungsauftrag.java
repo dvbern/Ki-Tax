@@ -76,7 +76,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	@Nonnull
 	@Valid
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "zahlungsauftrag")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "zahlungsauftrag")
 	private List<Zahlung> zahlungen = new ArrayList<>();
 
 	@Nonnull
