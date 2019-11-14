@@ -63,6 +63,6 @@ describe('OnboardingInfoGemComponent', () => {
     });
 
     it('should load all BFS Gemeinden', () => {
-        expect(gemeindeRSSpy.getAllBfsGemeinden).toHaveBeenCalled();
+         expect(gemeindeRSSpy.getAllBfsGemeinden).toHaveBeenCalled();
     });
 });
