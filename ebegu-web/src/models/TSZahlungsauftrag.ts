@@ -27,7 +27,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
     private _status: TSZahlungsauftragsstatus;
     private _beschrieb: string;
     private _betragTotalAuftrag: number;
-    private _hasNegativeZahlungen: boolean;
+    private _hasNegativeZahlungen: boolean = false;
     private _gemeinde: TSGemeinde;
     private _zahlungen: Array<TSZahlung>;
 
@@ -38,7 +38,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         status?: TSZahlungsauftragsstatus,
         beschrieb?: string,
         betragTotalAuftrag?: number,
-        hasNegativeZahlungen?: boolean,
+        hasNegativeZahlungen?: boolean | false,
         gemeinde?: TSGemeinde,
         zahlungen?: Array<TSZahlung>,
     ) {
