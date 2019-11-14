@@ -9,9 +9,9 @@ import {
     MatSortModule,
     MatTableModule,
     MatTabsModule,
+    MatTooltipModule,
 } from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
-import {MatTooltipModule} from '@angular/material';
 
 const MATERIAL_MODULES = [
     // MatAutocompleteModule,

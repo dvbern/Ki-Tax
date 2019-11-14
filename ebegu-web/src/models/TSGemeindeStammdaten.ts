@@ -49,6 +49,12 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public rechtsmittelbelehrung: TSTextRessource;
     public benachrichtigungBgEmailAuto: boolean;
     public benachrichtigungTsEmailAuto: boolean;
+    public standardDokSignature: boolean;
+    public standardDokTitle: string;
+    public standardDokUnterschriftTitel: string;
+    public standardDokUnterschriftName: string;
+    public standardDokUnterschriftTitel2: string;
+    public standardDokUnterschriftName2: string;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
 

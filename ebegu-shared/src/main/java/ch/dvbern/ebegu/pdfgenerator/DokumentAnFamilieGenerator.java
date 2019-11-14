@@ -36,8 +36,12 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.Element;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
@@ -104,12 +108,48 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 	}
 
 	@Nonnull
-	protected Paragraph createParagraphSignatur() {
-		String signiert = getSachbearbeiterSigniert();
-		if (signiert != null) {
-			return PdfUtil.createParagraph('\n' + signiert + '\n' + translate(SACHBEARBEITUNG), 2);
+	protected Element createParagraphSignatur() {
+		if(gemeindeStammdaten.getStandardDokSignature()){
+			String signiert = getSachbearbeiterSigniert();
+			if (signiert != null) {
+				return PdfUtil.createParagraph('\n' + signiert + '\n' + translate(SACHBEARBEITUNG), 2);
+			}
+			return PdfUtil.createParagraph(translate(SACHBEARBEITUNG), 2);
+				}
+		else {
+			return createAlternativSignatureTable();
 		}
-		return PdfUtil.createParagraph(translate(SACHBEARBEITUNG), 2);
+	}
+
+	@Nonnull
+	public PdfPTable createAlternativSignatureTable() {
+		PdfPTable table = new PdfPTable(3);
+		// Init
+		PdfUtil.setTableDefaultStyles(table);
+		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
+		PdfPCell titelCell = new PdfPCell(new Phrase(gemeindeStammdaten.getStandardDokTitle(),
+			getPageConfiguration().getFontBold()));
+		titelCell.setPaddingBottom(2);
+		titelCell.setPaddingLeft(0);
+		titelCell.setBorder(0);
+		table.addCell(titelCell);
+		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+		PdfPCell unterschriftTitelCell = new PdfPCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel(),
+			getPageConfiguration().getFont()));
+		unterschriftTitelCell.setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
+		unterschriftTitelCell.setPaddingLeft(0);
+		unterschriftTitelCell.setBorder(0);
+		table.addCell(unterschriftTitelCell);
+		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel2(),
+			getPageConfiguration().getFont()));
+		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftName(),
+			getPageConfiguration().getFont()));
+		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftName2(),
+			getPageConfiguration().getFont()));
+		table.addCell(new Phrase("",	getPageConfiguration().getFont()));
+		return table;
 	}
 
 	@Nullable

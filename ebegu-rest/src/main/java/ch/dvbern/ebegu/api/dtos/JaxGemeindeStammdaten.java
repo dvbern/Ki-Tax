@@ -84,6 +84,18 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private Boolean benachrichtigungBgEmailAuto;
 	@NotNull
 	private Boolean benachrichtigungTsEmailAuto;
+	@NotNull
+	private Boolean standardDokSignature;
+	@Nullable
+	private String standardDokTitle;
+	@Nullable
+	private String standardDokUnterschriftTitel;
+	@Nullable
+	private String standardDokUnterschriftName;
+	@Nullable
+	private String standardDokUnterschriftTitel2;
+	@Nullable
+	private String standardDokUnterschriftName2;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -304,5 +316,58 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setBenachrichtigungTsEmailAuto(@Nonnull Boolean benachrichtigungTsEmailAuto) {
 		this.benachrichtigungTsEmailAuto = benachrichtigungTsEmailAuto;
+	}
+
+	public Boolean getStandardDokSignature() {
+		return standardDokSignature;
+	}
+
+	public void setStandardDokSignature(Boolean standardDokSignature) {
+		this.standardDokSignature = standardDokSignature;
+	}
+
+	@Nullable
+	public String getStandardDokTitle() {
+		return standardDokTitle;
+	}
+
+	public void setStandardDokTitle(@Nullable String standardDokTitle) {
+		this.standardDokTitle = standardDokTitle;
+	}
+
+	@Nullable
+	public String getStandardDokUnterschriftTitel() {
+		return standardDokUnterschriftTitel;
+	}
+
+	public void setStandardDokUnterschriftTitel(@Nullable String standardDokUnterschriftTitel) {
+		this.standardDokUnterschriftTitel = standardDokUnterschriftTitel;
+	}
+
+	@Nullable
+	public String getStandardDokUnterschriftName() {
+		return standardDokUnterschriftName;
+	}
+
+	public void setStandardDokUnterschriftName(@Nullable String standardDokUnterschriftName) {
+		this.standardDokUnterschriftName = standardDokUnterschriftName;
+	}
+
+	@Nullable
+	public String getStandardDokUnterschriftTitel2() {
+		return standardDokUnterschriftTitel2;
+	}
+
+	public void setStandardDokUnterschriftTitel2(@Nullable String standardDokUnterschriftTitel2) {
+		this.standardDokUnterschriftTitel2 = standardDokUnterschriftTitel2;
+	}
+
+	@Nullable
+	public String getStandardDokUnterschriftName2() {
+		return standardDokUnterschriftName2;
+	}
+
+	public void setStandardDokUnterschriftName2(@Nullable String standardDokUnterschriftName2) {
+		this.standardDokUnterschriftName2 = standardDokUnterschriftName2;
 	}
 }

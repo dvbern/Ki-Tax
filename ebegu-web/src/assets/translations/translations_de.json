@@ -1742,5 +1742,12 @@
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Nach Abschluss einer Verfügung wird automatisch eine Bestätigung per Email versendet. Empfohlene Einstellung: An.",
     "ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN": "Anmeldebestätigungen automatisch per Email senden",
     "ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP": "Bei einer Anmeldung wird automatisch eine Bestätigung per Email versendet. Empfohlene Einstellung: An",
+    "STANDARD_DOK_SIGNATURE": "Standard Fusszeile bei generierten Dokumenten verwenden",
+    "STANDARD_DOK_SIGNATURE_HELP": "Standardmässig wird am Ende einer Verfügung eine elektronische Signatur generiert. Die so entstehenden Dokumente sind rechtskräftig. Empfohlene Einstellung: An.",
+    "STANDARD_DOK_TITLE": "Titel",
+    "STANDARD_DOK_UNTERSCHRIFT1_TITEL": "Unterschrift 1 - Titel",
+    "STANDARD_DOK_UNTERSCHRIFT1_NAME": "Unterschrift 1 - Name",
+    "STANDARD_DOK_UNTERSCHRIFT2_TITEL": "Unterschrift 2 - Titel",
+    "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Unterschrift 2 - Name",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
