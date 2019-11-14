@@ -36,7 +36,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -79,9 +78,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private InstitutionService instService;
 
 	@Inject
-	private BetreuungService betreuungService;
-
-	@Inject
 	private TestfaelleService testfaelleService;
 
 	private Gesuchsperiode gesuchsperiode;
@@ -101,7 +97,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Verfuegung verfuegung = new Verfuegung(betreuung);
 		verfuegung.setBetreuung(betreuung);
 		betreuung.setVerfuegung(verfuegung);
-		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(verfuegung, betreuung.getId(), false);
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(verfuegung, false);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);

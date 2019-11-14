@@ -3155,52 +3155,6 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxVerfuegung;
 	}
 
-	/**
-	 * converts the given verfuegung into a JaxVerfuegung
-	 *
-	 * @return dto with the values of the verfuegung
-	 */
-	public Verfuegung verfuegungToEntity(final JaxVerfuegung jaxVerfuegung, final Verfuegung verfuegung) {
-		requireNonNull(jaxVerfuegung);
-		requireNonNull(verfuegung);
-
-		convertAbstractVorgaengerFieldsToEntity(jaxVerfuegung, verfuegung);
-		verfuegung.setGeneratedBemerkungen(jaxVerfuegung.getGeneratedBemerkungen());
-		verfuegung.setManuelleBemerkungen(jaxVerfuegung.getManuelleBemerkungen());
-		verfuegung.setKategorieKeinPensum(jaxVerfuegung.isKategorieKeinPensum());
-		verfuegung.setKategorieMaxEinkommen(jaxVerfuegung.isKategorieMaxEinkommen());
-		verfuegung.setKategorieNichtEintreten(jaxVerfuegung.isKategorieNichtEintreten());
-		verfuegung.setKategorieNormal(jaxVerfuegung.isKategorieNormal());
-
-		//List of Verfuegungszeitabschnitte converten
-		verfuegungZeitabschnitteToEntity(verfuegung.getZeitabschnitte(), jaxVerfuegung.getZeitabschnitte());
-		return verfuegung;
-	}
-
-	private void verfuegungZeitabschnitteToEntity(
-		List<VerfuegungZeitabschnitt> existingZeitabschnitte,
-		List<JaxVerfuegungZeitabschnitt> zeitabschnitteFromClient) {
-
-		final Set<VerfuegungZeitabschnitt> convertedZeitabschnitte = new TreeSet<>();
-		for (final JaxVerfuegungZeitabschnitt jaxZeitabschnitt : zeitabschnitteFromClient) {
-			final VerfuegungZeitabschnitt containerToMergeWith = existingZeitabschnitte
-				.stream()
-				.filter(existingBetPensumEntity -> existingBetPensumEntity.getId().equals(jaxZeitabschnitt.getId()))
-				.reduce(StreamsUtil.toOnlyElement())
-				.orElse(new VerfuegungZeitabschnitt());
-			final VerfuegungZeitabschnitt abschnittToAdd =
-				verfuegungZeitabschnittToEntity(jaxZeitabschnitt, containerToMergeWith);
-			final boolean added = convertedZeitabschnitte.add(abschnittToAdd);
-			if (!added) {
-				LOGGER.warn("dropped duplicate zeitabschnitt {}", abschnittToAdd);
-			}
-		}
-
-		//change the existing collection to reflect changes
-		existingZeitabschnitte.clear();
-		existingZeitabschnitte.addAll(convertedZeitabschnitte);
-	}
-
 	@Nullable
 	private JaxVerfuegungZeitabschnitt verfuegungZeitabschnittToJax(@Nullable VerfuegungZeitabschnitt zeitabschnitt) {
 		if (zeitabschnitt == null) {
@@ -3236,43 +3190,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.isSameAusbezahlteVerguenstigung());
 
 		return jaxZeitabschn;
-	}
-
-	private VerfuegungZeitabschnitt verfuegungZeitabschnittToEntity(
-		@Nonnull JaxVerfuegungZeitabschnitt jaxVerfuegungZeitabschnitt,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-
-		requireNonNull(jaxVerfuegungZeitabschnitt);
-		requireNonNull(verfuegungZeitabschnitt);
-
-		convertAbstractDateRangedFieldsToEntity(jaxVerfuegungZeitabschnitt, verfuegungZeitabschnitt);
-		verfuegungZeitabschnitt.setErwerbspensumGS1(jaxVerfuegungZeitabschnitt.getErwerbspensumGS1());
-		verfuegungZeitabschnitt.setErwerbspensumGS2(jaxVerfuegungZeitabschnitt.getErwerbspensumGS2());
-		verfuegungZeitabschnitt.setBetreuungspensum(jaxVerfuegungZeitabschnitt.getBetreuungspensum());
-		verfuegungZeitabschnitt.setFachstellenpensum(jaxVerfuegungZeitabschnitt.getFachstellenpensum());
-		verfuegungZeitabschnitt.setAnspruchspensumRest(jaxVerfuegungZeitabschnitt.getAnspruchspensumRest());
-		int anspruchberechtigtesPensum = jaxVerfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruchberechtigtesPensum);
-		verfuegungZeitabschnitt.setBetreuungsstunden(jaxVerfuegungZeitabschnitt.getBetreuungsstunden());
-		verfuegungZeitabschnitt.setVollkosten(jaxVerfuegungZeitabschnitt.getVollkosten());
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
-		verfuegungZeitabschnitt.setVerguenstigung(jaxVerfuegungZeitabschnitt.getVerguenstigung());
-		verfuegungZeitabschnitt.setMinimalerElternbeitrag(jaxVerfuegungZeitabschnitt.getMinimalerElternbeitrag());
-		verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
-		verfuegungZeitabschnitt.setAbzugFamGroesse(jaxVerfuegungZeitabschnitt.getAbzugFamGroesse());
-		BigDecimal einkommen = jaxVerfuegungZeitabschnitt.getMassgebendesEinkommenVorAbzugFamgr();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(einkommen);
-		verfuegungZeitabschnitt.setBemerkungen(jaxVerfuegungZeitabschnitt.getBemerkungen());
-		verfuegungZeitabschnitt.setFamGroesse(jaxVerfuegungZeitabschnitt.getFamGroesse());
-		verfuegungZeitabschnitt.setEinkommensjahr(jaxVerfuegungZeitabschnitt.getEinkommensjahr());
-		verfuegungZeitabschnitt.setKategorieMaxEinkommen(jaxVerfuegungZeitabschnitt.isKategorieMaxEinkommen());
-		verfuegungZeitabschnitt.setKategorieKeinPensum(jaxVerfuegungZeitabschnitt.isKategorieKeinPensum());
-		verfuegungZeitabschnitt.setZuSpaetEingereicht(jaxVerfuegungZeitabschnitt.isZuSpaetEingereicht());
-		verfuegungZeitabschnitt.setZahlungsstatus(jaxVerfuegungZeitabschnitt.getZahlungsstatus());
-		verfuegungZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDaten(jaxVerfuegungZeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
-		verfuegungZeitabschnitt.setSameAusbezahlteVerguenstigung(jaxVerfuegungZeitabschnitt.isSameAusbezahlteVerguenstigung());
-		return verfuegungZeitabschnitt;
 	}
 
 	/**
