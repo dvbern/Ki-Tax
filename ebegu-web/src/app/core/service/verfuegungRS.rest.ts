@@ -47,16 +47,14 @@ export default class VerfuegungRS {
     }
 
     public saveVerfuegung(
-        verfuegung: TSVerfuegung,
+        verfuegungManuelleBemerkungen: string,
         gesuchId: string,
         betreuungId: string,
         ignorieren: boolean,
     ): IPromise<TSVerfuegung> {
-        const restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
-        const gesuchIdEnc = encodeURIComponent(gesuchId);
-        const url = `${this.serviceURL}/${gesuchIdEnc}/${encodeURIComponent(betreuungId)}/${ignorieren}`;
-
-        return this.http.put(url, restVerfuegung).then((response: any) => {
+        const url = `${this.serviceURL}/verfuegen/
+            ${encodeURIComponent(gesuchId)}/${encodeURIComponent(betreuungId)}/${ignorieren}`;
+        return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
             });
@@ -72,9 +70,10 @@ export default class VerfuegungRS {
             });
     }
 
-    public nichtEintreten(verfuegung: TSVerfuegung, gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
-        const restVerfuegung = this.ebeguRestUtil.verfuegungToRestObject({}, verfuegung);
-        return this.http.put(`${this.serviceURL}/nichtEintreten/${encodeURIComponent(betreuungId)}`, restVerfuegung)
+    public nichtEintreten(gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
+        const url = `${this.serviceURL}/nichtEintreten/
+            ${encodeURIComponent(gesuchId)}/${encodeURIComponent(betreuungId)}`;
+        return this.http.get(url)
             .then((response: any) => {
                 return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                     this.log.debug('PARSING Verfuegung REST object ', response.data);

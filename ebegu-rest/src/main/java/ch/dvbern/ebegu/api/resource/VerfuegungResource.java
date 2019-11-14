@@ -26,7 +26,6 @@ import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -147,38 +146,23 @@ public class VerfuegungResource {
 		}
 	}
 
-	// Vorschlag: hier koennten wir auch nur die Bemerkungen vom client mitgeben und die Verfuegung nochmal neu
-	// berechnen. Das ware sicherer gegen client manipulationen.
-	@ApiOperation(value = "Speichert eine Verfuegung in der Datenbank", response = JaxVerfuegung.class)
+	@ApiOperation(value = "Generiert eine Verfuegung und speichert diese in der Datenbank", response = JaxVerfuegung.class)
 	@Nullable
 	@PUT
-	@Path("/{gesuchId}/{betreuungId}/{ignorieren}")
+	@Path("/verfuegen/{gesuchId}/{betreuungId}/{ignorieren}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxVerfuegung saveVerfuegung(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdParam,
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungIdParam,
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId,
 		@Nonnull @NotNull @PathParam("ignorieren") Boolean ignorieren,
-		@Nonnull @NotNull @Valid JaxVerfuegung verfuegungJAXP) {
-
-		String gesuchId = gesuchIdParam.getId();
-		String betreuungId = betreuungIdParam.getId();
-		String method = "saveVerfuegung";
-
-		gesuchService.findGesuch(gesuchId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(method, "GesuchId invalid: " + gesuchId));
-		Betreuung betreuung = betreuungService.findBetreuung(betreuungId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(method, "BetreuungId invalid: " + betreuungId));
-
-		Verfuegung verfuegungToMerge = Optional.ofNullable(verfuegungJAXP.getId())
-			.flatMap(id -> verfuegungService.findVerfuegung(id))
-			.orElseGet(() -> new Verfuegung(betreuung));
-
-		Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
-
-		Verfuegung persistedVerfuegung =
-			verfuegungService.verfuegen(convertedVerfuegung, betreuungId, ignorieren, true);
-
+		@Nullable String verfuegungManuelleBemerkungen
+	) {
+		Verfuegung verfuegungToPersist = calculateAndExtractVerfuegung(gesuchJaxId, betreuungJaxId);
+		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
+		verfuegungToPersist.setManuelleBemerkungen(verfuegungManuelleBemerkungen);
+		// Die eigentliche Verfuegung vornehmen
+		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(verfuegungToPersist, ignorieren, true);
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
@@ -205,28 +189,49 @@ public class VerfuegungResource {
 
 	@ApiOperation(value = "Erstellt eine Nichteintretens-Verfuegung", response = JaxVerfuegung.class)
 	@Nullable
-	@PUT
-	@Path("/nichtEintreten/{betreuungId}")
+	@GET
+	@Path("/nichtEintreten/{gesuchId}/{betreuungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxVerfuegung schliessenNichtEintreten(
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
-		@Nonnull @NotNull @Valid JaxVerfuegung verfuegungJAXP) {
-
-		Betreuung betreuung = betreuungService.findBetreuung(betreuungId.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"nichtEintreten",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"BetreuungID invalid: " + betreuungId.getId()));
-
-		Verfuegung verfuegungToMerge = verfuegungJAXP.findId()
-			.flatMap(id -> verfuegungService.findVerfuegung(id))
-			.orElseGet(() -> new Verfuegung(betreuung));
-
-		Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
-		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(convertedVerfuegung, betreuung.getId());
-
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
+		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId
+	) {
+		Verfuegung verfuegungToPersist = calculateAndExtractVerfuegung(gesuchJaxId, betreuungJaxId);
+		// Die eigentliche Verfuegung vornehmen
+		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(verfuegungToPersist);
 		return converter.verfuegungToJax(persistedVerfuegung);
+	}
+
+	@Nonnull
+	private Verfuegung calculateAndExtractVerfuegung(
+		@Nonnull JaxId gesuchJaxId,
+		@Nonnull JaxId betreuungJaxId
+	) {
+		String gesuchId = converter.toEntityId(gesuchJaxId);
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchId));
+		// Wir muessen hier die Berechnung der Verfuegung nochmals neu vornehmen
+		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
+		// Die Betreuung ermitteln, welche wir verfuegen wollen
+		String betreuungId = converter.toEntityId(betreuungJaxId);
+		Betreuung betreuungZuVerfuegen = gesuchWithCalcVerfuegung.extractAllBetreuungen()
+			.stream()
+			.filter(betreuung -> betreuungId.equals(betreuung.getId()))
+			.findFirst()
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				betreuungId));
+		Verfuegung verfuegungToPersist = betreuungZuVerfuegen.getVerfuegung();
+		if (verfuegungToPersist == null) {
+			throw new EbeguEntityNotFoundException("saveVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Verfuegung fuer Betreuung not found: " + betreuungZuVerfuegen.getId());
+		}
+		return verfuegungToPersist;
 	}
 }
 

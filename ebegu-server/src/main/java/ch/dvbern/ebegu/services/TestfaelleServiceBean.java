@@ -639,7 +639,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 				.forEach(betreuung -> {
 					Verfuegung verfuegung = requireNonNull(betreuung.getVerfuegung());
 					verfuegung.setManuelleBemerkungen(verfuegung.getGeneratedBemerkungen());
-					verfuegungService.verfuegen(verfuegung, betreuung.getId(), ignorierenInZahlungslauf, false);
+					verfuegungService.verfuegen(verfuegung, ignorierenInZahlungslauf, false);
 				}
 			);
 			if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {

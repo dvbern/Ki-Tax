@@ -58,6 +58,9 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 
+	private static final String DEFAULT_BEMERKUNG = "01.08.2017 - 31.07.2018: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des "
+		+ "Beschäftigungspensums (Angestellt - Art. 34d ASIV).";
+
 	@Before
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
@@ -71,18 +74,14 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
-		persistence.merge(betreuung);
 
-		final JaxVerfuegung verfuegungJax = new JaxVerfuegung();
-		verfuegungJax.setGeneratedBemerkungen("genBemerkung");
-		verfuegungJax.setManuelleBemerkungen("manBemerkung");
+		String manuelleBemerkung = "manuelleBemerkung";
 
-		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, verfuegungJax);
+		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, manuelleBemerkung);
 
 		assert persistedVerfuegung != null;
-		Assert.assertEquals(verfuegungJax.getGeneratedBemerkungen(), persistedVerfuegung.getGeneratedBemerkungen());
-		Assert.assertEquals(verfuegungJax.getManuelleBemerkungen(), persistedVerfuegung.getManuelleBemerkungen());
+		Assert.assertEquals(DEFAULT_BEMERKUNG, persistedVerfuegung.getGeneratedBemerkungen());
+		Assert.assertEquals(manuelleBemerkung, persistedVerfuegung.getManuelleBemerkungen());
 
 	}
 
@@ -94,19 +93,15 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		Betreuung storedBetr = persistence.merge(betreuung);
 
-		final JaxVerfuegung verfuegungJax = new JaxVerfuegung();
-		verfuegungJax.setGeneratedBemerkungen("genBemerkung");
-		verfuegungJax.setManuelleBemerkungen("manBemerkung");
+		JaxId gesuchId = new JaxId(gesuch.getId());
+		JaxId betreuungId = new JaxId(storedBetr.getId());
 
-		final JaxVerfuegung persistedVerfuegung = verfuegungResource.schliessenNichtEintreten(new JaxId(storedBetr.getId()), verfuegungJax);
+		final JaxVerfuegung persistedVerfuegung = verfuegungResource.schliessenNichtEintreten(gesuchId, betreuungId);
 
 		Assert.assertNotNull(persistedVerfuegung);
 		persistedVerfuegung.getZeitabschnitte().forEach(jaxVerfZeitabsch -> Assert.assertEquals(0, jaxVerfZeitabsch.getAnspruchberechtigtesPensum()));
 		Betreuung storedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(Betreuungsstatus.NICHT_EINGETRETEN, storedBetreuung.getBetreuungsstatus());
-		Assert.assertEquals(verfuegungJax.getGeneratedBemerkungen(), persistedVerfuegung.getGeneratedBemerkungen());
-		Assert.assertEquals(verfuegungJax.getManuelleBemerkungen(), persistedVerfuegung.getManuelleBemerkungen());
-
 	}
 
 	@Test

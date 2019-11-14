@@ -138,12 +138,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung verfuegen(
-		@Nonnull Verfuegung verfuegung,
-		@Nonnull String betreuungId,
-		boolean ignorieren,
-		boolean sendEmail) {
-
+	public Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, boolean ignorieren, boolean sendEmail) {
+		String betreuungId = verfuegung.getBetreuung().getId();
 		setZahlungsstatus(verfuegung, betreuungId, ignorieren);
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.VERFUEGT);
 		//noinspection ResultOfMethodCallIgnored
@@ -284,7 +280,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId) {
+	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung) {
+		String betreuungId = verfuegung.getBetreuung().getId();
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {

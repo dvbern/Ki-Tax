@@ -2530,27 +2530,6 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public verfuegungToRestObject(verfuegung: any, verfuegungTS: TSVerfuegung): any {
-        if (verfuegungTS) {
-            this.abstractMutableEntityToRestObject(verfuegung, verfuegungTS);
-            verfuegung.generatedBemerkungen = verfuegungTS.generatedBemerkungen;
-            verfuegung.manuelleBemerkungen = verfuegungTS.manuelleBemerkungen;
-            verfuegung.zeitabschnitte = this.zeitabschnittListToRestObject(verfuegungTS.zeitabschnitte);
-            verfuegung.kategorieKeinPensum = verfuegungTS.kategorieKeinPensum;
-            verfuegung.kategorieMaxEinkommen = verfuegungTS.kategorieMaxEinkommen;
-            verfuegung.kategorieNichtEintreten = verfuegungTS.kategorieNichtEintreten;
-            verfuegung.kategorieNormal = verfuegungTS.kategorieNormal;
-            return verfuegung;
-        }
-        return undefined;
-    }
-
-    private zeitabschnittListToRestObject(data: Array<TSVerfuegungZeitabschnitt>): Array<any> {
-        return data && Array.isArray(data)
-            ? data.map(item => this.zeitabschnittToRestObject({}, item))
-            : [];
-    }
-
     private parseVerfuegungZeitabschnitte(data: Array<any>): TSVerfuegungZeitabschnitt[] {
         if (!data) {
             return [];
@@ -2558,41 +2537,6 @@ export default class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), item))
             : [this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), data)];
-    }
-
-    public zeitabschnittToRestObject(zeitabschnitt: any, zeitabschnittTS: TSVerfuegungZeitabschnitt): any {
-        if (zeitabschnittTS) {
-            this.abstractDateRangeEntityToRestObject(zeitabschnitt, zeitabschnittTS);
-            zeitabschnitt.abzugFamGroesse = zeitabschnittTS.abzugFamGroesse;
-            zeitabschnitt.anspruchberechtigtesPensum = zeitabschnittTS.anspruchberechtigtesPensum;
-            zeitabschnitt.bgPensum = zeitabschnittTS.bgPensum;
-            zeitabschnitt.anspruchspensumRest = zeitabschnittTS.anspruchspensumRest;
-            zeitabschnitt.bemerkungen = zeitabschnittTS.bemerkungen;
-            zeitabschnitt.betreuungspensum = zeitabschnittTS.betreuungspensum;
-            zeitabschnitt.betreuungsstunden = zeitabschnittTS.betreuungsstunden;
-            zeitabschnitt.elternbeitrag = zeitabschnittTS.elternbeitrag;
-            zeitabschnitt.erwerbspensumGS1 = zeitabschnittTS.erwerbspensumGS1;
-            zeitabschnitt.erwerbspensumGS2 = zeitabschnittTS.erwerbspensumGS2;
-            zeitabschnitt.fachstellenpensum = zeitabschnittTS.fachstellenpensum;
-            zeitabschnitt.massgebendesEinkommenVorAbzugFamgr = zeitabschnittTS.massgebendesEinkommenVorAbzugFamgr;
-            zeitabschnitt.famGroesse = zeitabschnittTS.famGroesse;
-            zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
-            zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
-            zeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten =
-                zeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten;
-            zeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
-                zeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
-            zeitabschnitt.verguenstigung = zeitabschnittTS.verguenstigung;
-            zeitabschnitt.minimalerElternbeitrag = zeitabschnittTS.minimalerElternbeitrag;
-            zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
-            zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
-            zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
-            zeitabschnitt.zuSpaetEingereicht = zeitabschnittTS.zuSpaetEingereicht;
-            zeitabschnitt.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten;
-            zeitabschnitt.sameAusbezahlteVerguenstigung = zeitabschnittTS.sameAusbezahlteVerguenstigung;
-            return zeitabschnitt;
-        }
-        return undefined;
     }
 
     public parseVerfuegungZeitabschnitt(
