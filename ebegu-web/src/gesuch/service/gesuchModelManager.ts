@@ -1262,7 +1262,7 @@ export default class GesuchModelManager {
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {
-        return this.verfuegungRS.nichtEintreten(this.getVerfuegenToWorkWith(),
+        return this.verfuegungRS.nichtEintreten(
             this.gesuch.id,
             this.getBetreuungToWorkWith().id).then((response: TSVerfuegung) => {
             this.setVerfuegenToWorkWith(response);

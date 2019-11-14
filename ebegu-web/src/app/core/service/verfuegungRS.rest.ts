@@ -52,7 +52,8 @@ export default class VerfuegungRS {
         betreuungId: string,
         ignorieren: boolean,
     ): IPromise<TSVerfuegung> {
-        const url = `${this.serviceURL}/verfuegen/${encodeURIComponent(gesuchId)}/${encodeURIComponent(betreuungId)}/${ignorieren}`;
+        const url = `${this.serviceURL}/verfuegen/
+            ${encodeURIComponent(gesuchId)}/${encodeURIComponent(betreuungId)}/${ignorieren}`;
         return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
@@ -69,8 +70,9 @@ export default class VerfuegungRS {
             });
     }
 
-    public nichtEintreten(verfuegung: TSVerfuegung, gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
-        const url = `${this.serviceURL}/nichtEintreten/${encodeURIComponent(gesuchId)}/${encodeURIComponent(betreuungId)}`;
+    public nichtEintreten(gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
+        const url = `${this.serviceURL}/nichtEintreten/
+            ${encodeURIComponent(gesuchId)}/${encodeURIComponent(betreuungId)}`;
         return this.http.get(url)
             .then((response: any) => {
                 return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {

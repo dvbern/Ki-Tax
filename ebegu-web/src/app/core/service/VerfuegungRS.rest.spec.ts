@@ -17,7 +17,6 @@ import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
-import TSVerfuegung from '../../../models/TSVerfuegung';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
@@ -31,7 +30,6 @@ describe('VerfuegungRS', () => {
     let mockKindContainerListRest: Array<any> = [];
     let mockKind: TSKindContainer;
     const gesuchId = '1234567789';
-    const betreuungId = '321123';
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
