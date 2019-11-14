@@ -1233,7 +1233,10 @@ export default class GesuchModelManager {
     }
 
     public saveVerfuegung(ignorieren: boolean): IPromise<TSVerfuegung> {
-        return this.verfuegungRS.saveVerfuegung(this.getVerfuegenToWorkWith().manuelleBemerkungen,
+        const manuelleBemerkungen = this.getVerfuegenToWorkWith() == null
+            ? '' : this.getVerfuegenToWorkWith().manuelleBemerkungen;
+        return this.verfuegungRS.saveVerfuegung(
+            manuelleBemerkungen,
             this.gesuch.id,
             this.getBetreuungToWorkWith().id,
             ignorieren)
