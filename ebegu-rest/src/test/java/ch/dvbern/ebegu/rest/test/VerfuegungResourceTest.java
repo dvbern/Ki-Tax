@@ -58,6 +58,9 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 	private Gesuchsperiode gesuchsperiode;
 
+	private static final String DEFAULT_BEMERKUNG = "01.08.2017 - 31.07.2018: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des "
+		+ "Beschäftigungspensums (Angestellt - Art. 34d ASIV).";
+
 	@Before
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
@@ -71,15 +74,13 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
-		persistence.merge(betreuung);
 
 		String manuelleBemerkung = "manuelleBemerkung";
 
 		final JaxVerfuegung persistedVerfuegung = verfuegungResource.saveVerfuegung(new JaxId(gesuch.getId()), new JaxId(betreuung.getId()), false, manuelleBemerkung);
 
 		assert persistedVerfuegung != null;
-		Assert.assertEquals("", persistedVerfuegung.getGeneratedBemerkungen());
+		Assert.assertEquals(DEFAULT_BEMERKUNG, persistedVerfuegung.getGeneratedBemerkungen());
 		Assert.assertEquals(manuelleBemerkung, persistedVerfuegung.getManuelleBemerkungen());
 
 	}
