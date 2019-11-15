@@ -37,7 +37,9 @@ public interface VerfuegungService {
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
 	 * Die Betreuung erhaelt den Status VERFUEGT
 	 *
-	 * @param verfuegung Die Verfuegung als DTO
+	 * @param gesuchId ID des Gesuchs, zu welcher die Verfügung gehört
+	 * @param betreuungId ID der Betreuung, welche verfügt werden soll
+	 * @param manuelleBemerkungen, user-provided Bemerkung zur Verfügung
 	 * @param ignorieren true wenn die ausbezahlten Zeitabschnitte nicht neu berechnet werden muessen
 	 * @param sendEmail true wenn eine Info EMail versendet werden soll
 	 */
@@ -48,7 +50,8 @@ public interface VerfuegungService {
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
 	 * Die Betreuung erhaelt den Status NICHT_EINGETRETEN
 	 *
-	 * @param verfuegung Die Verfuegung als DTO
+	 * @param gesuchId ID des Gesuchs, zu welcher die Verfügung gehört
+	 * @param betreuungId ID der Betreuung, welche verfügt werden soll
 	 */
 	@Nonnull
 	Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId);
