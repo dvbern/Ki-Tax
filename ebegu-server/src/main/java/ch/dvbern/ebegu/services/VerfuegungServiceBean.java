@@ -50,7 +50,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -590,31 +589,18 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Nonnull
-	private Verfuegung calculateAndExtractVerfuegung(
-		@Nonnull String gesuchId,
-		@Nonnull String betreuungId
-	) {
+	private Verfuegung calculateAndExtractVerfuegung(@Nonnull String gesuchId, @Nonnull String betreuungId) {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"saveVerfuegung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchId));
+			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", gesuchId));
 		// Wir muessen hier die Berechnung der Verfuegung nochmals neu vornehmen
 		Gesuch gesuchWithCalcVerfuegung = calculateVerfuegung(gesuch);
-		// Die Betreuung ermitteln, welche wir verfuegen wollen
-		Betreuung betreuungZuVerfuegen = gesuchWithCalcVerfuegung.extractAllBetreuungen()
-			.stream()
+		// Die berechnete Verfügung ermitteln
+		Verfuegung verfuegungToPersist = gesuchWithCalcVerfuegung.extractAllBetreuungen().stream()
 			.filter(betreuung -> betreuungId.equals(betreuung.getId()))
 			.findFirst()
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"saveVerfuegung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				betreuungId));
-		Verfuegung verfuegungToPersist = betreuungZuVerfuegen.getVerfuegung();
-		if (verfuegungToPersist == null) {
-			throw new EbeguEntityNotFoundException("saveVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"Verfuegung fuer Betreuung not found: " + betreuungZuVerfuegen.getId());
-		}
+			.map(Betreuung::getVerfuegung)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", betreuungId));
+
 		return verfuegungToPersist;
 	}
 }
