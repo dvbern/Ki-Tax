@@ -324,6 +324,17 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Nonnull
+	@Override
+	public Collection<BfsGemeinde> getAllBfsGemeinden() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
+		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+		CriteriaQuery<BfsGemeinde> all = query.select(root);
+		List<BfsGemeinde> allBfsGemeinden = persistence.getCriteriaResults(all);
+		return allBfsGemeinden;
+	}
+
+	@Nonnull
 	private Optional<Gemeinde> getAktiveGemeindeByBFSNummer(@Nonnull Long bfsNummer) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
