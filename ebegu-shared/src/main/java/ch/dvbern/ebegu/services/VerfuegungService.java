@@ -44,7 +44,12 @@ public interface VerfuegungService {
 	 * @param sendEmail true wenn eine Info EMail versendet werden soll
 	 */
 	@Nonnull
-	Verfuegung verfuegen(@Nonnull String gesuchId, @Nonnull String betreuungId, @Nullable String manuelleBemerkungen, boolean ignorieren, boolean sendEmail);
+	Verfuegung verfuegen(
+		@Nonnull String gesuchId,
+		@Nonnull String betreuungId,
+		@Nullable String manuelleBemerkungen,
+		boolean ignorieren,
+		boolean sendEmail);
 
 	/**
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
