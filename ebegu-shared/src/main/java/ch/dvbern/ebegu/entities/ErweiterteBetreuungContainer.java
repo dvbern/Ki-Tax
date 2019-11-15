@@ -41,6 +41,7 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
 	public ErweiterteBetreuungContainer() {
+		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
 	}
 
 	public ErweiterteBetreuungContainer(Betreuung betreuung) {
@@ -48,6 +49,15 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 		betreuung.setErweiterteBetreuungContainer(this); // maintain relation for java
 	}
 
+	/**
+	 * MapsId fuehrt dazu, dass als PK in der Datenbank der FK der Betreuung verwendet wird. Damit wir im Code trotzdem getId() verwenden
+	 * koennen wird die Methode hier ueberschrieben
+	 */
+	@Nonnull
+	@Override
+	public String getId() {
+		return betreuung.getId();
+	}
 
 	@Nullable
 	public Betreuung getBetreuung() {
