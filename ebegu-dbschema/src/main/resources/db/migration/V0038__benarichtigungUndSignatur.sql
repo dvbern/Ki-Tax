@@ -1,8 +1,8 @@
-alter table gemeinde_stammdaten add if not exists benachrichtigung_bg_email_auto bit not null;
+alter table gemeinde_stammdaten add if not exists benachrichtigung_bg_email_auto bit not null default true;
 alter table gemeinde_stammdaten_aud add if not exists benachrichtigung_bg_email_auto bit;
-alter table gemeinde_stammdaten add if not exists benachrichtigung_ts_email_auto bit not null;
+alter table gemeinde_stammdaten add if not exists benachrichtigung_ts_email_auto bit not null default true;
 alter table gemeinde_stammdaten_aud add if not exists benachrichtigung_ts_email_auto bit;
-alter table gemeinde_stammdaten add if not exists standard_dok_signature bit not null;
+alter table gemeinde_stammdaten add if not exists standard_dok_signature bit not null default true;
 alter table gemeinde_stammdaten_aud add if not exists standard_dok_signature bit;
 
 alter table gemeinde_stammdaten add if not exists standard_dok_title varchar(255);
