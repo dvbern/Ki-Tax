@@ -109,14 +109,13 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	@Nonnull
 	protected Element createParagraphSignatur() {
-		if(gemeindeStammdaten.getStandardDokSignature()){
+		if (gemeindeStammdaten.getStandardDokSignature()) {
 			String signiert = getSachbearbeiterSigniert();
 			if (signiert != null) {
 				return PdfUtil.createParagraph('\n' + signiert + '\n' + translate(SACHBEARBEITUNG), 2);
 			}
 			return PdfUtil.createParagraph(translate(SACHBEARBEITUNG), 2);
-				}
-		else {
+		} else {
 			return createAlternativSignatureTable();
 		}
 	}

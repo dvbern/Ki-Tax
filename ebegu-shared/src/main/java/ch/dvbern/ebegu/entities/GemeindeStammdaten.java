@@ -163,14 +163,17 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rechtsmittelbelehrung_id"))
 	private TextRessource rechtsmittelbelehrung;
 
+	@Nonnull
 	@NotNull
 	@Column(nullable = false)
 	private Boolean benachrichtigungBgEmailAuto = true;
 
+	@Nonnull
 	@NotNull
 	@Column(nullable = false)
 	private Boolean benachrichtigungTsEmailAuto = true;
 
+	@Nonnull
 	@NotNull
 	@Column(nullable = false)
 	private Boolean standardDokSignature = true;
@@ -530,11 +533,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.standardDokUnterschriftName2 = standardDokUnterschriftName2;
 	}
 
+	@Nonnull
 	public Boolean getStandardDokSignature() {
 		return standardDokSignature;
 	}
 
-	public void setStandardDokSignature(Boolean standardDokSignature) {
+	public void setStandardDokSignature(@Nonnull Boolean standardDokSignature) {
 		this.standardDokSignature = standardDokSignature;
 	}
 }
