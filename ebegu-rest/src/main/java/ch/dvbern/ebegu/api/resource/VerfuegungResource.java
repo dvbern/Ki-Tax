@@ -161,8 +161,6 @@ public class VerfuegungResource {
 	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		String betreuungId = converter.toEntityId(betreuungJaxId);
-		Objects.requireNonNull(gesuchId);
-		Objects.requireNonNull(betreuungId);
 
 		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(gesuchId, betreuungId, verfuegungManuelleBemerkungen, ignorieren, true);
 		return converter.verfuegungToJax(persistedVerfuegung);
@@ -201,8 +199,6 @@ public class VerfuegungResource {
 	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		String betreuungId = converter.toEntityId(betreuungJaxId);
-		Objects.requireNonNull(gesuchId);
-		Objects.requireNonNull(betreuungId);
 
 		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(gesuchId, betreuungId);
 		return converter.verfuegungToJax(persistedVerfuegung);
