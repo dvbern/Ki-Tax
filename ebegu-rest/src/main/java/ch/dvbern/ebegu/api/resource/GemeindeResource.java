@@ -402,6 +402,19 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 	}
 
+	@ApiOperation(value = "Returns all unregistered Gemeinden from BFS", responseContainer = "Collection",
+		response = JaxBfsGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/allBfs")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxBfsGemeinde> getAllBfsGemeinden() {
+		return gemeindeService.getAllBfsGemeinden().stream()
+			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
+			.collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Gemeinden in Status EINGELADEN",
 		response = Boolean.class)
 	@Nonnull

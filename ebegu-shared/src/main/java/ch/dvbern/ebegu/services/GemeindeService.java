@@ -103,4 +103,7 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Optional<Gemeinde> findRegistredGemeindeVerbundIfExist(@Nonnull Long gemeindeBfsNummer);
+
+	@Nonnull
+	Collection<BfsGemeinde> getAllBfsGemeinden();
 }

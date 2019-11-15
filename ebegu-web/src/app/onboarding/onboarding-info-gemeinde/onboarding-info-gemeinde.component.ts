@@ -21,7 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
+import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
@@ -41,19 +41,18 @@ export class OnboardingInfoGemeindeComponent implements OnInit {
     private readonly emailEnd: string = 'ONBOARDING_MAIL_BODY_END';
 
     public testZugangBeantragen: boolean;
-    public gemeinden$: Observable<TSGemeinde[]>;
-    public gemeinde?: TSGemeinde;
+    public gemeinden$: Observable<TSBfsGemeinde[]>;
+    public gemeinde?: TSBfsGemeinde;
 
     public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
                        private readonly translate: TranslateService,
                        private readonly gemeindeRS: GemeindeRS,
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
-            .pipe(map(gemeinden => {
-                gemeinden.sort(EbeguUtil.compareByName);
-
-                return gemeinden;
-            }));
+        this.gemeinden$ = from(this.gemeindeRS.getAllBfsGemeinden())
+            .pipe(map(bfsGemeinden => {
+            bfsGemeinden.sort(EbeguUtil.compareByName);
+            return bfsGemeinden;
+        }));
     }
 
     public ngOnInit(): void {
