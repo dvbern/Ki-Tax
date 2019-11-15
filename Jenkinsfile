@@ -24,16 +24,13 @@ pipeline {
 			}
 
 			steps {
-				ansiColor('xterm') {
-
-					withMaven(options: [
-							junitPublisher(healthScaleFactor: 1.0),
-							spotbugsPublisher(),
-							artifactsPublisher(disabled: true)
-					]) {
-						sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C ' +
-								'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
-					}
+				withMaven(options: [
+						junitPublisher(healthScaleFactor: 1.0),
+						spotbugsPublisher(),
+						artifactsPublisher(disabled: true)
+				]) {
+					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C ' +
+							'-P dvbern.oss -P test-wildfly-managed -P ci -P frontend clean install'
 				}
 			}
 
@@ -43,7 +40,7 @@ pipeline {
 							(useRankAsPriority: true), tsLint(pattern: '**/tslint-checkstyle-report.xml')])
 					junit allowEmptyResults: true,
 							testResults: 'target/surefire-reports/*.xml build/karma-results.xml'
-					cleanWs notFailBuild: true
+					cleanWs cleanWhenFailure: false, cleanWhenNotBuilt: false, cleanWhenUnstable: false, notFailBuild: true
 				}
 			}
 		}
