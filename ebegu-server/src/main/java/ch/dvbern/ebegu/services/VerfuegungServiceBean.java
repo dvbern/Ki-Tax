@@ -147,7 +147,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
 		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
-		verfuegung.setManuelleBemerkungen(manuelleBemerkungen);
+		String bemerkungen = manuelleBemerkungen == null ? verfuegung.getGeneratedBemerkungen() : manuelleBemerkungen;
+		verfuegung.setManuelleBemerkungen(bemerkungen);
 		setZahlungsstatus(verfuegung, betreuungId, ignorieren);
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.VERFUEGT);
 		//noinspection ResultOfMethodCallIgnored

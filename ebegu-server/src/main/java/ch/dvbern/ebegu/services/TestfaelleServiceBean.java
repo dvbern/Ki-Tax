@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -632,19 +631,14 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			}
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
 
-			// calling calculateVerfuegung, to create the Verfuegung entity and attach it to betreuung
-			verfuegungService.calculateVerfuegung(gesuch);
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())
-				.forEach(betreuung -> {
-					requireNonNull(betreuung.getVerfuegung());
-					verfuegungService.verfuegen(
-						gesuch.getId(),
-						betreuung.getId(),
-						betreuung.getVerfuegung().getGeneratedBemerkungen(),
-						ignorierenInZahlungslauf,
-						false);
-				}
+				.forEach(betreuung -> verfuegungService.verfuegen(
+					gesuch.getId(),
+					betreuung.getId(),
+					null,
+					ignorierenInZahlungslauf,
+					false)
 			);
 			if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 				generateDokFinSituation(gesuch); // the finSit document must be explicitly generated
