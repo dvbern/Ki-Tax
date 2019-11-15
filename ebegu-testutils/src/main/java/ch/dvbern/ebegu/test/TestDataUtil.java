@@ -381,23 +381,24 @@ public final class TestDataUtil {
 
 	@Nonnull
 	public static Gemeinde getGemeindeParis(@Nonnull Persistence persistence) {
+		GemeindeStammdaten stammdatenParis = getGemeindeStammdatenParis(persistence);
+		return stammdatenParis.getGemeinde();
+	}
+
+	public static GemeindeStammdaten getGemeindeStammdatenParis(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeParis();
 			persistence.persist(gemeinde.getMandant());
-			return persistence.persist(gemeinde);
+			gemeinde = persistence.persist(gemeinde);
 		}
-		return gemeinde;
-	}
-
-	@Nullable
-	public static Gemeinde getGemeindeLondon(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_LONDON_ID);
-		if (gemeinde == null) {
-			gemeinde = createGemeindeLondon();
-			return persistence.persist(gemeinde);
+		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, GEMEINDE_PARIS_ID);
+		if (stammdaten == null) {
+			stammdaten = createGemeindeStammdaten(gemeinde);
+			stammdaten.setId(GEMEINDE_PARIS_ID);
+			stammdaten = persistence.merge(stammdaten);
 		}
-		return gemeinde;
+		return stammdaten;
 	}
 
 	@Nonnull
@@ -410,6 +411,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99998L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
+		stammdaten.setId(GEMEINDE_PARIS_ID);
 		return gemeinde;
 	}
 
@@ -423,6 +426,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99999L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
+		stammdaten.setId(GEMEINDE_LONDON_ID);
 		return gemeinde;
 	}
 
@@ -1222,7 +1227,7 @@ public final class TestDataUtil {
 		} else {
 			testfall.createGesuch(eingangsdatum);
 		}
-		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
+		testfall.getDossier().setGemeinde(getGemeindeParis(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
 		persistEntity(persistence, testfall.getGesuch().getGesuchsperiode());
@@ -1453,25 +1458,16 @@ public final class TestDataUtil {
 		persistence.persist(einstellung);
 	}
 
-	public static void createStammdatenDefaultVerantwortliche(
+	public static void createStammdatenDefaultVerantwortlicheParis(
 		@Nonnull Persistence persistence,
 		@Nonnull Benutzer verantwortlicherTS,
 		@Nonnull Benutzer verantwortlicherBG) {
 
-		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
-		stammdaten.setDefaultBenutzer(verantwortlicherBG);
-		stammdaten.setDefaultBenutzerBG(verantwortlicherBG);
-		stammdaten.setDefaultBenutzerTS(verantwortlicherTS);
-		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));
-		stammdaten.setGemeinde(getTestGemeinde(persistence));
-		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
-		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
-		stammdaten.setBic("BIC123");
-		stammdaten.setKontoinhaber("Inhaber");
-		stammdaten.setMail("info@bern.ch");
-		stammdaten.setLogoContent(new byte[0]);
-
-		persistence.merge(stammdaten);
+		GemeindeStammdaten stammdatenParis = getGemeindeStammdatenParis(persistence);
+		stammdatenParis.setDefaultBenutzer(verantwortlicherBG);
+		stammdatenParis.setDefaultBenutzerBG(verantwortlicherBG);
+		stammdatenParis.setDefaultBenutzerTS(verantwortlicherTS);
+		persistence.merge(stammdatenParis);
 	}
 
 	public static GemeindeStammdaten createGemeindeWithStammdaten() {
@@ -1500,7 +1496,7 @@ public final class TestDataUtil {
 		return persistence.merge(gemeindeStammdaten);
 	}
 
-	public static Benutzer createBenutzerWithDefaultGemeinde(
+	public static Benutzer createBenutzerWithDefaultGemeinde( //TODO umbennenen
 		UserRole role, String userName,
 		@Nullable Traegerschaft traegerschaft,
 		@Nullable Institution institution,
@@ -1510,7 +1506,7 @@ public final class TestDataUtil {
 		@Nullable String vorname) {
 		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant, name, vorname);
 		if (role.isRoleGemeindeabhaengig()) {
-			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getTestGemeinde(persistence));
+			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeParis(persistence));
 		}
 		return benutzer;
 	}

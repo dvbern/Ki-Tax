@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -154,11 +155,12 @@ public class VerfuegungResource {
 		@Nonnull @NotNull @PathParam("ignorieren") Boolean ignorieren,
 		@Nullable String verfuegungManuelleBemerkungen
 	) {
-		Verfuegung verfuegungToPersist = calculateAndExtractVerfuegung(gesuchJaxId, betreuungJaxId);
-		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
-		verfuegungToPersist.setManuelleBemerkungen(verfuegungManuelleBemerkungen);
-		// Die eigentliche Verfuegung vornehmen
-		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(verfuegungToPersist, ignorieren);
+		String gesuchId = converter.toEntityId(gesuchJaxId);
+		String betreuungId = converter.toEntityId(betreuungJaxId);
+		Objects.requireNonNull(gesuchId);
+		Objects.requireNonNull(betreuungId);
+
+		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(gesuchId, betreuungId, verfuegungManuelleBemerkungen, ignorieren);
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
@@ -189,41 +191,13 @@ public class VerfuegungResource {
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJaxId
 	) {
-		Verfuegung verfuegungToPersist = calculateAndExtractVerfuegung(gesuchJaxId, betreuungJaxId);
-		// Die eigentliche Verfuegung vornehmen
-		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(verfuegungToPersist);
-		return converter.verfuegungToJax(persistedVerfuegung);
-	}
-
-	@Nonnull
-	private Verfuegung calculateAndExtractVerfuegung(
-		@Nonnull JaxId gesuchJaxId,
-		@Nonnull JaxId betreuungJaxId
-	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
-		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"saveVerfuegung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchId));
-		// Wir muessen hier die Berechnung der Verfuegung nochmals neu vornehmen
-		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
-		// Die Betreuung ermitteln, welche wir verfuegen wollen
 		String betreuungId = converter.toEntityId(betreuungJaxId);
-		Betreuung betreuungZuVerfuegen = gesuchWithCalcVerfuegung.extractAllBetreuungen()
-			.stream()
-			.filter(betreuung -> betreuungId.equals(betreuung.getId()))
-			.findFirst()
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"saveVerfuegung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				betreuungId));
-		Verfuegung verfuegungToPersist = betreuungZuVerfuegen.getVerfuegung();
-		if (verfuegungToPersist == null) {
-			throw new EbeguEntityNotFoundException("saveVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"Verfuegung fuer Betreuung not found: " + betreuungZuVerfuegen.getId());
-		}
-		return verfuegungToPersist;
+		Objects.requireNonNull(gesuchId);
+		Objects.requireNonNull(betreuungId);
+
+		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(gesuchId, betreuungId);
+		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 }
 
