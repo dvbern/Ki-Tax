@@ -123,7 +123,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungTest() {
 		assertNotNull(betreuungService);
 		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(persitedBetreuung.extractGesuch().extractGemeinde(), persistence);
 		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(persitedBetreuung.getId());
 		assertTrue(betreuungOptional.isPresent());
 		Betreuung betreuung = betreuungOptional.get();
@@ -153,7 +152,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungWithMitteilungTest() {
 		prepareDependentObjects();
 		Gesuch dagmarGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(dagmarGesuch.extractGemeinde(), persistence);
 		Mitteilung mitteilung = TestDataUtil.createMitteilung(dagmarGesuch.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		Betreuung betreuungUnderTest = dagmarGesuch.extractAllBetreuungen().get(0);
@@ -186,7 +184,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungsmitteilungTest() throws LoginException {
 		prepareDependentObjects();
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		final Betreuung betreuungUnderTest = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		loginAsSachbearbeiterInst("sainst", betreuungUnderTest.getInstitutionStammdaten().getInstitution());

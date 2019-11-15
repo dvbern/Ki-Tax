@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
 
 /**
  * Service zum berechnen und speichern der Verfuegung
@@ -42,7 +42,7 @@ public interface VerfuegungService {
 	 * @param sendEmail true wenn eine Info EMail versendet werden soll
 	 */
 	@Nonnull
-	Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, boolean ignorieren, boolean sendEmail);
+	Verfuegung verfuegen(@Nonnull String gesuchId, @Nonnull String betreuungId, @Nullable String manuelleBemerkungen, boolean ignorieren, boolean sendEmail);
 
 	/**
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
@@ -51,18 +51,7 @@ public interface VerfuegungService {
 	 * @param verfuegung Die Verfuegung als DTO
 	 */
 	@Nonnull
-	Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung);
-
-	/**
-	 * Speichert die Verfuegung und setzt die Betreuung in den uebergebenen Status
-	 * @deprecated wird nur noch von integration tests verwendet
-	 */
-	@Deprecated
-	@Nonnull
-	Verfuegung persistVerfuegung(
-		@Nonnull Verfuegung verfuegung,
-		@Nonnull String betreuungId,
-		@Nonnull Betreuungsstatus betreuungsstatus);
+	Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId);
 
 	/**
 	 * @param id PK (id) der Verfuegung
