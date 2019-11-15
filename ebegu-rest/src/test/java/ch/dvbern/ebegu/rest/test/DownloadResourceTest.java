@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.DownloadResource;
 import ch.dvbern.ebegu.api.resource.VerfuegungResource;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -85,8 +84,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
-		TestDataUtil.createGemeindeStammdaten(bern, persistence);
+		TestDataUtil.getGemeindeParis(persistence);
 	}
 
 	@Test
