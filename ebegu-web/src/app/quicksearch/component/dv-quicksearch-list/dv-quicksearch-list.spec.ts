@@ -15,19 +15,19 @@
 
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
-import SearchRS from '../../../../gesuch/service/searchRS.rest';
-import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
+import {SearchRS} from '../../../../gesuch/service/searchRS.rest';
+import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
-import TSAntragDTO from '../../../../models/TSAntragDTO';
-import TSGesuch from '../../../../models/TSGesuch';
-import TestDataUtil from '../../../../utils/TestDataUtil.spec';
+import {TSAntragDTO} from '../../../../models/TSAntragDTO';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../../core/core.angularjs.module';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
+import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
 

@@ -21,7 +21,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({

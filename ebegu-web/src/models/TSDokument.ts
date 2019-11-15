@@ -14,10 +14,10 @@
  */
 
 import * as moment from 'moment';
-import TSBenutzer from './TSBenutzer';
-import TSFile from './TSFile';
+import {TSBenutzer} from './TSBenutzer';
+import {TSFile} from './TSFile';
 
-export default class TSDokument extends TSFile {
+export class TSDokument extends TSFile {
 
     private _timestampUpload: moment.Moment;
     private _userUploaded: TSBenutzer;

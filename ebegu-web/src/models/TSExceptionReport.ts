@@ -17,7 +17,7 @@ import {TSErrorAction} from './enums/TSErrorAction';
 import {TSErrorLevel} from './enums/TSErrorLevel';
 import {TSErrorType} from './enums/TSErrorType';
 
-export default class TSExceptionReport {
+export class TSExceptionReport {
 
     public get type(): TSErrorType {
         return this._type;

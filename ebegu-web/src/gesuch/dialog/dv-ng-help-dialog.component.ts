@@ -16,7 +16,7 @@
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {KiBonGuidedTourService} from '../../app/kibonTour/service/KiBonGuidedTourService';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 

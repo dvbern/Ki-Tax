@@ -18,7 +18,7 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/co
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({

@@ -20,7 +20,7 @@ import {NgForm} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {getTSModulTagesschuleIntervallValues, TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
-import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
+import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
     selector: 'modul-tagesschule-dialog',

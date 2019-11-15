@@ -17,8 +17,8 @@
 
 import {StateProvider, Transition} from '@uirouter/angularjs';
 import * as angular from 'angular';
-import DossierRS from '../../gesuch/service/dossierRS.rest';
-import TSDossier from '../../models/TSDossier';
+import {DossierRS} from '../../gesuch/service/dossierRS.rest';
+import {TSDossier} from '../../models/TSDossier';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import IPromise = angular.IPromise;

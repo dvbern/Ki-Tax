@@ -16,11 +16,11 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
-import GlobalCacheService from '../../gesuch/service/globalCacheService';
+import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
-import TSEinstellung from '../../models/TSEinstellung';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSEinstellung} from '../../models/TSEinstellung';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class EinstellungRS {
 

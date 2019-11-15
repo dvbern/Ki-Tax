@@ -14,11 +14,11 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBenutzer from './TSBenutzer';
-import TSFall from './TSFall';
-import TSGemeinde from './TSGemeinde';
+import {TSBenutzer} from './TSBenutzer';
+import {TSFall} from './TSFall';
+import {TSGemeinde} from './TSGemeinde';
 
-export default class TSDossier extends TSAbstractMutableEntity {
+export class TSDossier extends TSAbstractMutableEntity {
 
     private _fall: TSFall;
     private _gemeinde: TSGemeinde;

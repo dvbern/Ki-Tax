@@ -20,10 +20,10 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');

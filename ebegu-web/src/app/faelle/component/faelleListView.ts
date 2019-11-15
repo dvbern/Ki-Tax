@@ -17,12 +17,12 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import SearchRS from '../../../gesuch/service/searchRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
+import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {isAnyStatusOfVerfuegt} from '../../../models/enums/TSAntragStatus';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
+import {TSAntragDTO} from '../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;

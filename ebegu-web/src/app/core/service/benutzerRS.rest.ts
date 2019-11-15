@@ -14,13 +14,13 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
-import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
+import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {IEntityRS} from './iEntityRS.rest';
 
-export default class BenutzerRS implements IEntityRS {
+export class BenutzerRS implements IEntityRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

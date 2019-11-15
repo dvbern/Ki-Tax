@@ -14,22 +14,22 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
-import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
-import TSDossier from '../../../models/TSDossier';
-import TSMitteilung from '../../../models/TSMitteilung';
-import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresultDTO';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
+import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSMitteilung} from '../../../models/TSMitteilung';
+import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../constants/CONSTANTS';
 import ITranslateService = angular.translate.ITranslateService;
 
-export default class MitteilungRS {
+export class MitteilungRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS', '$translate'];
     public serviceURL: string;

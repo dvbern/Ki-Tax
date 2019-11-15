@@ -19,11 +19,11 @@ import {AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewCh
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
-import AbstractAdminViewController from '../../../admin/abstractAdminView';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';

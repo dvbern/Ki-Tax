@@ -18,10 +18,10 @@
 import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
+import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';

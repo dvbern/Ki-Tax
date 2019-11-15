@@ -17,25 +17,25 @@
 
 import {async, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
-import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
-import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
+import {GesuchsperiodeRS} from '../../app/core/service/gesuchsperiodeRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSDossier from '../../models/TSDossier';
-import TSFall from '../../models/TSFall';
-import TSGemeinde from '../../models/TSGemeinde';
-import TSGesuch from '../../models/TSGesuch';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
-import DossierRS from './dossierRS.rest';
-import FallRS from './fallRS.rest';
-import GemeindeRS from './gemeindeRS.rest';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSDossier} from '../../models/TSDossier';
+import {TSFall} from '../../models/TSFall';
+import {TSGemeinde} from '../../models/TSGemeinde';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
+import {DossierRS} from './dossierRS.rest';
+import {FallRS} from './fallRS.rest';
+import {GemeindeRS} from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
-import GesuchRS from './gesuchRS.rest';
-import WizardStepManager from './wizardStepManager';
+import {GesuchRS} from './gesuchRS.rest';
+import {WizardStepManager} from './wizardStepManager';
 
 describe('gesuchGenerator', () => {
 

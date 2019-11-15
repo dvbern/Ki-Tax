@@ -17,8 +17,8 @@ import {IComponentOptions, IController, IFormController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {

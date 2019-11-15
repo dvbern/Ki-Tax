@@ -15,8 +15,8 @@
 
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSApplicationProperty from '../../../models/TSApplicationProperty';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ApplicationPropertyRS} from './applicationPropertyRS.rest';
 import IHttpBackendService = angular.IHttpBackendService;
 

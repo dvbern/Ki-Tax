@@ -17,7 +17,7 @@ import {NgModule} from '@angular/core';
 import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {map, take} from 'rxjs/operators';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';

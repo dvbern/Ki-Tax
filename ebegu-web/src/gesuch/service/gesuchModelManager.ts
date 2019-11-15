@@ -16,18 +16,18 @@
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
-import ErrorService from '../../app/core/errors/service/ErrorService';
-import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
-import BetreuungRS from '../../app/core/service/betreuungRS.rest';
-import ErwerbspensumRS from '../../app/core/service/erwerbspensumRS.rest';
-import EwkRS from '../../app/core/service/ewkRS.rest';
+import {ErrorService} from '../../app/core/errors/service/ErrorService';
+import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
+import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
+import {ErwerbspensumRS} from '../../app/core/service/erwerbspensumRS.rest';
+import {EwkRS} from '../../app/core/service/ewkRS.rest';
 import {FachstelleRS} from '../../app/core/service/fachstelleRS.rest';
-import GesuchstellerRS from '../../app/core/service/gesuchstellerRS.rest';
+import {GesuchstellerRS} from '../../app/core/service/gesuchstellerRS.rest';
 import {InstitutionStammdatenRS} from '../../app/core/service/institutionStammdatenRS.rest';
-import KindRS from '../../app/core/service/kindRS.rest';
-import VerfuegungRS from '../../app/core/service/verfuegungRS.rest';
+import {KindRS} from '../../app/core/service/kindRS.rest';
+import {VerfuegungRS} from '../../app/core/service/verfuegungRS.rest';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {
     isAnyStatusOfVerfuegt,
@@ -50,44 +50,44 @@ import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus'
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import TSAdresse from '../../models/TSAdresse';
-import TSAdresseContainer from '../../models/TSAdresseContainer';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSBetreuung from '../../models/TSBetreuung';
-import TSDossier from '../../models/TSDossier';
-import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
-import TSErwerbspensumContainer from '../../models/TSErwerbspensumContainer';
-import TSEWKPerson from '../../models/TSEWKPerson';
-import TSEWKResultat from '../../models/TSEWKResultat';
-import TSExceptionReport from '../../models/TSExceptionReport';
+import {TSAdresse} from '../../models/TSAdresse';
+import {TSAdresseContainer} from '../../models/TSAdresseContainer';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBetreuung} from '../../models/TSBetreuung';
+import {TSDossier} from '../../models/TSDossier';
+import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
+import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
+import {TSErwerbspensumContainer} from '../../models/TSErwerbspensumContainer';
+import {TSEWKPerson} from '../../models/TSEWKPerson';
+import {TSEWKResultat} from '../../models/TSEWKResultat';
+import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSFachstelle} from '../../models/TSFachstelle';
-import TSFall from '../../models/TSFall';
-import TSFamiliensituation from '../../models/TSFamiliensituation';
-import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
-import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
-import TSGemeinde from '../../models/TSGemeinde';
-import TSGemeindeKonfiguration from '../../models/TSGemeindeKonfiguration';
-import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
-import TSGesuch from '../../models/TSGesuch';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TSGesuchsteller from '../../models/TSGesuchsteller';
-import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
-import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
-import TSKindContainer from '../../models/TSKindContainer';
-import TSVerfuegung from '../../models/TSVerfuegung';
-import EbeguUtil from '../../utils/EbeguUtil';
+import {TSFall} from '../../models/TSFall';
+import {TSFamiliensituation} from '../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
+import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
+import {TSGemeinde} from '../../models/TSGemeinde';
+import {TSGemeindeKonfiguration} from '../../models/TSGemeindeKonfiguration';
+import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
+import {TSGesuchsteller} from '../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
+import {TSInstitutionStammdaten} from '../../models/TSInstitutionStammdaten';
+import {TSKindContainer} from '../../models/TSKindContainer';
+import {TSVerfuegung} from '../../models/TSVerfuegung';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import DossierRS from './dossierRS.rest';
-import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
-import FinanzielleSituationRS from './finanzielleSituationRS.rest';
-import GemeindeRS from './gemeindeRS.rest';
+import {DossierRS} from './dossierRS.rest';
+import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
+import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
+import {GemeindeRS} from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
-import GesuchRS from './gesuchRS.rest';
-import GlobalCacheService from './globalCacheService';
-import WizardStepManager from './wizardStepManager';
+import {GesuchRS} from './gesuchRS.rest';
+import {GlobalCacheService} from './globalCacheService';
+import {WizardStepManager} from './wizardStepManager';
 
-export default class GesuchModelManager {
+export class GesuchModelManager {
 
     public static $inject = [
         'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',

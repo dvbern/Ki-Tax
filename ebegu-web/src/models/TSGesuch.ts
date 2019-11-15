@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
@@ -26,15 +26,15 @@ import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';
 import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
-import TSAbstractAntragEntity from './TSAbstractAntragEntity';
-import TSEinkommensverschlechterungInfo from './TSEinkommensverschlechterungInfo';
-import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
-import TSFamiliensituation from './TSFamiliensituation';
-import TSFamiliensituationContainer from './TSFamiliensituationContainer';
-import TSGesuchstellerContainer from './TSGesuchstellerContainer';
-import TSKindContainer from './TSKindContainer';
+import {TSAbstractAntragEntity} from './TSAbstractAntragEntity';
+import {TSEinkommensverschlechterungInfo} from './TSEinkommensverschlechterungInfo';
+import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
+import {TSFamiliensituation} from './TSFamiliensituation';
+import {TSFamiliensituationContainer} from './TSFamiliensituationContainer';
+import {TSGesuchstellerContainer} from './TSGesuchstellerContainer';
+import {TSKindContainer} from './TSKindContainer';
 
-export default class TSGesuch extends TSAbstractAntragEntity {
+export class TSGesuch extends TSAbstractAntragEntity {
 
     private _gesuchsteller1: TSGesuchstellerContainer;
     private _gesuchsteller2: TSGesuchstellerContainer;

@@ -17,10 +17,10 @@ import * as moment from 'moment';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {ngServicesMock} from '../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
-import TSGesuch from '../models/TSGesuch';
-import TestDataUtil from '../utils/TestDataUtil.spec';
+import {TSGesuch} from '../models/TSGesuch';
+import {TestDataUtil} from '../utils/TestDataUtil.spec';
 import {GesuchRouteController} from './gesuch';
-import GesuchModelManager from './service/gesuchModelManager';
+import {GesuchModelManager} from './service/gesuchModelManager';
 
 describe('gesuch', () => {
 

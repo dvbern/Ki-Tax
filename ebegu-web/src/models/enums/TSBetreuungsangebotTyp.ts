@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSGemeinde from '../TSGemeinde';
+import {TSGemeinde} from '../TSGemeinde';
 
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',

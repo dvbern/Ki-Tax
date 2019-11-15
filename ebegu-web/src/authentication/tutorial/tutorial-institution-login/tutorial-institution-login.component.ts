@@ -18,11 +18,11 @@
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSInstitution from '../../../models/TSInstitution';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {returnToOriginalState} from '../../../utils/AuthenticationUtil';
-import AuthServiceRS from '../../service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 
 @Component({
     selector: 'dv-tutorial-institution-login',

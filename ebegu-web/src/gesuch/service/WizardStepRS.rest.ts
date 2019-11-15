@@ -14,10 +14,10 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import TSWizardStep from '../../models/TSWizardStep';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSWizardStep} from '../../models/TSWizardStep';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class WizardStepRS {
+export class WizardStepRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output,
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 
 @Component({

@@ -18,7 +18,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {externalClientComparator} from '../../../models/TSExternalClient';
-import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 
 @Component({
     selector: 'dv-external-client-assignment',

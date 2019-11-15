@@ -22,9 +22,9 @@ import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
-import TSDossier from '../models/TSDossier';
-import TSFall from '../models/TSFall';
-import TSGesuch from '../models/TSGesuch';
+import {TSDossier} from '../models/TSDossier';
+import {TSFall} from '../models/TSFall';
+import {TSGesuch} from '../models/TSGesuch';
 
 ngServicesMock.$inject = ['$provide'];
 

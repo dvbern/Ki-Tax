@@ -17,17 +17,17 @@ import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSDossier from '../../../models/TSDossier';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
 import {FreigabeViewController} from './freigabeView';
 
 describe('freigabeView', () => {

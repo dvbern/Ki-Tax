@@ -14,11 +14,11 @@
  */
 
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSDayOfWeek} from './enums/TSDayOfWeek';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-export default class TSModulTagesschule extends TSAbstractEntity {
+export class TSModulTagesschule extends TSAbstractEntity {
 
     public wochentag: TSDayOfWeek;
 

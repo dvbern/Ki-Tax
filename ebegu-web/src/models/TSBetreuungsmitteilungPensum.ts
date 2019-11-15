@@ -15,7 +15,7 @@
 
 import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 
-export default class TSBetreuungsmitteilungPensum extends TSAbstractDecimalPensumEntity {
+export class TSBetreuungsmitteilungPensum extends TSAbstractDecimalPensumEntity {
 
     public constructor() {
         super();

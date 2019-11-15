@@ -13,16 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import BenutzerRS from '../../app/core/service/benutzerRS.rest';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import TSAntragDTO from '../../models/TSAntragDTO';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSDossier from '../../models/TSDossier';
-import EbeguUtil from '../../utils/EbeguUtil';
+import {BenutzerRS} from '../../app/core/service/benutzerRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
+import {TSAntragDTO} from '../../models/TSAntragDTO';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSDossier} from '../../models/TSDossier';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import DossierRS from '../service/dossierRS.rest';
-import GemeindeRS from '../service/gemeindeRS.rest';
-import GesuchRS from '../service/gesuchRS.rest';
+import {DossierRS} from '../service/dossierRS.rest';
+import {GemeindeRS} from '../service/gemeindeRS.rest';
+import {GesuchRS} from '../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
 import IDialogService = angular.material.IDialogService;
 

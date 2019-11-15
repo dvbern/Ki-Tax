@@ -16,15 +16,15 @@
  */
 
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSAdresse from './TSAdresse';
-import TSBenutzer from './TSBenutzer';
-import TSGemeinde from './TSGemeinde';
-import TSGemeindeKonfiguration from './TSGemeindeKonfiguration';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSTextRessource from './TSTextRessource';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSAdresse} from './TSAdresse';
+import {TSBenutzer} from './TSBenutzer';
+import {TSGemeinde} from './TSGemeinde';
+import {TSGemeindeKonfiguration} from './TSGemeindeKonfiguration';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSTextRessource} from './TSTextRessource';
 
-export default class TSGemeindeStammdaten extends TSAbstractEntity {
+export class TSGemeindeStammdaten extends TSAbstractEntity {
     public administratoren: string; // read only
     public sachbearbeiter: string; // read only
     public defaultBenutzerBG: TSBenutzer;

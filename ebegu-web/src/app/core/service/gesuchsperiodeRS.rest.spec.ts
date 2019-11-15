@@ -17,13 +17,13 @@ import {IHttpBackendService, IHttpService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import GesuchsperiodeRS from './gesuchsperiodeRS.rest';
+import {GesuchsperiodeRS} from './gesuchsperiodeRS.rest';
 
 describe('gesuchsperiodeRS', () => {
 

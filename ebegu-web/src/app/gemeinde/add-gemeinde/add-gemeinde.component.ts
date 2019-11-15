@@ -22,14 +22,14 @@ import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {TSBfsGemeinde} from '../../../models/TSBfsGemeinde';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-add-gemeinde',

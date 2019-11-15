@@ -15,13 +15,13 @@
 
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSKind from '../../../models/TSKind';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSVerfuegung from '../../../models/TSVerfuegung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSKind} from '../../../models/TSKind';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSVerfuegung} from '../../../models/TSVerfuegung';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import VerfuegungRS from './verfuegungRS.rest';
+import {VerfuegungRS} from './verfuegungRS.rest';
 
 describe('VerfuegungRS', () => {
 

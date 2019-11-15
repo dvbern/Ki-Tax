@@ -17,9 +17,9 @@
 
 import {Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
-import TSSupportAnfrage from '../../models/TSSupportAnfrage';
-import EbeguUtil from '../../utils/EbeguUtil';
-import SupportRS from '../service/supportRS.rest';
+import {TSSupportAnfrage} from '../../models/TSSupportAnfrage';
+import {EbeguUtil} from '../../utils/EbeguUtil';
+import {SupportRS} from '../service/supportRS.rest';
 
 /**
  * This component shows a dialog to send a request of support

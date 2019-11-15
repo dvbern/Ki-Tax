@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSBenutzer from './TSBenutzer';
+import {TSBenutzer} from './TSBenutzer';
 
-export default class TSUserSearchresultDTO {
+export class TSUserSearchresultDTO {
 
     private _userDTOs: Array<TSBenutzer>;
     private _totalResultSize: number;

@@ -17,17 +17,17 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../../models/enums/TSAmt';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSMitteilung from '../../../models/TSMitteilung';
-import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresultDTO';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSMitteilung} from '../../../models/TSMitteilung';
+import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
-import MitteilungRS from '../../core/service/mitteilungRS.rest';
+import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 
 const LOG = LogFactory.createLog('PosteingangViewController');
 

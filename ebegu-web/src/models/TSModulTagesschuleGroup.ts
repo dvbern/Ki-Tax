@@ -16,15 +16,15 @@
  */
 
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {MAP_SORTED_BY_DAY_OF_WEEK, TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSModulTagesschule from './TSModulTagesschule';
-import TSTextRessource from './TSTextRessource';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSModulTagesschule} from './TSModulTagesschule';
+import {TSTextRessource} from './TSTextRessource';
 
-export default class TSModulTagesschuleGroup extends TSAbstractEntity {
+export class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     public modulTagesschuleName: TSModulTagesschuleName;
     public identifier: string;

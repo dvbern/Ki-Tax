@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSEinkommensverschlechterungInfo from './TSEinkommensverschlechterungInfo';
+import {TSEinkommensverschlechterungInfo} from './TSEinkommensverschlechterungInfo';
 
-export default class TSEinkommensverschlechterungInfoContainer extends TSAbstractMutableEntity {
+export class TSEinkommensverschlechterungInfoContainer extends TSAbstractMutableEntity {
 
     private _einkommensverschlechterungInfoGS: TSEinkommensverschlechterungInfo;
 

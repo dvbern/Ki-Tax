@@ -14,13 +14,13 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSAdresseContainer from './TSAdresseContainer';
-import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
-import TSErwerbspensumContainer from './TSErwerbspensumContainer';
-import TSFinanzielleSituationContainer from './TSFinanzielleSituationContainer';
-import TSGesuchsteller from './TSGesuchsteller';
+import {TSAdresseContainer} from './TSAdresseContainer';
+import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
+import {TSErwerbspensumContainer} from './TSErwerbspensumContainer';
+import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
+import {TSGesuchsteller} from './TSGesuchsteller';
 
-export default class TSGesuchstellerContainer extends TSAbstractMutableEntity {
+export class TSGesuchstellerContainer extends TSAbstractMutableEntity {
 
     private _gesuchstellerGS: TSGesuchsteller;
     private _gesuchstellerJA: TSGesuchsteller;

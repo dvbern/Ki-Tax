@@ -14,12 +14,12 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSVerfuegung from '../../../models/TSVerfuegung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSVerfuegung} from '../../../models/TSVerfuegung';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class VerfuegungRS {
+export class VerfuegungRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;

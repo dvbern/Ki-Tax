@@ -17,9 +17,9 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
-import TSBenutzer from '../../../../models/TSBenutzer';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 

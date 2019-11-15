@@ -15,10 +15,10 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController} from 'angular';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {AbstractAdminViewController} from '../../abstractAdminView';
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 

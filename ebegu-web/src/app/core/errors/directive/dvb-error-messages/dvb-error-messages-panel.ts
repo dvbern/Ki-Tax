@@ -17,15 +17,15 @@ import IComponentOptions = angular.IComponentOptions;
 import IScope = angular.IScope;
 import {IController, IOnInit} from 'angular';
 import {RemoveDialogController} from '../../../../../gesuch/dialog/RemoveDialogController';
-import GesuchRS from '../../../../../gesuch/service/gesuchRS.rest';
-import WizardStepManager from '../../../../../gesuch/service/wizardStepManager';
+import {GesuchRS} from '../../../../../gesuch/service/gesuchRS.rest';
+import {WizardStepManager} from '../../../../../gesuch/service/wizardStepManager';
 import {TSErrorAction} from '../../../../../models/enums/TSErrorAction';
 import {TSMessageEvent} from '../../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
-import TSExceptionReport from '../../../../../models/TSExceptionReport';
+import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
-import ErrorService from '../../service/ErrorService';
+import {ErrorService} from '../../service/ErrorService';
 
 const removeDialogTemplate = require('../../../../../gesuch/dialog/removeDialogTemplate.html');
 

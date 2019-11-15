@@ -14,11 +14,11 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import WizardStepManager from './wizardStepManager';
+import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {WizardStepManager} from './wizardStepManager';
 
-export default class FamiliensituationRS {
+export class FamiliensituationRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;

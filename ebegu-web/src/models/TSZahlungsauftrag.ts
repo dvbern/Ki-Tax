@@ -16,11 +16,11 @@
 import * as moment from 'moment';
 import {TSZahlungsauftragsstatus} from './enums/TSZahlungsauftragstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSGemeinde from './TSGemeinde';
-import TSZahlung from './TSZahlung';
+import {TSGemeinde} from './TSGemeinde';
+import {TSZahlung} from './TSZahlung';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
+export class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
 
     private _datumGeneriert: moment.Moment;
     private _datumFaellig: moment.Moment;

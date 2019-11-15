@@ -14,9 +14,9 @@
  */
 
 import {IDeferred} from 'angular';
-import TSExceptionReport from '../../../../models/TSExceptionReport';
-import TestDataUtil from '../../../../utils/TestDataUtil.spec';
-import HttpErrorInterceptor from './HttpErrorInterceptor';
+import {TSExceptionReport} from '../../../../models/TSExceptionReport';
+import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
+import {HttpErrorInterceptor} from './HttpErrorInterceptor';
 
 describe('httpErrorInterceptor', () => {
 

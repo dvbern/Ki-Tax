@@ -18,7 +18,7 @@ import {CORE_JS_MODULE} from '../../core/core.angularjs.module';
 import {PendenzenBetreuungenListViewComponentConfig} from './component/pendenzenBetreuungenListView/pendenzenBetreuungenListView';
 import {pendenzBetreuungenFilter} from './filter/pendenzBetreuungenFilter';
 import {pendenzRun} from './pendenzenBetreuungen.route';
-import PendenzBetreuungenRS from './service/PendenzBetreuungenRS.rest';
+import {PendenzBetreuungenRS} from './service/PendenzBetreuungenRS.rest';
 
 export const PENDENZEN_BETREUUNGEN_JS_MODULE =
     angular.module('ebeguWeb.pendenzenBetreuungen', [CORE_JS_MODULE.name])

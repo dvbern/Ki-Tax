@@ -14,16 +14,16 @@
  */
 
 import {IHttpResponse, IHttpService} from 'angular';
-import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
-import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
-import TSFinanzModel from '../../models/TSFinanzModel';
-import TSGesuch from '../../models/TSGesuch';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import WizardStepManager from './wizardStepManager';
+import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
+import {TSFinanzModel} from '../../models/TSFinanzModel';
+import {TSGesuch} from '../../models/TSGesuch';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {WizardStepManager} from './wizardStepManager';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
-export default class EinkommensverschlechterungContainerRS {
+export class EinkommensverschlechterungContainerRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;

@@ -15,7 +15,7 @@
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
+export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     private _nettolohn: number;
     private _familienzulage: number;

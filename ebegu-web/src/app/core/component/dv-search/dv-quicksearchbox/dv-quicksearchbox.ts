@@ -15,12 +15,12 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFilterService, ILogService, IPromise, IQService} from 'angular';
-import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
-import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
-import TSQuickSearchResult from '../../../../../models/dto/TSQuickSearchResult';
-import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
+import {TSQuickSearchResult} from '../../../../../models/dto/TSQuickSearchResult';
+import {TSSearchResultEntry} from '../../../../../models/dto/TSSearchResultEntry';
 import {isAnyStatusOfVerfuegt} from '../../../../../models/enums/TSAntragStatus';
-import TSAntragDTO from '../../../../../models/TSAntragDTO';
+import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {SearchIndexRS} from '../../../service/searchIndexRS.rest';
 import IInjectorService = angular.auto.IInjectorService;

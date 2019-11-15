@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractAntragDTO from './TSAbstractAntragDTO';
+import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
-export default class TSFallAntragDTO extends TSAbstractAntragDTO {
+export class TSFallAntragDTO extends TSAbstractAntragDTO {
 
     public get fallID(): string {
         return this._fallID;

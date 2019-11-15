@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-export default class TSBfsGemeinde extends TSAbstractEntity {
+export class TSBfsGemeinde extends TSAbstractEntity {
 
     private _name: string;
     private _bfsNummer: number;

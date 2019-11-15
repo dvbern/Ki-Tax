@@ -17,7 +17,7 @@ import * as moment from 'moment';
 import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
+export class TSAbstractPersonEntity extends TSAbstractMutableEntity {
 
     private _vorname: string;
     private _nachname: string;

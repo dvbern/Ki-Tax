@@ -16,7 +16,7 @@
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
+export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
 
     private _erwerbspensumGS1: number;
     private _erwerbspensumGS2: number;

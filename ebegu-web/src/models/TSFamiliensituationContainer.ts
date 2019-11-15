@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSFamiliensituation from './TSFamiliensituation';
+import {TSFamiliensituation} from './TSFamiliensituation';
 
-export default class TSFamiliensituationContainer extends TSAbstractMutableEntity {
+export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
 
     private _familiensituationJA: TSFamiliensituation;
     private _familiensituationGS: TSFamiliensituation;

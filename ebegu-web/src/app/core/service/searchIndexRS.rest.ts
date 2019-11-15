@@ -14,8 +14,8 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
-import TSQuickSearchResult from '../../../models/dto/TSQuickSearchResult';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSQuickSearchResult} from '../../../models/dto/TSQuickSearchResult';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class SearchIndexRS {
 

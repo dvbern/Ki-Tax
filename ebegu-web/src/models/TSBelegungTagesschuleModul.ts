@@ -16,10 +16,10 @@
  */
 
 import {TSBelegungTagesschuleModulIntervall} from './enums/TSBelegungTagesschuleModulIntervall';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSModulTagesschule from './TSModulTagesschule';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSModulTagesschule} from './TSModulTagesschule';
 
-export default class TSBelegungTagesschuleModul extends TSAbstractEntity {
+export class TSBelegungTagesschuleModul extends TSAbstractEntity {
 
     public intervall: TSBelegungTagesschuleModulIntervall;
     public modulTagesschule: TSModulTagesschule;

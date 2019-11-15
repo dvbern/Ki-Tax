@@ -16,14 +16,14 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DATE_LOCALE} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
+import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 

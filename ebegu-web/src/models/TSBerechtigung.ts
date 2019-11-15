@@ -17,12 +17,12 @@ import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {TSAmt} from './enums/TSAmt';
 import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSGemeinde from './TSGemeinde';
-import TSInstitution from './TSInstitution';
+import {TSGemeinde} from './TSGemeinde';
+import {TSInstitution} from './TSInstitution';
 import {TSTraegerschaft} from './TSTraegerschaft';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSBerechtigung extends TSAbstractDateRangedEntity {
+export class TSBerechtigung extends TSAbstractDateRangedEntity {
 
     private _traegerschaft?: TSTraegerschaft;
     private _institution?: TSInstitution;

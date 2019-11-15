@@ -20,9 +20,9 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSBfsGemeinde} from '../../../models/TSBfsGemeinde';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({

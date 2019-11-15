@@ -16,12 +16,12 @@
 import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
 import {Moment} from 'moment';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSAbstractMutableEntity} from '../../../../models/TSAbstractMutableEntity';
-import DateUtil from '../../../../utils/DateUtil';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {DateUtil} from '../../../../utils/DateUtil';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import ITranslateService = angular.translate.ITranslateService;
 
 /**

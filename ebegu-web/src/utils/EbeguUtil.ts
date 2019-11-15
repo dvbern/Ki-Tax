@@ -18,18 +18,18 @@ import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import {Displayable} from '../app/shared/interfaces/displayable';
-import TSBetreuungsnummerParts from '../models/dto/TSBetreuungsnummerParts';
+import {TSBetreuungsnummerParts} from '../models/dto/TSBetreuungsnummerParts';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
-import TSAbstractEntity from '../models/TSAbstractEntity';
-import TSBetreuung from '../models/TSBetreuung';
-import TSDossier from '../models/TSDossier';
-import TSFall from '../models/TSFall';
-import TSGemeinde from '../models/TSGemeinde';
-import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
-import TSGesuch from '../models/TSGesuch';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
+import {TSAbstractEntity} from '../models/TSAbstractEntity';
+import {TSBetreuung} from '../models/TSBetreuung';
+import {TSDossier} from '../models/TSDossier';
+import {TSFall} from '../models/TSFall';
+import {TSGemeinde} from '../models/TSGemeinde';
+import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGesuch} from '../models/TSGesuch';
+import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
-import DateUtil from './DateUtil';
+import {DateUtil} from './DateUtil';
 import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('EbeguUtil');
@@ -39,7 +39,7 @@ const defaultDateFormat = 'DD.MM.YYYY';
 /**
  * Klasse die allgemeine utils Methoden implementiert
  */
-export default class EbeguUtil {
+export class EbeguUtil {
 
     public static $inject = ['$filter', '$translate', '$log'];
 

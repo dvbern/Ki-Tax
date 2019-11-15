@@ -20,20 +20,20 @@ import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
-import TSBetreuung from '../../models/TSBetreuung';
-import TSExceptionReport from '../../models/TSExceptionReport';
-import TSGesuch from '../../models/TSGesuch';
-import EbeguUtil from '../../utils/EbeguUtil';
+import {TSBetreuung} from '../../models/TSBetreuung';
+import {TSExceptionReport} from '../../models/TSExceptionReport';
+import {TSGesuch} from '../../models/TSGesuch';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import BerechnungsManager from '../service/berechnungsManager';
-import GesuchModelManager from '../service/gesuchModelManager';
-import WizardStepManager from '../service/wizardStepManager';
+import {BerechnungsManager} from '../service/berechnungsManager';
+import {GesuchModelManager} from '../service/gesuchModelManager';
+import {WizardStepManager} from '../service/wizardStepManager';
 import IFormController = angular.IFormController;
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
-export default class AbstractGesuchViewController<T> implements IController {
+export class AbstractGesuchViewController<T> implements IController {
 
     public readonly DEFAULT_DELAY: number = 200;
 

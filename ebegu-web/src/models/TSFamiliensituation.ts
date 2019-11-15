@@ -17,7 +17,7 @@ import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSFamiliensituation extends TSAbstractMutableEntity {
+export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;

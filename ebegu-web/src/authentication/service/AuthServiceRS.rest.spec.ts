@@ -15,15 +15,15 @@
 
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
-import BenutzerRS from '../../app/core/service/benutzerRS.rest';
-import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
+import {BenutzerRS} from '../../app/core/service/benutzerRS.rest';
+import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSBerechtigung from '../../models/TSBerechtigung';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBerechtigung} from '../../models/TSBerechtigung';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
-import AuthServiceRS from './AuthServiceRS.rest';
+import {AuthServiceRS} from './AuthServiceRS.rest';
 
 describe('AuthServiceRS', () => {
 

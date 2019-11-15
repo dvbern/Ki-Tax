@@ -15,7 +15,7 @@
 
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {ADMIN_JS_MODULE} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 

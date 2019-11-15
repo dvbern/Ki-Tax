@@ -14,9 +14,9 @@
  */
 
 import {IHttpPromise, IHttpService} from 'angular';
-import TSAdresseContainer from '../../../models/TSAdresseContainer';
+import {TSAdresseContainer} from '../../../models/TSAdresseContainer';
 
-export default class AdresseRS {
+export class AdresseRS {
     public static $inject = ['$http', 'REST_API'];
 
     public serviceURL: string;

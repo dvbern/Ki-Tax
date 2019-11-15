@@ -21,19 +21,19 @@ import {from as fromPromise, from, Observable, of} from 'rxjs';
 import {filter, map, switchMap} from 'rxjs/operators';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {getTSEingangsartFromRole, TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSDossier from '../../../models/TSDossier';
-import TSGemeinde from '../../../models/TSGemeinde';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {INewFallStateParams} from '../../gesuch.route';
-import DossierRS from '../../service/dossierRS.rest';
-import GemeindeRS from '../../service/gemeindeRS.rest';
-import GesuchRS from '../../service/gesuchRS.rest';
+import {DossierRS} from '../../service/dossierRS.rest';
+import {GemeindeRS} from '../../service/gemeindeRS.rest';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 
 const LOG = LogFactory.createLog('FallToolbarComponent');
 

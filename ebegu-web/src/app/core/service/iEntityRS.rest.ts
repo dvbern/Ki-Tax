@@ -14,7 +14,7 @@
  */
 
 import {IHttpService} from 'angular';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export interface IEntityRS {
     serviceURL: string;

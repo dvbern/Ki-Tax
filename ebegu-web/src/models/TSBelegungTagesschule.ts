@@ -16,9 +16,9 @@
 import * as moment from 'moment';
 import {TSAbholungTagesschule} from './enums/TSAbholungTagesschule';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBelegungTagesschuleModul from './TSBelegungTagesschuleModul';
+import {TSBelegungTagesschuleModul} from './TSBelegungTagesschuleModul';
 
-export default class TSBelegungTagesschule extends TSAbstractMutableEntity {
+export class TSBelegungTagesschule extends TSAbstractMutableEntity {
 
     public belegungTagesschuleModule: Array<TSBelegungTagesschuleModul> = [];
     public eintrittsdatum: moment.Moment;
