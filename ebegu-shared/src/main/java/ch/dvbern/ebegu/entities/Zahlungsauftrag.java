@@ -76,11 +76,14 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	@Nonnull
 	@Valid
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "zahlungsauftrag")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "zahlungsauftrag")
 	private List<Zahlung> zahlungen = new ArrayList<>();
 
 	@Nonnull
 	private BigDecimal betragTotalAuftrag;
+
+	@Nonnull
+	private Boolean hasNegativeZahlungen = false;
 
 	public LocalDate getDatumFaellig() {
 		return datumFaellig;
@@ -139,6 +142,15 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	public void setGemeinde(@NotNull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nonnull
+	public Boolean getHasNegativeZahlungen() {
+		return hasNegativeZahlungen;
+	}
+
+	public void setHasNegativeZahlungen(@Nonnull Boolean hasNegativeZahlungen) {
+		this.hasNegativeZahlungen = hasNegativeZahlungen;
 	}
 
 	public String getFilename() {

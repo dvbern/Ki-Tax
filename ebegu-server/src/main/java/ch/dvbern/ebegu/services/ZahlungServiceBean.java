@@ -273,6 +273,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 */
 	private void calculateZahlungsauftrag(Zahlungsauftrag zahlungsauftrag) {
 		BigDecimal totalAuftrag = BigDecimal.ZERO;
+		boolean hasAnyZahlungWithNegativTotal = false;
 		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
 			BigDecimal totalZahlung = BigDecimal.ZERO;
 			for (Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()) {
@@ -280,9 +281,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 					totalZahlung = MathUtil.DEFAULT.add(totalZahlung, zahlungsposition.getBetrag());
 				}
 			}
+			if (!MathUtil.isPositive(totalZahlung)) {
+				hasAnyZahlungWithNegativTotal = true;
+			}
 			zahlung.setBetragTotalZahlung(totalZahlung);
 			totalAuftrag = MathUtil.DEFAULT.add(totalAuftrag, totalZahlung);
 		}
+		zahlungsauftrag.setHasNegativeZahlungen(hasAnyZahlungWithNegativTotal);
 		zahlungsauftrag.setBetragTotalAuftrag(totalAuftrag);
 	}
 

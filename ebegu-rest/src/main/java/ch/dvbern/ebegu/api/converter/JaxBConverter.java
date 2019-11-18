@@ -4226,20 +4226,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZahlungsauftrag.setGemeinde(gemeindeToJAX(persistedZahlungsauftrag.getGemeinde()));
 		jaxZahlungsauftrag.setDatumFaellig(persistedZahlungsauftrag.getDatumFaellig());
 		jaxZahlungsauftrag.setDatumGeneriert(persistedZahlungsauftrag.getDatumGeneriert());
+		jaxZahlungsauftrag.setHasNegativeZahlungen(persistedZahlungsauftrag.getHasNegativeZahlungen());
 
+		if (convertZahlungen) {
 		List<JaxZahlung> zahlungen = persistedZahlungsauftrag.getZahlungen().stream()
 			.map(this::zahlungToJAX)
 			.collect(Collectors.toList());
-
-		boolean hasNegativeZahlungen = false;
-		for (JaxZahlung zahlung : zahlungen) {
-			if (zahlung.getBetragTotalZahlung().doubleValue() < 0) {
-				hasNegativeZahlungen = true;
-			}
-		}
-		jaxZahlungsauftrag.setHasNegativeZahlungen(hasNegativeZahlungen);
-
-		if (convertZahlungen) {
 			jaxZahlungsauftrag.getZahlungen().addAll(zahlungen);
 		}
 		return jaxZahlungsauftrag;
