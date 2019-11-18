@@ -121,7 +121,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		fall.setMandant(mandant);
 		dossier.setVerantwortlicherBG(empfaengerJA);
 		dossier.setVerantwortlicherTS(empfaengerSCH);
-		dossier.setGemeinde(TestDataUtil.getTestGemeinde(persistence));
+		dossier.setGemeinde(TestDataUtil.getGemeindeParis(persistence));
 		fall = persistence.persist(fall);
 
 		traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
@@ -129,7 +129,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.persist(empfaengerINST);
 
 		// Default-Verantwortliche setzen, damit beim Senden der Message automatisch der Empfaenger ermittelt werden kann
-		TestDataUtil.createStammdatenDefaultVerantwortliche(persistence, empfaengerSCH, empfaengerJA);
+		TestDataUtil.createStammdatenDefaultVerantwortlicheParis(persistence, empfaengerSCH, empfaengerJA);
 	}
 
 	@Test
