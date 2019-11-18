@@ -31,6 +31,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
@@ -72,6 +73,7 @@ public class VerfuegungEventConverter {
 	private VerfuegungEventDTO toVerfuegungEventDTO(@Nonnull Verfuegung verfuegung) {
 		Betreuung betreuung = verfuegung.getBetreuung();
 		Gesuch gesuch = betreuung.extractGesuch();
+		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
 		Kind kind = betreuung.getKind().getKindJA();
 
@@ -88,9 +90,11 @@ public class VerfuegungEventConverter {
 			.setVon(periode.getGueltigAb())
 			.setBis(periode.getGueltigBis())
 			.setVersion(gesuch.getLaufnummer())
-			.setVerfuegtAm(verfuegtAm);
+			.setVerfuegtAm(verfuegtAm)
+			.setGemeindeBfsNr(gemeinde.getBfsNummer())
+			.setGemeindeName(gemeinde.getName());
 
-		addZeitabschnitte(verfuegung, builder);
+		setZeitabschnitte(verfuegung, builder);
 
 		return builder.build();
 	}
@@ -106,6 +110,7 @@ public class VerfuegungEventConverter {
 
 	@Nonnull
 	private GesuchstellerDTO toGesuchstellerDTO(@Nonnull Gesuchsteller gesuchsteller) {
+		//noinspection ConstantConditions
 		return GesuchstellerDTO.newBuilder()
 			.setVorname(gesuchsteller.getVorname())
 			.setNachname(gesuchsteller.getNachname())
@@ -113,7 +118,7 @@ public class VerfuegungEventConverter {
 			.build();
 	}
 
-	private void addZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
+	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
 			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend()));
@@ -126,10 +131,10 @@ public class VerfuegungEventConverter {
 		List<VerfuegungZeitabschnitt> allVerrechnet = findVorgaengerZeitabschnitte(betreuung, ignoredAbschnitte);
 		allVerrechnet.addAll(verrechnetAbschnitte);
 
-		builder.setZeitabschnitte(convertZeitabschnitte(allVerrechnet));
-
-		// Ignorierte Zeitabschnitte
-		builder.setIgnorierteZeitabschnitte(convertZeitabschnitte(ignoredAbschnitte));
+		//noinspection ResultOfMethodCallIgnored
+		builder
+			.setZeitabschnitte(convertZeitabschnitte(allVerrechnet))
+			.setIgnorierteZeitabschnitte(convertZeitabschnitte(ignoredAbschnitte));
 	}
 
 	@Nonnull
