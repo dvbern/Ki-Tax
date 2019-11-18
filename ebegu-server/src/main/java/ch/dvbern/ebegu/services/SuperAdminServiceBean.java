@@ -94,7 +94,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public void removeFallAndBenutzer(@Nonnull String benutzername){
-		LOG.info("Der Benutzer mit der Benutzername: " + benutzername + " wird gelöscht werden");
+		LOG.info("Der Benutzer mit Benutzername: " + benutzername + " wird gelöscht");
 		Benutzer benutzer = benutzerService.findBenutzer(benutzername).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,

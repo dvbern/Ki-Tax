@@ -418,7 +418,7 @@ public class BenutzerResource {
 		return benutzerService.isBenutzerDefaultBenutzerOfAnyGemeinde(username);
 	}
 
-	@ApiOperation(value = "Löscht der Benutzer mit dem gegebenen Benutzername.")
+	@ApiOperation(value = "Löscht der Benutzer mit dem gegebenen Benutzername.", response = Response.class)
 	@DELETE
 	@Path("/delete/{username}")
 	@Consumes(MediaType.WILDCARD)
