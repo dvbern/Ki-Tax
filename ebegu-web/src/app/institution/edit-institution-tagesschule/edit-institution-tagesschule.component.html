@@ -50,7 +50,8 @@
 
 <dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true">
     <dv-accordion-tab
-        *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule; trackBy:einstellungGP?.id; let i = index"
+        *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule; trackBy:
+        trackById; let i = index"
         [tabid]="i">
         <tab-title>
             <div class="message-header">

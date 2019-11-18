@@ -273,4 +273,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         }
         return this.translate.instant(group.modulTagesschuleName);
     }
+
+    public trackById(einstellungGP: TSEinstellungenTagesschule): string {
+        return einstellungGP.id;
+    }
 }

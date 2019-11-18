@@ -51,7 +51,7 @@ import {
 export class DvSwitchComponent<T> implements OnChanges {
 
     // It is allowed to set any values as switchOption. switchValue will then have the select (<any>) option
-    @Input() private switchValue: T;
+    @Input() public switchValue: T;
     @Input() public readonly switchOptionLeft: T;
     @Input() public readonly switchOptionRight: T;
 

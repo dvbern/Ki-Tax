@@ -30,8 +30,8 @@ import {SupportRS} from '../service/supportRS.rest';
 })
 export class DvNgSupportDialogComponent {
 
-    private readonly beschreibung: string;
-    private readonly idLength = 20;
+    public beschreibung: string;
+    public readonly idLength = 20;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSupportDialogComponent>,

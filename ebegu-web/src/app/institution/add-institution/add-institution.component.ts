@@ -42,7 +42,7 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
 export class AddInstitutionComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
-    private isBGInstitution: boolean;
+    public isBGInstitution: boolean;
     public betreuungsangebote: TSBetreuungsangebotTyp[];
     public betreuungsangebot: TSBetreuungsangebotTyp;
     public traegerschaften: TSTraegerschaft[];
