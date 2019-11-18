@@ -75,39 +75,45 @@ public class VerfuegungEventConverter {
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
 		Kind kind = betreuung.getKind().getKindJA();
 
-		VerfuegungEventDTO verfuegungDTO = new VerfuegungEventDTO();
-		verfuegungDTO.setKind(toKindDTO(kind));
-		verfuegungDTO.setGesuchsteller(toGesuchstellerDTO(gesuchsteller));
-		verfuegungDTO.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()));
-		verfuegungDTO.setRefnr(betreuung.getBGNummer());
-		verfuegungDTO.setInstitutionId(betreuung.getInstitutionStammdaten().getInstitution().getId());
-
 		DateRange periode = betreuung.extractGesuchsperiode().getGueltigkeit();
-		verfuegungDTO.setVon(periode.getGueltigAb());
-		verfuegungDTO.setBis(periode.getGueltigBis());
-
-		verfuegungDTO.setVersion(gesuch.getLaufnummer());
 		LocalDateTime timestampErstellt = verfuegung.getTimestampErstellt();
-		Instant instant = requireNonNull(timestampErstellt).atZone(ZoneId.systemDefault()).toInstant();
-		verfuegungDTO.setVerfuegtAm(instant);
+		Instant verfuegtAm = requireNonNull(timestampErstellt).atZone(ZoneId.systemDefault()).toInstant();
 
-		addZeitabschnitte(verfuegung, verfuegungDTO);
+		VerfuegungEventDTO.Builder builder = VerfuegungEventDTO.newBuilder()
+			.setKind(toKindDTO(kind))
+			.setGesuchsteller(toGesuchstellerDTO(gesuchsteller))
+			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()))
+			.setRefnr(betreuung.getBGNummer())
+			.setInstitutionId(betreuung.getInstitutionStammdaten().getInstitution().getId())
+			.setVon(periode.getGueltigAb())
+			.setBis(periode.getGueltigBis())
+			.setVersion(gesuch.getLaufnummer())
+			.setVerfuegtAm(verfuegtAm);
 
-		return verfuegungDTO;
+		addZeitabschnitte(verfuegung, builder);
+
+		return builder.build();
 	}
 
 	@Nonnull
 	private KindDTO toKindDTO(@Nonnull Kind kind) {
-		return new KindDTO(kind.getVorname(), kind.getNachname(), kind.getGeburtsdatum());
+		return KindDTO.newBuilder()
+			.setVorname(kind.getVorname())
+			.setNachname(kind.getNachname())
+			.setGeburtsdatum(kind.getGeburtsdatum())
+			.build();
 	}
 
 	@Nonnull
 	private GesuchstellerDTO toGesuchstellerDTO(@Nonnull Gesuchsteller gesuchsteller) {
-		//noinspection ConstantConditions
-		return new GesuchstellerDTO(gesuchsteller.getVorname(), gesuchsteller.getNachname(), gesuchsteller.getMail());
+		return GesuchstellerDTO.newBuilder()
+			.setVorname(gesuchsteller.getVorname())
+			.setNachname(gesuchsteller.getNachname())
+			.setEmail(gesuchsteller.getMail())
+			.build();
 	}
 
-	private void addZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO verfuegungDTO) {
+	private void addZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
 			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend()));
@@ -120,10 +126,10 @@ public class VerfuegungEventConverter {
 		List<VerfuegungZeitabschnitt> allVerrechnet = findVorgaengerZeitabschnitte(betreuung, ignoredAbschnitte);
 		allVerrechnet.addAll(verrechnetAbschnitte);
 
-		verfuegungDTO.setZeitabschnitte(convertZeitabschnitte(allVerrechnet));
+		builder.setZeitabschnitte(convertZeitabschnitte(allVerrechnet));
 
 		// Ignorierte Zeitabschnitte
-		verfuegungDTO.setIgnorierteZeitabschnitte(convertZeitabschnitte(ignoredAbschnitte));
+		builder.setIgnorierteZeitabschnitte(convertZeitabschnitte(ignoredAbschnitte));
 	}
 
 	@Nonnull
@@ -150,20 +156,22 @@ public class VerfuegungEventConverter {
 
 	@Nonnull
 	private ZeitabschnittDTO toZeitabschnittDTO(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		MathUtil ROUND = MathUtil.ZWEI_NACHKOMMASTELLE;
 
-		return new ZeitabschnittDTO(
-			zeitabschnitt.getGueltigkeit().getGueltigAb(),
-			zeitabschnitt.getGueltigkeit().getGueltigBis(),
-			zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer(),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getBetreuungspensum()),
-			zeitabschnitt.getAnspruchberechtigtesPensum(),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getBgPensum()),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVollkosten()),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getMinimalerElternbeitragGekuerzt()),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVerguenstigung()),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten()),
-			MathUtil.ZWEI_NACHKOMMASTELLE.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()),
-			Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()));
+		return ZeitabschnittDTO.newBuilder()
+			.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb())
+			.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis())
+			.setVerfuegungNr(zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer())
+			.setEffektiveBetreuungPct(ROUND.from(zeitabschnitt.getBetreuungspensum()))
+			.setAnspruchPct(zeitabschnitt.getAnspruchberechtigtesPensum())
+			.setVerguenstigtPct(ROUND.from(zeitabschnitt.getBgPensum()))
+			.setVollkosten(ROUND.from(zeitabschnitt.getVollkosten()))
+			.setBetreuungsgutschein(ROUND.from(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()))
+			.setMinimalerElternbeitrag(ROUND.from(zeitabschnitt.getMinimalerElternbeitragGekuerzt()))
+			.setVerguenstigung(ROUND.from(zeitabschnitt.getVerguenstigung()))
+			.setVerfuegteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten()))
+			.setAnspruchsberechtigteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()))
+			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
+			.build();
 	}
 }

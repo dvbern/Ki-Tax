@@ -54,6 +54,10 @@ public class InstitutionClientEventConverter {
 		@Nonnull String institutionId,
 		@Nonnull ExternalClient client) {
 
-		return new InstitutionClientEventDTO(institutionId, client.getClientName(), client.getType().name());
+		return InstitutionClientEventDTO.newBuilder()
+			.setInstitutionId(institutionId)
+			.setClientName(client.getClientName())
+			.setClientType(client.getType().name())
+			.build();
 	}
 }
