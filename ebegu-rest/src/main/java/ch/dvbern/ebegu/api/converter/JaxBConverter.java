@@ -1667,6 +1667,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxEinstellungenTagesschule.setGesuchsperiode(gesuchsperiodeToJAX(persistedEinstellungenTagesschule.getGesuchsperiode()));
 		jaxEinstellungenTagesschule.setModulTagesschuleGroups(modulTagesschuleGroupListToJax(persistedEinstellungenTagesschule.getModulTagesschuleGroups()));
 		jaxEinstellungenTagesschule.setModulTagesschuleTyp(persistedEinstellungenTagesschule.getModulTagesschuleTyp());
+		jaxEinstellungenTagesschule.setErlaeuterung(persistedEinstellungenTagesschule.getErlaeuterung());
 		return jaxEinstellungenTagesschule;
 	}
 
@@ -1725,6 +1726,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		einstellungenTagesschule.setModulTagesschuleTyp(jaxEinstellungenTagesschule.getModulTagesschuleTyp());
+		einstellungenTagesschule.setErlaeuterung(jaxEinstellungenTagesschule.getErlaeuterung());
 
 		return einstellungenTagesschule;
 	}
@@ -1759,7 +1761,10 @@ public class JaxBConverter extends AbstractConverter {
 				convertedModule.setModulTagesschuleGroup(modulTagesschuleGroup);
 			}
 		}
-		modulTagesschuleGroup.setModule(convertedModules);
+		if(convertedModules != null){
+			modulTagesschuleGroup.getModule().clear();
+			modulTagesschuleGroup.getModule().addAll(convertedModules);
+		}
 
 		return modulTagesschuleGroup;
 	}

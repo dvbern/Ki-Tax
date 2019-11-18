@@ -1700,8 +1700,9 @@
     "MODUL_VERPFLEGUNG": "Frais de repas",
     "MODUL_VERFUEGBAR": "Disponible le",
     "MODUL_INTERVALL": "Intervalle",
+    "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Ajouter une explication pour les modules",
     "MODUL_PAEDAGOGISCH_BETREUT": "Est soigné pédagogiquement",
-    "MODUL_HINZUFUEGEN": "Ajouter un module",
+    "MODUL_HINZUFUEGEN": "Ajouter un nouveau module",
     "MODUL_HINZUFUEGEN_SCOLARIS": "Créer un module selon Scolaris",
     "MODUL_CREATION_TYP": "Type de création du module (par ex. pour Scolaris)",
     "SCOLARIS": "Créer un dodule pour Scolaris (fixe)",
@@ -1739,6 +1740,7 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Veuillez entrer vos changements de temps de garde ou vous questions/remarques générales ici",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Remarque",
     "BETREUUNG_TAGESSCHULE_AGB": "J'ai lu et accepté<a href='dummy.pdf' target='_blank'> les conditions d'inscriptions à l'école à journée continue</a>",
+    "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Explications concernant les modules",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Il n'y a pas encore de module configuré pour cette école à journée continue",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Envoyer automatiquement des notifications par email lorsqu'une décision est prise",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Lorsqu'une décision est prise un email de confirmation est alors automatiquement envoyé. Réglage recommandé: activé.",
@@ -1751,5 +1753,7 @@
     "STANDARD_DOK_UNTERSCHRIFT1_NAME": "Signature 1 - Nom",
     "STANDARD_DOK_UNTERSCHRIFT2_TITEL": "Signature 2 - Titre",
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Signature 2 - Nom",
+    "ERROR_NO_MODUL_SELECTED": "Il faut sélectionner au moins un jour",
+    "IN_CHF_PLACEHOLDER": "en CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

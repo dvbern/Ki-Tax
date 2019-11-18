@@ -104,7 +104,8 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private Integer reihenfolge;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "modulTagesschuleGroup", fetch =
+		FetchType.LAZY)
 	@OrderBy("wochentag")
 	private Set<ModulTagesschule> module = new TreeSet<>();
 
