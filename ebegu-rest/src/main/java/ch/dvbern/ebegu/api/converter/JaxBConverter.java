@@ -4490,6 +4490,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxBfsGemeinde;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	public GemeindeStammdaten gemeindeStammdatenToEntity(
 		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
@@ -4502,6 +4503,9 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxStammdaten.getGemeinde().getId());
 		requireNonNull(jaxStammdaten.getAdresse());
 		requireNonNull(jaxStammdaten.getStandardRechtsmittelbelehrung());
+		requireNonNull(jaxStammdaten.getBenachrichtigungBgEmailAuto());
+		requireNonNull(jaxStammdaten.getBenachrichtigungTsEmailAuto());
+		requireNonNull(jaxStammdaten.getStandardDokSignature());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
@@ -4544,6 +4548,15 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		stammdaten.setStandardRechtsmittelbelehrung(jaxStammdaten.getStandardRechtsmittelbelehrung());
+		stammdaten.setBenachrichtigungBgEmailAuto(jaxStammdaten.getBenachrichtigungBgEmailAuto());
+		stammdaten.setBenachrichtigungTsEmailAuto(jaxStammdaten.getBenachrichtigungTsEmailAuto());
+		stammdaten.setStandardDokSignature(jaxStammdaten.getStandardDokSignature());
+
+		stammdaten.setStandardDokTitle(jaxStammdaten.getStandardDokTitle());
+		stammdaten.setStandardDokUnterschriftTitel(jaxStammdaten.getStandardDokUnterschriftTitel());
+		stammdaten.setStandardDokUnterschriftName(jaxStammdaten.getStandardDokUnterschriftName());
+		stammdaten.setStandardDokUnterschriftTitel2(jaxStammdaten.getStandardDokUnterschriftTitel2());
+		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
 
 		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
 			if (stammdaten.getRechtsmittelbelehrung() == null) {
@@ -4635,6 +4648,15 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
+		jaxStammdaten.setBenachrichtigungBgEmailAuto(stammdaten.getBenachrichtigungBgEmailAuto());
+		jaxStammdaten.setBenachrichtigungTsEmailAuto(stammdaten.getBenachrichtigungTsEmailAuto());
+		jaxStammdaten.setStandardDokSignature(stammdaten.getStandardDokSignature());
+
+		jaxStammdaten.setStandardDokTitle(stammdaten.getStandardDokTitle());
+		jaxStammdaten.setStandardDokUnterschriftTitel(stammdaten.getStandardDokUnterschriftTitel());
+		jaxStammdaten.setStandardDokUnterschriftName(stammdaten.getStandardDokUnterschriftName());
+		jaxStammdaten.setStandardDokUnterschriftTitel2(stammdaten.getStandardDokUnterschriftTitel2());
+		jaxStammdaten.setStandardDokUnterschriftName2(stammdaten.getStandardDokUnterschriftName2());
 
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));

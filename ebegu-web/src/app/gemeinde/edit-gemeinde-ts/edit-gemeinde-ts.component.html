@@ -129,8 +129,20 @@
                     </div>
                 </div>
             </div>
-
-
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <mat-checkbox id="benachrichtigungTsEmailAuto_id"
+                                      name="benachrichtigungTsEmailAuto_id"
+                                      [(ngModel)]="stammdaten.benachrichtigungTsEmailAuto">
+                            {{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN'|translate}}
+                            <li class="fa fa-info-circle"
+                                matTooltip="{{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
+                                matTooltipPosition="right"></li>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
             <dv-gemeinde-ts-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
@@ -170,7 +182,21 @@
                     </div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <mat-checkbox id="benachrichtigungTsEmailAutoDisplay_id"
+                                      name="benachrichtigungTSEmailAutoDisplay_id"
+                                      [(ngModel)]="stammdaten.benachrichtigungTsEmailAuto"
+                                      disabled="true">
+                            {{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN'|translate}}
+                            <li class="fa fa-info-circle"
+                                matTooltip="{{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
+                                matTooltipPosition="right"></li>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
             <dv-gemeinde-ts-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"

@@ -249,6 +249,19 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		generator2.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_mitTarif.pdf"));
 	}
 
+	@Test
+	public void normaleVerfuegungFusszeileTest() throws InvoiceGeneratorException, IOException {
+		stammdaten.setStandardDokSignature(false);
+		stammdaten.setStandardDokTitle("RESSORT SOZIALES");
+		stammdaten.setStandardDokUnterschriftTitel("Departementsvorsteher Soziales");
+		stammdaten.setStandardDokUnterschriftName("Pascal Lerch");
+		stammdaten.setStandardDokUnterschriftTitel2("Höhere Sachbearbeiterin Soziales");
+		stammdaten.setStandardDokUnterschriftName2("Katja Furrer");
+		createNormaleVerfuegung(gesuch_alleinstehend, true, Sprache.DEUTSCH, "Verfügung_alternativ_fusszeile_de.pdf");
+		createNormaleVerfuegung(gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "Verfügung_alternativ_fusszeile_fr.pdf");
+		stammdaten.setStandardDokSignature(true);
+	}
+
 	private Betreuung getFirstBetreuung(@Nonnull Gesuch gesuch) {
 		return gesuch.extractAllBetreuungen().get(0);
 	}
