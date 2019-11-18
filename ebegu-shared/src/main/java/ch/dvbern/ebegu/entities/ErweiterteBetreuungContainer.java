@@ -45,8 +45,8 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	}
 
 	public ErweiterteBetreuungContainer(Betreuung betreuung) {
-		this();
 		this.betreuung = betreuung; //maintain relation for hibernate
+		setId(betreuung.getId());
 		betreuung.setErweiterteBetreuungContainer(this); // maintain relation for java
 	}
 
