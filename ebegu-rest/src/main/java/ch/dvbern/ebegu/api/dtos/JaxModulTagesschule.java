@@ -16,70 +16,53 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import ch.dvbern.ebegu.enums.ModulTagesschuleName;
-import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
+import ch.dvbern.ebegu.entities.ModulTagesschule;
 
 /**
  * DTO fuer Module fuer die Tagesschulen
  */
-@XmlRootElement(name = "modulTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxModulTagesschule extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1893537808325618626L;
 
-	@NotNull
+	@NotNull @Nonnull
 	private DayOfWeek wochentag;
 
-	@NotNull
-	private ModulTagesschuleName modulTagesschuleName;
 
-	@NotNull
-	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime zeitVon = null;
-
-	@NotNull
-	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime zeitBis = null;
-
-
+	@Nonnull
 	public DayOfWeek getWochentag() {
 		return wochentag;
 	}
 
-	public void setWochentag(DayOfWeek wochentag) {
+	public void setWochentag(@Nonnull DayOfWeek wochentag) {
 		this.wochentag = wochentag;
 	}
 
-	public ModulTagesschuleName getModulTagesschuleName() {
-		return modulTagesschuleName;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof JaxModulTagesschule)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		JaxModulTagesschule that = (JaxModulTagesschule) o;
+		return getWochentag() == that.getWochentag();
 	}
 
-	public void setModulTagesschuleName(ModulTagesschuleName modulTagesschuleName) {
-		this.modulTagesschuleName = modulTagesschuleName;
-	}
-
-	public LocalDateTime getZeitVon() {
-		return zeitVon;
-	}
-
-	public void setZeitVon(LocalDateTime zeitVon) {
-		this.zeitVon = zeitVon;
-	}
-
-	public LocalDateTime getZeitBis() {
-		return zeitBis;
-	}
-
-	public void setZeitBis(LocalDateTime zeitBis) {
-		this.zeitBis = zeitBis;
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), getWochentag());
 	}
 }

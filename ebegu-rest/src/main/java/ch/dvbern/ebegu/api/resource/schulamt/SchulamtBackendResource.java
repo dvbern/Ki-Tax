@@ -183,9 +183,10 @@ public class SchulamtBackendResource {
 
 		List<JaxExternalModul> anmeldungen = new ArrayList<>();
 		betreuung.getBelegungTagesschule()
-			.getModuleTagesschule()
-			.forEach(modulTagesschule -> anmeldungen.add(new JaxExternalModul(modulTagesschule
-				.getWochentag(), JaxExternalModulName.valueOf(modulTagesschule.getModulTagesschuleName().name())))
+			.getBelegungTagesschuleModule()
+			.forEach(modulTagesschule -> anmeldungen.add(new JaxExternalModul(modulTagesschule.getModulTagesschule()
+				.getWochentag(),
+				JaxExternalModulName.valueOf(modulTagesschule.getModulTagesschule().getModulTagesschuleGroup().getModulTagesschuleName().name())))
 			);
 		return new JaxExternalAnmeldungTagesschule(
 			betreuung.getBGNummer(),

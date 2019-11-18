@@ -64,7 +64,6 @@ import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -404,7 +403,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch schulamtGesuch = persistNewNurSchulamtGesuchEntity(AntragStatus.IN_BEARBEITUNG_GS);
 
-		Assert.assertEquals(1, schulamtGesuch.getKindContainers().size());
+		Assert.assertEquals(2, schulamtGesuch.getKindContainers().size());
 		Assert.assertTrue(schulamtGesuch.hasOnlyBetreuungenOfSchulamt());
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(schulamtGesuch, AntragStatus.FREIGABEQUITTUNG);
 
@@ -682,7 +681,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testRemoveOnlineMutation() {
 		final Benutzer userGS = loginAsGesuchsteller("gesuchst");
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -779,9 +777,10 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testRemoveGesuchResetAnmeldungen() {
 		Gesuch erstgesuch = createSimpleVerfuegtesGesuch();
-
+		Gesuchsperiode gesuchsperiode = erstgesuch.getGesuchsperiode();
 		//add Anmeldungen
-		AnmeldungTagesschule betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
+		AnmeldungTagesschule betreuung =
+			TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next(), gesuchsperiode);
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 		betreuungService.saveAnmeldungTagesschule(betreuung, false);
@@ -1054,18 +1053,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistTestfall11_SchulamtOnly(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
 		wizardStepService.createWizardStepList(gesuch);
-		gesuch.getKindContainers().stream()
-			.flatMap(kindContainer -> {
-				assert kindContainer.getBetreuungen() != null;
-				return kindContainer.getBetreuungen().stream();
-			})
-			.forEach((betreuung)
-				-> {
-				betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
-				persistence.merge(betreuung.getInstitutionStammdaten());
-			});
 		return persistence.merge(gesuch);
 	}
 

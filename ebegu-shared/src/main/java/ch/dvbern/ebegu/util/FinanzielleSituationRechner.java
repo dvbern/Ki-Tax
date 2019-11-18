@@ -280,10 +280,21 @@ public class FinanzielleSituationRechner {
 
 		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
 		if (result) {
-			BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
-			return differenz.compareTo(minimumEKV.negate()) < 0;
+			BigDecimal differenzGerundet = getCalculatedProzentualeDifferenzRounded(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+			// -19.999 => -19 (nicht akzeptiert)
+			// -20.000 => -20 (akzeptiert)
+			// -20.001 => -20 (akzeptiert)
+			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0;
 		}
 		return false;
+	}
+
+	@Nonnull
+	public static BigDecimal getCalculatedProzentualeDifferenzRounded(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
+		BigDecimal resultExact = FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
+		double doubleValue = resultExact.doubleValue();
+		double resultFloor = Math.ceil(doubleValue);
+		return MathUtil.GANZZAHL.from(resultFloor);
 	}
 
 	@Nonnull

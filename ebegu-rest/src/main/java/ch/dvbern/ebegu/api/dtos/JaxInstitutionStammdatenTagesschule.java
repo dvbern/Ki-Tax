@@ -15,8 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "institutionStammdatenTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDTO {
+public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 6958211446966611467L;
 
@@ -37,7 +37,8 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 	private JaxGemeinde gemeinde;
 
 	@NotNull @Nonnull
-	private List<JaxModulTagesschule> moduleTagesschule = new ArrayList<>();
+	private Set<JaxEinstellungenTagesschule> einstellungenTagesschule = new HashSet<>();
+
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
@@ -48,12 +49,11 @@ public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDT
 		this.gemeinde = gemeinde;
 	}
 
-	@Nonnull
-	public List<JaxModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	public Set<JaxEinstellungenTagesschule> getEinstellungenTagesschule() {
+		return einstellungenTagesschule;
 	}
 
-	public void setModuleTagesschule(@NotNull List<JaxModulTagesschule> moduleTagesschule) {
-		this.moduleTagesschule = moduleTagesschule;
+	public void setEinstellungenTagesschule(Set<JaxEinstellungenTagesschule> einstellungenTagesschule) {
+		this.einstellungenTagesschule = einstellungenTagesschule;
 	}
 }

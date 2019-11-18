@@ -22,11 +22,11 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingInfoKitagComponent} from './onboarding-info-kitag.component';
+import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution.component';
 
-describe('OnboardingInfoKitagComponent', () => {
-    let component: OnboardingInfoKitagComponent;
-    let fixture: ComponentFixture<OnboardingInfoKitagComponent>;
+describe('OnboardingInfoInstitutionComponent', () => {
+    let component: OnboardingInfoInstitutionComponent;
+    let fixture: ComponentFixture<OnboardingInfoInstitutionComponent>;
 
     const i18nServiceSpy =
         jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
@@ -38,7 +38,7 @@ describe('OnboardingInfoKitagComponent', () => {
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingInfoKitagComponent],
+            declarations: [OnboardingInfoInstitutionComponent],
             providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
@@ -47,7 +47,7 @@ describe('OnboardingInfoKitagComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingInfoKitagComponent);
+        fixture = TestBed.createComponent(OnboardingInfoInstitutionComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

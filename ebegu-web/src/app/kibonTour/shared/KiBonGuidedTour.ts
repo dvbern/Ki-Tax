@@ -239,13 +239,7 @@ export class KiBonTourStep implements TourStep {
 
         // tslint:disable-next-line:early-exit
         if (state !== undefined && state !== null) {
-            this.closeAction = () => {
-                console.log('closeaction: ' + new Date().toLocaleString());
-            };
             this.action = () => {
-                console.log('action: ' + new Date().toLocaleString());
-                console.log(this.selector);
-                console.log(navigateToOpen);
                 if (navigateToOpen) {
                     state.go(navigateToOpen);
                 }

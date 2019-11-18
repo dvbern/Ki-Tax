@@ -21,10 +21,10 @@
         <a href=""
            uiSref="onboarding.anmeldung" translate>ONBOARDING_ZURUCK</a>
         <br/>
-        <h1 translate>ONBOARDING_INFO_KITAG</h1>
-        <p translate>ONBOARDING_INFO_KITAG_INTRO</p>
+        <h1 translate>ONBOARDING_INFO_INSTITUTION</h1>
+        <p translate>ONBOARDING_INFO_INSTITUTION_INTRO</p>
         <p class="onboarding-info-action">
-            <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_KITAG_LINK' | translate}}">
+            <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_INSTITUTION_LINK' | translate}}">
                 <button class="dv-btn onboarding-big-red-button">
                     <span translate>ONBOARDING_ZULASSUNG_KANTON</span>
                 </button>
@@ -43,12 +43,12 @@
                 <div class="onboarding-nb-gemeinde-input-container">
                     <div class="onboarding-nb-gemeinde-search" *ngIf="testZugangBeantragen">
                         <div class="form-group">
-                            <p translate>ONBOARDING_MEIN_GEMEINDE</p>
-                            <input id="kitag_name_ID" type="text" name="kitag_name"
-                                   [(ngModel)]="kitagName"
+                            <p translate>ONBOARDING_NAME_INSTITUION</p>
+                            <input id="institution_name_ID" type="text" name="institution_name"
+                                   [(ngModel)]="institutionName"
                                    [maxlength]="255" class="form-control input-freetext" required>
-                            <dv-error-messages [errorObject]="form.controls.kitag_name?.errors"
-                                               inputid="kitag_name_ID">
+                            <dv-error-messages [errorObject]="form.controls.institution_name?.errors"
+                                               inputid="institution_name_ID">
                             </dv-error-messages>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
         </form>
         <br/>
         <a href=""
-           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEM_LINK</a>
+           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
     </div>
 </div>
 

@@ -24,25 +24,25 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
-import {OnboardingInfoGemComponent} from './onboarding-info-gem.component';
+import {OnboardingInfoGemeindeComponent} from './onboarding-info-gemeinde.component';
 
 describe('OnboardingInfoGemComponent', () => {
-    let component: OnboardingInfoGemComponent;
-    let fixture: ComponentFixture<OnboardingInfoGemComponent>;
+    let component: OnboardingInfoGemeindeComponent;
+    let fixture: ComponentFixture<OnboardingInfoGemeindeComponent>;
 
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
     const i18nServiceSpy =
         jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
+        gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
                 UIRouterModule.forRoot({useHash: true}),
             ],
-            declarations: [OnboardingInfoGemComponent],
+            declarations: [OnboardingInfoGemeindeComponent],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
@@ -53,7 +53,7 @@ describe('OnboardingInfoGemComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OnboardingInfoGemComponent);
+        fixture = TestBed.createComponent(OnboardingInfoGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -62,7 +62,7 @@ describe('OnboardingInfoGemComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load all active Gemeinden', () => {
-        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
+    it('should load all BFS Gemeinden', () => {
+         expect(gemeindeRSSpy.getAllBfsGemeinden).toHaveBeenCalled();
     });
 });

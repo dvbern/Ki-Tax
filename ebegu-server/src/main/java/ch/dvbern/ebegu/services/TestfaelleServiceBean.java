@@ -634,14 +634,13 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			verfuegungService.calculateVerfuegung(gesuch);
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())
-				.forEach(betreuung -> verfuegungService.setZahlungsstatus(betreuung.getVerfuegung(), betreuung.getId(), ignorierenInZahlungslauf)
-			);
-			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-				.filter(betreuung -> !betreuung.isAngebotSchulamt())
 				.forEach(betreuung -> {
 					Objects.requireNonNull(betreuung.getVerfuegung());
-					betreuung.getVerfuegung().setManuelleBemerkungen(betreuung.getVerfuegung().getGeneratedBemerkungen());
-					verfuegungService.persistVerfuegung(betreuung.getVerfuegung(), betreuung.getId(), Betreuungsstatus.VERFUEGT);
+					verfuegungService.verfuegen(
+						gesuch.getId(),
+						betreuung.getId(),
+						betreuung.getVerfuegung().getGeneratedBemerkungen(),
+						ignorierenInZahlungslauf);
 				}
 			);
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())

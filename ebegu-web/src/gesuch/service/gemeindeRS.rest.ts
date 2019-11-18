@@ -26,6 +26,7 @@ import TSBenutzer from '../../models/TSBenutzer';
 import TSBfsGemeinde from '../../models/TSBfsGemeinde';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
+import TSGemeindeRegistrierung from '../../models/TSGemeindeRegistrierung';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import GlobalCacheService from './globalCacheService';
@@ -175,7 +176,8 @@ export default class GemeindeRS implements IEntityRS {
         let result: IPromise<any>;
         result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
-            headers: {'Content-Type': undefined}})
+            headers: {'Content-Type': undefined}
+        })
             .then((response: any) => {
                 this.$log.debug('Upload Gemeinde Logo ', response.data);
                 return response.data;
@@ -191,9 +193,30 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
     }
 
+    public getAllBfsGemeinden(): IPromise<TSBfsGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/allBfs`)
+            .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
+    }
+
     public hasGemeindenInStatusAngemeldet(): IPromise<boolean> {
         return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
             return response.data;
         });
+    }
+
+    public getGemeindenRegistrierung(gemeindeBGId: string, gemeindenTSIds: string[]
+    ): IPromise<TSGemeindeRegistrierung[]> {
+        const gemeindeBGIdOrNull = gemeindeBGId.length !== 0
+            ? encodeURIComponent(gemeindeBGId)
+            : null;
+        let gemeindenTSIdOrNull = '';
+        gemeindenTSIds.forEach(
+            id => (gemeindenTSIdOrNull.length > 0
+                ? gemeindenTSIdOrNull += ',' + encodeURIComponent(id)
+                : gemeindenTSIdOrNull += encodeURIComponent(id)));
+        return this.$http.get(
+            `${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${gemeindenTSIdOrNull.length !== 0 ?
+            encodeURIComponent(gemeindenTSIdOrNull) : null}`)
+            .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
 }

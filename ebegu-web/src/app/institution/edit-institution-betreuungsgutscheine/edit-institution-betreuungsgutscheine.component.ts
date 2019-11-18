@@ -32,6 +32,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
+    @Input() public editMode: boolean;
 
     public abweichendeZahlungsAdresse: boolean;
 
@@ -66,5 +67,22 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
             return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
         }
         return '';
+    }
+
+    public getAlterskategorien(): string {
+        const alterskategorien: string[] = [];
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieBaby) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
+        }
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieVorschule) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
+        }
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieKindergarten) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
+        }
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.alterskategorieSchule) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
+        }
+        return alterskategorien.join(', ');
     }
 }

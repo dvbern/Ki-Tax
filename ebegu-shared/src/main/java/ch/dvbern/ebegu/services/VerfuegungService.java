@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
 
 /**
  * Service zum berechnen und speichern der Verfuegung
@@ -38,11 +38,10 @@ public interface VerfuegungService {
 	 * Die Betreuung erhaelt den Status VERFUEGT
 	 *
 	 * @param verfuegung Die Verfuegung als DTO
-	 * @param betreuungId Id der Betreuung auf die die verfuegung gespeichet werden soll
 	 * @param ignorieren true wenn die ausbezahlten Zeitabschnitte nicht neu berechnet werden muessen
 	 */
 	@Nonnull
-	Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren);
+	Verfuegung verfuegen(@Nonnull String gesuchId, @Nonnull String betreuungId, @Nullable String manuelleBemerkungen, boolean ignorieren);
 
 	/**
 	 * Generiert das Verfuegungsdokument.
@@ -63,16 +62,9 @@ public interface VerfuegungService {
 	 * Die Betreuung erhaelt den Status NICHT_EINGETRETEN
 	 *
 	 * @param verfuegung Die Verfuegung als DTO
-	 * @param betreuungId Id der Betreuung auf die die verfuegung gespeichet werden soll
 	 */
 	@Nonnull
-	Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId);
-
-	/**
-	 * Speichert die Verfuegung und setzt die Betreuung in den uebergebenen Status
-	 */
-	@Nonnull
-	Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, @Nonnull Betreuungsstatus betreuungsstatus);
+	Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId);
 
 	/**
 	 * @param id PK (id) der Verfuegung

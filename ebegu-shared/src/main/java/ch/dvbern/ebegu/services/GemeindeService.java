@@ -97,4 +97,13 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Collection<BfsGemeinde> getUnregisteredBfsGemeinden(@Nonnull Mandant mandant);
+
+	/**
+	 * Gibt den zur BFS-Nummer gehoerenden Verbund zurueck.
+	 */
+	@Nonnull
+	Optional<Gemeinde> findRegistredGemeindeVerbundIfExist(@Nonnull Long gemeindeBfsNummer);
+
+	@Nonnull
+	Collection<BfsGemeinde> getAllBfsGemeinden();
 }

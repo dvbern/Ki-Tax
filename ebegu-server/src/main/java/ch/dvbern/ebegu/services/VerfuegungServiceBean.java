@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -49,9 +50,11 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
@@ -93,7 +96,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Stateless
 @Local(VerfuegungService.class)
 @RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT,
+	ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 public class VerfuegungServiceBean extends AbstractBaseService implements VerfuegungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungServiceBean.class);
@@ -103,6 +107,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private GesuchService gesuchService;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -137,7 +144,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
+	public Verfuegung verfuegen(@Nonnull String gesuchId, @Nonnull String betreuungId, @Nullable String manuelleBemerkungen, boolean ignorieren) {
+
+		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
+		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
+		verfuegung.setManuelleBemerkungen(manuelleBemerkungen);
+
 		setZahlungsstatus(verfuegung, betreuungId, ignorieren);
 		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.VERFUEGT);
 		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
@@ -269,7 +281,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId) {
+	public Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId) {
+
+		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
+
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
@@ -291,10 +306,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return persistedVerfuegung;
 	}
 
-	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, @Nonnull Betreuungsstatus betreuungsstatus) {
+	private Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, @Nonnull Betreuungsstatus betreuungsstatus) {
 		Objects.requireNonNull(verfuegung);
 		Objects.requireNonNull(betreuungId);
 
@@ -565,5 +578,34 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			}
 		}
 		return lastVerfuegungsZeitabschnitte;
+	}
+
+	@Nonnull
+	private Verfuegung calculateAndExtractVerfuegung(
+		@Nonnull String gesuchId,
+		@Nonnull String betreuungId
+	) {
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchId));
+		// Wir muessen hier die Berechnung der Verfuegung nochmals neu vornehmen
+		Gesuch gesuchWithCalcVerfuegung = calculateVerfuegung(gesuch);
+		// Die Betreuung ermitteln, welche wir verfuegen wollen
+		Betreuung betreuungZuVerfuegen = gesuchWithCalcVerfuegung.extractAllBetreuungen()
+			.stream()
+			.filter(betreuung -> betreuungId.equals(betreuung.getId()))
+			.findFirst()
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				betreuungId));
+		Verfuegung verfuegungToPersist = betreuungZuVerfuegen.getVerfuegung();
+		if (verfuegungToPersist == null) {
+			throw new EbeguEntityNotFoundException("saveVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"Verfuegung fuer Betreuung not found: " + betreuungZuVerfuegen.getId());
+		}
+		return verfuegungToPersist;
 	}
 }

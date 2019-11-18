@@ -29,10 +29,8 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.resource.DownloadResource;
 import ch.dvbern.ebegu.api.resource.VerfuegungResource;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -86,8 +84,7 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		Gemeinde bern = TestDataUtil.getGemeindeParis(persistence);
-		TestDataUtil.createGemeindeStammdaten(bern, persistence);
+		TestDataUtil.getGemeindeParis(persistence);
 	}
 
 	@Test
@@ -160,13 +157,10 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
+		JaxId gesuchId = new JaxId(gesuch.getId());
 		JaxId betreuungID = new JaxId(gesuch.extractAllBetreuungen().get(0).getId());
 
-		final JaxVerfuegung verfuegungJax = new JaxVerfuegung();
-		verfuegungJax.setGeneratedBemerkungen("genBemerkung");
-		verfuegungJax.setManuelleBemerkungen("manBemerkung");
-
-		verfuegungResource.schliessenNichtEintreten(betreuungID, verfuegungJax);
+		verfuegungResource.schliessenNichtEintreten(gesuchId, betreuungID);
 
 		HttpServletRequest request = mockRequest();
 		UriInfo uri = new ResteasyUriInfo("uri", "query", "path");

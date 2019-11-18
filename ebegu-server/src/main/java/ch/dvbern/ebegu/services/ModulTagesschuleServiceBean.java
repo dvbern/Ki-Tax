@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,9 +25,13 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -42,6 +47,9 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
 	@Override
@@ -70,6 +78,18 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 		persistence.remove(modulToRemove);
 	}
 
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void copyModuleTagesschuleToNewGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
+		@Nonnull Gesuchsperiode lastGesuchsperiode
+	) {
+		Collection<EinstellungenTagesschule> lastEinstellungenTagesschule =
+			criteriaQueryHelper.getEntitiesByAttribute(
+				EinstellungenTagesschule.class, lastGesuchsperiode, EinstellungenTagesschule_.gesuchsperiode);
+		lastEinstellungenTagesschule.forEach(lastEinstellung -> {
+			EinstellungenTagesschule newEinstellung = lastEinstellung.copyForGesuchsperiode(gesuchsperiodeToCreate);
+			persistence.merge(newEinstellung);
+		});
+	}
 }
-
-

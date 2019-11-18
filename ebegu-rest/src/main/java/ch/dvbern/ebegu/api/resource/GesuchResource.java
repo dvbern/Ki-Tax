@@ -291,7 +291,7 @@ public class GesuchResource {
 			GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 
-	@ApiOperation("Aktualisiert die Bemerkungen der Steuerverwaltung fuer ein Gesuch.")
+	@ApiOperation("Aktualisiert die Bemerkungen der Steuerbüro der Gemeinde fuer ein Gesuch.")
 	@Nullable
 	@PUT
 	@Path("/bemerkungPruefungSTV/{gesuchId}")

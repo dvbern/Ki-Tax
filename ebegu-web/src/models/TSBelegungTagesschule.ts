@@ -14,34 +14,17 @@
  */
 
 import * as moment from 'moment';
+import {TSAbholungTagesschule} from './enums/TSAbholungTagesschule';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSModulTagesschule from './TSModulTagesschule';
+import TSBelegungTagesschuleModul from './TSBelegungTagesschuleModul';
 
 export default class TSBelegungTagesschule extends TSAbstractMutableEntity {
 
-    private _moduleTagesschule: TSModulTagesschule[] = [];
-    private _eintrittsdatum: moment.Moment;
-
-    public constructor(moduleTagesschule?: TSModulTagesschule[], eintrittsdatum?: moment.Moment) {
-        super();
-        this._moduleTagesschule = moduleTagesschule ? moduleTagesschule : [];
-        this._eintrittsdatum = eintrittsdatum;
-    }
-
-    public get moduleTagesschule(): TSModulTagesschule[] {
-        return this._moduleTagesschule;
-    }
-
-    public set moduleTagesschule(value: TSModulTagesschule[]) {
-        this._moduleTagesschule = value;
-    }
-
-    public get eintrittsdatum(): moment.Moment {
-        return this._eintrittsdatum;
-    }
-
-    public set eintrittsdatum(value: moment.Moment) {
-        this._eintrittsdatum = value;
-    }
+    public belegungTagesschuleModule: Array<TSBelegungTagesschuleModul> = [];
+    public eintrittsdatum: moment.Moment;
+    public planKlasse: string;
+    public abholungTagesschule: TSAbholungTagesschule;
+    public bemerkung: string;
+    public abweichungZweitesSemester: boolean;
 
 }

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -54,6 +55,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
@@ -64,6 +66,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -71,6 +74,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.types.DateRange;
@@ -103,6 +107,9 @@ public class InstitutionResource {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -177,6 +184,19 @@ public class InstitutionResource {
 			gemeinde = getGemeindeOrThrowException(gemeindeId);
 			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
 			stammdatenTS.setGemeinde(gemeinde);
+			Set<EinstellungenTagesschule> einstellungenTagesschuleSet =
+				gesuchsperiodeService.getAllActiveGesuchsperioden().stream().map(
+					gesuchsperiode -> {
+						EinstellungenTagesschule einstellungenTagesschule = new EinstellungenTagesschule();
+						einstellungenTagesschule.setInstitutionStammdatenTagesschule(stammdatenTS);
+						einstellungenTagesschule.setGesuchsperiode(gesuchsperiode);
+						einstellungenTagesschule.setModulTagesschuleTyp(ModulTagesschuleTyp.DYNAMISCH);
+						return einstellungenTagesschule;
+					}
+				).collect(Collectors.toSet());
+
+			stammdatenTS.setEinstellungenTagesschule(einstellungenTagesschuleSet);
+
 			institutionStammdaten.setInstitutionStammdatenTagesschule(stammdatenTS);
 			break;
 
@@ -303,8 +323,8 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. Retruns " +
-		"all for admins", responseContainer = "List", response = JaxInstitution.class)
+	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
 	@Path("/editable/currentuser")
@@ -316,15 +336,15 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Find and return a list of all readable Institutionen of the currently logged in Benutzer. Retruns " +
-		"all for admins", responseContainer = "List", response = JaxInstitution.class)
+	@ApiOperation(value = "Find and return a list of all readable Institutionen of the currently logged in Benutzer. "
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull
 	@GET
 	@Path("/readable/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxInstitution> getInstitutionenReadableForCurrentBenutzer() {
-		return institutionService.getInstitutionenReadableForCurrentBenutzer(true).stream()
+		return institutionService.getInstitutionenReadableForCurrentBenutzer(false).stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}

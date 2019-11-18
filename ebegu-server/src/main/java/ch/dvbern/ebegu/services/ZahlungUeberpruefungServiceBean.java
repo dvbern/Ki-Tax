@@ -104,15 +104,16 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private Persistence persistence;
 
 
-	private Map<String, List<Zahlungsposition>> zahlungenIstMap = null;
-	private final List<String> potentielleFehlerList = new ArrayList<>();
-	private final List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
+	private Map<String, List<Zahlungsposition>> zahlungenIstMap = new HashMap<>();
+	private List<String> potentielleFehlerList = new ArrayList<>();
+	private List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
 
 
 	@Asynchronous
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(value = 360, unit = TimeUnit.MINUTES)
 	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull LocalDateTime datumLetzteZahlung) {
+		resetAllData();
 		LOGGER.info("Pruefe Zahlungen fuer Gemeinde {}", gemeinde.getName());
 		zahlungenIstMap = pruefeZahlungenIst(gemeinde);
 		// Alle Gesuchsperioden im Status AKTIV und INAKTIV muessen geprueft werden, da auch rueckwirkend Korrekturen gemacht werden koennen.
@@ -122,6 +123,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		LOGGER.info("Pruefung der Zahlungen beendet: {}", potentielleFehlerList.isEmpty() ? "OK" : "ERROR");
 		sendeMail(gemeinde);
+		resetAllData();
 	}
 
 	private void sendeMail(@Nonnull Gemeinde gemeinde) {
@@ -135,8 +137,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			final String serverName = ebeguConfiguration.getHostname();
 			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ')';
 			if (potentielleFehlerList.isEmpty()) {
-					mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
-						"Keine Fehler gefunden", administratorMail);
+				mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
+					"Keine Fehler gefunden", administratorMail);
 			} else {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Zusammenfassung: \n");
@@ -313,5 +315,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			zahlungenIst.put(key, new ArrayList<>());
 		}
 		zahlungenIst.get(key).add(zahlungsposition);
+	}
+
+	private void resetAllData() {
+		this.zahlungenIstMap = new HashMap<>();
+		this.potentielleFehlerList = new ArrayList<>();
+		this.potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	}
 }

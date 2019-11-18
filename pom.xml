@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2019.14.0-SNAPSHOT</version>
+    <version>2019.15.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -171,6 +171,12 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>${version.org.hibernate.validator}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.microprofile.health</groupId>
+                <artifactId>microprofile-health-api</artifactId>
+                <version>1.0</version>
+                <!--<scope>provided</scope>-->
             </dependency>
             <dependency>
                 <groupId>org.glassfish</groupId>
@@ -475,6 +481,11 @@
                 <groupId>ch.dvbern.oss.invoicegenerator</groupId>
                 <artifactId>invoice-generator</artifactId>
                 <version>5.2.0</version>
+            </dependency>
+            <dependency>
+              <groupId>ch.dvbern.oss.healthcheck.gc</groupId>
+              <artifactId>gc-health-check</artifactId>
+              <version>1.0.0</version>
             </dependency>
             <!-- endregion -->
 

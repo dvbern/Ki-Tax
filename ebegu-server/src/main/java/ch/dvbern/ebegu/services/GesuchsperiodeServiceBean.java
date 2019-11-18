@@ -97,6 +97,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	private EinstellungService einstellungService;
 
 	@Inject
+	private ModulTagesschuleService modulTagesschuleService;
+
+	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
@@ -124,57 +127,66 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		}
 		// Überprüfen, ob der Statusübergang zulässig ist
 		if (gesuchsperiode.getStatus() != statusBisher) {
-			// Alle Statusuebergaenge werden geloggt
-			logStatusChange(gesuchsperiode, statusBisher);
-			// Superadmin darf alles
-			if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
-				if (!isStatusUebergangValid(statusBisher, gesuchsperiode.getStatus())) {
-					throw new EbeguRuntimeException(
-						"saveGesuchsperiode",
-						ErrorCodeEnum.ERROR_GESUCHSPERIODE_INVALID_STATUSUEBERGANG,
-						statusBisher,
-						gesuchsperiode.getStatus());
-				}
-			}
-			// Falls es ein Statuswechsel war, und der neue Status ist AKTIV -> Mail an alle Gesuchsteller schicken
-			// Nur, wenn die Gesuchsperiode noch nie auf aktiv geschaltet war.
-			if (GesuchsperiodeStatus.AKTIV == gesuchsperiode.getStatus()
-				&& gesuchsperiode.getDatumAktiviert() == null) {
-				Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
-					getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1));
-				if (lastGesuchsperiodeOptional.isPresent()) {
-					gesuchService.sendMailsToAllGesuchstellerOfLastGesuchsperiode(
-						lastGesuchsperiodeOptional.get(),
-						gesuchsperiode);
-					gesuchsperiode.setDatumAktiviert(LocalDate.now());
-				}
-			}
-			if (GesuchsperiodeStatus.GESCHLOSSEN == gesuchsperiode.getStatus()) {
-				// Prüfen, dass ALLE Gesuche dieser Periode im Status "Verfügt" oder "Schulamt" sind. Sind noch
-				// Gesuce in Bearbeitung, oder in Beschwerde etc. darf nicht geschlossen werden!
-				if (!gesuchService.canGesuchsperiodeBeClosed(gesuchsperiode)) {
-					throw new EbeguRuntimeException(
-						"saveGesuchsperiode",
-						ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_CLOSED);
-				}
-			}
+			handleStatusUebergang(gesuchsperiode, statusBisher);
 		}
 		if (gesuchsperiode.isNew()) {
 			gesuchsperiode = saveGesuchsperiode(gesuchsperiode);
 			LocalDate stichtagInVorperiode = gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1);
-			Optional<Gesuchsperiode> lastGesuchsperiode = getGesuchsperiodeAm(stichtagInVorperiode);
-			if (lastGesuchsperiode.isPresent()) {
+			Optional<Gesuchsperiode> lastGesuchsperiodeOptional = getGesuchsperiodeAm(stichtagInVorperiode);
+			if (lastGesuchsperiodeOptional.isPresent()) {
+				Gesuchsperiode lastGesuchsperiode = lastGesuchsperiodeOptional.get();
 				// we only copy the einstellung when there is a lastGesuchsperiode. In some cases, among others in
 				// some tests we won't have a lastGesuchsperiode so we cannot copy the Einstellungen. In production
 				// if there is no lastGesuchsperiode there is also nothing to copy
-				einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode.get());
+				einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+
+				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
+				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
 
 				//copy erlaeuterung verfuegung from previos Gesuchperiode
-				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.get().getVerfuegungErlaeuterungenDe());
-				gesuchsperiode.setVerfuegungErlaeuterungenFr(lastGesuchsperiode.get().getVerfuegungErlaeuterungenFr());
+				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.getVerfuegungErlaeuterungenDe());
+				gesuchsperiode.setVerfuegungErlaeuterungenFr(lastGesuchsperiode.getVerfuegungErlaeuterungenFr());
 			}
 		}
 		return saveGesuchsperiode(gesuchsperiode);
+	}
+
+	private void handleStatusUebergang(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull GesuchsperiodeStatus statusBisher
+	) {
+		// Alle Statusuebergaenge werden geloggt
+		logStatusChange(gesuchsperiode, statusBisher);
+		// Superadmin darf alles
+		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)
+				&& !isStatusUebergangValid(statusBisher, gesuchsperiode.getStatus())) {
+			throw new EbeguRuntimeException(
+				"saveGesuchsperiode",
+				ErrorCodeEnum.ERROR_GESUCHSPERIODE_INVALID_STATUSUEBERGANG,
+				statusBisher,
+				gesuchsperiode.getStatus());
+		}
+		// Falls es ein Statuswechsel war, und der neue Status ist AKTIV -> Mail an alle Gesuchsteller schicken
+		// Nur, wenn die Gesuchsperiode noch nie auf aktiv geschaltet war.
+		if (GesuchsperiodeStatus.AKTIV == gesuchsperiode.getStatus()
+			&& gesuchsperiode.getDatumAktiviert() == null) {
+			Optional<Gesuchsperiode> lastGesuchsperiodeOptional =
+				getGesuchsperiodeAm(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1));
+			if (lastGesuchsperiodeOptional.isPresent()) {
+				gesuchService.sendMailsToAllGesuchstellerOfLastGesuchsperiode(
+					lastGesuchsperiodeOptional.get(),
+					gesuchsperiode);
+				gesuchsperiode.setDatumAktiviert(LocalDate.now());
+			}
+		}
+		// Prüfen, dass ALLE Gesuche dieser Periode im Status "Verfügt" oder "Schulamt" sind. Sind noch
+		// Gesuce in Bearbeitung, oder in Beschwerde etc. darf nicht geschlossen werden!
+		if (GesuchsperiodeStatus.GESCHLOSSEN == gesuchsperiode.getStatus()
+				&& !gesuchService.canGesuchsperiodeBeClosed(gesuchsperiode)) {
+			throw new EbeguRuntimeException(
+				"saveGesuchsperiode",
+				ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_CLOSED);
+		}
 	}
 
 	@Nonnull

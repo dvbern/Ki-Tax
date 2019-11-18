@@ -15,10 +15,10 @@
 
 import EbeguUtil from '../utils/EbeguUtil';
 import {TSFerienname} from './enums/TSFerienname';
-import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSAbstractEntity from './TSAbstractEntity';
 import TSGemeinde from './TSGemeinde';
 
-export default class TSInstitutionStammdatenFerieninsel extends TSAbstractDateRangedEntity {
+export default class TSInstitutionStammdatenFerieninsel extends TSAbstractEntity {
 
     private _gemeinde: TSGemeinde;
     private _ausweichstandortSommerferien: string;

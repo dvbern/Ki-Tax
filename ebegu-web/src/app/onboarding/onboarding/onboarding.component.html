@@ -21,28 +21,30 @@
         <p translate>ONBOARDING_KIBON_BGTS_BEANTRAGEN</p>
     </div>
 
-    <p class="onboarding-login" *ngIf="showLogin">
-        <button uiSref="onboarding.neubenutzer" class="dv-btn onboarding-big-red-button" autofocus>
-            <span translate>ONBOARDING_NEU_BENUTZER</span>
-        </button>
-        <br/>
-        <br/>
-        <button uiSref="authentication.login" [uiOptions]="{location: false}"
-                class="dv-btn onboarding-red-border-button">
-            <span translate>ONBOARDING_ANMELDEN</span>
-        </button>
+    <div class="onboarding-login" *ngIf="showLogin">
+        <div class="onboarding-login-buttons">
+            <button uiSref="onboarding.neubenutzer" class="dv-btn onboarding-big-red-button onboarding-login-button-width" autofocus>
+                <span translate>ONBOARDING_NEU_BENUTZER</span>
+            </button>
+            <br/>
+            <br/>
+            <button uiSref="authentication.login" [uiOptions]="{location: false}"
+                    class="dv-btn onboarding-red-border-button onboarding-login-button-width">
+                <span translate>ONBOARDING_ANMELDEN</span>
+            </button>
+        </div>
         <br/>
         <a href=""
-           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEM_LINK</a>
+           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
         <br/>
         <a href=""
-           uiSref="onboarding.infokitag" translate>ONBOARDING_INFO_KITAG_LINK</a>
+           uiSref="onboarding.infoinstitution" translate>ONBOARDING_INFO_INSTITUTION_LINK</a>
         <ng-container *ngIf="isDummyMode$ | async">
             <br/>
             <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
         </ng-container>
-    </p>
+    </div>
 </div>
 
 

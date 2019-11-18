@@ -20,7 +20,8 @@ export enum TSModulTagesschuleName {
     NACHMITTAGS_1 = 'NACHMITTAGS_1',
     NACHMITTAGS_1_HALB = 'NACHMITTAGS_1_HALB',
     NACHMITTAGS_2 = 'NACHMITTAGS_2',
-    NACHMITTAGS_2_HALB = 'NACHMITTAGS_2_HALB'
+    NACHMITTAGS_2_HALB = 'NACHMITTAGS_2_HALB',
+    DYNAMISCH = 'DYNAMISCH',
 }
 
 export function getTSModulTagesschuleNameValues(): Array<TSModulTagesschuleName> {
@@ -32,5 +33,6 @@ export function getTSModulTagesschuleNameValues(): Array<TSModulTagesschuleName>
         TSModulTagesschuleName.NACHMITTAGS_1_HALB,
         TSModulTagesschuleName.NACHMITTAGS_2,
         TSModulTagesschuleName.NACHMITTAGS_2_HALB,
+        TSModulTagesschuleName.DYNAMISCH,
     ];
 }

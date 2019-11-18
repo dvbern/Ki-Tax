@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {IbanModule} from 'ngx-iban';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MaterialModule} from '../shared/material.module';
@@ -25,13 +25,11 @@ import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-b
 import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
+import {ModulTagesschuleDialogComponent} from './edit-modul-tagesschule/modul-tagesschule-dialog.component';
 import {ExternalClientAssignmentComponent} from './external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './external-client-multiselect/external-client-multiselect.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
 import {InstitutionListComponent} from './list-institution/institution-list.component';
-import {ViewInstitutionBetreuungsgutscheineComponent} from './view-institution-betreuungsgutscheine/view-institution-betreuungsgutscheine.component';
-import {ViewInstitutionFerieninselComponent} from './view-institution-ferieninsel/view-institution-ferieninsel.component';
-import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschule/view-institution-tagesschule.component';
 
 @NgModule({
     imports: [
@@ -41,29 +39,29 @@ import {ViewInstitutionTagesschuleComponent} from './view-institution-tagesschul
         IbanModule,
         NgxMaterialTimepickerModule,
     ],
+    // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
+    // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
+    // See https://stackoverflow.com/a/51214263
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
         EditInstitutionBetreuungsgutscheineComponent,
-        ViewInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
-        ViewInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
-        ViewInstitutionFerieninselComponent,
         ExternalClientMultiselectComponent,
         ExternalClientAssignmentComponent,
+        ModulTagesschuleDialogComponent,
     ],
     entryComponents: [
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
         EditInstitutionBetreuungsgutscheineComponent,
-        ViewInstitutionBetreuungsgutscheineComponent,
         EditInstitutionTagesschuleComponent,
-        ViewInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
-        ViewInstitutionFerieninselComponent,
+        ModulTagesschuleDialogComponent,
     ],
     providers: [],
 })

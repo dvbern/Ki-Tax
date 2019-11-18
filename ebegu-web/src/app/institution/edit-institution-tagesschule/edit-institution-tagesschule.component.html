@@ -15,10 +15,12 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<fieldset>
+
 <!-- Gemeinde -->
 <div class="row">
     <div class="col-sm-6">
-        <div class="form-group">
+        <div class="form-group" *ngIf="editMode">
             <h3 translate for="gemeinde">GEMEINDE</h3>
             <mat-select [(ngModel)]="stammdaten.institutionStammdatenTagesschule.gemeinde"
                         [compareWith]="compareGemeinde"
@@ -32,6 +34,10 @@
             </mat-select>
             <dv-error-messages [errorObject]="gemeinde?.errors" inputId="gemeinde"></dv-error-messages>
         </div>
+        <div class="form-group" *ngIf="!editMode">
+            <h3 translate for="gemeinde">GEMEINDE</h3>
+            <p>{{stammdaten.institutionStammdatenTagesschule.gemeinde.name}}</p>
+        </div>
     </div>
 </div>
 
@@ -41,44 +47,104 @@
         <h1 translate>INSTITUTION_ST_MODULE</h1>
     </div>
 </div>
-<!-- Titelzeile -->
-<div class="row">
-    <div class="col-md-2">
-        <span translate>INSTITUTION_ST_MODULNAME</span>
-    </div>
-    <div class="col-md-3">
-        <span translate>VON</span>
-    </div>
-    <div class="col-md-3">
-        <span translate>BIS</span>
-    </div>
-</div>
-<div *ngFor="let modul of getModulTagesschuleNamen()">
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label translate>{{modul}}</label>
+
+<dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true" id="moduleListProEinstellungen">
+    <dv-accordion-tab
+        *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule; trackBy:einstellungGP?.id; let i = index"
+        [tabid]="i">
+        <tab-title>
+            <div class="message-header">
+                <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerVon"
-                       [format]="24" name="pickerVon{{modul}}" readonly
-                       [(ngModel)]="getModulTagesschule(modul).zeitVon"
-                       [required]="getModulTagesschule(modul).zeitBis">
-                <ngx-material-timepicker #pickerVon></ngx-material-timepicker>
-                <dv-error-messages [errorObject]="pickerVon.errors" inputId="pickerVon{{modul}}"></dv-error-messages>
+        </tab-title>
+        <tab-body>
+            <div>
+                <div class="row" *ngIf="editMode">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label translate for="typ{{einstellungGP?.id}}">MODUL_CREATION_TYP</label>
+                            <mat-select id="typ{{einstellungGP?.id}}" name="typ" class="form-control"
+                                        [(ngModel)]="einstellungGP.modulTagesschuleTyp"
+                                        (selectionChange)="changeModulTagesschuleTyp(einstellungGP)">
+                                <mat-option *ngFor="let option of getModulTagesschuleTypen()"
+                                            [value]="option">{{option | translate}} </mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table fixedtable table-hover" title="Title">
+                    <thead>
+                    <tr>
+                        <th translate>MODUL_BEZEICHNUNG</th>
+                        <th translate>MODUL_ZEITRAUM</th>
+                        <th translate>MODUL_VERPFLEGUNG</th>
+                        <th translate>MODUL_VERFUEGBAR</th>
+                        <th translate>MODUL_INTERVALL</th>
+                        <th *ngIf="editMode"></th>
+                    </tr>
+                    </thead>
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length > 0">
+						<tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:group?.identifier()">
+							<td title="{{group.bezeichnung}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                <span>{{getBezeichnung(group)}}</span>
+							</td>
+							<td title="{{group.getZeitraumString()}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{group.getZeitraumString()}}
+							</td>
+							<td title="{{group.verpflegungskosten}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{group.verpflegungskosten}}
+							</td>
+							<td title="{{getWochentageAsString(group)}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{getWochentageAsString(group)}}
+							</td>
+							<td title="{{group.intervall | translate}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{group.intervall | translate}}
+							</td>
+							<td *ngIf="editMode">
+                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                    <i class="fa fa-lg fa-edit"></i>
+                                </button>
+                                &nbsp;
+								<button type="button" class="dv-btn dv-btn-operation" (click)="removeModulTagesschuleGroup(einstellungGP, group)">
+									<i class="fa fa-lg fa-trash-o"></i>
+								</button>
+							</td>
+						</tr>
+                    </tbody>
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length === 0">
+						<tr>
+							<td colspan="6" class="empty-table" translate>KEIN_EINTRAG</td>
+						</tr>
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="md-no-float" translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
+                                   for="erlaeuterung_{{einstellungGP?.id}}">
+                            </label>
+                            <textarea name="erlaeuterung_{{einstellungGP?.id}}"
+                                      class="form-control " rows="3"
+                                      id="erlaeuterung_{{einstellungGP?.id}}"
+                                      [(ngModel)]="einstellungGP.erlaeuterung"
+                                      [disabled]="!editMode"
+                                      maxlength="4000">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)" type="button"
+                        (click)="addModulTagesschuleGroup(einstellungGP)" class="dv-btn dv-btn-operation">
+                    <i class="fa fa-lg fa-plus-circle"></i>
+                    <span translate>MODUL_HINZUFUEGEN</span>
+                </button>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <input placeholder="HH:mm" aria-label="HH:mm" [ngxTimepicker]="pickerBis"
-                       [format]="24" name="pickerBis{{modul}}" readonly
-                       [(ngModel)]="getModulTagesschule(modul).zeitBis"
-                       [required]="getModulTagesschule(modul).zeitVon">
-                <ngx-material-timepicker #pickerBis></ngx-material-timepicker>
-                <dv-error-messages [errorObject]="pickerBis.errors" inputId="pickerBis{{modul}}"></dv-error-messages>
-            </div>
-        </div>
-    </div>
-</div>
+
+        </tab-body>
+    </dv-accordion-tab>
+</dv-accordion>
+
+</fieldset>

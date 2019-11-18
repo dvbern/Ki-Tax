@@ -47,7 +47,6 @@ abstract class AbstractDokumente<T1, T2> {
 		@Nullable T2 dataForDocument2,
 		@Nullable LocalDate stichtag
 	) {
-
 		return isDokumentNeeded(dokumentTyp, dataForDocument1);
 	}
 

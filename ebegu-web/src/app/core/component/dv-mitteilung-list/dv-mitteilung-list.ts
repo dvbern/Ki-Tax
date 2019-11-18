@@ -429,13 +429,13 @@ export class DVMitteilungListController implements IOnInit {
 
     public mitteilungUebergebenAnJugendamt(mitteilung: TSMitteilung): void {
         this.mitteilungRS.mitteilungUebergebenAnJugendamt(mitteilung.id).then(msg => {
-            this.ebeguUtil.replaceElementInList(msg, this.allMitteilungen, false);
+            EbeguUtil.replaceElementInList(msg, this.allMitteilungen);
         });
     }
 
     public mitteilungUebergebenAnSchulamt(mitteilung: TSMitteilung): void {
         this.mitteilungRS.mitteilungUebergebenAnSchulamt(mitteilung.id).then(msg => {
-            this.ebeguUtil.replaceElementInList(msg, this.allMitteilungen, false);
+            EbeguUtil.replaceElementInList(msg, this.allMitteilungen);
         });
     }
 
