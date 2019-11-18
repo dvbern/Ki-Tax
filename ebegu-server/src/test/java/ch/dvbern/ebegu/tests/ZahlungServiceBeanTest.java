@@ -609,9 +609,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		// richtig gesetzt wird. So wird auch dies getestet
 		testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
 		verfuegungService.calculateVerfuegung(mutation);
-		for (Betreuung betreuung : betreuungs) {
+		for (Betreuung betreuung : mutation.extractAllBetreuungen()) {
 			Assert.assertNotNull(betreuung.getVerfuegung());
-			verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
+			verfuegungService.verfuegen(mutation.getId(), betreuung.getId(), null, false);
 		}
 		return mutation;
 	}
