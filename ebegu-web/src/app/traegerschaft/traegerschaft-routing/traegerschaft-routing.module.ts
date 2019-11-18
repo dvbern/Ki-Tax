@@ -27,7 +27,7 @@ import {TraegerschaftAddComponent} from '../traegerschaft-add/traegerschaft-add.
 import {TraegerschaftEditComponent} from '../traegerschaft-edit/traegerschaft-edit.component';
 import {TraegerschaftListComponent} from '../traegerschaft-list/traegerschaft-list.component';
 
-const states: Ng2StateDeclaration[] = [
+export const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'traegerschaft',
@@ -79,6 +79,6 @@ const states: Ng2StateDeclaration[] = [
 export class TraegerschaftRoutingModule {
 }
 
-function getTraegerschaften(traegerschaftRS: TraegerschaftRS): IPromise<TSTraegerschaft[]> {
+export function getTraegerschaften(traegerschaftRS: TraegerschaftRS): IPromise<TSTraegerschaft[]> {
     return traegerschaftRS.getAllActiveTraegerschaften();
 }

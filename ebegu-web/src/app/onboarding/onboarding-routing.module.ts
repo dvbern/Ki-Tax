@@ -14,12 +14,15 @@
  */
 
 import {NgModule} from '@angular/core';
+import {Resolve} from '@angular/router';
 import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {IPromise} from 'angular';
 import {map, take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
+import {ignoreNullAndUndefined} from '../../utils/rxjs-operators';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
@@ -31,17 +34,25 @@ import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboardi
 import {OnboardingComponent} from './onboarding/onboarding.component';
 import {MandantRS} from '../core/service/mandantRS.rest';
 
-const mandantBernId = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
 
-const tsEnabledResolver = [
-    'MandantRS', (mandantRS: MandantRS) => {
-       return mandantRS.findMandant(mandantBernId).then((result: { angebotTS: any; }) => {
-           return result.angebotTS;
+
+export class TSEnabledResolver implements Resolve<IPromise<boolean>> {
+    mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+
+    constructor(private mandantRS: MandantRS) {}
+
+    resolve(): IPromise<boolean> {
+        return this.mandantRS.findMandant(this.mandantBernId).then((result: { angebotTS: any; }) => {
+            return result.angebotTS;
         });
-    },
-];
+    }
+}
 
-const states: Ng2StateDeclaration[] = [
+export function nextState() : string {
+    return 'onboarding.gesuchsteller.registration';
+}
+
+export const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'onboarding',
@@ -91,8 +102,8 @@ const states: Ng2StateDeclaration[] = [
         url: '/registration-abschliessen',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
-            isTSAngebotEnabled: tsEnabledResolver,
-            nextState: () => 'onboarding.gesuchsteller.registration',
+            isTSAngebotEnabled: TSEnabledResolver,
+            nextState: nextState,
         },
     },
     {
@@ -100,7 +111,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/neu-benutzer',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
-            isTSAngebotEnabled: tsEnabledResolver,
+            isTSAngebotEnabled: TSEnabledResolver,
         },
         data: {
             roles: [TSRole.ANONYMOUS],
@@ -126,7 +137,7 @@ const states: Ng2StateDeclaration[] = [
 
 redirectToLandingPage.$inject = ['$transition$'];
 
-function redirectToLandingPage(transition: Transition): HookResult {
+export function redirectToLandingPage(transition: Transition): HookResult {
     const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
 
     return authService.principal$
@@ -145,7 +156,7 @@ function redirectToLandingPage(transition: Transition): HookResult {
 
 disableWhenDossierExists.$inject = ['$transition$'];
 
-function disableWhenDossierExists(transition: Transition): HookResult {
+export function disableWhenDossierExists(transition: Transition): HookResult {
     const dossierService = transition.injector().get('DossierRS');
 
     return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()

@@ -19,12 +19,11 @@ import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSe
 import {MatPaginatorIntl} from '@angular/material';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {WindowRef} from './service/windowRef.service';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
-import {UPGRADED_PROVIDERS} from './upgraded-providers';
+import {paginatorI18nProvider, UPGRADED_PROVIDERS} from './upgraded-providers';
 
 // sentry
 configureRaven();
@@ -70,9 +69,7 @@ export class CoreModule {
                 {
                     provide: MatPaginatorIntl,
                     deps: [TranslateService],
-                    useFactory: (translateService: TranslateService) => {
-                        return new PaginatorI18n(translateService);
-                    },
+                    useFactory: paginatorI18nProvider,
                 },
             ],
         };

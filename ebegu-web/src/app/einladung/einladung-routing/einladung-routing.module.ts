@@ -28,6 +28,14 @@ import {EinladungAbschliessenComponent} from '../einladung-abschliessen/einladun
 import {LoginInfoComponent} from '../login-info/login-info.component';
 import {handleLoggedInUser} from './einladung-helpers';
 
+export function authentication(authService: AuthServiceRS) {
+    authService.principal$
+        .pipe(
+            ignoreNullAndUndefined(),
+            take(1))
+        .toPromise();
+}
+
 const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
@@ -69,11 +77,7 @@ const states: Ng2StateDeclaration[] = [
             {
                 token: 'principal',
                 deps: [AuthServiceRS],
-                resolveFn: (authService: AuthServiceRS) => authService.principal$
-                    .pipe(
-                        ignoreNullAndUndefined(),
-                        take(1))
-                    .toPromise(),
+                resolveFn: authentication,
             },
         ],
     },
@@ -89,4 +93,6 @@ const states: Ng2StateDeclaration[] = [
     declarations: [],
 })
 export class EinladungRoutingModule {
+
+
 }
