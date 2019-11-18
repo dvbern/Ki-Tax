@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {Injectable, NgModule} from '@angular/core';
 import {Resolve} from '@angular/router';
 import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
@@ -35,7 +35,9 @@ import {OnboardingComponent} from './onboarding/onboarding.component';
 import {MandantRS} from '../core/service/mandantRS.rest';
 
 
-
+@Injectable(
+    { providedIn: 'root' }
+    )
 export class TSEnabledResolver implements Resolve<IPromise<boolean>> {
     mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
 
@@ -47,6 +49,7 @@ export class TSEnabledResolver implements Resolve<IPromise<boolean>> {
         });
     }
 }
+TSEnabledResolver.$inject = ['MandantRS'];
 
 export function nextState() : string {
     return 'onboarding.gesuchsteller.registration';
