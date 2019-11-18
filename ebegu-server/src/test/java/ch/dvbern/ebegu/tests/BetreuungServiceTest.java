@@ -51,6 +51,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -427,6 +428,25 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		} catch (Exception e) {
 			// Expected
 		}
+	}
+
+	@Test
+	public void mapsId() {
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+
+		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuung, false);
+
+		Assert.assertNotNull(persistedBetreuung);
+		Assert.assertNotNull(persistedBetreuung.getErweiterteBetreuungContainer());
+
+		ErweiterteBetreuungContainer ebc1 = persistence.find(
+			ErweiterteBetreuungContainer.class, persistedBetreuung.getErweiterteBetreuungContainer().getId());
+		ErweiterteBetreuungContainer ebc2 = persistence.find(
+			ErweiterteBetreuungContainer.class, persistedBetreuung.getId());
+		Assert.assertNotNull(ebc1);
+		Assert.assertNotNull(ebc2);
+		Assert.assertEquals(ebc1, ebc2);
 	}
 
 	private void prepareInstitutionsstammdaten(Betreuung betreuung, LocalDate kitaFrom, LocalDate kitaUntil) {
