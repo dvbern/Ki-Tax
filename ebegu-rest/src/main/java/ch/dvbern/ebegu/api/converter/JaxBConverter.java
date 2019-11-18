@@ -4481,6 +4481,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxBfsGemeinde;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	public GemeindeStammdaten gemeindeStammdatenToEntity(
 		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
