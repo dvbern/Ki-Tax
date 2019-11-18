@@ -2981,6 +2981,7 @@ export default class EbeguRestUtil {
             tsZahlungsauftrag.datumFaellig = DateUtil.localDateToMoment(zahlungsauftragFromServer.datumFaellig);
             tsZahlungsauftrag.datumGeneriert = DateUtil.localDateTimeToMoment(zahlungsauftragFromServer.datumGeneriert);
             tsZahlungsauftrag.betragTotalAuftrag = zahlungsauftragFromServer.betragTotalAuftrag;
+            tsZahlungsauftrag.hasNegativeZahlungen = zahlungsauftragFromServer.hasNegativeZahlungen;
             tsZahlungsauftrag.zahlungen = this.parseZahlungen(zahlungsauftragFromServer.zahlungen);
             tsZahlungsauftrag.gemeinde = this.parseGemeinde(new TSGemeinde(), zahlungsauftragFromServer.gemeinde);
 

@@ -1127,6 +1127,8 @@
     "ZAHLUNG_ERSTELLEN": "ÉTABLIR UN VERSEMENT",
     "ZAHLUNG_UEBERSICHT": "Aperçu",
     "ZAHLUNG": "Versement",
+    "TOOLTIP_NEGATIVE_WERTE": "Diese Zahlung enthält Rückforderungen respektive negative Werte. Diese Beträge müssen ausserhalb kiBon von der Institutionen zurückgefordert werden.",
+    "TOOLTIP_NEGATIVER_WERT": "Dieser Betrag muss ausserhalb kiBon zurückgefordert werden",
     "ARIA_REMOVE_ERWERBSPENSUM": "Supprimer le taux d'activité de cette ligne",
     "ARIA_ADD_ERWERBSPENSUM": "Saisir un nouveau taux d'activité",
     "ARIA_KONTAKT_MENU": "Contact de la commune",
