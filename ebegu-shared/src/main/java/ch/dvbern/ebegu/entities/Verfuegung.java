@@ -91,6 +91,7 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	public Verfuegung(Betreuung betreuung) {
 		this.betreuung = betreuung;
+		setId(betreuung.getId());
 		betreuung.setVerfuegung(this);
 	}
 
