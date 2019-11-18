@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -31,7 +32,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 /**
  * Gemeinsame Basisklasse zum berechnen der benötigten Dokumente für die Finanzielle Situation und die Einkommensverschlechterung
  */
-abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Object> {
+abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
 
 	void getAllDokumenteGesuchsteller(
 		Set<DokumentGrund> anlageVerzeichnis,
@@ -80,7 +81,8 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	}
 
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation){
 		if (abstractFinanzielleSituation != null) {
 			switch (dokumentTyp) {
 			case STEUERVERANLAGUNG:
@@ -127,8 +129,17 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		return false;
 	}
 
-	protected abstract boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation);
+	protected abstract boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
 
-	protected abstract boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
+	protected abstract boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
 
+	protected boolean isSozialhilfeempfaenger(@Nullable Familiensituation familiensituation) {
+		if (familiensituation != null &&
+			familiensituation.getSozialhilfeBezueger() != null &&
+			familiensituation.getSozialhilfeBezueger()
+		) {
+			return true;
+		}
+		return false;
+	}
 }
