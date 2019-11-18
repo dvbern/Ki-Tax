@@ -1496,7 +1496,7 @@ public final class TestDataUtil {
 		return persistence.merge(gemeindeStammdaten);
 	}
 
-	public static Benutzer createBenutzerWithDefaultGemeinde( //TODO umbennenen
+	public static Benutzer createBenutzerWithDefaultGemeinde(
 		UserRole role, String userName,
 		@Nullable Traegerschaft traegerschaft,
 		@Nullable Institution institution,
