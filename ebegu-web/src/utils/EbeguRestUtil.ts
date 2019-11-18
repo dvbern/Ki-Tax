@@ -818,6 +818,14 @@ export default class EbeguRestUtil {
             restStammdaten.bic = stammdaten.bic;
             restStammdaten.iban = stammdaten.iban;
             restStammdaten.standardRechtsmittelbelehrung = stammdaten.standardRechtsmittelbelehrung;
+            restStammdaten.benachrichtigungBgEmailAuto = stammdaten.benachrichtigungBgEmailAuto;
+            restStammdaten.benachrichtigungTsEmailAuto = stammdaten.benachrichtigungTsEmailAuto;
+            restStammdaten.standardDokSignature = stammdaten.standardDokSignature;
+            restStammdaten.standardDokTitle = stammdaten.standardDokTitle;
+            restStammdaten.standardDokUnterschriftTitel = stammdaten.standardDokUnterschriftTitel;
+            restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
+            restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
+            restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -865,6 +873,14 @@ export default class EbeguRestUtil {
             }
             stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
             stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
+            stammdatenTS.benachrichtigungBgEmailAuto = stammdatenFromServer.benachrichtigungBgEmailAuto;
+            stammdatenTS.benachrichtigungTsEmailAuto = stammdatenFromServer.benachrichtigungTsEmailAuto;
+            stammdatenTS.standardDokSignature = stammdatenFromServer.standardDokSignature;
+            stammdatenTS.standardDokTitle = stammdatenFromServer.standardDokTitle;
+            stammdatenTS.standardDokUnterschriftTitel = stammdatenFromServer.standardDokUnterschriftTitel;
+            stammdatenTS.standardDokUnterschriftName = stammdatenFromServer.standardDokUnterschriftName;
+            stammdatenTS.standardDokUnterschriftTitel2 = stammdatenFromServer.standardDokUnterschriftTitel2;
+            stammdatenTS.standardDokUnterschriftName2 = stammdatenFromServer.standardDokUnterschriftName2;
 
             return stammdatenTS;
         }
@@ -2965,6 +2981,7 @@ export default class EbeguRestUtil {
             tsZahlungsauftrag.datumFaellig = DateUtil.localDateToMoment(zahlungsauftragFromServer.datumFaellig);
             tsZahlungsauftrag.datumGeneriert = DateUtil.localDateTimeToMoment(zahlungsauftragFromServer.datumGeneriert);
             tsZahlungsauftrag.betragTotalAuftrag = zahlungsauftragFromServer.betragTotalAuftrag;
+            tsZahlungsauftrag.hasNegativeZahlungen = zahlungsauftragFromServer.hasNegativeZahlungen;
             tsZahlungsauftrag.zahlungen = this.parseZahlungen(zahlungsauftragFromServer.zahlungen);
             tsZahlungsauftrag.gemeinde = this.parseGemeinde(new TSGemeinde(), zahlungsauftragFromServer.gemeinde);
 
