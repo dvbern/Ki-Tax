@@ -27,6 +27,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
     private _status: TSZahlungsauftragsstatus;
     private _beschrieb: string;
     private _betragTotalAuftrag: number;
+    private _hasNegativeZahlungen: boolean = false;
     private _gemeinde: TSGemeinde;
     private _zahlungen: Array<TSZahlung>;
 
@@ -37,6 +38,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         status?: TSZahlungsauftragsstatus,
         beschrieb?: string,
         betragTotalAuftrag?: number,
+        hasNegativeZahlungen?: boolean | false,
         gemeinde?: TSGemeinde,
         zahlungen?: Array<TSZahlung>,
     ) {
@@ -46,6 +48,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         this._status = status;
         this._beschrieb = beschrieb;
         this._betragTotalAuftrag = betragTotalAuftrag;
+        this._hasNegativeZahlungen = hasNegativeZahlungen;
         this._gemeinde = gemeinde;
         this._zahlungen = zahlungen;
     }
@@ -80,6 +83,14 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
 
     public set betragTotalAuftrag(value: number) {
         this._betragTotalAuftrag = value;
+    }
+
+    public get hasNegativeZahlungen(): boolean {
+        return this._hasNegativeZahlungen;
+    }
+
+    public set hasNegativeZahlungen(value: boolean) {
+        this._hasNegativeZahlungen = value;
     }
 
     public get zahlungen(): Array<TSZahlung> {

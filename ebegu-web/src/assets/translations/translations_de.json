@@ -1127,6 +1127,8 @@
     "ZAHLUNG_ERSTELLEN": "Zahlung Erstellen",
     "ZAHLUNG_UEBERSICHT": "Überischt",
     "ZAHLUNG": "Zahlung",
+    "TOOLTIP_NEGATIVE_WERTE": "Diese Zahlung enthält Rückforderungen respektive negative Werte. Diese Beträge müssen ausserhalb kiBon von der Institutionen zurückgefordert werden.",
+    "TOOLTIP_NEGATIVER_WERT": "Dieser Betrag muss ausserhalb kiBon zurückgefordert werden",
     "ARIA_REMOVE_ERWERBSPENSUM": "Das Beschäftigungspensum dieser Zeile entfernen",
     "ARIA_ADD_ERWERBSPENSUM": "Ein neues Beschäftigungspensum erfassen",
     "ARIA_KONTAKT_MENU": "Kontakt der Gemeinde",
