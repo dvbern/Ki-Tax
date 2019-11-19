@@ -42,7 +42,7 @@ describe('TraegerschaftAddComponent', () => {
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, []);
+    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
