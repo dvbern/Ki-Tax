@@ -1700,8 +1700,9 @@
     "MODUL_VERPFLEGUNG": "Verpflegungskosten",
     "MODUL_VERFUEGBAR": "Verfügbar am",
     "MODUL_INTERVALL": "Intervall",
+    "MODUL_TAGESSCHULE_ERLAEUTERUNG": "Erläuterung zu den Modulen hinzufügen",
     "MODUL_PAEDAGOGISCH_BETREUT": "Wird pädagogisch betreut",
-    "MODUL_HINZUFUEGEN": "Modul hinzufügen",
+    "MODUL_HINZUFUEGEN": "Neues Modul hinzufügen",
     "MODUL_HINZUFUEGEN_SCOLARIS": "Module gemäss Scolaris erstellen",
     "MODUL_CREATION_TYP": "Erstellungsart der Module (z.B. für Scolaris)",
     "SCOLARIS": "Module für Scolaris erstellen (fix)",
@@ -1739,6 +1740,7 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Bitte Änderung der Betreuungszeiten oder allfällige Fragen/Anmerkungen hier angeben",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
     "BETREUUNG_TAGESSCHULE_AGB": "Ich habe<a href='dummy.pdf' target='_blank'> das Merkblatt zur Anmeldung in die Tagesschule gelesen</a> und zur Kenntnis genommen",
+    "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Erläuterungen zu den Modulen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Benachrichtigungen bei Verfügungen automatisch per Email senden",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Nach Abschluss einer Verfügung wird automatisch eine Bestätigung per Email versendet. Empfohlene Einstellung: An.",
@@ -1751,5 +1753,7 @@
     "STANDARD_DOK_UNTERSCHRIFT1_NAME": "Unterschrift 1 - Name",
     "STANDARD_DOK_UNTERSCHRIFT2_TITEL": "Unterschrift 2 - Titel",
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Unterschrift 2 - Name",
+    "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
+    "IN_CHF_PLACEHOLDER": "in CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
