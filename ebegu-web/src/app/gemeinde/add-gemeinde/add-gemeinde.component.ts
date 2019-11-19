@@ -208,11 +208,11 @@ export class AddGemeindeComponent implements OnInit {
         const hasBG = this.gemeinde.angebotBG;
         const hasTS = this.gemeinde.angebotTS || this.gemeinde.angebotFI;
         if (!hasBG) {
-            return 'ADMINISTRATOR_TS';
+            return 'TSRole_ADMIN_TS';
         }
         if (!hasTS) {
-            return 'ADMINISTRATOR_BG';
+            return 'TSRole_ADMIN_GEMEINDE';
         }
-        return 'ADMINISTRATOR_GEMEINDE';
+        return 'TSRole_ADMIN_GEMEINDE';
     }
 }

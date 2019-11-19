@@ -44,7 +44,7 @@ export class DvNgGesuchstellerDialogComponent {
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.emailAdresse = data.emailAdresse;
-        this.administratorRolle = data.administratorRolle;
+        this.administratorRolle = this.translate.instant(data.administratorRolle);
         this.gesuchstellerName = data.gesuchstellerName;
         this.confirmGesuchDelete = false;
         this.question = this.translate.instant('GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE', {
