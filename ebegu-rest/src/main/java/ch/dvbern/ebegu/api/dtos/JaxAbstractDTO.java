@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,6 +55,11 @@ public abstract class JaxAbstractDTO implements Serializable, Comparable<JaxAbst
 
 	protected JaxAbstractDTO(@Nonnull String id) {
 		this.id = Objects.requireNonNull(id);
+	}
+
+	@Nonnull
+	public Optional<String> findId() {
+		return Optional.ofNullable(id);
 	}
 
 	@Nullable

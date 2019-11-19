@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -96,7 +95,6 @@ public class VerfuegungResource {
 	@Inject
 	private PrincipalBean principalBean;
 
-
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungResource.class.getSimpleName());
 
 	@ApiOperation(value = "Calculates the Verfuegung of the Gesuch with the given id, does nothing if the Gesuch " +
@@ -124,10 +122,15 @@ public class VerfuegungResource {
 			JaxGesuch gesuchJax = converter.gesuchToJAX(gesuchWithCalcVerfuegung);
 
 			Set<JaxKindContainer> kindContainers = gesuchJax.getKindContainers();
-			// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder gefilter
-			// damit nur die relevanten Kinder geschickt werden
-			if (principalBean.isCallerInAnyOfRole(ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION)) {
-				Collection<Institution> instForCurrBenutzer = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+			// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder
+			// gefiltert, damit nur die relevanten Kinder geschickt werden
+			if (principalBean.isCallerInAnyOfRole(
+				ADMIN_TRAEGERSCHAFT,
+				SACHBEARBEITER_TRAEGERSCHAFT,
+				ADMIN_INSTITUTION,
+				SACHBEARBEITER_INSTITUTION)) {
+				Collection<Institution> instForCurrBenutzer =
+					institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 				RestUtil.purgeKinderAndBetreuungenOfInstitutionen(kindContainers, instForCurrBenutzer);
 			}
 			return Response.ok(kindContainers).build();
@@ -157,10 +160,8 @@ public class VerfuegungResource {
 	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		String betreuungId = converter.toEntityId(betreuungJaxId);
-		Objects.requireNonNull(gesuchId);
-		Objects.requireNonNull(betreuungId);
 
-		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(gesuchId, betreuungId, verfuegungManuelleBemerkungen, ignorieren);
+		Verfuegung persistedVerfuegung = this.verfuegungService.verfuegen(gesuchId, betreuungId, verfuegungManuelleBemerkungen, ignorieren, true);
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
@@ -173,12 +174,16 @@ public class VerfuegungResource {
 	public Response verfuegungSchliessenOhneVerfuegen(
 		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId) {
 
-		Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungId.getId());
-		if (betreuung.isPresent()) {
-			betreuungService.schliessenOhneVerfuegen(betreuung.get());
-			return Response.ok().build();
-		}
-		throw new EbeguEntityNotFoundException("verfuegungSchliessenOhneVerfuegen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID invalid: " + betreuungId.getId());
+		Betreuung betreuung = betreuungService.findBetreuung(betreuungId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"verfuegungSchliessenOhneVerfuegen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"BetreuungID invalid: " + betreuungId.getId()));
+
+
+		betreuungService.schliessenOhneVerfuegen(betreuung);
+
+		return Response.ok().build();
 	}
 
 	@ApiOperation(value = "Erstellt eine Nichteintretens-Verfuegung", response = JaxVerfuegung.class)
@@ -193,8 +198,6 @@ public class VerfuegungResource {
 	) {
 		String gesuchId = converter.toEntityId(gesuchJaxId);
 		String betreuungId = converter.toEntityId(betreuungJaxId);
-		Objects.requireNonNull(gesuchId);
-		Objects.requireNonNull(betreuungId);
 
 		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(gesuchId, betreuungId);
 		return converter.verfuegungToJax(persistedVerfuegung);

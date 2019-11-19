@@ -135,7 +135,6 @@
             <!-- to export jsonschemas -->
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jsonSchema</artifactId>
-            <version>${version.jackson}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

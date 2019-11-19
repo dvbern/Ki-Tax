@@ -17,14 +17,16 @@
 
 package ch.dvbern.ebegu.outbox.verfuegung;
 
-import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -32,19 +34,19 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.spotify.hamcrest.jackson.IsJsonObject;
+import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
+import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
+import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
+import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
+import com.spotify.hamcrest.pojo.IsPojo;
 import org.junit.Test;
 
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonArray;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonBigDecimal;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonInt;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonObject;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonText;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
@@ -78,7 +80,7 @@ public class VerfuegungEventConverterTest {
 	}
 
 	@Test
-	public void testEventConversion() throws IOException {
+	public void testEventConversion() {
 		Verfuegung verfuegung = createVerfuegung();
 		VerfuegungVerfuegtEvent event = converter.of(verfuegung);
 
@@ -86,6 +88,7 @@ public class VerfuegungEventConverterTest {
 		Gesuchsperiode gesuchsperiode = verfuegung.getBetreuung().extractGesuchsperiode();
 		String institutionId = betreuung.getInstitutionStammdaten().getInstitution().getId();
 		String bgNummer = betreuung.getBGNummer();
+		Gemeinde gemeinde = betreuung.extractGesuch().extractGemeinde();
 
 		assertThat(event, is(pojo(ExportedEvent.class)
 			.where(ExportedEvent::getAggregateId, is(bgNummer))
@@ -93,44 +96,53 @@ public class VerfuegungEventConverterTest {
 			.where(ExportedEvent::getType, is("VerfuegungVerfuegt")))
 		);
 
-		JsonNode jsonNode = ObjectMapperUtil.MAPPER.readTree(event.getPayload());
+		VerfuegungEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
-		assertThat(jsonNode, is(jsonObject()
-			.where("refnr", is(jsonText(bgNummer)))
-			.where("institutionId", is(jsonText(institutionId)))
-			.where("von", is(jsonText(gesuchsperiode.getGueltigkeit().getGueltigAb().toString())))
-			.where("bis", is(jsonText(gesuchsperiode.getGueltigkeit().getGueltigBis().toString())))
-			.where("version", is(jsonInt(0)))
-			.where("verfuegtAm", is(jsonText(TIMESTAMP_ERSTELLT.toString())))
-			.where("kind", is(jsonObject()
-				.where("vorname", is(jsonText(KIND_VORNAME)))
-				.where("nachname", is(jsonText(KIND_NACHNAME)))
-				.where("geburtsdatum", is(jsonText(KIND_GEBURTSDATUM.toString())))
+		// Avro only serializes Instant with microsecond precision (opposed to nano)
+		long expectedVerfuegtAm = TIMESTAMP_ERSTELLT.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+		assertThat(specificRecord, is(pojo(VerfuegungEventDTO.class)
+			.where(VerfuegungEventDTO::getRefnr, is(bgNummer))
+			.where(VerfuegungEventDTO::getInstitutionId, is(institutionId))
+			.where(VerfuegungEventDTO::getVon, is(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+			.where(VerfuegungEventDTO::getBis, is(gesuchsperiode.getGueltigkeit().getGueltigBis()))
+			.where(VerfuegungEventDTO::getVersion, is(0))
+			.where(VerfuegungEventDTO::getVerfuegtAm, is(pojo(Instant.class)
+				.where(Instant::toEpochMilli, is(expectedVerfuegtAm))))
+			.where(VerfuegungEventDTO::getKind, is(pojo(KindDTO.class)
+				.where(KindDTO::getVorname, is(KIND_VORNAME))
+				.where(KindDTO::getNachname, is(KIND_NACHNAME))
+				.where(KindDTO::getGeburtsdatum, is(KIND_GEBURTSDATUM))
 			))
-			.where("gesuchsteller", is(jsonObject()
-				.where("vorname", is(jsonText(GESUCHSTELLER_VORNAME)))
-				.where("nachname", is(jsonText(GESUCHSTELLER_NACHNAME)))
-				.where("email", is(jsonText(GESUCHSTELLER_MAIL)))
+			.where(VerfuegungEventDTO::getGesuchsteller, is(pojo(GesuchstellerDTO.class)
+				.where(GesuchstellerDTO::getVorname, is(GESUCHSTELLER_VORNAME))
+				.where(GesuchstellerDTO::getNachname, is(GESUCHSTELLER_NACHNAME))
+				.where(GesuchstellerDTO::getEmail, is(GESUCHSTELLER_MAIL))
 			))
-			.where("betreuungsArt", is(jsonText("KITA")))
-			.where("zeitabschnitte", is(jsonArray(contains(defaultZeitAbschnitt()))))
-			.where("ignorierteZeitabschnitte", is(jsonArray(is(empty()))))
+			.where(VerfuegungEventDTO::getBetreuungsArt, is(BetreuungsangebotTyp.KITA))
+			.where(VerfuegungEventDTO::getGemeindeName, is(gemeinde.getName()))
+			.where(VerfuegungEventDTO::getGemeindeBfsNr, is(gemeinde.getBfsNummer()))
+			.where(VerfuegungEventDTO::getZeitabschnitte, is(contains(defaultZeitAbschnitt())))
+			.where(VerfuegungEventDTO::getIgnorierteZeitabschnitte, is(empty()))
 		));
 	}
 
 	@Nonnull
-	private IsJsonObject defaultZeitAbschnitt() {
-		return jsonObject()
-			.where("von", is(jsonText(LocalDate.now().toString())))
-			.where("bis", is(jsonText(Constants.END_OF_TIME.toString())))
-			.where("verfuegungNr", is(jsonInt(0)))
-			.where("effektiveBetreuungPct", is(jsonBigDecimal(comparesEqualTo(BigDecimal.TEN))))
-			.where("anspruchPct", is(jsonInt(50)))
-			.where("verguenstigtPct", is(jsonBigDecimal(comparesEqualTo(BigDecimal.TEN))))
-			.where("vollkosten", is(jsonBigDecimal(comparesEqualTo(BigDecimal.ZERO))))
-			.where("betreuungsgutschein", is(jsonBigDecimal(comparesEqualTo(BigDecimal.ZERO))))
-			.where("minimalerElternbeitrag", is(jsonBigDecimal(comparesEqualTo(BigDecimal.ZERO))))
-			.where("verguenstigung", is(jsonBigDecimal(comparesEqualTo(BigDecimal.ZERO))));
+	private IsPojo<ZeitabschnittDTO> defaultZeitAbschnitt() {
+		return pojo(ZeitabschnittDTO.class)
+			.where(ZeitabschnittDTO::getVon, is(LocalDate.now()))
+			.where(ZeitabschnittDTO::getBis, is(Constants.END_OF_TIME))
+			.where(ZeitabschnittDTO::getVerfuegungNr, is(0))
+			.where(ZeitabschnittDTO::getEffektiveBetreuungPct, comparesEqualTo(BigDecimal.TEN))
+			.where(ZeitabschnittDTO::getAnspruchPct, is(50))
+			.where(ZeitabschnittDTO::getVerguenstigtPct, comparesEqualTo(BigDecimal.TEN))
+			.where(ZeitabschnittDTO::getVollkosten, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getBetreuungsgutschein, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getMinimalerElternbeitrag, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getVerguenstigung, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getVerfuegteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getAnspruchsberechtigteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getZeiteinheit, is(Zeiteinheit.DAYS));
 	}
 
 	@Nonnull

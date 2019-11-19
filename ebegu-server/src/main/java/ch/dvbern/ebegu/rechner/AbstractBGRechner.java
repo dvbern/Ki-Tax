@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -32,10 +33,10 @@ public abstract class AbstractBGRechner {
 	protected static final MathUtil MATH = MathUtil.EXACT;
 
 	/**
-	 * Diese Methode fuehrt die Berechnung fuer  die uebergebenen Verfuegungsabschnitte durch.
+	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
 	@Nonnull
-	public VerfuegungZeitabschnitt calculate(
+	public BGCalculationResult calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
@@ -51,10 +52,11 @@ public abstract class AbstractBGRechner {
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensum();
 
 		// Inputdaten validieren
-		checkArguments(von, bis, verfuegungZeitabschnitt.getBgPensum(), massgebendesEinkommen);
+		BigDecimal bgPensum = verfuegungZeitabschnitt.getBgPensum();
+		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
 
 		// Zwischenresultate
-		BigDecimal verguenstigungProTag = getVerguenstigungProZeiteinheit(
+		BigDecimal verguenstigungProZeiteinheit = getVerguenstigungProZeiteinheit(
 			parameterDTO,
 			unter12Monate,
 			eingeschult,
@@ -64,42 +66,48 @@ public abstract class AbstractBGRechner {
 
 		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
 
-		BigDecimal stundenGemaessPensumUndAnteilMonat =
-			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
-				parameterDTO,
-				von,
-				bis,
-				verfuegungZeitabschnitt.getBgPensum());
+		BigDecimal verfuegteZeiteinheiten =
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, bgPensum);
 
-		BigDecimal minBetrag =
-			MATH.multiply(stundenGemaessPensumUndAnteilMonat, getMinimalBeitragProZeiteinheit(parameterDTO));
+		BigDecimal anspruchPensum = MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+		BigDecimal anspruchsberechtigteZeiteinheiten =
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, anspruchPensum);
+
+		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
-			MATH.multiplyNullSafe(stundenGemaessPensumUndAnteilMonat, verguenstigungProTag);
+			MATH.multiplyNullSafe(verfuegteZeiteinheiten, verguenstigungProZeiteinheit);
 
 		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
 		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
 			anteilVerguenstigesPensumAmBetreuungspensum =
-				MATH.divide(verfuegungZeitabschnitt.getBgPensum(), betreuungspensum);
+				MATH.divide(bgPensum, betreuungspensum);
 		}
 		BigDecimal vollkostenFuerVerguenstigtesPensum =
-			MathUtil.DEFAULT.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
+			MATH.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
 		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
-		// Resultat
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
-		// Runden und auf Zeitabschnitt zurückschreiben
-		verfuegungZeitabschnitt.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
-			verguenstigungVorVollkostenUndMinimalbetrag);
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(verguenstigungVorMinimalbetrag));
-		verfuegungZeitabschnitt.setVerguenstigung(verguenstigung);
-		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
-		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
-		return verfuegungZeitabschnitt;
+
+		// Resultat
+		BGCalculationResult result = new BGCalculationResult();
+		result.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
+		result.setVerguenstigungOhneBeruecksichtigungVollkosten(
+			MathUtil.DEFAULT.from(verguenstigungVorVollkostenUndMinimalbetrag));
+		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(
+			verguenstigungVorMinimalbetrag));
+		result.setVerguenstigung(MathUtil.DEFAULT.from(verguenstigung));
+		result.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
+		result.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
+
+		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(verfuegteZeiteinheiten));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten));
+		result.setZeiteinheit(getZeiteinheit());
+
+		return result;
 	}
 
 	/**
@@ -183,4 +191,6 @@ public abstract class AbstractBGRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean besonderebeduerfnisse);
 
+	@Nonnull
+	protected abstract PensumUnits getZeiteinheit();
 }

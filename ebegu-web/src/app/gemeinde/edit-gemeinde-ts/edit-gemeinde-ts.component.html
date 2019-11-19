@@ -20,7 +20,7 @@
         <fieldset ngModelGroup="dv-edit-gemeinde-ts">
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <div class="form-group">
                             <mat-checkbox id="altTSAdresse_id" name="altTSAdresse_id"
                                           [(ngModel)]="altTSAdresse"
@@ -184,24 +184,22 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">
-                        <mat-checkbox id="benachrichtigungTsEmailAutoDisplay_id"
-                                      name="benachrichtigungTSEmailAutoDisplay_id"
-                                      [(ngModel)]="stammdaten.benachrichtigungTsEmailAuto"
-                                      disabled="true">
-                            {{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN'|translate}}
-                            <li class="fa fa-info-circle"
-                                matTooltip="{{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
-                                matTooltipPosition="right"></li>
-                        </mat-checkbox>
-                    </div>
+                    <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">
+                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
+                    </h3>
+                    <h3 *ngIf="!stammdaten.benachrichtigungTsEmailAuto">
+                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
+                    </h3>
+                    <p></p>
                 </div>
             </div>
-            <dv-gemeinde-ts-konfiguration
-                [konfigurationsListe]="stammdaten.konfigurationsListe"
-                [gemeindeStatus]="stammdaten.gemeinde.status"
-                [editMode]="editMode">
-            </dv-gemeinde-ts-konfiguration>
+            <div class="mt-2">
+                <dv-gemeinde-ts-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [editMode]="editMode">
+                </dv-gemeinde-ts-konfiguration>
+            </div>
         </fieldset>
     </ng-template>
 </div>

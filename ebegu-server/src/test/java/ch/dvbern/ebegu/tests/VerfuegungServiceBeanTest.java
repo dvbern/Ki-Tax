@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
@@ -52,6 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static ch.dvbern.ebegu.rechner.AbstractBGRechnerTest.checkTestfall01WaeltiDagmar;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Tests fuer die Klasse VerfuegungService
@@ -79,7 +81,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private TestfaelleService testfaelleService;
 
-	private Gesuchsperiode gesuchsperiode;
+	private Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 
 	@Before
 	public void setUp() {
@@ -92,7 +94,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
 		Assert.assertNull(betreuung.getVerfuegung());
-		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false);
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);
@@ -233,12 +235,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			null,
 			gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		return createAndPersistVerfuegteVerfuegung(betreuung).getVerfuegung();
+		return requireNonNull(createAndPersistVerfuegteVerfuegung(betreuung).getVerfuegung());
 	}
 
-	private Betreuung createAndPersistVerfuegteVerfuegung(Betreuung betreuung) {
+	@Nonnull
+	private Betreuung createAndPersistVerfuegteVerfuegung(@Nonnull Betreuung betreuung) {
 		final Verfuegung createdVerf =
-		verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false);
+		verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
 		return createdVerf.getBetreuung();
 	}
 

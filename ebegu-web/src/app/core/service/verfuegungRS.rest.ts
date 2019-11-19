@@ -55,6 +55,7 @@ export default class VerfuegungRS {
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const betreuungIdEnc = encodeURIComponent(betreuungId);
         const url = `${this.serviceURL}/verfuegen/${gesuchIdEnc}/${betreuungIdEnc}/${ignorieren}`;
+
         return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
@@ -75,6 +76,7 @@ export default class VerfuegungRS {
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const betreuungIdEnc = encodeURIComponent(betreuungId);
         const url = `${this.serviceURL}/nichtEintreten/${gesuchIdEnc}/${betreuungIdEnc}`;
+
         return this.http.get(url)
             .then((response: any) => {
                 return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {

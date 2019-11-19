@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.outbox;
 
 import javax.annotation.Nonnull;
 
+import org.apache.avro.Schema;
+
 public interface ExportedEvent {
 
 	/**
@@ -58,9 +60,15 @@ public interface ExportedEvent {
 	String getType();
 
 	/**
-	 * @return a (binary) JSON structure with the actual event contents, e.g. containing a purchase order, information
+	 * @return a (binary) Avro structure with the actual event contents, e.g. containing a purchase order, information
 	 * about the purchaser, contained order lines, their price etc.
 	 */
 	@Nonnull
 	byte[] getPayload();
+
+	/**
+	 * @return the Avro schma for the generated payload.
+	 */
+	@Nonnull
+	Schema getSchema();
 }
