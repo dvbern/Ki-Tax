@@ -146,16 +146,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	@Column(nullable = true) // nullable, because migration is needed
-	private @Min(0) @NotNull BigDecimal verfuegteAnzahlZeiteinheiten = BigDecimal.ZERO;
+	private @Min(0) BigDecimal verfuegteAnzahlZeiteinheiten = BigDecimal.ZERO;
 
 	@Nonnull
 	@Column(nullable = true) // nullable, because migration is needed
-	private @Min(0) @NotNull BigDecimal anspruchsberechtigteAnzahlZeiteinheiten = BigDecimal.ZERO;
+	private @Min(0) BigDecimal anspruchsberechtigteAnzahlZeiteinheiten = BigDecimal.ZERO;
 
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true, length = Constants.DB_DEFAULT_SHORT_LENGTH) // nullable, because migration is needed
-	private @NotNull PensumUnits zeiteinheit = PensumUnits.DAYS;
+	private PensumUnits zeiteinheit = PensumUnits.DAYS;
 
 	// TODO unused in kibon -> remove?
 	@Column(nullable = true)
