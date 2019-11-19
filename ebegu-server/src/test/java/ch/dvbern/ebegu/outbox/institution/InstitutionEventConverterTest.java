@@ -22,15 +22,14 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.databind.JsonNode;
+import ch.dvbern.kibon.exchange.commons.institution.AdresseDTO;
+import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
 import org.junit.Test;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonObject;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonText;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -41,7 +40,7 @@ public class InstitutionEventConverterTest {
 	private final InstitutionEventConverter converter = new InstitutionEventConverter();
 
 	@Test
-	public void testCreatedEvent() throws Exception {
+	public void testCreatedEvent() {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		Institution institution = institutionStammdaten.getInstitution();
 		Adresse adresse = institutionStammdaten.getAdresse();
@@ -54,19 +53,19 @@ public class InstitutionEventConverterTest {
 			.where(ExportedEvent::getType, is("InstitutionChanged")))
 		);
 
-		JsonNode jsonNode = ObjectMapperUtil.MAPPER.readTree(event.getPayload());
+		InstitutionEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
-		assertThat(jsonNode, is(jsonObject()
-			.where("id", is(jsonText(institution.getId())))
-			.where("name", is(jsonText(institution.getName())))
-			.where("traegerschaft", is(jsonText(checkNotNull(institution.getTraegerschaft()).getName())))
-			.where("adresse", is(jsonObject()
-				.where("strasse", is(jsonText(adresse.getStrasse())))
-				.where("hausnummer", is(jsonText(adresse.getHausnummer())))
-				.where("adresszusatz", is(jsonText(adresse.getZusatzzeile())))
-				.where("ort", is(jsonText(adresse.getOrt())))
-				.where("plz", is(jsonText(adresse.getPlz())))
-				.where("land", is(jsonText(adresse.getLand().name())))
+		assertThat(specificRecord, is(pojo(InstitutionEventDTO.class)
+			.where(InstitutionEventDTO::getId, is(institution.getId()))
+			.where(InstitutionEventDTO::getName, is(institution.getName()))
+			.where(InstitutionEventDTO::getTraegerschaft, is(checkNotNull(institution.getTraegerschaft()).getName()))
+			.where(InstitutionEventDTO::getAdresse, is(pojo(AdresseDTO.class)
+				.where(AdresseDTO::getStrasse, is(adresse.getStrasse()))
+				.where(AdresseDTO::getHausnummer, is(adresse.getHausnummer()))
+				.where(AdresseDTO::getAdresszusatz, is(adresse.getZusatzzeile()))
+				.where(AdresseDTO::getOrt, is(adresse.getOrt()))
+				.where(AdresseDTO::getPlz, is(adresse.getPlz()))
+				.where(AdresseDTO::getLand, is(adresse.getLand().name()))
 			))
 		));
 	}

@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.outbox.EventConverterUtil;
+import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.institution.AdresseDTO;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
 
@@ -36,11 +36,12 @@ public class InstitutionEventConverter {
 	@Nonnull
 	public InstitutionChangedEvent of(@Nonnull InstitutionStammdaten stammdaten) {
 		InstitutionEventDTO dto = toInstitutionEventDTO(stammdaten);
-		byte[] payload = EventConverterUtil.toJsonB(dto);
+		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new InstitutionChangedEvent(stammdaten.getInstitution().getId(), payload);
+		return new InstitutionChangedEvent(stammdaten.getInstitution().getId(), payload, dto.getSchema());
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Nonnull
 	private InstitutionEventDTO toInstitutionEventDTO(@Nonnull InstitutionStammdaten stammdaten) {
 		Institution institution = stammdaten.getInstitution();

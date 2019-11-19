@@ -54,8 +54,8 @@
         <version.wildfly.container>14.0.1.Final</version.wildfly.container>
         <version.sentry>1.7.16</version.sentry>
         <version.bouncycastle>1.60</version.bouncycastle>
-        <version.jackson>2.9.9</version.jackson>
-        <version.hamcrest>2.1</version.hamcrest>
+        <version.jackson>2.9.10.20191020</version.jackson>
+        <version.hamcrest>2.2</version.hamcrest>
         <version.poi>3.17</version.poi>
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
@@ -214,11 +214,6 @@
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.9.9.3</version>
-            </dependency>
-            <dependency>
                 <groupId>io.undertow</groupId>
                 <artifactId>undertow-core</artifactId>
                 <version>2.0.21.Final</version>
@@ -372,12 +367,27 @@
             <dependency>
                 <groupId>ch.dvbern.kibon</groupId>
                 <artifactId>kibon-exchange-api-commons</artifactId>
-                <version>1.0.0-rc1</version>
+                <version>1.0.0-rc3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
-                <version>2.3.0</version>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-avro-serializer</artifactId>
+                <version>5.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>1.9.1</version>
             </dependency>
             <!-- endregion -->
 
@@ -583,13 +593,13 @@
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>hamcrest-jackson</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>hamcrest-pojo</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
             <scope>test</scope>
         </dependency>
         <!-- endregion -->

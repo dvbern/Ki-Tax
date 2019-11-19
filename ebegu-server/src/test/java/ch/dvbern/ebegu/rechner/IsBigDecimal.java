@@ -15,24 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.outbox;
+package ch.dvbern.ebegu.rechner;
+
+import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.hamcrest.Matcher;
 
-public final class EventConverterUtil {
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
-	private EventConverterUtil() {
-		// util class
+public final class IsBigDecimal {
+
+	private IsBigDecimal() {
 	}
 
-	public static byte[] toJsonB(@Nonnull Object anything) {
-		try {
-			return ObjectMapperUtil.MAPPER.writeValueAsBytes(anything);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("failed converting to jsonb", e);
-		}
+	@Nonnull
+	public static Matcher<BigDecimal> greaterZeroWithScale2() {
+		return allOf(greaterThan(BigDecimal.ZERO), pojo(BigDecimal.class).where(BigDecimal::scale, is(2)));
 	}
 }

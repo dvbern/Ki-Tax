@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.outbox.EventConverterUtil;
+import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
 
 @ApplicationScoped
@@ -33,9 +33,9 @@ public class InstitutionClientEventConverter {
 		@Nonnull ExternalClient client) {
 
 		InstitutionClientEventDTO dto = toInstitutionClientEventDTO(institutionId, client);
-		byte[] payload = EventConverterUtil.toJsonB(dto);
+		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new InstitutionClientAddedEvent(institutionId, payload);
+		return new InstitutionClientAddedEvent(institutionId, payload, dto.getSchema());
 	}
 
 	@Nonnull
@@ -44,9 +44,9 @@ public class InstitutionClientEventConverter {
 		@Nonnull ExternalClient client) {
 
 		InstitutionClientEventDTO dto = toInstitutionClientEventDTO(institutionId, client);
-		byte[] payload = EventConverterUtil.toJsonB(dto);
+		byte[] payload = AvroConverter.toAvroBinary(dto);
 
-		return new InstitutionClientRemovedEvent(institutionId, payload);
+		return new InstitutionClientRemovedEvent(institutionId, payload, dto.getSchema());
 	}
 
 	@Nonnull

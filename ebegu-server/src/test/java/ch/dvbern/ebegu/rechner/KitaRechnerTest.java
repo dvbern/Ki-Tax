@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -22,10 +23,18 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
+import com.spotify.hamcrest.pojo.IsPojo;
+import org.hamcrest.Matcher;
 import org.junit.Test;
+
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Testet den Kita-Rechner
@@ -46,7 +55,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		LocalDate.of(2019, Month.FEBRUARY, 10),
 		LocalDate.of(2019, Month.FEBRUARY, 10));
 
-
+	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
 	public void test() {
 		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 20, 100000, 120.90);
@@ -64,6 +73,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		testWithParams(geburtstagKind, true, true, true, intervall, 20, 20, 150000, 88.65);
 	}
 
+	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
 	public void beispieleAusExcel() {
 		LocalDate baby = LocalDate.of(2018, Month.JULY, 23);
@@ -98,24 +108,49 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		DateRange ganzerSeptember = new DateRange(
 			LocalDate.of(2018, Month.SEPTEMBER, 1),
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt =
-			testWithParams(geburtstagKind, false, false, false, ganzerSeptember, 100, 50, 180607, 0.00);
 
-		Assert.assertEquals(100, verfuegungZeitabschnitt.getBetreuungspensum().intValue());
-		Assert.assertEquals(50, verfuegungZeitabschnitt.getBgPensum().intValue());
-		Assert.assertEquals(1000, verfuegungZeitabschnitt.getVollkosten().intValue());
+		IsPojo<BGCalculationResult> matcher = pojo(BGCalculationResult.class)
+			.where(BGCalculationResult::getVollkosten, comparesEqualTo(BigDecimal.valueOf(1000)));
+
+		testWithParams(geburtstagKind, false, false, false, ganzerSeptember, 100, 50, 180607, matcher);
 	}
 
-	private VerfuegungZeitabschnitt testWithParams(
+	private void testWithParams(
 		@Nonnull LocalDate geburtstag,
 		boolean eingeschult,
 		boolean besondereBeduerfnisse,
 		boolean besondereBeduerfnisseBestaetigt,
 		@Nonnull DateRange intervall,
-		int betreuungspensum, int anspruch,
+		int betreuungspensum,
+		int anspruch,
 		int einkommen,
 		double expected
 	) {
+
+		testWithParams(
+			geburtstag,
+			eingeschult,
+			besondereBeduerfnisse,
+			besondereBeduerfnisseBestaetigt,
+			intervall,
+			betreuungspensum,
+			anspruch,
+			einkommen,
+			defaultMatcher(expected));
+	}
+
+	private void testWithParams(
+		@Nonnull LocalDate geburtstag,
+		boolean eingeschult,
+		boolean besondereBeduerfnisse,
+		boolean besondereBeduerfnisseBestaetigt,
+		@Nonnull DateRange intervall,
+		int betreuungspensum,
+		int anspruch,
+		int einkommen,
+		@Nonnull Matcher<BGCalculationResult> matcher
+	) {
+
 		Verfuegung verfuegung = prepareVerfuegungKita(
 			geburtstag,
 			intervall.getGueltigAb(),
@@ -128,12 +163,22 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
 		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
 		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(betreuungspensum));
-		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
+		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1)
+			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);
 		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
-		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
-		return calculate;
+		BGCalculationResult result = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+
+		assertThat(result, matcher);
+	}
+
+	@Nonnull
+	private IsPojo<BGCalculationResult> defaultMatcher(double expectedVerguenstigung) {
+		return pojo(BGCalculationResult.class)
+			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expectedVerguenstigung)))
+			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("zeiteinheit", is(PensumUnits.DAYS));
 	}
 }

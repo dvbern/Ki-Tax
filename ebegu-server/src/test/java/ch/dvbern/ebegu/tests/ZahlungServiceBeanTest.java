@@ -611,7 +611,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		verfuegungService.calculateVerfuegung(mutation);
 		for (Betreuung betreuung : mutation.extractAllBetreuungen()) {
 			Assert.assertNotNull(betreuung.getVerfuegung());
-			verfuegungService.verfuegen(mutation.getId(), betreuung.getId(), null, false);
+			verfuegungService.verfuegen(mutation.getId(), betreuung.getId(), null, false, true);
 		}
 		return mutation;
 	}

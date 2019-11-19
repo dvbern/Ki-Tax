@@ -15,24 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.outbox.institutionclient;
+package ch.dvbern.ebegu.outbox;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import org.apache.avro.Schema;
 
-public class InstitutionClientRemovedEvent extends AbstractInstitutionClientEvent {
+@Converter(autoApply = true)
+public class SchemaConverter implements AttributeConverter<Schema, String> {
 
-	public InstitutionClientRemovedEvent(
-		@Nonnull String institutionId,
-		@Nonnull byte[] institutionClient,
-		@Nonnull Schema schema) {
-		super(institutionId, institutionClient, schema);
+	@Override
+	@Nullable
+	public String convertToDatabaseColumn(@Nullable Schema attribute) {
+		return attribute == null ? null : attribute.toString();
 	}
 
-	@Nonnull
 	@Override
-	public String getType() {
-		return "ClientRemoved";
+	@Nullable
+	public Schema convertToEntityAttribute(@Nullable String dbData) {
+		return dbData == null ? null : new Schema.Parser().parse(dbData);
 	}
 }
