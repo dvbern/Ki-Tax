@@ -281,7 +281,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 					totalZahlung = MathUtil.DEFAULT.add(totalZahlung, zahlungsposition.getBetrag());
 				}
 			}
-			if (!MathUtil.isPositive(totalZahlung)) {
+			if (MathUtil.isNegative(totalZahlung)) {
 				hasAnyZahlungWithNegativTotal = true;
 			}
 			zahlung.setBetragTotalZahlung(totalZahlung);
