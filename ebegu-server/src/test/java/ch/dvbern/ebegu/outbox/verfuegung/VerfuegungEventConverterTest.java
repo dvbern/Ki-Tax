@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -87,6 +88,7 @@ public class VerfuegungEventConverterTest {
 		Gesuchsperiode gesuchsperiode = verfuegung.getBetreuung().extractGesuchsperiode();
 		String institutionId = betreuung.getInstitutionStammdaten().getInstitution().getId();
 		String bgNummer = betreuung.getBGNummer();
+		Gemeinde gemeinde = betreuung.extractGesuch().extractGemeinde();
 
 		assertThat(event, is(pojo(ExportedEvent.class)
 			.where(ExportedEvent::getAggregateId, is(bgNummer))
@@ -118,6 +120,8 @@ public class VerfuegungEventConverterTest {
 				.where(GesuchstellerDTO::getEmail, is(GESUCHSTELLER_MAIL))
 			))
 			.where(VerfuegungEventDTO::getBetreuungsArt, is(BetreuungsangebotTyp.KITA))
+			.where(VerfuegungEventDTO::getGemeindeName, is(gemeinde.getName()))
+			.where(VerfuegungEventDTO::getGemeindeBfsNr, is(gemeinde.getBfsNummer()))
 			.where(VerfuegungEventDTO::getZeitabschnitte, is(contains(defaultZeitAbschnitt())))
 			.where(VerfuegungEventDTO::getIgnorierteZeitabschnitte, is(empty()))
 		));
