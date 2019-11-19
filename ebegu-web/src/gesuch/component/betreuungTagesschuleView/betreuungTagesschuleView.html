@@ -40,16 +40,16 @@
 
                 <!-- Eintrittsdatum -->
                 <div class="row">
-                    <div class="col-sm-12 dv-input-container-small">
+                    <div class="col-sm-12 dv-input-container-small form-group">
                         <label class="md-no-float required" data-translate="EINTRITTSDATUM"
                                for="eintrittsdatum_ID"></label>
                         <dv-datepicker input-id="eintrittsdatum_ID" name="eintrittsdatum"
                                        ng-model="vm.betreuung.belegungTagesschule.eintrittsdatum"
                                        ng-required="true"
-                                       class="input-element"
+                                       class="input-element "
                                        dv-min-date="vm.datumErsterSchultag">
                         </dv-datepicker>
-                        <dv-error-messages input-id="eintrittsdatum"
+                        <dv-error-messages input-id="eintrittsdatum_ID"
                                            for="vm.form.eintrittsdatum.$error"></dv-error-messages>
                     </div>
                 </div>
@@ -91,6 +91,23 @@
                                                    for="vm.form.abholungTagesschule.$error"></dv-error-messages>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="row marginTop30" ng-if="vm.erlaeuterung !== null">
+                    <div class="col-sm-12 dv-input-container-big">
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float" data-translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
+                                   for="erlaeuterung_ID">
+                            </label>
+                            <input name="erlaeuterung"
+                                      class="form-control " rows="6"
+                                      id="erlaeuterung_ID"
+                                      ng-model="vm.erlaeuterung"
+                                      ng-disabled="true"
+                                      maxlength="4000">
+                            </input>
+                        </dv-input-container>
                     </div>
                 </div>
 
@@ -180,7 +197,7 @@
                                      name="agbTSAkzeptiert"
                                      id="agbTSAkzeptiert"
                                      aria-label="{{'BETREUUNG_TAGESSCHULE_AGB' | translate}}"
-                                     ng-required="true">
+                                     ng-required="vm.isAnmeldenClicked">
                             <span data-translate="BETREUUNG_TAGESSCHULE_AGB"></span>
                         </md-checkbox>
                         <dv-error-messages input-id="agbTSAkzeptiert" for="vm.form.agbTSAkzeptiert.$error"></dv-error-messages>
