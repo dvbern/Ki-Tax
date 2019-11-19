@@ -27,7 +27,7 @@ import {TraegerschaftAddComponent} from '../traegerschaft-add/traegerschaft-add.
 import {TraegerschaftEditComponent} from '../traegerschaft-edit/traegerschaft-edit.component';
 import {TraegerschaftListComponent} from '../traegerschaft-list/traegerschaft-list.component';
 
-export const states: Ng2StateDeclaration[] = [
+export const STATES: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'traegerschaft',
@@ -70,7 +70,7 @@ export const states: Ng2StateDeclaration[] = [
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states: STATES}),
     ],
     exports: [
         UIRouterUpgradeModule,

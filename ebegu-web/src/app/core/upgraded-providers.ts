@@ -298,8 +298,7 @@ export const mandantRSProvider = {
     deps: ['$injector'],
 };
 
-export function paginatorI18nFactory(translateService: TranslateService) : PaginatorI18n
-{
+export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
     return new PaginatorI18n(translateService);
 }
 

@@ -28,7 +28,7 @@ import {EinladungAbschliessenComponent} from '../einladung-abschliessen/einladun
 import {LoginInfoComponent} from '../login-info/login-info.component';
 import {handleLoggedInUser} from './einladung-helpers';
 
-export function authentication(authService: AuthServiceRS) {
+export function authentication(authService: AuthServiceRS): void {
     authService.principal$
         .pipe(
             ignoreNullAndUndefined(),
@@ -71,7 +71,8 @@ const states: Ng2StateDeclaration[] = [
         component: EinladungAbschliessenComponent,
         data: {
             // Da ein Mitarbeiter mit irgend einer Rolle angelegt werden kann, müssen wir alle Rollen erlauben
-            roles: TSRoleUtil.getAllRolesButAnonymous(), // anonyme benutzer werden vom authentication.hook umgeleitet zur loginpage
+            roles: TSRoleUtil.getAllRolesButAnonymous(), // anonyme benutzer werden vom authentication.hook umgeleitet
+                                                         // zur loginpage
         },
         resolve: [
             {
@@ -93,6 +94,4 @@ const states: Ng2StateDeclaration[] = [
     declarations: [],
 })
 export class EinladungRoutingModule {
-
-
 }

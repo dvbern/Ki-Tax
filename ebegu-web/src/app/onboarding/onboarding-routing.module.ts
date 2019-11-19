@@ -22,7 +22,6 @@ import {map, take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
-import {ignoreNullAndUndefined} from '../../utils/rxjs-operators';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
@@ -34,28 +33,29 @@ import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboardi
 import {OnboardingComponent} from './onboarding/onboarding.component';
 import {MandantRS} from '../core/service/mandantRS.rest';
 
-
 @Injectable(
-    { providedIn: 'root' }
-    )
+    {providedIn: 'root'}
+)
 export class TSEnabledResolver implements Resolve<IPromise<boolean>> {
-    mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+    private readonly mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
 
-    constructor(private mandantRS: MandantRS) {}
+    public constructor(private readonly mandantRS: MandantRS) {
+    }
 
-    resolve(): IPromise<boolean> {
+    public resolve(): IPromise<boolean> {
         return this.mandantRS.findMandant(this.mandantBernId).then((result: { angebotTS: any; }) => {
             return result.angebotTS;
         });
     }
 }
+
 TSEnabledResolver.$inject = ['MandantRS'];
 
-export function nextState() : string {
+export function nextState(): string {
     return 'onboarding.gesuchsteller.registration';
 }
 
-export const states: Ng2StateDeclaration[] = [
+export const STATES: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'onboarding',
@@ -106,7 +106,7 @@ export const states: Ng2StateDeclaration[] = [
         component: OnboardingNeuBenutzerComponent,
         resolve: {
             isTSAngebotEnabled: TSEnabledResolver,
-            nextState: nextState,
+            nextState,
         },
     },
     {
@@ -171,7 +171,7 @@ export function disableWhenDossierExists(transition: Transition): HookResult {
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states: STATES}),
     ],
     exports: [
         UIRouterUpgradeModule,

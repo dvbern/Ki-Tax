@@ -15,7 +15,7 @@
     "build": "npm run build:prod",
     "prebuild:ci": "npm run prebuild",
     "build:ci": "npm run build:prod -- --progress=false",
-    "build:prod": "ng build --configuration=production",
+    "build:prod": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng build --configuration=production",
     "preserver": "check-engine && npm run set-version",
     "server": "ng serve --disable-host-check",
     "prelint": "check-engine",
