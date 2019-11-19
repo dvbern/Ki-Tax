@@ -21,7 +21,7 @@
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <div class="form-group">
                             <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
                                           [(ngModel)]="altBGAdresse"
@@ -373,35 +373,25 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">
-                        <mat-checkbox id="benachrichtigungBgEmailAutoDisplay_id"
-                                      name="benachrichtigungBgEmailAutoDisplay_id"
-                                      [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto"
-                                      disabled="true">
-                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
-                            <li class="fa fa-info-circle"
-                                matTooltip="{{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
-                                matTooltipPosition="right"></li>
-                        </mat-checkbox>
-                    </div>
+                    <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
+                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
+                    </h3>
+                    <h3 *ngIf="!stammdaten.benachrichtigungBgEmailAuto">
+                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
+                    </h3>
+                    <p></p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <div class="form-group">
-                            <mat-checkbox id="standardDokSignatureDisplay_id" name="standardDokSignatureDisplay_id"
-                                          [(ngModel)]="stammdaten.standardDokSignature"
-                                          disabled="true">
-                                {{'STANDARD_DOK_SIGNATURE'|translate}}
-                                <li class="fa fa-info-circle"
-                                    matTooltip="{{'STANDARD_DOK_SIGNATURE_HELP'|translate}}"
-                                    matTooltipPosition="right"></li>
-                            </mat-checkbox>
+                        <div *ngIf="stammdaten.standardDokSignature">
+                            <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
                         </div>
                         <div *ngIf="!stammdaten.standardDokSignature">
                             <div class="row">
                                  <div class="col-sm-6">
+                                     <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
                                     <div>
                                         <div class="form-group">
                                             <label translate for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
