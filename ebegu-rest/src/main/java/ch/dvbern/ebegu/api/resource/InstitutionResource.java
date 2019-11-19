@@ -137,7 +137,7 @@ public class InstitutionResource {
 		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
 			Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 				.map(b -> {
-					if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
+					if ((b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT && b.getRole() != UserRole.GESUCHSTELLER) ||
 						!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
 						// an existing user cannot be used to create a new Institution
 						throw new EbeguRuntimeException(

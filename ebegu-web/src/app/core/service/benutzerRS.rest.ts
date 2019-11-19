@@ -149,4 +149,11 @@ export default class BenutzerRS implements IEntityRS {
                 return JSON.parse(response.data);
             });
     }
+
+    public removeBenutzer(username: string): IPromise<boolean> {
+        return this.$http.delete(`${this.serviceURL}/delete/${encodeURIComponent(username)}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
 }

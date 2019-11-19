@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
@@ -24,11 +25,14 @@ import {take} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import TSExceptionReport from '../../../models/TSExceptionReport';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
@@ -40,6 +44,8 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddInstitutionComponent implements OnInit {
+
+    private readonly log: Log = LogFactory.createLog('AddInstitutionComponent');
 
     @ViewChild(NgForm) public form: NgForm;
     private isBGInstitution: boolean;
@@ -60,6 +66,8 @@ export class AddInstitutionComponent implements OnInit {
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -98,7 +106,53 @@ export class AddInstitutionComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        this.persistInstitution();
+        this.persistInstitutionWithGSCheck();
+    }
+
+    private persistInstitutionWithGSCheck(): void {
+        this.institutionRS.createInstitution(
+            this.institution,
+            this.beguStart,
+            this.betreuungsangebot,
+            this.adminMail,
+            this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
+        ).then(neueinstitution => {
+            this.institution = neueinstitution;
+            this.navigateBack();
+        }).catch((exception: TSExceptionReport[]) => {
+            if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
+                this.errorService.clearAll();
+                const adminRolle = 'TSRole_ADMIN_INSTITUTION';
+                const dialogConfig = new MatDialogConfig();
+                dialogConfig.data = {
+                    emailAdresse: this.adminMail,
+                    administratorRolle: adminRolle,
+                    gesuchstellerName: exception[0].argumentList[1],
+                };
+                this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
+                    .subscribe(answer => {
+                            if (answer !== true) {
+                                return;
+                            }
+                            this.log.warn(`Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen`
+                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
+                            this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
+                                () => {
+                                    this.persistInstitution();
+                                }
+                            );
+                        },
+                        () => {
+                        });
+            } else if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
+                this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
+                    () => {
+                        this.errorService.clearAll();
+                        this.persistInstitution();
+                    }
+                );
+            }
+        });
     }
 
     private persistInstitution(): void {
@@ -111,7 +165,7 @@ export class AddInstitutionComponent implements OnInit {
         ).then(neueinstitution => {
             this.institution = neueinstitution;
             this.navigateBack();
-        });
+            });
     }
 
     private initInstitution(): void {
