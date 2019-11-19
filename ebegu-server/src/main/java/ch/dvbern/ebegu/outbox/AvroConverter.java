@@ -18,16 +18,12 @@
 package ch.dvbern.ebegu.outbox;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Lists;
 import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileReader;
-import org.apache.avro.file.DataFileWriter;
-import org.apache.avro.file.SeekableByteArrayInput;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
@@ -45,41 +41,6 @@ public final class AvroConverter {
 	}
 
 	@Nonnull
-	public static <D extends SpecificRecordBase> byte[] toAvroData(@Nonnull D datum) {
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			DatumWriter<D> writer = new SpecificDatumWriter<>(datum.getSchema());
-			DataFileWriter<D> dataFileWriter = new DataFileWriter<>(writer);
-
-			dataFileWriter.create(datum.getSchema(), out);
-			dataFileWriter.append(datum);
-			dataFileWriter.flush();
-			dataFileWriter.close();
-
-			return out.toByteArray();
-		} catch (IOException e) {
-			throw new IllegalStateException("failed converting to avro", e);
-		}
-	}
-
-	@Nonnull
-	public static <D extends SpecificRecordBase> List<D> fromAvroData(@Nonnull Schema schema, @Nonnull byte[] avro) {
-		try {
-			DatumReader<D> reader = new SpecificDatumReader<>(schema);
-			SeekableByteArrayInput inputStream = new SeekableByteArrayInput(avro);
-			DataFileReader<D> dataFileReader = new DataFileReader<>(inputStream, reader);
-
-			List<D> datum = Lists.newArrayList(dataFileReader.iterator());
-
-			dataFileReader.close();
-
-			return datum;
-		} catch (IOException e) {
-			throw new IllegalStateException("failed converting from avro", e);
-		}
-	}
-
-	@Nonnull
 	public static <D extends SpecificRecordBase> byte[] toAvroBinary(@Nonnull D datum) {
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -91,19 +52,52 @@ public final class AvroConverter {
 			out.close();
 
 			return out.toByteArray();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new IllegalStateException("failed converting to avro", e);
 		}
 	}
 
 	@Nonnull
-	public static <D extends SpecificRecordBase> D fromAvroBinary(@Nonnull Schema schema, @Nonnull byte[] avro) {
+	public static <D extends SpecificRecordBase> D fromAvroBinary(
+		@Nonnull Schema writer,
+		@Nonnull Schema reader,
+		@Nonnull byte[] avro) {
 		try {
-			DatumReader<D> reader = new SpecificDatumReader<>(schema);
+			DatumReader<D> datumReader = new SpecificDatumReader<>(writer, reader);
+			Decoder decoder = DecoderFactory.get().binaryDecoder(avro, null);
+
+			return datumReader.read(null, decoder);
+		} catch (Exception e) {
+			throw new IllegalStateException("failed converting from avro", e);
+		}
+	}
+
+	/**
+	 * @deprecated DANGEROUS: cannot handle Schema changes, because it assumes writer schema matches schema of DTOs in
+	 * classpath. Only serves demonstration purposes.
+	 */
+	@Deprecated
+	@Nonnull
+	public static <D extends SpecificRecordBase> D fromAvroBinary(@Nonnull Schema writer, @Nonnull byte[] avro) {
+		try {
+			DatumReader<D> reader = new SpecificDatumReader<>(writer);
 			Decoder decoder = DecoderFactory.get().binaryDecoder(avro, null);
 
 			return reader.read(null, decoder);
-		} catch (IOException e) {
+		} catch (Exception e) {
+			throw new IllegalStateException("failed converting from avro", e);
+		}
+	}
+
+	@Nonnull
+	public static <D extends GenericRecord> D fromAvroBinaryGeneric(@Nonnull Schema schema, @Nonnull byte[] avro) {
+		try {
+
+			GenericDatumReader<D> reader = new GenericDatumReader<>(schema);
+			Decoder decoder = DecoderFactory.get().binaryDecoder(avro, null);
+
+			return reader.read(null, decoder);
+		} catch (Exception e) {
 			throw new IllegalStateException("failed converting from avro", e);
 		}
 	}

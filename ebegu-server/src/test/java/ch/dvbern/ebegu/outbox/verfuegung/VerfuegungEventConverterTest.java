@@ -96,6 +96,7 @@ public class VerfuegungEventConverterTest {
 			.where(ExportedEvent::getType, is("VerfuegungVerfuegt")))
 		);
 
+		//noinspection deprecation
 		VerfuegungEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		// Avro only serializes Instant with microsecond precision (opposed to nano)
