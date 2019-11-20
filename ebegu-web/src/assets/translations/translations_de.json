@@ -458,7 +458,7 @@
     "BETREUUNG_LOESCHEN": "Wollen Sie das Betreuungsangebot \"{{betreuungsangebottyp}}\" vom Kind {{kindname}} wirklich löschen?",
     "BETREUUNG_LOESCHEN_BESCHREIBUNG": "Alle verknüpfte Datenobjekte werden damit auch gelöscht",
     "PLATZBESTAETIGUNG_ANFORDERN": "Platzbestätigung anfordern",
-    "BESTAETIGEN": "Platz Bestätigen",
+    "PLATZ_BESTAETIGEN": "Platz Bestätigen",
     "ABWEISEN": "Platz Abweisen",
     "STORNIEREN": "Stornieren",
     "FALSCHE_ANGABEN": "Falsche Angaben",

@@ -458,7 +458,7 @@
     "BETREUUNG_LOESCHEN": "Souhaitez-vous vraiment supprimer l'offre de prise en charge \"{{betreuungsangebottyp}}\" pour {{kindname}} ?",
     "BETREUUNG_LOESCHEN_BESCHREIBUNG": "Toutes les données seront également aussi supprimées.",
     "PLATZBESTAETIGUNG_ANFORDERN": "DEMANDER UNE CONFIRMATION",
-    "BESTAETIGEN": "Confirmer la place",
+    "PLATZ_BESTAETIGEN": "Confirmer la place",
     "ABWEISEN": "Refuser la place",
     "STORNIEREN": "Annuler",
     "FALSCHE_ANGABEN": "Données erronées",
