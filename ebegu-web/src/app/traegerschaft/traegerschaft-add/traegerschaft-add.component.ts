@@ -16,9 +16,14 @@
  */
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
+import TSExceptionReport from '../../../models/TSExceptionReport';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
+import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
@@ -27,6 +32,8 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TraegerschaftAddComponent implements OnInit {
+
+    private readonly log: Log = LogFactory.createLog('TraegerschaftAddComponent');
 
     @ViewChild(NgForm) public form: NgForm;
 
@@ -37,6 +44,8 @@ export class TraegerschaftAddComponent implements OnInit {
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly benutzerRS: BenutzerRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -58,6 +67,47 @@ export class TraegerschaftAddComponent implements OnInit {
     }
 
     private save(): void {
+        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
+            .then(neueTraegerschaft => {
+                this.traegerschaft = neueTraegerschaft;
+                this.navigateBack();
+            }).catch((exception: TSExceptionReport[]) => {
+            if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
+                this.errorService.clearAll();
+                const adminRolle = 'TSRole_ADMIN_TRAEGERSCHAFT';
+                const dialogConfig = new MatDialogConfig();
+                dialogConfig.data = {
+                    emailAdresse: this.adminMail,
+                    administratorRolle: adminRolle,
+                    gesuchstellerName: exception[0].argumentList[1],
+                };
+                this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
+                    .subscribe(answer => {
+                            if (answer !== true) {
+                                return;
+                            }
+                            this.log.warn(`Der Gesuchsteller: ' +  ${exception[0].argumentList[1]} + wird einen neuen`
+                                + ` Rollen bekommen und seine Gesuch wird gelöscht werden!`);
+                            this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
+                                () => {
+                                    this.persistTraegerschaft();
+                                }
+                            );
+                        },
+                        () => {
+                        });
+            } else if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_NO_GESUCH') {
+                this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
+                    () => {
+                        this.errorService.clearAll();
+                        this.persistTraegerschaft();
+                    }
+                );
+            }
+        });
+    }
+
+    private persistTraegerschaft(): void {
         this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
             .then(neueTraegerschaft => {
                 this.traegerschaft = neueTraegerschaft;

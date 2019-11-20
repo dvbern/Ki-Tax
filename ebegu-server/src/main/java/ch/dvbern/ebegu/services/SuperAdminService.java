@@ -47,4 +47,10 @@ public interface SuperAdminService {
 	 */
 	@Nonnull
 	Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser);
+
+	/**
+	 * Löscht einen Benutzer von der System
+	 * @param benutzername
+	 */
+	void removeFallAndBenutzer(@Nonnull String benutzername);
 }
