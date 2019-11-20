@@ -536,6 +536,12 @@
                 <version>${version.hamcrest}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>eu.codearte.catch-exception</groupId>
+                <artifactId>catch-exception</artifactId>
+                <version>2.0</version>
+                <scope>test</scope>
+            </dependency>
             <!-- endregion -->
 
         </dependencies>
@@ -600,6 +606,11 @@
             <groupId>com.spotify</groupId>
             <artifactId>hamcrest-pojo</artifactId>
             <version>1.1.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.codearte.catch-exception</groupId>
+            <artifactId>catch-exception</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- endregion -->

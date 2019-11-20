@@ -37,7 +37,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -95,7 +95,7 @@ public class OutboxEventKafkaProducer {
 		props.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
 		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
 
-		Producer<String, SpecificRecordBase> producer = new KafkaProducer<>(props);
+		Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
 
 		events.stream()
 			.map(this::toProducerRecord)
@@ -123,14 +123,14 @@ public class OutboxEventKafkaProducer {
 	 * </p>
 	 */
 	@Nonnull
-	private ProducerRecord<String, SpecificRecordBase> toProducerRecord(@Nonnull OutboxEvent outboxEvent) {
+	private ProducerRecord<String, GenericRecord> toProducerRecord(@Nonnull OutboxEvent outboxEvent) {
 		String key = outboxEvent.getAggregateId();
 		String topic = outboxEvent.getAggregateType() + "Events";
 		String eventId = outboxEvent.getId();
 		String eventType = outboxEvent.getType();
 		byte[] payload = outboxEvent.getPayload();
 
-		SpecificRecordBase specificRecordBase = AvroConverter.fromAvroBinary(outboxEvent.getAvroSchema(), payload);
+		GenericRecord specificRecordBase = AvroConverter.fromAvroBinaryGeneric(outboxEvent.getAvroSchema(), payload);
 
 		// adding some metadata
 		Iterable<Header> headers = Arrays.asList(

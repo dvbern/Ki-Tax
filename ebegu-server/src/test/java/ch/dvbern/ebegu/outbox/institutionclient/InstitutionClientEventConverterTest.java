@@ -66,6 +66,7 @@ public class InstitutionClientEventConverterTest {
 	}
 
 	private void verifyPayload(@Nonnull ExportedEvent event) {
+		//noinspection deprecation
 		InstitutionClientEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		assertThat(specificRecord, is(pojo(InstitutionClientEventDTO.class)

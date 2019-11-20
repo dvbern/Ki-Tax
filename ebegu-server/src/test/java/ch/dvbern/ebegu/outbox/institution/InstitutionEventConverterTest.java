@@ -53,6 +53,7 @@ public class InstitutionEventConverterTest {
 			.where(ExportedEvent::getType, is("InstitutionChanged")))
 		);
 
+		//noinspection deprecation
 		InstitutionEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		assertThat(specificRecord, is(pojo(InstitutionEventDTO.class)
