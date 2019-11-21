@@ -357,23 +357,26 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if(!fallOpt.isPresent()){
 				//return error code keinen Gesusch, user can be deleted without warning
 				throw new BenutzerExistException(
-					KibonLogLevel.INFO,
+					KibonLogLevel.NONE,
 					benutzer.getUsername(),
 					benutzer.getFullName(),
 					ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+
 			} else {
 				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(fallOpt.get().getId());
 				boolean hasGesuchFreigegeben = false;
-				if(gesuchIdList.size() == 0){
+				if (gesuchIdList.isEmpty()) {
 					//return error code keinen Gesusch, user can be deleted without warning
 					throw new BenutzerExistException(
-						KibonLogLevel.INFO,
+						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
 				}
 				for (String id : gesuchIdList) {
-					Gesuch gs = gesuchService.findGesuch(id, false).get();
+					Gesuch gs = gesuchService.findGesuch(id, false)
+						.orElseThrow(() -> new EbeguRuntimeException(
+						"checkGesuchstellerHoehreRolleEinladen", "Gesuch nicht gefunden"));
 					if(gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
 						hasGesuchFreigegeben = true;
 						break;
@@ -381,13 +384,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				}
 				if (hasGesuchFreigegeben) {
 					throw new BenutzerExistException(
-						KibonLogLevel.INFO,
+						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH);
 				} else {
 					throw new BenutzerExistException(
-						KibonLogLevel.INFO,
+						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH);

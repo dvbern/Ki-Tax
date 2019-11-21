@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -426,7 +427,11 @@ public class BenutzerResource {
 	public Response deleteBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		superAdminService.removeFallAndBenutzer(username);
+		Benutzer eingeloggterBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException(
+			"deleteBenutzer", "No User is logged in"));
+
+		superAdminService.removeFallAndBenutzer(username, eingeloggterBenutzer);
 		return Response.ok().build();
 	}
 }
