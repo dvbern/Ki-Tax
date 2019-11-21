@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,16 +95,22 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public void removeFallAndBenutzer(@Nonnull String benutzername){
-		LOG.info("Der Benutzer mit Benutzername: " + benutzername + " wird gelöscht");
 		Benutzer benutzer = benutzerService.findBenutzer(benutzername).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			benutzername));
 
+		Benutzer eingeloggterBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+
+		LOG.warn("Der Benutzer mit Benutzername: {} und Rolle {} wird gelöscht durch Benutzer {} mit Rolle {}",
+			benutzername,
+			benutzer.getRole(),
+			eingeloggterBenutzer.getUsername(),
+			eingeloggterBenutzer.getRole());
+
 		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
-		if(fallOpt.isPresent()){
-			this.removeFall(fallOpt.get());
-		}
+		fallOpt.ifPresent(this::removeFall);
 		benutzerService.removeBenutzer(benutzername);
 	}
 }
