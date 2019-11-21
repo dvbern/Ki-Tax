@@ -30,7 +30,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Nous vous présentons nos salutations les meilleures.<br/>
-		Votre commune
+		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
