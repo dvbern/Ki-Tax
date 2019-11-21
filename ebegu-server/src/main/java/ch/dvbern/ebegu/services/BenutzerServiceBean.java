@@ -374,7 +374,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
 				}
 				for (String id : gesuchIdList) {
-					Gesuch gs = gesuchService.findGesuch(id, false).get();
+					Gesuch gs = gesuchService.findGesuch(id, false)
+						.orElseThrow(() -> new EbeguRuntimeException(
+						"checkGesuchstellerHoehreRolleEinladen", "Gesuch nicht gefunden"));
 					if(gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
 						hasGesuchFreigegeben = true;
 						break;
