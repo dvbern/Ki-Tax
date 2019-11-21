@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +42,16 @@ import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
+import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
+import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
+import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
+import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
+import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03;
+import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_04;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_05;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_06;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
@@ -65,8 +75,8 @@ import static org.junit.Assert.assertEquals;
 /**
  * Superklasse für BG-Rechner-Tests
  */
-@SuppressWarnings("UnusedAssignment")
-public class AbstractBGRechnerTest {
+@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+public abstract class AbstractBGRechnerTest {
 
 	protected BetreuungsgutscheinEvaluator evaluator;
 
@@ -85,7 +95,7 @@ public class AbstractBGRechnerTest {
 	public static BetreuungsgutscheinEvaluator createEvaluator(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde bern) {
-		Map<EinstellungKey, Einstellung> einstellungen = new HashMap<>();
+		Map<EinstellungKey, Einstellung> einstellungen = new EnumMap<>(EinstellungKey.class);
 
 		Einstellung paramMaxEinkommen =
 			new Einstellung(EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN, "160000", gesuchsperiode);
@@ -276,7 +286,7 @@ public class AbstractBGRechnerTest {
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar} auf korrekte berechnung zu
+	 * hilfsmethode um den {@link Testfall01_WaeltiDagmar} auf korrekte berechnung zu
 	 * pruefen
 	 */
 	public static void checkTestfall01WaeltiDagmar(Gesuch gesuch) {
@@ -290,10 +300,10 @@ public class AbstractBGRechnerTest {
 					assertEquals(53872, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal(80.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(80.00), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
+					assertZeitabschnitt(august, new BigDecimal("80.00"), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("80.00"), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
 					// Letzter Monat
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(80.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(80.00), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
+					assertZeitabschnitt(januar, new BigDecimal("80.00"), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("80.00"), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
 					// Kein Anspruch mehr ab Februar
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
 					assertZeitabschnitt(februar, MathUtil.DEFAULT.from(0.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
@@ -308,17 +318,17 @@ public class AbstractBGRechnerTest {
 					assertZeitabschnitt(januar, MathUtil.DEFAULT.from(0.00), 20, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
 					// Erster Monat
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
-					assertZeitabschnitt(februar, new BigDecimal(40.00), 100, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
+					assertZeitabschnitt(februar, new BigDecimal("40.00"), 100, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
 					// Letzter Monat
 					VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-					assertZeitabschnitt(juli, new BigDecimal(40.00), 100, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
+					assertZeitabschnitt(juli, new BigDecimal("40.00"), 100, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
 				}
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne} auf
+	 * hilfsmethode um den {@link Testfall02_FeutzYvonne} auf
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall02FeutzYvonne(Gesuch gesuch) {
@@ -333,11 +343,11 @@ public class AbstractBGRechnerTest {
 				assertEquals(113346, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal(40.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(august, new BigDecimal("40.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal(40.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(juli, new BigDecimal("40.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 			}
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
@@ -349,16 +359,16 @@ public class AbstractBGRechnerTest {
 				assertEquals(113346, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal(60.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
+				assertZeitabschnitt(august, new BigDecimal("60.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal(60.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
+				assertZeitabschnitt(juli, new BigDecimal("60.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia} auf
+	 * hilfsmethode um den {@link Testfall03_PerreiraMarcia} auf
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall03PerreiraMarcia(Gesuch gesuch) {
@@ -373,16 +383,16 @@ public class AbstractBGRechnerTest {
 				assertEquals(68678, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal(50.00), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
+				assertZeitabschnitt(august, new BigDecimal("50.00"), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal(50.00), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
+				assertZeitabschnitt(juli, new BigDecimal("50.00"), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura} auf
+	 * hilfsmethode um den {@link Testfall04_WaltherLaura} auf
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall04WaltherLaura(Gesuch gesuch) {
@@ -398,16 +408,16 @@ public class AbstractBGRechnerTest {
 					MathUtil.GANZZAHL.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal(50.00), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
+				assertZeitabschnitt(august, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal(50.00), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
+				assertZeitabschnitt(juli, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret} auf korrekte berechnung zu
+	 * hilfsmethode um den {@link Testfall05_LuethiMeret} auf korrekte berechnung zu
 	 * pruefen
 	 */
 	public static void checkTestfall05LuethiMeret(Gesuch gesuch) {
@@ -422,22 +432,22 @@ public class AbstractBGRechnerTest {
 				assertEquals(98830, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat 50%
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal(50.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
+				assertZeitabschnitt(august, new BigDecimal("50.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
 				// Letzter Monat 50%
 				VerfuegungZeitabschnitt dezember = verfuegung.getZeitabschnitte().get(4);
-				assertZeitabschnitt(dezember, new BigDecimal(50.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
+				assertZeitabschnitt(dezember, new BigDecimal("50.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
 				// Erster Monat 60 %
 				VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-				assertZeitabschnitt(januar, new BigDecimal(60.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
+				assertZeitabschnitt(januar, new BigDecimal("60.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("60.00"), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
 				// Letzter Monat 60 %
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal(60.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
+				assertZeitabschnitt(juli, new BigDecimal("60.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("60.00"), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora} auf
+	 * hilfsmethode um den {@link Testfall06_BeckerNora} auf
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall06BeckerNora(Gesuch gesuch) {
@@ -458,12 +468,12 @@ public class AbstractBGRechnerTest {
 			assertEquals(-7600, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 			// Erster Monat
 			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-			assertZeitabschnitt(august, new BigDecimal(100.00), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), 1600, 1488, 112);
+			assertZeitabschnitt(august, new BigDecimal("100.00"), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), 1600, 1488, 112);
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01} auf korrekte berechnung zu pruefen
+	 * hilfsmethode um den {@link Testfall_ASIV_01} auf korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall_ASIV_01(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
@@ -490,7 +500,7 @@ public class AbstractBGRechnerTest {
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02} auf korrekte berechnung zu pruefen
+	 * hilfsmethode um den {@link Testfall_ASIV_02} auf korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall_ASIV_02(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
@@ -517,7 +527,7 @@ public class AbstractBGRechnerTest {
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03} auf korrekte berechnung zu pruefen
+	 * hilfsmethode um den {@link Testfall_ASIV_03} auf korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall_ASIV_03(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
@@ -544,7 +554,7 @@ public class AbstractBGRechnerTest {
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall_ASIV_04} auf korrekte berechnung zu pruefen
+	 * hilfsmethode um den {@link Testfall_ASIV_04} auf korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall_ASIV_04(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();

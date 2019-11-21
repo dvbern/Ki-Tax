@@ -131,10 +131,14 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         } else {
             einstellungenTagesschule.modulTagesschuleGroups.push(group);
         }
-        EbeguUtil.handleSmarttablesUpdateBug(einstellungenTagesschule.modulTagesschuleGroups);
+        // This is a trick to force the list of module to reload when we add an element:
+        const element = document.getElementById('typ' + einstellungenTagesschule.id);
+        element.focus();
+        element.blur();
     }
 
-    public getIndexOfElementwithIdentifier(entityToSearch: TSModulTagesschuleGroup, listToSearchIn: Array<TSModulTagesschuleGroup>): number {
+    public getIndexOfElementwithIdentifier(entityToSearch: TSModulTagesschuleGroup,
+                                           listToSearchIn: Array<TSModulTagesschuleGroup>): number {
         if (EbeguUtil.isNullOrUndefined(entityToSearch)) {
             return -1;
         }

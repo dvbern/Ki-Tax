@@ -22,12 +22,12 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 
 /**
- * Konfiguration von Kurstool
+ * Konfiguration von kiBon
  */
 public interface EbeguConfiguration {
 
 	/**
-	 * @return true wenn sich die Applikation im Entwiklungsmodus befindet, false sonst
+	 * @return true wenn sich die Applikation im Entwicklungsmodus befindet, false sonst
 	 */
 	boolean getIsDevmode();
 
@@ -187,4 +187,7 @@ public interface EbeguConfiguration {
 
 	@Nonnull
 	Optional<String> getKafkaURL();
+
+	@Nonnull
+	String getSchemaRegistryURL();
 }

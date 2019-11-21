@@ -17,7 +17,6 @@ import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
-import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
@@ -85,22 +84,5 @@ describe('VerfuegungRS', () => {
                 expect(foundKind[0].id).toEqual(mockKind.id);
             });
         });
-        describe('saveVerfuegung', () => {
-            it('should save the given Verfuegung', () => {
-                const verfuegung = TestDataUtil.createVerfuegung();
-                $httpBackend.expectPUT(`${verfuegungRS.serviceURL}/${gesuchId}/${betreuungId}/false`).respond(
-                    ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
-                $httpBackend.expectGET(`/ebegu/api/v1/wizard-steps/${gesuchId}`).respond({});
-
-                let savedVerfuegung: TSVerfuegung;
-                verfuegungRS.saveVerfuegung(verfuegung, gesuchId, betreuungId, false).then(result => {
-                    savedVerfuegung = result;
-                });
-                $httpBackend.flush();
-                expect(savedVerfuegung).toBeDefined();
-                expect(savedVerfuegung.id).toEqual(verfuegung.id);
-            });
-        });
     });
-
 });

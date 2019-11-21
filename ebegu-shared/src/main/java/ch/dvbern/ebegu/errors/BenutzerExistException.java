@@ -15,24 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.outbox;
+package ch.dvbern.ebegu.errors;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 
-public final class EventConverterUtil {
+public class BenutzerExistException extends EbeguRuntimeException {
 
-	private EventConverterUtil() {
-		// util class
-	}
+	private static final long serialVersionUID = 430436378419395145L;
 
-	public static byte[] toJsonB(@Nonnull Object anything) {
-		try {
-			return ObjectMapperUtil.MAPPER.writeValueAsBytes(anything);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("failed converting to jsonb", e);
-		}
+	public <T extends AbstractEntity> BenutzerExistException(
+		@Nonnull KibonLogLevel logLevel,
+		@Nonnull String benutzerName,
+		@Nonnull String fullName,
+		@Nonnull ErrorCodeEnum errorCodeEnum) {
+
+		super(logLevel, null, errorCodeEnum,  benutzerName, fullName);
 	}
 }

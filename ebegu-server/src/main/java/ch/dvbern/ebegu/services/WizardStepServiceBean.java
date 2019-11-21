@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
@@ -103,6 +104,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private MailService mailService;
 	@Inject
 	private GesuchService gesuchService;
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Override
 	@Nonnull
@@ -489,12 +492,16 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			}
 
 			try {
-				if (!verfuegenWizardStep.getGesuch().isMutation()) {
-					// Erstgesuch
-					mailService.sendInfoVerfuegtGesuch(verfuegenWizardStep.getGesuch());
-				} else {
-					// Mutation
-					mailService.sendInfoVerfuegtMutation(verfuegenWizardStep.getGesuch());
+				GemeindeStammdaten gemeindeStammdaten =
+					gemeindeService.getGemeindeStammdatenByGemeindeId(verfuegenWizardStep.getGesuch().getDossier().getGemeinde().getId()).get();
+				if(gemeindeStammdaten.getBenachrichtigungBgEmailAuto()) {
+					if (!verfuegenWizardStep.getGesuch().isMutation()) {
+						// Erstgesuch
+						mailService.sendInfoVerfuegtGesuch(verfuegenWizardStep.getGesuch());
+					} else {
+						// Mutation
+						mailService.sendInfoVerfuegtMutation(verfuegenWizardStep.getGesuch());
+					}
 				}
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e, "Error sending Mail zu gesuchsteller", "");

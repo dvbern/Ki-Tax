@@ -818,6 +818,14 @@ export class EbeguRestUtil {
             restStammdaten.bic = stammdaten.bic;
             restStammdaten.iban = stammdaten.iban;
             restStammdaten.standardRechtsmittelbelehrung = stammdaten.standardRechtsmittelbelehrung;
+            restStammdaten.benachrichtigungBgEmailAuto = stammdaten.benachrichtigungBgEmailAuto;
+            restStammdaten.benachrichtigungTsEmailAuto = stammdaten.benachrichtigungTsEmailAuto;
+            restStammdaten.standardDokSignature = stammdaten.standardDokSignature;
+            restStammdaten.standardDokTitle = stammdaten.standardDokTitle;
+            restStammdaten.standardDokUnterschriftTitel = stammdaten.standardDokUnterschriftTitel;
+            restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
+            restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
+            restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -865,6 +873,14 @@ export class EbeguRestUtil {
             }
             stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
             stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
+            stammdatenTS.benachrichtigungBgEmailAuto = stammdatenFromServer.benachrichtigungBgEmailAuto;
+            stammdatenTS.benachrichtigungTsEmailAuto = stammdatenFromServer.benachrichtigungTsEmailAuto;
+            stammdatenTS.standardDokSignature = stammdatenFromServer.standardDokSignature;
+            stammdatenTS.standardDokTitle = stammdatenFromServer.standardDokTitle;
+            stammdatenTS.standardDokUnterschriftTitel = stammdatenFromServer.standardDokUnterschriftTitel;
+            stammdatenTS.standardDokUnterschriftName = stammdatenFromServer.standardDokUnterschriftName;
+            stammdatenTS.standardDokUnterschriftTitel2 = stammdatenFromServer.standardDokUnterschriftTitel2;
+            stammdatenTS.standardDokUnterschriftName2 = stammdatenFromServer.standardDokUnterschriftName2;
 
             return stammdatenTS;
         }
@@ -2530,27 +2546,6 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public verfuegungToRestObject(verfuegung: any, verfuegungTS: TSVerfuegung): any {
-        if (verfuegungTS) {
-            this.abstractMutableEntityToRestObject(verfuegung, verfuegungTS);
-            verfuegung.generatedBemerkungen = verfuegungTS.generatedBemerkungen;
-            verfuegung.manuelleBemerkungen = verfuegungTS.manuelleBemerkungen;
-            verfuegung.zeitabschnitte = this.zeitabschnittListToRestObject(verfuegungTS.zeitabschnitte);
-            verfuegung.kategorieKeinPensum = verfuegungTS.kategorieKeinPensum;
-            verfuegung.kategorieMaxEinkommen = verfuegungTS.kategorieMaxEinkommen;
-            verfuegung.kategorieNichtEintreten = verfuegungTS.kategorieNichtEintreten;
-            verfuegung.kategorieNormal = verfuegungTS.kategorieNormal;
-            return verfuegung;
-        }
-        return undefined;
-    }
-
-    private zeitabschnittListToRestObject(data: Array<TSVerfuegungZeitabschnitt>): Array<any> {
-        return data && Array.isArray(data)
-            ? data.map(item => this.zeitabschnittToRestObject({}, item))
-            : [];
-    }
-
     private parseVerfuegungZeitabschnitte(data: Array<any>): TSVerfuegungZeitabschnitt[] {
         if (!data) {
             return [];
@@ -2558,41 +2553,6 @@ export class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), item))
             : [this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), data)];
-    }
-
-    public zeitabschnittToRestObject(zeitabschnitt: any, zeitabschnittTS: TSVerfuegungZeitabschnitt): any {
-        if (zeitabschnittTS) {
-            this.abstractDateRangeEntityToRestObject(zeitabschnitt, zeitabschnittTS);
-            zeitabschnitt.abzugFamGroesse = zeitabschnittTS.abzugFamGroesse;
-            zeitabschnitt.anspruchberechtigtesPensum = zeitabschnittTS.anspruchberechtigtesPensum;
-            zeitabschnitt.bgPensum = zeitabschnittTS.bgPensum;
-            zeitabschnitt.anspruchspensumRest = zeitabschnittTS.anspruchspensumRest;
-            zeitabschnitt.bemerkungen = zeitabschnittTS.bemerkungen;
-            zeitabschnitt.betreuungspensum = zeitabschnittTS.betreuungspensum;
-            zeitabschnitt.betreuungsstunden = zeitabschnittTS.betreuungsstunden;
-            zeitabschnitt.elternbeitrag = zeitabschnittTS.elternbeitrag;
-            zeitabschnitt.erwerbspensumGS1 = zeitabschnittTS.erwerbspensumGS1;
-            zeitabschnitt.erwerbspensumGS2 = zeitabschnittTS.erwerbspensumGS2;
-            zeitabschnitt.fachstellenpensum = zeitabschnittTS.fachstellenpensum;
-            zeitabschnitt.massgebendesEinkommenVorAbzugFamgr = zeitabschnittTS.massgebendesEinkommenVorAbzugFamgr;
-            zeitabschnitt.famGroesse = zeitabschnittTS.famGroesse;
-            zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
-            zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
-            zeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten =
-                zeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten;
-            zeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
-                zeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
-            zeitabschnitt.verguenstigung = zeitabschnittTS.verguenstigung;
-            zeitabschnitt.minimalerElternbeitrag = zeitabschnittTS.minimalerElternbeitrag;
-            zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
-            zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
-            zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
-            zeitabschnitt.zuSpaetEingereicht = zeitabschnittTS.zuSpaetEingereicht;
-            zeitabschnitt.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten;
-            zeitabschnitt.sameAusbezahlteVerguenstigung = zeitabschnittTS.sameAusbezahlteVerguenstigung;
-            return zeitabschnitt;
-        }
-        return undefined;
     }
 
     public parseVerfuegungZeitabschnitt(
@@ -3021,6 +2981,7 @@ export class EbeguRestUtil {
             tsZahlungsauftrag.datumFaellig = DateUtil.localDateToMoment(zahlungsauftragFromServer.datumFaellig);
             tsZahlungsauftrag.datumGeneriert = DateUtil.localDateTimeToMoment(zahlungsauftragFromServer.datumGeneriert);
             tsZahlungsauftrag.betragTotalAuftrag = zahlungsauftragFromServer.betragTotalAuftrag;
+            tsZahlungsauftrag.hasNegativeZahlungen = zahlungsauftragFromServer.hasNegativeZahlungen;
             tsZahlungsauftrag.zahlungen = this.parseZahlungen(zahlungsauftragFromServer.zahlungen);
             tsZahlungsauftrag.gemeinde = this.parseGemeinde(new TSGemeinde(), zahlungsauftragFromServer.gemeinde);
 
@@ -3210,7 +3171,7 @@ export class EbeguRestUtil {
             einstellungenTagesschuleTS.modulTagesschuleTyp = einstellungFromServer.modulTagesschuleTyp;
             einstellungenTagesschuleTS.modulTagesschuleGroups =
                 this.parseModuleTagesschuleGroupsArray(einstellungFromServer.modulTagesschuleGroups);
-
+            einstellungenTagesschuleTS.erlaeuterung = einstellungFromServer.erlaeuterung;
             return einstellungenTagesschuleTS;
         }
         return undefined;
@@ -3235,6 +3196,7 @@ export class EbeguRestUtil {
             restEinstellung.modulTagesschuleTyp = einstellungTagesschuleTS.modulTagesschuleTyp;
             restEinstellung.modulTagesschuleGroups =
                 this.moduleTagesschuleGroupsArrayToRestObject(einstellungTagesschuleTS.modulTagesschuleGroups);
+            restEinstellung.erlaeuterung = einstellungTagesschuleTS.erlaeuterung;
             return restEinstellung;
         }
         return undefined;

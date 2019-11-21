@@ -22,13 +22,16 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import com.google.common.base.Objects;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.avro.Schema;
 
 /**
  * An OutboxEvent is used to persist an {@link ExportedEvent}, allowing that the event is persisted in the same
@@ -43,43 +46,51 @@ public class OutboxEvent extends AbstractEntity {
 
 	@Nonnull
 	@Column(nullable = false, updatable = false)
-	private final @NotNull String aggregateType;
+	private final @NotEmpty String aggregateType;
 
 	@Nonnull
 	@Column(nullable = false, updatable = false)
-	private final @NotNull String aggregateId;
+	private final @NotEmpty String aggregateId;
 
 	@Nonnull
 	@Column(nullable = false, updatable = false)
-	private final @NotNull String type;
+	private final @NotEmpty String type;
 
 	@Nonnull
 	@Lob
 	@Column(nullable = false, updatable = false)
 	private final @NotNull byte[] payload;
 
+	@Nonnull
+	@Lob
+	@Convert(converter = SchemaConverter.class)
+	@Column(nullable = false, updatable = false)
+	private final @NotNull Schema avroSchema;
+
 	/**
-	 * @deprecated just for JPA
+	 * just for JPA
 	 */
-	@Deprecated
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "just for JPA")
-	public OutboxEvent() {
-		this.aggregateType = null;
-		this.aggregateId = null;
-		this.type = null;
+	protected OutboxEvent() {
+		this.aggregateType = "";
+		this.aggregateId = "";
+		this.type = "";
 		this.payload = null;
+		this.avroSchema = null;
 	}
 
 	public OutboxEvent(
 		@Nonnull String aggregateType,
 		@Nonnull String aggregateId,
 		@Nonnull String type,
-		@Nonnull byte[] jsonPayload) {
+		@Nonnull byte[] jsonPayload,
+		@Nonnull Schema avroSchema) {
 		this.aggregateType = aggregateType;
 		this.aggregateId = aggregateId;
 		this.type = type;
 		this.payload = Arrays.copyOf(jsonPayload, jsonPayload.length);
+		this.avroSchema = avroSchema;
 	}
 
 	@Override
@@ -105,12 +116,19 @@ public class OutboxEvent extends AbstractEntity {
 
 		return Objects.equal(getAggregateType(), that.getAggregateType()) &&
 			Objects.equal(getAggregateId(), that.getAggregateId()) &&
-			Objects.equal(getType(), that.getType());
+			Objects.equal(getType(), that.getType()) &&
+			Objects.equal(getAvroSchema(), that.getAvroSchema());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), getAggregateType(), getAggregateId(), getType(), getPayload());
+		return Objects.hashCode(
+			super.hashCode(),
+			getAggregateType(),
+			getAggregateId(),
+			getType(),
+			getPayload(),
+			getAvroSchema());
 	}
 
 	@Nonnull
@@ -131,5 +149,10 @@ public class OutboxEvent extends AbstractEntity {
 	@Nonnull
 	public byte[] getPayload() {
 		return Arrays.copyOf(payload, payload.length);
+	}
+
+	@Nonnull
+	public Schema getAvroSchema() {
+		return avroSchema;
 	}
 }

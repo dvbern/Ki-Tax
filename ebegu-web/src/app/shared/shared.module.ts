@@ -29,6 +29,7 @@ import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
+import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -96,7 +97,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         NavbarComponent,
         StammdatenHeaderComponent,
         UiViewComponent,
-        KiBonGuidedTourComponent
+        KiBonGuidedTourComponent,
+        DvNgGesuchstellerDialogComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
@@ -110,6 +112,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         GemeindeMultiselectComponent,
         NavbarComponent,
         StammdatenHeaderComponent,
+        DvNgGesuchstellerDialogComponent,
     ],
     exports: [
         CommonModule,

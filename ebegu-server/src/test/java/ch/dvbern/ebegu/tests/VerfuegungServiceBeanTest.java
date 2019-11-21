@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
@@ -35,8 +36,6 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -54,6 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static ch.dvbern.ebegu.rechner.AbstractBGRechnerTest.checkTestfall01WaeltiDagmar;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Tests fuer die Klasse VerfuegungService
@@ -79,16 +79,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private InstitutionService instService;
 
 	@Inject
-	private BetreuungService betreuungService;
-
-	@Inject
 	private TestfaelleService testfaelleService;
 
-	private Gesuchsperiode gesuchsperiode;
+	private Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 
 	@Before
 	public void setUp() {
-		gesuchsperiode = createGesuchsperiode();
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
@@ -96,12 +93,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void saveVerfuegung() {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
-		TestDataUtil.createGemeindeStammdaten(betreuung.extractGesuch().extractGemeinde(), persistence);
 		Assert.assertNull(betreuung.getVerfuegung());
-		Verfuegung verfuegung = new Verfuegung(betreuung);
-		verfuegung.setBetreuung(betreuung);
-		betreuung.setVerfuegung(verfuegung);
-		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(verfuegung, betreuung.getId(), false);
+		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);
@@ -124,7 +117,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			LocalDate.of(1980, Month.MARCH, 25),
 			null,
 			gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertEquals(35, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
@@ -232,7 +224,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			null,
 			gesuchsperiode
 		).getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		return persistence.merge(betreuung);
 	}
 
@@ -244,16 +235,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			null,
 			gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		return createAndPersistVerfuegteVerfuegung(betreuung).getVerfuegung();
+		return requireNonNull(createAndPersistVerfuegteVerfuegung(betreuung).getVerfuegung());
 	}
 
-	private Betreuung createAndPersistVerfuegteVerfuegung(Betreuung betreuung) {
-		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
-		Betreuung storedBetr = persistence.merge(betreuung);
-		Assert.assertNull(storedBetr.getVerfuegung());
-		Verfuegung verfuegung = new Verfuegung(storedBetr);
+	@Nonnull
+	private Betreuung createAndPersistVerfuegteVerfuegung(@Nonnull Betreuung betreuung) {
 		final Verfuegung createdVerf =
-			verfuegungService.persistVerfuegung(verfuegung, storedBetr.getId(), Betreuungsstatus.VERFUEGT);
+		verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
 		return createdVerf.getBetreuung();
 	}
 

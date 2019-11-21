@@ -22,6 +22,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import org.apache.avro.Schema;
 
 public class InstitutionChangedEvent implements ExportedEvent {
 
@@ -31,9 +32,16 @@ public class InstitutionChangedEvent implements ExportedEvent {
 	@Nonnull
 	private final byte[] institution;
 
-	public InstitutionChangedEvent(@Nonnull String institutionId, @Nonnull byte[] institution) {
+	@Nonnull
+	private final Schema schema;
+
+	public InstitutionChangedEvent(
+		@Nonnull String institutionId,
+		@Nonnull byte[] institution,
+		@Nonnull Schema schema) {
 		this.institutionId = institutionId;
 		this.institution = Arrays.copyOf(institution, institution.length);
+		this.schema = schema;
 	}
 
 	@Nonnull
@@ -58,5 +66,11 @@ public class InstitutionChangedEvent implements ExportedEvent {
 	@Override
 	public byte[] getPayload() {
 		return Arrays.copyOf(institution, institution.length);
+	}
+
+	@Nonnull
+	@Override
+	public Schema getSchema() {
+		return schema;
 	}
 }

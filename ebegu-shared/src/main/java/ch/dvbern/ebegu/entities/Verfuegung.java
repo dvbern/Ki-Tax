@@ -91,7 +91,18 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	public Verfuegung(Betreuung betreuung) {
 		this.betreuung = betreuung;
+		setId(betreuung.getId());
 		betreuung.setVerfuegung(this);
+	}
+
+	/**
+	 * MapsId fuehrt dazu, dass als PK in der Datenbank der FK der Betreuung verwendet wird. Damit wir im Code trotzdem getId() verwenden
+	 * koennen wird die Methode hier ueberschrieben
+	 */
+	@Nonnull
+	@Override
+	public String getId() {
+		return betreuung.getId();
 	}
 
 	@Nullable

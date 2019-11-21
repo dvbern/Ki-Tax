@@ -48,7 +48,7 @@
     </div>
 </div>
 
-<dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true">
+<dv-accordion class="gesuchsperiodenList" allow-multiple-sections="true" id="moduleListProEinstellungen">
     <dv-accordion-tab
         *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule; trackBy:
         trackById; let i = index"
@@ -60,12 +60,11 @@
         </tab-title>
         <tab-body>
             <div>
-
                 <div class="row" *ngIf="editMode">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label translate for="typ">MODUL_CREATION_TYP</label>
-                            <mat-select id="typ" name="typ" class="form-control"
+                            <label translate for="typ{{einstellungGP?.id}}">MODUL_CREATION_TYP</label>
+                            <mat-select id="typ{{einstellungGP?.id}}" name="typ" class="form-control"
                                         [(ngModel)]="einstellungGP.modulTagesschuleTyp"
                                         (selectionChange)="changeModulTagesschuleTyp(einstellungGP)">
                                 <mat-option *ngFor="let option of getModulTagesschuleTypen()"
@@ -104,7 +103,11 @@
 								{{group.intervall | translate}}
 							</td>
 							<td *ngIf="editMode">
-								<button type="button" (click)="removeModulTagesschuleGroup(einstellungGP, group)">
+                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                    <i class="fa fa-lg fa-edit"></i>
+                                </button>
+                                &nbsp;
+								<button type="button" class="dv-btn dv-btn-operation" (click)="removeModulTagesschuleGroup(einstellungGP, group)">
 									<i class="fa fa-lg fa-trash-o"></i>
 								</button>
 							</td>
@@ -117,11 +120,28 @@
                     </tbody>
                 </table>
 
-                <button *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)" type="button" (click)="addModulTagesschuleGroup(einstellungGP)" class="dv-btn">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="md-no-float" translate="BETREUUNG_TAGESSCHULE_ERLAEUTERUNG"
+                                   for="erlaeuterung_{{einstellungGP?.id}}">
+                            </label>
+                            <textarea name="erlaeuterung_{{einstellungGP?.id}}"
+                                      class="form-control " rows="3"
+                                      id="erlaeuterung_{{einstellungGP?.id}}"
+                                      [(ngModel)]="einstellungGP.erlaeuterung"
+                                      [disabled]="!editMode"
+                                      maxlength="4000">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)" type="button"
+                        (click)="addModulTagesschuleGroup(einstellungGP)" class="dv-btn dv-btn-operation">
                     <i class="fa fa-lg fa-plus-circle"></i>
                     <span translate>MODUL_HINZUFUEGEN</span>
                 </button>
-
             </div>
 
         </tab-body>

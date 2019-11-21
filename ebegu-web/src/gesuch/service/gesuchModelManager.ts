@@ -1233,7 +1233,10 @@ export class GesuchModelManager {
     }
 
     public saveVerfuegung(ignorieren: boolean): IPromise<TSVerfuegung> {
-        return this.verfuegungRS.saveVerfuegung(this.getVerfuegenToWorkWith(),
+        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(this.getVerfuegenToWorkWith())
+            ? '' : this.getVerfuegenToWorkWith().manuelleBemerkungen;
+        return this.verfuegungRS.saveVerfuegung(
+            manuelleBemerkungen,
             this.gesuch.id,
             this.getBetreuungToWorkWith().id,
             ignorieren)
@@ -1262,7 +1265,7 @@ export class GesuchModelManager {
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {
-        return this.verfuegungRS.nichtEintreten(this.getVerfuegenToWorkWith(),
+        return this.verfuegungRS.nichtEintreten(
             this.gesuch.id,
             this.getBetreuungToWorkWith().id).then((response: TSVerfuegung) => {
             this.setVerfuegenToWorkWith(response);

@@ -70,6 +70,9 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
         // Alle die aktuell gesetzt sind, werden als angeboten initialisiert
         if (EbeguUtil.isNotNullOrUndefined(this.module)) {
             this.initializeTempModuleIfAngeboten();
+        } else {
+            this.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
+            this.wirdPaedagogischBetreut = true;
         }
         // Alle die jetzt noch nicht gesetzt sind, müssen neu erstellt werden (nicht angeboten)
         this.initializeTempModuleIfNichtAngeboten();
@@ -149,10 +152,10 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
     public getModuleOrdered(): TSModulTagesschule[] {
         const sorted = this.module;
         sorted.sort((a, b) => {
-                const indexOfA = MAP_SORTED_BY_DAY_OF_WEEK.get(a.wochentag);
-                const indexOfB = MAP_SORTED_BY_DAY_OF_WEEK.get(b.wochentag);
-                return indexOfA.toString().localeCompare(indexOfB.toString());
-            });
+            const indexOfA = MAP_SORTED_BY_DAY_OF_WEEK.get(a.wochentag);
+            const indexOfB = MAP_SORTED_BY_DAY_OF_WEEK.get(b.wochentag);
+            return indexOfA.toString().localeCompare(indexOfB.toString());
+        });
         this.module = sorted;
         return this.module;
     }

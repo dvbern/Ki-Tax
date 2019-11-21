@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -42,7 +43,9 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
@@ -52,6 +55,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
@@ -92,9 +96,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(VerfuegungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT,
-	ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+	ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
+	STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 public class VerfuegungServiceBean extends AbstractBaseService implements VerfuegungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungServiceBean.class);
@@ -104,6 +108,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private GesuchService gesuchService;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -138,10 +145,21 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung verfuegen(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
-		setZahlungsstatus(verfuegung, betreuungId, ignorieren);
-		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.VERFUEGT);
-		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
+	public Verfuegung verfuegen(
+		@Nonnull String gesuchId,
+		@Nonnull String betreuungId,
+		@Nullable String manuelleBemerkungen,
+		boolean ignorieren,
+		boolean sendEmail) {
+
+		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
+		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
+		String bemerkungen = manuelleBemerkungen == null ? verfuegung.getGeneratedBemerkungen() : manuelleBemerkungen;
+		verfuegung.setManuelleBemerkungen(bemerkungen);
+		setZahlungsstatus(verfuegung, ignorieren);
+		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, Betreuungsstatus.VERFUEGT);
+		//noinspection ResultOfMethodCallIgnored
+		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 
 		// Dokument erstellen
 		Betreuung betreuung = persistedVerfuegung.getBetreuung();
@@ -149,98 +167,131 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		event.fire(verfuegungEventConverter.of(persistedVerfuegung));
 
-		mailService.sendInfoBetreuungVerfuegt(betreuung);
+		if (sendEmail) {
+			mailService.sendInfoBetreuungVerfuegt(betreuung);
+		}
+
 		return persistedVerfuegung;
 	}
 
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public void generateVerfuegungDokument(@Nonnull Betreuung betreuung) {
+	/**
+	 * Generiert das Verfuegungsdokument.
+	 *
+	 * @param betreuung Betreuung, fuer die das Dokument generiert werden soll.
+	 */
+	private void generateVerfuegungDokument(@Nonnull Betreuung betreuung) {
 		try {
-			generatedDokumentService
-				.getVerfuegungDokumentAccessTokenGeneratedDokument(betreuung.extractGesuch(), betreuung, "", true);
+			Gesuch gesuch = betreuung.extractGesuch();
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getVerfuegungDokumentAccessTokenGeneratedDokument(gesuch, betreuung, "", true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
-			throw new EbeguRuntimeException("generateVerfuegungDokument", "Verfuegung-Dokument konnte nicht erstellt werden"
-				+ betreuung.getId(), e);
+			throw new EbeguRuntimeException(
+				"generateVerfuegungDokument",
+				"Verfuegung-Dokument konnte nicht erstellt werden"
+					+ betreuung.getId(),
+				e);
 		}
 	}
 
-	@SuppressWarnings("LocalVariableNamingConvention")
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
-		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
-		Objects.requireNonNull(betreuung);
-		final Gesuch gesuch = betreuung.extractGesuch();
+	/**
+	 * Aendert den Status der Zahlung auf NEU oder IGNORIEREND fuer alle Zahlungen wo etwas korrigiert wurde.
+	 * Wird auf NEU gesetzt wenn ignorieren==false, sonst wird es auf IGNORIEREND gesetzt.
+	 */
+	private void setZahlungsstatus(@Nonnull Verfuegung verfuegung, boolean ignorieren) {
+		Betreuung betreuung = verfuegung.getBetreuung();
+		Gesuch gesuch = betreuung.extractGesuch();
 
 		// Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA und TAGESELTERN aktualisiert werden
-		if (gesuch.isMutation() && betreuung.isAngebotAuszuzahlen()) {
-			Optional<Verfuegung> vorgaengerAusbezahlteVerfuegungOpt = findVorgaengerAusbezahlteVerfuegung(betreuung);
+		if (!gesuch.isMutation() || !betreuung.isAngebotAuszuzahlen()) {
+			return;
+		}
 
-			if (vorgaengerAusbezahlteVerfuegungOpt.isPresent()) {
+		findVorgaengerAusbezahlteVerfuegung(betreuung)
+			.ifPresent(vorgaenger -> setZahlungsstatus(verfuegung, vorgaenger, ignorieren));
+	}
 
-				final Verfuegung vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlteVerfuegungOpt.get();
+	private void setZahlungsstatus(
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull Verfuegung vorgaenger,
+		boolean ignorieren) {
 
-				for (VerfuegungZeitabschnitt verfuegungZeitabschnittNeu : verfuegung.getZeitabschnitte()) {
+		verfuegung.getZeitabschnitte()
+			.forEach(zeitabschnitt -> setZahlungsstatus(
+				zeitabschnitt,
+				findZeitabschnitteOnVerfuegung(zeitabschnitt.getGueltigkeit(), vorgaenger),
+				ignorieren));
+	}
 
-					List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerAusbezahlteVerfuegung =
-						findZeitabschnitteOnVerfuegung(verfuegungZeitabschnittNeu.getGueltigkeit(), vorgaengerAusbezahlteVerfuegung);
+	private void setZahlungsstatus(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaenger,
+		boolean ignorieren) {
 
-					Optional<VerfuegungZeitabschnitt> zeitabschnittSameGueltigkeitSameBetrag = VerfuegungUtil.findZeitabschnittSameGueltigkeitSameBetrag
-						(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung, verfuegungZeitabschnittNeu);
+		Optional<VerfuegungZeitabschnitt> zeitabschnittSameGueltigkeitSameBetrag =
+			VerfuegungUtil.findZeitabschnittSameGueltigkeitSameBetrag(vorgaenger, zeitabschnitt);
 
-					// Folgende Informationen werden fuer die Berechnung des Status benoetigt:
-					boolean sameGueltigkeitSameBetrag = zeitabschnittSameGueltigkeitSameBetrag.isPresent();
-					boolean zeitraumBereitsVerrechnet = areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung); // Alles ausser NEU
-					boolean voraengerIgnoriertUndAusbezahlt = isThereAnyIgnoriert(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung);
+		// Folgende Informationen werden fuer die Berechnung des Status benoetigt:
+		boolean sameGueltigkeitSameBetrag = zeitabschnittSameGueltigkeitSameBetrag.isPresent();
+		// Alles ausser NEU
+		boolean zeitraumBereitsVerrechnet = areAllZeitabschnitteVerrechnet(vorgaenger);
+		boolean voraengerIgnoriertUndAusbezahlt = isThereAnyIgnoriert(vorgaenger);
 
-					LOG.debug("Verfüge {}, sameGueltigkeitSameBetrag={}, zeitraumBereitsVerrechnet={}, voraengerIgnoriertUndAusbezahlt={}",
-						verfuegungZeitabschnittNeu.getGueltigkeit().toRangeString(), sameGueltigkeitSameBetrag, zeitraumBereitsVerrechnet,
-						voraengerIgnoriertUndAusbezahlt);
+		LOG.debug(
+			"Verfüge {}, sameGueltigkeitSameBetrag={}, zeitraumBereitsVerrechnet={}, "
+				+ "voraengerIgnoriertUndAusbezahlt={}",
+			zeitabschnitt.getGueltigkeit().toRangeString(),
+			sameGueltigkeitSameBetrag,
+			zeitraumBereitsVerrechnet,
+			voraengerIgnoriertUndAusbezahlt);
 
-					// Es gelten folgende Regeln:
-					// - Wenn ein Zeitraum bereits einmal ignoriert und ausbezahlt wurde, muss er auch kuenftig immer ausbezahlt werden
-					// - Wenn ein Zeitraum noch nie verrechnet wurde, erhaelt er den Status neu
-					// - Wenn der Zeitraum verrechnet wurde -> VERRECHNEND (wir muessen nochmals auszahlen), *ausser* es wurde
-					// 		das "ignorieren" Flag gesetzt -> IGNORIEREND
-					// 		=> Wenn der Betrag nicht geändert hat, sollten wir nicht auf IGNORIEREND setzen, egal wie das Flag war.
-					// 		Wichtig ist, dass auf dieser Verfuegung (die noch nicht ausbezahlt war) nie ein "behandelter" Status gesetzt wird
-					//		da wir sonst bei einer weiteren Mutation die falsche Vorgängerverfügung verwenden!
-					if (voraengerIgnoriertUndAusbezahlt) {
-						verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
-					} else if (!zeitraumBereitsVerrechnet) {
-						verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
-					} else if (!sameGueltigkeitSameBetrag) {
-						// Wenn der Betrag und die Gueltigkeit gleich bleibt: Wir wurden gar nicht gefragt, ob wir
-						// ignorieren wollen -> wir lassen den letzten bekannten Status!
-						if (ignorieren ) {
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
-						} else {
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
-						}
-					} else  {
-						// Es war verrechnet UND derselbe Betrag. Wir muessen den Status trotzdem auf etwas "nicht-behandeltes"
-						// zuruecksetzen!
-						if (verfuegungZeitabschnittNeu.getZahlungsstatus().isVerrechnet()) {
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
-						}
-					}
-
-					VerfuegungZeitabschnitt vorgaener = CollectionUtils.isNotEmpty(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung) ?
-						zeitabschnitteOnVorgaengerAusbezahlteVerfuegung.get(0) : null;
-					VerfuegungsZeitabschnittZahlungsstatus statusVorgaenger = vorgaener != null ? vorgaener.getZahlungsstatus() : null;
-					LOG.debug("Zeitabschnitt {} VORHER={} NEU={}",
-						verfuegungZeitabschnittNeu.getGueltigkeit().toRangeString(),
-						statusVorgaenger,
-						verfuegungZeitabschnittNeu.getZahlungsstatus());
-				}
+		// Es gelten folgende Regeln:
+		// - Wenn ein Zeitraum bereits einmal ignoriert und ausbezahlt wurde, muss er auch kuenftig immer
+		//   ausbezahlt werden
+		// - Wenn ein Zeitraum noch nie verrechnet wurde, erhaelt er den Status neu
+		// - Wenn der Zeitraum verrechnet wurde -> VERRECHNEND (wir muessen nochmals auszahlen), *ausser*
+		//     es wurde das "ignorieren" Flag gesetzt -> IGNORIEREND
+		// 	   => Wenn der Betrag nicht geändert hat, sollten wir nicht auf IGNORIEREND setzen, egal wie das
+		// 	   Flag war.
+		//     Wichtig ist, dass auf dieser Verfuegung (die noch nicht ausbezahlt war) nie ein "behandelter"
+		//     Status gesetzt wird da wir sonst bei einer weiteren Mutation die falsche Vorgängerverfügung
+		//     verwenden!
+		if (voraengerIgnoriertUndAusbezahlt) {
+			zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
+		} else if (!zeitraumBereitsVerrechnet) {
+			zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		} else if (!sameGueltigkeitSameBetrag) {
+			// Wenn der Betrag und die Gueltigkeit gleich bleibt: Wir wurden gar nicht gefragt, ob wir
+			// ignorieren wollen -> wir lassen den letzten bekannten Status!
+			if (ignorieren) {
+				zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
+			} else {
+				zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
+			}
+		} else {
+			// Es war verrechnet UND derselbe Betrag. Wir muessen den Status trotzdem auf etwas
+			// "nicht-behandeltes"
+			// zuruecksetzen!
+			if (zeitabschnitt.getZahlungsstatus().isVerrechnet()) {
+				zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
 			}
 		}
+
+		VerfuegungZeitabschnitt vorgaener = CollectionUtils.isNotEmpty(vorgaenger) ? vorgaenger.get(0) : null;
+
+		VerfuegungsZeitabschnittZahlungsstatus statusVorgaenger =
+			vorgaener != null ? vorgaener.getZahlungsstatus() : null;
+
+		LOG.debug(
+			"Zeitabschnitt {} VORHER={} NEU={}",
+			zeitabschnitt.getGueltigkeit().toRangeString(),
+			statusVorgaenger,
+			zeitabschnitt.getZahlungsstatus());
 	}
 
 	private boolean areAllZeitabschnitteVerrechnet(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		return zeitabschnitte.stream()
-			.allMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf());
+			.allMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus()
+				.isBereitsBehandeltInZahlungslauf());
 	}
 
 	private boolean isThereAnyIgnoriert(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
@@ -270,21 +321,24 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung nichtEintreten(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId) {
+	public Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId) {
+
+		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
+
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
-		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-			zeitabschnitt.setAnspruchberechtigtesPensum(0);
-		}
+		verfuegung.getZeitabschnitte()
+			.forEach(z -> z.setAnspruchberechtigtesPensum(0));
 		verfuegung.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
-		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, betreuungId, Betreuungsstatus.NICHT_EINGETRETEN);
-		wizardStepService.updateSteps(persistedVerfuegung.getBetreuung().extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
+		Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, Betreuungsstatus.NICHT_EINGETRETEN);
+		//noinspection ResultOfMethodCallIgnored
+		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen
 		Betreuung betreuung = verfuegung.getBetreuung();
 		try {
-			generatedDokumentService
-				.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuung, true);
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuung, true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException("nichtEintreten", "Nichteintretensverfuegung-Dokument konnte nicht "
 				+ "erstellt werden" + betreuungId, e);
@@ -292,15 +346,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return persistedVerfuegung;
 	}
 
-	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull String betreuungId, @Nonnull Betreuungsstatus betreuungsstatus) {
-		Objects.requireNonNull(verfuegung);
-		Objects.requireNonNull(betreuungId);
+	private Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull Betreuungsstatus betreuungsstatus) {
 
 		setVerfuegungsKategorien(verfuegung);
-		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
+		Betreuung betreuung = verfuegung.getBetreuung();
 		betreuung.setBetreuungsstatus(betreuungsstatus);
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		betreuung.setGueltig(true);
@@ -322,8 +372,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Verfuegung> findVerfuegung(@Nonnull String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Verfuegung a = persistence.find(Verfuegung.class, id);
@@ -333,8 +384,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Collection<Verfuegung> getAllVerfuegungen() {
 		Collection<Verfuegung> verfuegungen = criteriaQueryHelper.getAll(Verfuegung.class);
 		authorizer.checkReadAuthorizationVerfuegungen(verfuegungen);
@@ -343,27 +395,30 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, STEUERAMT, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gesuch calculateVerfuegung(@Nonnull Gesuch gesuch) {
-		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
+		finanzielleSituationService.calculateFinanzDaten(gesuch);
 
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+		Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+		Gemeinde gemeinde = gesuch.extractGemeinde();
+		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
+		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gemeinde, gesuchsperiode, sprache.getLocale());
 
-		final List<Rule> rules = rulesService
-			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), sprache.getLocale());
-
-		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
+		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
+			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
+			true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
-		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
 		initializeVorgaengerVerfuegungen(gesuch);
 
 		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
-		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen reicht hier glaub
+		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen
+		// reicht hier glaub
 		return gesuch;
 	}
 
@@ -376,7 +431,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		final List<Rule> rules = rulesService
 			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), sprache.getLocale());
-		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
+		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
+			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
+			true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
 		initializeVorgaengerVerfuegungen(gesuch);
@@ -459,9 +516,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<LocalDate> findVorgaengerVerfuegungDate(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
 
@@ -507,7 +564,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
@@ -538,10 +595,14 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	/**
-	 * Mithilfe der Methode isSamePersistedValues schaut ob der uebergebene Zeitabschnitt bereits in der uebergebenen Liste existiert.
+	 * Mithilfe der Methode isSamePersistedValues schaut ob der uebergebene Zeitabschnitt bereits in der uebergebenen
+	 * Liste existiert.
 	 * Alle Felder muessen verglichen werden.
 	 */
-	private boolean isNotInZeitabschnitteList(VerfuegungZeitabschnitt zeitabschnitt, List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
+	private boolean isNotInZeitabschnitteList(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
+
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : vorgaengerZeitabschnitte) {
 			if (verfuegungZeitabschnitt.isSamePersistedValues(zeitabschnitt)) {
 				return false;
@@ -566,5 +627,21 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			}
 		}
 		return lastVerfuegungsZeitabschnitte;
+	}
+
+	@Nonnull
+	private Verfuegung calculateAndExtractVerfuegung(@Nonnull String gesuchId, @Nonnull String betreuungId) {
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", gesuchId));
+		// Wir muessen hier die Berechnung der Verfuegung nochmals neu vornehmen
+		Gesuch gesuchWithCalcVerfuegung = calculateVerfuegung(gesuch);
+		// Die berechnete Verfügung ermitteln
+		Verfuegung verfuegungToPersist = gesuchWithCalcVerfuegung.extractAllBetreuungen().stream()
+			.filter(betreuung -> betreuungId.equals(betreuung.getId()))
+			.findFirst()
+			.map(Betreuung::getVerfuegung)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", betreuungId));
+
+		return verfuegungToPersist;
 	}
 }

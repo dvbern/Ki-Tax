@@ -36,15 +36,23 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.common.serialization.StringSerializer;
 
-import static ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil.MESSAGE_HEADER_EVENT_ID;
-import static ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil.MESSAGE_HEADER_EVENT_TYPE;
+import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_ID;
+import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_TYPE;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.ACKS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
 @Stateless
 public class OutboxEventKafkaProducer {
@@ -81,12 +89,13 @@ public class OutboxEventKafkaProducer {
 		}
 
 		Properties props = new Properties();
-		props.setProperty("bootstrap.servers", ebeguConfiguration.getKafkaURL().get());
-		props.setProperty("acks", "all");
-		props.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-		props.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
+		props.setProperty(BOOTSTRAP_SERVERS_CONFIG, ebeguConfiguration.getKafkaURL().get());
+		props.setProperty(ACKS_CONFIG, "all");
+		props.setProperty(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		props.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
+		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
 
-		Producer<String, byte[]> producer = new KafkaProducer<>(props);
+		Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
 
 		events.stream()
 			.map(this::toProducerRecord)
@@ -97,13 +106,31 @@ public class OutboxEventKafkaProducer {
 		events.forEach(entityManager::remove);
 	}
 
+	/**
+	 * There are three approaches I considered for OutboxEvent AVRO payload with schema registry:
+	 * <ol>
+	 *    <li>Use KafkaAvroSerializer when creating an OutboxEvent.<br>
+	 *        Downside: the business transaction requires a running schema registry.</li>
+	 *    <li>Write a custom KafkaAvroSerializer, which does the schema registration & caching and just forwards the
+	 *    already serialized avro binary payload.<br>
+	 *        Downside: must keep track of API changes of the schema registry.</li>
+	 *    <li>Deserialize the avro payload and use KafkaAvroSerializer in a standard fashion.<br>
+	 *        Downside: performance penalty from redundant deserialization followed by another serialization</li>
+	 * </ol>
+	 * <p>
+	 * The last approach was chosen, because it is the most stable solution and as long as we are not dealing with
+	 * lots and lots of events the pefromance penalty should be negligible.
+	 * </p>
+	 */
 	@Nonnull
-	private ProducerRecord<String, byte[]> toProducerRecord(@Nonnull OutboxEvent outboxEvent) {
+	private ProducerRecord<String, GenericRecord> toProducerRecord(@Nonnull OutboxEvent outboxEvent) {
 		String key = outboxEvent.getAggregateId();
 		String topic = outboxEvent.getAggregateType() + "Events";
 		String eventId = outboxEvent.getId();
 		String eventType = outboxEvent.getType();
 		byte[] payload = outboxEvent.getPayload();
+
+		GenericRecord specificRecordBase = AvroConverter.fromAvroBinaryGeneric(outboxEvent.getAvroSchema(), payload);
 
 		// adding some metadata
 		Iterable<Header> headers = Arrays.asList(
@@ -116,6 +143,6 @@ public class OutboxEventKafkaProducer {
 			.toInstant()
 			.toEpochMilli();
 
-		return new ProducerRecord<>(topic, null, timestamp, key, payload, headers);
+		return new ProducerRecord<>(topic, null, timestamp, key, specificRecordBase, headers);
 	}
 }

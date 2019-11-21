@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,8 +33,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
+import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -69,6 +72,10 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 	@Column(nullable = false)
 	private ModulTagesschuleTyp modulTagesschuleTyp = ModulTagesschuleTyp.DYNAMISCH;
 
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String erlaeuterung;
 
 	public EinstellungenTagesschule() {
 	}
@@ -129,11 +136,21 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		this.modulTagesschuleTyp = modulTagesschuleTyp;
 	}
 
+	@Nullable
+	public String getErlaeuterung() {
+		return erlaeuterung;
+	}
+
+	public void setErlaeuterung(@Nullable String erlaeuterung) {
+		this.erlaeuterung = erlaeuterung;
+	}
+
 	@Nonnull
 	public EinstellungenTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		EinstellungenTagesschule copy = new EinstellungenTagesschule();
 		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
 		copy.setGesuchsperiode(gesuchsperiode);
+		copy.setErlaeuterung(this.getErlaeuterung());
 		copy.setModulTagesschuleTyp(this.getModulTagesschuleTyp());
 		if (CollectionUtils.isNotEmpty(this.getModulTagesschuleGroups())) {
 			copy.setModulTagesschuleGroups(new TreeSet<>());

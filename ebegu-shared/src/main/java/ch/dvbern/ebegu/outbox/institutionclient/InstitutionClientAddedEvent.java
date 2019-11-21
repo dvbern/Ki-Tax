@@ -19,10 +19,15 @@ package ch.dvbern.ebegu.outbox.institutionclient;
 
 import javax.annotation.Nonnull;
 
+import org.apache.avro.Schema;
+
 public class InstitutionClientAddedEvent extends AbstractInstitutionClientEvent {
 
-	public InstitutionClientAddedEvent(@Nonnull String institutionId, @Nonnull byte[] institutionClient) {
-		super(institutionId, institutionClient);
+	public InstitutionClientAddedEvent(
+		@Nonnull String institutionId,
+		@Nonnull byte[] institutionClient,
+		@Nonnull Schema schema) {
+		super(institutionId, institutionClient, schema);
 	}
 
 	@Nonnull

@@ -25,4 +25,5 @@ export class TSEinstellungenTagesschule extends TSAbstractEntity {
     public gesuchsperiode: TSGesuchsperiode;
     public modulTagesschuleTyp: TSModulTagesschuleTyp;
     public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
+    public erlaeuterung: string;
 }
