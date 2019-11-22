@@ -387,6 +387,13 @@ public class BetreuungResource {
 			betreuungService.removeBetreuung(converter.toEntityId(betreuungJAXPId));
 			return Response.ok().build();
 		}
+		Optional<? extends AbstractAnmeldung> anmeldung = betreuungService.findAnmeldung(betreuungJAXPId.getId());
+		if(anmeldung.isPresent()){
+			resourceHelper.assertGesuchStatusForBenutzerRole(anmeldung.get().extractGesuch());
+			betreuungService.removeAnmeldung(converter.toEntityId(betreuungJAXPId));
+			return Response.ok().build();
+		}
+
 		throw new EbeguEntityNotFoundException("removeBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID "
 			+ "invalid: " + betreuungJAXPId.getId());
 	}

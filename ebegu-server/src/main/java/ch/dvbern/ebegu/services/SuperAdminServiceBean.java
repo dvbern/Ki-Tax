@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
@@ -25,15 +27,21 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -44,6 +52,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @RunAs(UserRoleName.SUPER_ADMIN)
 public class SuperAdminServiceBean implements SuperAdminService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(SuperAdminServiceBean.class.getSimpleName());
+
 	@Inject
 	private GesuchService gesuchService;
 
@@ -52,6 +62,9 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	@Override
 	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
@@ -76,5 +89,24 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser) {
 		return gesuchService.updateGesuch(gesuch, saveInStatusHistory, saveAsUser);
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public void removeFallAndBenutzer(@Nonnull String benutzernameToRemove, @Nonnull Benutzer eingeloggterBenutzer){
+		Benutzer benutzer = benutzerService.findBenutzer(benutzernameToRemove).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"removeBenutzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			benutzernameToRemove));
+
+		LOG.warn("Der Benutzer mit Benutzername: {} und Rolle {} wird gelöscht durch Benutzer {} mit Rolle {}",
+			benutzernameToRemove,
+			benutzer.getRole(),
+			eingeloggterBenutzer.getUsername(),
+			eingeloggterBenutzer.getRole());
+
+		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
+		fallOpt.ifPresent(this::removeFall);
+		benutzerService.removeBenutzer(benutzernameToRemove);
 	}
 }

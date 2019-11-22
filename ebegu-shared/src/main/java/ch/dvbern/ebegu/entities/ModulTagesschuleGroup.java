@@ -36,7 +36,10 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
@@ -52,6 +55,7 @@ import org.hibernate.envers.Audited;
 @CheckTimeRange
 @Audited
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "bezeichnung_id", name = "UK_bezeichnung_id"))
 public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<ModulTagesschuleGroup> {
 
 	private static final long serialVersionUID = -8403411439182708718L;
@@ -71,8 +75,9 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	private String identifier;
 
 	@NotNull @Nonnull
-	@Column(nullable = false)
-	private String bezeichnung;
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_bezeichnung_id"))
+	private TextRessource bezeichnung = new TextRessource();
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -99,7 +104,8 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private Integer reihenfolge;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modulTagesschuleGroup", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "modulTagesschuleGroup", fetch =
+		FetchType.LAZY)
 	@OrderBy("wochentag")
 	private Set<ModulTagesschule> module = new TreeSet<>();
 
@@ -166,11 +172,11 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	}
 
 	@Nonnull
-	public String getBezeichnung() {
+	public TextRessource getBezeichnung() {
 		return bezeichnung;
 	}
 
-	public void setBezeichnung(@Nonnull String bezeichnung) {
+	public void setBezeichnung(@Nonnull TextRessource bezeichnung) {
 		this.bezeichnung = bezeichnung;
 	}
 
@@ -230,7 +236,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		ModulTagesschuleGroup copy = new ModulTagesschuleGroup();
 		copy.setModulTagesschuleName(this.getModulTagesschuleName());
 		copy.setIdentifier(UUID.randomUUID().toString());
-		copy.setBezeichnung(this.getBezeichnung());
+		copy.setBezeichnung(this.getBezeichnung().copyTextRessource());
 		copy.setZeitVon(this.getZeitVon());
 		copy.setZeitBis(this.getZeitBis());
 		copy.setVerpflegungskosten(this.getVerpflegungskosten());

@@ -21,7 +21,7 @@
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <div class="form-group">
                             <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
                                           [(ngModel)]="altBGAdresse"
@@ -136,6 +136,119 @@
                     <div class="form-group">
                         <h3 translate>BEGU_START</h3>
                         <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <mat-checkbox id="benachrichtigungBgEmailAuto_id" name="benachrichtigungBgEmailAuto_id"
+                                      [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
+                            <li class="fa fa-info-circle"
+                                matTooltip="{{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
+                                matTooltipPosition="right"></li>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <mat-checkbox id="standardDokSignature_id" name="standardDokSignature_id"
+                                          [(ngModel)]="stammdaten.standardDokSignature">
+                                {{'STANDARD_DOK_SIGNATURE'|translate}}
+                                <li class="fa fa-info-circle"
+                                    matTooltip="{{'STANDARD_DOK_SIGNATURE_HELP'|translate}}"
+                                    matTooltipPosition="right"></li>
+                            </mat-checkbox>
+                        </div>
+                        <div *ngIf="!stammdaten.standardDokSignature">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                    <div>
+                                        <div class="form-group">
+                                            <label translate for="standardDokTitle_id">STANDARD_DOK_TITLE</label>
+                                            <input id="standardDokTitle_id"
+                                                   type="text"
+                                                   name="standardDokTitle_id"
+												   #standardDokTitle="ngModel"
+                                                   [(ngModel)]="stammdaten.standardDokTitle"
+                                                   [maxlength]="255"
+                                                   class="form-control">
+                                            <dv-error-messages [errorObject]="standardDokTitle.errors"
+                                                               inputId="standardDokTitle_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Unterschrift 1 Titel-->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate
+                                               for="standardDokUnterschriftTitel_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
+                                        <input id="standardDokUnterschriftTitel_id" type="text"
+                                               name="standardDokUnterschriftTitel_id"
+											   #standardDokUnterschriftTitel="ngModel"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
+                                               [maxlength]="255" class="form-control">
+                                        <dv-error-messages [errorObject]="standardDokUnterschriftTitel.errors"
+                                                           inputId="standardDokUnterschriftTitel_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Unterschrift 1 Name -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate for="standardDokUnterschriftName_id">
+                                            STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
+                                        <input id="standardDokUnterschriftName_id"
+                                               type="text"
+                                               name="standardDokUnterschriftName_id"
+											   #standardDokUnterschriftName="ngModel"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftName"
+                                               [maxlength]="255"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="standardDokUnterschriftName.errors"
+                                                           inputId="standardDokUnterschriftName_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Unterschrift 2 Titel-->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate
+                                               for="standardDokUnterschriftTitel2_id">
+                                            STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
+                                        <input id="standardDokUnterschriftTitel2_id" type="text"
+                                               name="standardDokUnterschriftTitel2_id"
+											   #standardDokUnterschriftTitel2="ngModel"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
+                                               [maxlength]="255" class="form-control">
+                                        <dv-error-messages [errorObject]="standardDokUnterschriftTitel2.errors"
+                                                           inputId="standardDokUnterschriftTitel2_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Unterschrift 2 Name -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate for="standardDokUnterschriftName2_id">
+                                            STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
+                                        <input id="standardDokUnterschriftName2_id"
+                                               type="text"
+                                               name="standardDokUnterschriftName2_id"
+											   #standardDokUnterschriftName2="ngModel"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftName2"
+                                               [maxlength]="255"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="standardDokUnterschriftName2.errors"
+                                                           inputId="standardDokUnterschriftName2_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -260,42 +373,132 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <dv-accordion class="konfigurationList" allow-multiple-sections="true">
-                        <dv-accordion-tab
-                            *ngFor="let konf of konfigurationsListe; let i = index"
-                            [tabid]="i">
-                            <tab-title>
-                                <div class="message-header">
-                                    <p class="fa fa-angle-right"></p>{{konf.gesuchsperiodeName}}
-                                </div>
-                            </tab-title>
-                            <tab-body>
-                                <div class="row">
-                                    <!-- readonly -->
-                                    <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                    <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
+                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
+                    </h3>
+                    <h3 *ngIf="!stammdaten.benachrichtigungBgEmailAuto">
+                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
+                    </h3>
+                    <p></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div *ngIf="stammdaten.standardDokSignature">
+                            <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
+                        </div>
+                        <div *ngIf="!stammdaten.standardDokSignature">
+                            <div class="row">
+                                 <div class="col-sm-6">
+                                     <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
+                                    <div>
                                         <div class="form-group">
-                                            <!-- BG bis Schulstufe -->
-                                            <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
-                                            <!-- Kontingentierung -->
-                                            <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
-                                               class="line-through">{{getKonfigKontingentierungString()}}</p>
-                                            <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
-                                            <p *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
+                                            <label translate for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
+                                            <input id="standardDokTitleDisplay_id"
+                                                   type="text"
+                                                   name="standardDokTitleDisplay_id"
+                                                   [(ngModel)]="stammdaten.standardDokTitle"
+                                                   class="form-control"
+                                                    disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Unterschrift 1 Titel-->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate
+                                               for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
+                                        <input id="standardDokUnterschriftTitelDisplay_id" type="text"
+                                               name="standardDokUnterschriftTitelDisplay_id"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
+                                               class="form-control" disabled="true">
+                                    </div>
+                                </div>
+                                <!-- Unterschrift 1 Name -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate for="standardDokUnterschriftNameDisplay_id">
+                                            STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
+                                        <input id="standardDokUnterschriftNameDisplay_id"
+                                               type="text"
+                                               name="standardDokUnterschriftNameDisplay_id"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftName"
+                                               class="form-control" disabled="true">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Unterschrift 2 Titel-->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate
+                                               for="standardDokUnterschriftTitel2Display_id">
+                                            STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
+                                        <input id="standardDokUnterschriftTitel2Display_id" type="text"
+                                               name="standardDokUnterschriftTitel2Display_id"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
+                                               class="form-control" disabled="true">
+                                    </div>
+                                </div>
+                                <!-- Unterschrift 2 Name -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label translate for="standardDokUnterschriftName2Display_id">
+                                            STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
+                                        <input id="standardDokUnterschriftName2Display_id"
+                                               type="text"
+                                               name="standardDokUnterschriftName2Display_id"
+                                               [(ngModel)]="stammdaten.standardDokUnterschriftName2"
+                                               class="form-control" disabled="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <dv-accordion class="konfigurationList" allow-multiple-sections="true">
+            <dv-accordion-tab
+                *ngFor="let konf of konfigurationsListe; let i = index"
+                [tabid]="i">
+                <tab-title>
+                    <div class="message-header">
+                        <p class="fa fa-angle-right"></p>{{konf.gesuchsperiodeName}}
+                    </div>
+                </tab-title>
+                <tab-body>
+                    <div class="row">
+                        <!-- readonly -->
+                        <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <div class="form-group">
+                                <!-- BG bis Schulstufe -->
+                                <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
+                                <!-- Kontingentierung -->
+                                <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
+                                   class="line-through">{{getKonfigKontingentierungString()}}</p>
+                                <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
+                                <p *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
                                                 <span translate
                                                       [translateParams]="{valueMandant:
                                                   konfigurationsListe[i].erwerbspensumZuschlagMax, value:
                                                   konfigurationsListe[i].erwerbspensumZuschlag}">
                                                     EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
                                                 </span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </tab-body>
-                        </dv-accordion-tab>
-                    </dv-accordion>
-                </div>
-            </div>
-        </fieldset>
-    </ng-template>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </tab-body>
+            </dv-accordion-tab>
+        </dv-accordion>
+    </div>
+</div>
+</fieldset>
+</ng-template>
 </div>

@@ -87,4 +87,11 @@ public class TextRessource extends AbstractMutableEntity {
 		return Objects.equals(getTextDeutsch(), otherTextRessource.getTextDeutsch()) &&
 			Objects.equals(getTextFranzoesisch(), otherTextRessource.getTextFranzoesisch());
 	}
+
+	public TextRessource copyTextRessource() {
+		TextRessource copy = new TextRessource();
+		copy.setTextDeutsch(this.getTextDeutsch());
+		copy.setTextFranzoesisch(this.getTextFranzoesisch());
+		return copy;
+	}
 }

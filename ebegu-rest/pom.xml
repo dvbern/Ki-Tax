@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2019.14.2</version>
+        <version>2019.15.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -95,6 +95,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.microprofile.health</groupId>
+            <artifactId>microprofile-health-api</artifactId>
+            <!--<scope>provided</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>ch.dvbern.oss.healthcheck.gc</groupId>
+            <artifactId>gc-health-check</artifactId>
+        </dependency>
+        <dependency>
             <!-- Fuer DB-Skripts (TransactionTimeout) -->
             <groupId>org.jboss.ejb3</groupId>
             <artifactId>jboss-ejb3-ext-api</artifactId>
@@ -126,7 +135,6 @@
             <!-- to export jsonschemas -->
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jsonSchema</artifactId>
-            <version>${version.jackson}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

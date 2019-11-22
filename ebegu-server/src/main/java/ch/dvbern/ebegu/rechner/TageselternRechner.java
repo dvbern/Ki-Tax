@@ -21,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -93,5 +94,11 @@ public class TageselternRechner extends AbstractBGRechner {
 		@Nonnull Boolean besonderebeduerfnisse) {
 
 		return besonderebeduerfnisse ? parameterDTO.getZuschlagBehinderungProStd() : BigDecimal.ZERO;
+	}
+
+	@Nonnull
+	@Override
+	protected PensumUnits getZeiteinheit() {
+		return PensumUnits.HOURS;
 	}
 }

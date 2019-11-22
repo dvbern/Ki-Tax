@@ -43,7 +43,8 @@ public class OutboxEventSender {
 			event.getAggregateType(),
 			event.getAggregateId(),
 			event.getType(),
-			event.getPayload()
+			event.getPayload(),
+			event.getSchema()
 		);
 
 		entityManager.persist(outboxEvent);

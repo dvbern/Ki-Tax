@@ -17,17 +17,18 @@
 
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import EbeguUtil from '../utils/EbeguUtil';
-import {TSDayOfWeek} from './enums/TSDayOfWeek';
+import {MAP_SORTED_BY_DAY_OF_WEEK, TSDayOfWeek} from './enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from './enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from './enums/TSModulTagesschuleName';
 import TSAbstractEntity from './TSAbstractEntity';
 import TSModulTagesschule from './TSModulTagesschule';
+import TSTextRessource from './TSTextRessource';
 
 export default class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     public modulTagesschuleName: TSModulTagesschuleName;
     public identifier: string;
-    public bezeichnung: string;
+    public bezeichnung: TSTextRessource = new TSTextRessource();
     public zeitVon: string;
     public zeitBis: string;
     public verpflegungskosten: number;
@@ -69,6 +70,9 @@ export default class TSModulTagesschuleGroup extends TSAbstractEntity {
         // Alle die aktuell gesetzt sind, werden als angeboten initialisiert
         if (EbeguUtil.isNotNullOrUndefined(this.module)) {
             this.initializeTempModuleIfAngeboten();
+        } else {
+            this.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
+            this.wirdPaedagogischBetreut = true;
         }
         // Alle die jetzt noch nicht gesetzt sind, müssen neu erstellt werden (nicht angeboten)
         this.initializeTempModuleIfNichtAngeboten();
@@ -140,5 +144,19 @@ export default class TSModulTagesschuleGroup extends TSAbstractEntity {
             && EbeguUtil.isNotNullOrUndefined(this.zeitBis)
             && EbeguUtil.isNotNullOrUndefined(this.intervall)
             && this.module.length > 0;
+    }
+
+    /**
+     * Sortiert die Module dieser Group nach Wochentag und gibt sie zurück.
+     */
+    public getModuleOrdered(): TSModulTagesschule[] {
+        const sorted = this.module;
+        sorted.sort((a, b) => {
+            const indexOfA = MAP_SORTED_BY_DAY_OF_WEEK.get(a.wochentag);
+            const indexOfB = MAP_SORTED_BY_DAY_OF_WEEK.get(b.wochentag);
+            return indexOfA.toString().localeCompare(indexOfB.toString());
+        });
+        this.module = sorted;
+        return this.module;
     }
 }

@@ -17,20 +17,16 @@
 
 package ch.dvbern.ebegu.outbox.institutionclient;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.enums.ExternalClientType;
+import ch.dvbern.ebegu.outbox.AvroConverter;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.databind.JsonNode;
+import ch.dvbern.kibon.exchange.commons.institutionclient.InstitutionClientEventDTO;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonObject;
-import static com.spotify.hamcrest.jackson.JsonMatchers.jsonText;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -44,7 +40,7 @@ public class InstitutionClientEventConverterTest {
 	private static final String INSTITUTION_ID = "1";
 
 	@Test
-	public void testAddedEvent() throws Exception {
+	public void testAddedEvent() {
 		InstitutionClientAddedEvent event = converter.clientAddedEventOf(INSTITUTION_ID, CLIENT);
 
 		assertThat(event, exportedEventMatcher("ClientAdded"));
@@ -53,7 +49,7 @@ public class InstitutionClientEventConverterTest {
 	}
 
 	@Test
-	public void testRemovedEvent() throws Exception {
+	public void testRemovedEvent() {
 		InstitutionClientRemovedEvent event = converter.clientRemovedEventOf(INSTITUTION_ID, CLIENT);
 
 		assertThat(event, exportedEventMatcher("ClientRemoved"));
@@ -69,13 +65,14 @@ public class InstitutionClientEventConverterTest {
 			.where(ExportedEvent::getType, is(expectedType)));
 	}
 
-	private void verifyPayload(@Nonnull ExportedEvent event) throws IOException {
-		JsonNode jsonNode = ObjectMapperUtil.MAPPER.readTree(event.getPayload());
+	private void verifyPayload(@Nonnull ExportedEvent event) {
+		//noinspection deprecation
+		InstitutionClientEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
-		assertThat(jsonNode, is(jsonObject()
-			.where("institutionId", is(jsonText(INSTITUTION_ID)))
-			.where("clientName", is(jsonText(CLIENT.getClientName())))
-			.where("clientType", is(jsonText((CLIENT.getType().name()))))
+		assertThat(specificRecord, is(pojo(InstitutionClientEventDTO.class)
+			.where(InstitutionClientEventDTO::getInstitutionId, is(INSTITUTION_ID))
+			.where(InstitutionClientEventDTO::getClientName, is(CLIENT.getClientName()))
+			.where(InstitutionClientEventDTO::getClientType, is(CLIENT.getType().name()))
 		));
 	}
 }

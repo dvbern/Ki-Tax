@@ -94,7 +94,6 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		return BatchStatus.FAILED.toString();
 	}
 
-	@SuppressWarnings("UnnecessaryLocalVariable")
 	@Nonnull
 	private UploadFileInfo triggerReportGeneration(ReportVorlage workJobType) throws ExcelMergeException, MergeDocException, URISyntaxException, IOException {
 

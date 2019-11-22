@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.outbox.institution;
 
 import java.util.List;
 
+import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -33,10 +34,12 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
+@RunAs(UserRoleName.SUPER_ADMIN)
 public class InstitutionEventGenerator {
 
 	@Inject

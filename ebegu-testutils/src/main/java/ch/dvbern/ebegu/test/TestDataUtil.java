@@ -16,8 +16,10 @@
 package ch.dvbern.ebegu.test;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +66,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
@@ -88,13 +91,17 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -120,6 +127,9 @@ import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
+import ch.dvbern.ebegu.enums.ModulTagesschuleName;
+import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -132,6 +142,7 @@ import ch.dvbern.ebegu.testfaelle.TestFall12_Mischgesuch;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
+import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -370,23 +381,24 @@ public final class TestDataUtil {
 
 	@Nonnull
 	public static Gemeinde getGemeindeParis(@Nonnull Persistence persistence) {
+		GemeindeStammdaten stammdatenParis = getGemeindeStammdatenParis(persistence);
+		return stammdatenParis.getGemeinde();
+	}
+
+	public static GemeindeStammdaten getGemeindeStammdatenParis(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
 			gemeinde = createGemeindeParis();
 			persistence.persist(gemeinde.getMandant());
-			return persistence.persist(gemeinde);
+			gemeinde = persistence.persist(gemeinde);
 		}
-		return gemeinde;
-	}
-
-	@Nullable
-	public static Gemeinde getGemeindeLondon(@Nonnull Persistence persistence) {
-		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_LONDON_ID);
-		if (gemeinde == null) {
-			gemeinde = createGemeindeLondon();
-			return persistence.persist(gemeinde);
+		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, GEMEINDE_PARIS_ID);
+		if (stammdaten == null) {
+			stammdaten = createGemeindeStammdaten(gemeinde);
+			stammdaten.setId(GEMEINDE_PARIS_ID);
+			stammdaten = persistence.merge(stammdaten);
 		}
-		return gemeinde;
+		return stammdaten;
 	}
 
 	@Nonnull
@@ -399,6 +411,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99998L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
+		stammdaten.setId(GEMEINDE_PARIS_ID);
 		return gemeinde;
 	}
 
@@ -412,6 +426,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99999L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
+		stammdaten.setId(GEMEINDE_LONDON_ID);
 		return gemeinde;
 	}
 
@@ -479,11 +495,116 @@ public final class TestDataUtil {
 			BetreuungsangebotTyp.KITA);
 	}
 
-	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleBern() {
-		return createInstitutionStammdaten(
+	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleBern(Gesuchsperiode gesuchsperiode) {
+		return createTagesschuleInstitutionStammdaten(
 			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE,
-			"Tagesschule Bern",
-			BetreuungsangebotTyp.TAGESSCHULE);
+			"Tagesschule Bern", gesuchsperiode
+			);
+	}
+
+	private static InstitutionStammdaten createTagesschuleInstitutionStammdaten(@Nonnull String id,
+		@Nonnull String name,@Nonnull Gesuchsperiode gesuchsperiode) {
+		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
+		instStammdaten.setId(id);
+		instStammdaten.setMail(TESTMAIL);
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
+		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+		instStammdaten.setInstitution(createDefaultInstitution());
+		instStammdaten.getInstitution().setName(name);
+		instStammdaten.setAdresse(createDefaultAdresse());
+
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = new InstitutionStammdatenTagesschule();
+		institutionStammdatenTagesschule.setGemeinde(createGemeindeParis());
+
+		//modul Tagesschule Group Vormittag
+		TextRessource vormittagText = new TextRessource();
+		vormittagText.setTextDeutsch("Vormittag");
+		vormittagText.setTextFranzoesisch("Matin");
+		ModulTagesschuleGroup vormittag = createModulTagesschuleGroup(vormittagText ,
+			ModulTagesschuleIntervall.WOECHENTLICH,
+			"4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuX", "3.00", 8, 0, 12,0);
+
+		//modul Tagesschule Group Nachmittag
+		TextRessource nachmittagText = new TextRessource();
+		nachmittagText.setTextDeutsch("Nachmittag");
+		nachmittagText.setTextFranzoesisch("Après-midi");
+		ModulTagesschuleGroup nachmittag = createModulTagesschuleGroup(nachmittagText, ModulTagesschuleIntervall.WOECHENTLICH,
+			"4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuY", null, 13, 0, 16,0);
+
+		//modul Tagesschule Group Mittag
+		TextRessource mittagText = new TextRessource();
+		mittagText.setTextDeutsch("Mittag");
+		mittagText.setTextFranzoesisch("Midi");
+		ModulTagesschuleGroup mittag = createModulTagesschuleGroup(mittagText, ModulTagesschuleIntervall.WOECHENTLICH,
+			"4y69g9PhD9mXguXcPAwlFinnfo6RTdyuzWuZ", "10.00", 12, 0, 13,0);
+
+		//Einstellungen Tagesschule
+		EinstellungenTagesschule einstellungenTagesschule = new EinstellungenTagesschule();
+		einstellungenTagesschule.setGesuchsperiode(gesuchsperiode);
+		einstellungenTagesschule.setModulTagesschuleTyp(ModulTagesschuleTyp.DYNAMISCH);
+		einstellungenTagesschule.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschule);
+
+		vormittag.setEinstellungenTagesschule(einstellungenTagesschule);
+		nachmittag.setEinstellungenTagesschule(einstellungenTagesschule);
+		mittag.setEinstellungenTagesschule(einstellungenTagesschule);
+
+		Set<ModulTagesschuleGroup> modulTSGroupSet = new TreeSet<>();
+		modulTSGroupSet.add(vormittag);
+		modulTSGroupSet.add(mittag);
+		modulTSGroupSet.add(nachmittag);
+
+		einstellungenTagesschule.setModulTagesschuleGroups(modulTSGroupSet);
+
+		Set<EinstellungenTagesschule> einstellungenTagesschuleSet = new TreeSet<>();
+		einstellungenTagesschuleSet.add(einstellungenTagesschule);
+		institutionStammdatenTagesschule.setEinstellungenTagesschule(einstellungenTagesschuleSet);
+
+		instStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschule);
+
+		return instStammdaten;
+	}
+
+	private static ModulTagesschuleGroup createModulTagesschuleGroup(@Nonnull TextRessource bezeichnung,
+		@Nonnull ModulTagesschuleIntervall intervall, @Nonnull String identifier,@Nullable String verpflegungskosten, @Nonnull int startHour,
+		@Nonnull int startMinute, @Nonnull int stopHour, @Nonnull int stopMinute){
+		ModulTagesschuleGroup mtg = new ModulTagesschuleGroup();
+		mtg.setBezeichnung(bezeichnung);
+		mtg.setIntervall(intervall);
+		mtg.setIdentifier(identifier);
+		mtg.setReihenfolge(0);
+		mtg.setModulTagesschuleName(ModulTagesschuleName.DYNAMISCH);
+		if(verpflegungskosten != null) {
+			mtg.setVerpflegungskosten(new BigDecimal(verpflegungskosten));
+		}
+		mtg.setWirdPaedagogischBetreut(false);
+		mtg.setZeitVon(LocalTime.of(startHour,startMinute));
+		mtg.setZeitBis(LocalTime.of(stopHour,stopMinute));
+
+		//modul Tagesschule
+		Set<ModulTagesschule> modulTSSet = new TreeSet<>();
+
+		ModulTagesschule monday = new ModulTagesschule();
+		monday.setWochentag(DayOfWeek.MONDAY);
+		monday.setModulTagesschuleGroup(mtg);
+		modulTSSet.add(monday);
+
+		ModulTagesschule tuesday = new ModulTagesschule();
+		tuesday.setWochentag(DayOfWeek.TUESDAY);
+		tuesday.setModulTagesschuleGroup(mtg);
+		modulTSSet.add(tuesday);
+
+		ModulTagesschule thursday = new ModulTagesschule();
+		thursday.setWochentag(DayOfWeek.THURSDAY);
+		thursday.setModulTagesschuleGroup(mtg);
+		modulTSSet.add(thursday);
+
+		ModulTagesschule friday = new ModulTagesschule();
+		friday.setWochentag(DayOfWeek.FRIDAY);
+		friday.setModulTagesschuleGroup(mtg);
+		modulTSSet.add(friday);
+
+		mtg.setModule(modulTSSet);
+		return mtg;
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenFerieninselGuarda() {
@@ -509,11 +630,11 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
-	public static Collection<InstitutionStammdaten> saveInstitutionsstammdatenForTestfaelle(@Nonnull Persistence persistence) {
+	public static Collection<InstitutionStammdaten> saveInstitutionsstammdatenForTestfaelle(@Nonnull Persistence persistence, Gesuchsperiode gesuchsperiode) {
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = createInstitutionStammdatenKitaBruennen();
 		final InstitutionStammdaten institutionStammdatenTagesfamilien = createInstitutionStammdatenTagesfamilien();
-		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = createInstitutionStammdatenTagesschuleBern();
+		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = createInstitutionStammdatenTagesschuleBern(gesuchsperiode);
 		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = createInstitutionStammdatenFerieninselGuarda();
 		final Mandant mandant = createDefaultMandant();
 
@@ -541,6 +662,15 @@ public final class TestDataUtil {
 			return persistence.merge(institutionStammdaten);
 		}
 		return found;
+	}
+
+	public static void saveInstitutionStammdatenTagesschule(@Nonnull Persistence persistence,
+		@Nonnull InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+		InstitutionStammdatenTagesschule foundStammdatenTagesschule =
+			persistence.find(InstitutionStammdatenTagesschule.class, institutionStammdatenTagesschule.getId());
+		if(foundStammdatenTagesschule == null){
+			persistence.merge(institutionStammdatenTagesschule);
+		}
 	}
 
 	@Nonnull
@@ -659,9 +789,9 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
-	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind) {
+	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind, Gesuchsperiode gesuchsperiode) {
 		AnmeldungTagesschule betreuung = new AnmeldungTagesschule();
-		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern());
+		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
@@ -864,6 +994,35 @@ public final class TestDataUtil {
 		return gesuch;
 	}
 
+	public static Gesuch createTestfall11_SchulamtOnly(){
+		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
+		Testfall11_SchulamtOnly testfall = new Testfall11_SchulamtOnly(gesuchsperiode,
+			insttStammdaten);
+		testfall.createGesuch(LocalDate.of(2017, Month.MARCH, 25));
+		Gesuch gesuch = testfall.fillInGesuch();
+		gesuch.setGesuchsperiode(gesuchsperiode);
+		return gesuch;
+	}
+
+	/**
+	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
+	 */
+	public static Gesuch createAndPersistTestfall11_SchulamtOnly(
+		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+
+		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
+		Testfall11_SchulamtOnly testfall = new Testfall11_SchulamtOnly(gesuchsperiode,
+			insttStammdaten);
+		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
+		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+	}
+
 	public static Gesuch createTestgesuchYvonneFeuz() {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
@@ -993,17 +1152,19 @@ public final class TestDataUtil {
 					persistence.merge(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 				}
 			}
+			for(AnmeldungTagesschule anmeldungTagesschule: kindContainer.getAnmeldungenTagesschule()){
+				InstitutionStammdaten institutionStammdaten = anmeldungTagesschule.getInstitutionStammdaten();
+				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
+				InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
+					institutionStammdaten.getInstitutionStammdatenTagesschule();
+				assert institutionStammdatenTagesschule != null;
+				saveInstitutionStammdatenTagesschule(persistence, institutionStammdatenTagesschule);
+			}
+			for(AnmeldungFerieninsel anmeldungFerieninsel: kindContainer.getAnmeldungenFerieninsel()){
+				InstitutionStammdaten institutionStammdaten = anmeldungFerieninsel.getInstitutionStammdaten();
+				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
+			}
 		}
-	}
-
-	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		Persistence persistence,
-		LocalDate eingangsdatum,
-		@Nullable AntragStatus status) {
-		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
-		Testfall02_FeutzYvonne testfall =
-			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
@@ -1011,7 +1172,8 @@ public final class TestDataUtil {
 		@Nullable LocalDate eingangsdatum,
 		Gesuchsperiode gesuchsperiode) {
 
-		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
+		Collection<InstitutionStammdaten> institutionStammdatenList =
+			saveInstitutionsstammdatenForTestfaelle(persistence, gesuchsperiode);
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, null);
 	}
@@ -1020,7 +1182,8 @@ public final class TestDataUtil {
 		 Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
-		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
+		Collection<InstitutionStammdaten> institutionStammdatenList =
+			saveInstitutionsstammdatenForTestfaelle(persistence, gesuchsperiode);
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
@@ -1034,7 +1197,7 @@ public final class TestDataUtil {
 	) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(gesuchsperiode,
 			institutionStammdatenList);
@@ -1064,7 +1227,7 @@ public final class TestDataUtil {
 		} else {
 			testfall.createGesuch(eingangsdatum);
 		}
-		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
+		testfall.getDossier().setGemeinde(getGemeindeParis(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
 		persistEntity(persistence, testfall.getGesuch().getGesuchsperiode());
@@ -1295,25 +1458,16 @@ public final class TestDataUtil {
 		persistence.persist(einstellung);
 	}
 
-	public static void createStammdatenDefaultVerantwortliche(
+	public static void createStammdatenDefaultVerantwortlicheParis(
 		@Nonnull Persistence persistence,
 		@Nonnull Benutzer verantwortlicherTS,
 		@Nonnull Benutzer verantwortlicherBG) {
 
-		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
-		stammdaten.setDefaultBenutzer(verantwortlicherBG);
-		stammdaten.setDefaultBenutzerBG(verantwortlicherBG);
-		stammdaten.setDefaultBenutzerTS(verantwortlicherTS);
-		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));
-		stammdaten.setGemeinde(getTestGemeinde(persistence));
-		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
-		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
-		stammdaten.setBic("BIC123");
-		stammdaten.setKontoinhaber("Inhaber");
-		stammdaten.setMail("info@bern.ch");
-		stammdaten.setLogoContent(new byte[0]);
-
-		persistence.merge(stammdaten);
+		GemeindeStammdaten stammdatenParis = getGemeindeStammdatenParis(persistence);
+		stammdatenParis.setDefaultBenutzer(verantwortlicherBG);
+		stammdatenParis.setDefaultBenutzerBG(verantwortlicherBG);
+		stammdatenParis.setDefaultBenutzerTS(verantwortlicherTS);
+		persistence.merge(stammdatenParis);
 	}
 
 	public static GemeindeStammdaten createGemeindeWithStammdaten() {
@@ -1352,7 +1506,7 @@ public final class TestDataUtil {
 		@Nullable String vorname) {
 		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant, name, vorname);
 		if (role.isRoleGemeindeabhaengig()) {
-			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getTestGemeinde(persistence));
+			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getGemeindeParis(persistence));
 		}
 		return benutzer;
 	}

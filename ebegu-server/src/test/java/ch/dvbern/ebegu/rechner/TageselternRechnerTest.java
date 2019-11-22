@@ -22,10 +22,15 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Testet den Tageseltern-Rechner
@@ -45,7 +50,6 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	private final DateRange intervallTag = new DateRange(
 		LocalDate.of(2019, Month.FEBRUARY, 10),
 		LocalDate.of(2019, Month.FEBRUARY, 10));
-
 
 	@Test
 	public void test() {
@@ -112,18 +116,30 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		int einkommen,
 		double expected
 	) {
-		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, intervall.getGueltigAb(), intervall.getGueltigBis(), eingeschult, besondereBeduerfnisse,
-			MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
+		Verfuegung verfuegung = prepareVerfuegungKita(
+			geburtstag,
+			intervall.getGueltigAb(),
+			intervall.getGueltigBis(),
+			eingeschult,
+			besondereBeduerfnisse,
+			MathUtil.DEFAULT.fromNullSafe(einkommen),
+			MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
 		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
 		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(anspruch));
-		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
+		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1)
+			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);
-		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
-		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
+		BGCalculationResult result = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+
+		assertThat(result, pojo(BGCalculationResult.class)
+			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expected)))
+			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("zeiteinheit", is(PensumUnits.HOURS))
+		);
 	}
 }

@@ -41,6 +41,7 @@ import TSBatchJobInformation from '../models/TSBatchJobInformation';
 import TSBelegungFerieninsel from '../models/TSBelegungFerieninsel';
 import TSBelegungFerieninselTag from '../models/TSBelegungFerieninselTag';
 import TSBelegungTagesschule from '../models/TSBelegungTagesschule';
+import TSBelegungTagesschuleModul from '../models/TSBelegungTagesschuleModul';
 import TSBenutzer from '../models/TSBenutzer';
 import TSBerechtigung from '../models/TSBerechtigung';
 import TSBerechtigungHistory from '../models/TSBerechtigungHistory';
@@ -817,6 +818,14 @@ export default class EbeguRestUtil {
             restStammdaten.bic = stammdaten.bic;
             restStammdaten.iban = stammdaten.iban;
             restStammdaten.standardRechtsmittelbelehrung = stammdaten.standardRechtsmittelbelehrung;
+            restStammdaten.benachrichtigungBgEmailAuto = stammdaten.benachrichtigungBgEmailAuto;
+            restStammdaten.benachrichtigungTsEmailAuto = stammdaten.benachrichtigungTsEmailAuto;
+            restStammdaten.standardDokSignature = stammdaten.standardDokSignature;
+            restStammdaten.standardDokTitle = stammdaten.standardDokTitle;
+            restStammdaten.standardDokUnterschriftTitel = stammdaten.standardDokUnterschriftTitel;
+            restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
+            restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
+            restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -864,6 +873,14 @@ export default class EbeguRestUtil {
             }
             stammdatenTS.bgAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.bgAdresse);
             stammdatenTS.tsAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.tsAdresse);
+            stammdatenTS.benachrichtigungBgEmailAuto = stammdatenFromServer.benachrichtigungBgEmailAuto;
+            stammdatenTS.benachrichtigungTsEmailAuto = stammdatenFromServer.benachrichtigungTsEmailAuto;
+            stammdatenTS.standardDokSignature = stammdatenFromServer.standardDokSignature;
+            stammdatenTS.standardDokTitle = stammdatenFromServer.standardDokTitle;
+            stammdatenTS.standardDokUnterschriftTitel = stammdatenFromServer.standardDokUnterschriftTitel;
+            stammdatenTS.standardDokUnterschriftName = stammdatenFromServer.standardDokUnterschriftName;
+            stammdatenTS.standardDokUnterschriftTitel2 = stammdatenFromServer.standardDokUnterschriftTitel2;
+            stammdatenTS.standardDokUnterschriftName2 = stammdatenFromServer.standardDokUnterschriftName2;
 
             return stammdatenTS;
         }
@@ -2529,27 +2546,6 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public verfuegungToRestObject(verfuegung: any, verfuegungTS: TSVerfuegung): any {
-        if (verfuegungTS) {
-            this.abstractMutableEntityToRestObject(verfuegung, verfuegungTS);
-            verfuegung.generatedBemerkungen = verfuegungTS.generatedBemerkungen;
-            verfuegung.manuelleBemerkungen = verfuegungTS.manuelleBemerkungen;
-            verfuegung.zeitabschnitte = this.zeitabschnittListToRestObject(verfuegungTS.zeitabschnitte);
-            verfuegung.kategorieKeinPensum = verfuegungTS.kategorieKeinPensum;
-            verfuegung.kategorieMaxEinkommen = verfuegungTS.kategorieMaxEinkommen;
-            verfuegung.kategorieNichtEintreten = verfuegungTS.kategorieNichtEintreten;
-            verfuegung.kategorieNormal = verfuegungTS.kategorieNormal;
-            return verfuegung;
-        }
-        return undefined;
-    }
-
-    private zeitabschnittListToRestObject(data: Array<TSVerfuegungZeitabschnitt>): Array<any> {
-        return data && Array.isArray(data)
-            ? data.map(item => this.zeitabschnittToRestObject({}, item))
-            : [];
-    }
-
     private parseVerfuegungZeitabschnitte(data: Array<any>): TSVerfuegungZeitabschnitt[] {
         if (!data) {
             return [];
@@ -2557,41 +2553,6 @@ export default class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), item))
             : [this.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), data)];
-    }
-
-    public zeitabschnittToRestObject(zeitabschnitt: any, zeitabschnittTS: TSVerfuegungZeitabschnitt): any {
-        if (zeitabschnittTS) {
-            this.abstractDateRangeEntityToRestObject(zeitabschnitt, zeitabschnittTS);
-            zeitabschnitt.abzugFamGroesse = zeitabschnittTS.abzugFamGroesse;
-            zeitabschnitt.anspruchberechtigtesPensum = zeitabschnittTS.anspruchberechtigtesPensum;
-            zeitabschnitt.bgPensum = zeitabschnittTS.bgPensum;
-            zeitabschnitt.anspruchspensumRest = zeitabschnittTS.anspruchspensumRest;
-            zeitabschnitt.bemerkungen = zeitabschnittTS.bemerkungen;
-            zeitabschnitt.betreuungspensum = zeitabschnittTS.betreuungspensum;
-            zeitabschnitt.betreuungsstunden = zeitabschnittTS.betreuungsstunden;
-            zeitabschnitt.elternbeitrag = zeitabschnittTS.elternbeitrag;
-            zeitabschnitt.erwerbspensumGS1 = zeitabschnittTS.erwerbspensumGS1;
-            zeitabschnitt.erwerbspensumGS2 = zeitabschnittTS.erwerbspensumGS2;
-            zeitabschnitt.fachstellenpensum = zeitabschnittTS.fachstellenpensum;
-            zeitabschnitt.massgebendesEinkommenVorAbzugFamgr = zeitabschnittTS.massgebendesEinkommenVorAbzugFamgr;
-            zeitabschnitt.famGroesse = zeitabschnittTS.famGroesse;
-            zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
-            zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
-            zeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten =
-                zeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten;
-            zeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
-                zeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
-            zeitabschnitt.verguenstigung = zeitabschnittTS.verguenstigung;
-            zeitabschnitt.minimalerElternbeitrag = zeitabschnittTS.minimalerElternbeitrag;
-            zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
-            zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
-            zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
-            zeitabschnitt.zuSpaetEingereicht = zeitabschnittTS.zuSpaetEingereicht;
-            zeitabschnitt.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten;
-            zeitabschnitt.sameAusbezahlteVerguenstigung = zeitabschnittTS.sameAusbezahlteVerguenstigung;
-            return zeitabschnitt;
-        }
-        return undefined;
     }
 
     public parseVerfuegungZeitabschnitt(
@@ -3020,6 +2981,7 @@ export default class EbeguRestUtil {
             tsZahlungsauftrag.datumFaellig = DateUtil.localDateToMoment(zahlungsauftragFromServer.datumFaellig);
             tsZahlungsauftrag.datumGeneriert = DateUtil.localDateTimeToMoment(zahlungsauftragFromServer.datumGeneriert);
             tsZahlungsauftrag.betragTotalAuftrag = zahlungsauftragFromServer.betragTotalAuftrag;
+            tsZahlungsauftrag.hasNegativeZahlungen = zahlungsauftragFromServer.hasNegativeZahlungen;
             tsZahlungsauftrag.zahlungen = this.parseZahlungen(zahlungsauftragFromServer.zahlungen);
             tsZahlungsauftrag.gemeinde = this.parseGemeinde(new TSGemeinde(), zahlungsauftragFromServer.gemeinde);
 
@@ -3209,7 +3171,7 @@ export default class EbeguRestUtil {
             einstellungenTagesschuleTS.modulTagesschuleTyp = einstellungFromServer.modulTagesschuleTyp;
             einstellungenTagesschuleTS.modulTagesschuleGroups =
                 this.parseModuleTagesschuleGroupsArray(einstellungFromServer.modulTagesschuleGroups);
-
+            einstellungenTagesschuleTS.erlaeuterung = einstellungFromServer.erlaeuterung;
             return einstellungenTagesschuleTS;
         }
         return undefined;
@@ -3234,6 +3196,7 @@ export default class EbeguRestUtil {
             restEinstellung.modulTagesschuleTyp = einstellungTagesschuleTS.modulTagesschuleTyp;
             restEinstellung.modulTagesschuleGroups =
                 this.moduleTagesschuleGroupsArrayToRestObject(einstellungTagesschuleTS.modulTagesschuleGroups);
+            restEinstellung.erlaeuterung = einstellungTagesschuleTS.erlaeuterung;
             return restEinstellung;
         }
         return undefined;
@@ -3254,7 +3217,10 @@ export default class EbeguRestUtil {
             this.parseAbstractEntity(modulTagesschuleGroupTS, modulGroupFromServer);
             modulTagesschuleGroupTS.modulTagesschuleName = modulGroupFromServer.modulTagesschuleName;
             modulTagesschuleGroupTS.identifier = modulGroupFromServer.identifier;
-            modulTagesschuleGroupTS.bezeichnung = modulGroupFromServer.bezeichnung;
+            if (modulGroupFromServer.bezeichnung) {
+                modulTagesschuleGroupTS.bezeichnung = this.parseTextRessource(
+                    new TSTextRessource(), modulGroupFromServer.bezeichnung);
+            }
             modulTagesschuleGroupTS.zeitVon = modulGroupFromServer.zeitVon;
             modulTagesschuleGroupTS.zeitBis = modulGroupFromServer.zeitBis;
             modulTagesschuleGroupTS.verpflegungskosten = modulGroupFromServer.verpflegungskosten;
@@ -3285,7 +3251,9 @@ export default class EbeguRestUtil {
             this.abstractEntityToRestObject(restModulGroup, modulTagesschuleGroupTS);
             restModulGroup.modulTagesschuleName = modulTagesschuleGroupTS.modulTagesschuleName;
             restModulGroup.identifier = modulTagesschuleGroupTS.identifier;
-            restModulGroup.bezeichnung = modulTagesschuleGroupTS.bezeichnung;
+            if (modulTagesschuleGroupTS.bezeichnung) {
+                restModulGroup.bezeichnung = this.textRessourceToRestObject({}, modulTagesschuleGroupTS.bezeichnung);
+            }
             restModulGroup.zeitVon = modulTagesschuleGroupTS.zeitVon;
             restModulGroup.zeitBis = modulTagesschuleGroupTS.zeitBis;
             restModulGroup.verpflegungskosten = modulTagesschuleGroupTS.verpflegungskosten;
@@ -3322,8 +3290,13 @@ export default class EbeguRestUtil {
     ): TSBelegungTagesschule {
         if (belegungFromServer) {
             this.parseAbstractMutableEntity(belegungTS, belegungFromServer);
-            belegungTS.moduleTagesschule = this.parseModuleTagesschuleArray(belegungFromServer.moduleTagesschule);
+            belegungTS.belegungTagesschuleModule =
+                this.parseBelegungTagesschuleModulList(belegungFromServer.belegungTagesschuleModule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
+            belegungTS.abholungTagesschule = belegungFromServer.abholungTagesschule;
+            belegungTS.planKlasse = belegungFromServer.planKlasse;
+            belegungTS.abweichungZweitesSemester = belegungFromServer.abweichungZweitesSemester;
+            belegungTS.bemerkung = belegungFromServer.bemerkung;
             return belegungTS;
         }
         return undefined;
@@ -3332,9 +3305,58 @@ export default class EbeguRestUtil {
     private belegungTagesschuleToRestObject(restBelegung: any, belegungTS: TSBelegungTagesschule): any {
         if (belegungTS) {
             this.abstractMutableEntityToRestObject(restBelegung, belegungTS);
-            restBelegung.moduleTagesschule = this.moduleTagesschuleArrayToRestObject(belegungTS.moduleTagesschule);
+            restBelegung.belegungTagesschuleModule =
+                this.belegungTagesschuleModulArrayToRestObject(belegungTS.belegungTagesschuleModule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
+            restBelegung.abholungTagesschule = belegungTS.abholungTagesschule;
+            restBelegung.planKlasse = belegungTS.planKlasse;
+            restBelegung.abweichungZweitesSemester = belegungTS.abweichungZweitesSemester;
+            restBelegung.bemerkung = belegungTS.bemerkung;
             return restBelegung;
+        }
+        return undefined;
+    }
+
+    public parseBelegungTagesschuleModulList(data: any): TSBelegungTagesschuleModul[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBelegungTagesschuleModul(new TSBelegungTagesschuleModul(), item))
+            : [this.parseBelegungTagesschuleModul(new TSBelegungTagesschuleModul(), data)];
+    }
+
+    private parseBelegungTagesschuleModul(
+        belegungModulTS: TSBelegungTagesschuleModul,
+        belegungModulFromServer: any,
+    ): TSBelegungTagesschuleModul {
+        if (belegungModulFromServer) {
+            this.parseAbstractEntity(belegungModulTS, belegungModulFromServer);
+            belegungModulTS.intervall = belegungModulFromServer.intervall;
+            belegungModulTS.modulTagesschule =
+                this.parseModulTagesschule(new TSModulTagesschule(), belegungModulFromServer.modulTagesschule);
+            return belegungModulTS;
+        }
+        return undefined;
+    }
+
+    private belegungTagesschuleModulArrayToRestObject(data: Array<TSBelegungTagesschuleModul>): any[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.belegungTagesschuleModulToRestObject({}, item))
+            : [];
+    }
+
+    private belegungTagesschuleModulToRestObject(restBelegungModul: any,
+                                                 belegungModulTS: TSBelegungTagesschuleModul): any {
+        if (belegungModulTS) {
+            this.abstractEntityToRestObject(restBelegungModul, belegungModulTS);
+            restBelegungModul.intervall = belegungModulTS.intervall;
+            restBelegungModul.modulTagesschule =
+                this.modulTagesschuleToRestObject({}, belegungModulTS.modulTagesschule);
+            return restBelegungModul;
         }
         return undefined;
     }

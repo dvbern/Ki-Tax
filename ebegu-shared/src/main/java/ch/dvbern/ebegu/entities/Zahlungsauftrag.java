@@ -82,6 +82,9 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 	@Nonnull
 	private BigDecimal betragTotalAuftrag;
 
+	@Nonnull
+	private Boolean hasNegativeZahlungen = false;
+
 	public LocalDate getDatumFaellig() {
 		return datumFaellig;
 	}
@@ -139,6 +142,15 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	public void setGemeinde(@NotNull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nonnull
+	public Boolean getHasNegativeZahlungen() {
+		return hasNegativeZahlungen;
+	}
+
+	public void setHasNegativeZahlungen(@Nonnull Boolean hasNegativeZahlungen) {
+		this.hasNegativeZahlungen = hasNegativeZahlungen;
 	}
 
 	public String getFilename() {

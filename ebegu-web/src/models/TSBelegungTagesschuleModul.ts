@@ -15,24 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.outbox;
+import {TSBelegungTagesschuleModulIntervall} from './enums/TSBelegungTagesschuleModulIntervall';
+import TSAbstractEntity from './TSAbstractEntity';
+import TSModulTagesschule from './TSModulTagesschule';
 
-import javax.annotation.Nonnull;
+export default class TSBelegungTagesschuleModul extends TSAbstractEntity {
 
-import ch.dvbern.kibon.exchange.commons.util.ObjectMapperUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
+    public intervall: TSBelegungTagesschuleModulIntervall;
+    public modulTagesschule: TSModulTagesschule;
 
-public final class EventConverterUtil {
-
-	private EventConverterUtil() {
-		// util class
-	}
-
-	public static byte[] toJsonB(@Nonnull Object anything) {
-		try {
-			return ObjectMapperUtil.MAPPER.writeValueAsBytes(anything);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("failed converting to jsonb", e);
-		}
-	}
 }

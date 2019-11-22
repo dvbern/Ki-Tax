@@ -51,6 +51,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,7 +124,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungTest() {
 		assertNotNull(betreuungService);
 		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(persitedBetreuung.extractGesuch().extractGemeinde(), persistence);
 		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(persitedBetreuung.getId());
 		assertTrue(betreuungOptional.isPresent());
 		Betreuung betreuung = betreuungOptional.get();
@@ -153,7 +153,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungWithMitteilungTest() {
 		prepareDependentObjects();
 		Gesuch dagmarGesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(dagmarGesuch.extractGemeinde(), persistence);
 		Mitteilung mitteilung = TestDataUtil.createMitteilung(dagmarGesuch.getDossier(), empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		Betreuung betreuungUnderTest = dagmarGesuch.extractAllBetreuungen().get(0);
@@ -186,7 +185,6 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void removeBetreuungsmitteilungTest() throws LoginException {
 		prepareDependentObjects();
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
-		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		final Betreuung betreuungUnderTest = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 
 		loginAsSachbearbeiterInst("sainst", betreuungUnderTest.getInstitutionStammdaten().getInstitution());
@@ -219,7 +217,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 	public void betreuungMitBelegungFerieninsel() {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
-		TestDataUtil.saveInstitutionsstammdatenForTestfaelle(persistence);
+		TestDataUtil.saveInstitutionsstammdatenForTestfaelle(persistence, gesuchsperiode);
 		kindContainer.getAnmeldungenFerieninsel().add(TestDataUtil.createAnmeldungFerieninsel(kindContainer));
 		final AnmeldungFerieninsel betreuungUnderTest = kindContainer.getAnmeldungenFerieninsel().iterator().next();
 
@@ -430,6 +428,25 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		} catch (Exception e) {
 			// Expected
 		}
+	}
+
+	@Test
+	public void mapsId() {
+		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.now(), null, gesuchsperiode);
+		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+
+		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuung, false);
+
+		Assert.assertNotNull(persistedBetreuung);
+		Assert.assertNotNull(persistedBetreuung.getErweiterteBetreuungContainer());
+
+		ErweiterteBetreuungContainer ebc1 = persistence.find(
+			ErweiterteBetreuungContainer.class, persistedBetreuung.getErweiterteBetreuungContainer().getId());
+		ErweiterteBetreuungContainer ebc2 = persistence.find(
+			ErweiterteBetreuungContainer.class, persistedBetreuung.getId());
+		Assert.assertNotNull(ebc1);
+		Assert.assertNotNull(ebc2);
+		Assert.assertEquals(ebc1, ebc2);
 	}
 
 	private void prepareInstitutionsstammdaten(Betreuung betreuung, LocalDate kitaFrom, LocalDate kitaUntil) {

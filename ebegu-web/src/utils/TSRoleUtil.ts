@@ -158,6 +158,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
         ];
     }
 

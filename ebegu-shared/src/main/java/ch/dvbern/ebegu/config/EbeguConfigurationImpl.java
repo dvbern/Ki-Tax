@@ -69,6 +69,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_SUPPORT_MAIL = "ebegu.support.mail";
 
 	private static final String KIBON_KAFKA_URL = "kibon.kafka.url";
+	private static final String KIBON_SCHEMA_REGISTRY_URL = "kibon.schemaregistry.url";
 
 
 	@Inject
@@ -244,5 +245,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public Optional<String> getKafkaURL() {
 		return Optional.ofNullable(getString(KIBON_KAFKA_URL));
+	}
+
+	@Nonnull
+	@Override
+	public String getSchemaRegistryURL() {
+		return getString(KIBON_SCHEMA_REGISTRY_URL, "");
 	}
 }

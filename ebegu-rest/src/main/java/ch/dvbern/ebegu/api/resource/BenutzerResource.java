@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -53,9 +54,11 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.SuperAdminService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,6 +95,9 @@ public class BenutzerResource {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private SuperAdminService superAdminService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -411,5 +417,21 @@ public class BenutzerResource {
 		@Nonnull @NotNull @PathParam("username") String username) {
 
 		return benutzerService.isBenutzerDefaultBenutzerOfAnyGemeinde(username);
+	}
+
+	@ApiOperation(value = "Löscht der Benutzer mit dem gegebenen Benutzername.", response = Response.class)
+	@DELETE
+	@Path("/delete/{username}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public Response deleteBenutzer(
+		@Nonnull @NotNull @PathParam("username") String username) {
+
+		Benutzer eingeloggterBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException(
+			"deleteBenutzer", "No User is logged in"));
+
+		superAdminService.removeFallAndBenutzer(username, eingeloggterBenutzer);
+		return Response.ok().build();
 	}
 }

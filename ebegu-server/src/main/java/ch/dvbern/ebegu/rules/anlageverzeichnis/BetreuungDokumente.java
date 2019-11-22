@@ -81,5 +81,4 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 			return false;
 		}
 	}
-
 }

@@ -30,12 +30,12 @@ describe('OnboardingInfoGemComponent', () => {
     let component: OnboardingInfoGemeindeComponent;
     let fixture: ComponentFixture<OnboardingInfoGemeindeComponent>;
 
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
     const i18nServiceSpy =
         jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
+        gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
@@ -62,7 +62,7 @@ describe('OnboardingInfoGemComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load all active Gemeinden', () => {
-        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
+    it('should load all BFS Gemeinden', () => {
+         expect(gemeindeRSSpy.getAllBfsGemeinden).toHaveBeenCalled();
     });
 });
