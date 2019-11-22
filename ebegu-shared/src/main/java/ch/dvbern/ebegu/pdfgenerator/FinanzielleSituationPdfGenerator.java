@@ -159,12 +159,13 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private void initializeValues() {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
-		requireNonNull(ekvContainerGS1);
-
 		basisJahrGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
-		ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
-		ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+
+		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
+		if (ekvContainerGS1 != null) {
+			ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
+			ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		}
 
 		basisJahrGS1.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittBasisjahr(basisJahrGS1));
 		basisJahrGS2 = null;
