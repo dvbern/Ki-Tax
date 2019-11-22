@@ -30,7 +30,6 @@ describe('VerfuegungRS', () => {
     let mockKindContainerListRest: Array<any> = [];
     let mockKind: TSKindContainer;
     const gesuchId = '1234567789';
-    const betreuungId = '321123';
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
