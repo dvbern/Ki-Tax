@@ -49,8 +49,8 @@ public interface SuperAdminService {
 	Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser);
 
 	/**
-	 * Löscht einen Benutzer von der System
-	 * @param benutzername
+	 * Löscht einen Benutzer von der System. Der aktuelle User muss mitgegeben werden, da der Superadmin-Service
+	 * im @RunAs Modus laeuft und die Information über den tatsächlich eingeloggten Benutzer verloren geht
 	 */
-	void removeFallAndBenutzer(@Nonnull String benutzername);
+	void removeFallAndBenutzer(@Nonnull String benutzername, @Nonnull Benutzer eingeloggterBenutzer);
 }
