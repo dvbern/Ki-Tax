@@ -104,6 +104,9 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichDetail;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichGrundlagen;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -187,6 +190,9 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.LastenausgleichDetail;
+import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -4703,5 +4709,73 @@ public class JaxBConverter extends AbstractConverter {
 				.findFirst().get().getValueAsInteger()
 		);
 		return konfiguration;
+	}
+
+	@Nonnull
+	public LastenausgleichGrundlagen lastenausgleichGrundlagenToEntity(
+		@Nonnull final JaxLastenausgleichGrundlagen jaxGrundlagen,
+		@Nonnull final LastenausgleichGrundlagen grundlagen
+	) {
+		requireNonNull(grundlagen);
+		requireNonNull(jaxGrundlagen);
+
+		convertAbstractFieldsToEntity(jaxGrundlagen, grundlagen);
+		grundlagen.setJahr(jaxGrundlagen.getJahr());
+		grundlagen.setKostenPro100ProzentPlatz(jaxGrundlagen.getKostenPro100ProzentPlatz());
+		return grundlagen;
+	}
+
+	@Nullable
+	public JaxLastenausgleichGrundlagen lastenausgleichGrundlagenToJAX(@Nullable final LastenausgleichGrundlagen persistedGrundlagen) {
+		if (persistedGrundlagen == null) {
+			return null;
+		}
+		JaxLastenausgleichGrundlagen jaxGrundlagen = new JaxLastenausgleichGrundlagen();
+		convertAbstractFieldsToJAX(persistedGrundlagen, jaxGrundlagen);
+		jaxGrundlagen.setJahr(persistedGrundlagen.getJahr());
+		jaxGrundlagen.setKostenPro100ProzentPlatz(persistedGrundlagen.getKostenPro100ProzentPlatz());
+		return jaxGrundlagen;
+	}
+
+	@Nullable
+	public JaxLastenausgleich lastenausgleichToJAX(@Nullable final Lastenausgleich persistedLastenausgleich) {
+		if (persistedLastenausgleich == null) {
+			return null;
+		}
+		JaxLastenausgleich jaxLastenausgleich = new JaxLastenausgleich();
+		convertAbstractFieldsToJAX(persistedLastenausgleich, jaxLastenausgleich);
+		jaxLastenausgleich.setJahr(persistedLastenausgleich.getJahr());
+		jaxLastenausgleich.setTotalAlleGemeinden(persistedLastenausgleich.getTotalAlleGemeinden());
+		Set<JaxLastenausgleichDetail> jaxDetails = lastenausgleichDetailListToJax(persistedLastenausgleich.getLastenausgleichDetails());
+		jaxLastenausgleich.getLastenausgleichDetails().addAll(jaxDetails);
+		return jaxLastenausgleich;
+	}
+
+	@Nonnull
+	private Set<JaxLastenausgleichDetail> lastenausgleichDetailListToJax(@Nullable final Set<LastenausgleichDetail> details) {
+		if (details == null) {
+			return Collections.emptySet();
+		}
+		return details.stream()
+			.map(this::lastenausgleichDetailToJAX)
+			.collect(Collectors.toCollection(TreeSet::new));
+	}
+
+	@Nullable
+	private JaxLastenausgleichDetail lastenausgleichDetailToJAX(@Nullable final LastenausgleichDetail persistedDetail) {
+		if (persistedDetail == null) {
+			return null;
+		}
+		JaxLastenausgleichDetail jaxDetail = new JaxLastenausgleichDetail();
+		convertAbstractFieldsToJAX(persistedDetail, jaxDetail);
+		jaxDetail.setJahr(persistedDetail.getJahr());
+		jaxDetail.setGemeindeName(persistedDetail.getGemeinde().getName());
+		jaxDetail.setGemeindeBfsNummer(persistedDetail.getGemeinde().getBfsNummer());
+		jaxDetail.setTotalBelegungen(persistedDetail.getTotalBelegungen());
+		jaxDetail.setTotalBetragGutscheine(persistedDetail.getTotalBetragGutscheine());
+		jaxDetail.setSelbstbehaltGemeinde(persistedDetail.getSelbstbehaltGemeinde());
+		jaxDetail.setBetragLastenausgleich(persistedDetail.getBetragLastenausgleich());
+		jaxDetail.setKorrektur(persistedDetail.isKorrektur());
+		return jaxDetail;
 	}
 }

@@ -103,6 +103,9 @@ import TSInstitutionUpdate from '../models/TSInstitutionUpdate';
 import TSKind from '../models/TSKind';
 import TSKindContainer from '../models/TSKindContainer';
 import TSKindDublette from '../models/TSKindDublette';
+import TSLastenausgleich from '../models/TSLastenausgleich';
+import TSLastenausgleichDetail from '../models/TSLastenausgleichDetail';
+import TSLastenausgleichGrundlagen from '../models/TSLastenausgleichGrundlagen';
 import TSMahnung from '../models/TSMahnung';
 import {TSMandant} from '../models/TSMandant';
 import TSMitteilung from '../models/TSMitteilung';
@@ -3550,5 +3553,61 @@ export default class EbeguRestUtil {
             return gemeindeRegistrierungTS;
         }
         return undefined;
+    }
+
+    public lastenausgleichGrundlagenToRestObject(restGrundlagen: any, tsGrundlagen: TSLastenausgleichGrundlagen): TSLastenausgleichGrundlagen {
+        if (tsGrundlagen) {
+            this.abstractEntityToRestObject(restGrundlagen, tsGrundlagen);
+            restGrundlagen.jahr = tsGrundlagen.jahr;
+            restGrundlagen.kostenPro100ProzentPlatz = tsGrundlagen.kostenPro100ProzentPlatz;
+            return restGrundlagen;
+        }
+        return undefined;
+    }
+
+    public parseLastenausgleichGrundlagen(
+        tsGrundlagen: TSLastenausgleichGrundlagen,
+        receivedGrundlagen: any,
+    ): TSLastenausgleichGrundlagen {
+        this.parseAbstractEntity(tsGrundlagen, receivedGrundlagen);
+        tsGrundlagen.jahr = receivedGrundlagen.jahr;
+        tsGrundlagen.kostenPro100ProzentPlatz = receivedGrundlagen.kostenPro100ProzentPlatz;
+        return tsGrundlagen;
+    }
+
+    public parseLastenausgleich(
+        tsLastenausgleich: TSLastenausgleich,
+        receivedLastenausgleich: any,
+    ): TSLastenausgleich {
+        this.parseAbstractEntity(tsLastenausgleich, receivedLastenausgleich);
+        tsLastenausgleich.jahr = receivedLastenausgleich.jahr;
+        tsLastenausgleich.totalAlleGemeinden = receivedLastenausgleich.totalAlleGemeinden;
+        tsLastenausgleich.lastenausgleichDetails = this.parseLastenausgleichDetailList(receivedLastenausgleich.lastenausgleichDetails);
+        return tsLastenausgleich;
+    }
+
+    private parseLastenausgleichDetailList(data: any): TSLastenausgleichDetail[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLastenausgleichDetail(new TSLastenausgleichDetail(), item))
+            : [this.parseLastenausgleichDetail(new TSLastenausgleichDetail(), data)];
+    }
+
+    private parseLastenausgleichDetail(
+        tsDetail: TSLastenausgleichDetail,
+        receivedDetail: any,
+    ): TSLastenausgleichDetail {
+        this.parseAbstractEntity(tsDetail, receivedDetail);
+        tsDetail.jahr = receivedDetail.jahr;
+        tsDetail.gemeindeName = receivedDetail.gemeindeName;
+        tsDetail.gemeindeBfsNummer = receivedDetail.gemeindeBfsNummer;
+        tsDetail.totalBelegungen = receivedDetail.totalBelegungen;
+        tsDetail.totalBetragGutscheine = receivedDetail.totalBetragGutscheine;
+        tsDetail.selbstbehaltGemeinde = receivedDetail.selbstbehaltGemeinde;
+        tsDetail.betragLastenausgleich = receivedDetail.betragLastenausgleich;
+        tsDetail.korrektur = receivedDetail.korrektur;
+        return tsDetail;
     }
 }
