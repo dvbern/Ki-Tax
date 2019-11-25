@@ -131,15 +131,14 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">
+                    <div class="form-group checkbox-with-tooltip">
                         <mat-checkbox id="benachrichtigungTsEmailAuto_id"
                                       name="benachrichtigungTsEmailAuto_id"
                                       [(ngModel)]="stammdaten.benachrichtigungTsEmailAuto">
                             {{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN'|translate}}
-                            <li class="fa fa-info-circle"
-                                matTooltip="{{'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP'|translate}}"
-                                matTooltipPosition="right"></li>
                         </mat-checkbox>
+                        <dv-tooltip id="benachrichtigungTsEmailAuto_tooltip"
+                                    [text]="'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP' | translate"></dv-tooltip>
                     </div>
                 </div>
             </div>
