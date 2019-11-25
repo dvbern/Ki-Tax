@@ -109,7 +109,7 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
-        this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+        this.keineBeschwerdeAdresse = EbeguUtil.isNotNullOrUndefined(stammdaten.beschwerdeAdresse);
         if (EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
             stammdaten.beschwerdeAdresse = new TSAdresse();
         }
