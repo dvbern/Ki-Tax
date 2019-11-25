@@ -3555,7 +3555,10 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public lastenausgleichGrundlagenToRestObject(restGrundlagen: any, tsGrundlagen: TSLastenausgleichGrundlagen): TSLastenausgleichGrundlagen {
+    public lastenausgleichGrundlagenToRestObject(
+        restGrundlagen: any,
+        tsGrundlagen: TSLastenausgleichGrundlagen
+    ): TSLastenausgleichGrundlagen {
         if (tsGrundlagen) {
             this.abstractEntityToRestObject(restGrundlagen, tsGrundlagen);
             restGrundlagen.jahr = tsGrundlagen.jahr;
@@ -3582,7 +3585,8 @@ export default class EbeguRestUtil {
         this.parseAbstractEntity(tsLastenausgleich, receivedLastenausgleich);
         tsLastenausgleich.jahr = receivedLastenausgleich.jahr;
         tsLastenausgleich.totalAlleGemeinden = receivedLastenausgleich.totalAlleGemeinden;
-        tsLastenausgleich.lastenausgleichDetails = this.parseLastenausgleichDetailList(receivedLastenausgleich.lastenausgleichDetails);
+        tsLastenausgleich.lastenausgleichDetails =
+            this.parseLastenausgleichDetailList(receivedLastenausgleich.lastenausgleichDetails);
         return tsLastenausgleich;
     }
 
