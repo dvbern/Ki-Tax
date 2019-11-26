@@ -138,14 +138,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         }, (newValue, oldValue) => {
             if (newValue !== oldValue) {
                this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
-               this.loadElauterungForTagesschule();
+               this.loadErlaeuterungForTagesschule();
             }
         });
     }
 
     public $onInit(): void {
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
-        this.loadElauterungForTagesschule();
+        this.loadErlaeuterungForTagesschule();
         if (this.betreuung.isEnabled()) {
             this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
             this.setErsterSchultag();
@@ -178,7 +178,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return '';
     }
 
-    private loadElauterungForTagesschule(): void {
+    private loadErlaeuterungForTagesschule(): void {
         const tsEinstellungenTagesschule =
             this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
                 .filter((einstellung: TSEinstellungenTagesschule) =>
