@@ -105,15 +105,14 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
-    public getRechtsmittelBelehrungVerfuegungText(kontaktAdresse: TSAdresse, beschwerdeAdresse: TSAdresse, keineBeschwerdeAdresse: boolean): Observable<string> {
-        let adresse = ((keineBeschwerdeAdresse) ? kontaktAdresse : beschwerdeAdresse);
+    public getRechtsmittelBelehrungVerfuegungText$(kontaktAdresse: TSAdresse, beschwerdeAdresse: TSAdresse,
+                                                   keineBeschwerdeAdresse: boolean): Observable<string> {
+        const adresse = ((keineBeschwerdeAdresse) ? kontaktAdresse : beschwerdeAdresse);
         let adresseStr;
-        if (adresse.organisation && adresse.strasse && adresse.plz && adresse.land) {
-            adresseStr = `${adresse.organisation}, ${adresse.strasse} ${adresse.hausnummer}, ${adresse.plz} ${adresse.land}`;
-        } else {
-            adresseStr = this.translate.instant("ADRESSE_NICHT_ANGEGEBEN");
-        }
-        return this.translate.get("RECHTSMITTELBELEHRUNG_VERFUEGUNG", {adresse: adresseStr});
+        (adresse.organisation && adresse.strasse && adresse.plz && adresse.ort)
+            ? adresseStr = `${adresse.organisation}, ${adresse.strasse} ${adresse.hausnummer},
+             ${adresse.plz} ${adresse.ort}`
+            : adresseStr = this.translate.instant('ADRESSE_NICHT_ANGEGEBEN');
+        return this.translate.get('RECHTSMITTELBELEHRUNG_VERFUEGUNG', {adresse: adresseStr});
     }
-
 }
