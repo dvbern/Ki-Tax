@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.outbox.verfuegung;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RunAs;
@@ -47,10 +48,8 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechner;
 import ch.dvbern.ebegu.rechner.BGCalculationResult;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import static ch.dvbern.ebegu.rechner.BGRechnerFactory.getRechner;
 import static java.util.Objects.requireNonNull;
@@ -58,8 +57,6 @@ import static java.util.Objects.requireNonNull;
 @Stateless
 @RunAs(UserRoleName.SUPER_ADMIN)
 public class VerfuegungEventGenerator extends AbstractBaseService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungEventGenerator.class);
 
 	@Inject
 	private Persistence persistence;
@@ -75,6 +72,7 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 	 * Reason: when converting to events, we also get vorgänger Verfügung Zeitabschnitte. Thus, the initialisation must
 	 * happen on all Verfügungen, before they are converted.
 	 */
+	@TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
 	@Schedule(info = "Migration-aid, pushes already existing Verfuegungen to outbox", hour = "5", persistent = true)
 	public void migrate() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -88,12 +86,12 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 		List<Verfuegung> verfuegungen = persistence.getEntityManager().createQuery(query)
 			.getResultList();
 
-		verfuegungen.stream()
-			.filter(this::withZeiteinheiten)
-			.forEach(verfuegung -> {
-				verfuegung.setSkipPreUpdate(true);
-				persistence.merge(verfuegung);
-			});
+		verfuegungen.forEach(verfuegung -> {
+			withZeiteinheiten(verfuegung);
+			verfuegung.setSkipPreUpdate(true);
+		});
+
+		persistence.getEntityManager().flush();
 
 		publishExistingVerfuegungen();
 	}
@@ -131,26 +129,12 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 		});
 	}
 
-	/**
-	 * @return TRUE, when all VerfuegungZeiteinheiten could be updated, FALSE otherwise
-	 */
-	private boolean withZeiteinheiten(@Nonnull Verfuegung verfuegung) {
+	private void withZeiteinheiten(@Nonnull Verfuegung verfuegung) {
 		AbstractBGRechner rechner = requireNonNull(getRechner(verfuegung.getBetreuung()));
 		BGRechnerParameterDTO parameterDTO = getParameter(verfuegung);
 
-		boolean allUpdated = verfuegung.getZeitabschnitte().stream()
-			.map(zeitabschnitt -> zeitabschnittWithZeiteinheiten(rechner, parameterDTO, zeitabschnitt))
-			.reduce(true, Boolean::logicalAnd);
-
-		if (!allUpdated) {
-			LOG.warn(
-				"The calculation result has changed: {}/{}/{}",
-				verfuegung.getId(),
-				verfuegung.getBetreuung().getBetreuungsstatus(),
-				verfuegung.getBetreuung().isGueltig());
-		}
-
-		return allUpdated;
+		verfuegung.getZeitabschnitte()
+			.forEach(zeitabschnitt -> zeitabschnittWithZeiteinheiten(rechner, parameterDTO, zeitabschnitt));
 	}
 
 	@Nonnull
@@ -164,32 +148,15 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 
 	/**
 	 * Updates a VerfuegungZeitabschnitt with the Zeiteinheiten fields.
-	 *
-	 * @return TRUE when the update was performed, FALSE otherwise
 	 */
-	private boolean zeitabschnittWithZeiteinheiten(
+	private void zeitabschnittWithZeiteinheiten(
 		@Nonnull AbstractBGRechner rechner,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 
 		BGCalculationResult result = rechner.calculate(zeitabschnitt, parameterDTO);
-		if (hasSameCalculation(result, zeitabschnitt)) {
-			zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(result.getVerfuegteAnzahlZeiteinheiten());
-			zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(result.getAnspruchsberechtigteAnzahlZeiteinheiten());
-			zeitabschnitt.setZeiteinheit(result.getZeiteinheit());
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @return TRUE when all values except the new Zeitenheiten match.
-	 */
-	private boolean hasSameCalculation(
-		@Nonnull BGCalculationResult result,
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-
-		return MathUtil.isSame(result.getMinimalerElternbeitrag(), zeitabschnitt.getMinimalerElternbeitrag());
+		zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(result.getVerfuegteAnzahlZeiteinheiten());
+		zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(result.getAnspruchsberechtigteAnzahlZeiteinheiten());
+		zeitabschnitt.setZeiteinheit(result.getZeiteinheit());
 	}
 }
