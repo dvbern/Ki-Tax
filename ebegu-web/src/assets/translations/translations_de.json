@@ -1762,5 +1762,6 @@
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Unterschrift 2 - Name",
     "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
     "IN_CHF_PLACEHOLDER": "in CHF",
+    "LETZTE_ANGABE": "Letzte Angabe:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

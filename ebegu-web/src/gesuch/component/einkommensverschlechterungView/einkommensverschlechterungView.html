@@ -41,17 +41,22 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="FINANZIELLE_SITUATION_NETTOLOHN"
+                                <label class="md-no-float required" data-translate="FINANZIELLE_SITUATION_NETTOLOHN"
                                        for="nettolohn"></label>
                                 <dv-valueinput input-id="nettolohn"
                                                name="nettolohn"
                                                ng-model="vm.model.getEkvToWorkWith().nettolohn"
-                                               class="input-element">
+                                               class="input-element" required>
                                 </dv-valueinput>
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().nettolohn"
                                     ja="vm.model.getEkvToWorkWith().nettolohn"
                                     show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
+                                <p class="letzte-angabe">
+                                    <span>{{ 'LETZTE_ANGABE' | translate }}</span>
+                                    <span>{{ vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn |
+                                            currency: 'CHF':0}}</span>
+                                </p>
                                 <dv-error-messages input-id="nettolohn"
                                                    for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
@@ -63,7 +68,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="familienzulage">
+                                <label class="md-no-float required" for="familienzulage">
                                     <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
                                     <dv-tooltip input-id="familienzulage"
                                                 text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
@@ -72,7 +77,7 @@
                                     <dv-valueinput input-id="familienzulage"
                                                    name="familienzulage"
                                                    ng-model="vm.model.getEkvToWorkWith().familienzulage"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().familienzulage"
@@ -89,7 +94,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="ersatzeinkommen">
+                                <label class="md-no-float required" for="ersatzeinkommen">
                                     <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN"></span>
                                     <dv-tooltip input-id="ersatzeinkommen"
                                                 text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
@@ -97,7 +102,7 @@
                                 <dv-valueinput input-id="ersatzeinkommen"
                                                name="ersatzeinkommen"
                                                ng-model="vm.model.getEkvToWorkWith().ersatzeinkommen"
-                                               class="input-element">
+                                               class="input-element" required>
                                 </dv-valueinput>
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommen"
@@ -113,7 +118,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="erhalteneAlimente">
+                                <label class="md-no-float required" for="erhalteneAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
                                     <dv-tooltip input-id="erhalteneAlimente"
                                                 text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
@@ -122,7 +127,7 @@
                                     <dv-valueinput input-id="erhalteneAlimente"
                                                    name="erhalteneAlimente"
                                                    ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
@@ -295,7 +300,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="geleisteteAlimente">
+                                <label class="md-no-float required" for="geleisteteAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
                                     <dv-tooltip input-id="geleisteteAlimente"
                                                 text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
@@ -304,7 +309,7 @@
                                     <dv-valueinput input-id="geleisteteAlimente"
                                                    name="geleisteteAlimente"
                                                    ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"

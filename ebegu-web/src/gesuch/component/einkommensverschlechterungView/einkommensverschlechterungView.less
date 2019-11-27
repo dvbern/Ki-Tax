@@ -13,6 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 .no-margin {
     margin: 0 !important;
+}
+
+.letzte-angabe {
+    font-size: 1.6rem;
+    clear: both;
+    background-color: @contrast;
+    width: 100%;
+    min-height: 2.3rem;
+    height: auto;
+    padding: 0 0 0 1rem;
+    margin: 1rem 0 0;
+    display: inline-block;
+    border-color: @contrast-light;
+    span:first-child {
+        .ebeguItalic();
+    }
+    span {
+        font-size: 1.3rem;
+        color: @contrast-darkest;
+        letter-spacing: 0.1rem;
+        line-height: 1rem;
+    }
 }
