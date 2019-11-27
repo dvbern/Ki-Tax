@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 /**
@@ -39,7 +40,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class LastenausgleichDetail extends AbstractEntity {
+public class LastenausgleichDetail extends AbstractEntity implements Comparable<LastenausgleichDetail> {
 
 	private static final long serialVersionUID = 5266890248557491091L;
 
@@ -170,5 +171,14 @@ public class LastenausgleichDetail extends AbstractEntity {
 		final LastenausgleichDetail otherDetail = (LastenausgleichDetail) other;
 		return Objects.equals(getJahr(), otherDetail.getJahr()) &&
 			Objects.equals(getGemeinde(), otherDetail.getGemeinde());
+	}
+
+	@Override
+	public int compareTo(@Nonnull  LastenausgleichDetail other) {
+		CompareToBuilder compareToBuilder = new CompareToBuilder();
+		compareToBuilder.append(this.getJahr(), other.getJahr());
+		compareToBuilder.append(this.getGemeinde(), other.getGemeinde());
+		compareToBuilder.append(this.getLastenausgleich(), other.getLastenausgleich());
+		return compareToBuilder.toComparison();
 	}
 }

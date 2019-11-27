@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -110,8 +111,9 @@ public interface VerfuegungService {
 		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
 
 	/**
-	 * Returns all Zeitabschnitte within the given year that are gueltig
+	 * Returns all Zeitabschnitte within the given year that are gueltig. Wenn eine Gemeinde mitgegeben wird, wird
+	 * auf diese eingeschränkt, sonst kommen alle Gemeinden
 	 */
 	@Nonnull
-	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year);
+	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year, @Nullable Gemeinde einschraenkenAufGemeinde);
 }

@@ -43,9 +43,13 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
@@ -565,9 +569,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year) {
+	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year, @Nullable Gemeinde einschraenkenAufGemeinde) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
+		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 
@@ -575,18 +580,23 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
 
 		ParameterExpression<Integer> parameterYear = cb.parameter(Integer.class, "year");
-		Predicate predicateYear = cb.equal(
+		predicatesToUse.add(cb.equal(
 			cb.function(
 				"YEAR",
 				Integer.class,
 				root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)
 			),
 			parameterYear
-		);
+		));
 
-		Predicate predicateGueltig = cb.isTrue(joinBetreuung.get(Betreuung_.gueltig));
+		predicatesToUse.add(cb.isTrue(joinBetreuung.get(Betreuung_.gueltig)));
 
-		query.where(cb.and(predicateYear, predicateGueltig));
+		if (einschraenkenAufGemeinde != null) {
+			Join<Gesuch, Dossier> joinDossier = joinBetreuung.join(Betreuung_.kind).join(KindContainer_.gesuch).join(Gesuch_.dossier);
+			predicatesToUse.add(cb.equal(joinDossier.get(Dossier_.gemeinde), einschraenkenAufGemeinde));
+
+		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
 
 		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(parameterYear, year);

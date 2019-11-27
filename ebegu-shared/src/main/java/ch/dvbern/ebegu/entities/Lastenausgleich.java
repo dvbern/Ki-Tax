@@ -95,6 +95,10 @@ public class Lastenausgleich extends AbstractEntity {
 		this.lastenausgleichDetails = lastenausgleichDetails;
 	}
 
+	public void addLastenausgleichDetail(@Nonnull LastenausgleichDetail detail) {
+		getLastenausgleichDetails().add(detail);
+	}
+
 	@Override
 	public boolean isSame(@Nullable AbstractEntity other) {
 		//noinspection ObjectEquality
