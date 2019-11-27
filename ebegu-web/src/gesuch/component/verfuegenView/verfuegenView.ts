@@ -18,16 +18,23 @@ import {IComponentOptions, ILogService, IPromise, IScope, IWindowService} from '
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
+import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StepDialogController} from '../../dialog/StepDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -66,6 +73,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'ApplicationPropertyRS',
         '$timeout',
         'AuthServiceRS',
+        'I18nServiceRSRest',
     ];
 
     // this is the model...
@@ -76,6 +84,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
+
+    public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
     public constructor(
         private readonly $state: StateService,
@@ -93,6 +103,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         $timeout: ITimeoutService,
         private readonly authServiceRs: AuthServiceRS,
+        private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -133,6 +144,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         const gesuch = this.gesuchModelManager.getGesuch();
         if (!gesuch) {
             return;
+        }
+        if (this.isTagesschuleVerfuegung()) {
+            this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(), this.gesuchModelManager.getGesuchsperiode(), true);
         }
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
@@ -212,8 +226,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 parentController: undefined,
                 elementID: undefined,
             }).then(() => {
-               const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
-               promise.then(() => this.goToVerfuegen());
+                const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
+                promise.then(() => this.goToVerfuegen());
             });
         } else {
             const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
@@ -221,7 +235,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
     }
 
-    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean):  IPromise<TSVerfuegung> {
+    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean): IPromise<TSVerfuegung> {
         return direktVerfuegen
             ? this.saveVerfuegung()
             // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
@@ -341,7 +355,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
      */
     public showVerfuegen(): boolean {
         return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.VERFUEGEN)
-            && [TSBetreuungsstatus.BESTAETIGT, TSBetreuungsstatus.STORNIERT].includes(this.getBetreuungsstatus());
+            && [TSBetreuungsstatus.BESTAETIGT, TSBetreuungsstatus.STORNIERT].includes(this.getBetreuungsstatus())
+            && !this.isTagesschuleVerfuegung();
     }
 
     public saveVerfuegung(): IPromise<TSVerfuegung> {
@@ -494,5 +509,28 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public disableAblehnen(): boolean {
         // Der Button "ABLEHNEN" darf im Fall von "STORNIERT" nicht angezeigt werden
         return this.isBetreuungInStatus(TSBetreuungsstatus.STORNIERT);
+    }
+
+    public isTagesschuleVerfuegung(): boolean {
+        return this.getBetreuung().isAngebotTagesschule();
+    }
+
+    public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
+        return getTSAbholungTagesschuleValues();
+    }
+
+    public getWeekDays(): TSDayOfWeek[] {
+        return getWeekdaysValues();
+    }
+
+    public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
+        if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
+            return group.bezeichnung.textFranzoesisch;
+        }
+        return group.bezeichnung.textDeutsch;
+    }
+
+    public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
+        return TagesschuleUtil.getModulTimeAsString(modul);
     }
 }

@@ -201,7 +201,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
          * wird bei Betreuungen im Status Bestätigt und Unbekannte Institution direkt das PDF erzeugt.
          * Alle anderen darf der GS nicht anschauen (siehe isDetailAvailableForBetreuungstatus())
          */
-        if (this.isGesuchsteller() && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
+        if (this.isGesuchsteller() && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
+            && !betreuung.isAngebotTagesschule()) {
             this.openVerfuegungPDF(betreuung);
             return;
         }
@@ -226,6 +227,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public kannVerfuegungOeffnen(betreuung: TSBetreuung): boolean {
         if (betreuung) {
+            if (betreuung.isAngebotTagesschule()) {
+                return this.isDetailAvailableForTagesschuleAnmeldung(betreuung.betreuungsstatus);
+            }
             return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
         }
         return false;
@@ -243,6 +247,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSBetreuungsstatus.VERFUEGT,
             TSBetreuungsstatus.NICHT_EINGETRETEN,
             TSBetreuungsstatus.STORNIERT
+        ];
+        return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
+    }
+
+    private isDetailAvailableForTagesschuleAnmeldung(betreuungsstatus: TSBetreuungsstatus): boolean {
+        const allowedBetstatus: Array<TSBetreuungsstatus> = [
+            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
+            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }

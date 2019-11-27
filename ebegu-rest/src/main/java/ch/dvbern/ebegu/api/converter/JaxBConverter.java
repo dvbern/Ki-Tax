@@ -4178,10 +4178,15 @@ public class JaxBConverter extends AbstractConverter {
 			// es muss nochmal das Auftragstotal berechnet werden. Diesmal nur mit den erlaubten Zahlungen
 			// Dies nur fuer Institutionen
 			BigDecimal total = BigDecimal.ZERO;
+			boolean hasAnyNegativeZahlung = false;
 			for (JaxZahlung zahlung : jaxZahlungsauftrag.getZahlungen()) {
 				total = MathUtil.DEFAULT.add(total, zahlung.getBetragTotalZahlung());
+				if(MathUtil.isNegative(zahlung.getBetragTotalZahlung())){
+					hasAnyNegativeZahlung = true;
+				}
 			}
 			jaxZahlungsauftrag.setBetragTotalAuftrag(total);
+			jaxZahlungsauftrag.setHasNegativeZahlungen(hasAnyNegativeZahlung);
 		} else {
 			jaxZahlungsauftrag.setBetragTotalAuftrag(persistedZahlungsauftrag.getBetragTotalAuftrag());
 		}
