@@ -181,4 +181,19 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		compareToBuilder.append(this.getLastenausgleich(), other.getLastenausgleich());
 		return compareToBuilder.toComparison();
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("LastenausgleichDetail{");
+		sb.append("lastenausgleich=").append(lastenausgleich);
+		sb.append(", jahr=").append(jahr);
+		sb.append(", gemeinde=").append(gemeinde);
+		sb.append(", totalBelegungen=").append(totalBelegungen);
+		sb.append(", totalBetragGutscheine=").append(totalBetragGutscheine);
+		sb.append(", selbstbehaltGemeinde=").append(selbstbehaltGemeinde);
+		sb.append(", betragLastenausgleich=").append(betragLastenausgleich);
+		sb.append(", korrektur=").append(korrektur);
+		sb.append('}');
+		return sb.toString();
+	}
 }

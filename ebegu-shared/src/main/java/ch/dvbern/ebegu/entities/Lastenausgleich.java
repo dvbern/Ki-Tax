@@ -18,9 +18,9 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +29,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
@@ -61,7 +62,8 @@ public class Lastenausgleich extends AbstractEntity {
 	@Nonnull
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "lastenausgleich")
-	private Set<LastenausgleichDetail> lastenausgleichDetails = new TreeSet<>();
+	@OrderBy("jahr DESC")
+	private List<LastenausgleichDetail> lastenausgleichDetails = new ArrayList<>();
 
 
 	public Lastenausgleich() {
@@ -87,11 +89,11 @@ public class Lastenausgleich extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Set<LastenausgleichDetail> getLastenausgleichDetails() {
+	public List<LastenausgleichDetail> getLastenausgleichDetails() {
 		return lastenausgleichDetails;
 	}
 
-	public void setLastenausgleichDetails(@Nonnull Set<LastenausgleichDetail> lastenausgleichDetails) {
+	public void setLastenausgleichDetails(@Nonnull List<LastenausgleichDetail> lastenausgleichDetails) {
 		this.lastenausgleichDetails = lastenausgleichDetails;
 	}
 
@@ -114,5 +116,14 @@ public class Lastenausgleich extends AbstractEntity {
 		final Lastenausgleich otherLastenausgleich = (Lastenausgleich) other;
 		return Objects.equals(getJahr(), otherLastenausgleich.getJahr()) &&
 			MathUtil.isSame(this.getTotalAlleGemeinden(), otherLastenausgleich.getTotalAlleGemeinden());
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("Lastenausgleich{");
+		sb.append("jahr=").append(jahr);
+		sb.append(", totalAlleGemeinden=").append(totalAlleGemeinden);
+		sb.append('}');
+		return sb.toString();
 	}
 }
