@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.outbox.verfuegung;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RunAs;
@@ -49,6 +50,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +77,7 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 	 * Reason: when converting to events, we also get vorgänger Verfügung Zeitabschnitte. Thus, the initialisation must
 	 * happen on all Verfügungen, before they are converted.
 	 */
+	@TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
 	@Schedule(info = "Migration-aid, pushes already existing Verfuegungen to outbox", hour = "5", persistent = true)
 	public void migrate() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
