@@ -50,8 +50,6 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.ejb3.annotation.TransactionTimeout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.rechner.BGRechnerFactory.getRechner;
 import static java.util.Objects.requireNonNull;
@@ -59,8 +57,6 @@ import static java.util.Objects.requireNonNull;
 @Stateless
 @RunAs(UserRoleName.SUPER_ADMIN)
 public class VerfuegungEventGenerator extends AbstractBaseService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungEventGenerator.class);
 
 	@Inject
 	private Persistence persistence;
