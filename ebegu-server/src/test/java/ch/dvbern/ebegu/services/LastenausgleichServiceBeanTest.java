@@ -51,11 +51,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	// Testdaten
 	// Wir testen mit Dagmar Waelti. 1 mal Dagmar Waelti gibt folgende Werte
 	private final BigDecimal waeltiTotalGutscheinHalbjahr1 = MathUtil.DEFAULT.fromNullSafe(7256.50);
-	private final BigDecimal waeltiTotalGutscheinHalbjahr2 = MathUtil.DEFAULT.fromNullSafe(5805.20);
 	private final BigDecimal waeltiTotalBelegungHalbjahr1 = MathUtil.DEFAULT.fromNullSafe(33.35);
-	private final BigDecimal waeltiTotalBelegungHalbjahr2 = MathUtil.DEFAULT.fromNullSafe(26.65);
-	private final BigDecimal waeltiKostenPro100ProzentHalbjahr1 = MathUtil.DEFAULT.fromNullSafe(21769.50);
-	private final BigDecimal waeltiKostenPro100ProzentHalbjahr2 = MathUtil.DEFAULT.fromNullSafe(21769.50);
+	private final BigDecimal waeltiKostenPro100Prozent = MathUtil.DEFAULT.fromNullSafe(21769.50);
 
 	private Gesuchsperiode gp1718;
 
@@ -106,7 +103,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = createGesuch(gp1718);
 
 		// Lastenausgleich erstellen
-		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiKostenPro100ProzentHalbjahr1);
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiKostenPro100Prozent);
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2017, lastenausgleich.getJahr().longValue());
 		Assert.assertEquals(1, lastenausgleich.getLastenausgleichDetails().size());
@@ -125,7 +122,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createLastenausgleichReicheGemeinde() {
 		Gesuch gesuch = createGesuch(gp1718);
 		//  Die durchschnittlichen Kostne pro 100% Platz sind doppelt so hoch wie in der Gemeinde
-		BigDecimal hoheKostenPro100ProzentPlatz = MathUtil.DEFAULT.multiply(waeltiKostenPro100ProzentHalbjahr1, MathUtil.DEFAULT.from(2));
+		BigDecimal hoheKostenPro100ProzentPlatz = MathUtil.DEFAULT.multiply(waeltiKostenPro100Prozent, MathUtil.DEFAULT.from(2));
 
 		// Lastenausgleich erstellen
 		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, hoheKostenPro100ProzentPlatz);
@@ -147,7 +144,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createLastenausgleichArmeGemeinde() {
 		Gesuch gesuch = createGesuch(gp1718);
 		//  Die durchschnittlichen Kostne pro 100% Platz sind halb so hoch wie in der Gemeinde
-		BigDecimal tiefeKostenPro100ProzentPlatz = MathUtil.DEFAULT.divide(waeltiKostenPro100ProzentHalbjahr1, MathUtil.DEFAULT.from(2));
+		BigDecimal tiefeKostenPro100ProzentPlatz = MathUtil.DEFAULT.divide(waeltiKostenPro100Prozent, MathUtil.DEFAULT.from(2));
 
 		// Lastenausgleich erstellen
 		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, tiefeKostenPro100ProzentPlatz);
@@ -170,14 +167,14 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = createGesuch(gp1718);
 
 		// Lastenausgleich 2017 erstellen
-		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiKostenPro100ProzentHalbjahr1);
+		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiKostenPro100Prozent);
 		Assert.assertNotNull(lastenausgleich2017);
 
 		// Nachtraeglich ein weiteres Gesuch verfuegen
 		createGesuch(gp1718);
 
 		// Lastenausgleich 2018 erstellen: Dies soll auch zu Korrekturen fuer 2017 fuehren
-		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleich(2018, waeltiKostenPro100ProzentHalbjahr2);
+		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleich(2018, waeltiKostenPro100Prozent);
 		Assert.assertNotNull(lastenausgleich2018);
 
 		Assert.assertEquals(2018, lastenausgleich2018.getJahr().longValue());
