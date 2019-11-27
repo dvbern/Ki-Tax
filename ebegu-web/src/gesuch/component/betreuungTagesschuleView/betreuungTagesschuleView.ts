@@ -36,10 +36,10 @@ import TSBelegungTagesschuleModul from '../../../models/TSBelegungTagesschuleMod
 import TSBelegungTagesschuleModulGroup from '../../../models/TSBelegungTagesschuleModulGroup';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSEinstellungenTagesschule from '../../../models/TSEinstellungenTagesschule';
-import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -137,13 +137,15 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return this.getBetreuungModel().institutionStammdaten;
         }, (newValue, oldValue) => {
             if (newValue !== oldValue) {
-                this.loadModule();
+               this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+               this.loadErlaeuterungForTagesschule();
             }
         });
     }
 
     public $onInit(): void {
-        this.loadModule();
+        this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+        this.loadErlaeuterungForTagesschule();
         if (this.betreuung.isEnabled()) {
             this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
             this.setErsterSchultag();
@@ -176,84 +178,16 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return '';
     }
 
-    /**
-     * Lädt die Module: Diejenigen, die bereits auf der Betreuung waren, werden als ANGEMELDET
-     * markiert, die grundsätzlich verfügbaren als "ANGEBOTEN". Alle anderen Wochentage pro Gruppe
-     * werden als NICHT-ANGEBOTEN trotzdem hinzugefügt
-     */
-    private loadModule(): void {
-        if (!(this.getBetreuungModel().institutionStammdaten
-            && this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule)
-        ) {
-            return;
-        }
-        const moduleAngemeldet = this.getBetreuungModel().belegungTagesschule.belegungTagesschuleModule;
-        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule();
-
-        this.modulGroups = [];
-        for (const groupTagesschule of moduleAngeboten) {
-            this.initializeGroup(groupTagesschule);
-            const moduleOfGroup = groupTagesschule.getModuleOrdered();
-            const group = new TSBelegungTagesschuleModulGroup();
-            group.group = groupTagesschule;
-            for (const modulOfGroup of moduleOfGroup) {
-                let foundInAngemeldete = false;
-                for (const angMod of moduleAngemeldet) {
-                    if (angMod.modulTagesschule.id !== modulOfGroup.id) {
-                        continue;
-                    }
-                    angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
-                    group.module.push(angMod);
-                    foundInAngemeldete = true;
-                }
-                if (foundInAngemeldete) {
-                    continue;
-                }
-                // Das Modul war bisher nicht ausgewählt, muss aber trotzdem angeboten werden
-                const tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
-                tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
-                group.module.push(tsBelegungTagesschuleModul);
-            }
-            this.modulGroups.push(group);
-        }
-    }
-
-    private loadAngeboteneModuleForTagesschule(): TSModulTagesschuleGroup[] {
+    private loadErlaeuterungForTagesschule(): void {
         const tsEinstellungenTagesschule =
             this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
                 .filter((einstellung: TSEinstellungenTagesschule) =>
                     einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
                 .pop();
         if (!tsEinstellungenTagesschule) {
-            return [];
+            return;
         }
         this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
-        return tsEinstellungenTagesschule.modulTagesschuleGroups;
-    }
-
-    private initializeGroup(group: TSModulTagesschuleGroup): void {
-        for (const day of getWeekdaysValues()) {
-            if (this.getModulForDay(group, day)) {
-                continue;
-            }
-            const modul = new TSModulTagesschule();
-            modul.wochentag = day;
-            modul.angeboten = false;
-            group.module.push(modul);
-        }
-    }
-
-    private getModulForDay(group: TSModulTagesschuleGroup, day: TSDayOfWeek): TSModulTagesschule {
-        for (const modul of group.module) {
-            if (day !== modul.wochentag) {
-                continue;
-            }
-            if (modul.id !== undefined) {
-                    modul.angeboten = true;
-            }
-            return modul;
-        }
-        return undefined;
     }
 
     public getWeekDays(): TSDayOfWeek[] {
@@ -342,10 +276,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
-        if (modul) {
-            return `${modul.zeitVon} - ${modul.zeitBis}`;
-        }
-        return '';
+        return TagesschuleUtil.getModulTimeAsString(modul);
     }
 
     public showButtonsInstitution(): boolean {

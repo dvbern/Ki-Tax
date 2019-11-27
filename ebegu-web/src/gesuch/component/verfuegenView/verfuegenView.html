@@ -50,8 +50,134 @@
                     </div>
                 </div>
 
+                <!-- Verfuegung Tagesschule -->
+                <div ng-if="vm.isTagesschuleVerfuegung()">
+                    <br/>
+                    <!-- Eintrittsdatum -->
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small form-group">
+                            <label class="md-no-float required" data-translate="EINTRITTSDATUM"
+                                   for="eintrittsdatum_ID"></label>
+                            <dv-datepicker input-id="eintrittsdatum_ID" name="eintrittsdatum"
+                                           ng-model="vm.getBetreuung().belegungTagesschule.eintrittsdatum"
+                                           ng-required="true"
+                                           class="input-element "
+                                           ng-disabled="true">
+                            </dv-datepicker>
+                        </div>
+                    </div>
+
+                    <!-- Planklasse -->
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" for="planKlasse_ID">
+                                    <span data-translate="PLANKLASSE"> </span>
+                                    <dv-tooltip input-id="planKlasse" text="'PLANKLASSE_INFO' | translate"></dv-tooltip>
+                                </label>
+                                <input aria-describedby="planKlasse_ID-error" id="planKlasse_ID"
+                                       type="text" name="planKlasse"
+                                       ng-model="vm.getBetreuung().belegungTagesschule.planKlasse"
+                                       dv-max-length class="form-control"
+                                       ng-disabled="true">
+                            </dv-input-container>
+                        </div>
+                    </div>
+
+                    <!-- Abholung aus der Tagesschule -->
+                    <div class="row marginTop20">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <label class="md-no-float" ng-class="{'required': vm.isGesuchstellerRole()}" for="abholungTagesschule_ID">
+                                    <span data-translate="ABHOLUNG_AUS_TAGESSCHULE"></span>
+                                </label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="abholungTagesschule_ID-error" name="abholungTagesschule" id="abholungTagesschule_ID"
+                                            ng-model="vm.getBetreuung().belegungTagesschule.abholungTagesschule"
+                                            ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
+                                            class="form-control"
+                                            ng-disabled="true">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TS-Module -->
+                    <div class="dv-ebegu-calendar__wrapper-tagesschule">
+
+                        <!-- Header mit Wochentagen -->
+                        <div class="dv-ebegu-calendar__row--tagesschule">
+                            <div class="dv-ebegu-calendar__wrapper-small-blank"></div>
+                            <div class="dv-ebegu-calendar__wrapper">
+                                <div class="dv-ebegu-calendar__container-weekdays">
+                                    <div class="dv-ebegu-calendar__weekday dv-ebegu-calendar__weekday--{{day}}"
+                                         ng-repeat="day in vm.getWeekDays()">{{ day | translate}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dv-ebegu-calendar__row--tagesschule"
+                             ng-repeat="group in vm.modulGroups track by group.group.identifier">
+                            <!-- Gruppe (Name und Zeit) -->
+                            <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
+                                <span class="dv-ebegu-calendar__module-name" ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
+                                <span class="dv-ebegu-calendar__module-time"
+                                      ng-bind="vm.getModulTimeAsString(group.group)"></span>
+                            </div>
+                            <div class="dv-ebegu-calendar__wrapper">
+                                <div class="dv-ebegu-calendar__container dv-ebegu-calendar__container--no-margin">
+
+                                    <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
+                                         ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
+                                            <md-checkbox
+                                                name="modul_{{mod.modulTagesschule.identifier}}"
+                                                ng-model="mod.modulTagesschule.angemeldet"
+                                                aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                                ng-disabled="!vm.isModuleEditable(mod)"
+                                                ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
+                                                class="dv-ebegu-calendar--tagesschule">
+                                                <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
+                                            </md-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Abweichung zweites Semester und Bemerkungen -->
+                    <div class="row marginTop30">
+                        <div class="col-sm-12 dv-input-container-question">
+                            <md-checkbox class="checkbox marginTop20"
+                                         ng-model="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
+                                         name="abweichungZweitesSemester"
+                                         id="abweichungZweitesSemester"
+                                         aria-label="{{'BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX' | translate}}"
+                                         ng-disabled="true">
+                                <span data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"></span>
+                            </md-checkbox>
+                            <dv-input-container class="form-group" ng-show="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester">
+                                <label class="md-no-float" ng-class="{'required': vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester}"
+                                       data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG" for="bemerkung_ID">
+                                </label>
+                                <p class="inlineHint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
+                                <textarea aria-describedby="bemerkung_ID-error"
+                                          name="bemerkung"
+                                          class="form-control " rows="6"
+                                          id="bemerkung_ID"
+                                          ng-model="vm.getBetreuung().belegungTagesschule.bemerkung"
+                                          ng-required="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester"
+                                          maxlength="4000"
+                                          ng-disabled="true">
+                                </textarea>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- Tabelle -->
-                <div class="row" ng-if="vm.showVerfuegungsDetails()">
+                <div class="row" ng-if="vm.showVerfuegungsDetails() && !vm.isTagesschuleVerfuegung()">
                     <div class="col-md-12 table-responsive">
                         <table st-table="displayedCollection" st-safe-src="vm.getVerfuegungZeitabschnitte()"
                                class="table">
@@ -72,10 +198,12 @@
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="infotext">
-                                    <dv-tooltip text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
+                                    <dv-tooltip
+                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="infotext result">
-                                    <dv-tooltip text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
+                                    <dv-tooltip
+                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="infotext result">
                                     <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>
@@ -144,98 +272,99 @@
                         </table>
                     </div>
                 </div>
-
-                <!--bemerkungen-->
-                <div class="row marginTop20" dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtRoles()"
-                     dv-show-expression="vm.showVerfuegungsDetails()">
-                    <div class="col-md-12 form-group">
-                        <label class="md-no-float inlineHint" for="manuelle_notes"
-                               data-translate="BEGRUENDUNG"></label>
-                        <textarea md-no-autogrow class="form-control" rows="6" name="manuelle_notes" id="manuelle_notes"
-                                  ng-model="vm.bemerkungen" ng-disabled="vm.isBemerkungenDisabled()"
-                                  ng-required="vm.isVerfuegenClicked"
-                                  ng-attr-placeholder="{{'BEMERKUNGEN_PLACEHOLDER' | translate}}"
-                                  maxlength="4000"></textarea>
-                        <dv-error-messages input-id="manuelle_notes"
-                                           for="vm.form.manuelle_notes.$error"></dv-error-messages>
+                <div ng-if="!vm.isTagesschuleVerfuegung()">
+                    <!--bemerkungen-->
+                    <div class="row marginTop20" dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtRoles()"
+                         dv-show-expression="vm.showVerfuegungsDetails()">
+                        <div class="col-md-12 form-group">
+                            <label class="md-no-float inlineHint" for="manuelle_notes"
+                                   data-translate="BEGRUENDUNG"></label>
+                            <textarea md-no-autogrow class="form-control" rows="6" name="manuelle_notes"
+                                      id="manuelle_notes"
+                                      ng-model="vm.bemerkungen" ng-disabled="vm.isBemerkungenDisabled()"
+                                      ng-required="vm.isVerfuegenClicked"
+                                      ng-attr-placeholder="{{'BEMERKUNGEN_PLACEHOLDER' | translate}}"
+                                      maxlength="4000"></textarea>
+                            <dv-error-messages input-id="manuelle_notes"
+                                               for="vm.form.manuelle_notes.$error"></dv-error-messages>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Bestätigung, dass die Begründungen kontrolliert wurden -->
-                <div class="row" dv-show-element
-                     dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                     dv-show-expression="vm.showVerfuegen()">
-                    <div class="col-xs-12 dv-input-container-question">
-                        <div class="checkbox">
-                            <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
-                                         ng-required="vm.isVerfuegenClicked"
-                                         name="verfuegungsBemerkungenKontrolliert"
-                                         aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}">
-                                <span data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"></span>
-                            </md-checkbox>
-                            <div class="dv-error-messages">
-                                <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
-                                     class="error">
-                                    <div ng-message="required"
-                                         data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
-                                         for="vm.form.verfuegungsBemerkungenKontrolliert.$error"
-                                         role="alert"></div>
+                    <!-- Bestätigung, dass die Begründungen kontrolliert wurden -->
+                    <div class="row" dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                         dv-show-expression="vm.showVerfuegen()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
+                                             ng-required="vm.isVerfuegenClicked"
+                                             name="verfuegungsBemerkungenKontrolliert"
+                                             aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}">
+                                    <span data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"></span>
+                                </md-checkbox>
+                                <div class="dv-error-messages">
+                                    <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                         class="error">
+                                        <div ng-message="required"
+                                             data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
+                                             for="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                             role="alert"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!--VerfuegungPDF anzeigen-->
-                <div class="row marginTop20 text-left">
-                    <div class="col-xs-12" ng-if="vm.showVerfuegungPdfLink()">
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                ng-click="vm.openVerfuegungPDF()">
-                            <i class="fa fa-file-text-o"></i>
-                            <span data-translate="PDF_VERFUEGUNG_ANZEIGEN"></span>
-                        </button>
+                    <!--VerfuegungPDF anzeigen-->
+                    <div class="row marginTop20 text-left">
+                        <div class="col-xs-12" ng-if="vm.showVerfuegungPdfLink()">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openVerfuegungPDF()">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="PDF_VERFUEGUNG_ANZEIGEN"></span>
+                            </button>
+                        </div>
+
+                        <!--export for external programs-->
+                        <div class="col-xs-12" dv-show-element
+                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                             dv-show-expression="vm.showExportLink()">
+                            <a type="button" class="btn-link link-underline" ng-click="vm.openExport()" href="">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="DOWNLOAD_EXPORT_FILE"></span>
+                            </a>
+
+                        </div>
+                        <!--schemalinks-->
+                        <div class="col-xs-12 marginTop10" dv-show-element
+                             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
+                             dv-show-expression="vm.showSchemas && vm.showExportLink()">
+                            <span class="marginRight10"> Schemas:</span>
+                            <a ng-click="vm.exportJsonSchema()" href=""
+                               class="btn-link link-underline"><span>json</span></a>
+                            <a ng-click="vm.exportXmlSchema()" href="" title="to show please disable popupblocker"
+                               class="btn-link link-underline"><span>xml</span></a>
+                        </div>
+
+                        <div class="col-xs-12" ng-if="vm.showNichtEintretenPdfLink()">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openNichteintretenPDF()">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="PDF_NICHT_EINTRETEN_ANZEIGEN"></span>
+                            </button>
+                        </div>
                     </div>
 
-                    <!--export for external programs-->
-                    <div class="col-xs-12" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
-                         dv-show-expression="vm.showExportLink()">
-                        <a type="button" class="btn-link link-underline" ng-click="vm.openExport()" href="">
-                            <i class="fa fa-file-text-o"></i>
-                            <span data-translate="DOWNLOAD_EXPORT_FILE"></span>
-                        </a>
 
-                    </div>
-                    <!--schemalinks-->
-                    <div class="col-xs-12 marginTop10" dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
-                         dv-show-expression="vm.showSchemas && vm.showExportLink()">
-                        <span class="marginRight10"> Schemas:</span>
-                        <a ng-click="vm.exportJsonSchema()" href=""
-                           class="btn-link link-underline"><span>json</span></a>
-                        <a ng-click="vm.exportXmlSchema()" href="" title="to show please disable popupblocker"
-                           class="btn-link link-underline"><span>xml</span></a>
-                    </div>
-
-                    <div class="col-xs-12" ng-if="vm.showNichtEintretenPdfLink()">
-                        <button type="button" class="dv-btn btn-link link-underline"
-                                ng-click="vm.openNichteintretenPDF()">
-                            <i class="fa fa-file-text-o"></i>
-                            <span data-translate="PDF_NICHT_EINTRETEN_ANZEIGEN"></span>
-                        </button>
-                    </div>
-                </div>
-
-
-                <div class="row marginTop20" ng-show="vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
-                    <div class="col-md-12">
-                        <div class="well well-status-warten">
-                            <span data-translate="IDENTISCHE_BERECHNUNG"></span>
+                    <div class="row marginTop20" ng-show="vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
+                        <div class="col-md-12">
+                            <div class="well well-status-warten">
+                                <span data-translate="IDENTISCHE_BERECHNUNG"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Navigation Buttons -->
                 <div class="dv-navigation dv-navigation-flex">
                     <span class="ie11-fix" dv-show-element
@@ -260,13 +389,15 @@
                                 <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
                             </dv-loading-button>
                         </span>
-                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
+                        <span class="ie11-fix"
+                              ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
                                 <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </span>
-                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
+                        <span class="ie11-fix"
+                              ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
                             <dv-loading-button type="submit" button-click="vm.save()">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>
