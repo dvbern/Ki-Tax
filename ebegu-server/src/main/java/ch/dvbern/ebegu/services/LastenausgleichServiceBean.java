@@ -42,6 +42,8 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -55,6 +57,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Local(LastenausgleichService.class)
 public class LastenausgleichServiceBean extends AbstractBaseService implements LastenausgleichService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LastenausgleichServiceBean.class);
 	private static final BigDecimal SELBSTBEHALT = MathUtil.DEFAULT.from(0.2d);
 
 	@Inject
@@ -70,7 +73,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	private VerfuegungService verfuegungService;
 
 
-	@RolesAllowed({ SUPER_ADMIN})
+	@RolesAllowed(SUPER_ADMIN)
 	@Override
 	@Nonnull
 	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal kostenPro100ProzentPlatz) {
@@ -88,8 +91,10 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden();
 		for (Gemeinde gemeinde : aktiveGemeinden) {
+			LOG.info("Evaluating Gemeinde " + gemeinde.getName() + " and year " + jahr);
 			LastenausgleichDetail detail = createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagen);
 			if (detail != null) {
+				LOG.info("... found");
 				lastenausgleich.addLastenausgleichDetail(detail);
 			}
 		}
@@ -99,8 +104,10 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			Optional<LastenausgleichGrundlagen> grundlagenKorrekturjahr = findLastenausgleichGrundlagen(korrekturJahr);
 			if (grundlagenKorrekturjahr.isPresent()) {
 				for (Gemeinde gemeinde : aktiveGemeinden) {
+					LOG.info("Evaluating Korrekturen for Gemeinde " + gemeinde.getName() + " and year " + korrekturJahr);
 					LastenausgleichDetail detail = createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenKorrekturjahr.get());
 					if (detail != null) {
+						LOG.info("... found");
 						lastenausgleich.addLastenausgleichDetail(detail);
 					}
 				}

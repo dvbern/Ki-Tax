@@ -111,9 +111,14 @@ public interface VerfuegungService {
 		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
 
 	/**
-	 * Returns all Zeitabschnitte within the given year that are gueltig. Wenn eine Gemeinde mitgegeben wird, wird
-	 * auf diese eingeschränkt, sonst kommen alle Gemeinden
+	 * Returns all Zeitabschnitte within the given year that are gueltig.
 	 */
 	@Nonnull
-	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year, @Nullable Gemeinde einschraenkenAufGemeinde);
+	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year);
+
+	/**
+	 * Returns all Zeitabschnitte within the given year that are gueltig and concern the given gemeinde
+	 */
+	@Nonnull
+	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year, @Nonnull Gemeinde gemeinde);
 }

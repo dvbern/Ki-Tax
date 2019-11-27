@@ -101,7 +101,7 @@ public class ReportLastenausgleichKibonServiceBean extends AbstractReportService
 	}
 
 	private List<LastenausgleichKibonDataRow> getReportLastenausgleichKibon(LocalDate dateFrom) {
-		final List<VerfuegungZeitabschnitt> zeitabschnitteByYear = verfuegungService.findZeitabschnitteByYear(dateFrom.getYear(), null);
+		final List<VerfuegungZeitabschnitt> zeitabschnitteByYear = verfuegungService.findZeitabschnitteByYear(dateFrom.getYear());
 
 		List<LastenausgleichKibonDataRow> allLastenausgleich = zeitabschnitteByYear.stream()
 			.map(zeitabschnitt -> {
