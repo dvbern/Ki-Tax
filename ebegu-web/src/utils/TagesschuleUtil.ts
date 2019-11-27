@@ -16,18 +16,21 @@
  */
 
 import {getWeekdaysValues, TSDayOfWeek} from '../models/enums/TSDayOfWeek';
-import TSBelegungTagesschuleModul from '../models/TSBelegungTagesschuleModul';
-import TSBelegungTagesschuleModulGroup from '../models/TSBelegungTagesschuleModulGroup';
-import TSBetreuung from '../models/TSBetreuung';
-import TSEinstellungenTagesschule from '../models/TSEinstellungenTagesschule';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
-import TSModulTagesschule from '../models/TSModulTagesschule';
-import TSModulTagesschuleGroup from '../models/TSModulTagesschuleGroup';
+import {TSBelegungTagesschuleModul} from '../models/TSBelegungTagesschuleModul';
+import {TSBelegungTagesschuleModulGroup} from '../models/TSBelegungTagesschuleModulGroup';
+import {TSBetreuung} from '../models/TSBetreuung';
+import {TSEinstellungenTagesschule} from '../models/TSEinstellungenTagesschule';
+import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
+import {TSModulTagesschule} from '../models/TSModulTagesschule';
+import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
 
 export class TagesschuleUtil {
 
-    public static initModuleTagesschule(betreuung: TSBetreuung, gesuchsPeriode: TSGesuchsperiode,
-                                        verfuegungView: boolean): TSBelegungTagesschuleModulGroup[] {
+    public static initModuleTagesschule(
+        betreuung: TSBetreuung,
+        gesuchsPeriode: TSGesuchsperiode,
+        verfuegungView: boolean,
+    ): TSBelegungTagesschuleModulGroup[] {
         if (!(betreuung.institutionStammdaten
             && betreuung.institutionStammdaten.institutionStammdatenTagesschule)
         ) {
@@ -39,9 +42,11 @@ export class TagesschuleUtil {
         return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView);
     }
 
-    private static initModulGroups(moduleAngemeldet: TSBelegungTagesschuleModul[],
-                                   moduleAngeboten: TSModulTagesschuleGroup[],
-                                   verfuegungView: boolean): TSBelegungTagesschuleModulGroup[] {
+    private static initModulGroups(
+        moduleAngemeldet: TSBelegungTagesschuleModul[],
+        moduleAngeboten: TSModulTagesschuleGroup[],
+        verfuegungView: boolean,
+    ): TSBelegungTagesschuleModulGroup[] {
         const modulGroups: TSBelegungTagesschuleModulGroup[] = [];
         for (const groupTagesschule of moduleAngeboten) {
             TagesschuleUtil.initializeGroup(groupTagesschule);
@@ -68,9 +73,11 @@ export class TagesschuleUtil {
         return modulGroups;
     }
 
-    private static setAlreadyAngemeldetModule(group: TSBelegungTagesschuleModulGroup,
-                                              moduleAngemeldet: TSBelegungTagesschuleModul[],
-                                              moduleOfGroupId: string): boolean {
+    private static setAlreadyAngemeldetModule(
+        group: TSBelegungTagesschuleModulGroup,
+        moduleAngemeldet: TSBelegungTagesschuleModul[],
+        moduleOfGroupId: string,
+    ): boolean {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
             if (angMod.modulTagesschule.id !== moduleOfGroupId) {
@@ -83,8 +90,10 @@ export class TagesschuleUtil {
         return foundInAngemeldete;
     }
 
-    private static loadAngeboteneModuleForTagesschule(betreuung: TSBetreuung,
-                                                      gesuchsPeriode: TSGesuchsperiode): TSModulTagesschuleGroup[] {
+    private static loadAngeboteneModuleForTagesschule(
+        betreuung: TSBetreuung,
+        gesuchsPeriode: TSGesuchsperiode,
+    ): TSModulTagesschuleGroup[] {
         const tsEinstellungenTagesschule =
             betreuung.institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
                 .filter((einstellung: TSEinstellungenTagesschule) =>
