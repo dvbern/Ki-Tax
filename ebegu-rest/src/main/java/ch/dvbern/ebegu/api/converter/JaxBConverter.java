@@ -105,8 +105,6 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
-import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichDetail;
-import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichGrundlagen;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -220,6 +218,7 @@ import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AdresseService;
@@ -4711,32 +4710,6 @@ public class JaxBConverter extends AbstractConverter {
 		return konfiguration;
 	}
 
-	@Nonnull
-	public LastenausgleichGrundlagen lastenausgleichGrundlagenToEntity(
-		@Nonnull final JaxLastenausgleichGrundlagen jaxGrundlagen,
-		@Nonnull final LastenausgleichGrundlagen grundlagen
-	) {
-		requireNonNull(grundlagen);
-		requireNonNull(jaxGrundlagen);
-
-		convertAbstractFieldsToEntity(jaxGrundlagen, grundlagen);
-		grundlagen.setJahr(jaxGrundlagen.getJahr());
-		grundlagen.setKostenPro100ProzentPlatz(jaxGrundlagen.getKostenPro100ProzentPlatz());
-		return grundlagen;
-	}
-
-	@Nullable
-	public JaxLastenausgleichGrundlagen lastenausgleichGrundlagenToJAX(@Nullable final LastenausgleichGrundlagen persistedGrundlagen) {
-		if (persistedGrundlagen == null) {
-			return null;
-		}
-		JaxLastenausgleichGrundlagen jaxGrundlagen = new JaxLastenausgleichGrundlagen();
-		convertAbstractFieldsToJAX(persistedGrundlagen, jaxGrundlagen);
-		jaxGrundlagen.setJahr(persistedGrundlagen.getJahr());
-		jaxGrundlagen.setKostenPro100ProzentPlatz(persistedGrundlagen.getKostenPro100ProzentPlatz());
-		return jaxGrundlagen;
-	}
-
 	@Nullable
 	public JaxLastenausgleich lastenausgleichToJAX(@Nullable final Lastenausgleich persistedLastenausgleich) {
 		if (persistedLastenausgleich == null) {
@@ -4746,36 +4719,31 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(persistedLastenausgleich, jaxLastenausgleich);
 		jaxLastenausgleich.setJahr(persistedLastenausgleich.getJahr());
 		jaxLastenausgleich.setTotalAlleGemeinden(persistedLastenausgleich.getTotalAlleGemeinden());
-		Set<JaxLastenausgleichDetail> jaxDetails = lastenausgleichDetailListToJax(persistedLastenausgleich.getLastenausgleichDetails());
-		jaxLastenausgleich.getLastenausgleichDetails().addAll(jaxDetails);
+
 		return jaxLastenausgleich;
 	}
 
-	@Nonnull
-	private Set<JaxLastenausgleichDetail> lastenausgleichDetailListToJax(@Nullable final Set<LastenausgleichDetail> details) {
-		if (details == null) {
-			return Collections.emptySet();
-		}
-		return details.stream()
-			.map(this::lastenausgleichDetailToJAX)
-			.collect(Collectors.toCollection(TreeSet::new));
+
+	public void lastenausgleichGrundlagenToEntity() {
+		throw new EbeguFingerWegException("lastenausgleichGrundlagenToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
-	@Nullable
-	private JaxLastenausgleichDetail lastenausgleichDetailToJAX(@Nullable final LastenausgleichDetail persistedDetail) {
-		if (persistedDetail == null) {
-			return null;
-		}
-		JaxLastenausgleichDetail jaxDetail = new JaxLastenausgleichDetail();
-		convertAbstractFieldsToJAX(persistedDetail, jaxDetail);
-		jaxDetail.setJahr(persistedDetail.getJahr());
-		jaxDetail.setGemeindeName(persistedDetail.getGemeinde().getName());
-		jaxDetail.setGemeindeBfsNummer(persistedDetail.getGemeinde().getBfsNummer());
-		jaxDetail.setTotalBelegungen(persistedDetail.getTotalBelegungen());
-		jaxDetail.setTotalBetragGutscheine(persistedDetail.getTotalBetragGutscheine());
-		jaxDetail.setSelbstbehaltGemeinde(persistedDetail.getSelbstbehaltGemeinde());
-		jaxDetail.setBetragLastenausgleich(persistedDetail.getBetragLastenausgleich());
-		jaxDetail.setKorrektur(persistedDetail.isKorrektur());
-		return jaxDetail;
+	public void lastenausgleichGrundlagenToJAX() {
+		throw new EbeguFingerWegException("lastenausgleichGrundlagenToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	private void lastenausgleichDetailListToEntity() {
+		throw new EbeguFingerWegException("lastenausgleichDetailListToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	private void lastenausgleichDetailListToJax() {
+		throw new EbeguFingerWegException("lastenausgleichDetailListToJax", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	private void lastenausgleichDetailToEntity() {
+		throw new EbeguFingerWegException("lastenausgleichDetailToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);}
+
+	private void lastenausgleichDetailToJAX() {
+		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 }

@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
@@ -40,9 +38,6 @@ public class JaxLastenausgleich extends JaxAbstractDTO {
 	@NotNull @Nonnull
 	private BigDecimal totalAlleGemeinden = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
-	private List<JaxLastenausgleichDetail> lastenausgleichDetails = new ArrayList<>();
-
 
 	@Nonnull
 	public Integer getJahr() {
@@ -60,14 +55,5 @@ public class JaxLastenausgleich extends JaxAbstractDTO {
 
 	public void setTotalAlleGemeinden(@Nonnull BigDecimal totalAlleGemeinden) {
 		this.totalAlleGemeinden = totalAlleGemeinden;
-	}
-
-	@Nonnull
-	public List<JaxLastenausgleichDetail> getLastenausgleichDetails() {
-		return lastenausgleichDetails;
-	}
-
-	public void setLastenausgleichDetails(@Nonnull List<JaxLastenausgleichDetail> lastenausgleichDetails) {
-		this.lastenausgleichDetails = lastenausgleichDetails;
 	}
 }
