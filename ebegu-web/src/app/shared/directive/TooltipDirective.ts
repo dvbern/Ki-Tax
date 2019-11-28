@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,36 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import (reference) '../../../style/variables.less';
-@import (reference) '../../../style/mixins.less';
+import {Directive, ElementRef, Injector, Input} from '@angular/core';
+import {UpgradeComponent} from '@angular/upgrade/static';
 
-/deep/
-.mat-tab-label-active {
-    background-color: @lgrey;
-    opacity: 1 !important;
-}
-/deep/
-.mat-tab-label-content {
-    color: @black;
-    font-weight: 600;
-    .ebeguFont-family();
-}
+@Directive({
+    selector: 'dv-tooltip'
+})
+export class TooltipDirective extends UpgradeComponent {
 
-.mat-tab-group,
-.mat-tab-body{
-    .ebeguFont-family() !important;
-}
-::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
-::ng-deep .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    height: 0px;
-}
+    @Input() public inputId: string;
+    @Input() public text: string;
 
-/deep/
-.checkbox-with-tooltip {
-    display: flex;
-    dv-tooltip {
-        display: flex;
-        align-items: center;
-        padding-left: 0.75rem;
+    public constructor(elementRef: ElementRef, injector: Injector) {
+        super('dvTooltip', elementRef, injector);
     }
+
 }

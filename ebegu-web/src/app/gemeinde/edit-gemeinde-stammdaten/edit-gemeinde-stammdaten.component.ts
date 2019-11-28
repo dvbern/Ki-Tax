@@ -22,6 +22,7 @@ import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -104,4 +105,14 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
+    public getRechtsmittelBelehrungVerfuegungText$(kontaktAdresse: TSAdresse, beschwerdeAdresse: TSAdresse,
+                                                   keineBeschwerdeAdresse: boolean): Observable<string> {
+        const adresse = ((keineBeschwerdeAdresse) ? kontaktAdresse : beschwerdeAdresse);
+        let adresseStr;
+        (adresse.organisation && adresse.strasse && adresse.plz && adresse.ort)
+            ? adresseStr = `${adresse.organisation}, ${adresse.strasse} ${adresse.hausnummer},
+             ${adresse.plz} ${adresse.ort}`
+            : adresseStr = this.translate.instant('ADRESSE_NICHT_ANGEGEBEN');
+        return this.translate.get('RECHTSMITTELBELEHRUNG_VERFUEGUNG', {adresse: adresseStr});
+    }
 }
