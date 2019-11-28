@@ -189,8 +189,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
-import ch.dvbern.ebegu.entities.LastenausgleichDetail;
-import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -4732,18 +4730,18 @@ public class JaxBConverter extends AbstractConverter {
 		throw new EbeguFingerWegException("lastenausgleichGrundlagenToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
-	private void lastenausgleichDetailListToEntity() {
+	public void lastenausgleichDetailListToEntity() {
 		throw new EbeguFingerWegException("lastenausgleichDetailListToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
-	private void lastenausgleichDetailListToJax() {
+	public void lastenausgleichDetailListToJax() {
 		throw new EbeguFingerWegException("lastenausgleichDetailListToJax", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
-	private void lastenausgleichDetailToEntity() {
+	public void lastenausgleichDetailToEntity() {
 		throw new EbeguFingerWegException("lastenausgleichDetailToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);}
 
-	private void lastenausgleichDetailToJAX() {
+	public void lastenausgleichDetailToJAX() {
 		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 }

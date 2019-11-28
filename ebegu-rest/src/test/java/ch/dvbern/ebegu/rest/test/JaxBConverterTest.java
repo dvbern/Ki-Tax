@@ -62,6 +62,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -248,5 +249,21 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
 		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, loadedFachstelle.getName());
+	}
+
+	@Test
+	public void immutableClientObjectTest() {
+		converter.lastenausgleichGrundlagenToEntity();
+		Assert.fail("Die Methode darf nicht verwendet werden");
+		converter.lastenausgleichGrundlagenToJAX();
+		Assert.fail("Die Methode darf nicht verwendet werden");
+		converter.lastenausgleichDetailListToEntity();
+		Assert.fail("Die Methode darf nicht verwendet werden");
+		converter.lastenausgleichDetailListToJax();
+		Assert.fail("Die Methode darf nicht verwendet werden");
+		converter.lastenausgleichDetailToEntity();
+		Assert.fail("Die Methode darf nicht verwendet werden");
+		converter.lastenausgleichDetailToJAX();
+		Assert.fail("Die Methode darf nicht verwendet werden");
 	}
 }
