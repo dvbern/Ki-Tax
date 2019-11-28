@@ -323,9 +323,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nullable Einkommensverschlechterung ekv2,
 		int basisJahrPlus
 	) {
-		if (finSit == null || ekv2 == null) {
-			return null;
-		}
 		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
 		BigDecimal durchschnitt = FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finSit, ekv1, ekv2, ekvInfo, basisJahrPlus);
 		return MathUtil.roundToFrankenRappen(durchschnitt);
