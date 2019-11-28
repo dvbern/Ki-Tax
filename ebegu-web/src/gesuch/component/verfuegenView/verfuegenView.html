@@ -185,14 +185,23 @@
                             <tr>
                                 <td class="infotext"></td>
                                 <td class="infotext"></td>
-                                <td class="infotext">
+                                <td class="infotext" ng-if="vm.showPensumInPercent()">
                                     <dv-tooltip text="'EFFEKTIVE_BETREUUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext">
+                                <td class="infotext" ng-if="vm.showPensumInHours()">
+                                    <dv-tooltip text="'EFFEKTIVE_BETREUUNG_IN_H_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td class="infotext" ng-if="vm.showPensumInPercent()">
                                     <dv-tooltip text="'ANSPRUCH_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext">
+                                <td class="infotext" ng-if="vm.showPensumInHours()">
+                                    <dv-tooltip text="'ANSPRUCH_IN_H_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td class="infotext" ng-if="vm.showPensumInPercent()">
                                     <dv-tooltip text="'VERGUENSTIGT_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td class="infotext" ng-if="vm.showPensumInHours()">
+                                    <dv-tooltip text="'VERGUENSTIGT_IN_H_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="infotext">
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
@@ -215,9 +224,18 @@
                             <tr>
                                 <th class="text-right datum" data-translate="BETREUUNG_VON"></th>
                                 <th class="text-right datum" data-translate="BETREUUNG_BIS"></th>
-                                <th class="text-right betrag" data-translate="EFFEKTIVE_BETREUUNG"></th>
-                                <th class="text-right betrag" data-translate="ANSPRUCH"></th>
-                                <th class="text-right betrag" data-translate="VERGUENSTIGT"></th>
+                                <th class="text-right betrag" data-translate="EFFEKTIVE_BETREUUNG"
+                                    ng-if="vm.showPensumInPercent()"></th>
+                                <th class="text-right betrag" data-translate="EFFEKTIVE_BETREUUNG_IN_H"
+                                    ng-if="vm.showPensumInHours()"></th>
+                                <th class="text-right betrag" data-translate="ANSPRUCH"
+                                    ng-if="vm.showPensumInPercent()"></th>
+                                <th class="text-right betrag" data-translate="ANSPRUCH_IN_H"
+                                    ng-if="vm.showPensumInHours()"></th>
+                                <th class="text-right betrag" data-translate="VERGUENSTIGT"
+                                    ng-if="vm.showPensumInPercent()"></th>
+                                <th class="text-right betrag" data-translate="VERGUENSTIGT_IN_H"
+                                    ng-if="vm.showPensumInHours()"></th>
                                 <th class="text-right betrag" data-translate="VOLLKOSTEN"></th>
                                 <th class="text-right betrag"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
@@ -236,16 +254,25 @@
                                 <td class="text-right"
                                     ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Effektives Betreuungspensum -->
-                                <td class="text-right"><span
+                                <td class="text-right" ng-if="vm.showPensumInPercent()"><span
                                     ng-bind="verfuegungZeitabschnitt.betreuungspensum"></span>%
                                 </td>
+                                <td class="text-right" ng-if="vm.showPensumInHours()"><span
+                                    ng-bind="verfuegungZeitabschnitt.betreuungsstunden"></span>
+                                </td>
                                 <!-- Anspruchberechtigtes Pensum -->
-                                <td class="text-right"><span
+                                <td class="text-right" ng-if="vm.showPensumInPercent()"><span
                                     ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%
                                 </td>
+                                <td class="text-right" ng-if="vm.showPensumInHours()"><span
+                                    ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></span>
+                                </td>
                                 <!-- Vergünstigtes Pensum -->
-                                <td class="text-right"><span
+                                <td class="text-right" ng-if="vm.showPensumInPercent()"><span
                                     ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%
+                                </td>
+                                <td class="text-right" ng-if="vm.showPensumInHours()"><span
+                                    ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></span>
                                 </td>
                                 <!-- Kosten -->
                                 <td class="text-right"

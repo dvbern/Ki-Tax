@@ -2568,6 +2568,9 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
             verfuegungZeitabschnittTS.betreuungspensum = zeitabschnittFromServer.betreuungspensum;
             verfuegungZeitabschnittTS.betreuungsstunden = zeitabschnittFromServer.betreuungsstunden;
+            verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten = zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
+            verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten = zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
+            verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.elternbeitrag = zeitabschnittFromServer.elternbeitrag;
             verfuegungZeitabschnittTS.erwerbspensumGS1 = zeitabschnittFromServer.erwerbspensumGS1;
             verfuegungZeitabschnittTS.erwerbspensumGS2 = zeitabschnittFromServer.erwerbspensumGS2;

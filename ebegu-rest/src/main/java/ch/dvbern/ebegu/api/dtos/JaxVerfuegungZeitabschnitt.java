@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.util.Constants;
 
@@ -74,6 +75,12 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	private Integer einkommensjahr;
 
 	private BigDecimal betreuungsstunden;
+
+	private BigDecimal verfuegteAnzahlZeiteinheiten;
+
+	private BigDecimal anspruchsberechtigteAnzahlZeiteinheiten;
+
+	private PensumUnits zeiteinheit;
 
 	private BigDecimal vollkosten = BigDecimal.ZERO;
 
@@ -161,6 +168,30 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setBetreuungsstunden(BigDecimal betreuungsstunden) {
 		this.betreuungsstunden = betreuungsstunden;
+	}
+
+	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
+		return verfuegteAnzahlZeiteinheiten;
+	}
+
+	public void setVerfuegteAnzahlZeiteinheiten(BigDecimal verfuegteAnzahlZeiteinheiten) {
+		this.verfuegteAnzahlZeiteinheiten = verfuegteAnzahlZeiteinheiten;
+	}
+
+	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
+		return anspruchsberechtigteAnzahlZeiteinheiten;
+	}
+
+	public void setAnspruchsberechtigteAnzahlZeiteinheiten(BigDecimal anspruchsberechtigteAnzahlZeiteinheiten) {
+		this.anspruchsberechtigteAnzahlZeiteinheiten = anspruchsberechtigteAnzahlZeiteinheiten;
+	}
+
+	public PensumUnits getZeiteinheit() {
+		return zeiteinheit;
+	}
+
+	public void setZeiteinheit(PensumUnits zeiteinheit) {
+		this.zeiteinheit = zeiteinheit;
 	}
 
 	public BigDecimal getVollkosten() {

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
@@ -24,6 +25,9 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _fachstellenpensum: number;
     private _anspruchspensumRest: number;
     private _anspruchberechtigtesPensum: number;
+    private _verfuegteAnzahlZeiteinheiten: number;
+    private _anspruchsberechtigteAnzahlZeiteinheiten: number;
+    private _zeiteinheit: TSPensumUnits;
     private _bgPensum: number;
     private _betreuungsstunden: number;
     private _vollkosten: number;
@@ -66,6 +70,30 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
 
     public set betreuungspensum(value: number) {
         this._betreuungspensum = value;
+    }
+
+    public get verfuegteAnzahlZeiteinheiten(): number {
+        return this._verfuegteAnzahlZeiteinheiten;
+    }
+
+    public set verfuegteAnzahlZeiteinheiten(value: number) {
+        this._verfuegteAnzahlZeiteinheiten = value;
+    }
+
+    public get anspruchsberechtigteAnzahlZeiteinheiten(): number {
+        return this._anspruchsberechtigteAnzahlZeiteinheiten;
+    }
+
+    public set anspruchsberechtigteAnzahlZeiteinheiten(value: number) {
+        this._anspruchsberechtigteAnzahlZeiteinheiten = value;
+    }
+
+    public get zeiteinheit(): TSPensumUnits {
+        return this._zeiteinheit;
+    }
+
+    public set zeiteinheit(value: TSPensumUnits) {
+        this._zeiteinheit = value;
     }
 
     public get fachstellenpensum(): number {

@@ -3172,6 +3172,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getErwerbspensumGS1());
 		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getErwerbspensumGS2());
 		jaxZeitabschn.setBetreuungspensum(zeitabschnitt.getBetreuungspensum());
+		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
+		jaxZeitabschn.setAnspruchsberechtigteAnzahlZeiteinheiten(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
+		jaxZeitabschn.setZeiteinheit(zeitabschnitt.getZeiteinheit());
 		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
