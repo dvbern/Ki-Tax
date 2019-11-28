@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 
 /**
@@ -60,12 +60,12 @@ public interface Rule {
 	/**
 	 * Diese Methode fuehrt die eigentliche Berechnung durch die von der Regel abgebildet wird
 	 *
-	 * @param betreuung Die Betreuung fuer die Berechnet wird
+	 * @param platz Betreuung oder Anmeldung
 	 * @param zeitabschnitte Die Zeitabschnitte die bereits ermittelt wurden
 	 * @return gemergete Liste von bestehenden und neu berechneten Zeitabschnitten
 	 */
 	@Nonnull
-	List<VerfuegungZeitabschnitt> calculate(Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte);
+	List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte);
 
 	/**
 	 * Gibt zurueck, ob die Regel fuer die Berechnung der Familiensituation (Fam-Groesse, Einkommen, Abzug fuer Fam-Groesse)

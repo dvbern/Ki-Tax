@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -55,11 +55,11 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		// Die Regel gilt nur fuer Kita
-		if (betreuung.getBetreuungsangebotTyp().isKita()) {
-			if (betreuung.getKind().getKindJA() != null) {
-				final Kind kindJA = betreuung.getKind().getKindJA();
+		if (platz.getBetreuungsangebotTyp().isKita()) {
+			if (platz.getKind().getKindJA() != null) {
+				final Kind kindJA = platz.getKind().getKindJA();
 				EinschulungTyp einschulungTyp = kindJA.getEinschulungTyp();
 				if (einschulungTyp != null) {
 					if (einschulungTyp.ordinal() > einschulungsTypAnspruchsgrenze.ordinal()) {

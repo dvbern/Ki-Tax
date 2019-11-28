@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -36,11 +36,11 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
-		if (betreuung.getBetreuungsangebotTyp().isSchulamt()) {
+		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
+		if (platz.getBetreuungsangebotTyp().isSchulamt()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
 		}
