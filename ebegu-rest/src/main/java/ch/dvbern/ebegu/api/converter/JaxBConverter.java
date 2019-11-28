@@ -4746,19 +4746,19 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(persistedLastenausgleich, jaxLastenausgleich);
 		jaxLastenausgleich.setJahr(persistedLastenausgleich.getJahr());
 		jaxLastenausgleich.setTotalAlleGemeinden(persistedLastenausgleich.getTotalAlleGemeinden());
-		Set<JaxLastenausgleichDetail> jaxDetails = lastenausgleichDetailListToJax(persistedLastenausgleich.getLastenausgleichDetails());
+		List<JaxLastenausgleichDetail> jaxDetails = lastenausgleichDetailListToJax(persistedLastenausgleich.getLastenausgleichDetails());
 		jaxLastenausgleich.getLastenausgleichDetails().addAll(jaxDetails);
 		return jaxLastenausgleich;
 	}
 
 	@Nonnull
-	private Set<JaxLastenausgleichDetail> lastenausgleichDetailListToJax(@Nullable final Set<LastenausgleichDetail> details) {
+	private List<JaxLastenausgleichDetail> lastenausgleichDetailListToJax(@Nullable final List<LastenausgleichDetail> details) {
 		if (details == null) {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 		return details.stream()
 			.map(this::lastenausgleichDetailToJAX)
-			.collect(Collectors.toCollection(TreeSet::new));
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	@Nullable
