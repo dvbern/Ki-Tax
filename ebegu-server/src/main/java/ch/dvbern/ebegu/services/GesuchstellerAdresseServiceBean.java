@@ -123,6 +123,8 @@ public class GesuchstellerAdresseServiceBean extends AbstractBaseService impleme
 	 * @param minimalDatumBis datum bis zu dem gesucht wird (incl)
 	 */
 	private TypedQuery<GesuchstellerAdresseContainer> getAdresseQuery(@Nonnull String gesuchstellerID, @Nonnull AdresseTyp typ, @Nullable LocalDate maximalDatumVon, @Nullable LocalDate minimalDatumBis) {
+		Objects.requireNonNull(gesuchstellerID);
+		Objects.requireNonNull(typ);
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		ParameterExpression<String> gesuchstellerIdParam = cb.parameter(String.class, "gesuchstellerID");
 		ParameterExpression<AdresseTyp> typParam = cb.parameter(AdresseTyp.class, "adresseTyp");
@@ -180,6 +182,7 @@ public class GesuchstellerAdresseServiceBean extends AbstractBaseService impleme
 	@Override
 	@PermitAll
 	public Optional<GesuchstellerAdresseContainer> getKorrespondenzAdr(@Nonnull String gesuchstellerID) {
+		Objects.requireNonNull(gesuchstellerID);
 		List<GesuchstellerAdresseContainer> results = getAdresseQuery(gesuchstellerID, AdresseTyp.KORRESPONDENZADRESSE, null, null).getResultList();
 		if (results.isEmpty()) {
 			return Optional.empty();
@@ -194,6 +197,7 @@ public class GesuchstellerAdresseServiceBean extends AbstractBaseService impleme
 	@Override
 	@PermitAll
 	public Optional<GesuchstellerAdresseContainer> getRechnungsAdr(@Nonnull String gesuchstellerID) {
+		Objects.requireNonNull(gesuchstellerID);
 		List<GesuchstellerAdresseContainer> results = getAdresseQuery(gesuchstellerID, AdresseTyp.RECHNUNGSADRESSE, null, null).getResultList();
 		if (results.isEmpty()) {
 			return Optional.empty();

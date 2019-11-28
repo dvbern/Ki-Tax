@@ -150,6 +150,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Override
 	@Nonnull
+	// TODO wieso ist der Benutzer nullable?
 	public Optional<Fall> findFallByBesitzer(@Nullable Benutzer benutzer) {
 		Optional<Fall> fallOptional = criteriaQueryHelper.getEntityByUniqueAttribute(Fall.class, benutzer, Fall_.besitzer);
 		fallOptional.ifPresent(fall -> authorizer.checkReadAuthorizationFall(fall));
@@ -200,6 +201,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 	@Nonnull
 	@Override
 	public Optional<String> getCurrentEmailAddress(@Nonnull String fallID) {
+		Objects.requireNonNull(fallID);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 
 		final CriteriaQuery<String> query = cb.createQuery(String.class);

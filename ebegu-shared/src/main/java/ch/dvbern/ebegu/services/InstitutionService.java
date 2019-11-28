@@ -110,12 +110,12 @@ public interface InstitutionService {
 	/**
 	 * Updates the Flag stammdatenCheckRequired to false and updates the Stammdaten so timestamp_mutiert gets updated
 	 */
-	Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId);
+	void deactivateStammdatenCheckRequired(@Nonnull String institutionId);
 
 	/**
 	 * Updates the Flag stammdatenCheckRequired to the given value
 	 */
-	Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
+	void updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
 
 	/**
 	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
