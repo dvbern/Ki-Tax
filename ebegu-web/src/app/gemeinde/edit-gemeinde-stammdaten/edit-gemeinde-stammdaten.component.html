@@ -217,12 +217,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group checkbox-with-tooltip">
                         <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
                                       [(ngModel)]="keineBeschwerdeAdresse"
                                       (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
                             {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                         </mat-checkbox>
+                        <dv-tooltip inputId="keineBeschwerdeAdresseTooltip"
+                                    [text]="getRechtsmittelBelehrungVerfuegungText$(stammdaten.adresse,
+                                    stammdaten.beschwerdeAdresse, keineBeschwerdeAdresse) | async"></dv-tooltip>
                     </div>
                     <div *ngIf="!keineBeschwerdeAdresse">
                         <div class="col-sm-12">
@@ -240,7 +243,7 @@
                                                [maxlength]="255"
                                                class="form-control"
                                                required
-                                               placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                               placeholder="{{'ADRESSE_REGIERUNGSSTADTHALTERAMT_PLACEHOLDER'|translate}}">
                                         <dv-error-messages [errorObject]="nameAnschriftBA.errors"
                                                            inputId="anschrift_ba_id"></dv-error-messages>
                                     </div>
