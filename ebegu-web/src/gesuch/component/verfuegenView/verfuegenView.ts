@@ -516,7 +516,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public isTagesfamilienVerfuegung(): boolean {
-        return this.getBetreuung().isAngebotTagesfamilien()
+        return this.getBetreuung().isAngebotTagesfamilien();
     }
 
     public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {

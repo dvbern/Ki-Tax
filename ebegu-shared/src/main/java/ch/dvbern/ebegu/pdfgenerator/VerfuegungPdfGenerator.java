@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -73,6 +74,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
 	private static final String PENSUM_TITLE = "PdfGeneration_Verfuegung_PensumTitle";
+	private static final String PENSUM_TITLE_TFO = "PdfGeneration_Verfuegung_PensumTitleTFO";
 	private static final String PENSUM_BETREUUNG = "PdfGeneration_Verfuegung_Betreuungspensum";
 	private static final String PENSUM_ANSPRUCH = "PdfGeneration_Verfuegung_Anspruchspensum";
 	private static final String PENSUM_BG = "PdfGeneration_Verfuegung_BgPensum";
@@ -317,7 +319,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		// Spaltentitel, Row 1
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VON), null, fontTabelle, 2, 1));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, fontTabelle, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(PENSUM_TITLE), null, fontTabelle, 1, 3));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
 		table.addCell(createCell(
 			true,
@@ -372,7 +374,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			table.addCell(createCell(
 				false,
 				Element.ALIGN_RIGHT,
-				PdfUtil.printPercent(abschnitt.getBetreuungspensum()),
+				printEffektiv(abschnitt),
 				null,
 				fontTabelle,
 				1,
@@ -380,7 +382,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			table.addCell(createCell(
 				false,
 				Element.ALIGN_RIGHT,
-				PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum()),
+				printAnspruch(abschnitt),
 				null,
 				fontTabelle,
 				1,
@@ -388,7 +390,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			table.addCell(createCell(
 				false,
 				Element.ALIGN_RIGHT,
-				PdfUtil.printPercent(abschnitt.getBgPensum()),
+				printVerguenstigt(abschnitt),
 				null,
 				fontTabelle,
 				1,
@@ -573,5 +575,37 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_1_VERFUEGUNG))
 		);
+	}
+
+	private boolean isTFO() {
+		return betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN;
+	}
+
+	private String getPensumTitle() {
+		if (isTFO()) {
+			return PENSUM_TITLE_TFO;
+		}
+		return PENSUM_TITLE;
+	}
+
+	private String printEffektiv(VerfuegungZeitabschnitt abschnitt) {
+		if (isTFO()) {
+			return PdfUtil.printBigDecimal(abschnitt.getBetreuungsstunden());
+		}
+		return PdfUtil.printPercent(abschnitt.getBetreuungspensum());
+	}
+
+	private String printAnspruch(VerfuegungZeitabschnitt abschnitt) {
+		if (isTFO()) {
+			return PdfUtil.printBigDecimal(abschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
+		}
+		return PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum());
+	}
+
+	private String printVerguenstigt(VerfuegungZeitabschnitt abschnitt) {
+		if (isTFO()) {
+			return PdfUtil.printBigDecimal(abschnitt.getVerfuegteAnzahlZeiteinheiten());
+		}
+		return PdfUtil.printPercent(abschnitt.getBgPensum());
 	}
 }
