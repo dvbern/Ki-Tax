@@ -49,11 +49,10 @@ public class TagesschuleTarifRechner {
 		@Nonnull BigDecimal massengebendesEinkommenMitAbzug) {
 		//socialhilfe Bezueger bekommen der Minimal Tarif
 		if (gesuch.getFamiliensituationContainer() != null
-			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null) {
-			if (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() != null
-				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger()) {
-				return MathUtil.DEFAULT.from(MITA);
-			}
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null &&
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger()) {
+			return MathUtil.DEFAULT.from(MITA);
 		}
 
 		requireNonNull(gesuch.getGesuchsteller1());
