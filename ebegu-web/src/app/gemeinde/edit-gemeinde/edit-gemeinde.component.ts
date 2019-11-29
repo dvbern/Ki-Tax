@@ -52,7 +52,7 @@ export class EditGemeindeComponent implements OnInit {
     public keineBeschwerdeAdresse: boolean;
     public beguStartStr: string;
     private navigationSource: StateDeclaration;
-    private gemeindeId: string;
+    public gemeindeId: string;
     private fileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;

@@ -46,6 +46,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     public korrespondenzsprache: string;
     public benutzerListe: Array<TSBenutzer>;
+    public showMessageKeinAngebotSelected: boolean = false;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -90,6 +91,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
                 this.benutzerListe.push(tsBen);
             }
         });
+        this.showMessageKeinAngebotSelected = !stammdaten.gemeinde.angebotBG
+            && !stammdaten.gemeinde.angebotTS
+            && !stammdaten.gemeinde.angebotFI;
     }
 
     public isSuperadmin(): boolean {

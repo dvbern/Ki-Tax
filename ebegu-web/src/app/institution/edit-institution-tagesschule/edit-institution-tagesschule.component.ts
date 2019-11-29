@@ -281,4 +281,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     public trackById(einstellungGP: TSEinstellungenTagesschule): string {
         return einstellungGP.id;
     }
+
+    public trackByIdentifier(group: TSModulTagesschuleGroup): string {
+        return group.identifier;
+    }
 }

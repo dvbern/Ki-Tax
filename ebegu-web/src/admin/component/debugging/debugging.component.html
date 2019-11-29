@@ -51,7 +51,7 @@
                         <option *ngFor="let key of TRACE_CATEGORY_KEYS"
                                 [ngValue]="TRACE_CATEGORY[key]">
                             {{key}}
-                            <ng-container *ngIf="routerTraceCategories.includes(TRACE_CATEGORY[key])">{{"&#xf00c;"}}
+                            <ng-container *ngIf="routerTraceCategories.includes(findCategory(key))">{{"&#xf00c;"}}
                             </ng-container>
                         </option>
                     </select>

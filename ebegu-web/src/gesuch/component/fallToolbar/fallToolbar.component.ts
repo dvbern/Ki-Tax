@@ -106,7 +106,7 @@ export class FallToolbarComponent implements OnChanges {
         this.calculateFallNummer();
     }
 
-    private isOnlineGesuch(): boolean {
+    public isOnlineGesuch(): boolean {
         return this.selectedDossier
             && this.selectedDossier.fall
             && !EbeguUtil.isNullOrUndefined(this.selectedDossier.fall.besitzer);

@@ -320,7 +320,6 @@
                             <input class="dv-mat-datepicker" type="text"
                                    name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
                                    [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
-                                   [min]="beguStartDatumMin"
                                    [matDatepicker]="begu_start"
                                    [disabled]="!(isSuperadmin())"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">

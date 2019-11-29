@@ -341,4 +341,8 @@ export class EditInstitutionComponent implements OnInit {
     public isFerieninsel(): boolean {
         return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL;
     }
+
+    public traegerschaftId(traegerschaft: TSTraegerschaft): string {
+        return traegerschaft.id;
+    }
 }
