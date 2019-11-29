@@ -21,7 +21,7 @@
 
             <h2>
             <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR"
-                  translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith(), gesuchsteller:vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
+                  translate-values="{basisjahr: vm.model.getBasisjahr(), gesuchsteller:vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
             </h2>
             <dv-bisher gs="vm.model.getEkvToWorkWith_GS()"
                        ja="vm.model.getEkvToWorkWith()"
@@ -52,11 +52,11 @@
                                     gs="vm.model.getEkvToWorkWith_GS().nettolohn"
                                     ja="vm.model.getEkvToWorkWith().nettolohn"
                                     show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
-                                <p class="letzte-angabe">
-                                    <span>{{ 'LETZTE_ANGABE' | translate }}</span>
-                                    <span>{{ vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn |
-                                            currency: 'CHF':0}}</span>
-                                </p>
+                                <dv-eingabe-basisjahr
+                                    [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn"
+                                    [basisjahr]="vm.model.getBasisjahr()"
+                                >
+                                </dv-eingabe-basisjahr>
                                 <dv-error-messages input-id="nettolohn"
                                                    for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
@@ -79,6 +79,11 @@
                                                    ng-model="vm.model.getEkvToWorkWith().familienzulage"
                                                    class="input-element" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.familienzulage"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().familienzulage"
                                         ja="vm.model.getEkvToWorkWith().familienzulage"
@@ -104,6 +109,11 @@
                                                ng-model="vm.model.getEkvToWorkWith().ersatzeinkommen"
                                                class="input-element" required>
                                 </dv-valueinput>
+                                <dv-eingabe-basisjahr
+                                    [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommen"
+                                    [basisjahr]="vm.model.getBasisjahr()"
+                                >
+                                </dv-eingabe-basisjahr>
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommen"
                                     ja="vm.model.getEkvToWorkWith().ersatzeinkommen"
@@ -129,6 +139,11 @@
                                                    ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
                                                    class="input-element" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.erhalteneAlimente"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
                                         ja="vm.model.getEkvToWorkWith().erhalteneAlimente"
@@ -174,7 +189,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHR"
                                            for="geschaeftsgewinnBasisjahr"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
                                                    name="geschaeftsgewinnBasisjahr"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr"
@@ -202,7 +217,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus1"
@@ -222,7 +237,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahrMinus1"
@@ -249,7 +264,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
                                            for="geschaeftsgewinnBasisjahrMinus2"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()-2}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr()-2}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
                                                    name="geschaeftsgewinnBasisjahrMinus2"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus2"
@@ -311,6 +326,11 @@
                                                    ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
                                                    class="input-element" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.geleisteteAlimente"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
                                         ja="vm.model.getEkvToWorkWith().geleisteteAlimente"

@@ -1762,6 +1762,6 @@
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Signature 2 - Nom",
     "ERROR_NO_MODUL_SELECTED": "Il faut sélectionner au moins un jour",
     "IN_CHF_PLACEHOLDER": "en CHF",
-    "LETZTE_ANGABE": "Letzte Angabe:",
+    "EINGABE_BASISJAHR": "Angabe {{ basisjahr }}: {{ wertBasisjahr }} CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

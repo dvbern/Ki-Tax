@@ -28,6 +28,7 @@ import {
     DossierToolbarComponentConfig,
     DossierToolbarGesuchstellerComponentConfig,
 } from './component/dossierToolbar/dossierToolbar';
+import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
@@ -87,5 +88,6 @@ export const GESUCH_JS_MODULE =
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
         .component('dvBetreuungInput', new BetreuungInputComponentConfig())
+        .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
 ;
