@@ -103,6 +103,7 @@ import TSInstitutionUpdate from '../models/TSInstitutionUpdate';
 import TSKind from '../models/TSKind';
 import TSKindContainer from '../models/TSKindContainer';
 import TSKindDublette from '../models/TSKindDublette';
+import TSLastenausgleich from '../models/TSLastenausgleich';
 import TSMahnung from '../models/TSMahnung';
 import {TSMandant} from '../models/TSMandant';
 import TSMitteilung from '../models/TSMitteilung';
@@ -3550,5 +3551,15 @@ export default class EbeguRestUtil {
             return gemeindeRegistrierungTS;
         }
         return undefined;
+    }
+
+    public parseLastenausgleich(
+        tsLastenausgleich: TSLastenausgleich,
+        receivedLastenausgleich: any,
+    ): TSLastenausgleich {
+        this.parseAbstractEntity(tsLastenausgleich, receivedLastenausgleich);
+        tsLastenausgleich.jahr = receivedLastenausgleich.jahr;
+        tsLastenausgleich.totalAlleGemeinden = receivedLastenausgleich.totalAlleGemeinden;
+        return tsLastenausgleich;
     }
 }
