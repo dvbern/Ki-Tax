@@ -71,7 +71,7 @@ public final class MutationsMerger {
 		@Nonnull Locale locale
 	) {
 
-		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() || !(platz instanceof Betreuung)) {
 			return zeitabschnitte;
 		}
 		if (platz.extractGesuch().getTyp().isGesuch()) {
