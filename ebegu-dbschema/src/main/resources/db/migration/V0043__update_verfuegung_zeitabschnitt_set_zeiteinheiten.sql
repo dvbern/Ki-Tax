@@ -25,6 +25,6 @@ UPDATE verfuegung_zeitabschnitt AS dest,
 		  ) AS r
 	) AS src
 SET dest.verfuegte_anzahl_zeiteinheiten            = src.calc_verfuegte_anzahl_zeiteinheiten,
-	dest.anspruchsberechtigte_anzahl_zeiteinheiten = src.calc_verfuegte_anzahl_zeiteinheiten,
+	dest.anspruchsberechtigte_anzahl_zeiteinheiten = src.calc_anspruchsberechtigte_anzahl_zeiteinheiten,
 	dest.zeiteinheit                               = src.calc_zeiteinheit
 WHERE src.id = dest.id;
