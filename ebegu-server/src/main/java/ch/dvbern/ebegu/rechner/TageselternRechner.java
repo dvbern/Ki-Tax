@@ -16,13 +16,10 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -41,34 +38,17 @@ public class TageselternRechner extends AbstractBGRechner {
 	@Override
 	protected BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
+		@Nonnull BigDecimal anteilMonat,
 		@Nonnull BigDecimal bgPensum) {
 
-		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageTFO();
-		BigDecimal oeffnungsstunden = parameterDTO.getOeffnungsstundenTFO();
-		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
+		BigDecimal oeffnungstageProJahr = parameterDTO.getOeffnungstageTFO();
+		BigDecimal oeffnungsstundenProTag = parameterDTO.getOeffnungsstundenTFO();
 		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
+		BigDecimal oeffnungstageProMonat = MATH.divide(oeffnungstageProJahr, MATH.from(12));
 		BigDecimal stundenGemaessPensumUndAnteilMonat =
-			MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, pensum, oeffnungsstunden);
+			MATH.multiplyNullSafe(oeffnungstageProMonat, anteilMonat, pensum, oeffnungsstundenProTag);
+
 		return stundenGemaessPensumUndAnteilMonat;
-	}
-
-	@Nonnull
-	@Override
-	protected BigDecimal getAnteilMonat(
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis) {
-
-		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
-		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
-		BigDecimal oeffnungsstunden = parameterDTO.getOeffnungsstundenTFO();
-		long nettoTageMonat = DateUtil.daysBetween(monatsanfang, monatsende);
-		long nettoTageIntervall = DateUtil.daysBetween(von, bis);
-		long stundenMonat = nettoTageMonat * oeffnungsstunden.longValue();
-		long stundenIntervall = nettoTageIntervall * oeffnungsstunden.longValue();
-		return MathUtil.EXACT.divide(MathUtil.EXACT.from(stundenIntervall), MathUtil.EXACT.from(stundenMonat));
 	}
 
 	@Nonnull
@@ -89,7 +69,7 @@ public class TageselternRechner extends AbstractBGRechner {
 
 	@Nonnull
 	@Override
-	protected  BigDecimal getZuschlagFuerBesondereBeduerfnisse(
+	protected BigDecimal getZuschlagFuerBesondereBeduerfnisse(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean besonderebeduerfnisse) {
 
