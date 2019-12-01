@@ -16,12 +16,10 @@
  */
 
 import TSAbstractEntity from './TSAbstractEntity';
-import TSLastenausgleichDetail from './TSLastenausgleichDetail';
 
 export default class TSLastenausgleich extends TSAbstractEntity {
 
     public jahr: number;
     public totalAlleGemeinden: number;
-    public lastenausgleichDetails: Array<TSLastenausgleichDetail>;
 
 }

@@ -23,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.entities.ModulTagesschule;
 
 /**
  * DTO fuer Module fuer die Tagesschulen
