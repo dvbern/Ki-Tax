@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
+import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
@@ -62,6 +63,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -248,5 +250,65 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
 		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, loadedFachstelle.getName());
+	}
+
+	@Test
+	public void lastenausgleichGrundlatenToEntityImmutable() {
+		try {
+			converter.lastenausgleichGrundlagenToEntity();
+			Assert.fail("Die Methode darf nicht verwendet werden");
+		} catch (EbeguFingerWegException dummy) {
+			// expected
+		}
+	}
+
+	@Test
+	public void lastenausgleichGrundlagenToJAXImmutable() {
+		try {
+			converter.lastenausgleichGrundlagenToJAX();
+			Assert.fail("Die Methode darf nicht verwendet werden");
+		} catch (EbeguFingerWegException dummy) {
+			// expected
+		}
+	}
+
+	@Test
+	public void lastenausgleichDetailListToEntityImmutable() {
+		try {
+			converter.lastenausgleichDetailListToEntity();
+			Assert.fail("Die Methode darf nicht verwendet werden");
+		} catch (EbeguFingerWegException dummy) {
+			// expected
+		}
+	}
+
+	@Test
+	public void lastenausgleichDetailListToJaxImmutable() {
+		try {
+			converter.lastenausgleichDetailListToJax();
+			Assert.fail("Die Methode darf nicht verwendet werden");
+		} catch (EbeguFingerWegException dummy) {
+			// expected
+		}
+	}
+
+	@Test
+	public void lastenausgleichDetailToEntityImmutable() {
+		try {
+			converter.lastenausgleichDetailToEntity();
+			Assert.fail("Die Methode darf nicht verwendet werden");
+		} catch (EbeguFingerWegException dummy) {
+			// expected
+		}
+	}
+
+	@Test
+	public void lastenausgleichDetailToJAXImmutable() {
+		try {
+			converter.lastenausgleichDetailToJAX();
+			Assert.fail("Die Methode darf nicht verwendet werden");
+		} catch (EbeguFingerWegException dummy) {
+			// expected
+		}
 	}
 }

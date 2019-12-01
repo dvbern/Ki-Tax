@@ -15,36 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import (reference) '../../../style/variables.less';
-@import (reference) '../../../style/mixins.less';
+import TSAbstractEntity from './TSAbstractEntity';
 
-/deep/
-.mat-tab-label-active {
-    background-color: @lgrey;
-    opacity: 1 !important;
-}
-/deep/
-.mat-tab-label-content {
-    color: @black;
-    font-weight: 600;
-    .ebeguFont-family();
-}
+export default class TSLastenausgleich extends TSAbstractEntity {
 
-.mat-tab-group,
-.mat-tab-body{
-    .ebeguFont-family() !important;
-}
-::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
-::ng-deep .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-    height: 0px;
-}
+    public jahr: number;
+    public totalAlleGemeinden: number;
 
-/deep/
-.checkbox-with-tooltip {
-    display: flex;
-    dv-tooltip {
-        display: flex;
-        align-items: center;
-        padding-left: 0.75rem;
-    }
 }
