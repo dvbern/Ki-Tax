@@ -130,6 +130,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	@Nonnull
 	@PermitAll
 	public List<KindContainer> findAllKinderFromGesuch(@Nonnull String gesuchId) {
+		Objects.requireNonNull(gesuchId);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
 		Root<KindContainer> root = query.from(KindContainer.class);

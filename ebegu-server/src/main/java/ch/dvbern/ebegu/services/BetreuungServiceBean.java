@@ -818,7 +818,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
 
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeindeOrTS() || institutionen.length == 0) {
 			return Collections.EMPTY_LIST;
 		}
 
@@ -865,6 +865,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	private Collection<AnmeldungTagesschule> getPendenzenAnmeldungTagesschuleForInstitution(@Nonnull Institution... institutionen) {
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
+
+		// parameter für "in" operation darf nie leer sein
+		if (institutionen.length == 0) {
+			return Collections.EMPTY_LIST;
+		}
 
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 
@@ -923,6 +928,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	private Collection<AnmeldungFerieninsel> getPendenzenAnmeldungFerieninselForInstitution(@Nonnull Institution... institutionen) {
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
+
+		// parameter für "in" operation darf nie leer sein
+		if (institutionen.length == 0) {
+			return Collections.EMPTY_LIST;
+		}
 
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 
