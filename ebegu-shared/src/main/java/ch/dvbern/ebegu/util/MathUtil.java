@@ -24,6 +24,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.Contract;
+
 public enum MathUtil {
 
 	GANZZAHL(19, 0, RoundingMode.HALF_UP),
@@ -64,6 +66,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable BigDecimal src) {
 		if (src == null) {
 			return null;
@@ -87,6 +90,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable BigInteger src) {
 		if (src == null) {
 			return null;
@@ -100,6 +104,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable Long src) {
 		if (src == null) {
 			return null;
@@ -133,6 +138,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable Integer src) {
 		if (src == null) {
 			return null;
@@ -144,6 +150,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable String src) {
 		if (src == null) {
 			return null;
@@ -155,6 +162,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+		@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable Double src) {
 		if (src == null) {
 			return null;
@@ -176,6 +184,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nonnull
+	@Contract("null,null->null; null,!null->null; !null,null->null; !null,!null->!null")
 	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nullable BigDecimal augment) {
 		if (augment == null) {
 			return value;
@@ -190,25 +199,10 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null,null->null; null,!null->null; !null,null->null; !null,!null->!null")
 	public BigDecimal add(@Nullable BigDecimal value, @Nullable BigDecimal augment) {
 		if (value == null || augment == null) {
 			return null;
-		}
-		return addNullSafe(value, augment);
-	}
-
-	/**
-	 * adds augement parameters to value, null values are treated as zero
-	 *
-	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
-	 */
-	@Nullable
-	public BigDecimal add(@Nullable BigDecimal value, @Nullable BigDecimal... augment) {
-		if (augment == null || augment.length == 0) {
-			return null;
-		}
-		if (value == null) {
-			return BigDecimal.ZERO;
 		}
 		return addNullSafe(value, augment);
 	}
@@ -249,6 +243,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null,null->null; null,!null->null; !null,null->null; !null,!null->!null")
 	public BigDecimal subtract(@Nullable BigDecimal value, @Nullable BigDecimal subtrahend) {
 		if (value == null || subtrahend == null) {
 			return null;
@@ -260,6 +255,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null,null->null; null,!null->null; !null,null->null; !null,!null->!null")
 	public BigDecimal multiply(@Nullable BigDecimal value, @Nullable BigDecimal multiplicand) {
 		if (value == null || multiplicand == null) {
 			return null;
@@ -312,6 +308,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
+	@Contract("null,null->null; null,!null->null; !null,null->null; !null,!null->!null")
 	public BigDecimal divide(@Nullable BigDecimal dividend, @Nullable BigDecimal divisor) {
 		if (dividend == null || divisor == null) {
 			return null;
@@ -323,6 +320,7 @@ public enum MathUtil {
 	 * Konvertiert eine Prozentzahl (z.B. 34%) in eine Bruchzahl (z.B. 0.34), i.E.: dividiert durch 100
 	 */
 	@Nullable
+	@Contract("null -> null; !null -> !null")
 	public BigDecimal pctToFraction(@Nullable BigDecimal value) {
 		if (value == null) {
 			return null;
@@ -334,6 +332,7 @@ public enum MathUtil {
 	 * Konvertiert eine Bruchzahl (z.B. 0.34) in eine Prozentzahl (z.B. 34%), i.E.: multipliziert mit 100
 	 */
 	@Nullable
+	@Contract("null -> null; !null -> !null")
 	public BigDecimal fractionToPct(@Nullable BigDecimal value) {
 		if (value == null) {
 			return null;

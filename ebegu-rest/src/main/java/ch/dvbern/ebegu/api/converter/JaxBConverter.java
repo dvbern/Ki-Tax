@@ -3190,9 +3190,13 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
 		jaxZeitabschn.setFamGroesse(zeitabschnitt.getFamGroesse());
 		jaxZeitabschn.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
+		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
+		jaxZeitabschn.setAnspruchsberechtigteAnzahlZeiteinheiten(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
+		jaxZeitabschn.setZeiteinheit(zeitabschnitt.getZeiteinheit());
 		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.isKategorieKeinPensum());
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
+		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.isSameAusbezahlteVerguenstigung());
