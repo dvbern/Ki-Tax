@@ -882,6 +882,10 @@
     "MIN_ELTERNBEITRAG_HELP": "Die Eltern müssen einen minimalen Elternbeitrag leisten. Falls dies noch nicht der Fall ist, weil die Kosten vollständig oder fast vollständig durch den Betreuungsgutschein gedeckt werden, muss die Kita oder Tagesfamilienorganisation den Eltern den (fehlenden) minimalen Elternbeitrag in Rechnung stellen. Der minimale Elternbeitrag beträgt 7 Franken pro Betreuungstag (20% Pensum pro Woche) in einer Kita und 70 Rappen pro Betreuungsstunde bei Tagesfamilien.",
     "ELTERNBEITRAG_HELP": "Elternbeitrag in&nbsp;CHF Hilfetext",
     "VERGUENSTIGUNG_HELP": "Bezeichnet den Betrag in CHF, der an die Kita überwiesen wird. Dieser entspricht dem Betreuungsgutschein abzüglich eines allfälligen minimalen Elternbeitrags (den die Kita bzw. die Tagesfamilienorganisation den Eltern in Rechnung stellen würde).",
+    "VERFUEGTE_ZEITEINHEITEN": "Verfügte Zeiteinheiten",
+    "ANSPRUCHSBERECHTIGTE_ZEITEINHEITEN": "Anspruchsberechtigte Zeiteinheiten",
+    "ZEITEINHEIT": "Zeiteinheit",
+    "ZEITABSCHNITTE_NICHT_BERECHNET": "Zeitabschnitte noch nicht berechnet",
     "AUFGRUND_FIN_SITUATION": "Finanzielle Verhältnisse {{jahr}}",
     "AUFGRUND_EINKOMMENSVERSCHLECHTERUNG": "Einkommensverschlechterung {{jahr}}",
     "ABZUG_AUFGRUND_FAM_GROESSE": "Abzug (aufgrund Familiengrösse {{famgroesse}})",
@@ -1502,7 +1506,8 @@
     "OEFFNUNGSZEITEN": "Öffnungszeiten",
     "BANKVERBINDUNG": "Bankverbindung für Auszahlungen",
     "BESCHWERDE_ADRESSE": "Beschwerde",
-    "BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT": "Identisch wie Kontaktadresse",
+    "BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT": "Identisch wie Kontaktadresse (nur bei gemeindeinternem Beschwerdeverfahren)",
+    "ADRESSE_REGIERUNGSSTADTHALTERAMT_PLACEHOLDER": "Adresse Regierungsstadthalteramt (ausser wenn gemeindeinternes Beschwerdeverfahren)",
     "STANDARD_VERANTWORTLICHE": "Standard-Verantwortliche",
     "KONTO_INHABER": "Kontoinhaber",
     "BIC_SWIFT_NUMMER": "BIC/SWIFT-Nummer",
@@ -1768,5 +1773,7 @@
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Unterschrift 2 - Name",
     "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
     "IN_CHF_PLACEHOLDER": "in CHF",
+    "RECHTSMITTELBELEHRUNG_VERFUEGUNG": "Gegen diese Verfügung kann innert 30 Tagen Beschwerde erhoben werden. Die Beschwerdefrist kann nicht verlängert werden. Die Beschwerde ist an die Adresse {{adresse}} zuzustellen. Sie muss (a) angeben, welche Entscheidung anstelle der angefochtenen Verfügung beantragt wird; (b) aus welchen Gründen diese andere Entscheidung verlangt wird, (c) die Unterschrift der beschwerdeführenden Partei oder der sie vertretenden Person enthalten. Der Beschwerdeschrift beizulegen sind die Beweismittel, soweit sie greifbar sind, und die angefochtene Verfügung.",
+    "ADRESSE_NICHT_ANGEGEBEN": "ADRESSE NOCH NICHT ANGEGEBEN",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

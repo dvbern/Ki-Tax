@@ -20,11 +20,9 @@ package ch.dvbern.ebegu.outbox.verfuegung;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,26 +31,16 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.rechner.AbstractBGRechner;
-import ch.dvbern.ebegu.rechner.BGCalculationResult;
-import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.ejb3.annotation.TransactionTimeout;
-
-import static ch.dvbern.ebegu.rechner.BGRechnerFactory.getRechner;
-import static java.util.Objects.requireNonNull;
 
 @Stateless
 @RunAs(UserRoleName.SUPER_ADMIN)
@@ -62,48 +50,18 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 	private Persistence persistence;
 
 	@Inject
-	private Event<ExportedEvent> event;
-
-	@Inject
-	private VerfuegungEventConverter verfuegungEventConverter;
-
-	/**
-	 * First, add Zeitenheiten fields to all Verfuegungen in the database, then convert to events.
-	 * Reason: when converting to events, we also get vorgänger Verfügung Zeitabschnitte. Thus, the initialisation must
-	 * happen on all Verfügungen, before they are converted.
-	 */
-	@TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
-	@Schedule(info = "Migration-aid, pushes already existing Verfuegungen to outbox", hour = "5", persistent = true)
-	public void migrate() {
-		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<Verfuegung> query = cb.createQuery(Verfuegung.class);
-		Root<Verfuegung> root = query.from(Verfuegung.class);
-
-		Predicate isNotPublished = cb.isFalse(root.get(Verfuegung_.eventPublished));
-
-		query.where(isNotPublished);
-
-		List<Verfuegung> verfuegungen = persistence.getEntityManager().createQuery(query)
-			.getResultList();
-
-		verfuegungen.forEach(verfuegung -> {
-			withZeiteinheiten(verfuegung);
-			verfuegung.setSkipPreUpdate(true);
-		});
-
-		persistence.getEntityManager().flush();
-
-		publishExistingVerfuegungen();
-	}
+	private VerfuegungEventAsyncHelper asyncHelper;
 
 	/**
 	 * Each new Verfuegung is published to Kafka via the outbox event system. However, there are already Verfuegungn
 	 * in the database which have not been published, because the outbox event system has been added later. Thus,
 	 * fetch all these Verfuegungen and publish them once.
 	 */
-	private void publishExistingVerfuegungen() {
+	@TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
+	@Schedule(info = "Migration-aid, pushes already existing Verfuegungen to outbox", hour = "5", persistent = true)
+	public void migrate() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<Verfuegung> query = cb.createQuery(Verfuegung.class);
+		CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<Verfuegung> root = query.from(Verfuegung.class);
 		Path<Betreuung> betreuungPath = root.get(Verfuegung_.betreuung);
 
@@ -115,48 +73,12 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 		Predicate isNotPublished = cb.isFalse(root.get(Verfuegung_.eventPublished));
 
 		query.where(isGueltig, isNotPublished, isVerfuegt);
+		query.select(betreuungPath.get(AbstractEntity_.ID));
 
-		List<Verfuegung> verfuegungen = persistence.getEntityManager().createQuery(query)
+		List<String> verfuegungen = persistence.getEntityManager().createQuery(query)
 			.setParameter(statusParam, Betreuungsstatus.VERFUEGT)
 			.getResultList();
 
-		verfuegungen.forEach(verfuegung -> {
-			event.fire(verfuegungEventConverter.of(verfuegung));
-
-			verfuegung.setSkipPreUpdate(true);
-			verfuegung.setEventPublished(true);
-			persistence.merge(verfuegung);
-		});
-	}
-
-	private void withZeiteinheiten(@Nonnull Verfuegung verfuegung) {
-		AbstractBGRechner rechner = requireNonNull(getRechner(verfuegung.getBetreuung()));
-		BGRechnerParameterDTO parameterDTO = getParameter(verfuegung);
-
-		verfuegung.getZeitabschnitte()
-			.forEach(zeitabschnitt -> zeitabschnittWithZeiteinheiten(rechner, parameterDTO, zeitabschnitt));
-	}
-
-	@Nonnull
-	private BGRechnerParameterDTO getParameter(@Nonnull Verfuegung verfuegung) {
-		Gesuch gesuch = verfuegung.getBetreuung().getKind().getGesuch();
-		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
-		Gemeinde gemeinde = gesuch.extractGemeinde();
-
-		return loadCalculatorParameters(gemeinde, gesuchsperiode);
-	}
-
-	/**
-	 * Updates a VerfuegungZeitabschnitt with the Zeiteinheiten fields.
-	 */
-	private void zeitabschnittWithZeiteinheiten(
-		@Nonnull AbstractBGRechner rechner,
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-
-		BGCalculationResult result = rechner.calculate(zeitabschnitt, parameterDTO);
-		zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(result.getVerfuegteAnzahlZeiteinheiten());
-		zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(result.getAnspruchsberechtigteAnzahlZeiteinheiten());
-		zeitabschnitt.setZeiteinheit(result.getZeiteinheit());
+		verfuegungen.forEach(v -> asyncHelper.convert(v));
 	}
 }

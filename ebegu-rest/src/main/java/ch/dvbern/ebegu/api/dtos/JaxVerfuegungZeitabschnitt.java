@@ -70,17 +70,22 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean zuSpaetEingereicht;
 
+	private boolean minimalesEwpUnterschritten;
+
 	private BigDecimal bgPensum; //min von anspruchberechtigtesPensum und betreuungspensum
 
 	private Integer einkommensjahr;
 
+	@Nullable
+	private BigDecimal verfuegteAnzahlZeiteinheiten = null;
+
+	@Nullable
+	private BigDecimal anspruchsberechtigteAnzahlZeiteinheiten = null;
+
+	@Nullable
+	private PensumUnits zeiteinheit = null;
+
 	private BigDecimal betreuungspensumZeiteinheit;
-
-	private BigDecimal verfuegteAnzahlZeiteinheiten;
-
-	private BigDecimal anspruchsberechtigteAnzahlZeiteinheiten;
-
-	private PensumUnits zeiteinheit;
 
 	private BigDecimal vollkosten = BigDecimal.ZERO;
 
@@ -101,6 +106,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
 	private String bemerkungen;
 
 	@NotNull
@@ -162,36 +168,72 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.anspruchberechtigtesPensum = anspruchberechtigtesPensum;
 	}
 
+	public boolean isZuSpaetEingereicht() {
+		return zuSpaetEingereicht;
+	}
+
+	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
+		this.zuSpaetEingereicht = zuSpaetEingereicht;
+	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return minimalesEwpUnterschritten;
+	}
+
+	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
+		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
+	}
+
+	public BigDecimal getBgPensum() {
+		return bgPensum;
+	}
+
+	public void setBgPensum(BigDecimal bgPensum) {
+		this.bgPensum = bgPensum;
+	}
+
+	public Integer getEinkommensjahr() {
+		return einkommensjahr;
+	}
+
+	public void setEinkommensjahr(Integer einkommensjahr) {
+		this.einkommensjahr = einkommensjahr;
+	}
+
+	@Nullable
+	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
+		return verfuegteAnzahlZeiteinheiten;
+	}
+
+	public void setVerfuegteAnzahlZeiteinheiten(@Nullable BigDecimal verfuegteAnzahlZeiteinheiten) {
+		this.verfuegteAnzahlZeiteinheiten = verfuegteAnzahlZeiteinheiten;
+	}
+
+	@Nullable
+	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
+		return anspruchsberechtigteAnzahlZeiteinheiten;
+	}
+
+	public void setAnspruchsberechtigteAnzahlZeiteinheiten(
+		@Nullable BigDecimal anspruchsberechtigteAnzahlZeiteinheiten) {
+		this.anspruchsberechtigteAnzahlZeiteinheiten = anspruchsberechtigteAnzahlZeiteinheiten;
+	}
+
+	@Nullable
+	public PensumUnits getZeiteinheit() {
+		return zeiteinheit;
+	}
+
+	public void setZeiteinheit(@Nullable PensumUnits zeiteinheit) {
+		this.zeiteinheit = zeiteinheit;
+	}
+
 	public BigDecimal getBetreuungspensumZeiteinheit() {
 		return betreuungspensumZeiteinheit;
 	}
 
 	public void setBetreuungspensumZeiteinheit(BigDecimal betreuungspensumZeiteinheit) {
 		this.betreuungspensumZeiteinheit = betreuungspensumZeiteinheit;
-	}
-
-	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
-		return verfuegteAnzahlZeiteinheiten;
-	}
-
-	public void setVerfuegteAnzahlZeiteinheiten(BigDecimal verfuegteAnzahlZeiteinheiten) {
-		this.verfuegteAnzahlZeiteinheiten = verfuegteAnzahlZeiteinheiten;
-	}
-
-	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
-		return anspruchsberechtigteAnzahlZeiteinheiten;
-	}
-
-	public void setAnspruchsberechtigteAnzahlZeiteinheiten(BigDecimal anspruchsberechtigteAnzahlZeiteinheiten) {
-		this.anspruchsberechtigteAnzahlZeiteinheiten = anspruchsberechtigteAnzahlZeiteinheiten;
-	}
-
-	public PensumUnits getZeiteinheit() {
-		return zeiteinheit;
-	}
-
-	public void setZeiteinheit(PensumUnits zeiteinheit) {
-		this.zeiteinheit = zeiteinheit;
 	}
 
 	public BigDecimal getVollkosten() {
@@ -206,8 +248,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		return verguenstigungOhneBeruecksichtigungVollkosten;
 	}
 
-	public void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
-		verguenstigungOhneBeruecksichtigungVollkosten) {
+	public void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
 		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
 	}
 
@@ -215,8 +256,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 	}
 
-	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
-		verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
 		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 	}
 
@@ -252,6 +292,14 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.abzugFamGroesse = abzugFamGroesse;
 	}
 
+	public BigDecimal getFamGroesse() {
+		return famGroesse;
+	}
+
+	public void setFamGroesse(BigDecimal famGroesse) {
+		this.famGroesse = famGroesse;
+	}
+
 	public BigDecimal getMassgebendesEinkommenVorAbzugFamgr() {
 		return massgebendesEinkommenVorAbzugFamgr;
 	}
@@ -277,22 +325,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.zahlungsstatus = zahlungsstatus;
 	}
 
-	public BigDecimal getFamGroesse() {
-		return famGroesse;
-	}
-
-	public void setFamGroesse(BigDecimal famGroesse) {
-		this.famGroesse = famGroesse;
-	}
-
-	public Integer getEinkommensjahr() {
-		return einkommensjahr;
-	}
-
-	public void setEinkommensjahr(Integer einkommensjahr) {
-		this.einkommensjahr = einkommensjahr;
-	}
-
 	public boolean isKategorieMaxEinkommen() {
 		return kategorieMaxEinkommen;
 	}
@@ -307,22 +339,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setKategorieKeinPensum(boolean kategorieKeinPensum) {
 		this.kategorieKeinPensum = kategorieKeinPensum;
-	}
-
-	public boolean isZuSpaetEingereicht() {
-		return zuSpaetEingereicht;
-	}
-
-	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
-		this.zuSpaetEingereicht = zuSpaetEingereicht;
-	}
-
-	public BigDecimal getBgPensum() {
-		return bgPensum;
-	}
-
-	public void setBgPensum(BigDecimal bgPensum) {
-		this.bgPensum = bgPensum;
 	}
 
 	public boolean isSameVerfuegteVerfuegungsrelevanteDaten() {

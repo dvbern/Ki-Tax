@@ -104,6 +104,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -187,6 +188,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -214,6 +216,7 @@ import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AdresseService;
@@ -3190,9 +3193,13 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
 		jaxZeitabschn.setFamGroesse(zeitabschnitt.getFamGroesse());
 		jaxZeitabschn.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
+		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
+		jaxZeitabschn.setAnspruchsberechtigteAnzahlZeiteinheiten(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
+		jaxZeitabschn.setZeiteinheit(zeitabschnitt.getZeiteinheit());
 		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.isKategorieKeinPensum());
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
+		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.isSameAusbezahlteVerguenstigung());
@@ -4706,5 +4713,42 @@ public class JaxBConverter extends AbstractConverter {
 				.findFirst().get().getValueAsInteger()
 		);
 		return konfiguration;
+	}
+
+	@Nullable
+	public JaxLastenausgleich lastenausgleichToJAX(@Nullable final Lastenausgleich persistedLastenausgleich) {
+		if (persistedLastenausgleich == null) {
+			return null;
+		}
+		JaxLastenausgleich jaxLastenausgleich = new JaxLastenausgleich();
+		convertAbstractFieldsToJAX(persistedLastenausgleich, jaxLastenausgleich);
+		jaxLastenausgleich.setJahr(persistedLastenausgleich.getJahr());
+		jaxLastenausgleich.setTotalAlleGemeinden(persistedLastenausgleich.getTotalAlleGemeinden());
+
+		return jaxLastenausgleich;
+	}
+
+
+	public void lastenausgleichGrundlagenToEntity() {
+		throw new EbeguFingerWegException("lastenausgleichGrundlagenToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	public void lastenausgleichGrundlagenToJAX() {
+		throw new EbeguFingerWegException("lastenausgleichGrundlagenToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	public void lastenausgleichDetailListToEntity() {
+		throw new EbeguFingerWegException("lastenausgleichDetailListToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	public void lastenausgleichDetailListToJax() {
+		throw new EbeguFingerWegException("lastenausgleichDetailListToJax", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	public void lastenausgleichDetailToEntity() {
+		throw new EbeguFingerWegException("lastenausgleichDetailToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);}
+
+	public void lastenausgleichDetailToJAX() {
+		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 }
