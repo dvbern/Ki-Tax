@@ -49,7 +49,7 @@ public abstract class AbstractBGRechner {
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
-		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensum();
+		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
 		BigDecimal bgPensum = verfuegungZeitabschnitt.getBgPensum();
@@ -72,6 +72,8 @@ public abstract class AbstractBGRechner {
 		BigDecimal anspruchPensum = MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, anspruchPensum);
+
+		BigDecimal betreuungspensumZeiteinheit = getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, betreuungspensum);
 
 		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
@@ -106,6 +108,7 @@ public abstract class AbstractBGRechner {
 		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(verfuegteZeiteinheiten));
 		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten));
 		result.setZeiteinheit(getZeiteinheit());
+		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
 		return result;
 	}

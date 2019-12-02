@@ -101,11 +101,11 @@ public class AbstractEbeguRuleTest {
 		Assert.assertEquals(Integer.valueOf(60), fourth.getErwerbspensumGS1());
 		Assert.assertNull(fifth.getErwerbspensumGS1());
 
-		Assert.assertEquals(50, first.getBetreuungspensum().intValue());
-		Assert.assertEquals(50, second.getBetreuungspensum().intValue());
-		Assert.assertEquals(70, third.getBetreuungspensum().intValue());
-		Assert.assertEquals(70, fourth.getBetreuungspensum().intValue());
-		Assert.assertEquals(50, fifth.getBetreuungspensum().intValue());
+		Assert.assertEquals(50, first.getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(50, second.getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(70, third.getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(70, fourth.getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(50, fifth.getBetreuungspensumProzent().intValue());
 	}
 
 	@Test
@@ -163,9 +163,9 @@ public class AbstractEbeguRuleTest {
 		Assert.assertEquals(DATUM_4, second.getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(DATUM_4.plusDays(1), third.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(Constants.END_OF_TIME, third.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(50, first.getBetreuungspensum().intValue());
-		Assert.assertEquals(70, second.getBetreuungspensum().intValue());
-		Assert.assertEquals(50, third.getBetreuungspensum().intValue());
+		Assert.assertEquals(50, first.getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(70, second.getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(50, third.getBetreuungspensumProzent().intValue());
 	}
 
 	@Test
@@ -335,7 +335,7 @@ public class AbstractEbeguRuleTest {
 
 	private VerfuegungZeitabschnitt createBetreuungspensum(LocalDate von, LocalDate bis, BigDecimal pensum) {
 		VerfuegungZeitabschnitt zeitabschnitt1 = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt1.setBetreuungspensum(pensum);
+		zeitabschnitt1.setBetreuungspensumProzent(pensum);
 		return zeitabschnitt1;
 	}
 
@@ -347,7 +347,7 @@ public class AbstractEbeguRuleTest {
 		int expectedBgPensum,
 		@Nullable MsgKey expectedBemerkungIfAny) {
 
-		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensum());
+		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensumProzent());
 		assertEquals(expectedAnspruchsPensum, zeitabschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(expectedBgPensum), zeitabschnitt.getBgPensum());
 

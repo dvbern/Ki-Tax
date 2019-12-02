@@ -64,7 +64,7 @@ public final class RestanspruchInitializer {
 		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchberechtigtesPensum();
-			BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensum();
+			BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
 			int anspruchspensumRest = sourceZeitabschnitt.getAnspruchspensumRest();
 			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
 			if (anspruchberechtigtesPensum == 0 && anspruchspensumRest != -1) {

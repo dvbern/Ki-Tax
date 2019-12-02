@@ -488,7 +488,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		ListIterator<VerfuegungZeitabschnitt> listIteratorBeginning = result.listIterator();
 		while (listIteratorBeginning.hasNext()) {
 			VerfuegungZeitabschnitt zeitabschnitt = listIteratorBeginning.next();
-			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensum())) {
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensumProzent())) {
 				listIteratorBeginning.remove();
 			} else {
 				break;
@@ -498,7 +498,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		ListIterator<VerfuegungZeitabschnitt> listIteratorEnd = result.listIterator();
 		while (listIteratorEnd.hasNext()) {
 			VerfuegungZeitabschnitt zeitabschnitt = listIteratorEnd.next();
-			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensum())) {
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensumProzent())) {
 				listIteratorEnd.remove();
 			} else {
 				break;
@@ -590,9 +590,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private String printEffektiv(VerfuegungZeitabschnitt abschnitt) {
 		if (isTFO()) {
-			return PdfUtil.printBigDecimal(abschnitt.getBetreuungsstunden());
+			return PdfUtil.printBigDecimal(abschnitt.getBetreuungspensumZeiteinheit());
 		}
-		return PdfUtil.printPercent(abschnitt.getBetreuungspensum());
+		return PdfUtil.printPercent(abschnitt.getBetreuungspensumProzent());
 	}
 
 	private String printAnspruch(VerfuegungZeitabschnitt abschnitt) {

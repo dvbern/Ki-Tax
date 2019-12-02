@@ -153,7 +153,7 @@ public abstract class AbstractBGRechnerTest {
 		int anspruchsberechtigtesPensum,
 		BigDecimal bgPensum) {
 		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensum()));
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 	}
@@ -166,7 +166,7 @@ public abstract class AbstractBGRechnerTest {
 		int bgPensum
 	) {
 		Assert.assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(betreuungspensum, abschnitt.getBetreuungspensum().intValue());
+		Assert.assertEquals(betreuungspensum, abschnitt.getBetreuungspensumProzent().intValue());
 		Assert.assertEquals(anspruch, abschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(bgPensum, abschnitt.getBgPensum().intValue());
 	}
@@ -181,7 +181,7 @@ public abstract class AbstractBGRechnerTest {
 		double elternbeitrag) {
 
 		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensum()));
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 		assertEquals(MATH.from(vollkosten), abschnitt.getVollkosten());
@@ -275,7 +275,7 @@ public abstract class AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
 		zeitabschnitt.setAnspruchberechtigtesPensum(20);
-		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(20));
+		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(20));
 		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
 		zeitabschnitt.setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
