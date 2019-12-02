@@ -224,8 +224,7 @@
                             {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                         </mat-checkbox>
                         <dv-tooltip inputId="keineBeschwerdeAdresseTooltip"
-                                    [text]="getRechtsmittelBelehrungVerfuegungText$(stammdaten.adresse,
-                                    stammdaten.beschwerdeAdresse, keineBeschwerdeAdresse) | async"></dv-tooltip>
+                                    [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
                     </div>
                     <div *ngIf="!keineBeschwerdeAdresse">
                         <div class="col-sm-12">
