@@ -34,8 +34,7 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
-import {TagesschuleUtil} from "../../../utils/TagesschuleUtil";
-
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
@@ -65,7 +64,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             this.gemeindeList = allGemeinden;
         });
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
-            einst.modulTagesschuleGroups =TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
+            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
     }
 
@@ -130,14 +129,14 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        console.log("applyModulTagesschuleGroup");
         const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
         if (index > -1) {
             einstellungenTagesschule.modulTagesschuleGroups[index] = group;
         } else {
             einstellungenTagesschule.modulTagesschuleGroups.push(group);
         }
-        einstellungenTagesschule.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einstellungenTagesschule.modulTagesschuleGroups);
+        einstellungenTagesschule.modulTagesschuleGroups =
+            TagesschuleUtil.sortModulTagesschuleGroups(einstellungenTagesschule.modulTagesschuleGroups);
         // This is a trick to force the list of module to reload when we add an element:
         const element = document.getElementById('typ' + einstellungenTagesschule.id);
         element.focus();

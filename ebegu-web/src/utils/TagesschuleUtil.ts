@@ -43,8 +43,8 @@ export class TagesschuleUtil {
                                    moduleAngeboten: TSModulTagesschuleGroup[],
                                    verfuegungView: boolean): TSBelegungTagesschuleModulGroup[] {
         const modulGroups: TSBelegungTagesschuleModulGroup[] = [];
-        moduleAngeboten = this.sortModulTagesschuleGroups(moduleAngeboten);
-        for (const groupTagesschule of moduleAngeboten) {
+        const moduleAngebotenSorted = this.sortModulTagesschuleGroups(moduleAngeboten);
+        for (const groupTagesschule of moduleAngebotenSorted) {
             TagesschuleUtil.initializeGroup(groupTagesschule);
             const moduleOfGroup = groupTagesschule.getModuleOrdered();
             const group = new TSBelegungTagesschuleModulGroup();
@@ -129,18 +129,20 @@ export class TagesschuleUtil {
         return '';
     }
 
-    public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]) : TSModulTagesschuleGroup[] {
-        return modulTagesschuleGroups.sort(function (a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) {
-            var vonA = Date.parse('01/01/2011 ' + a.zeitVon);
-            var vonB = Date.parse('01/01/2011 ' + b.zeitVon);
-            var vergleicheVon = vonA.valueOf() - vonB.valueOf();
-            if (vergleicheVon != 0) {
+    public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
+        TSModulTagesschuleGroup[] {
+        return modulTagesschuleGroups.sort( (a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
+            const referenzeDatum = '01/01/2011 ';
+            const vonA = Date.parse(referenzeDatum + a.zeitVon);
+            const vonB = Date.parse(referenzeDatum + b.zeitVon);
+            const vergleicheVon = vonA.valueOf() - vonB.valueOf();
+            if (vergleicheVon !== 0) {
                 return vergleicheVon;
             }
-            var bisA = Date.parse('01/01/2011 ' + a.zeitBis);
-            var bisB = Date.parse('01/01/2011 ' + b.zeitBis);
-            var vergleicheBis = bisA.valueOf() - bisB.valueOf();
-            if (vergleicheBis != 0) {
+            const bisA = Date.parse(referenzeDatum + a.zeitBis);
+            const bisB = Date.parse(referenzeDatum + b.zeitBis);
+            const vergleicheBis = bisA.valueOf() - bisB.valueOf();
+            if (vergleicheBis !== 0) {
                 return vergleicheBis;
             }
             return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
