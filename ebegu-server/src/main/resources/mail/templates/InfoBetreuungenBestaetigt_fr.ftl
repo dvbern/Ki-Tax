@@ -28,7 +28,7 @@ ${templateConfiguration.mailCss}
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>.
 	<p>
 		Nous vous présentons nos salutations les meilleures.<br/>
-		Votre commune
+		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
 
 	<p>

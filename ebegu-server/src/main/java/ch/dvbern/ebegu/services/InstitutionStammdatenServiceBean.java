@@ -217,6 +217,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	public Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(
 		@Nonnull String gesuchsperiodeId) {
 
+		Objects.requireNonNull(gesuchsperiodeId);
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(
@@ -266,6 +267,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Collection<Gemeinde> gemeinden
 	) {
+
+		Objects.requireNonNull(gesuchsperiodeId);
+		Objects.requireNonNull(gemeinden);
 
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, gesuchsperiodeId);
 

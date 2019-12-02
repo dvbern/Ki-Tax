@@ -427,7 +427,7 @@ public class InstitutionResource {
 		requireNonNull(institutionJaxId.getId());
 		final String institutionId = converter.toEntityId(institutionJaxId);
 
-		final Institution updatedInstitution = institutionService.deactivateStammdatenCheckRequired(institutionId);
-		return Response.ok(updatedInstitution).build();
+		institutionService.deactivateStammdatenCheckRequired(institutionId);
+		return Response.ok().build();
 	}
 }
