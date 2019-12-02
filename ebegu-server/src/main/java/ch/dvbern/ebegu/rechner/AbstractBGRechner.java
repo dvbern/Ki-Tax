@@ -74,7 +74,7 @@ public abstract class AbstractBGRechner {
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);
 
-		BigDecimal betreuungspensumZeiteinheit = getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, betreuungspensum);
+		BigDecimal betreuungspensumZeiteinheit = getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, betreuungspensum);
 
 		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =

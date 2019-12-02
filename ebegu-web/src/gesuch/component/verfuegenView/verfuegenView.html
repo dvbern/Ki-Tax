@@ -255,10 +255,10 @@
                                     ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Effektives Betreuungspensum -->
                                 <td class="text-right" ng-if="vm.showPensumInPercent()"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungspensum"></span>%
+                                    ng-bind="verfuegungZeitabschnitt.betreuungspensumProzent"></span>%
                                 </td>
                                 <td class="text-right" ng-if="vm.showPensumInHours()"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungsstunden"></span>
+                                    ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"></span>
                                 </td>
                                 <!-- Anspruchberechtigtes Pensum -->
                                 <td class="text-right" ng-if="vm.showPensumInPercent()"><span
