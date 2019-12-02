@@ -448,4 +448,20 @@ public enum MathUtil {
 	public static BigDecimal toTwoKommastelle(@Nonnull BigDecimal value) {
 		return MathUtil.DEFAULT.from(value);
 	}
+
+	@Nonnull
+	public static BigDecimal minimum(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2) {
+		if (value1.compareTo(value2) > 0) {
+			return value1;
+		}
+		return value2;
+	}
+
+	@Nonnull
+	public static BigDecimal maximum(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2) {
+		if (value1.compareTo(value2) < 0) {
+			return value1;
+		}
+		return value2;
+	}
 }
