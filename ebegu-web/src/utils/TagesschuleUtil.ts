@@ -43,6 +43,7 @@ export class TagesschuleUtil {
                                    moduleAngeboten: TSModulTagesschuleGroup[],
                                    verfuegungView: boolean): TSBelegungTagesschuleModulGroup[] {
         const modulGroups: TSBelegungTagesschuleModulGroup[] = [];
+        moduleAngeboten = this.sortModulTagesschuleGroups(moduleAngeboten);
         for (const groupTagesschule of moduleAngeboten) {
             TagesschuleUtil.initializeGroup(groupTagesschule);
             const moduleOfGroup = groupTagesschule.getModuleOrdered();
@@ -126,6 +127,24 @@ export class TagesschuleUtil {
             return `${modul.zeitVon} - ${modul.zeitBis}`;
         }
         return '';
+    }
+
+    public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]) : TSModulTagesschuleGroup[] {
+        return modulTagesschuleGroups.sort(function (a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) {
+            var vonA = Date.parse('01/01/2011 ' + a.zeitVon);
+            var vonB = Date.parse('01/01/2011 ' + b.zeitVon);
+            var vergleicheVon = vonA.valueOf() - vonB.valueOf();
+            if (vergleicheVon != 0) {
+                return vergleicheVon;
+            }
+            var bisA = Date.parse('01/01/2011 ' + a.zeitBis);
+            var bisB = Date.parse('01/01/2011 ' + b.zeitBis);
+            var vergleicheBis = bisA.valueOf() - bisB.valueOf();
+            if (vergleicheBis != 0) {
+                return vergleicheBis;
+            }
+            return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
+        });
     }
 
 }
