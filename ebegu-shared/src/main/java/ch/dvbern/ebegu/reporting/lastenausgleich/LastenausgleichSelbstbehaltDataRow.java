@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 /**
  * DTO für den Lastenausgleich von KiBon
  */
-public class LastenausgleichKibonDataRow {
+public class LastenausgleichSelbstbehaltDataRow {
 
 	private String bgNummer;
 	private String kindName;

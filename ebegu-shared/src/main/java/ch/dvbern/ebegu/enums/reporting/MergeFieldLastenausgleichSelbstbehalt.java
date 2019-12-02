@@ -30,7 +30,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_C
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
-public enum MergeFieldLastenausgleichKibon implements MergeFieldProvider {
+public enum MergeFieldLastenausgleichSelbstbehalt implements MergeFieldProvider {
 
 	// This template exists only in german, since its use is intern
 
@@ -55,7 +55,7 @@ public enum MergeFieldLastenausgleichKibon implements MergeFieldProvider {
 	@Nonnull
 	private final MergeField<?> mergeField;
 
-	<V> MergeFieldLastenausgleichKibon(@Nonnull MergeField<V> mergeField) {
+	<V> MergeFieldLastenausgleichSelbstbehalt(@Nonnull MergeField<V> mergeField) {
 		this.mergeField = mergeField;
 	}
 
