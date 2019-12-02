@@ -2564,32 +2564,34 @@ export default class EbeguRestUtil {
             this.parseDateRangeEntity(verfuegungZeitabschnittTS, zeitabschnittFromServer);
             verfuegungZeitabschnittTS.abzugFamGroesse = zeitabschnittFromServer.abzugFamGroesse;
             verfuegungZeitabschnittTS.anspruchberechtigtesPensum = zeitabschnittFromServer.anspruchberechtigtesPensum;
-            verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
+            verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten = zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
             verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
             verfuegungZeitabschnittTS.betreuungspensum = zeitabschnittFromServer.betreuungspensum;
             verfuegungZeitabschnittTS.betreuungsstunden = zeitabschnittFromServer.betreuungsstunden;
+            verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
+            verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
             verfuegungZeitabschnittTS.elternbeitrag = zeitabschnittFromServer.elternbeitrag;
             verfuegungZeitabschnittTS.erwerbspensumGS1 = zeitabschnittFromServer.erwerbspensumGS1;
             verfuegungZeitabschnittTS.erwerbspensumGS2 = zeitabschnittFromServer.erwerbspensumGS2;
             verfuegungZeitabschnittTS.fachstellenpensum = zeitabschnittFromServer.fachstellenpensum;
-            verfuegungZeitabschnittTS.massgebendesEinkommenVorAbzugFamgr =
-                zeitabschnittFromServer.massgebendesEinkommenVorAbzugFamgr;
             verfuegungZeitabschnittTS.famGroesse = zeitabschnittFromServer.famGroesse;
-            verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
-            verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
-            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten =
-                zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
-            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
-                zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
-            verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
-            verfuegungZeitabschnittTS.minimalerElternbeitrag = zeitabschnittFromServer.minimalerElternbeitrag;
-            verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
-            verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;
-            verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
-            verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
+            verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
+            verfuegungZeitabschnittTS.massgebendesEinkommenVorAbzugFamgr = zeitabschnittFromServer.massgebendesEinkommenVorAbzugFamgr;
+            verfuegungZeitabschnittTS.minimalerElternbeitrag = zeitabschnittFromServer.minimalerElternbeitrag;
+            verfuegungZeitabschnittTS.minimalesEwpUnterschritten = zeitabschnittFromServer.minimalesEwpUnterschritten;
             verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung = zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
+            verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
+            verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten = zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
+            verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
+            verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
+            verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
+            verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
+            verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
+
             return verfuegungZeitabschnittTS;
         }
         return undefined;

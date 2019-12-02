@@ -40,24 +40,13 @@ public class KitaRechner extends AbstractBGRechner {
 	@Override
 	protected BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
+		@Nonnull BigDecimal anteilMonat,
 		@Nonnull BigDecimal bgPensum) {
 
 		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
-		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
 		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
+
 		return MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, pensum);
-	}
-
-	@Nonnull
-	@Override
-	protected BigDecimal getAnteilMonat(
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis) {
-
-		return DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 	}
 
 	@Nonnull
