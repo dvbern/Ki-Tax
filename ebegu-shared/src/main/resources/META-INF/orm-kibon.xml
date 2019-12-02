@@ -366,4 +366,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.ModulTagesschuleGroup"/>
 	<entity class="ch.dvbern.ebegu.entities.EinstellungenTagesschule"/>
 	<entity class="ch.dvbern.ebegu.entities.BelegungTagesschuleModul"/>
+	<entity class="ch.dvbern.ebegu.entities.LastenausgleichGrundlagen"/>
+	<entity class="ch.dvbern.ebegu.entities.Lastenausgleich"/>
+	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
 </entity-mappings>
