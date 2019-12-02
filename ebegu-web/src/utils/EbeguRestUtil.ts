@@ -2591,8 +2591,6 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
-            verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;
-            verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung = zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             return verfuegungZeitabschnittTS;
         }
         return undefined;
