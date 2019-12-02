@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -113,6 +114,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(value = 360, unit = TimeUnit.MINUTES)
 	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull LocalDateTime datumLetzteZahlung) {
+		Objects.requireNonNull(gemeinde);
+		Objects.requireNonNull(datumLetzteZahlung);
 		resetAllData();
 		LOGGER.info("Pruefe Zahlungen fuer Gemeinde {}", gemeinde.getName());
 		zahlungenIstMap = pruefeZahlungenIst(gemeinde);
@@ -127,6 +130,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void sendeMail(@Nonnull Gemeinde gemeinde) {
+		Objects.requireNonNull(gemeinde);
 		LOGGER.info("Sende Mail...");
 		String administratorMail = ebeguConfiguration.getAdministratorMail();
 		if (StringUtils.isEmpty(administratorMail)) {
@@ -163,6 +167,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	private void pruefungZahlungenSollFuerGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde gemeinde, @Nonnull LocalDateTime datumLetzteZahlung) {
+		Objects.requireNonNull(gesuchsperiode);
+		Objects.requireNonNull(gemeinde);
+		Objects.requireNonNull(datumLetzteZahlung);
+
 		LOGGER.info("Pruefe Gesuchsperiode {}", gesuchsperiode.toString());
 		Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde.getId());
 		for (Dossier dossier : allDossiers) {
@@ -173,6 +181,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void pruefeZahlungenSollFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull LocalDateTime datumLetzteZahlung) {
+		Objects.requireNonNull(gesuch);
+		Objects.requireNonNull(datumLetzteZahlung);
+
 		if (gesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
 			return;
 		}
