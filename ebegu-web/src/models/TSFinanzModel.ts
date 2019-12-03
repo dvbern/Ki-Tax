@@ -294,6 +294,10 @@ export class TSFinanzModel {
         return this.basisjahrPlus;
     }
 
+    public getBasisjahr(): number {
+        return this.basisjahr;
+    }
+
     /**
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */

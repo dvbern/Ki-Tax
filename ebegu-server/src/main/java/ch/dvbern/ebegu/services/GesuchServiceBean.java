@@ -2011,6 +2011,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		@Nonnull LocalDate datumBis,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
+
+		Objects.requireNonNull(datumVon);
+		Objects.requireNonNull(datumBis);
+		Objects.requireNonNull(gesuchsperiode);
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Tuple> query = cb.createTupleQuery();
 		Root<Gesuch> root = query.from(Gesuch.class);
@@ -2076,6 +2081,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull String dossierId
 	) {
+		Objects.requireNonNull(gesuchsperiodeId);
+		Objects.requireNonNull(dossierId);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
@@ -2180,6 +2187,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	public boolean hasFolgegesuchForAmt(@Nonnull String gesuchId) {
+		Objects.requireNonNull(gesuchId);
 		final Optional<Gesuch> optGesuch = findGesuch(gesuchId);
 		final Gesuch gesuch = optGesuch.orElseThrow(()
 			-> new EbeguEntityNotFoundException("hasFolgegesuchForAmt", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));

@@ -187,7 +187,9 @@
                     <!-- Betreuungsgutscheine akzeptieren ab/bis -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate>INSTITUTION_BEGU_START_END</label>
+                            <label *ngIf="isBetreuungsgutschein()" translate>INSTITUTION_BEGU_START_END</label>
+                            <label *ngIf="isTagesschule() || isFerieninsel()" translate>
+                                INSTITUTION_ANMELDUNG_START_END</label>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <input class="dv-mat-datepicker"
@@ -308,7 +310,9 @@
                         <!-- Betreuungsgutschien akzeptieren ab / bis -->
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <h3 translate>INSTITUTION_BEGU_AKZEPTIEREN</h3>
+                                <h3 *ngIf="isBetreuungsgutschein()" translate>INSTITUTION_BEGU_AKZEPTIEREN</h3>
+                                <h3 *ngIf="isTagesschule() || isFerieninsel()" translate>
+                                    INSTITUTION_ANMELDUNG_AKZEPTIEREN</h3>
                                 <p>{{getGueltigkeitTodisplay()}}</p>
                             </div>
                         </div>

@@ -107,5 +107,4 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
-
 }

@@ -15,6 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
+import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
@@ -25,10 +26,12 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
     declarations: [
         FallToolbarComponent,
         DvSwitchComponent,
+        DvEingabeBasisjahrComponent
     ],
     entryComponents: [
         FallToolbarComponent,
         DvSwitchComponent,
+        DvEingabeBasisjahrComponent
     ],
 })
 

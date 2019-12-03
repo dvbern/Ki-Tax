@@ -237,7 +237,6 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public hasEmptyAenderungPer(): boolean {
         return this.isMutation()
             && !this.getFamiliensituation().aenderungPer
-            && !this.isKorrekturModusJugendamt()
             && !this.getFamiliensituationErstgesuch().isSameFamiliensituation(this.getFamiliensituation());
     }
 

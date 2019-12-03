@@ -88,11 +88,15 @@
                     <div class="row marginTop20">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
-                                <label class="md-no-float" ng-class="{'required': vm.isGesuchstellerRole()}" for="abholungTagesschule_ID">
+                                <label class="md-no-float"
+                                       ng-class="{'required': vm.isGesuchstellerRole()}"
+                                       for="abholungTagesschule_ID">
                                     <span data-translate="ABHOLUNG_AUS_TAGESSCHULE"></span>
                                 </label>
                                 <div class="dv-select-style">
-                                    <select aria-describedby="abholungTagesschule_ID-error" name="abholungTagesschule" id="abholungTagesschule_ID"
+                                    <select aria-describedby="abholungTagesschule_ID-error"
+                                            name="abholungTagesschule"
+                                            id="abholungTagesschule_ID"
                                             ng-model="vm.getBetreuung().belegungTagesschule.abholungTagesschule"
                                             ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
                                             class="form-control"
@@ -121,7 +125,8 @@
                              ng-repeat="group in vm.modulGroups track by group.group.identifier">
                             <!-- Gruppe (Name und Zeit) -->
                             <div class="dv-ebegu-calendar__wrapper-small dv-ebegu-calendar__module">
-                                <span class="dv-ebegu-calendar__module-name" ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
+                                <span class="dv-ebegu-calendar__module-name"
+                                      ng-bind="vm.getModulBezeichnungInLanguage(group.group)"></span>
                                 <span class="dv-ebegu-calendar__module-time"
                                       ng-bind="vm.getModulTimeAsString(group.group)"></span>
                             </div>
@@ -130,15 +135,15 @@
 
                                     <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
                                          ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
-                                            <md-checkbox
-                                                name="modul_{{mod.modulTagesschule.identifier}}"
-                                                ng-model="mod.modulTagesschule.angemeldet"
-                                                aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
-                                                ng-disabled="!vm.isModuleEditable(mod)"
-                                                ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
-                                                class="dv-ebegu-calendar--tagesschule">
-                                                <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
-                                            </md-checkbox>
+                                        <md-checkbox
+                                            name="modul_{{mod.modulTagesschule.identifier}}"
+                                            ng-model="mod.modulTagesschule.angemeldet"
+                                            aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                            ng-disabled="!vm.isModuleEditable(mod)"
+                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
+                                            class="dv-ebegu-calendar--tagesschule">
+                                            <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
+                                        </md-checkbox>
                                     </div>
                                 </div>
                             </div>
@@ -156,9 +161,12 @@
                                          ng-disabled="true">
                                 <span data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"></span>
                             </md-checkbox>
-                            <dv-input-container class="form-group" ng-show="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester">
-                                <label class="md-no-float" ng-class="{'required': vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester}"
-                                       data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG" for="bemerkung_ID">
+                            <dv-input-container class="form-group"
+                                                ng-show="vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester">
+                                <label class="md-no-float"
+                                       ng-class="{'required': vm.getBetreuung().belegungTagesschule.abweichungZweitesSemester}"
+                                       data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG"
+                                       for="bemerkung_ID">
                                 </label>
                                 <p class="inlineHint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
                                 <textarea aria-describedby="bemerkung_ID-error"
@@ -180,93 +188,102 @@
                 <div class="row" ng-if="vm.showVerfuegungsDetails() && !vm.isTagesschuleVerfuegung()">
                     <div class="col-md-12 table-responsive">
                         <table st-table="displayedCollection" st-safe-src="vm.getVerfuegungZeitabschnitte()"
-                               class="table">
+                               class="table verfuegung-table">
                             <thead>
-                            <tr>
-                                <td class="infotext"></td>
-                                <td class="infotext"></td>
-                                <td class="infotext">
+                            <tr class="infotext-row">
+                                <td></td>
+                                <td></td>
+                                <td>
                                     <dv-tooltip text="'EFFEKTIVE_BETREUUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext">
+                                <td>
                                     <dv-tooltip text="'ANSPRUCH_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext">
+                                <td>
                                     <dv-tooltip text="'VERGUENSTIGT_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext">
+                                <td>
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext">
-                                    <dv-tooltip
-                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
+                                <td>
+                                    <dv-tooltip text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext result">
-                                    <dv-tooltip
-                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
+                                <td class="result">
+                                    <dv-tooltip text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext result">
+                                <td class="result">
                                     <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="infotext result">
+                                <td class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
                             </tr>
-                            <tr>
-                                <th class="text-right datum" data-translate="BETREUUNG_VON"></th>
-                                <th class="text-right datum" data-translate="BETREUUNG_BIS"></th>
-                                <th class="text-right betrag" data-translate="EFFEKTIVE_BETREUUNG"></th>
-                                <th class="text-right betrag" data-translate="ANSPRUCH"></th>
-                                <th class="text-right betrag" data-translate="VERGUENSTIGT"></th>
-                                <th class="text-right betrag" data-translate="VOLLKOSTEN"></th>
-                                <th class="text-right betrag"
-                                    data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
-                                <th class="text-right betrag result gutschein"
+                            <tr class="title-row">
+                                <th data-translate="BETREUUNG_VON"></th>
+                                <th data-translate="BETREUUNG_BIS"></th>
+                                <th data-translate="EFFEKTIVE_BETREUUNG"></th>
+                                <th data-translate="ANSPRUCH"></th>
+                                <th data-translate="VERGUENSTIGT"></th>
+                                <th data-translate="VOLLKOSTEN"></th>
+                                <th data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
+                                <th class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
-                                <th class="text-right betrag result" data-translate="MIN_ELTERNBEITRAG"></th>
-                                <th class="text-right betrag result" data-translate="VERGUENSTIGUNG"></th>
+                                <th class="result" data-translate="MIN_ELTERNBEITRAG"></th>
+                                <th class="result" data-translate="VERGUENSTIGUNG"></th>
+                                <th dv-show-element
+                                    dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                                    data-translate="VERFUEGTE_ZEITEINHEITEN"></th>
+                                <th dv-show-element
+                                    dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                                    data-translate="ANSPRUCHSBERECHTIGTE_ZEITEINHEITEN"></th>
+                                <th dv-show-element
+                                    dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                                    data-translate="ZEITEINHEIT"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
-                            <tr ng-repeat="verfuegungZeitabschnitt in displayedCollection">
+                            <tr ng-repeat="verfuegungZeitabschnitt in displayedCollection" class="zeitabschnitt-row">
                                 <!-- Von -->
-                                <td class="text-right"
-                                    ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                <td ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Bis -->
-                                <td class="text-right"
-                                    ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                <td ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Effektives Betreuungspensum -->
-                                <td class="text-right"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungspensum"></span>%
-                                </td>
+                                <td><span ng-bind="verfuegungZeitabschnitt.betreuungspensum"></span>%</td>
                                 <!-- Anspruchberechtigtes Pensum -->
-                                <td class="text-right"><span
-                                    ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%
-                                </td>
+                                <td><span ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%</td>
                                 <!-- Vergünstigtes Pensum -->
-                                <td class="text-right"><span
-                                    ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%
-                                </td>
+                                <td><span ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%</td>
                                 <!-- Kosten -->
-                                <td class="text-right"
-                                    ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
+                                <td ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
-                                <td class="text-right"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
+                                <td ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
-                                <td class="text-right result gutschein"
+                                <td class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
                                 <!-- Minimaler Elternbeitrag -->
-                                <td class="text-right result"
+                                <td class="result"
                                     ng-bind="verfuegungZeitabschnitt.getMinimalerElternbeitragGekuerzt() | currency : '' : 2"></td>
                                 <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="text-right result"
+                                <td class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>
+                                <!-- SUPERADMIN REGION -->
+                                <td dv-show-element
+                                    dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                                    ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></td>
+                                <td dv-show-element
+                                    dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                                    ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></td>
+                                <td dv-show-element
+                                    dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()"
+                                    ng-bind="verfuegungZeitabschnitt.zeiteinheit"></td>
+                                <!-- END REGION -->
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">
                             <tr>
-                                <td colspan="10" class="empty-table">Zeitabschnitte noch nicht berechnet</td>
+                                <td colspan="10"
+                                    class="empty-table text-left"
+                                    data-translate="ZEITABSCHNITTE_NICHT_BERECHNET"></td>
                             </tr>
                             </tbody>
                         </table>

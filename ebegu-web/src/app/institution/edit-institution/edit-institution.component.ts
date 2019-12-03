@@ -53,6 +53,7 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 
 @Component({
     selector: 'dv-edit-institution',
@@ -157,6 +158,13 @@ export class EditInstitutionComponent implements OnInit {
         this.initName = stammdaten.institution.name;
         this.editMode = stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
         this.changeDetectorRef.markForCheck();
+
+        if (!this.isTagesschule()) {
+            return;
+        }
+        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
+            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
+        });
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
@@ -227,7 +235,7 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.errorService.clearAll();
         if (this.componentTagesschule
-                && !this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
+            && !this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_MODULE_INVALID'));
             return;
         }
