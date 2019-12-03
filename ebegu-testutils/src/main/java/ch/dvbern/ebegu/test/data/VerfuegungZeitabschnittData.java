@@ -31,7 +31,7 @@ public class VerfuegungZeitabschnittData {
 
 	private String gueltigBis;
 
-	private BigDecimal betreuungspensum;
+	private BigDecimal betreuungspensumProzent;
 
 	private int anspruchberechtigtesPensum;
 
@@ -58,17 +58,17 @@ public class VerfuegungZeitabschnittData {
 		this.elternbeitrag = verfuegungZeitabschnitt.getElternbeitrag();
 		this.anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 		this.bemerkungen = verfuegungZeitabschnitt.getBemerkungen();
-		this.betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
+		this.betreuungspensumProzent = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 		this.famGroesse = verfuegungZeitabschnitt.getFamGroesse();
 		this.vollkosten = verfuegungZeitabschnitt.getVollkosten();
 	}
 
-	public BigDecimal getBetreuungspensum() {
-		return betreuungspensum;
+	public BigDecimal getBetreuungspensumProzent() {
+		return betreuungspensumProzent;
 	}
 
-	public void setBetreuungspensum(BigDecimal betreuungspensum) {
-		this.betreuungspensum = betreuungspensum;
+	public void setBetreuungspensumProzent(BigDecimal betreuungspensumProzent) {
+		this.betreuungspensumProzent = betreuungspensumProzent;
 	}
 
 	public int getAnspruchberechtigtesPensum() {
