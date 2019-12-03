@@ -46,8 +46,6 @@ public class TagesschuleRechner {
 	) {
 		// Massgebendes Einkommen der Familie. Mit Maximal und Minimalwerten "verrechnen"
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
-		massgebendesEinkommen = MathUtil.minimum(massgebendesEinkommen, parameterDTO.getMinMassgebendesEinkommen());
-		massgebendesEinkommen = MathUtil.maximum(massgebendesEinkommen, parameterDTO.getMaxMassgebendesEinkommen());
 
 		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, rechnen wir mit dem Maximalen Einkommen.
 		// TODO: Sobald im GUI die Frage nach den Vollkosten vorhanden ist, muss sichergestellt werden, dass eine Rule das "isBezahltVollkosten"-Flag setzt
@@ -71,6 +69,16 @@ public class TagesschuleRechner {
 
 		BigDecimal multiplyDividedMeMinusMinmE = MathUtil.EXACT.multiply(divided, meMinusMinmE);
 
-		return MathUtil.DEFAULT.addNullSafe(multiplyDividedMeMinusMinmE, parameterDTO.getMinTarif());
+		BigDecimal tarif = MathUtil.DEFAULT.addNullSafe(multiplyDividedMeMinusMinmE,
+			parameterDTO.getMinTarif());
+
+		tarif = MathUtil.minimum(tarif, parameterDTO.getMinTarif());
+		if (modul.getModulTagesschule().getModulTagesschuleGroup().isWirdPaedagogischBetreut()) {
+			tarif = MathUtil.maximum(tarif, parameterDTO.getMaxTarifMitPaedagogischerBetreuung());
+		}
+		else{
+			tarif = MathUtil.maximum(tarif, parameterDTO.getMaxTarifOhnePaedagogischeBetreuung());
+		}
+		return tarif;
 	}
 }
