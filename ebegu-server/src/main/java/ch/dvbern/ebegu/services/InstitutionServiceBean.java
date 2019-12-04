@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -332,11 +331,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			});
 	}
 
-	@Nullable
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
 		, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
-	public Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
+	public void deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
 		InstitutionStammdaten stammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, true);
 		if (stammdaten != null) {
@@ -346,14 +344,13 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
 		}
 
-		return updateStammdatenCheckRequired(institutionId, false);
+		updateStammdatenCheckRequired(institutionId, false);
 	}
 
-	@Nullable
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
 		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
-	public Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
+	public void updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
 		final Optional<Institution> institutionOpt = findInstitution(institutionId, false);
 
 		final Institution institution = institutionOpt.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -365,8 +362,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			institution.setStammdatenCheckRequired(isCheckRequired);
 			persistence.merge(institution); // direkt ueber persistence.merge wegen Berechtigung Batchjob
 		}
-
-		return institution;
 	}
 
 	@Override

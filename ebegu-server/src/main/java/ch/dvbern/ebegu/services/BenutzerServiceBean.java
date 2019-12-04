@@ -1120,6 +1120,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private List<Benutzer> findBenutzer(@Nonnull List<String> benutzerIds) {
+		requireNonNull(benutzerIds);
 		if (!benutzerIds.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
@@ -1145,6 +1146,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@RolesAllowed(SUPER_ADMIN)
 	public int handleAbgelaufeneRollen(@Nonnull LocalDate stichtag) {
+		requireNonNull(stichtag);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
@@ -1197,6 +1199,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	private Berechtigung getAktuellGueltigeBerechtigungFuerBenutzer(@Nonnull Benutzer benutzer) {
+		requireNonNull(benutzer);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Berechtigung> query = cb.createQuery(Berechtigung.class);
 		Root<Berechtigung> root = query.from(Berechtigung.class);
@@ -1228,6 +1231,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private void removeBerechtigung(@Nonnull Berechtigung berechtigung) {
+		requireNonNull(berechtigung);
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(berechtigung.getBenutzer().getUsername());
 		persistence.remove(berechtigung);
 	}
@@ -1235,6 +1239,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted) {
+		requireNonNull(berechtigung);
 		BerechtigungHistory newBerechtigungsHistory = new BerechtigungHistory(berechtigung, deleted);
 		newBerechtigungsHistory.setTimestampErstellt(LocalDateTime.now());
 		String userMutiert =
@@ -1248,6 +1253,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT, REVISOR })
 	public Collection<BerechtigungHistory> getBerechtigungHistoriesForBenutzer(@Nonnull Benutzer benutzer) {
+		requireNonNull(benutzer);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BerechtigungHistory> query = cb.createQuery(BerechtigungHistory.class);
 		Root<BerechtigungHistory> root = query.from(BerechtigungHistory.class);
@@ -1266,6 +1272,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public boolean isBenutzerDefaultBenutzerOfAnyGemeinde(@Nonnull String username) {
+		requireNonNull(username);
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);

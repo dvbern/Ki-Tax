@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -64,14 +65,14 @@ public abstract class AbstractBGRechner {
 			massgebendesEinkommen,
 			verfuegungZeitabschnitt.isBezahltVollkosten());
 
-		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
+		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 
 		BigDecimal verfuegteZeiteinheiten =
-			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, bgPensum);
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
 
 		BigDecimal anspruchPensum = MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
-			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, anspruchPensum);
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);
 
 		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
@@ -164,16 +165,9 @@ public abstract class AbstractBGRechner {
 	}
 
 	@Nonnull
-	protected abstract BigDecimal getAnteilMonat(
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis);
-
-	@Nonnull
 	protected abstract BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
+		@Nonnull BigDecimal anteilMonat,
 		@Nonnull BigDecimal bgPensum);
 
 	@Nonnull

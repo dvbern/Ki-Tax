@@ -1155,8 +1155,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
 		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			Collection<Gemeinde> gemeindenForUser = user.extractGemeindenForUser();
-			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
-			predicates.add(inGemeinde);
+			if (!gemeindenForUser.isEmpty()) {
+				Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
+				predicates.add(inGemeinde);
+			}
 		}
 	}
 
