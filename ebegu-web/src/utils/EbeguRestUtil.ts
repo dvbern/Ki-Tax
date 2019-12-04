@@ -104,7 +104,7 @@ import {TSKind} from '../models/TSKind';
 import {TSKindContainer} from '../models/TSKindContainer';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
-import TSLastenausgleich from '../models/TSLastenausgleich';
+import {TSLastenausgleich} from '../models/TSLastenausgleich';
 import {TSMandant} from '../models/TSMandant';
 import {TSMitteilung} from '../models/TSMitteilung';
 import {TSModulTagesschule} from '../models/TSModulTagesschule';

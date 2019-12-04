@@ -16,7 +16,6 @@
  */
 
 import {Provider} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
@@ -28,7 +27,6 @@ import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
-import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {ErrorService} from './errors/service/ErrorService';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -298,16 +296,6 @@ export const mandantRSProvider = {
     deps: ['$injector'],
 };
 
-export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
-    return new PaginatorI18n(translateService);
-}
-
-export const paginatorI18nProvider = {
-    provide: PaginatorI18n,
-    useFactory: paginatorI18nFactory,
-    deps: ['$injector'],
-};
-
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -331,6 +319,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     institutionStammdatenRSProvider,
     einstellungRSProvider,
     supportRSProvider,
-    mandantRSProvider,
-    paginatorI18nProvider
+    mandantRSProvider
 ];
