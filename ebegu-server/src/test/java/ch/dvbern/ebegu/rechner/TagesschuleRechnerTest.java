@@ -50,42 +50,42 @@ public class TagesschuleRechnerTest {
 
 	@Test
 	public void minimalTarif() {
-		doTest(10000, true, 0.78);
-		doTestWithOneKinder(10000, true, 0.78);
-		doTest(37000, true, 0.78);
-		doTestWithOneKinder(37000, true, 0.78);
-		doTest(10000, false, 0.78);
-		doTestWithOneKinder(10000, false, 0.78);
-		doTest(37000, false, 0.78);
-		doTestWithOneKinder(37000, false, 0.78);
+		doTestWithFamilienGroesse2(10000, true, 0.78);
+		doTestWithFamilienGroesse3(10000, true, 0.78);
+		doTestWithFamilienGroesse2(37000, true, 0.78);
+		doTestWithFamilienGroesse3(37000, true, 0.78);
+		doTestWithFamilienGroesse2(10000, false, 0.78);
+		doTestWithFamilienGroesse3(10000, false, 0.78);
+		doTestWithFamilienGroesse2(37000, false, 0.78);
+		doTestWithFamilienGroesse3(37000, false, 0.78);
 	}
 
 	@Test
 	public void grenzeMittendrinn() {
-		doTest(67000, true, 3.13);
-		doTestWithOneKinder(67000, true, 2.01);
-		doTest(67100, true, 3.14);
-		doTestWithOneKinder(67100, true, 2.02);
-		doTest(67000, false, 1.87);
-		doTestWithOneKinder(67000, false, 1.35);
-		doTest(67100, false, 1.88);
-		doTestWithOneKinder(67100, false, 1.36);
+		doTestWithFamilienGroesse2(67000, true, 3.13);
+		doTestWithFamilienGroesse3(67000, true, 2.01);
+		doTestWithFamilienGroesse2(67100, true, 3.14);
+		doTestWithFamilienGroesse3(67100, true, 2.02);
+		doTestWithFamilienGroesse2(67000, false, 1.87);
+		doTestWithFamilienGroesse3(67000, false, 1.35);
+		doTestWithFamilienGroesse2(67100, false, 1.88);
+		doTestWithFamilienGroesse3(67100, false, 1.36);
 	}
 
 	@Test
 	public void maximalTarif() {
-		doTest(150000, true, 11.26);
-		doTest(160000, true, 12.24);
-		doTest(1600000, true, 12.24);
-		doTest(150000, false, 5.65);
-		doTest(160000, false, 6.11);
-		doTest(1600000, false, 6.11);
-		doTestWithOneKinder(167000, true, 11.81);
-		doTestWithOneKinder(1600000, true, 12.24);
-		doTestWithOneKinder(1600000, false, 6.11);
+		doTestWithFamilienGroesse2(150000, true, 11.26);
+		doTestWithFamilienGroesse2(160000, true, 12.24);
+		doTestWithFamilienGroesse2(1600000, true, 12.24);
+		doTestWithFamilienGroesse2(150000, false, 5.65);
+		doTestWithFamilienGroesse2(160000, false, 6.11);
+		doTestWithFamilienGroesse2(1600000, false, 6.11);
+		doTestWithFamilienGroesse3(167000, true, 11.81);
+		doTestWithFamilienGroesse3(1600000, true, 12.24);
+		doTestWithFamilienGroesse3(1600000, false, 6.11);
 	}
 
-	private void doTest(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
+	private void doTestWithFamilienGroesse2(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
 		verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
@@ -98,10 +98,10 @@ public class TagesschuleRechnerTest {
 		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
 	}
 
-	private void doTestWithOneKinder(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
+	private void doTestWithFamilienGroesse3(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.setAbzugFamGroesse(new BigDecimal(11400.00));
+		verfuegungZeitabschnitt.setAbzugFamGroesse(MathUtil.DEFAULT.fromNullSafe(11400.00));
 		BelegungTagesschuleModul modul = new BelegungTagesschuleModul();
 		modul.setModulTagesschule(new ModulTagesschule());
 		modul.getModulTagesschule().setModulTagesschuleGroup(new ModulTagesschuleGroup());
