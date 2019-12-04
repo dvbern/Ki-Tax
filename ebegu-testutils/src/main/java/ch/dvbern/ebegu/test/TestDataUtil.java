@@ -1011,7 +1011,7 @@ public final class TestDataUtil {
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
 	public static Gesuch createAndPersistTestfall11_SchulamtOnly(
-		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();

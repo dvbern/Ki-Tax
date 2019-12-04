@@ -257,7 +257,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			}
 			if (predicateObjectDto.getAntragTyp() != null) {
 				List<AntragTyp> values = AntragTyp.getValuesForFilter(predicateObjectDto.getAntragTyp());
-				predicates.add(root.get(Gesuch_.typ).in(values));
+
+				if (values != null && !values.isEmpty()) {
+					predicates.add(root.get(Gesuch_.typ).in(values));
+				}
 			}
 			if (predicateObjectDto.getGesuchsperiodeString() != null) {
 				String[] years = ensureYearFormat(predicateObjectDto.getGesuchsperiodeString());

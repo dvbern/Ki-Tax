@@ -1053,7 +1053,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {
-		Gesuch gesuch = TestDataUtil.createAndPersistTestfall11_SchulamtOnly(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistTestfall11_SchulamtOnly(persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
 		wizardStepService.createWizardStepList(gesuch);
 		return persistence.merge(gesuch);
 	}
