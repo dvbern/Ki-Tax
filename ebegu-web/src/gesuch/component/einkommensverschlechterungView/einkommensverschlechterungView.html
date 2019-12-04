@@ -21,7 +21,7 @@
 
             <h2>
             <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR"
-                  translate-values="{basisjahr: vm.model.getBasisjahr(), gesuchsteller:vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
+                  translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith(), gesuchsteller:vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
             </h2>
             <dv-bisher gs="vm.model.getEkvToWorkWith_GS()"
                        ja="vm.model.getEkvToWorkWith()"
@@ -53,6 +53,7 @@
                                     ja="vm.model.getEkvToWorkWith().nettolohn"
                                     show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                                 <dv-eingabe-basisjahr
+                                    [neuer-wert]="vm.model.getEkvToWorkWith().nettolohn"
                                     [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn"
                                     [basisjahr]="vm.model.getBasisjahr()"
                                 >
@@ -80,6 +81,7 @@
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.model.getEkvToWorkWith().familienzulage"
                                         [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.familienzulage"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >
@@ -110,6 +112,7 @@
                                                class="input-element" required>
                                 </dv-valueinput>
                                 <dv-eingabe-basisjahr
+                                    [neuer-wert]="vm.model.getEkvToWorkWith().ersatzeinkommen"
                                     [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommen"
                                     [basisjahr]="vm.model.getBasisjahr()"
                                 >
@@ -140,6 +143,7 @@
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.model.getEkvToWorkWith().erhalteneAlimente"
                                         [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.erhalteneAlimente"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >
@@ -327,6 +331,7 @@
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.model.getEkvToWorkWith().geleisteteAlimente"
                                         [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.geleisteteAlimente"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >

@@ -70,6 +70,7 @@
                                     <dv-bisher gs="vm.getEinkommensverschlechterungGS1_GS().bruttovermoegen"
                                                ja="vm.getEinkommensverschlechterungGS1_JA().bruttovermoegen"></dv-bisher>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS1_JA().bruttovermoegen"
                                         [wert-basisjahr]="vm.model.finanzielleSituationContainerGS1.finanzielleSituationJA.bruttovermoegen"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >
@@ -99,6 +100,7 @@
                                                    dv-on-blur="vm.calculate()">
                                     </dv-valueinput>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS2_JA().bruttovermoegen"
                                         [wert-basisjahr]="vm.model.finanzielleSituationContainerGS2.finanzielleSituationJA.bruttovermoegen"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >
@@ -131,6 +133,7 @@
                                                    dv-on-blur="vm.calculate()">
                                     </dv-valueinput>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS1_JA().schulden"
                                         [wert-basisjahr]="vm.model.finanzielleSituationContainerGS1.finanzielleSituationJA.schulden"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >
@@ -162,6 +165,7 @@
                                                    dv-on-blur="vm.calculate()">
                                     </dv-valueinput>
                                     <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS2_JA().schulden"
                                         [wert-basisjahr]="vm.model.finanzielleSituationContainerGS2.finanzielleSituationJA.schulden"
                                         [basisjahr]="vm.model.getBasisjahr()"
                                     >
