@@ -45,10 +45,9 @@
                                         <dv-datepicker input-id="aenderungPer_ID" name="aenderungPer"
                                                        ng-model="vm.getFamiliensituation().aenderungPer"
                                                        class="input-element"
-
                                                        dv-on-blur="vm.onDatumBlur()"
                                                        ng-change="vm.aenderungPerChanged()"
-                                                       ng-disabled="vm.isGesuchReadonly() || (vm.isKorrekturModusJugendamt() && !vm.gesuchstellerHasChangedZivilstand())">
+                                                       ng-disabled="vm.isGesuchReadonly()">
                                         </dv-datepicker>
                                         <dv-bisher gs="vm.model.familiensituationGS.aenderungPer"
                                                    ja="vm.model.familiensituationJA.aenderungPer"></dv-bisher>

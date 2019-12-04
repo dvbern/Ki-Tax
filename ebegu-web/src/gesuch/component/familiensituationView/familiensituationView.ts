@@ -259,9 +259,4 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             this.resetFamsit();
         }
     }
-
-    public gesuchstellerHasChangedZivilstand(): boolean {
-        return this.getFamiliensituationGS() && !!this.getFamiliensituationGS().aenderungPer;
-    }
-
 }
