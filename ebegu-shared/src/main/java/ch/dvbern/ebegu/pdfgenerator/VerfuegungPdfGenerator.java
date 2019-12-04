@@ -245,6 +245,10 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		addBemerkungenIfAvailable(document, true);
 	}
 
+	@Nonnull
+	public boolean isVerfuegung() {
+		return true;
+	}
 
 	@Nonnull
 	private PdfPTable createIntroAndInfoKontingentierung() {
@@ -259,6 +263,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		}
 		return table;
 	}
+
 
 	@Nonnull
 	private PdfPTable createIntro() {
