@@ -19,8 +19,8 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSAdresse from '../../../models/TSAdresse';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import {TSAdresse} from '../../../models/TSAdresse';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 
 @Component({
     selector: 'dv-edit-institution-betreuungsgutscheine',

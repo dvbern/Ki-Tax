@@ -14,24 +14,24 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSDokument from '../../../models/TSDokument';
-import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSDokument} from '../../../models/TSDokument';
+import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
-import BerechnungsManager from '../../service/berechnungsManager';
-import DokumenteRS from '../../service/dokumenteRS.rest';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import GesuchRS from '../../service/gesuchRS.rest';
-import GlobalCacheService from '../../service/globalCacheService';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {DokumenteRS} from '../../service/dokumenteRS.rest';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
+import {GlobalCacheService} from '../../service/globalCacheService';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 

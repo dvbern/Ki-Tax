@@ -29,6 +29,10 @@ import {UPGRADED_PROVIDERS} from './upgraded-providers';
 // sentry
 configureRaven();
 
+export function paginatorI18nFactory(translateService: TranslateService): PaginatorI18n {
+    return new PaginatorI18n(translateService);
+}
+
 @NgModule({
     imports: [
         // only those modules required by the providers/components of the core module
@@ -70,9 +74,7 @@ export class CoreModule {
                 {
                     provide: MatPaginatorIntl,
                     deps: [TranslateService],
-                    useFactory: (translateService: TranslateService) => {
-                        return new PaginatorI18n(translateService);
-                    },
+                    useFactory: paginatorI18nFactory,
                 },
             ],
         };

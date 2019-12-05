@@ -16,14 +16,14 @@
 import {IHttpBackendService, IQService, IRootScopeService, ITimeoutService} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
-import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
 import {UmzugViewController} from './umzugView';
 import ITranslateService = angular.translate.ITranslateService;
 

@@ -14,9 +14,9 @@
  */
 
 import {IComponentOptions} from 'angular';
-import TSQuickSearchResult from '../../../models/dto/TSQuickSearchResult';
-import TSAbstractAntragDTO from '../../../models/TSAbstractAntragDTO';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSQuickSearchResult} from '../../../models/dto/TSQuickSearchResult';
+import {TSAbstractAntragDTO} from '../../../models/TSAbstractAntragDTO';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {SearchIndexRS} from '../../core/service/searchIndexRS.rest';
 import {ISearchResultateStateParams} from '../search.route';
 import ILogService = angular.ILogService;

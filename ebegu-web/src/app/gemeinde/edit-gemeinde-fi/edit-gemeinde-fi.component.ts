@@ -18,7 +18,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {Observable} from 'rxjs';
-import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 
 @Component({
     selector: 'dv-edit-gemeinde-fi',

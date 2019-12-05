@@ -18,22 +18,22 @@
 import {Injectable} from '@angular/core';
 import {IPromise} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
-import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
-import GesuchsperiodeRS from '../../app/core/service/gesuchsperiodeRS.rest';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
+import {GesuchsperiodeRS} from '../../app/core/service/gesuchsperiodeRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {getStartAntragStatusFromEingangsart} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {isNewDossierNeeded, isNewFallNeeded, TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
-import TSDossier from '../../models/TSDossier';
-import TSFall from '../../models/TSFall';
-import TSGesuch from '../../models/TSGesuch';
+import {TSDossier} from '../../models/TSDossier';
+import {TSFall} from '../../models/TSFall';
+import {TSGesuch} from '../../models/TSGesuch';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import DossierRS from './dossierRS.rest';
-import FallRS from './fallRS.rest';
-import GemeindeRS from './gemeindeRS.rest';
-import GesuchRS from './gesuchRS.rest';
-import WizardStepManager from './wizardStepManager';
+import {DossierRS} from './dossierRS.rest';
+import {FallRS} from './fallRS.rest';
+import {GemeindeRS} from './gemeindeRS.rest';
+import {GesuchRS} from './gesuchRS.rest';
+import {WizardStepManager} from './wizardStepManager';
 
 const LOG = LogFactory.createLog('GesuchGenerator');
 

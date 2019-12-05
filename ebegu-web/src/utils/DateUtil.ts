@@ -19,7 +19,7 @@ import Moment = moment.Moment; // kann das über ein anderes Import Format gelö
 
 const LOG = LogFactory.createLog('DateUtil');
 
-export default class DateUtil {
+export class DateUtil {
 
     /**
      * @param localDateTimeString string with format YYYY-MM-DDTHH:mm:ss.SSS

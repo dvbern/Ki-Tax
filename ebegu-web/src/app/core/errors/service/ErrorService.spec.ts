@@ -17,8 +17,8 @@ import {IRootScopeService} from 'angular';
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
-import TSExceptionReport from '../../../../models/TSExceptionReport';
-import ErrorService from './ErrorService';
+import {TSExceptionReport} from '../../../../models/TSExceptionReport';
+import {ErrorService} from './ErrorService';
 
 describe('errorService', () => {
 

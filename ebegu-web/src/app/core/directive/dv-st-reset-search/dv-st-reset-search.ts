@@ -19,7 +19,7 @@ import IScope = angular.IScope;
 import {IAugmentedJQuery, IDirectiveFactory} from 'angular';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 
-export default class DVSTResetSearch implements IDirective {
+export class DVSTResetSearch implements IDirective {
 
     public restrict = 'A';
     public require = '^stTable';

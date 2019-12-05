@@ -14,7 +14,7 @@
  */
 
 import {IHttpPromise, IHttpService} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class DatabaseMigrationRS {
 

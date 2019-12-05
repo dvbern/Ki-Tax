@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSFerienname} from './enums/TSFerienname';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSGemeinde from './TSGemeinde';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSGemeinde} from './TSGemeinde';
 
-export default class TSInstitutionStammdatenFerieninsel extends TSAbstractEntity {
+export class TSInstitutionStammdatenFerieninsel extends TSAbstractEntity {
 
     private _gemeinde: TSGemeinde;
     private _ausweichstandortSommerferien: string;

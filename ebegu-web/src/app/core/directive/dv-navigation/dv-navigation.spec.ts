@@ -15,20 +15,20 @@
 
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
-import TSDossier from '../../../../models/TSDossier';
-import TSFall from '../../../../models/TSFall';
-import TSFamiliensituation from '../../../../models/TSFamiliensituation';
-import TSFamiliensituationContainer from '../../../../models/TSFamiliensituationContainer';
-import TSGesuch from '../../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
-import TestDataUtil from '../../../../utils/TestDataUtil.spec';
+import {TSDossier} from '../../../../models/TSDossier';
+import {TSFall} from '../../../../models/TSFall';
+import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../models/TSFamiliensituationContainer';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
 

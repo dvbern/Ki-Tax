@@ -31,6 +31,12 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DvEingabeBasisjahrComponent {
+    @Input() public neuerWert: number;
     @Input() public wertBasisjahr: number;
     @Input() public basisjahr: number;
+
+    public isVisible(): boolean {
+        return this.wertBasisjahr > 0 ||
+            (this.wertBasisjahr !== this.neuerWert && this.neuerWert > 0);
+    }
 }

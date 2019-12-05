@@ -14,19 +14,19 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import KindRS from '../app/core/service/kindRS.rest';
-import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
+import {KindRS} from '../app/core/service/kindRS.rest';
+import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
-import TSGesuch from '../models/TSGesuch';
-import TSKindDublette from '../models/TSKindDublette';
-import TSMahnung from '../models/TSMahnung';
+import {TSGesuch} from '../models/TSGesuch';
+import {TSKindDublette} from '../models/TSKindDublette';
+import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {GesuchRouteController} from './gesuch';
-import BerechnungsManager from './service/berechnungsManager';
-import GesuchModelManager from './service/gesuchModelManager';
-import MahnungRS from './service/mahnungRS.rest';
+import {BerechnungsManager} from './service/berechnungsManager';
+import {GesuchModelManager} from './service/gesuchModelManager';
+import {MahnungRS} from './service/mahnungRS.rest';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;

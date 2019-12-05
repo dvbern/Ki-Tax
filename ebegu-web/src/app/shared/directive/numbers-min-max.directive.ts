@@ -1,6 +1,6 @@
 import {Directive, forwardRef, Input} from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 @Directive({
     selector: '[customMinMax][formControlName],[customMinMax][formControl],[customMinMax][ngModel]',

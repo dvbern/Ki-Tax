@@ -15,19 +15,19 @@
 
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope} from 'angular';
-import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
-import BerechnungsManager from '../../../../../gesuch/service/berechnungsManager';
-import GemeindeRS from '../../../../../gesuch/service/gemeindeRS.rest';
-import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {BerechnungsManager} from '../../../../../gesuch/service/berechnungsManager';
+import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
+import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsangebotTyp';
-import TSPendenzBetreuung from '../../../../../models/TSPendenzBetreuung';
-import TestDataUtil from '../../../../../utils/TestDataUtil.spec';
-import GesuchsperiodeRS from '../../../../core/service/gesuchsperiodeRS.rest';
+import {TSPendenzBetreuung} from '../../../../../models/TSPendenzBetreuung';
+import {TestDataUtil} from '../../../../../utils/TestDataUtil.spec';
+import {GesuchsperiodeRS} from '../../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../../core/service/institutionStammdatenRS.rest';
 import {PENDENZEN_BETREUUNGEN_JS_MODULE} from '../../pendenzenBetreuungen.module';
-import PendenzBetreuungenRS from '../../service/PendenzBetreuungenRS.rest';
+import {PendenzBetreuungenRS} from '../../service/PendenzBetreuungenRS.rest';
 import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenListView';
 
 describe('pendenzenBetreuungenListView', () => {

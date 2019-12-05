@@ -15,6 +15,6 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="eingabe-basisjahr inlineHint" *ngIf="wertBasisjahr > 0">
+<div class="eingabe-basisjahr inlineHint" *ngIf="isVisible()">
     <span>{{'EINGABE_BASISJAHR' | translate:{'basisjahr': basisjahr, 'wertBasisjahr': wertBasisjahr.toLocaleString('de-CH')} }}</span>
 </div>

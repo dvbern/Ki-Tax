@@ -18,7 +18,7 @@
 /**
  * Enum for the actions that can be triggered to create new Fall, Dossier and Gesuch
  */
-import EbeguUtil from '../../utils/EbeguUtil';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 
 export enum TSCreationAction {
     CREATE_NEW_FALL = 'CREATE_NEW_FALL',

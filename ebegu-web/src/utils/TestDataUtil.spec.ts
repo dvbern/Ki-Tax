@@ -22,31 +22,31 @@ import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
-import TSAbstractEntity from '../models/TSAbstractEntity';
+import {TSAbstractEntity} from '../models/TSAbstractEntity';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
-import TSAdresse from '../models/TSAdresse';
-import TSAdresseContainer from '../models/TSAdresseContainer';
-import TSBenutzer from '../models/TSBenutzer';
-import TSBerechtigung from '../models/TSBerechtigung';
-import TSDossier from '../models/TSDossier';
-import TSErwerbspensum from '../models/TSErwerbspensum';
-import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
-import TSFall from '../models/TSFall';
-import TSGemeinde from '../models/TSGemeinde';
-import TSGemeindeKonfiguration from '../models/TSGemeindeKonfiguration';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
-import TSGesuchsteller from '../models/TSGesuchsteller';
-import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
+import {TSAdresse} from '../models/TSAdresse';
+import {TSAdresseContainer} from '../models/TSAdresseContainer';
+import {TSBenutzer} from '../models/TSBenutzer';
+import {TSBerechtigung} from '../models/TSBerechtigung';
+import {TSDossier} from '../models/TSDossier';
+import {TSErwerbspensum} from '../models/TSErwerbspensum';
+import {TSErwerbspensumContainer} from '../models/TSErwerbspensumContainer';
+import {TSFall} from '../models/TSFall';
+import {TSGemeinde} from '../models/TSGemeinde';
+import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
+import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
+import {TSGesuchsteller} from '../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
 import {TSMandant} from '../models/TSMandant';
-import TSModulTagesschule from '../models/TSModulTagesschule';
-import TSModulTagesschuleGroup from '../models/TSModulTagesschuleGroup';
-import TSVerfuegung from '../models/TSVerfuegung';
-import TSWizardStep from '../models/TSWizardStep';
+import {TSModulTagesschule} from '../models/TSModulTagesschule';
+import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
+import {TSVerfuegung} from '../models/TSVerfuegung';
+import {TSWizardStep} from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
-import DateUtil from './DateUtil';
+import {DateUtil} from './DateUtil';
 
 // tslint:disable:no-magic-numbers no-identical-functions
-export default class TestDataUtil {
+export class TestDataUtil {
 
     public static setAbstractFieldsUndefined(abstractEntity: TSAbstractEntity): void {
         abstractEntity.id = undefined;

@@ -19,7 +19,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 /**
  * DTO für einen Einwohnercode aus dem EWK
  */
-export default class TSEWKEinwohnercode extends TSAbstractMutableEntity {
+export class TSEWKEinwohnercode extends TSAbstractMutableEntity {
 
     private _code: string;
     private _codeTxt: string;

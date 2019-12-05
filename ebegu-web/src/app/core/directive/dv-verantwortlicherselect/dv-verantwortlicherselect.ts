@@ -14,11 +14,11 @@
  */
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import TSBenutzer from '../../../../models/TSBenutzer';
-import TSGesuch from '../../../../models/TSGesuch';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSGesuch} from '../../../../models/TSGesuch';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import BenutzerRS from '../../service/benutzerRS.rest';
+import {BenutzerRS} from '../../service/benutzerRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {

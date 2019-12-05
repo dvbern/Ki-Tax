@@ -20,7 +20,7 @@ import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/const
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
-import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
+import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class BetreuungInputComponentConfig implements IComponentOptions {

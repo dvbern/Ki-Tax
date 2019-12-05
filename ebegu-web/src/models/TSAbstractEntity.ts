@@ -15,7 +15,7 @@
 
 import * as moment from 'moment';
 
-export default class TSAbstractEntity {
+export class TSAbstractEntity {
     private _id: string;
     private _timestampErstellt: moment.Moment;
     private _timestampMutiert: moment.Moment;

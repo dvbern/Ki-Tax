@@ -22,11 +22,11 @@ import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
-import AbstractAdminViewController from '../../../admin/abstractAdminView';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import TSGemeinde from '../../../models/TSGemeinde';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 

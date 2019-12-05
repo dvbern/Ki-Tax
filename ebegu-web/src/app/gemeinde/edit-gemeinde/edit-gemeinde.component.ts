@@ -22,19 +22,19 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSAdresse from '../../../models/TSAdresse';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
-import TSTextRessource from '../../../models/TSTextRessource';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSAdresse} from '../../../models/TSAdresse';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSTextRessource} from '../../../models/TSTextRessource';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('EditGemeindeComponent');
@@ -52,7 +52,7 @@ export class EditGemeindeComponent implements OnInit {
     public keineBeschwerdeAdresse: boolean;
     public beguStartStr: string;
     private navigationSource: StateDeclaration;
-    private gemeindeId: string;
+    public gemeindeId: string;
     private fileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;

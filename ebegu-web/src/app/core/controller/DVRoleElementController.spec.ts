@@ -14,7 +14,7 @@
  */
 
 import {AUTHENTICATION_JS_MODULE} from '../../../authentication/authentication.module';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../../models/enums/TSRole';
 import {CORE_JS_MODULE} from '../core.angularjs.module';

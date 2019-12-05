@@ -21,7 +21,7 @@ import {TSDateRange} from './types/TSDateRange';
 /**
  * Definiert einen unbezahlten Urlaub
  */
-export default class TSUnbezahlterUrlaub extends TSAbstractDateRangedEntity {
+export class TSUnbezahlterUrlaub extends TSAbstractDateRangedEntity {
 
     public constructor(
         gueltigkeit?: TSDateRange,

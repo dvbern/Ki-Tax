@@ -16,10 +16,10 @@
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import TSBenutzer from '../../../../models/TSBenutzer';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {LogFactory} from '../../logging/LogFactory';
-import BenutzerRS from '../../service/benutzerRS.rest';
+import {BenutzerRS} from '../../service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('UserselectController');
 

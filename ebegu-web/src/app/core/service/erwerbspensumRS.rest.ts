@@ -14,11 +14,11 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class ErwerbspensumRS {
+export class ErwerbspensumRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
 

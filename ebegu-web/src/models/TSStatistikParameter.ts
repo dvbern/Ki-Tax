@@ -16,7 +16,7 @@
 import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSStatistikParameter extends TSAbstractMutableEntity {
+export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _jahr: string;
     private _gesuchsperiode: string;
     private _stichtag: moment.Moment;

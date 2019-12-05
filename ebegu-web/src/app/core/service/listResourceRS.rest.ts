@@ -14,10 +14,10 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import TSLand from '../../../models/types/TSLand';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSLand} from '../../../models/types/TSLand';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class ListResourceRS {
+export class ListResourceRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
     public static laenderList: TSLand[];

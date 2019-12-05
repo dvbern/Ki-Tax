@@ -14,16 +14,16 @@
  */
 
 import {IComponentOptions, IFormController} from 'angular';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerienname';
-import TSFerieninselStammdaten from '../../../models/TSFerieninselStammdaten';
-import TSFerieninselZeitraum from '../../../models/TSFerieninselZeitraum';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
+import {TSFerieninselZeitraum} from '../../../models/TSFerieninselZeitraum';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {AbstractAdminViewController} from '../../abstractAdminView';
 import {FerieninselStammdatenRS} from '../../service/ferieninselStammdatenRS.rest';
 import ITimeoutService = angular.ITimeoutService;
 

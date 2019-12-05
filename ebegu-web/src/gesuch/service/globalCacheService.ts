@@ -20,7 +20,7 @@ import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 /**
  * Class to store cache Global
  */
-export default class GlobalCacheService {
+export class GlobalCacheService {
 
     public static $inject = ['$cacheFactory'];
 

@@ -15,12 +15,12 @@
 
 import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSEWKAdresse from './TSEWKAdresse';
+import {TSEWKAdresse} from './TSEWKAdresse';
 
 /**
  * DTO für eine Beziehung aus dem EWK
  */
-export default class TSEWKBeziehung extends TSAbstractMutableEntity {
+export class TSEWKBeziehung extends TSAbstractMutableEntity {
 
     private _beziehungstyp: string;
     private _beziehungstypTxt: string;

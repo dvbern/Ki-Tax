@@ -16,18 +16,18 @@
 import {IPromise} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import TSDokumenteDTO from '../../models/dto/TSDokumenteDTO';
-import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSDokumenteDTO} from '../../models/dto/TSDokumenteDTO';
+import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import TSFinanzModel from '../../models/TSFinanzModel';
-import TSGesuch from '../../models/TSGesuch';
-import DokumenteRS from './dokumenteRS.rest';
-import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
-import FinanzielleSituationRS from './finanzielleSituationRS.rest';
+import {TSFinanzModel} from '../../models/TSFinanzModel';
+import {TSGesuch} from '../../models/TSGesuch';
+import {DokumenteRS} from './dokumenteRS.rest';
+import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
+import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
 
 const LOG = LogFactory.createLog('BerechnungsManager');
 
-export default class BerechnungsManager {
+export class BerechnungsManager {
 
     public static $inject = [
         'FinanzielleSituationRS',

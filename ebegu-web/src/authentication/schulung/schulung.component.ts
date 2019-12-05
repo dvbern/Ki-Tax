@@ -17,12 +17,12 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSInstitution from '../../models/TSInstitution';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSInstitution} from '../../models/TSInstitution';
 import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
-import AuthServiceRS from '../service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
 export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
     transclude: false,

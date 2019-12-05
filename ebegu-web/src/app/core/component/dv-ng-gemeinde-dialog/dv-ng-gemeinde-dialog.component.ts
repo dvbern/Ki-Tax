@@ -17,7 +17,7 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import TSGemeinde from '../../../../models/TSGemeinde';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 
 /**
  * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.

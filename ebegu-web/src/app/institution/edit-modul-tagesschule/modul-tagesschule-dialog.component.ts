@@ -23,7 +23,7 @@ import {
     TSModulTagesschuleIntervall
 } from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
-import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
+import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
 @Component({
     selector: 'modul-tagesschule-dialog',

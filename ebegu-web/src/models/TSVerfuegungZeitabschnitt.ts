@@ -17,14 +17,14 @@ import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
+export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public abzugFamGroesse: number;
     public anspruchberechtigtesPensum: number;
     public anspruchsberechtigteAnzahlZeiteinheiten: number;
     public anspruchspensumRest: number;
     public bemerkungen: string;
-    public betreuungspensum: number;
-    public betreuungsstunden: number;
+    public betreuungspensumProzent: number;
+    public betreuungspensumZeiteinheit: number;
     public bgPensum: number;
     public einkommensjahr: number;
     public elternbeitrag: number;

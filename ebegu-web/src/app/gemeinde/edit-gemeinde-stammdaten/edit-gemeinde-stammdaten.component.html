@@ -322,13 +322,12 @@
                             <input class="dv-mat-datepicker" type="text"
                                    name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
                                    [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
-                                   [min]="beguStartDatumMin"
                                    [matDatepicker]="begu_start"
                                    [disabled]="!(isSuperadmin())"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
                             <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
                             <mat-datepicker #begu_start></mat-datepicker>
-                            <dv-error-messages inputid="begu_start_ID"
+                            <dv-error-messages input-id="begu_start_ID"
                                                [errorObject]="bgStartDate.errors">
                             </dv-error-messages>
                         </div>

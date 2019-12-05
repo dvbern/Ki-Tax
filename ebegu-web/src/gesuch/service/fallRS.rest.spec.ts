@@ -16,10 +16,10 @@
 import {IHttpBackendService} from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import TSFall from '../../models/TSFall';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
-import FallRS from './fallRS.rest';
+import {TSFall} from '../../models/TSFall';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
+import {FallRS} from './fallRS.rest';
 
 describe('fallRS', () => {
 

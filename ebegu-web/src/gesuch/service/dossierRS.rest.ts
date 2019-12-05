@@ -15,10 +15,10 @@
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
-import TSDossier from '../../models/TSDossier';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSDossier} from '../../models/TSDossier';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class DossierRS implements IEntityRS {
+export class DossierRS implements IEntityRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     public serviceURL: string;

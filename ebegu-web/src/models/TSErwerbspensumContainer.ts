@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSErwerbspensum from './TSErwerbspensum';
+import {TSErwerbspensum} from './TSErwerbspensum';
 
-export default class TSErwerbspensumContainer extends TSAbstractMutableEntity {
+export class TSErwerbspensumContainer extends TSAbstractMutableEntity {
 
     private _erwerbspensumGS: TSErwerbspensum;
     private _erwerbspensumJA: TSErwerbspensum;

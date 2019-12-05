@@ -15,10 +15,10 @@
 
 import {IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
 import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSMahnung from '../../../models/TSMahnung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSMahnung} from '../../../models/TSMahnung';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DownloadRS {

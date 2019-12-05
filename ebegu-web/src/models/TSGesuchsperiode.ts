@@ -17,7 +17,7 @@ import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
+export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
 
     private _status: TSGesuchsperiodeStatus;
 

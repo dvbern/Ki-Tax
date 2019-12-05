@@ -14,11 +14,11 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class GesuchstellerRS {
+export class GesuchstellerRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;

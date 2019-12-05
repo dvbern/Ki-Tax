@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 
-export default class TSAbstractAntragDTO {
+export class TSAbstractAntragDTO {
 
     private _fallNummer: number;
     private _dossierId: string;

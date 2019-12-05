@@ -14,10 +14,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSPendenzBetreuung from '../../../../models/TSPendenzBetreuung';
-import EbeguRestUtil from '../../../../utils/EbeguRestUtil';
+import {TSPendenzBetreuung} from '../../../../models/TSPendenzBetreuung';
+import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 
-export default class PendenzBetreuungenRS {
+export class PendenzBetreuungenRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

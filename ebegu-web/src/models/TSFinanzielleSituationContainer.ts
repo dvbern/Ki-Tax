@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSFinanzielleSituation from './TSFinanzielleSituation';
+import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 
-export default class TSFinanzielleSituationContainer extends TSAbstractMutableEntity {
+export class TSFinanzielleSituationContainer extends TSAbstractMutableEntity {
 
     private _jahr: number;
     private _finanzielleSituationGS: TSFinanzielleSituation;

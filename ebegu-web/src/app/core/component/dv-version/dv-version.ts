@@ -14,13 +14,13 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
-import DateUtil from '../../../../utils/DateUtil';
+import {DateUtil} from '../../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
-import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor';
+import {HttpVersionInterceptor} from '../../service/version/HttpVersionInterceptor';
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
 import ITranslateService = angular.translate.ITranslateService;

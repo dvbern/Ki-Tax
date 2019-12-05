@@ -16,9 +16,9 @@
 import {IComponentOptions, IController} from 'angular';
 import {EbeguVorlageRS} from '../../../../admin/service/ebeguVorlageRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
-import TSDownloadFile from '../../../../models/TSDownloadFile';
-import TSEbeguVorlage from '../../../../models/TSEbeguVorlage';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSEbeguVorlage} from '../../../../models/TSEbeguVorlage';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../service/downloadRS.rest';
 import ILogService = angular.ILogService;

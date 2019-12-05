@@ -16,14 +16,14 @@
 import * as moment from 'moment';
 import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSEWKAdresse from './TSEWKAdresse';
-import TSEWKBeziehung from './TSEWKBeziehung';
-import TSEWKEinwohnercode from './TSEWKEinwohnercode';
+import {TSEWKAdresse} from './TSEWKAdresse';
+import {TSEWKBeziehung} from './TSEWKBeziehung';
+import {TSEWKEinwohnercode} from './TSEWKEinwohnercode';
 
 /**
  * DTO für eine Person aus dem EWK
  */
-export default class TSEWKPerson extends TSAbstractMutableEntity {
+export class TSEWKPerson extends TSAbstractMutableEntity {
 
     private _personID: string;
     private _einwohnercodes: Array<TSEWKEinwohnercode>;

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export default class TSLand {
+export class TSLand {
     private _translationKey: string;
     private _code: string;
 

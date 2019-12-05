@@ -15,8 +15,8 @@
 
 import {IHttpService, IPromise} from 'angular';
 import {TSFerienname} from '../../models/enums/TSFerienname';
-import TSFerieninselStammdaten from '../../models/TSFerieninselStammdaten';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSFerieninselStammdaten} from '../../models/TSFerieninselStammdaten';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 export class FerieninselStammdatenRS {
 
