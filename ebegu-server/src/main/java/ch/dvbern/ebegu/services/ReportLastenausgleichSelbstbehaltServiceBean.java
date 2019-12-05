@@ -37,9 +37,9 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
-import ch.dvbern.ebegu.reporting.ReportLastenausgleichKibonService;
-import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichKibonDataRow;
-import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichKibonExcelConverter;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
+import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichSelbstbehaltDataRow;
+import ch.dvbern.ebegu.reporting.lastenausgleich.LastenausgleichSelbstbehaltExcelConverter;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -56,11 +56,11 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Stateless
-@Local(ReportLastenausgleichKibonService.class)
+@Local(ReportLastenausgleichSelbstbehaltService.class)
 @PermitAll
-public class ReportLastenausgleichKibonServiceBean extends AbstractReportServiceBean implements ReportLastenausgleichKibonService {
+public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReportServiceBean implements ReportLastenausgleichSelbstbehaltService {
 
-	private LastenausgleichKibonExcelConverter lastenausgleichKibonExcelConverter = new LastenausgleichKibonExcelConverter();
+	private LastenausgleichSelbstbehaltExcelConverter lastenausgleichKibonExcelConverter = new LastenausgleichSelbstbehaltExcelConverter();
 
 	@Inject
 	private VerfuegungService verfuegungService;
@@ -77,7 +77,7 @@ public class ReportLastenausgleichKibonServiceBean extends AbstractReportService
 		@Nonnull LocalDate dateFrom, @Nonnull Locale locale
 	) throws ExcelMergeException {
 
-		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_KIBON;
+		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT;
 
 		InputStream is = ReportMassenversandServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
@@ -85,7 +85,7 @@ public class ReportLastenausgleichKibonServiceBean extends AbstractReportService
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<LastenausgleichKibonDataRow> reportData = getReportLastenausgleichKibon(dateFrom);
+		List<LastenausgleichSelbstbehaltDataRow> reportData = getReportLastenausgleichKibon(dateFrom);
 		ExcelMergerDTO excelMergerDTO = lastenausgleichKibonExcelConverter
 			.toExcelMergerDTO(reportData, dateFrom.getYear(), locale);
 
@@ -100,15 +100,15 @@ public class ReportLastenausgleichKibonServiceBean extends AbstractReportService
 			getContentTypeForExport());
 	}
 
-	private List<LastenausgleichKibonDataRow> getReportLastenausgleichKibon(LocalDate dateFrom) {
+	private List<LastenausgleichSelbstbehaltDataRow> getReportLastenausgleichKibon(LocalDate dateFrom) {
 		final List<VerfuegungZeitabschnitt> zeitabschnitteByYear = verfuegungService.findZeitabschnitteByYear(dateFrom.getYear());
 
-		List<LastenausgleichKibonDataRow> allLastenausgleich = zeitabschnitteByYear.stream()
+		List<LastenausgleichSelbstbehaltDataRow> allLastenausgleich = zeitabschnitteByYear.stream()
 			.map(zeitabschnitt -> {
 				final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 				final Kind kindJA = betreuung.getKind().getKindJA();
 
-				LastenausgleichKibonDataRow dataRow = new LastenausgleichKibonDataRow();
+				LastenausgleichSelbstbehaltDataRow dataRow = new LastenausgleichSelbstbehaltDataRow();
 
 				dataRow.setBgNummer(betreuung.getBGNummer());
 				dataRow.setKindName(kindJA.getNachname());

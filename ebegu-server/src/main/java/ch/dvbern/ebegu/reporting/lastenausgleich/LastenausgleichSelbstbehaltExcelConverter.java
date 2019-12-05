@@ -22,7 +22,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichKibon;
+import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichSelbstbehalt;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.requireNonNull;
 
-public class LastenausgleichKibonExcelConverter implements ExcelConverter {
+public class LastenausgleichSelbstbehaltExcelConverter implements ExcelConverter {
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -39,7 +39,7 @@ public class LastenausgleichKibonExcelConverter implements ExcelConverter {
 
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
-		@Nonnull List<LastenausgleichKibonDataRow> data,
+		@Nonnull List<LastenausgleichSelbstbehaltDataRow> data,
 		int year,
 		@Nonnull Locale locale
 	) {
@@ -47,24 +47,24 @@ public class LastenausgleichKibonExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		excelMerger.addValue(MergeFieldLastenausgleichKibon.jahr, BigDecimal.valueOf(year));
+		excelMerger.addValue(MergeFieldLastenausgleichSelbstbehalt.jahr, BigDecimal.valueOf(year));
 
 		data.forEach(dataRow -> {
-			ExcelMergerDTO fallRowGroup = excelMerger.createGroup(MergeFieldLastenausgleichKibon.repeatRow);
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.bgNummer, dataRow.getBgNummer());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.kindName, dataRow.getKindName());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.kindVorname, dataRow.getKindVorname());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.kindGeburtsdatum, dataRow.getKindGeburtsdatum());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.zeitabschnittVon, dataRow.getZeitabschnittVon());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.zeitabschnittBis, dataRow.getZeitabschnittBis());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.bgPensum, dataRow.getBgPensum());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.institution, dataRow.getInstitution());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.betreuungsTyp,
+			ExcelMergerDTO fallRowGroup = excelMerger.createGroup(MergeFieldLastenausgleichSelbstbehalt.repeatRow);
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.bgNummer, dataRow.getBgNummer());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.kindName, dataRow.getKindName());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.kindVorname, dataRow.getKindVorname());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.kindGeburtsdatum, dataRow.getKindGeburtsdatum());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.zeitabschnittVon, dataRow.getZeitabschnittVon());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.zeitabschnittBis, dataRow.getZeitabschnittBis());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.bgPensum, dataRow.getBgPensum());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.institution, dataRow.getInstitution());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.betreuungsTyp,
 				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale));
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.tarif,
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.tarif,
 				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getTarif()), locale));
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.zusatz, dataRow.getZusatz());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.gutschein, dataRow.getGutschein());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.zusatz, dataRow.getZusatz());
+			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.gutschein, dataRow.getGutschein());
 		});
 
 		return excelMerger;

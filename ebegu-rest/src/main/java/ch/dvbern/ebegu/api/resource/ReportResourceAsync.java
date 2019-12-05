@@ -592,7 +592,7 @@ public class ReportResourceAsync {
 
 		workJob = workjobService.createNewReporting(
 			workJob,
-			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_KIBON,
+			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT,
 			LocalDate.ofYearDay(year, 1),
 			null,
 			null,
