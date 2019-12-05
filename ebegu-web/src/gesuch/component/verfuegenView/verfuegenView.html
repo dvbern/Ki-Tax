@@ -193,22 +193,22 @@
                             <tr class="infotext-row">
                                 <td></td>
                                 <td></td>
-                                <td ng-if="vm.showPensumInPercent()">
+                                <td ng-if="vm.showPercent">
                                     <dv-tooltip text="'EFFEKTIVE_BETREUUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showPensumInHours()">
+                                <td ng-if="vm.showHours">
                                     <dv-tooltip text="'EFFEKTIVE_BETREUUNG_IN_H_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showPensumInPercent()">
+                                <td ng-if="vm.showPercent">
                                     <dv-tooltip text="'ANSPRUCH_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showPensumInHours()">
+                                <td ng-if="vm.showHours">
                                     <dv-tooltip text="'ANSPRUCH_IN_H_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showPensumInPercent()">
+                                <td ng-if="vm.showPercent">
                                     <dv-tooltip text="'VERGUENSTIGT_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showPensumInHours()">
+                                <td ng-if="vm.showHours">
                                     <dv-tooltip text="'VERGUENSTIGT_IN_H_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td>
@@ -230,12 +230,12 @@
                             <tr class="title-row">
                                 <th data-translate="BETREUUNG_VON"></th>
                                 <th data-translate="BETREUUNG_BIS"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG" ng-if="vm.showPensumInPercent()"></th>
-                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_H" ng-if="vm.showPensumInHours()"></th>
-                                <th data-translate="ANSPRUCH" ng-if="vm.showPensumInPercent()"></th>
-                                <th data-translate="ANSPRUCH_IN_H" ng-if="vm.showPensumInHours()"></th>
-                                <th data-translate="VERGUENSTIGT" ng-if="vm.showPensumInPercent()"></th>
-                                <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showPensumInHours()"></th>
+                                <th data-translate="EFFEKTIVE_BETREUUNG" ng-if="vm.showPercent"></th>
+                                <th data-translate="EFFEKTIVE_BETREUUNG_IN_H" ng-if="vm.showHours"></th>
+                                <th data-translate="ANSPRUCH" ng-if="vm.showPercent"></th>
+                                <th data-translate="ANSPRUCH_IN_H" ng-if="vm.showHours"></th>
+                                <th data-translate="VERGUENSTIGT" ng-if="vm.showPercent"></th>
+                                <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
                                 <th data-translate="VOLLKOSTEN"></th>
                                 <th data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
                                 <th class="result"
@@ -251,24 +251,24 @@
                                 <!-- Bis -->
                                 <td ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Effektives Betreuungspensum -->
-                                <td ng-if="vm.showPensumInPercent()"><span
+                                <td ng-if="vm.showPercent"><span
                                     ng-bind="verfuegungZeitabschnitt.betreuungspensumProzent"></span>%
                                 </td>
-                                <td ng-if="vm.showPensumInHours()"><span
+                                <td ng-if="vm.showHours"><span
                                     ng-bind="verfuegungZeitabschnitt.betreuungspensumZeiteinheit"></span>
                                 </td>
                                 <!-- Anspruchberechtigtes Pensum -->
-                                <td ng-if="vm.showPensumInPercent()"><span
+                                <td ng-if="vm.showPercent"><span
                                     ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%
                                 </td>
-                                <td ng-if="vm.showPensumInHours()"><span
+                                <td ng-if="vm.showHours"><span
                                     ng-bind="verfuegungZeitabschnitt.anspruchsberechtigteAnzahlZeiteinheiten"></span>
                                 </td>
                                 <!-- Vergünstigtes Pensum -->
-                                <td ng-if="vm.showPensumInPercent()"><span
+                                <td ng-if="vm.showPercent"><span
                                     ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%
                                 </td>
-                                <td ng-if="vm.showPensumInHours()"><span
+                                <td ng-if="vm.showHours"><span
                                     ng-bind="verfuegungZeitabschnitt.verfuegteAnzahlZeiteinheiten"></span>
                                 </td>
                                 <!-- Kosten -->
@@ -318,7 +318,7 @@
                     <!-- Bestätigung, dass die Begründungen kontrolliert wurden -->
                     <div class="row" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                         dv-show-expression="vm.showVerfuegen()">
+                         dv-show-expression="vm.showVerfuegung">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
@@ -381,7 +381,7 @@
                     </div>
 
 
-                    <div class="row marginTop20" ng-show="vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
+                    <div class="row marginTop20" ng-show="vm.sameVerfuegteVerfuegungsrelevanteDaten">
                         <div class="col-md-12">
                             <div class="well well-status-warten">
                                 <span data-translate="IDENTISCHE_BERECHNUNG"></span>
@@ -395,16 +395,16 @@
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                         <dv-loading-button type="submit"
                                            button-click="vm.save()"
-                                           ng-if="!vm.isSameVerfuegteVerfuegungsrelevanteDaten() && vm.showVerfuegen()">
+                                           ng-if="!vm.sameVerfuegteVerfuegungsrelevanteDaten && vm.showVerfuegung">
                             <span class="uppercase" data-translate="VERFUEGEN"></span>
                         </dv-loading-button>
                         <dv-loading-button type="submit"
                                            button-click="vm.nichtEintreten()"
-                                           ng-if="!vm.isSameVerfuegteVerfuegungsrelevanteDaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
+                                           ng-if="!vm.sameVerfuegteVerfuegungsrelevanteDaten && vm.showVerfuegung && vm.gesuchModelManager.isGesuch()">
                             <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
                         <span class="ie11-fix"
-                              ng-show="!vm.isSameVerfuegteVerfuegungsrelevanteDaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
+                              ng-show="!vm.sameVerfuegteVerfuegungsrelevanteDaten && vm.showVerfuegung && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
@@ -414,14 +414,14 @@
                             </dv-loading-button>
                         </span>
                         <span class="ie11-fix"
-                              ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
+                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
                                 <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </span>
                         <span class="ie11-fix"
-                              ng-show="vm.showVerfuegen() && vm.isSameVerfuegteVerfuegungsrelevanteDaten()">
+                              ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten">
                             <dv-loading-button type="submit" button-click="vm.save()">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>

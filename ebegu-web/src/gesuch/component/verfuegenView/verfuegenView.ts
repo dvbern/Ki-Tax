@@ -84,6 +84,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
+    public showPercent: boolean;
+    public showHours: boolean;
+    public showVerfuegung: boolean;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -158,6 +161,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setParamsDependingOnCurrentVerfuegung();
             });
         }
+        this.showPercent = this.showPensumInPercent();
+        this.showHours = this.showPensumInHours();
+        this.showVerfuegung = this.showVerfuegen();
+
+
         this.initDevModeParameter();
     }
 
