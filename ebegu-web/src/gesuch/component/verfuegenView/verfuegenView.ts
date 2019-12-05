@@ -165,7 +165,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.showHours = this.showPensumInHours();
         this.showVerfuegung = this.showVerfuegen();
 
-
         this.initDevModeParameter();
     }
 
