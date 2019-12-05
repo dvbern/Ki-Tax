@@ -190,7 +190,7 @@ public class ExportConverter {
 		LocalDate von = zeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = zeitabschnitt.getGueltigkeit().getGueltigBis();
 		int verfuegungNr = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer();
-		BigDecimal effektiveBetr = zeitabschnitt.getBetreuungspensum();
+		BigDecimal effektiveBetr = zeitabschnitt.getBetreuungspensumProzent();
 		int anspruchPct = zeitabschnitt.getAnspruchberechtigtesPensum();
 		BigDecimal vergPct = zeitabschnitt.getBgPensum();
 		BigDecimal vollkosten = zeitabschnitt.getVollkosten();

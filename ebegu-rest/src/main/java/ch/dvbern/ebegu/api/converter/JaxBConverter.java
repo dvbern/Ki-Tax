@@ -3174,12 +3174,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setAbzugFamGroesse(zeitabschnitt.getAbzugFamGroesse());
 		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getErwerbspensumGS1());
 		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getErwerbspensumGS2());
-		jaxZeitabschn.setBetreuungspensum(zeitabschnitt.getBetreuungspensum());
+		jaxZeitabschn.setBetreuungspensumProzent(zeitabschnitt.getBetreuungspensumProzent());
 		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
 		jaxZeitabschn.setAnspruchberechtigtesPensum(zeitabschnitt.getAnspruchberechtigtesPensum());
-		jaxZeitabschn.setBetreuungsstunden(zeitabschnitt.getBetreuungsstunden());
+		jaxZeitabschn.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		jaxZeitabschn.setVollkosten(zeitabschnitt.getVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());

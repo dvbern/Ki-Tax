@@ -127,7 +127,7 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
 		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(anspruch));
+		verfuegungZeitabschnitt.setBetreuungspensumProzent(MathUtil.DEFAULT.from(anspruch));
 		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);

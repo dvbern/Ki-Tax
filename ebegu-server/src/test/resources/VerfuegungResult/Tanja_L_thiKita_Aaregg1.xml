@@ -7,7 +7,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>50.00</betreuungspensum>
+        <betreuungspensumProzent>50.00</betreuungspensumProzent>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.08.2017</gueltigAb>
@@ -18,7 +18,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>50.00</betreuungspensum>
+        <betreuungspensumProzent>50.00</betreuungspensumProzent>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.09.2017</gueltigAb>
@@ -29,7 +29,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>50.00</betreuungspensum>
+        <betreuungspensumProzent>50.00</betreuungspensumProzent>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.10.2017</gueltigAb>
@@ -40,7 +40,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>50.00</betreuungspensum>
+        <betreuungspensumProzent>50.00</betreuungspensumProzent>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.11.2017</gueltigAb>
@@ -51,7 +51,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>50.00</betreuungspensum>
+        <betreuungspensumProzent>50.00</betreuungspensumProzent>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.12.2017</gueltigAb>
@@ -62,7 +62,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.01.2018</gueltigAb>
@@ -73,7 +73,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.02.2018</gueltigAb>
@@ -84,7 +84,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.03.2018</gueltigAb>
@@ -95,7 +95,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.04.2018</gueltigAb>
@@ -106,7 +106,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.05.2018</gueltigAb>
@@ -117,7 +117,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.06.2018</gueltigAb>
@@ -128,7 +128,7 @@
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>60.00</betreuungspensum>
+        <betreuungspensumProzent>60.00</betreuungspensumProzent>
         <elternbeitrag>1372.60</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.07.2018</gueltigAb>

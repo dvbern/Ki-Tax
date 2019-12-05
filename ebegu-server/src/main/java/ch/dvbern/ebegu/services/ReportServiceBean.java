@@ -1303,10 +1303,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			locale
 			)
 		);
-		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensum()));
+		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensumProzent()));
 		row.setAnspruchsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getAnspruchberechtigtesPensum()));
 		row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
-		row.setBgStunden(zeitabschnitt.getBetreuungsstunden());
+		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		row.setVerguenstigt(zeitabschnitt.getVerguenstigung());

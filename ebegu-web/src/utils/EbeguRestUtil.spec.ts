@@ -494,8 +494,8 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.anspruchberechtigtesPensum)
                     .toEqual(restVerfuegungZeitabschnitt.anspruchberechtigtesPensum);
                 expect(verfuegungTS.anspruchspensumRest).toEqual(restVerfuegungZeitabschnitt.anspruchspensumRest);
-                expect(verfuegungTS.betreuungspensum).toEqual(restVerfuegungZeitabschnitt.betreuungspensum);
-                expect(verfuegungTS.betreuungsstunden).toEqual(restVerfuegungZeitabschnitt.betreuungsstunden);
+                expect(verfuegungTS.betreuungspensumProzent).toEqual(restVerfuegungZeitabschnitt.betreuungspensumProzent);
+                expect(verfuegungTS.betreuungspensumZeiteinheit).toEqual(restVerfuegungZeitabschnitt.betreuungspensumZeiteinheit);
                 expect(verfuegungTS.elternbeitrag).toEqual(restVerfuegungZeitabschnitt.elternbeitrag);
                 expect(verfuegungTS.erwerbspensumGS1).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS1);
                 expect(verfuegungTS.erwerbspensumGS2).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS2);
