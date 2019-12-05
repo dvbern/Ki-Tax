@@ -137,6 +137,7 @@ import HttpResponseInterceptor from './service/HttpResponseInterceptor';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import KindRS from './service/kindRS.rest';
+import LastenausgleichRS from './service/lastenausgleichRS.rest';
 import ListResourceRS from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
@@ -223,6 +224,7 @@ export const CORE_JS_MODULE = angular
     .service('AntragStatusHistoryRS', AntragStatusHistoryRS)
     .service('MitteilungRS', MitteilungRS)
     .service('ZahlungRS', ZahlungRS)
+    .service('LastenausgleichRS', LastenausgleichRS)
     .service('GlobalCacheService', GlobalCacheService)
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)

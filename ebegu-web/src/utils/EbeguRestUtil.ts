@@ -3555,6 +3555,15 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public parseLastenausgleichList(data: any): TSLastenausgleich[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLastenausgleich(new TSLastenausgleich(), item))
+            : [];
+    }
+
     public parseLastenausgleich(
         tsLastenausgleich: TSLastenausgleich,
         receivedLastenausgleich: any,

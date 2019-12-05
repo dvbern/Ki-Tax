@@ -70,12 +70,10 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal selbstbehaltGemeinde = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal betragLastenausgleich = BigDecimal.ZERO;
 
 	@Column(nullable = false)

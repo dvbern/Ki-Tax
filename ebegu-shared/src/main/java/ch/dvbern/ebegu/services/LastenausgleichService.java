@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -31,12 +32,18 @@ import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 public interface LastenausgleichService {
 
 	/**
+	 * Gibt alle vorhandenen Lastenausgleiche zurück.
+	 */
+	@Nonnull
+	Collection<Lastenausgleich> getAllLastenausgleiche();
+
+	/**
 	 * Berechnet einen Lastenausgleich fuer das uebergebene Jahr. Die Kosten pro 100% Platz werden als LastenausgleichGrundlagen gespeichert.
 	 * Der Lastenausgleich kann pro Jahr nur einmal erstellt werden, auch die Grundlagen duerfen nicht mehr geaendert werden.
 	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
 	 */
 	@Nonnull
-	Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal kostenPro100ProzentPlatz);
+	Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz);
 
 	/**
 	 * Sucht den Lastenausgleich des uebergebenen Jahres, falls vorhanden

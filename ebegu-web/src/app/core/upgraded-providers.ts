@@ -35,6 +35,7 @@ import {DownloadRS} from './service/downloadRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
+import LastenausgleichRS from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
@@ -139,6 +140,17 @@ export function zahlungRSProviderServiceFactory(i: IInjectorService): ZahlungRS 
 export const zahlungRSProvider = {
     provide: ZahlungRS,
     useFactory: zahlungRSProviderServiceFactory,
+    deps: ['$injector'],
+};
+
+// LastenausgleichRS
+export function lastenausgleichRSProviderServiceFactory(i: IInjectorService): LastenausgleichRS {
+    return i.get('LastenausgleichRS');
+}
+
+export const lastenausgleichRSProvider = {
+    provide: LastenausgleichRS,
+    useFactory: lastenausgleichRSProviderServiceFactory,
     deps: ['$injector'],
 };
 

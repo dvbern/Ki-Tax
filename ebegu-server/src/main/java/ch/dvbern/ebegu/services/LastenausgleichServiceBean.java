@@ -58,7 +58,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 public class LastenausgleichServiceBean extends AbstractBaseService implements LastenausgleichService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LastenausgleichServiceBean.class);
-	private static final BigDecimal SELBSTBEHALT = MathUtil.DEFAULT.from(0.20);
+	private static final BigDecimal SELBSTBEHALT = MathUtil.DEFAULT.fromNullSafe(0.20);
 
 	@Inject
 	private Persistence persistence;
@@ -72,13 +72,20 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Inject
 	private VerfuegungService verfuegungService;
 
+	@Nonnull
+	@Override
+	public Collection<Lastenausgleich> getAllLastenausgleiche() {
+		return criteriaQueryHelper.getAll(Lastenausgleich.class);
+	}
 
 	@RolesAllowed(SUPER_ADMIN)
 	@Override
 	@Nonnull
-	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal kostenPro100ProzentPlatz) {
+	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz) {
 		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
 		assertUnique(jahr);
+
+		BigDecimal kostenPro100ProzentPlatz = MathUtil.DEFAULT.divideNullSafe(MathUtil.DEFAULT.multiply(selbstbehaltPro100ProzentPlatz, MathUtil.HUNDRED), SELBSTBEHALT);
 
 		LastenausgleichGrundlagen grundlagen = new LastenausgleichGrundlagen();
 		grundlagen.setJahr(jahr);
