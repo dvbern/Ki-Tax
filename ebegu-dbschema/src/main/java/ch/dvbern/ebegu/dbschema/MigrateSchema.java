@@ -51,10 +51,9 @@ public class MigrateSchema {
 	public void migrateSchema() {
 
 		final DataSource dataSource = resolveDB();
-		final Flyway flyway = new Flyway();
-		flyway.setDataSource(dataSource);
-		//			flyway.setLocations("/dbscripts", "/ch/dvbern/fzl/kurstool/dbschema"); wir verwenden default
-		flyway.setEncoding("UTF-8");
+		final Flyway flyway =
+			Flyway.configure().encoding("UTF-8").table("schema_version").dataSource(dataSource).load();
+
 		flyway.migrate();
 	}
 }
