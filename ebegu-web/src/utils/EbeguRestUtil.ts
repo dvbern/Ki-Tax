@@ -2567,8 +2567,8 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten = zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
             verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
-            verfuegungZeitabschnittTS.betreuungspensum = zeitabschnittFromServer.betreuungspensum;
-            verfuegungZeitabschnittTS.betreuungsstunden = zeitabschnittFromServer.betreuungsstunden;
+            verfuegungZeitabschnittTS.betreuungspensumProzent = zeitabschnittFromServer.betreuungspensumProzent;
+            verfuegungZeitabschnittTS.betreuungspensumZeiteinheit = zeitabschnittFromServer.betreuungspensumZeiteinheit;
             verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
             verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
             verfuegungZeitabschnittTS.elternbeitrag = zeitabschnittFromServer.elternbeitrag;
@@ -2591,7 +2591,6 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
-
             return verfuegungZeitabschnittTS;
         }
         return undefined;

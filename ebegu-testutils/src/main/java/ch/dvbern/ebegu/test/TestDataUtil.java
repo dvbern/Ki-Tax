@@ -1011,7 +1011,7 @@ public final class TestDataUtil {
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
 	public static Gesuch createAndPersistTestfall11_SchulamtOnly(
-		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
@@ -1870,7 +1870,7 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(10));
+		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(10));
 		zeitabschnitt.setAnspruchberechtigtesPensum(50);
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);

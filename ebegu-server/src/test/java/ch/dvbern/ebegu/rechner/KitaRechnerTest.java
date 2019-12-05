@@ -162,7 +162,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
 		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(betreuungspensum));
+		verfuegungZeitabschnitt.setBetreuungspensumProzent(MathUtil.DEFAULT.from(betreuungspensum));
 		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);

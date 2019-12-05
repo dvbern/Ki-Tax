@@ -84,6 +84,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
+    public showPercent: boolean;
+    public showHours: boolean;
+    public showVerfuegung: boolean;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -158,6 +161,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setParamsDependingOnCurrentVerfuegung();
             });
         }
+        this.showPercent = this.showPensumInPercent();
+        this.showHours = this.showPensumInHours();
+        this.showVerfuegung = this.showVerfuegen();
+
         this.initDevModeParameter();
     }
 
@@ -515,6 +522,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.getBetreuung().isAngebotTagesschule();
     }
 
+    public isTagesfamilienVerfuegung(): boolean {
+        return this.getBetreuung().isAngebotTagesfamilien();
+    }
+
     public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
         return getTSAbholungTagesschuleValues();
     }
@@ -532,5 +543,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
         return TagesschuleUtil.getModulTimeAsString(modul);
+    }
+
+    public showPensumInHours(): boolean {
+        return this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public showPensumInPercent(): boolean {
+        return !this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
     }
 }
