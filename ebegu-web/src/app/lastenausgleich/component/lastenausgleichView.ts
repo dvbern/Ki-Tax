@@ -20,15 +20,12 @@ import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogControl
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSLastenausgleich from '../../../models/TSLastenausgleich';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
-import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import LastenausgleichRS from '../../core/service/lastenausgleichRS.rest';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-
-const LOG = LogFactory.createLog('LastenausgleichViewController');
 
 export class LastenausgleichViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -95,6 +92,7 @@ export class LastenausgleichViewController implements IController {
     }
 
     public downloadCsv(lastenausgleich: TSLastenausgleich): void {
+        console.log('Weil lint sonst motzt, dass der parameter unused ist:', lastenausgleich);
         window.alert('not yet implemented');
     }
 }

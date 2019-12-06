@@ -50,8 +50,8 @@ export default class LastenausgleichRS {
         return this.http.get(`${this.serviceURL}/create`,
             {
                 params: {
-                    jahr: jahr,
-                    selbstbehaltPro100ProzentPlatz: selbstbehaltPro100ProzentPlatz,
+                    jahr,
+                    selbstbehaltPro100ProzentPlatz,
                 },
             }).then((httpresponse: any) => {
             return this.ebeguRestUtil.parseLastenausgleich(new TSLastenausgleich(), httpresponse.data);
@@ -62,7 +62,7 @@ export default class LastenausgleichRS {
         return this.http.get(`${this.serviceURL}/excel`,
             {
                 params: {
-                    lastenausgleichId: lastenausgleichId,
+                    lastenausgleichId,
                 }})
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
