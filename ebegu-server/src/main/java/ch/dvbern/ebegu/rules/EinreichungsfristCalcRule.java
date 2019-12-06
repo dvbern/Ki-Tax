@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -45,12 +45,12 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
+		if (platz.getBetreuungsangebotTyp().isJugendamt()) {
 			if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
-				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
 				}

@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -41,20 +41,19 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
+		if (Objects.requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (areNotInBern(verfuegungZeitabschnitt)) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 				verfuegungZeitabschnitt.addBemerkung(
 					RuleKey.WOHNSITZ,
 					MsgKey.WOHNSITZ_MSG,
 					getLocale(),
-					betreuung.extractGesuch().getDossier().getGemeinde().getName()
+					platz.extractGesuch().getDossier().getGemeinde().getName()
 				);
 			}
-
 		}
 	}
 

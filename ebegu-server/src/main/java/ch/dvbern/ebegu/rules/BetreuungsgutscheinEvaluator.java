@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -81,9 +82,13 @@ public class BetreuungsgutscheinEvaluator {
 		// Fuer die Familiensituation ist die Betreuung nicht relevant. Wir brauchen aber eine, da die Signatur der Rules
 		// mit Betreuungen funktioniert. Wir nehmen einfach die erste von irgendeinem Kind, das heisst ohne betreuung koennen wir nicht berechnen
 		// Fuer ein Gesuch im Status KEIN_ANGEBOT wir können keine Betreuung finden, da es keine gibt.
-		Betreuung firstBetreuungOfGesuch = gesuch.getStatus() == AntragStatus.KEIN_ANGEBOT
+		AbstractPlatz firstBetreuungOfGesuch = gesuch.getStatus() == AntragStatus.KEIN_ANGEBOT
 			? null
 			: gesuch.getFirstBetreuung();
+		// Für die Berechnung der Familiensituation-Finanzen genügt auch eine Tagesschul-Anmeldung
+		if (firstBetreuungOfGesuch == null) {
+			firstBetreuungOfGesuch = gesuch.getFirstAnmeldung();
+		}
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode());
@@ -95,6 +100,7 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte = rule.calculate(firstBetreuungOfGesuch, zeitabschnitte);
 				}
 			}
+			//TODO (NEFR): Falls die Aufteilung in Monate nicht gewuenscht wird, muesste folgende Regel (konfigurierbar) ausgeschaltet werden
 			// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 			zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 

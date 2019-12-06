@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -42,11 +43,12 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+			Betreuung betreuung = (Betreuung) platz;
 			int pensumFachstelle = verfuegungZeitabschnitt.getFachstellenpensum();
 			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet

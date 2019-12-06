@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
@@ -50,15 +50,15 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
 
 		// Relevant sind der Geburtstag des Kindes sowie der Einschulungstyp
-		Kind kind = betreuung.getKind().getKindJA();
+		Kind kind = platz.getKind().getKindJA();
 		final LocalDate geburtsdatum = kind.getGeburtsdatum();
 		LocalDate stichtagBabyTarifEnde = geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth());
 		boolean eingeschult = kind.getEinschulungTyp() != null && kind.getEinschulungTyp().isEingeschult();
-		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
+		DateRange gesuchsperiode = platz.extractGesuchsperiode().getGueltigkeit();
 
 		if (gesuchsperiode.contains(stichtagBabyTarifEnde)) {
 			DateRange abschnittBaby = new DateRange(gesuchsperiode.getGueltigAb(), stichtagBabyTarifEnde);
