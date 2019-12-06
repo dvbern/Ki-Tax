@@ -343,7 +343,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            return this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
+            const antragStatus = this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
+            this.refreshKinderListe();
+            return antragStatus;
         });
     }
 
@@ -679,6 +681,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
+                this.refreshKinderListe();
                 return this.gesuchModelManager.getGesuch();
             });
         });

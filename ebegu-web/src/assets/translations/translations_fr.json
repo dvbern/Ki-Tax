@@ -624,7 +624,7 @@
     "SCHULAMT_ANMELDUNG_UEBERNOMMEN": "Inscription reprise",
     "SCHULAMT_ANMELDUNG_ABGELEHNT": "Inscription refusée",
     "SCHULAMT_FALSCHE_INSTITUTION": "Institution erronée",
-    "SCHULAMT_ANMELDUNG_AKZEPTIERT": "Modules acceptés",
+    "SCHULAMT_MODULE_AKZEPTIERT": "Modules acceptés",
     "ABGEWIESEN": "Rejeté",
     "BESTAETIGT": "Confirmé",
     "AUSGELOEST": "Envoyé",
