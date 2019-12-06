@@ -171,4 +171,14 @@ export default class BetreuungRS {
 
         return this.http.put(`${this.serviceURL}/anmeldung/create/`, restAnmeldung);
     }
+
+    public anmeldungSchulamtModuleAkzeptiert(
+        betreuung: TSBetreuung,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
+
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        return this.http.put(`${this.serviceURL}/schulamt/akzeptieren`, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
+    }
 }

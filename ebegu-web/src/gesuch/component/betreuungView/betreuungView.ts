@@ -31,6 +31,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
@@ -477,12 +478,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
         }).then(() => {
+            let betreuungsstatus: TSBetreuungsstatus;
+            EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch().finSitStatus)
+            || (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().finSitStatus)
+            && this.gesuchModelManager.getGesuch().finSitStatus === TSFinSitStatus.ABGELEHNT) ?
+                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
+                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+                this.save(betreuungsstatus,
                     PENDENZEN_BETREUUNG,
                     undefined);
             } else {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+                this.save(betreuungsstatus,
                     GESUCH_BETREUUNGEN,
                     {gesuchId: this.getGesuchId()});
             }

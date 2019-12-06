@@ -333,6 +333,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (saveInStatusHistory) {
 			antragStatusHistoryService.saveStatusChange(merged, saveAsUser);
 		}
+
+		if(gesuch.getFinSitStatus() != null && gesuch.getFinSitStatus().equals(FinSitStatus.AKZEPTIERT)){
+			gesuch.getKindContainers().forEach(kindContainer -> {
+				kindContainer.getAnmeldungenTagesschule().forEach(anmeldungTagesschule -> {
+					if(anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)){
+						this.betreuungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+					}
+					}
+				);
+			});
+		}
+
 		return merged;
 	}
 
