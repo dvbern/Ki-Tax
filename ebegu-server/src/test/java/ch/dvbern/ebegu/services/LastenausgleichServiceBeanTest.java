@@ -55,6 +55,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	private final BigDecimal waeltiKostenPro100Prozent = MathUtil.DEFAULT.fromNullSafe(21769.50);
 
 	private Gesuchsperiode gp1718;
+	private Gesuchsperiode gp1819;
+
 
 	@Inject
 	private LastenausgleichService lastenausgleichServiceBean;
@@ -73,6 +75,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	public void init() {
 		gp1718 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2017, 2018);
 		TestDataUtil.prepareParameters(gp1718, persistence);
+		gp1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+		TestDataUtil.prepareParameters(gp1819, persistence);
 	}
 
 	@Test
@@ -198,6 +202,26 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(2917.11), detail2017.getSelbstbehaltGemeinde());
 		Assert.assertEquals(MathUtil.DEFAULT.from(11595.89), detail2017.getBetragLastenausgleich());
 		Assert.assertTrue(detail2017.isKorrektur());
+	}
+
+	@Test
+	public void createLastenausgleichKorrekturenMehrereJahre() {
+
+		// Lastenausgleich 2017: 1 aus Erhebung
+		createGesuch(gp1718);
+		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiKostenPro100Prozent);
+		Assert.assertEquals(1, lastenausgleich2017.getLastenausgleichDetails().size());
+
+		// Lastenausgleich 2018: 1 aus Erhebung, 2 aus Korrektur 2017
+		createGesuch(gp1718);
+		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleich(2018, waeltiKostenPro100Prozent);
+		Assert.assertEquals(3, lastenausgleich2018.getLastenausgleichDetails().size());
+
+		// Lastenausgleich 2019: 1 aus Erhebung, 2 aus Korrektur 2017, 2 aus Korrektur 2018
+		createGesuch(gp1718);
+		Lastenausgleich lastenausgleich2019 = lastenausgleichServiceBean.createLastenausgleich(2019, waeltiKostenPro100Prozent);
+		Assert.assertEquals(5, lastenausgleich2019.getLastenausgleichDetails().size());
+
 	}
 
 	private Gesuch createGesuch(Gesuchsperiode gesuchsperiode) {

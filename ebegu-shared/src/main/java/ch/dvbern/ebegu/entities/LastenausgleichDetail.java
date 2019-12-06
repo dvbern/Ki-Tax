@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -193,5 +194,16 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		sb.append(", korrektur=").append(korrektur);
 		sb.append('}');
 		return sb.toString();
+	}
+
+	public void add(@Nonnull LastenausgleichDetail other) {
+		this.setTotalBelegungen(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungen(), other.getTotalBelegungen()));
+		this.setTotalBetragGutscheine(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheine(), other.getTotalBetragGutscheine()));
+		this.setSelbstbehaltGemeinde(MathUtil.DEFAULT.addNullSafe(this.getSelbstbehaltGemeinde(), other.getSelbstbehaltGemeinde()));
+		this.setBetragLastenausgleich(MathUtil.DEFAULT.addNullSafe(this.getBetragLastenausgleich(), other.getBetragLastenausgleich()));
+	}
+
+	public boolean hasChanged(@Nonnull LastenausgleichDetail detail) {
+		return this.getBetragLastenausgleich().compareTo(detail.getBetragLastenausgleich()) != 0;
 	}
 }
