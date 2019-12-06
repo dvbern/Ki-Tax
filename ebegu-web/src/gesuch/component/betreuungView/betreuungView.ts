@@ -23,7 +23,7 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {isVerfuegtOrSTV, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
@@ -31,7 +31,6 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
@@ -479,11 +478,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
         }).then(() => {
             let betreuungsstatus: TSBetreuungsstatus;
-            EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch().finSitStatus)
-            || (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().finSitStatus)
-            && this.gesuchModelManager.getGesuch().finSitStatus === TSFinSitStatus.ABGELEHNT) ?
-                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
-                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+            (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+               isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
+                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.save(betreuungsstatus,

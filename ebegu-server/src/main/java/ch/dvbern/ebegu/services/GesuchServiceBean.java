@@ -334,12 +334,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			antragStatusHistoryService.saveStatusChange(merged, saveAsUser);
 		}
 
-		if(gesuch.getFinSitStatus() != null && gesuch.getFinSitStatus().equals(FinSitStatus.AKZEPTIERT)){
+		if (gesuch.getStatus().equals(AntragStatus.VERFUEGEN) || gesuch.getStatus().equals(AntragStatus.NUR_SCHULAMT)) {
 			gesuch.getKindContainers().forEach(kindContainer -> {
 				kindContainer.getAnmeldungenTagesschule().forEach(anmeldungTagesschule -> {
-					if(anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)){
-						this.betreuungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
-					}
+						if (anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)) {
+							this.betreuungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+						}
 					}
 				);
 			});
@@ -1193,7 +1193,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 		return Optional.of(gesuch);
 	}
-
 
 	private Optional<Gesuch> getNeustesGeprueftesGesuchInAnotherDossier(@Nonnull Dossier dossier) {
 
