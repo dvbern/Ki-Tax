@@ -13,8 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Injectable, NgModule} from '@angular/core';
-import {Resolve} from '@angular/router';
+import {NgModule} from '@angular/core';
 import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {IPromise} from 'angular';
@@ -33,23 +32,13 @@ import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboardi
 import {OnboardingComponent} from './onboarding/onboarding.component';
 import {MandantRS} from '../core/service/mandantRS.rest';
 
-@Injectable(
-    {providedIn: 'root'}
-)
-export class TSEnabledResolver implements Resolve<IPromise<boolean>> {
-    private readonly mandantBernId: string = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
-
-    public constructor(private readonly mandantRS: MandantRS) {
-    }
-
-    public resolve(): IPromise<boolean> {
-        return this.mandantRS.findMandant(this.mandantBernId).then((result: { angebotTS: any; }) => {
-            return result.angebotTS;
-        });
-    }
+resolveTSEnabled.$inject = ['MandantRS'];
+export function resolveTSEnabled(mandantRS: MandantRS): IPromise<boolean> {
+    const mandantBernId = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
+    return mandantRS.findMandant(mandantBernId).then((result: { angebotTS: any; }) => {
+        return result.angebotTS;
+    });
 }
-
-TSEnabledResolver.$inject = ['MandantRS'];
 
 export function nextState(): string {
     return 'onboarding.gesuchsteller.registration';
@@ -105,7 +94,7 @@ export const STATES: Ng2StateDeclaration[] = [
         url: '/registration-abschliessen',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
-            isTSAngebotEnabled: TSEnabledResolver,
+            isTSAngebotEnabled: resolveTSEnabled,
             nextState,
         },
     },
@@ -114,7 +103,7 @@ export const STATES: Ng2StateDeclaration[] = [
         url: '/neu-benutzer',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
-            isTSAngebotEnabled: TSEnabledResolver,
+            isTSAngebotEnabled: resolveTSEnabled,
         },
         data: {
             roles: [TSRole.ANONYMOUS],
