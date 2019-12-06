@@ -255,7 +255,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
-            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
+            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
+            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
