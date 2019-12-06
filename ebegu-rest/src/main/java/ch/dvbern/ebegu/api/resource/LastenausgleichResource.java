@@ -19,27 +19,46 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichBerechnungService;
 import ch.dvbern.ebegu.services.LastenausgleichService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -55,6 +74,12 @@ public class LastenausgleichResource {
 
 	@Inject
 	private LastenausgleichService lastenausgleichService;
+
+	@Inject
+	private ReportLastenausgleichBerechnungService reportService;
+
+	@Inject
+	private DownloadResource downloadResource;
 
 	@Inject
 	private JaxBConverter converter;
@@ -90,5 +115,29 @@ public class LastenausgleichResource {
 
 		Lastenausgleich lastenausgleich = lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz);
 		return converter.lastenausgleichToJAX(lastenausgleich);
+	}
+
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlung'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/")
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public Response getLastenausgleichReportExcel(
+		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo)
+		throws ExcelMergeException, EbeguRuntimeException {
+
+		Objects.requireNonNull(jaxId);
+		String ip = downloadResource.getIP(request);
+		String lastenausgleichId = converter.toEntityId(jaxId);
+
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportLastenausgleichKibon(lastenausgleichId, Locale.GERMAN);
+		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
+
+		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
 	}
 }

@@ -17,9 +17,11 @@
 
 import {IComponentOptions, IController} from 'angular';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSLastenausgleich from '../../../models/TSLastenausgleich';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 import LastenausgleichRS from '../../core/service/lastenausgleichRS.rest';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
@@ -41,6 +43,7 @@ export class LastenausgleichViewController implements IController {
         'LastenausgleichRS',
         'DvDialog',
         '$translate',
+        'DownloadRS',
     ];
 
     public jahr: number;
@@ -53,6 +56,7 @@ export class LastenausgleichViewController implements IController {
         private readonly lastenausgleichRS: LastenausgleichRS,
         private readonly dvDialog: DvDialog,
         private readonly $translate: ITranslateService,
+        private readonly downloadRS: DownloadRS,
     ) {
     }
 
@@ -79,9 +83,15 @@ export class LastenausgleichViewController implements IController {
         });
     }
 
-    public downloadExcel(lastenausgleich: TSLastenausgleich): angular.IPromise<void | never> {
-        window.alert('not yet implemented');
-        return undefined;
+    public downloadExcel(lastenausgleich: TSLastenausgleich): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.lastenausgleichRS.getLastenausgleichReportExcel(lastenausgleich.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 
     public downloadCsv(lastenausgleich: TSLastenausgleich): void {

@@ -49,7 +49,7 @@ public interface LastenausgleichService {
 	 * Sucht den Lastenausgleich des uebergebenen Jahres, falls vorhanden
 	 */
 	@Nonnull
-	Optional<Lastenausgleich> findLastenausgleich(int jahr);
+	Lastenausgleich findLastenausgleich(@Nonnull String lastenausgleichId);
 
 	/**
 	 * Sucht die LastenausgleichGrundlagen des uebergebenen Jahres, falls vorhanden

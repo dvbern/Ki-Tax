@@ -89,6 +89,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 		LastenausgleichGrundlagen grundlagen = new LastenausgleichGrundlagen();
 		grundlagen.setJahr(jahr);
+		grundlagen.setSelbstbehaltPro100ProzentPlatz(selbstbehaltPro100ProzentPlatz);
 		grundlagen.setKostenPro100ProzentPlatz(kostenPro100ProzentPlatz);
 		persistence.persist(grundlagen);
 
@@ -132,9 +133,15 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	}
 
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	@Override
 	@Nonnull
-	public Optional<Lastenausgleich> findLastenausgleich(int jahr) {
+	@Override
+	public Lastenausgleich findLastenausgleich(@Nonnull String lastenausgleichId) {
+		return persistence.find(Lastenausgleich.class, lastenausgleichId);
+	}
+
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@Nonnull
+	private Optional<Lastenausgleich> findLastenausgleichByJahr(int jahr) {
 		Optional<Lastenausgleich> optional = criteriaQueryHelper.getEntityByUniqueAttribute(Lastenausgleich.class, jahr,
 			Lastenausgleich_.jahr);
 		return optional;
@@ -153,7 +160,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		if (findLastenausgleichGrundlagen(jahr).isPresent()) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "assertUnique", ErrorCodeEnum.ERROR_LASTENAUSGLEICH_GRUNDLAGEN_EXISTS);
 		}
-		if (findLastenausgleich(jahr).isPresent()) {
+		if (findLastenausgleichByJahr(jahr).isPresent()) {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "assertUnique", ErrorCodeEnum.ERROR_LASTENAUSGLEICH_EXISTS);
 		}
 	}

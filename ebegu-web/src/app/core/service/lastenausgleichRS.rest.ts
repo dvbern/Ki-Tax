@@ -16,6 +16,7 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
+import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSLastenausgleich from '../../../models/TSLastenausgleich';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -55,5 +56,16 @@ export default class LastenausgleichRS {
             }).then((httpresponse: any) => {
             return this.ebeguRestUtil.parseLastenausgleich(new TSLastenausgleich(), httpresponse.data);
         });
+    }
+
+    public getLastenausgleichReportExcel(lastenausgleichId: string): IPromise<TSDownloadFile> {
+        return this.http.get(`${this.serviceURL}/excel`,
+            {
+                params: {
+                    lastenausgleichId: lastenausgleichId,
+                }})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
     }
 }
