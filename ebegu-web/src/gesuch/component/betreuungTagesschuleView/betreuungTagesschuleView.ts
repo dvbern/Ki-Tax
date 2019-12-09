@@ -137,15 +137,18 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return this.getBetreuungModel().institutionStammdaten;
         }, (newValue, oldValue) => {
             if (newValue !== oldValue) {
-               this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
-               this.loadErlaeuterungForTagesschule();
+                this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+                this.loadErlaeuterungForTagesschule();
             }
         });
     }
 
     public $onInit(): void {
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
-        this.loadErlaeuterungForTagesschule();
+
+        if (this.betreuung.institutionStammdaten) {
+            this.loadErlaeuterungForTagesschule();
+        }
         if (this.betreuung.isEnabled()) {
             this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
             this.setErsterSchultag();
