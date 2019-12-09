@@ -68,4 +68,8 @@ export default class LastenausgleichRS {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });
     }
+
+    public removeLastenausgleich(lastenausgleichId: string): void {
+        this.http.delete(`${this.serviceURL}/${encodeURIComponent(lastenausgleichId)}`);
+    }
 }

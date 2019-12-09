@@ -53,6 +53,7 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer den Lastenausgleich
@@ -171,6 +172,14 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		Optional<LastenausgleichGrundlagen> optional = criteriaQueryHelper.getEntityByUniqueAttribute(LastenausgleichGrundlagen.class, jahr,
 			LastenausgleichGrundlagen_.jahr);
 		return optional;
+	}
+
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@Override
+	public void removeLastenausgleich(@Nonnull String lastenausgleichId) {
+		requireNonNull(lastenausgleichId);
+		Lastenausgleich lastenausgleichToRemove = findLastenausgleich(lastenausgleichId);
+		persistence.remove(lastenausgleichToRemove);
 	}
 
 	private Collection<LastenausgleichDetail> findLastenausgleichDetailForKorrekturen(int jahr, @Nonnull Gemeinde gemeinde) {

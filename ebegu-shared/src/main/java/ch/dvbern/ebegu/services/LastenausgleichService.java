@@ -56,4 +56,9 @@ public interface LastenausgleichService {
 	 */
 	@Nonnull
 	Optional<LastenausgleichGrundlagen> findLastenausgleichGrundlagen(int jahr);
+
+	/**
+	 * Löscht den Lastenausgleich
+	 */
+	void removeLastenausgleich(@Nonnull String lastenausgleichId);
 }

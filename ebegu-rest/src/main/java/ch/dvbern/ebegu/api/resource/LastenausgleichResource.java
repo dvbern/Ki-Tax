@@ -32,10 +32,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -139,5 +143,21 @@ public class LastenausgleichResource {
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
+	}
+
+	@ApiOperation("Loescht den Lastenausgleich mit der uebergebenen id aus der DB")
+	@Nullable
+	@DELETE
+	@Path("/{lastenausgleichId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public Response removeLastenausgleich(
+		@Nonnull @NotNull @PathParam("lastenausgleichId") JaxId lastenausgleichJAXPId,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(lastenausgleichJAXPId.getId());
+		final String lastenausgleichId = converter.toEntityId(lastenausgleichJAXPId);
+		lastenausgleichService.removeLastenausgleich(lastenausgleichId);
+		return Response.ok().build();
 	}
 }

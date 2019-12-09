@@ -1782,5 +1782,8 @@
     "LASTENAUSGLEICH_CSV": "CSV",
     "LASTENAUSGLEICH_ERSTELLEN_TITLE": "Wollen Sie den Lastenausgleich wirklich erstellen?",
     "LASTENAUSGLEICH_ERSTELLEN_INFO": "Dies kann nicht rückgängig gemacht werden. Pro Jahr kann nur ein Lastenausgleich erstellt werden",
+    "LASTENAUSGLEICH_LOESCHEN_DIALOG_TITLE": "Wollen Sie den Lastenausgleich wirklich löschen?",
+    "LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT": "Dies kann nicht rückgängig gemacht werden!",
+    "LASTENAUSGLEICH_REMOVE": "Löschen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

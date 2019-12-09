@@ -16,10 +16,13 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSLastenausgleich from '../../../models/TSLastenausgleich';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import LastenausgleichRS from '../../core/service/lastenausgleichRS.rest';
 import IFormController = angular.IFormController;
@@ -41,6 +44,8 @@ export class LastenausgleichViewController implements IController {
         'DvDialog',
         '$translate',
         'DownloadRS',
+        'AuthServiceRS',
+        'ApplicationPropertyRS',
     ];
 
     public jahr: number;
@@ -54,6 +59,8 @@ export class LastenausgleichViewController implements IController {
         private readonly dvDialog: DvDialog,
         private readonly $translate: ITranslateService,
         private readonly downloadRS: DownloadRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
@@ -94,5 +101,19 @@ export class LastenausgleichViewController implements IController {
     public downloadCsv(lastenausgleich: TSLastenausgleich): void {
         console.log('Weil lint sonst motzt, dass der parameter unused ist:', lastenausgleich);
         window.alert('not yet implemented');
+    }
+
+    public isRemoveAllowed(): boolean {
+        return this.applicationPropertyRS.isDevMode() && this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public removeLastenausgleich(lastenausgleich: TSLastenausgleich): void {
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: 'LASTENAUSGLEICH_LOESCHEN_DIALOG_TITLE',
+            deleteText: 'LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT',
+            parentController: this,
+        }).then(() => {   // User confirmed removal
+            this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id);
+        });
     }
 }

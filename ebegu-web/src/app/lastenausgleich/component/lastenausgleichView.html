@@ -84,6 +84,8 @@
                     data-translate="LASTENAUSGLEICH_TOTALBETRAG"></th>
                 <th data-translate="LASTENAUSGLEICH_EXCEL" class="lastenausgleich-percent-15 uppercase"></th>
                 <th data-translate="LASTENAUSGLEICH_CSV" class="lastenausgleich-percent-15 uppercase"></th>
+                <th ng-if="vm.isRemoveAllowed()" class="uppercase"
+                    data-translate="LASTENAUSGLEICH_REMOVE"></th>
             </tr>
             </thead>
             <tbody>
@@ -110,6 +112,11 @@
                         <i class="fa fa-lg fa-file-excel-o"></i>
                     </dv-loading-button>
                 </td>
+                <th ng-if="vm.isRemoveAllowed()">
+                    <dv-loading-button type="button" button-click="vm.removeLastenausgleich(row)" button-class="dv-btn-operation">
+                        <i class="fa fa-lg fa-trash-o" aria-label="{{'LASTENAUSGLEICH_DELETE' | translate}}"></i>
+                    </dv-loading-button>
+                </th>
             </tr>
             </tbody>
             <tfoot>
