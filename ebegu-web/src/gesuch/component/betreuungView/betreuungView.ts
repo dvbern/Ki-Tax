@@ -1084,6 +1084,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         } else {
+            this.getBetreuungModel().vertrag = true;
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }
