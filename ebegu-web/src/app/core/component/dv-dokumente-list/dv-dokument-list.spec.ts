@@ -13,14 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
-import TSDokumentGrund from '../../../../models/TSDokumentGrund';
-import TSGesuch from '../../../../models/TSGesuch';
-import TSGesuchstellerContainer from '../../../../models/TSGesuchstellerContainer';
-import TSKind from '../../../../models/TSKind';
-import TSKindContainer from '../../../../models/TSKindContainer';
+import {TSDokumentGrund} from '../../../../models/TSDokumentGrund';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../../../models/TSGesuchstellerContainer';
+import {TSKind} from '../../../../models/TSKind';
+import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {DVDokumenteListController} from './dv-dokumente-list';
 

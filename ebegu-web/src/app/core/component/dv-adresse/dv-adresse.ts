@@ -14,15 +14,15 @@
  */
 
 import {IComponentOptions, IFormController} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
-import TSAdresseContainer from '../../../../models/TSAdresseContainer';
-import TSGemeinde from '../../../../models/TSGemeinde';
-import TSLand from '../../../../models/types/TSLand';
+import {TSAdresseContainer} from '../../../../models/TSAdresseContainer';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSLand} from '../../../../models/types/TSLand';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import AdresseRS from '../../service/adresseRS.rest';
-import ListResourceRS from '../../service/listResourceRS.rest';
+import {AdresseRS} from '../../service/adresseRS.rest';
+import {ListResourceRS} from '../../service/listResourceRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class AdresseComponentConfig implements IComponentOptions {

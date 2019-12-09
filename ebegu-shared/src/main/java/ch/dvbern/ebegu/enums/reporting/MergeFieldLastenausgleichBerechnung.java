@@ -25,37 +25,30 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
-public enum MergeFieldLastenausgleichKibon implements MergeFieldProvider {
+public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 
 	// This template exists only in german, since its use is intern
+	berechnungsjahr(new SimpleMergeField<>("berechnungsjahr", BIGDECIMAL_CONVERTER)),
+	durchschnittlicheKostenPro100ProzentPlatz(new SimpleMergeField<>("durchschnittlicheKostenPro100ProzentPlatz", BIGDECIMAL_CONVERTER)),
 
-	jahr(new SimpleMergeField<>("jahr", BIGDECIMAL_CONVERTER)),
-
-	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
-	kindName(new SimpleMergeField<>("kindName", STRING_CONVERTER)),
-	kindVorname(new SimpleMergeField<>("kindVorname", STRING_CONVERTER)),
-	kindGeburtsdatum(new SimpleMergeField<>("kindGeburtsdatum", DATE_CONVERTER)),
-	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
-	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
-	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
-	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
-	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER)),
-	tarif(new SimpleMergeField<>("tarif", STRING_CONVERTER)),
-	zusatz(new SimpleMergeField<>("zusatz", BOOLEAN_X_CONVERTER)),
-	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER)),
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
+	bfsNummer(new SimpleMergeField<>("bfsNummer", STRING_CONVERTER)),
+	verrechnungsjahr(new SimpleMergeField<>("verrechnungsjahr", STRING_CONVERTER)),
+	totalBelegung(new SimpleMergeField<>("totalBelegung", PERCENT_CONVERTER)),
+	totalGutscheine(new SimpleMergeField<>("totalGutscheine", BIGDECIMAL_CONVERTER)),
+	kostenPro100ProzentPlatz(new SimpleMergeField<>("kostenPro100ProzentPlatz", BIGDECIMAL_CONVERTER)),
+	selbstbehaltGemeinde(new SimpleMergeField<>("selbstbehaltGemeinde", BIGDECIMAL_CONVERTER)),
+	eingabeLastenausgleich(new SimpleMergeField<>("eingabeLastenausgleich", BIGDECIMAL_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
-
 
 	@Nonnull
 	private final MergeField<?> mergeField;
 
-	<V> MergeFieldLastenausgleichKibon(@Nonnull MergeField<V> mergeField) {
+	<V> MergeFieldLastenausgleichBerechnung(@Nonnull MergeField<V> mergeField) {
 		this.mergeField = mergeField;
 	}
 

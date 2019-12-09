@@ -15,13 +15,13 @@
 
 import * as moment from 'moment';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
-import TSAbstractEntity from '../models/TSAbstractEntity';
-import TSFall from '../models/TSFall';
-import TSGemeinde from '../models/TSGemeinde';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
+import {TSAbstractEntity} from '../models/TSAbstractEntity';
+import {TSFall} from '../models/TSFall';
+import {TSGemeinde} from '../models/TSGemeinde';
+import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
-import EbeguUtil from './EbeguUtil';
-import TestDataUtil from './TestDataUtil.spec';
+import {EbeguUtil} from './EbeguUtil';
+import {TestDataUtil} from './TestDataUtil.spec';
 import IProvideService = angular.auto.IProvideService;
 
 // tslint:disable:no-magic-numbers

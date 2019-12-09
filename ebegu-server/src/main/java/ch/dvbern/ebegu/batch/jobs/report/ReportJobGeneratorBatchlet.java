@@ -37,7 +37,7 @@ import javax.inject.Named;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.reporting.ReportLastenausgleichKibonService;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
@@ -67,7 +67,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	private ReportVerrechnungKibonService reportVerrechnungKibonService;
 
 	@Inject
-	private ReportLastenausgleichKibonService reportLastenausgleichKibonService;
+	private ReportLastenausgleichSelbstbehaltService reportLastenausgleichKibonService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -181,7 +181,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
 			return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
 		}
-		case VORLAGE_REPORT_LASTENAUSGLEICH_KIBON: {
+		case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
 			return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
 		}
 		}

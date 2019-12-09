@@ -20,7 +20,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
-export default class TSInstitution extends TSAbstractMutableEntity {
+export class TSInstitution extends TSAbstractMutableEntity {
     public name: string;
     public traegerschaft: TSTraegerschaft;
     public mandant: TSMandant;

@@ -15,18 +15,18 @@
 
 import * as angular from 'angular';
 import {of} from 'rxjs';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
-import TSMitteilung from '../../../models/TSMitteilung';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import MitteilungRS from '../../core/service/mitteilungRS.rest';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSFall} from '../../../models/TSFall';
+import {TSMitteilung} from '../../../models/TSMitteilung';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
+import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {POSTEINGANG_JS_MODULE} from '../posteingang.module';
 import {PosteingangViewController} from './posteingangView';
 

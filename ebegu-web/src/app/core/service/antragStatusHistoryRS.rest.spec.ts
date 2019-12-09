@@ -16,13 +16,13 @@
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
-import TSGesuch from '../../../models/TSGesuch';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSAntragStatusHistory} from '../../../models/TSAntragStatusHistory';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import AntragStatusHistoryRS from './antragStatusHistoryRS.rest';
+import {AntragStatusHistoryRS} from './antragStatusHistoryRS.rest';
 
 describe('antragStatusHistoryRS', () => {
 

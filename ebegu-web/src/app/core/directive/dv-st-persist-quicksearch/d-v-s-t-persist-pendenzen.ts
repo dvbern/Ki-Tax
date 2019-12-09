@@ -14,9 +14,9 @@
  */
 
 import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
-import BenutzerRS from '../../service/benutzerRS.rest';
+import {BenutzerRS} from '../../service/benutzerRS.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 
@@ -24,7 +24,7 @@ import {InstitutionRS} from '../../service/institutionRS.rest';
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
  * The information will be stored in an angular-service, whi
  */
-export default class DVSTPersistPendenzen implements IDirective {
+export class DVSTPersistPendenzen implements IDirective {
     public static $inject: string[] = ['BenutzerRS', 'InstitutionRS', 'DVsTPersistService', 'GemeindeRS'];
 
     public restrict = 'A';

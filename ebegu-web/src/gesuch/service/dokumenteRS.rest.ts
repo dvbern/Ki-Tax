@@ -14,17 +14,17 @@
  */
 
 import {IHttpService} from 'angular';
-import TSDokumenteDTO from '../../models/dto/TSDokumenteDTO';
+import {TSDokumenteDTO} from '../../models/dto/TSDokumenteDTO';
 import {TSDokumentGrundTyp} from '../../models/enums/TSDokumentGrundTyp';
-import TSDokument from '../../models/TSDokument';
-import TSDokumentGrund from '../../models/TSDokumentGrund';
-import TSGesuch from '../../models/TSGesuch';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSDokument} from '../../models/TSDokument';
+import {TSDokumentGrund} from '../../models/TSDokumentGrund';
+import {TSGesuch} from '../../models/TSGesuch';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import ICacheObject = angular.ICacheObject;
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
-export default class DokumenteRS {
+export class DokumenteRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

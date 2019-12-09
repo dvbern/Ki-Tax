@@ -17,10 +17,10 @@ import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../models/enums/TSMitteilungTeilnehmerTyp';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
-import TSMitteilung from '../../../models/TSMitteilung';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSFall} from '../../../models/TSFall';
+import {TSMitteilung} from '../../../models/TSMitteilung';
 import {POSTEINGANG_JS_MODULE} from '../posteingang.module';
 
 // tslint:disable:no-magic-numbers no-duplicate-string

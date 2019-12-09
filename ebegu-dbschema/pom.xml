@@ -56,6 +56,7 @@
                     <locations>
                         <location>db/migration</location>
                     </locations>
+                    <table>schema_version</table>
                 </configuration>
             </plugin>
         </plugins>

@@ -14,7 +14,7 @@
  */
 
 import {Directive, Input, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 
 /**

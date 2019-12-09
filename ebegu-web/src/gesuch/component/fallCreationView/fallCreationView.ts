@@ -14,22 +14,22 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope} from 'angular';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {INewFallStateParams} from '../../gesuch.route';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 

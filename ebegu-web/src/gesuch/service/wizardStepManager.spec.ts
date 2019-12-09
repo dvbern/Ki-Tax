@@ -15,7 +15,7 @@
 
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
@@ -24,16 +24,16 @@ import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import TSAdresse from '../../models/TSAdresse';
-import TSAdresseContainer from '../../models/TSAdresseContainer';
-import TSGesuch from '../../models/TSGesuch';
-import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
-import TSWizardStep from '../../models/TSWizardStep';
+import {TSAdresse} from '../../models/TSAdresse';
+import {TSAdresseContainer} from '../../models/TSAdresseContainer';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
+import {TSWizardStep} from '../../models/TSWizardStep';
 import {TSDateRange} from '../../models/types/TSDateRange';
-import DateUtil from '../../utils/DateUtil';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
-import WizardStepManager from './wizardStepManager';
-import WizardStepRS from './WizardStepRS.rest';
+import {DateUtil} from '../../utils/DateUtil';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
+import {WizardStepManager} from './wizardStepManager';
+import {WizardStepRS} from './WizardStepRS.rest';
 
 // tslint:disable:no-big-function
 describe('wizardStepManager', () => {

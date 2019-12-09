@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -61,10 +62,10 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 	 */
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> resultlist = new ArrayList<>();
-		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
-
+		if (requireNonNull(platz.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
+			Betreuung betreuung = (Betreuung) platz;
 			final List<AbwesenheitContainer> sortedAbwesenheiten = betreuung.getAbwesenheitContainers().stream().sorted().collect(Collectors.toList());
 			for (final AbwesenheitContainer abwesenheit : sortedAbwesenheiten) {
 				final Abwesenheit abwesenheitJA = abwesenheit.getAbwesenheitJA();

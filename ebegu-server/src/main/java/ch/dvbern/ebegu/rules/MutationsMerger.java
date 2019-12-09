@@ -25,6 +25,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -65,14 +66,18 @@ public final class MutationsMerger {
 	@Nonnull
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	public static List<VerfuegungZeitabschnitt> execute(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
 
-		if (betreuung.extractGesuch().getTyp().isGesuch()) {
+		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() || !(platz instanceof Betreuung)) {
 			return zeitabschnitte;
 		}
+		if (platz.extractGesuch().getTyp().isGesuch()) {
+			return zeitabschnitte;
+		}
+		Betreuung betreuung = (Betreuung) platz;
 		final Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 
 		final LocalDate mutationsEingansdatum = betreuung.extractGesuch().getRegelStartDatum();

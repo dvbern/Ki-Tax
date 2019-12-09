@@ -19,13 +19,13 @@ import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSMitteilungEvent} from '../../models/enums/TSMitteilungEvent';
-import TSAntragDTO from '../../models/TSAntragDTO';
-import TSGesuch from '../../models/TSGesuch';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import WizardStepManager from './wizardStepManager';
+import {TSAntragDTO} from '../../models/TSAntragDTO';
+import {TSGesuch} from '../../models/TSGesuch';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {WizardStepManager} from './wizardStepManager';
 import IRootScopeService = angular.IRootScopeService;
 
-export default class GesuchRS implements IEntityRS {
+export class GesuchRS implements IEntityRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'WizardStepManager', '$rootScope'];
     public serviceURL: string;

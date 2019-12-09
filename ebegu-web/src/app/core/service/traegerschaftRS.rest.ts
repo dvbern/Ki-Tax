@@ -15,7 +15,7 @@
 
 import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class TraegerschaftRS {
 

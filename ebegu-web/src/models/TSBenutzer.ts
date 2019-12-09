@@ -13,19 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import DateUtil from '../utils/DateUtil';
-import EbeguUtil from '../utils/EbeguUtil';
+import {DateUtil} from '../utils/DateUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAmt} from './enums/TSAmt';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import {rolePrefix, TSRole} from './enums/TSRole';
-import TSBerechtigung from './TSBerechtigung';
-import TSGemeinde from './TSGemeinde';
-import TSInstitution from './TSInstitution';
+import {TSBerechtigung} from './TSBerechtigung';
+import {TSGemeinde} from './TSGemeinde';
+import {TSInstitution} from './TSInstitution';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
-export default class TSBenutzer {
+export class TSBenutzer {
 
     private _nachname: string;
     private _vorname: string;

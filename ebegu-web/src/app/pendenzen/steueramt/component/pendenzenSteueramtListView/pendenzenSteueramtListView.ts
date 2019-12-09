@@ -18,10 +18,10 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
-import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
-import SearchRS from '../../../../../gesuch/service/searchRS.rest';
-import TSAntragDTO from '../../../../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../../../../models/TSAntragSearchresultDTO';
+import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
+import {SearchRS} from '../../../../../gesuch/service/searchRS.rest';
+import {TSAntragDTO} from '../../../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../../../models/TSAntragSearchresultDTO';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 
 export class PendenzenSteueramtListViewComponentConfig implements IComponentOptions {

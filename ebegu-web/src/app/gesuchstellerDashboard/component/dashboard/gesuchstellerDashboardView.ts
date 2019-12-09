@@ -15,25 +15,25 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
-import SearchRS from '../../../../gesuch/service/searchRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
+import {SearchRS} from '../../../../gesuch/service/searchRS.rest';
 import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../../../models/enums/TSGesuchBetreuungenStatus';
-import TSAntragDTO from '../../../../models/TSAntragDTO';
-import TSDossier from '../../../../models/TSDossier';
-import TSGemeindeKonfiguration from '../../../../models/TSGemeindeKonfiguration';
-import TSGemeindeStammdaten from '../../../../models/TSGemeindeStammdaten';
-import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
-import DateUtil from '../../../../utils/DateUtil';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSAntragDTO} from '../../../../models/TSAntragDTO';
+import {TSDossier} from '../../../../models/TSDossier';
+import {TSGemeindeKonfiguration} from '../../../../models/TSGemeindeKonfiguration';
+import {TSGemeindeStammdaten} from '../../../../models/TSGemeindeStammdaten';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {DateUtil} from '../../../../utils/DateUtil';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import ErrorService from '../../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../../core/service/gesuchsperiodeRS.rest';
-import MitteilungRS from '../../../core/service/mitteilungRS.rest';
+import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
+import {MitteilungRS} from '../../../core/service/mitteilungRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class GesuchstellerDashboardListViewConfig implements IComponentOptions {

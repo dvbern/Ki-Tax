@@ -15,10 +15,10 @@
 
 import {TSEbeguVorlageKey} from './enums/TSEbeguVorlageKey';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSVorlage from './TSVorlage';
+import {TSVorlage} from './TSVorlage';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSEbeguVorlage extends TSAbstractDateRangedEntity {
+export class TSEbeguVorlage extends TSAbstractDateRangedEntity {
 
     private _name: TSEbeguVorlageKey;
     private _vorlage: TSVorlage;

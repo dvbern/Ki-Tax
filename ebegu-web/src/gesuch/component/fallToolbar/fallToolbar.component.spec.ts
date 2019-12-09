@@ -19,16 +19,16 @@ import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import DossierRS from '../../service/dossierRS.rest';
-import GemeindeRS from '../../service/gemeindeRS.rest';
-import GesuchRS from '../../service/gesuchRS.rest';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSFall} from '../../../models/TSFall';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
+import {DossierRS} from '../../service/dossierRS.rest';
+import {GemeindeRS} from '../../service/gemeindeRS.rest';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {FallToolbarComponent} from './fallToolbar.component';
 
 // tslint:disable:no-big-function

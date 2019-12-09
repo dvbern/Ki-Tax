@@ -21,7 +21,7 @@ import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
 /**
  * this interceptor boradcasts a  VERSION_MATCH or VERSION_MISMATCH event whenever a rest service responds
  */
-export default class HttpVersionInterceptor implements IHttpInterceptor {
+export class HttpVersionInterceptor implements IHttpInterceptor {
 
     public static $inject = ['$rootScope', '$log'];
 

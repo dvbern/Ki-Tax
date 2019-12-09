@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -49,9 +50,13 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
-		Gesuch gesuch = betreuung.extractGesuch();
+		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+			return einreichungsfristAbschnitte;
+		}
+		Betreuung betreuung = (Betreuung) platz;
+		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
 		if (gesuch.getTyp().isGesuch() && startDatum != null) {
 			Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();

@@ -21,14 +21,14 @@ import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
-import BenutzerRS from '../../app/core/service/benutzerRS.rest';
+import {BenutzerRS} from '../../app/core/service/benutzerRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import HttpBuffer from './HttpBuffer';
+import {HttpBuffer} from './HttpBuffer';
 import ICookiesService = angular.cookies.ICookiesService;
 import IHttpService = angular.IHttpService;
 import IPromise = angular.IPromise;
@@ -38,7 +38,7 @@ import ITimeoutService = angular.ITimeoutService;
 
 const LOG = LogFactory.createLog('AuthServiceRS');
 
-export default class AuthServiceRS {
+export class AuthServiceRS {
 
     public static $inject = [
         '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil', 'httpBuffer',

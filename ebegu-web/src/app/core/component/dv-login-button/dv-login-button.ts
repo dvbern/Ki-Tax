@@ -18,8 +18,8 @@
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import TSBenutzer from '../../../../models/TSBenutzer';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 

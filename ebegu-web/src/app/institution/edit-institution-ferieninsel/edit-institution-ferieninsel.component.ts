@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 
 @Component({
     selector: 'dv-edit-institution-ferieninsel',

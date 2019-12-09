@@ -15,7 +15,7 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
-import TSZahlungsauftrag from '../../models/TSZahlungsauftrag';
+import {TSZahlungsauftrag} from '../../models/TSZahlungsauftrag';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 
 zahlungRun.$inject = ['RouterHelper'];

@@ -15,7 +15,7 @@
 
 import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 
-export default class TSBetreuungspensum extends TSAbstractDecimalPensumEntity {
+export class TSBetreuungspensum extends TSAbstractDecimalPensumEntity {
 
     private _nichtEingetreten: boolean;
 

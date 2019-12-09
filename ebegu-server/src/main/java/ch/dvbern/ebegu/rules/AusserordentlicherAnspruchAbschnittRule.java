@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
@@ -40,9 +40,9 @@ public class AusserordentlicherAnspruchAbschnittRule extends AbstractAbschnittRu
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
-		PensumAusserordentlicherAnspruch anspruch = betreuung.getKind().getKindJA().getPensumAusserordentlicherAnspruch();
+		PensumAusserordentlicherAnspruch anspruch = platz.getKind().getKindJA().getPensumAusserordentlicherAnspruch();
 		if (anspruch != null) {
 			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(anspruch));
 		}

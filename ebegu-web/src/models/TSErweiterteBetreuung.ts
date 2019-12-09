@@ -16,7 +16,7 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFachstelle} from './TSFachstelle';
 
-export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
+export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     private _erweiterteBeduerfnisse: boolean = false;
     private _fachstelle: TSFachstelle;

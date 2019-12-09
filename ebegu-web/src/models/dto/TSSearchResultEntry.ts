@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractAntragDTO from '../TSAbstractAntragDTO';
+import {TSAbstractAntragDTO} from '../TSAbstractAntragDTO';
 
-export default class TSSearchResultEntry {
+export class TSSearchResultEntry {
 
     private _additionalInformation: string;
     private _antragDTO: TSAbstractAntragDTO;

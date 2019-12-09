@@ -16,9 +16,9 @@
 import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBenutzer from './TSBenutzer';
+import {TSBenutzer} from './TSBenutzer';
 
-export default class TSAntragStatusHistory extends TSAbstractMutableEntity {
+export class TSAntragStatusHistory extends TSAbstractMutableEntity {
 
     private _gesuchId: string;
     private _benutzer: TSBenutzer;

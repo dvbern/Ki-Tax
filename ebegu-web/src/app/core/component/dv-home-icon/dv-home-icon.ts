@@ -15,7 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 export class DvHomeIconComponentConfig implements IComponentOptions {

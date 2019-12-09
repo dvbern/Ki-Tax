@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -63,13 +63,13 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
-			requireNonNull(betreuung.extractGesuch(), "Gesuch muss gesetzt sein");
-			requireNonNull(betreuung.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
-			boolean hasSecondGesuchsteller = hasSecondGSForZeit(betreuung, verfuegungZeitabschnitt.getGueltigkeit());
+		if (requireNonNull(platz.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
+			requireNonNull(platz.extractGesuch(), "Gesuch muss gesetzt sein");
+			requireNonNull(platz.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
+			boolean hasSecondGesuchsteller = hasSecondGSForZeit(platz, verfuegungZeitabschnitt.getGueltigkeit());
 			int erwerbspensumOffset = hasSecondGesuchsteller ? 100 : 0;
 			// Erwerbspensum ist immer die erste Rule, d.h. es wird das Erwerbspensum mal als Anspruch angenommen
 			// Das Erwerbspensum muss PRO GESUCHSTELLER auf 100% limitiert werden
@@ -79,13 +79,13 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 				erwerbspensum2 = calculateErwerbspensumGS2(verfuegungZeitabschnitt, getLocale());
 			}
 			int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
-			int minimum = getMinimumErwerbspensum(betreuung);
+			int minimum = getMinimumErwerbspensum(platz);
 			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum, erwerbspensumOffset, getLocale());
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);
 		}
 	}
 
-	private int getMinimumErwerbspensum(@Nonnull Betreuung betreuung) {
+	private int getMinimumErwerbspensum(@Nonnull AbstractPlatz betreuung) {
 		EinschulungTyp einschulungTyp = betreuung.getKind().getKindJA().getEinschulungTyp();
 		Objects.requireNonNull(einschulungTyp);
 		int mininum = einschulungTyp.isEingeschult() ? minErwerbspensumEingeschult : minErwerbspensumNichtEingeschult;
@@ -158,7 +158,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return erwerbspensum;
 	}
 
-	private boolean hasSecondGSForZeit(@Nonnull Betreuung betreuung, @Nonnull DateRange gueltigkeit) {
+	private boolean hasSecondGSForZeit(@Nonnull AbstractPlatz betreuung, @Nonnull DateRange gueltigkeit) {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
 		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();

@@ -20,8 +20,8 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {MatOptionSelectionChange} from '@angular/material';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../../models/TSGemeinde';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 
 let nextId = 0;
 

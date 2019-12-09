@@ -18,7 +18,7 @@ import {IComponentOptions, IController, ILocationService, ITimeoutService, IWind
 import {TSRole} from '../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {IAuthenticationStateParams} from '../authentication.route';
-import AuthServiceRS from '../service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
 // tslint:disable-next-line:naming-convention variable-name
 export const LoginComponentConfig: IComponentOptions = {

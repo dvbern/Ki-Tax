@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSErweiterteBetreuung from './TSErweiterteBetreuung';
+import {TSErweiterteBetreuung} from './TSErweiterteBetreuung';
 
-export default class TSErweiterteBetreuungContainer extends TSAbstractMutableEntity {
+export class TSErweiterteBetreuungContainer extends TSAbstractMutableEntity {
 
     private _erweiterteBetreuungGS: TSErweiterteBetreuung;
     private _erweiterteBetreuungJA: TSErweiterteBetreuung;

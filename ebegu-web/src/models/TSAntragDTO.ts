@@ -19,9 +19,9 @@ import {TSAntragTyp} from './enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
-import TSAbstractAntragDTO from './TSAbstractAntragDTO';
+import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
-export default class TSAntragDTO extends TSAbstractAntragDTO {
+export class TSAntragDTO extends TSAbstractAntragDTO {
     private static readonly YEAR_2000 = 2000;
 
     private _antragId: string;

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSFile from './TSFile';
+import {TSFile} from './TSFile';
 
-export default class TSVorlage extends TSFile {
+export class TSVorlage extends TSFile {
 }

@@ -14,14 +14,14 @@
  */
 
 import {IHttpBackendService, IQService} from 'angular';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSKind from '../../../models/TSKind';
-import TSKindContainer from '../../../models/TSKindContainer';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSKind} from '../../../models/TSKind';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import KindRS from './kindRS.rest';
+import {KindRS} from './kindRS.rest';
 
 describe('KindRS', () => {
 

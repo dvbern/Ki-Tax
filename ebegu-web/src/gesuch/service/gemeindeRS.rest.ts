@@ -19,19 +19,19 @@ import {IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angu
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSBfsGemeinde from '../../models/TSBfsGemeinde';
-import TSGemeinde from '../../models/TSGemeinde';
-import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
-import TSGemeindeRegistrierung from '../../models/TSGemeindeRegistrierung';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBfsGemeinde} from '../../models/TSBfsGemeinde';
+import {TSGemeinde} from '../../models/TSGemeinde';
+import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
+import {TSGemeindeRegistrierung} from '../../models/TSGemeindeRegistrierung';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import GlobalCacheService from './globalCacheService';
+import {GlobalCacheService} from './globalCacheService';
 
-export default class GemeindeRS implements IEntityRS {
+export class GemeindeRS implements IEntityRS {
 
     public static $inject =
         ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];

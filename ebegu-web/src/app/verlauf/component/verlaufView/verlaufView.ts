@@ -17,13 +17,13 @@ import IComponentOptions = angular.IComponentOptions;
 import IFormController = angular.IFormController;
 import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
-import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
-import TSAntragStatusHistory from '../../../../models/TSAntragStatusHistory';
-import TSDossier from '../../../../models/TSDossier';
-import TSGesuch from '../../../../models/TSGesuch';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
+import {TSAntragStatusHistory} from '../../../../models/TSAntragStatusHistory';
+import {TSDossier} from '../../../../models/TSDossier';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import AntragStatusHistoryRS from '../../../core/service/antragStatusHistoryRS.rest';
+import {AntragStatusHistoryRS} from '../../../core/service/antragStatusHistoryRS.rest';
 import {IVerlaufStateParams} from '../../verlauf.route';
 
 export class VerlaufViewComponentConfig implements IComponentOptions {

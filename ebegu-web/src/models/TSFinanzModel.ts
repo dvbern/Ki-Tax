@@ -13,15 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../utils/EbeguUtil';
-import TSEinkommensverschlechterung from './TSEinkommensverschlechterung';
-import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
-import TSFinanzielleSituation from './TSFinanzielleSituation';
-import TSFinanzielleSituationContainer from './TSFinanzielleSituationContainer';
-import TSGesuch from './TSGesuch';
+import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
+import {TSEinkommensverschlechterungContainer} from './TSEinkommensverschlechterungContainer';
+import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlechterungInfoContainer';
+import {TSFinanzielleSituation} from './TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
+import {TSGesuch} from './TSGesuch';
 
-export default class TSFinanzModel {
+export class TSFinanzModel {
 
     private _gemeinsameSteuererklaerung: boolean;
     private _sozialhilfeBezueger: boolean;

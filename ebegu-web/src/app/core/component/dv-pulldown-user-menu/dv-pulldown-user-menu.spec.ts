@@ -16,9 +16,9 @@
 import {StateService} from '@uirouter/core';
 import {IComponentControllerService, IScope} from 'angular';
 import {of} from 'rxjs';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import TSBenutzer from '../../../../models/TSBenutzer';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import IInjectorService = angular.auto.IInjectorService;

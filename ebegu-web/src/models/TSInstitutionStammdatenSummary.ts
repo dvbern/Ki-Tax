@@ -18,13 +18,13 @@
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSAdresse from './TSAdresse';
-import TSInstitution from './TSInstitution';
-import TSInstitutionStammdatenBetreuungsgutscheine from './TSInstitutionStammdatenBetreuungsgutscheine';
-import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
-import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
+import {TSAdresse} from './TSAdresse';
+import {TSInstitution} from './TSInstitution';
+import {TSInstitutionStammdatenBetreuungsgutscheine} from './TSInstitutionStammdatenBetreuungsgutscheine';
+import {TSInstitutionStammdatenFerieninsel} from './TSInstitutionStammdatenFerieninsel';
+import {TSInstitutionStammdatenTagesschule} from './TSInstitutionStammdatenTagesschule';
 
-export default class TSInstitutionStammdatenSummary extends TSAbstractDateRangedEntity {
+export class TSInstitutionStammdatenSummary extends TSAbstractDateRangedEntity {
 
     public betreuungsangebotTyp: TSBetreuungsangebotTyp = undefined;
     public institution: TSInstitution = undefined;

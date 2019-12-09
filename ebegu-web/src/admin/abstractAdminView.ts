@@ -14,13 +14,13 @@
  */
 
 import {IController} from 'angular';
-import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../models/enums/TSRole';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
+import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 
-export default class AbstractAdminViewController implements IController {
+export class AbstractAdminViewController implements IController {
 
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;

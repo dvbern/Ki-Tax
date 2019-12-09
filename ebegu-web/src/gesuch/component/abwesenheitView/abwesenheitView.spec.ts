@@ -15,16 +15,16 @@
 
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSInstitution from '../../../models/TSInstitution';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import TSKind from '../../../models/TSKind';
-import TSKindContainer from '../../../models/TSKindContainer';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSKind} from '../../../models/TSKind';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbwesenheitViewController, KindBetreuungUI} from './abwesenheitView';
 
 describe('abwesenheitView', () => {

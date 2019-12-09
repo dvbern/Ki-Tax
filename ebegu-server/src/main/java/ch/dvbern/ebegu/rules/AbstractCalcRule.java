@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -33,7 +33,7 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public abstract class AbstractCalcRule extends AbstractEbeguRule {
 
-	public AbstractCalcRule(
+	protected AbstractCalcRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
 		@Nonnull DateRange validityPeriod,
@@ -44,7 +44,7 @@ public abstract class AbstractCalcRule extends AbstractEbeguRule {
 
 	@Nonnull
 	@Override
-	protected final List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected final List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		return new ArrayList<>();
 	}
 }

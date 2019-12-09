@@ -15,12 +15,12 @@
 
 import {TSTaetigkeit} from './enums/TSTaetigkeit';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
-import TSUnbezahlterUrlaub from './TSUnbezahlterUrlaub';
+import {TSUnbezahlterUrlaub} from './TSUnbezahlterUrlaub';
 
 /**
  * Definiert ein Erwerbspensum
  */
-export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
+export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _taetigkeit: TSTaetigkeit;
 

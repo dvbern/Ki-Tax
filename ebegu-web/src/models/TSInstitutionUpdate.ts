@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSInstitutionStammdaten from './TSInstitutionStammdaten';
+import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
-export default class TSInstitutionUpdate {
+export class TSInstitutionUpdate {
 
     public name: string;
     public traegerschaftId: string;

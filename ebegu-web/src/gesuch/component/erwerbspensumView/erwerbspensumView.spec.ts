@@ -19,9 +19,9 @@ import ADMIN_JS_MODULE from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {ErwerbspensumViewComponentConfig} from './erwerbspensumView';
 
 describe('erwerbspensumView', () => {

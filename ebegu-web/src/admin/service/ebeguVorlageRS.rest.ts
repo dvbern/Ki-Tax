@@ -14,8 +14,8 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import TSEbeguVorlage from '../../models/TSEbeguVorlage';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSEbeguVorlage} from '../../models/TSEbeguVorlage';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import IHttpPromise = angular.IHttpPromise;
 import IQService = angular.IQService;
 

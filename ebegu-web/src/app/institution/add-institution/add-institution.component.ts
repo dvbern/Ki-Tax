@@ -22,17 +22,17 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {take} from 'rxjs/operators';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
-import TSExceptionReport from '../../../models/TSExceptionReport';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSInstitution from '../../../models/TSInstitution';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
+import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
@@ -48,7 +48,7 @@ export class AddInstitutionComponent implements OnInit {
     private readonly log: Log = LogFactory.createLog('AddInstitutionComponent');
 
     @ViewChild(NgForm) public form: NgForm;
-    private isBGInstitution: boolean;
+    public isBGInstitution: boolean;
     public betreuungsangebote: TSBetreuungsangebotTyp[];
     public betreuungsangebot: TSBetreuungsangebotTyp;
     public traegerschaften: TSTraegerschaft[];

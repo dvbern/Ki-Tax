@@ -19,7 +19,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 /**
  * DTO für eine Adresse aus dem EWK
  */
-export default class TSEWKAdresse extends TSAbstractMutableEntity {
+export class TSEWKAdresse extends TSAbstractMutableEntity {
 
     private _adresstyp: string;
     private _adresstypTxt: string;

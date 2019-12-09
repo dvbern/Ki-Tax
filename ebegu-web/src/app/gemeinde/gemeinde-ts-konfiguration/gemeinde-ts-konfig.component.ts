@@ -22,7 +22,7 @@ import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
+import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({

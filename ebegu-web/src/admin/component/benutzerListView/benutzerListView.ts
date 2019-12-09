@@ -17,11 +17,11 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise} from 'angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
-import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {BenutzerRS} from '../../../app/core/service/benutzerRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
+import {AbstractAdminViewController} from '../../abstractAdminView';
 
 export class BenutzerListViewComponentConfig implements IComponentOptions {
     public transclude = false;

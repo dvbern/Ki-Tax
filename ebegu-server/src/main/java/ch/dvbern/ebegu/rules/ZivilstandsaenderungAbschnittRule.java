@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -50,9 +50,9 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 
-		Gesuch gesuch = betreuung.extractGesuch();
+		Gesuch gesuch = platz.extractGesuch();
 		final List<VerfuegungZeitabschnitt> zivilstandsaenderungAbschnitte = new ArrayList<>();
 
 		// Ueberpruefen, ob die Gesuchsteller-Kardinalität geändert hat. Nur dann muss evt. anders berechnet werden!
@@ -60,7 +60,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		Objects.requireNonNull(familiensituation);
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 
-		LocalDate gesuchsperiodeBis = betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		LocalDate gesuchsperiodeBis = platz.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
 		RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
 

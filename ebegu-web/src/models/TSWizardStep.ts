@@ -17,7 +17,7 @@ import {TSWizardStepName} from './enums/TSWizardStepName';
 import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSWizardStep extends TSAbstractMutableEntity {
+export class TSWizardStep extends TSAbstractMutableEntity {
 
     private _gesuchId: string;
     private _wizardStepName: TSWizardStepName;

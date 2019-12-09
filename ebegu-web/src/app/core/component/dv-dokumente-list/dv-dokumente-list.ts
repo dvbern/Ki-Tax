@@ -14,17 +14,17 @@
  */
 
 import {IComponentOptions, IController, ILogService} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {isAnyStatusOfVerfuegtButSchulamt} from '../../../../models/enums/TSAntragStatus';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
 import {TSRole} from '../../../../models/enums/TSRole';
-import TSDokument from '../../../../models/TSDokument';
-import TSDokumentGrund from '../../../../models/TSDokumentGrund';
-import TSDownloadFile from '../../../../models/TSDownloadFile';
+import {TSDokument} from '../../../../models/TSDokument';
+import {TSDokumentGrund} from '../../../../models/TSDokumentGrund';
+import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {MAX_FILE_SIZE} from '../../constants/CONSTANTS';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';

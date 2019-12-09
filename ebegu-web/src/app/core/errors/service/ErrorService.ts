@@ -17,9 +17,9 @@ import IRootScopeService = angular.IRootScopeService;
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
-import TSExceptionReport from '../../../../models/TSExceptionReport';
+import {TSExceptionReport} from '../../../../models/TSExceptionReport';
 
-export default class ErrorService {
+export class ErrorService {
 
     public static $inject = ['$rootScope'];
 

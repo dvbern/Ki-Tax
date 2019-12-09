@@ -18,7 +18,7 @@ import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import HttpAuthInterceptor from './HttpAuthInterceptor';
+import {HttpAuthInterceptor} from './HttpAuthInterceptor';
 
 describe('HttpAuthInterceptor', () => {
 

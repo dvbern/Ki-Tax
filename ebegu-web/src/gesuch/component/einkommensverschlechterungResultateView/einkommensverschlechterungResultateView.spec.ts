@@ -17,11 +17,11 @@ import {async} from '@angular/core/testing';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import TSGesuchsteller from '../../../models/TSGesuchsteller';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 // tslint:disable:no-magic-numbers
 describe('einkommensverschlechterungResultateView', () => {

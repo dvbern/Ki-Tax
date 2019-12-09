@@ -16,11 +16,11 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import GlobalCacheService from '../../../gesuch/service/globalCacheService';
+import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class InstitutionStammdatenRS {
 

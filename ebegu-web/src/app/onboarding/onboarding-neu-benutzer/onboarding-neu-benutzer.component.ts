@@ -19,9 +19,9 @@ import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSGemeinde from '../../../models/TSGemeinde';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-onboarding-neu-benutzer',

@@ -15,8 +15,8 @@
 
 import {IHttpPromise, IHttpService} from 'angular';
 import * as moment from 'moment';
-import DateUtil from '../../utils/DateUtil';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {DateUtil} from '../../utils/DateUtil';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import IPromise = angular.IPromise;
 
 export class TestFaelleRS {

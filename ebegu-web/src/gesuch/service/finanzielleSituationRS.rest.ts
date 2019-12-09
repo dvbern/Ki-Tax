@@ -14,17 +14,17 @@
  */
 
 import {IHttpService} from 'angular';
-import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
-import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
-import TSFinanzModel from '../../models/TSFinanzModel';
-import TSGesuch from '../../models/TSGesuch';
-import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import WizardStepManager from './wizardStepManager';
+import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../models/TSFinanzModel';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {WizardStepManager} from './wizardStepManager';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
-export default class FinanzielleSituationRS {
+export class FinanzielleSituationRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;

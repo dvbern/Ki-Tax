@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSAdresse from './TSAdresse';
+import {TSAdresse} from './TSAdresse';
 
-export default class TSAdresseContainer extends TSAbstractMutableEntity {
+export class TSAdresseContainer extends TSAbstractMutableEntity {
 
     private _adresseJA: TSAdresse;
     private _adresseGS: TSAdresse;
