@@ -27,7 +27,6 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.MathUtil;
@@ -61,12 +60,10 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal totalBelegungen = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal totalBetragGutscheine = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
@@ -184,9 +181,9 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("LastenausgleichDetail{");
-		sb.append("lastenausgleich=").append(lastenausgleich);
+		sb.append("lastenausgleich=").append(lastenausgleich.getJahr());
 		sb.append(", jahr=").append(jahr);
-		sb.append(", gemeinde=").append(gemeinde);
+		sb.append(", gemeinde=").append(gemeinde.getName());
 		sb.append(", totalBelegungen=").append(totalBelegungen);
 		sb.append(", totalBetragGutscheine=").append(totalBetragGutscheine);
 		sb.append(", selbstbehaltGemeinde=").append(selbstbehaltGemeinde);
@@ -197,6 +194,9 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	}
 
 	public void add(@Nonnull LastenausgleichDetail other) {
+		this.setGemeinde(other.getGemeinde());
+		this.setJahr(other.getJahr());
+		this.setLastenausgleich(other.getLastenausgleich());
 		this.setTotalBelegungen(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungen(), other.getTotalBelegungen()));
 		this.setTotalBetragGutscheine(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheine(), other.getTotalBetragGutscheine()));
 		this.setSelbstbehaltGemeinde(MathUtil.DEFAULT.addNullSafe(this.getSelbstbehaltGemeinde(), other.getSelbstbehaltGemeinde()));

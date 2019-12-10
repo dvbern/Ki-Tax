@@ -49,6 +49,8 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -63,7 +65,10 @@ import static java.util.Objects.requireNonNull;
 @Local(LastenausgleichService.class)
 public class LastenausgleichServiceBean extends AbstractBaseService implements LastenausgleichService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LastenausgleichServiceBean.class.getSimpleName());
+
 	private static final BigDecimal SELBSTBEHALT = MathUtil.DEFAULT.fromNullSafe(0.20);
+	private static final String NEWLINE = "\n";
 
 	@Inject
 	private Persistence persistence;
@@ -90,7 +95,14 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
 		assertUnique(jahr);
 
-		BigDecimal kostenPro100ProzentPlatz = MathUtil.DEFAULT.divideNullSafe(MathUtil.DEFAULT.multiply(selbstbehaltPro100ProzentPlatz, MathUtil.HUNDRED), SELBSTBEHALT);
+		StringBuilder sb = new StringBuilder();
+		sb.append("Erstelle Lastenausgleich für Jahr ").append(jahr)
+			.append(" bei einem Selbstbehalt pro 100% Platz von ").append(selbstbehaltPro100ProzentPlatz)
+			.append(NEWLINE);
+
+		BigDecimal kostenPro100ProzentPlatz = MathUtil.DEFAULT.divideNullSafe(selbstbehaltPro100ProzentPlatz, SELBSTBEHALT);
+		sb.append("Kosten pro 100% Platz: ").append(kostenPro100ProzentPlatz)
+			.append(NEWLINE);
 
 		LastenausgleichGrundlagen grundlagenErhebungsjahr = new LastenausgleichGrundlagen();
 		grundlagenErhebungsjahr.setJahr(jahr);
@@ -107,6 +119,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			LastenausgleichDetail detailErhebung = createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenErhebungsjahr);
 			if (detailErhebung != null) {
 				lastenausgleich.addLastenausgleichDetail(detailErhebung);
+				sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
+				sb.append(detailErhebung).append(NEWLINE);
 			}
 		}
 		// Korrekturen frueherer Jahre: Wir gehen bis 10 Jahre retour
@@ -114,9 +128,13 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			int korrekturJahr = jahr - i;
 			Optional<LastenausgleichGrundlagen> grundlagenKorrekturjahr = findLastenausgleichGrundlagen(korrekturJahr);
 			if (grundlagenKorrekturjahr.isPresent()) {
+				sb.append("Korrekturen für Jahr ").append(korrekturJahr).append(NEWLINE);
 				for (Gemeinde gemeinde : aktiveGemeinden) {
+					sb.append("Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
 					// Wir ermitteln für die Gemeinde und das Korrekurjahr den aktuell gültigen Wert
 					LastenausgleichDetail detailAktuellesTotalKorrekturjahr = createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenKorrekturjahr.get());
+					sb.append("Aktuell berechnetes Total: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+
 					if (detailAktuellesTotalKorrekturjahr != null) {
 						// Dieses Detail ist jetzt aber das aktuelle Total für das Jahr. Uns interessiert aber die eventuelle
 						// Differenz zu bereits ausgeglichenen Beträgen
@@ -126,18 +144,24 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 						for (LastenausgleichDetail detailBereitsVerrechnet : detailsBereitsVerrechnetKorrekturjahr) {
 							detailBisherigeWerte.add(detailBereitsVerrechnet);
 						}
+						sb.append("Davon bereits verrechnet: ").append(NEWLINE).append(detailBisherigeWerte).append(NEWLINE);
 						// Gibt es eine Differenz?
 						if (detailBisherigeWerte.hasChanged(detailAktuellesTotalKorrekturjahr)) {
 							// Es gibt eine Differenz (wobei wir nur den Betrag des Lastenausgleiches anschauen)
 							// Wir rechnen das bisher verrechnete minus
 							LastenausgleichDetail detailKorrektur = createLastenausgleichDetailKorrektur(detailBisherigeWerte);
+							detailKorrektur.setLastenausgleich(lastenausgleich);
 							lastenausgleich.addLastenausgleichDetail(detailKorrektur);
+							sb.append("Korrektur PLUS: ").append(NEWLINE).append(detailKorrektur).append(NEWLINE);
 							// Und erstellen einen neuen Korrektur-Eintrag mit dem aktuell berechneten Wert
 							lastenausgleich.addLastenausgleichDetail(detailAktuellesTotalKorrekturjahr);
+							sb.append("Korrektur MINUS: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
 						}
 					}
 				}
 			}
+			// Wir loggen dies mit WARN, damit wir es im Sentry sehen
+			LOG.warn(sb.toString());
 		}
 
 		// Am Schluss das berechnete Total speichern
@@ -177,8 +201,12 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	public void removeLastenausgleich(@Nonnull String lastenausgleichId) {
+		// Lastenausgleich und -Grundlagen löschen
 		requireNonNull(lastenausgleichId);
 		Lastenausgleich lastenausgleichToRemove = findLastenausgleich(lastenausgleichId);
+		Optional<LastenausgleichGrundlagen> lastenausgleichGrundlagen = findLastenausgleichGrundlagen(lastenausgleichToRemove.getJahr());
+		System.out.println("lastenausgleichgrundlagen" + lastenausgleichGrundlagen.isPresent());
+		lastenausgleichGrundlagen.ifPresent(lastenausgleichGrundlagen1 -> persistence.remove(lastenausgleichGrundlagen1));
 		persistence.remove(lastenausgleichToRemove);
 	}
 
@@ -259,6 +287,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		detail.setTotalBetragGutscheine(detail.getTotalBetragGutscheine().negate());
 		detail.setSelbstbehaltGemeinde(detail.getSelbstbehaltGemeinde().negate());
 		detail.setBetragLastenausgleich(detail.getBetragLastenausgleich().negate());
+		detail.setKorrektur(true);
 		return detail;
 	}
 

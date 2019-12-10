@@ -69,7 +69,10 @@ export default class LastenausgleichRS {
             });
     }
 
-    public removeLastenausgleich(lastenausgleichId: string): void {
-        this.http.delete(`${this.serviceURL}/${encodeURIComponent(lastenausgleichId)}`);
+    public removeLastenausgleich(lastenausgleichId: string): IPromise<any> {
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(lastenausgleichId)}`)
+            .then(value => {
+                return value.data
+            });
     }
 }

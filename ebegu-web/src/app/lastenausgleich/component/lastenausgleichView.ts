@@ -22,7 +22,6 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSLastenausgleich from '../../../models/TSLastenausgleich';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import LastenausgleichRS from '../../core/service/lastenausgleichRS.rest';
 import IFormController = angular.IFormController;
@@ -45,7 +44,6 @@ export class LastenausgleichViewController implements IController {
         '$translate',
         'DownloadRS',
         'AuthServiceRS',
-        'ApplicationPropertyRS',
     ];
 
     public jahr: number;
@@ -60,7 +58,6 @@ export class LastenausgleichViewController implements IController {
         private readonly $translate: ITranslateService,
         private readonly downloadRS: DownloadRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
@@ -104,7 +101,7 @@ export class LastenausgleichViewController implements IController {
     }
 
     public isRemoveAllowed(): boolean {
-        return this.applicationPropertyRS.isDevMode() && this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public removeLastenausgleich(lastenausgleich: TSLastenausgleich): void {
@@ -113,7 +110,9 @@ export class LastenausgleichViewController implements IController {
             deleteText: 'LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT',
             parentController: this,
         }).then(() => {   // User confirmed removal
-            this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id);
+            this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id).then(value => {
+                this.$onInit();
+            });
         });
     }
 }
