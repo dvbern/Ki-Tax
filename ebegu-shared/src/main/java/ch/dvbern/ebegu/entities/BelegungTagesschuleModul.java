@@ -36,7 +36,7 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-public class BelegungTagesschuleModul extends AbstractMutableEntity implements Comparable<BelegungTagesschuleModul> {
+public class BelegungTagesschuleModul extends AbstractEntity implements Comparable<BelegungTagesschuleModul> {
 
 	private static final long serialVersionUID = -2101736417147986784L;
 
@@ -89,7 +89,6 @@ public class BelegungTagesschuleModul extends AbstractMutableEntity implements C
 	@Nonnull
 	public BelegungTagesschuleModul copyBelegungTagesschuleModul(@Nonnull BelegungTagesschuleModul target,
 		@Nonnull AntragCopyType copyType) {
-		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setIntervall(this.getIntervall());
