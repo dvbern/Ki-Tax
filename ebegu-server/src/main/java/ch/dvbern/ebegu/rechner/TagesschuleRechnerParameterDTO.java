@@ -44,6 +44,13 @@ public final class TagesschuleRechnerParameterDTO {
 	private BigDecimal maxMassgebendesEinkommen;
 	private BigDecimal minMassgebendesEinkommen;
 
+	private int stundenProWocheMitBetreuung;
+	private int minutesProWocheMitBetreuung;
+	private BigDecimal verpflegKostenProWocheMitBetreuung;
+	private int stundenProWocheOhneBetreuung;
+	private int minutesProWocheOhneBetreuung;
+	private BigDecimal verpflegKostenProWocheOhneBetreuung;
+
 
 	public TagesschuleRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		// TODO: Die Werte aus den Einstellungen lesen!
@@ -110,4 +117,51 @@ public final class TagesschuleRechnerParameterDTO {
 		this.minMassgebendesEinkommen = minMassgebendesEinkommen;
 	}
 
+	public int getStundenProWocheMitBetreuung() {
+		return stundenProWocheMitBetreuung;
+	}
+
+	public void setStundenProWocheMitBetreuung(int stundenProWocheMitBetreuung) {
+		this.stundenProWocheMitBetreuung = stundenProWocheMitBetreuung;
+	}
+
+	public int getMinutesProWocheMitBetreuung() {
+		return minutesProWocheMitBetreuung;
+	}
+
+	public void setMinutesProWocheMitBetreuung(int minutesProWocheMitBetreuung) {
+		this.minutesProWocheMitBetreuung = minutesProWocheMitBetreuung;
+	}
+
+	public BigDecimal getVerpflegKostenProWocheMitBetreuung() {
+		return verpflegKostenProWocheMitBetreuung;
+	}
+
+	public void setVerpflegKostenProWocheMitBetreuung(BigDecimal verpflegKostenProWocheMitBetreuung) {
+		this.verpflegKostenProWocheMitBetreuung = verpflegKostenProWocheMitBetreuung;
+	}
+
+	public int getStundenProWocheOhneBetreuung() {
+		return stundenProWocheOhneBetreuung;
+	}
+
+	public void setStundenProWocheOhneBetreuung(int stundenProWocheOhneBetreuung) {
+		this.stundenProWocheOhneBetreuung = stundenProWocheOhneBetreuung;
+	}
+
+	public int getMinutesProWocheOhneBetreuung() {
+		return minutesProWocheOhneBetreuung;
+	}
+
+	public void setMinutesProWocheOhneBetreuung(int minutesProWocheOhneBetreuung) {
+		this.minutesProWocheOhneBetreuung = minutesProWocheOhneBetreuung;
+	}
+
+	public BigDecimal getVerpflegKostenProWocheOhneBetreuung() {
+		return verpflegKostenProWocheOhneBetreuung;
+	}
+
+	public void setVerpflegKostenProWocheOhneBetreuung(BigDecimal verpflegKostenProWocheOhneBetreuung) {
+		this.verpflegKostenProWocheOhneBetreuung = verpflegKostenProWocheOhneBetreuung;
+	}
 }

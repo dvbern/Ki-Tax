@@ -42,19 +42,24 @@ public class TagesschuleRechner {
 	public BigDecimal calculateTarif(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull TagesschuleRechnerParameterDTO parameterDTO,
-		@Nonnull BelegungTagesschuleModul modul
+		@Nonnull boolean wirdPedagogischBetreut
 	) {
 		// Massgebendes Einkommen der Familie. Mit Maximal und Minimalwerten "verrechnen"
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
 
-		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, rechnen wir mit dem Maximalen Einkommen.
+		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
 		// TODO: Sobald im GUI die Frage nach den Vollkosten vorhanden ist, muss sichergestellt werden, dass eine Rule das "isBezahltVollkosten"-Flag setzt
 		if (zeitabschnitt.isBezahltVollkosten()) {
-			massgebendesEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
+			if (wirdPedagogischBetreut) {
+				return parameterDTO.getMaxTarifMitPaedagogischerBetreuung();
+			}
+			else{
+				return parameterDTO.getMaxTarifOhnePaedagogischeBetreuung();
+			}
 		}
 
 		BigDecimal mataMinusMita = null;
-		if (modul.getModulTagesschule().getModulTagesschuleGroup().isWirdPaedagogischBetreut()) {
+		if (wirdPedagogischBetreut) {
 			mataMinusMita = MathUtil.EXACT.subtract(parameterDTO.getMaxTarifMitPaedagogischerBetreuung(), parameterDTO.getMinTarif());
 		} else {
 			mataMinusMita = MathUtil.EXACT.subtract(parameterDTO.getMaxTarifOhnePaedagogischeBetreuung(), parameterDTO.getMinTarif());
@@ -73,7 +78,7 @@ public class TagesschuleRechner {
 			parameterDTO.getMinTarif());
 
 		tarif = MathUtil.minimum(tarif, parameterDTO.getMinTarif());
-		if (modul.getModulTagesschule().getModulTagesschuleGroup().isWirdPaedagogischBetreut()) {
+		if (wirdPedagogischBetreut) {
 			tarif = MathUtil.maximum(tarif, parameterDTO.getMaxTarifMitPaedagogischerBetreuung());
 		}
 		else{
