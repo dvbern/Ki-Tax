@@ -76,14 +76,20 @@ export class LastenausgleichViewController implements IController {
                 .then((response: TSLastenausgleich) => {
                     this.lastenausgleiche.push(response);
                 });
+        }, err => {
+            LOG.error(err);
         });
     }
 
+    // todo: remove disable-next, when implemented.
+    // tslint:disable-next-line
     public downloadExcel(lastenausgleich: TSLastenausgleich): angular.IPromise<void | never> {
         window.alert('not yet implemented');
         return undefined;
     }
 
+    // todo: remove disable-next, when implemented.
+    // tslint:disable-next-line
     public downloadCsv(lastenausgleich: TSLastenausgleich): void {
         window.alert('not yet implemented');
     }

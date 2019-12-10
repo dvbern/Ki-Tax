@@ -27,10 +27,14 @@
                     <div class="col-md-3">
                         <dv-input-container class="form-group">
                             <label class="md-no-float required" for="jahr" data-translate="LASTENAUSGLEICH_JAHR"></label>
-                            <dv-valueinput input-id="jahr" name="jahr"
-                                           ng-model="vm.jahr"
-                                           class="input-element" required>
-                            </dv-valueinput>
+                            <input id="jahr"
+                                   type="text"
+                                   name="jahr"
+                                   ng-model="vm.jahr"
+                                   dv-max-length
+                                   class="form-control input-dv"
+                                   required
+                                   aria-describedby="jahr-error">
                             <dv-error-messages input-id="jahr"
                                                for="vm.form.jahr.$error"
                                                class="error"></dv-error-messages>
@@ -41,9 +45,11 @@
                     <div class="col-md-3">
                         <dv-input-container class="form-group">
                             <label class="md-no-float required" for="selbstbehaltPro100ProzentPlatz" data-translate="LASTENAUSGLEICH_SELBSTBEHALT"></label>
-                            <dv-valueinput input-id="jahr" name="selbstbehaltPro100ProzentPlatz"
+                            <dv-valueinput input-id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
                                            ng-model="vm.selbstbehaltPro100ProzentPlatz"
-                                           class="input-element" required>
+                                           class="input-element"
+                                           area-describedby="selbstbehaltPro100ProzentPlatz-error"
+                                           required>
                             </dv-valueinput>
                             <dv-error-messages input-id="selbstbehaltPro100ProzentPlatz"
                                                for="vm.form.selbstbehaltPro100ProzentPlatz.$error"
