@@ -16,11 +16,11 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSLastenausgleich from '../../../models/TSLastenausgleich';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class LastenausgleichRS {
+export class LastenausgleichRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     public serviceURL: string;
@@ -72,7 +72,7 @@ export default class LastenausgleichRS {
     public removeLastenausgleich(lastenausgleichId: string): IPromise<any> {
         return this.http.delete(`${this.serviceURL}/${encodeURIComponent(lastenausgleichId)}`)
             .then(value => {
-                return value.data
+                return value.data;
             });
     }
 }

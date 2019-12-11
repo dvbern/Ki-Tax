@@ -16,14 +16,15 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSLastenausgleich from '../../../models/TSLastenausgleich';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
 import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
-import LastenausgleichRS from '../../core/service/lastenausgleichRS.rest';
+import {LastenausgleichRS} from '../../core/service/lastenausgleichRS.rest';
 import IFormController = angular.IFormController;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -114,7 +115,7 @@ export class LastenausgleichViewController implements IController {
             deleteText: 'LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT',
             parentController: this,
         }).then(() => {   // User confirmed removal
-            this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id).then(value => {
+            this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id).then(() => {
                 this.$onInit();
             });
         });

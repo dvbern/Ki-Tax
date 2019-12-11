@@ -35,7 +35,7 @@ import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
-import LastenausgleichRS from './service/lastenausgleichRS.rest';
+import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
