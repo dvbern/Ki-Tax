@@ -125,7 +125,8 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		final ModulTagesschuleGroup otherModulTagesschule = (ModulTagesschuleGroup) other;
 		return getModulTagesschuleName() == otherModulTagesschule.getModulTagesschuleName() &&
 			Objects.equals(getZeitVon(), otherModulTagesschule.getZeitVon()) &&
-			Objects.equals(getZeitBis(), otherModulTagesschule.getZeitBis());
+			Objects.equals(getZeitBis(), otherModulTagesschule.getZeitBis()) &&
+			Objects.equals(isWirdPaedagogischBetreut(), ((ModulTagesschuleGroup) other).isWirdPaedagogischBetreut());
 	}
 
 	@Nonnull
@@ -229,6 +230,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		builder.append(this.getZeitVon(), o.getZeitVon());
 		builder.append(this.getZeitBis(), o.getZeitBis());
 		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
+		builder.append(this.isWirdPaedagogischBetreut(), o.isWirdPaedagogischBetreut());
 		return builder.toComparison();
 	}
 

@@ -17,11 +17,9 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
@@ -31,23 +29,18 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.rechner.TagesschuleRechner;
 import ch.dvbern.ebegu.rechner.TagesschuleRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.services.util.TagesschuleBerechnungHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -110,99 +103,39 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
 
-		Verfuegung verfuegungMitFamiliensituation = evaluateFamiliensituationForTagesschuleAnmeldung(gesuch, gemeinde
-			, gesuchsperiode);
-
-		//TODO Add the new parameters to the Gesuchperiode GUI + DB or other story
-		TagesschuleRechnerParameterDTO parameterDTO = loadTagesschuleRechnerParameters(gemeinde, gesuchsperiode);
-
 		AnmeldungTagesschule anmeldungTagesschule =
 			betreuungService.findAnmeldungTagesschule(anmeldungTagesschuleId).orElseThrow(() -> new EbeguEntityNotFoundException(
 				"generateAndPersistZeitabschnitte",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				anmeldungTagesschuleId));
 
-		calculateStundenUndVerpflegungKostenProWoche(anmeldungTagesschule, parameterDTO);
+		List<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = generateZeitabschnitte(gesuch,
+			gemeinde, gesuchsperiode, anmeldungTagesschule);
+
+		persistence.persist(anmeldungTagesschuleZeitabschnitts);
+		persistence.merge(anmeldungTagesschule);
+
+		return anmeldungTagesschuleZeitabschnitts;
+	}
+
+	@Nonnull
+	private List<AnmeldungTagesschuleZeitabschnitt> generateZeitabschnitte(@Nonnull Gesuch gesuch,
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule){
+
+		Verfuegung verfuegungMitFamiliensituation = evaluateFamiliensituationForTagesschuleAnmeldung(gesuch, gemeinde
+			, gesuchsperiode);
+
+		TagesschuleRechnerParameterDTO parameterDTO = loadTagesschuleRechnerParameters(gemeinde, gesuchsperiode);
 
 		List<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts =
-			calculateTagesschuleZeitabschnitte(verfuegungMitFamiliensituation, parameterDTO);
+			TagesschuleBerechnungHelper.calculateZeitabschnitte(anmeldungTagesschule, parameterDTO, verfuegungMitFamiliensituation);
 
-
-		return anmeldungTagesschuleZeitabschnitts;
-	}
-
-	private  List<AnmeldungTagesschuleZeitabschnitt> calculateTagesschuleZeitabschnitte(@Nonnull Verfuegung verfuegungMitFamiliensituation,
-		@Nonnull TagesschuleRechnerParameterDTO parameterDTO){
-
-		TagesschuleRechner tagesschuleRechner = new TagesschuleRechner();
-
-		List<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new ArrayList<>();
-
-		for(VerfuegungZeitabschnitt verfuegungZeitabschnitt: verfuegungMitFamiliensituation.getZeitabschnitte()){
-			AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt =
-				new AnmeldungTagesschuleZeitabschnitt();
-			anmeldungTagesschuleZeitabschnitt.setMassgebendesEinkommenInklAbzugFamgr(verfuegungZeitabschnitt.getMassgebendesEinkommen());
-			BigDecimal tarif = tagesschuleRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, true);
-			//TODO fill the anmeldungTagesschuleZeitabschnitt Object with the value and calculate the total kosten
-		}
+		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabscnittsSet = new TreeSet<>();
+		anmeldungTagesschuleZeitabscnittsSet.addAll(anmeldungTagesschuleZeitabschnitts);
+		anmeldungTagesschule.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabscnittsSet);
 
 		return anmeldungTagesschuleZeitabschnitts;
-	}
-
-	private void calculateStundenUndVerpflegungKostenProWoche(AnmeldungTagesschule anmeldungTagesschule,
-		@Nonnull TagesschuleRechnerParameterDTO parameterDTO){
-		assert anmeldungTagesschule.getBelegungTagesschule() != null;
-		int stundenProWocheMitBetreuung = 0;
-		int minutesProWocheMitBetreuung  = 0;
-		BigDecimal verpflegKostenProWocheMitBetreuung  = new BigDecimal("0.0");
-		int stundenProWocheOhneBetreuung = 0;
-		int minutesProWocheOhneBetreuung = 0;
-		BigDecimal verpflegKostenProWocheOhneBetreuung = new BigDecimal("0.0");
-		for (BelegungTagesschuleModul belegungTagesschuleModul :
-			anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
-			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
-			int hours = modulTagesschule.getModulTagesschuleGroup().getZeitVon().getHour();
-			int minutes = modulTagesschule.getModulTagesschuleGroup().getZeitVon().getMinute();
-			LocalTime zeitBis = modulTagesschule.getModulTagesschuleGroup().getZeitBis();
-			zeitBis = zeitBis.minusHours(hours);
-			zeitBis = zeitBis.minusMinutes(minutes);
-			if(modulTagesschule.getModulTagesschuleGroup().isWirdPaedagogischBetreut()){
-				stundenProWocheMitBetreuung += zeitBis.getHour();
-				minutesProWocheMitBetreuung += zeitBis.getMinute();
-				if (modulTagesschule.getModulTagesschuleGroup().getVerpflegungskosten() != null) {
-					verpflegKostenProWocheMitBetreuung =
-						verpflegKostenProWocheMitBetreuung.add(modulTagesschule.getModulTagesschuleGroup().getVerpflegungskosten());
-				}
-			}
-			else{
-				stundenProWocheOhneBetreuung += zeitBis.getHour();
-				minutesProWocheOhneBetreuung += zeitBis.getMinute();
-				if (modulTagesschule.getModulTagesschuleGroup().getVerpflegungskosten() != null) {
-					verpflegKostenProWocheOhneBetreuung =
-						verpflegKostenProWocheOhneBetreuung.add(modulTagesschule.getModulTagesschuleGroup().getVerpflegungskosten());
-				}
-			}
-		}
-
-		Double additionalHours = minutesProWocheMitBetreuung / 60.0;
-		if (additionalHours >= 1.0) {
-			int hoursToAdd = additionalHours.intValue();
-			stundenProWocheMitBetreuung += hoursToAdd;
-			minutesProWocheMitBetreuung -= hoursToAdd * 60;
-		}
-		additionalHours = minutesProWocheOhneBetreuung / 60.0;
-		if (additionalHours >= 1.0) {
-			int hoursToAdd = additionalHours.intValue();
-			stundenProWocheOhneBetreuung += hoursToAdd;
-			minutesProWocheOhneBetreuung -= hoursToAdd * 60;
-		}
-
-		parameterDTO.setStundenProWocheMitBetreuung(stundenProWocheMitBetreuung);
-		parameterDTO.setMinutesProWocheMitBetreuung(minutesProWocheMitBetreuung);
-		parameterDTO.setVerpflegKostenProWocheMitBetreuung(verpflegKostenProWocheMitBetreuung);
-		parameterDTO.setStundenProWocheOhneBetreuung(stundenProWocheOhneBetreuung);
-		parameterDTO.setMinutesProWocheOhneBetreuung(minutesProWocheOhneBetreuung);
-		parameterDTO.setVerpflegKostenProWocheOhneBetreuung(verpflegKostenProWocheOhneBetreuung);
 	}
 
 

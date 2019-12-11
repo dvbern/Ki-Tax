@@ -67,7 +67,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "modulTagesschuleGroup", fetch =
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "anmeldungTagesschule", fetch =
 		FetchType.LAZY)
 	@OrderBy("gueltigkeit ASC")
 	private Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new TreeSet<>();

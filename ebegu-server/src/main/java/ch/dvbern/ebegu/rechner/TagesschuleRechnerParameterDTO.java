@@ -31,6 +31,9 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 
 /**
  * Kapselung aller Parameter, welche für die Tagesschule-Berechnung aller Angebote benötigt werden.
@@ -39,7 +42,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
 public final class TagesschuleRechnerParameterDTO {
 
 	private BigDecimal maxTarifMitPaedagogischerBetreuung;
-	private BigDecimal maxTarifOhnePaedagogischeBetreuung;
+	private BigDecimal maxTarifOhnePaedagogischerBetreuung;
 	private BigDecimal minTarif;
 	private BigDecimal maxMassgebendesEinkommen;
 	private BigDecimal minMassgebendesEinkommen;
@@ -53,7 +56,12 @@ public final class TagesschuleRechnerParameterDTO {
 
 
 	public TagesschuleRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
-		// TODO: Die Werte aus den Einstellungen lesen!
+		this.setMaxTarifMitPaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG,
+			gesuchsperiode, gemeinde));
+		this.setMaxTarifOhnePaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG,
+			gesuchsperiode, gemeinde));
+		this.setMinTarif(asBigDecimal(paramMap, MIN_TARIF,
+			gesuchsperiode, gemeinde));
 		this.setMaxMassgebendesEinkommen(asBigDecimal(paramMap, MAX_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde));
 		this.setMinMassgebendesEinkommen(asBigDecimal(paramMap, MIN_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde));
 	}
@@ -85,12 +93,12 @@ public final class TagesschuleRechnerParameterDTO {
 		this.maxTarifMitPaedagogischerBetreuung = maxTarifMitPaedagogischerBetreuung;
 	}
 
-	public BigDecimal getMaxTarifOhnePaedagogischeBetreuung() {
-		return maxTarifOhnePaedagogischeBetreuung;
+	public BigDecimal getMaxTarifOhnePaedagogischerBetreuung() {
+		return maxTarifOhnePaedagogischerBetreuung;
 	}
 
-	public void setMaxTarifOhnePaedagogischeBetreuung(BigDecimal maxTarifOhnePaedagogischeBetreuung) {
-		this.maxTarifOhnePaedagogischeBetreuung = maxTarifOhnePaedagogischeBetreuung;
+	public void setMaxTarifOhnePaedagogischerBetreuung(BigDecimal maxTarifOhnePaedagogischerBetreuung) {
+		this.maxTarifOhnePaedagogischerBetreuung = maxTarifOhnePaedagogischerBetreuung;
 	}
 
 	public BigDecimal getMinTarif() {

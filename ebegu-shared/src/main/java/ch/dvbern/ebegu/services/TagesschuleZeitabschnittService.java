@@ -28,5 +28,4 @@ public interface TagesschuleZeitabschnittService {
 	@Nonnull
 	List<AnmeldungTagesschuleZeitabschnitt> generateAndPersistZeitabschnitte(@Nonnull String gesuchId,
 		@Nonnull String anmeldungTagesschuleId);
-
 }

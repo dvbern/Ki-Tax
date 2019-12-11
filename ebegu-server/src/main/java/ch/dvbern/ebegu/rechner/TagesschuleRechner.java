@@ -54,7 +54,7 @@ public class TagesschuleRechner {
 				return parameterDTO.getMaxTarifMitPaedagogischerBetreuung();
 			}
 			else{
-				return parameterDTO.getMaxTarifOhnePaedagogischeBetreuung();
+				return parameterDTO.getMaxTarifOhnePaedagogischerBetreuung();
 			}
 		}
 
@@ -62,7 +62,8 @@ public class TagesschuleRechner {
 		if (wirdPedagogischBetreut) {
 			mataMinusMita = MathUtil.EXACT.subtract(parameterDTO.getMaxTarifMitPaedagogischerBetreuung(), parameterDTO.getMinTarif());
 		} else {
-			mataMinusMita = MathUtil.EXACT.subtract(parameterDTO.getMaxTarifOhnePaedagogischeBetreuung(), parameterDTO.getMinTarif());
+			mataMinusMita = MathUtil.EXACT.subtract(parameterDTO.getMaxTarifOhnePaedagogischerBetreuung(),
+				parameterDTO.getMinTarif());
 		}
 		BigDecimal maxmEMinusMinmE = MathUtil.EXACT.subtract(parameterDTO.getMaxMassgebendesEinkommen(),
 			parameterDTO.getMinMassgebendesEinkommen());
@@ -82,7 +83,7 @@ public class TagesschuleRechner {
 			tarif = MathUtil.maximum(tarif, parameterDTO.getMaxTarifMitPaedagogischerBetreuung());
 		}
 		else{
-			tarif = MathUtil.maximum(tarif, parameterDTO.getMaxTarifOhnePaedagogischeBetreuung());
+			tarif = MathUtil.maximum(tarif, parameterDTO.getMaxTarifOhnePaedagogischerBetreuung());
 		}
 		return tarif;
 	}

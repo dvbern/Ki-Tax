@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -43,7 +44,7 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal betreuungsstundenProWoche = BigDecimal.ZERO;
+	private LocalTime betreuungsstundenProWoche;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -81,11 +82,11 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
 	}
 
 	@Nonnull
-	public BigDecimal getBetreuungsstundenProWoche() {
+	public LocalTime getBetreuungsstundenProWoche() {
 		return betreuungsstundenProWoche;
 	}
 
-	public void setBetreuungsstundenProWoche(@Nonnull BigDecimal betreuungsstundenProWoche) {
+	public void setBetreuungsstundenProWoche(@Nonnull LocalTime betreuungsstundenProWoche) {
 		this.betreuungsstundenProWoche = betreuungsstundenProWoche;
 	}
 
