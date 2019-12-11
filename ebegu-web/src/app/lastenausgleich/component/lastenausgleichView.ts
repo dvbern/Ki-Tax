@@ -29,6 +29,8 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
+const LOG = LogFactory.createLog('LastenausgleichViewController');
+
 export class LastenausgleichViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public template = require('./lastenausgleichView.html');
@@ -81,6 +83,8 @@ export class LastenausgleichViewController implements IController {
                 .then((response: TSLastenausgleich) => {
                     this.lastenausgleiche.push(response);
                 });
+        }, err => {
+            LOG.error(err);
         });
     }
 
