@@ -16,11 +16,11 @@
 import * as moment from 'moment';
 import {TSFerienname} from './enums/TSFerienname';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBelegungFerieninselTag from './TSBelegungFerieninselTag';
-import TSFerieninselZeitraum from './TSFerieninselZeitraum';
-import TSGesuchsperiode from './TSGesuchsperiode';
+import {TSBelegungFerieninselTag} from './TSBelegungFerieninselTag';
+import {TSFerieninselZeitraum} from './TSFerieninselZeitraum';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
 
-export default class TSFerieninselStammdaten extends TSAbstractMutableEntity {
+export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     private _ferienname: TSFerienname;
     private _zeitraum: TSFerieninselZeitraum;              // Der erste Zeitraum

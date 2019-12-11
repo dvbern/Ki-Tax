@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -38,14 +39,16 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+		@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (!betreuung.isAngebotSchulamt()
-			&& (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
-			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung())) {
-			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
-			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
+		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+			Betreuung betreuung = (Betreuung) platz;
+			if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
+				|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {
+				// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
+				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
+			}
 		}
 	}
 }

@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSEinkommensverschlechterung from './TSEinkommensverschlechterung';
+import {TSEinkommensverschlechterung} from './TSEinkommensverschlechterung';
 
-export default class TSEinkommensverschlechterungContainer extends TSAbstractMutableEntity {
+export class TSEinkommensverschlechterungContainer extends TSAbstractMutableEntity {
 
     private _ekvGSBasisJahrPlus1: TSEinkommensverschlechterung;
     private _ekvGSBasisJahrPlus2: TSEinkommensverschlechterung;

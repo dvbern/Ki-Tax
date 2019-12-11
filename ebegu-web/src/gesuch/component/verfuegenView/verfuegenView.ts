@@ -19,7 +19,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -27,22 +27,22 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSBelegungTagesschuleModulGroup from '../../../models/TSBelegungTagesschuleModulGroup';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
-import TSVerfuegung from '../../../models/TSVerfuegung';
-import TSVerfuegungZeitabschnitt from '../../../models/TSVerfuegungZeitabschnitt';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {TSVerfuegung} from '../../../models/TSVerfuegung';
+import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StepDialogController} from '../../dialog/StepDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
-import BerechnungsManager from '../../service/berechnungsManager';
-import ExportRS from '../../service/exportRS.rest';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {ExportRS} from '../../service/exportRS.rest';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
@@ -84,6 +84,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public fragenObIgnorieren: boolean;
     public verfuegungsBemerkungenKontrolliert: boolean = false;
     public isVerfuegenClicked: boolean = false;
+    public showPercent: boolean;
+    public showHours: boolean;
+    public showVerfuegung: boolean;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -158,6 +161,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setParamsDependingOnCurrentVerfuegung();
             });
         }
+        this.showPercent = this.showPensumInPercent();
+        this.showHours = this.showPensumInHours();
+        this.showVerfuegung = this.showVerfuegen();
+
         this.initDevModeParameter();
     }
 
@@ -515,6 +522,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.getBetreuung().isAngebotTagesschule();
     }
 
+    public isTagesfamilienVerfuegung(): boolean {
+        return this.getBetreuung().isAngebotTagesfamilien();
+    }
+
     public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
         return getTSAbholungTagesschuleValues();
     }
@@ -532,5 +543,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {
         return TagesschuleUtil.getModulTimeAsString(modul);
+    }
+
+    public showPensumInHours(): boolean {
+        return this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public showPensumInPercent(): boolean {
+        return !this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
     }
 }

@@ -13,14 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSBenutzerStatus} from './enums/TSBenutzerStatus';
 import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSInstitution from './TSInstitution';
+import {TSInstitution} from './TSInstitution';
 import {TSTraegerschaft} from './TSTraegerschaft';
 
-export default class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
+export class TSBerechtigungHistory extends TSAbstractDateRangedEntity {
 
     private _userErstellt: string;
     private _username: string;

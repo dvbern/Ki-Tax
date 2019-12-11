@@ -17,7 +17,7 @@ import {TSAdressetyp} from './enums/TSAdressetyp';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSAdresse extends TSAbstractDateRangedEntity {
+export class TSAdresse extends TSAbstractDateRangedEntity {
 
     private _strasse: string;
     private _hausnummer: string;

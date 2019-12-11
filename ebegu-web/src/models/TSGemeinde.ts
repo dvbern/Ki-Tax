@@ -17,9 +17,9 @@
 
 import * as moment from 'moment';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-export default class TSGemeinde extends TSAbstractEntity {
+export class TSGemeinde extends TSAbstractEntity {
     public name: string;
     public gemeindeNummer: number;
     public bfsNummer: number;

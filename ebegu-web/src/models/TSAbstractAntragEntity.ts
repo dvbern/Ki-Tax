@@ -18,10 +18,10 @@ import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSDossier from './TSDossier';
-import TSGesuchsperiode from './TSGesuchsperiode';
+import {TSDossier} from './TSDossier';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
 
-export default class TSAbstractAntragEntity extends TSAbstractMutableEntity {
+export class TSAbstractAntragEntity extends TSAbstractMutableEntity {
 
     private _dossier: TSDossier;
     private _gesuchsperiode: TSGesuchsperiode;

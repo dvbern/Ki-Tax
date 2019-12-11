@@ -16,11 +16,11 @@
  */
 
 import {TSModulTagesschuleTyp} from './enums/TSModulTagesschuleTyp';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSModulTagesschuleGroup from './TSModulTagesschuleGroup';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSModulTagesschuleGroup} from './TSModulTagesschuleGroup';
 
-export default class TSEinstellungenTagesschule extends TSAbstractEntity {
+export class TSEinstellungenTagesschule extends TSAbstractEntity {
 
     public gesuchsperiode: TSGesuchsperiode;
     public modulTagesschuleTyp: TSModulTagesschuleTyp;

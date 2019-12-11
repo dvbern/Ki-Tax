@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
-import TSAdresse from './TSAdresse';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSAdresse} from './TSAdresse';
 
-export default class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntity {
+export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntity {
 
     public iban: string = undefined;
     public kontoinhaber: string = undefined;

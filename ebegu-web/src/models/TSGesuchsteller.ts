@@ -15,9 +15,9 @@
 
 import * as moment from 'moment';
 import {TSSprache} from './enums/TSSprache';
-import TSAbstractPersonEntity from './TSAbstractPersonEntity';
+import {TSAbstractPersonEntity} from './TSAbstractPersonEntity';
 
-export default class TSGesuchsteller extends TSAbstractPersonEntity {
+export class TSGesuchsteller extends TSAbstractPersonEntity {
 
     private _mail: string;
     private _mobile: string;

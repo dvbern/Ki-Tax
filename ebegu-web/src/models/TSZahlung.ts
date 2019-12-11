@@ -17,7 +17,7 @@ import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from './enums/TSZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSZahlung extends TSAbstractMutableEntity {
+export class TSZahlung extends TSAbstractMutableEntity {
 
     private _institutionsName: string;
 

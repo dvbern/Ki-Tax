@@ -14,14 +14,14 @@
  */
 
 import {IHttpBackendService, IQService} from 'angular';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import TSBetreuung from '../../../models/TSBetreuung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import BetreuungRS from './betreuungRS.rest';
+import {BetreuungRS} from './betreuungRS.rest';
 
 describe('betreuungRS', () => {
 

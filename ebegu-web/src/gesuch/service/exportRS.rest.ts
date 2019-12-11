@@ -14,9 +14,9 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class ExportRS {
+export class ExportRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

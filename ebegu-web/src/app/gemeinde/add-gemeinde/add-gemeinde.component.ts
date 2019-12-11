@@ -23,18 +23,18 @@ import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
-import TSExceptionReport from '../../../models/TSExceptionReport';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSBfsGemeinde} from '../../../models/TSBfsGemeinde';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
+import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 
 @Component({
     selector: 'dv-add-gemeinde',
@@ -119,7 +119,7 @@ export class AddGemeindeComponent implements OnInit {
 
         this.errorService.clearAll();
         if (this.isAtLeastOneAngebotSelected()) {
-            this.persistGemeindeWithGSCheck();
+            this.persistGemeinde();
         }
     }
 

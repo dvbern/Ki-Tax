@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
+import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
 
-export default class TSInstitutionStammdaten extends TSInstitutionStammdatenSummary {
+export class TSInstitutionStammdaten extends TSInstitutionStammdatenSummary {
 
     public administratoren: string = undefined; // read only
     public sachbearbeiter: string = undefined; // read only

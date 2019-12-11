@@ -16,7 +16,7 @@
 import * as moment from 'moment';
 import {LogLevel} from '../app/core/logging/log-level';
 import {LogFactory} from '../app/core/logging/LogFactory';
-import DateUtil from './DateUtil';
+import {DateUtil} from './DateUtil';
 
 // tslint:disable:no-identical-functions no-duplicate-string
 describe('dateUtil', () => {

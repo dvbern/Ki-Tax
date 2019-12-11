@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractFinanzielleSituation from './TSAbstractFinanzielleSituation';
+import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
-export default class TSEinkommensverschlechterung extends TSAbstractFinanzielleSituation {
+export class TSEinkommensverschlechterung extends TSAbstractFinanzielleSituation {
 
     private _geschaeftsgewinnBasisjahrMinus1: number;
 

@@ -14,13 +14,13 @@
  */
 
 import {IHttpService} from 'angular';
-import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import WizardStepManager from './wizardStepManager';
+import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {WizardStepManager} from './wizardStepManager';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 
-export default class EinkommensverschlechterungInfoRS {
+export class EinkommensverschlechterungInfoRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;

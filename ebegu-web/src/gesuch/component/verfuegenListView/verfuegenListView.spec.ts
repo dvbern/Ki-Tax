@@ -19,17 +19,17 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSDossier from '../../../models/TSDossier';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
 import {VerfuegenListViewController} from './verfuegenListView';
 
 describe('verfuegenListViewTest', () => {

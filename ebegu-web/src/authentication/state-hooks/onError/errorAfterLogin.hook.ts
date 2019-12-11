@@ -20,7 +20,7 @@ import {map, mergeMap, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
-import AuthServiceRS from '../../service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 import {OnErrorPriorities} from './onErrorPriorities';
 
 /**

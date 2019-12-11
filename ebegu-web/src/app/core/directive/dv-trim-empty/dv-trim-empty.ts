@@ -18,7 +18,7 @@ import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, INgMo
 /**
  * this directive can be added to an element that has an ngModel to trim the empty string to null
  */
-export default class DVTrimEmpty implements IDirective {
+export class DVTrimEmpty implements IDirective {
 
     public restrict = 'A';
     public require = '?ngModel';

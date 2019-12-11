@@ -28,7 +28,7 @@ import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, ILogS
  *
  * @see EBEGU-897
  */
-export default class DVSuppressFormSubmitOnEnter implements IDirective {
+export class DVSuppressFormSubmitOnEnter implements IDirective {
 
     public restrict = 'A';
     public link: IDirectiveLinkFn;

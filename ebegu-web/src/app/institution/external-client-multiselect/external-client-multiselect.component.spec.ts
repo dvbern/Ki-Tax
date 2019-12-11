@@ -20,7 +20,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {createClient} from '../../../models/TSExternalClient';
-import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {WindowRef} from '../../core/service/windowRef.service';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';

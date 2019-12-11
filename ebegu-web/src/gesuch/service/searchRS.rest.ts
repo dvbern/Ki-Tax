@@ -15,11 +15,11 @@
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
-import TSAntragDTO from '../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSAntragDTO} from '../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class SearchRS implements IEntityRS {
+export class SearchRS implements IEntityRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
     public serviceURL: string;

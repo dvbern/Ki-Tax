@@ -54,7 +54,7 @@ public class FachstelleRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -79,7 +79,7 @@ public class FachstelleRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -109,7 +109,7 @@ public class FachstelleRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(40), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		List<VerfuegungZeitabschnitt> nextZeitabschn = EbeguRuleTestsHelper.initializeRestanspruchForNextBetreuung(betreuung, result);

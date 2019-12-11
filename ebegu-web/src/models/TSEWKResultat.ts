@@ -14,12 +14,12 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSEWKPerson from './TSEWKPerson';
+import {TSEWKPerson} from './TSEWKPerson';
 
 /**
  * DTO für Resultate aus dem EWK
  */
-export default class TSEWKResultat extends TSAbstractMutableEntity {
+export class TSEWKResultat extends TSAbstractMutableEntity {
 
     private _maxResultate: number;
     private _anzahlResultate: number;

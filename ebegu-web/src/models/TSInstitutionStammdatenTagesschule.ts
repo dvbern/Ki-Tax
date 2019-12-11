@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
-import TSEinstellungenTagesschule from './TSEinstellungenTagesschule';
-import TSGemeinde from './TSGemeinde';
+import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSEinstellungenTagesschule} from './TSEinstellungenTagesschule';
+import {TSGemeinde} from './TSGemeinde';
 
-export default class TSInstitutionStammdatenTagesschule extends TSAbstractEntity {
+export class TSInstitutionStammdatenTagesschule extends TSAbstractEntity {
 
     public gemeinde: TSGemeinde;
     public einstellungenTagesschule: Array<TSEinstellungenTagesschule>;

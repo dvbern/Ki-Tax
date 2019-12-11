@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export default class TSGemeindeRegistrierung {
+export class TSGemeindeRegistrierung {
     public name: string;
     public id: string;
     public verbundName: string;

@@ -1098,6 +1098,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			.orElse(null);
 	}
 
+	@Nullable
+	public AbstractAnmeldung getFirstAnmeldung() {
+		return extractAllAnmeldungen().stream()
+			.findFirst()
+			.orElse(null);
+	}
+
 	/**
 	 * Ermittelt, ob mindestens eine Betreuung mit erweitertem Betreuungsaufwand erfasst wurde.
 	 * Falls ja, wird die finanzielle Situation nicht mehr zwingend.

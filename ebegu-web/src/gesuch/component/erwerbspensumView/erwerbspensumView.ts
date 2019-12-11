@@ -15,21 +15,21 @@
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSErwerbspensum from '../../../models/TSErwerbspensum';
-import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import TSUnbezahlterUrlaub from '../../../models/TSUnbezahlterUrlaub';
-import DateUtil from '../../../utils/DateUtil';
+import {TSErwerbspensum} from '../../../models/TSErwerbspensum';
+import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
+import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
+import {TSUnbezahlterUrlaub} from '../../../models/TSUnbezahlterUrlaub';
+import {DateUtil} from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class ErwerbspensumViewComponentConfig implements IComponentOptions {

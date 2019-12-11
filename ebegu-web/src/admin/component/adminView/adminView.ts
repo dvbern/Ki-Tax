@@ -15,10 +15,10 @@
 
 import {IComponentOptions, IHttpPromise} from 'angular';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSApplicationProperty from '../../../models/TSApplicationProperty';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {AbstractAdminViewController} from '../../abstractAdminView';
 import {ReindexRS} from '../../service/reindexRS.rest';
 
 export class AdminViewComponentConfig implements IComponentOptions {

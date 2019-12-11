@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -42,11 +42,11 @@ public class AbwesenheitCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		requireNonNull(betreuung.getBetreuungsangebotTyp());
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() && verfuegungZeitabschnitt.isLongAbwesenheit()) {
+		requireNonNull(platz.getBetreuungsangebotTyp());
+		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() && verfuegungZeitabschnitt.isLongAbwesenheit()) {
 			verfuegungZeitabschnitt.setBezahltVollkosten(true);
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, getLocale());
 		}

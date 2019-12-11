@@ -16,9 +16,9 @@
 import * as moment from 'moment';
 import {TSMahnungTyp} from './enums/TSMahnungTyp';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSGesuch from './TSGesuch';
+import {TSGesuch} from './TSGesuch';
 
-export default class TSMahnung extends TSAbstractMutableEntity {
+export class TSMahnung extends TSAbstractMutableEntity {
 
     private _gesuch: TSGesuch;
     private _mahnungTyp: TSMahnungTyp;

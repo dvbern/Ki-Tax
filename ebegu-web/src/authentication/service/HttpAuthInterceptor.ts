@@ -17,9 +17,9 @@ import {IHttpInterceptor, IHttpResponse, IPromise, IQService} from 'angular';
 import {isIgnorableHttpError} from '../../app/core/errors/service/HttpErrorInterceptor';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
-import HttpBuffer from './HttpBuffer';
+import {HttpBuffer} from './HttpBuffer';
 
-export default class HttpAuthInterceptor implements IHttpInterceptor {
+export class HttpAuthInterceptor implements IHttpInterceptor {
 
     public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
 

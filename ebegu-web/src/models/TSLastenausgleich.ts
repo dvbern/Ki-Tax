@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-export default class TSLastenausgleich extends TSAbstractEntity {
+export class TSLastenausgleich extends TSAbstractEntity {
 
     public jahr: number;
     public totalAlleGemeinden: number;

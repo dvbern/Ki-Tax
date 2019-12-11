@@ -14,13 +14,13 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSEWKResultat from '../../../models/TSEWKResultat';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSEWKResultat} from '../../../models/TSEWKResultat';
+import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import IHttpParamSerializer = angular.IHttpParamSerializer;
 
-export default class EwkRS {
+export class EwkRS {
 
     public static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
 

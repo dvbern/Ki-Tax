@@ -15,11 +15,11 @@
 
 import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
-import TSGesuch from '../../models/TSGesuch';
-import TSMahnung from '../../models/TSMahnung';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSMahnung} from '../../models/TSMahnung';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class MahnungRS implements IEntityRS {
+export class MahnungRS implements IEntityRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
 

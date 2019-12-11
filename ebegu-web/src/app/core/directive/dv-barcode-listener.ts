@@ -17,13 +17,13 @@ import {IController, IDirective, IDirectiveFactory, IDocumentService, ILogServic
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {FreigabeController} from '../../../gesuch/dialog/FreigabeController';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import TSAntragDTO from '../../../models/TSAntragDTO';
+import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import ErrorService from '../errors/service/ErrorService';
+import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {DvDialog} from './dv-dialog/dv-dialog';
 import ITranslateService = angular.translate.ITranslateService;

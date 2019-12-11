@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSDokumentGrund from '../TSDokumentGrund';
+import {TSDokumentGrund} from '../TSDokumentGrund';
 
-export default class TSDokumenteDTO {
+export class TSDokumenteDTO {
 
     private _dokumentGruende: Array<TSDokumentGrund>;
 

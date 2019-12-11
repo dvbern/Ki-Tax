@@ -18,7 +18,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {StammdatenHeaderComponent} from './stammdaten-header.component';
 
 describe('StammdatenHeaderComponent', () => {

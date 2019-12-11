@@ -271,8 +271,9 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(fehlerString + "Elternbeitrag", expected.getElternbeitrag(), calculated.getElternbeitrag());
 		Assert.assertEquals(fehlerString + "Anspruchberechtigtes Pensum", expected.getAnspruchberechtigtesPensum(), calculated.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(fehlerString + "Bemerkungen", expected.getBemerkungen(), calculated.getBemerkungen());
-		Assert.assertEquals(fehlerString + "Betreuungspensum",
-			MathUtil.DEFAULT.from(expected.getBetreuungspensum()), MathUtil.DEFAULT.from(calculated.getBetreuungspensum()));
+		Assert.assertEquals(fehlerString + "BetreuungspensumProzent",
+			MathUtil.DEFAULT.from(expected.getBetreuungspensumProzent()),
+			MathUtil.DEFAULT.from(calculated.getBetreuungspensumProzent()));
 		Assert.assertEquals(fehlerString + "Vollkosten", expected.getVollkosten(), calculated.getVollkosten());
 	}
 

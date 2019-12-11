@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export default class TSPublicAppConfig {
+export class TSPublicAppConfig {
     public currentNode: string;
     public devmode: boolean;
     public whitelist: string;

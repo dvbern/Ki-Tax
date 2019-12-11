@@ -136,7 +136,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
 	@Column(nullable = false)
-	private @Min(0) @NotNull BigDecimal betreuungspensum = BigDecimal.ZERO;
+	private @Min(0) @NotNull BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
 
 	/**
 	 * Anpsruch für diese Kita, bzw. Tageseltern Kleinkinder
@@ -159,7 +159,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	// TODO unused in kibon -> remove?
 	@Column(nullable = true)
-	private BigDecimal betreuungsstunden = BigDecimal.ZERO;
+	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
 
 	@Column(nullable = true)
 	private BigDecimal vollkosten = BigDecimal.ZERO;
@@ -226,7 +226,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private boolean eingeschult;
 
-	@Transient
+	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
 
 	public VerfuegungZeitabschnitt() {
@@ -249,13 +249,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
-		this.betreuungspensum = toCopy.betreuungspensum;
+		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.anspruchberechtigtesPensum = toCopy.anspruchberechtigtesPensum;
 		this.verfuegteAnzahlZeiteinheiten = toCopy.verfuegteAnzahlZeiteinheiten;
 		this.anspruchsberechtigteAnzahlZeiteinheiten = toCopy.anspruchsberechtigteAnzahlZeiteinheiten;
 		this.zeiteinheit = toCopy.zeiteinheit;
-		this.betreuungsstunden = toCopy.betreuungsstunden;
+		this.setBetreuungspensumZeiteinheit(toCopy.getBetreuungspensumZeiteinheit());
 		this.setVollkosten(toCopy.getVollkosten());
 		this.setElternbeitrag(toCopy.getElternbeitrag());
 		this.setVerguenstigungOhneBeruecksichtigungVollkosten(toCopy.getVerguenstigungOhneBeruecksichtigungVollkosten());
@@ -330,12 +330,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	@Nonnull
-	public BigDecimal getBetreuungspensum() {
-		return betreuungspensum;
+	public BigDecimal getBetreuungspensumProzent() {
+		return betreuungspensumProzent;
 	}
 
-	public void setBetreuungspensum(@Nonnull BigDecimal betreuungspensum) {
-		this.betreuungspensum = betreuungspensum;
+	public void setBetreuungspensumProzent(@Nonnull BigDecimal betreuungspensumProzent) {
+		this.betreuungspensumProzent = betreuungspensumProzent;
 	}
 
 	public int getFachstellenpensum() {
@@ -364,14 +364,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setAnspruchberechtigtesPensum(int anspruchberechtigtesPensum) {
 		this.anspruchberechtigtesPensum = anspruchberechtigtesPensum;
-	}
-
-	public BigDecimal getBetreuungsstunden() {
-		return betreuungsstunden;
-	}
-
-	public void setBetreuungsstunden(BigDecimal betreuungsstunden) {
-		this.betreuungsstunden = betreuungsstunden;
 	}
 
 	public BigDecimal getVollkosten() {
@@ -679,7 +671,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount" })
 	public void add(VerfuegungZeitabschnitt other) {
-		this.setBetreuungspensum(this.getBetreuungspensum().add(other.getBetreuungspensum()));
+		this.setBetreuungspensumProzent(this.getBetreuungspensumProzent().add(other.getBetreuungspensumProzent()));
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
 			+ other.getAusserordentlicherAnspruch());
@@ -702,13 +694,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			.add(this.anspruchsberechtigteAnzahlZeiteinheiten));
 
 		BigDecimal newBetreuungsstunden = BigDecimal.ZERO;
-		if (this.getBetreuungsstunden() != null) {
-			newBetreuungsstunden = newBetreuungsstunden.add(this.getBetreuungsstunden());
+		if (this.getBetreuungspensumZeiteinheit() != null) {
+			newBetreuungsstunden = newBetreuungsstunden.add(this.getBetreuungspensumZeiteinheit());
 		}
-		if (other.getBetreuungsstunden() != null) {
-			newBetreuungsstunden = newBetreuungsstunden.add(other.getBetreuungsstunden());
+		if (other.getBetreuungspensumZeiteinheit() != null) {
+			newBetreuungsstunden = newBetreuungsstunden.add(other.getBetreuungspensumZeiteinheit());
 		}
-		this.setBetreuungsstunden(newBetreuungsstunden);
+		this.setBetreuungspensumZeiteinheit(newBetreuungsstunden);
 
 		if (this.getErwerbspensumGS1() == null && other.getErwerbspensumGS1() == null) {
 			this.setErwerbspensumGS1(null);
@@ -852,7 +844,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@Transient
 	public BigDecimal getBgPensum() {
-		return getBetreuungspensum().min(MathUtil.DEFAULT.from(getAnspruchberechtigtesPensum()));
+		return getBetreuungspensumProzent().min(MathUtil.DEFAULT.from(getAnspruchberechtigtesPensum()));
 	}
 
 	@Override
@@ -862,7 +854,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " EP GS1: " + erwerbspensumGS1 + '\t'
 			+ " EP GS2: " + erwerbspensumGS2 + '\t'
-			+ " BetrPensum: " + betreuungspensum + '\t'
+			+ " BetrPensum: " + betreuungspensumProzent + '\t'
 			+ " Anspruch: " + anspruchberechtigtesPensum + '\t'
 			+ " Restanspruch: " + anspruchspensumRest + '\t'
 			+ " BG-Pensum: " + getBgPensum() + '\t'
@@ -904,7 +896,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return isSameErwerbspensum(erwerbspensumGS1, otherVerfuegungZeitabschnitt.erwerbspensumGS1) &&
 			isSameErwerbspensum(erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
-			MathUtil.isSame(betreuungspensum, otherVerfuegungZeitabschnitt.betreuungspensum) &&
+			MathUtil.isSame(betreuungspensumProzent, otherVerfuegungZeitabschnitt.betreuungspensumProzent) &&
 			fachstellenpensum == otherVerfuegungZeitabschnitt.fachstellenpensum &&
 			ausserordentlicherAnspruch == otherVerfuegungZeitabschnitt.ausserordentlicherAnspruch &&
 			anspruchspensumRest == otherVerfuegungZeitabschnitt.anspruchspensumRest &&
@@ -943,9 +935,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			return true;
 		}
 
-		return MathUtil.isSame(betreuungspensum, that.betreuungspensum) &&
+		return MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
+			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
 			MathUtil.isSame(vollkosten, that.vollkosten) &&
 			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
 			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
@@ -981,9 +973,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// zuSpaetEingereicht und zahlungsstatus sind hier nicht aufgefuehrt, weil;
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
-		return MathUtil.isSame(betreuungspensum, that.betreuungspensum) &&
+		return MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
+			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
 			MathUtil.isSame(vollkosten, that.vollkosten) &&
 			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
 			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
@@ -1002,7 +994,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public boolean isSameBerechnung(VerfuegungZeitabschnitt that) {
 		return MathUtil.isSame(getBgPensum(), that.getBgPensum()) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
+			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
 			MathUtil.isSame(verguenstigung, that.verguenstigung) &&
 			MathUtil.isSame(getMinimalerElternbeitragGekuerzt(), that.getMinimalerElternbeitragGekuerzt()) &&
 			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0) &&
@@ -1024,5 +1016,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
+	}
+
+	public BigDecimal getBetreuungspensumZeiteinheit() {
+		return betreuungspensumZeiteinheit;
+	}
+
+	public void setBetreuungspensumZeiteinheit(BigDecimal betreuungspensumZeiteinheit) {
+		this.betreuungspensumZeiteinheit = betreuungspensumZeiteinheit;
 	}
 }

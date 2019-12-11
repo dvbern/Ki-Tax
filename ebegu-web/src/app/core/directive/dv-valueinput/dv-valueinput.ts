@@ -14,7 +14,7 @@
  */
 
 import {IAugmentedJQuery, IController, IDirective, IDirectiveFactory, INgModelController} from 'angular';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import ITimeoutService = angular.ITimeoutService;
 
 declare let require: any;

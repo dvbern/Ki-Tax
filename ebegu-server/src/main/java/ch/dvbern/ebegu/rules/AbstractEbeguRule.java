@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
@@ -55,7 +55,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Valid
 	private final DateRange validityPeriod;
 
-	public AbstractEbeguRule(
+	protected AbstractEbeguRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
 		@Nonnull DateRange validityPeriod,
@@ -104,26 +104,26 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
-	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung);
+	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
 
 	/**
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
 	 * Hier kann man davon ausgehen, dass die Zeitabschnitte schon validiert und gemergt sind.
 	 */
-	protected abstract void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
+	protected abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
 
 	/**
 	 * Hauptmethode der Regelberechnung. Diese wird von Aussen aufgerufen
 	 */
 	@Nonnull
 	@Override
-	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
 		Collections.sort(zeitabschnitte);
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
 
-		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(platz);
 		Collections.sort(abschnitteCreatedInRule);
 
 		// In dieser Funktion muss sichergestellt werden, dass in der neuen Liste keine Ueberschneidungen mehr bestehen
@@ -134,13 +134,13 @@ public abstract class AbstractEbeguRule implements Rule {
 		// Die Zeitabschnitte (jetzt ohne Überschneidungen) normalisieren:
 		// - Muss innerhalb Gesuchsperiode sein
 		// - Müssen sich unterscheiden (d.h. 20+20 vs 40 soll nur einen Schnitz geben)
-		Gesuchsperiode gesuchsperiode = betreuung.extractGesuchsperiode();
+		Gesuchsperiode gesuchsperiode = platz.extractGesuchsperiode();
 		List<VerfuegungZeitabschnitt> normalizedZeitabschn = normalizeZeitabschnitte(mergedZeitabschnitte,
 			gesuchsperiode);
 
 		// Die eigentliche Rule anwenden
 		for (VerfuegungZeitabschnitt zeitabschnitt : normalizedZeitabschn) {
-			executeRule(betreuung, zeitabschnitt);
+			executeRule(platz, zeitabschnitt);
 		}
 		return normalizedZeitabschn;
 	}

@@ -18,8 +18,8 @@ import IFormController = angular.IFormController;
 import ITimeoutService = angular.ITimeoutService;
 import {StateService} from '@uirouter/core';
 import {IController} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
 

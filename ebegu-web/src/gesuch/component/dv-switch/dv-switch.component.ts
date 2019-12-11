@@ -51,7 +51,7 @@ import {
 export class DvSwitchComponent<T> implements OnChanges {
 
     // It is allowed to set any values as switchOption. switchValue will then have the select (<any>) option
-    @Input() private switchValue: T;
+    @Input() public switchValue: T;
     @Input() public readonly switchOptionLeft: T;
     @Input() public readonly switchOptionRight: T;
 
@@ -82,8 +82,8 @@ export class DvSwitchComponent<T> implements OnChanges {
         }
     }
 
-    @HostListener('keydown.space', ['$event'])
-    @HostListener('click', ['$event'])
+    @HostListener('keydown.space', [])
+    @HostListener('click', [])
     public toggle(): void {
         if (this.disabled) {
             return;
@@ -99,6 +99,7 @@ export class DvSwitchComponent<T> implements OnChanges {
             this.tabindex = changes.disabled.currentValue ? -1 : 0;
         }
     }
+
     private emitAndSetValue(value: T): void {
         this.switchValue = value;
         this.switchValueChange.emit(value);

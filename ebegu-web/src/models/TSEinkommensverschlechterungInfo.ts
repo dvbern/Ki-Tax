@@ -16,7 +16,7 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 // tslint:disable:naming-convention variable-name
-export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableEntity {
+export class TSEinkommensverschlechterungInfo extends TSAbstractMutableEntity {
 
     private _einkommensverschlechterung: boolean = false;
 

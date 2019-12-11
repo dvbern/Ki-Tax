@@ -18,17 +18,17 @@ import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSAbwesenheitContainer from './TSAbwesenheitContainer';
-import TSBelegungFerieninsel from './TSBelegungFerieninsel';
-import TSBelegungTagesschule from './TSBelegungTagesschule';
-import TSBetreuungspensumAbweichung from './TSBetreuungspensumAbweichung';
-import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
-import TSErweiterteBetreuungContainer from './TSErweiterteBetreuungContainer';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
-import TSVerfuegung from './TSVerfuegung';
+import {TSAbwesenheitContainer} from './TSAbwesenheitContainer';
+import {TSBelegungFerieninsel} from './TSBelegungFerieninsel';
+import {TSBelegungTagesschule} from './TSBelegungTagesschule';
+import {TSBetreuungspensumAbweichung} from './TSBetreuungspensumAbweichung';
+import {TSBetreuungspensumContainer} from './TSBetreuungspensumContainer';
+import {TSErweiterteBetreuungContainer} from './TSErweiterteBetreuungContainer';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
+import {TSVerfuegung} from './TSVerfuegung';
 
-export default class TSBetreuung extends TSAbstractMutableEntity {
+export class TSBetreuung extends TSAbstractMutableEntity {
 
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _betreuungsstatus: TSBetreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;

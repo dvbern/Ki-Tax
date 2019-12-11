@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBetreuungspensum from './TSBetreuungspensum';
+import {TSBetreuungspensum} from './TSBetreuungspensum';
 
-export default class TSBetreuungspensumContainer extends TSAbstractMutableEntity {
+export class TSBetreuungspensumContainer extends TSAbstractMutableEntity {
 
     private _betreuungspensumGS: TSBetreuungspensum;
     private _betreuungspensumJA: TSBetreuungspensum;

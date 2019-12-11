@@ -18,13 +18,13 @@ import * as moment from 'moment';
 import {from, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSZahlung from '../../../models/TSZahlung';
-import TSZahlungsauftrag from '../../../models/TSZahlungsauftrag';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSZahlung} from '../../../models/TSZahlung';
+import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class ZahlungRS {
+export class ZahlungRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

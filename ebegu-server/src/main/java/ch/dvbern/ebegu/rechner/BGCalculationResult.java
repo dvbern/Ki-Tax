@@ -45,6 +45,8 @@ public class BGCalculationResult {
 	private BigDecimal anspruchsberechtigteAnzahlZeiteinheiten = BigDecimal.ZERO;
 	@Nonnull
 	private PensumUnits zeiteinheit = PensumUnits.DAYS;
+	@Nonnull
+	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
 
 	public void toVerfuegungZeitabschnitt(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		zeitabschnitt.setMinimalerElternbeitrag(minimalerElternbeitrag);
@@ -59,6 +61,7 @@ public class BGCalculationResult {
 		zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(verfuegteAnzahlZeiteinheiten);
 		zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(anspruchsberechtigteAnzahlZeiteinheiten);
 		zeitabschnitt.setZeiteinheit(zeiteinheit);
+		zeitabschnitt.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 	}
 
 	@Override
@@ -76,6 +79,7 @@ public class BGCalculationResult {
 			.add("verfuegteAnzahlZeiteinheiten", verfuegteAnzahlZeiteinheiten)
 			.add("anspruchsberechtigteAnzahlZeiteinheiten", anspruchsberechtigteAnzahlZeiteinheiten)
 			.add("zeiteinheit", zeiteinheit)
+			.add("betreuungspensumZeiteinheit",betreuungspensumZeiteinheit)
 			.toString();
 	}
 
@@ -161,5 +165,14 @@ public class BGCalculationResult {
 
 	public void setZeiteinheit(@Nonnull PensumUnits zeiteinheit) {
 		this.zeiteinheit = zeiteinheit;
+	}
+
+	@Nonnull
+	public BigDecimal getBetreuungspensumZeiteinheit() {
+		return betreuungspensumZeiteinheit;
+	}
+
+	public void setBetreuungspensumZeiteinheit(@Nonnull BigDecimal betreuungspensumZeiteinheit) {
+		this.betreuungspensumZeiteinheit = betreuungspensumZeiteinheit;
 	}
 }

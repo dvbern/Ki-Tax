@@ -20,7 +20,7 @@ import {IDeferred, IHttpService, IRequestConfig} from 'angular';
  * Code from Kita-Projekt, den wir in Typescript geschrieben haben
  * Adapted from https://github.com/witoldsz/angular-http-auth
  */
-export default class HttpBuffer {
+export class HttpBuffer {
 
     public static $inject = ['$injector'];
 

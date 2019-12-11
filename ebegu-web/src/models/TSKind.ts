@@ -15,11 +15,11 @@
 
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSKinderabzug} from './enums/TSKinderabzug';
-import TSAbstractPersonEntity from './TSAbstractPersonEntity';
+import {TSAbstractPersonEntity} from './TSAbstractPersonEntity';
 import {TSPensumAusserordentlicherAnspruch} from './TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
-export default class TSKind extends TSAbstractPersonEntity {
+export class TSKind extends TSAbstractPersonEntity {
 
     private _kinderabzugErstesHalbjahr: TSKinderabzug;
     private _kinderabzugZweitesHalbjahr: TSKinderabzug;

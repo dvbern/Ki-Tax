@@ -16,12 +16,12 @@
 import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
 import {from, merge, Observable, of, Subject, timer} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {Log, LogFactory} from '../../logging/LogFactory';
-import MitteilungRS from '../../service/mitteilungRS.rest';
+import {MitteilungRS} from '../../service/mitteilungRS.rest';
 
 @Component({
     selector: 'dv-posteingang',

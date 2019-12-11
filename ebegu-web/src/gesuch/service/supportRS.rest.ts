@@ -16,10 +16,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSSupportAnfrage from '../../models/TSSupportAnfrage';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSSupportAnfrage} from '../../models/TSSupportAnfrage';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class SupportRS {
+export class SupportRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

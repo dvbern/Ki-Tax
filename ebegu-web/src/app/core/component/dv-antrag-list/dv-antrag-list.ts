@@ -17,8 +17,8 @@ import {IComponentOptions, IController, IFilterService, IPromise, IWindowService
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {
     getTSAntragStatusPendenzValues,
     getTSAntragStatusValuesByRole,
@@ -29,16 +29,16 @@ import {
     getTSBetreuungsangebotTypValuesForMandant,
     TSBetreuungsangebotTyp,
 } from '../../../../models/enums/TSBetreuungsangebotTyp';
-import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
-import TSAntragDTO from '../../../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
-import TSBenutzer from '../../../../models/TSBenutzer';
-import TSGemeinde from '../../../../models/TSGemeinde';
-import TSInstitution from '../../../../models/TSInstitution';
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
+import {TSAntragDTO} from '../../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDTO';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSInstitution} from '../../../../models/TSInstitution';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
-import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
+import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 

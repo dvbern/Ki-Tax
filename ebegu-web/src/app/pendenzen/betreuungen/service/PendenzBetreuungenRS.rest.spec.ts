@@ -16,11 +16,11 @@
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
-import TSPendenzBetreuung from '../../../../models/TSPendenzBetreuung';
-import EbeguRestUtil from '../../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../../utils/TestDataUtil.spec';
+import {TSPendenzBetreuung} from '../../../../models/TSPendenzBetreuung';
+import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {PENDENZEN_BETREUUNGEN_JS_MODULE} from '../pendenzenBetreuungen.module';
-import PendenzBetreuungenRS from './PendenzBetreuungenRS.rest';
+import {PendenzBetreuungenRS} from './PendenzBetreuungenRS.rest';
 
 describe('pendenzBetreuungenRS', () => {
 

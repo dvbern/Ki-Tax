@@ -14,11 +14,11 @@
  */
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
-import GlobalCacheService from '../../../gesuch/service/globalCacheService';
+import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import TSApplicationProperty from '../../../models/TSApplicationProperty';
-import TSPublicAppConfig from '../../../models/TSPublicAppConfig';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class ApplicationPropertyRS {
 

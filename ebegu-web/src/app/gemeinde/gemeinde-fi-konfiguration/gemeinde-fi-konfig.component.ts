@@ -21,7 +21,7 @@ import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
+import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 
 @Component({
     selector: 'dv-gemeinde-fi-konfiguration',

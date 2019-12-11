@@ -17,8 +17,8 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import TSExternalClient, {externalClientComparator} from '../../../models/TSExternalClient';
-import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
+import {TSExternalClient, externalClientComparator} from '../../../models/TSExternalClient';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 
 let nextId = 0;
 
