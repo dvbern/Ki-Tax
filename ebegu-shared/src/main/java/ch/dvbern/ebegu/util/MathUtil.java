@@ -463,4 +463,10 @@ public enum MathUtil {
 		}
 		return value2;
 	}
+
+	@Nonnull
+	public static BigDecimal roundToNearestQuarter(@Nonnull BigDecimal value) {
+		value = MathUtil.GANZZAHL.multiply(value, new BigDecimal(4));
+		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(value, new BigDecimal(4));
+	}
 }
