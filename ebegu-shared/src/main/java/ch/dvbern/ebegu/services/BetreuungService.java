@@ -218,4 +218,10 @@ public interface BetreuungService {
 	 * die Anmeldung existiert
 	 */
 	void removeAnmeldung(@Nonnull AbstractAnmeldung anmeldung);
+
+	/**
+	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_MODULE_AKZEPTIERT und sendet dem Gesuchsteller eine E-Mail.
+	 */
+	@Nonnull
+	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 }
