@@ -24,7 +24,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -40,25 +40,25 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> einkommensAbschnitte = new ArrayList<>();
 		// Nur ausführen wenn Finanzdaten gesetzt
 		// Der {@link FinanzielleSituationRechner} wurde verwendet um das jeweils geltende  Einkommen auszurechnen. Das heisst im DTO ist schon
 		// jeweils das zu verwendende Einkommen gesetzt
-		FinanzDatenDTO finanzDatenDTOAlleine = betreuung.extractGesuch().getFinanzDatenDTO_alleine();
-		FinanzDatenDTO finanzDatenDTOZuZweit = betreuung.extractGesuch().getFinanzDatenDTO_zuZweit();
+		FinanzDatenDTO finanzDatenDTOAlleine = platz.extractGesuch().getFinanzDatenDTO_alleine();
+		FinanzDatenDTO finanzDatenDTOZuZweit = platz.extractGesuch().getFinanzDatenDTO_zuZweit();
 
 		if (finanzDatenDTOAlleine != null && finanzDatenDTOZuZweit != null) {
 			VerfuegungZeitabschnitt lastAbschnitt;
 
 			// Abschnitt Finanzielle Situation (Massgebendes Einkommen fuer die Gesuchsperiode)
-			VerfuegungZeitabschnitt abschnittFinanzielleSituation = new VerfuegungZeitabschnitt(betreuung.extractGesuchsperiode().getGueltigkeit());
+			VerfuegungZeitabschnitt abschnittFinanzielleSituation = new VerfuegungZeitabschnitt(platz.extractGesuchsperiode().getGueltigkeit());
 			einkommensAbschnitte.add(abschnittFinanzielleSituation);
 			lastAbschnitt = abschnittFinanzielleSituation;
 
 			// Einkommensverschlechterung 1: In mind. 1 Kombination eingegeben
 			if (finanzDatenDTOAlleine.isEkv1Erfasst() || finanzDatenDTOZuZweit.isEkv1Erfasst()) {
-				int jahr = betreuung.extractGesuchsperiode().getBasisJahrPlus1();
+				int jahr = platz.extractGesuchsperiode().getBasisJahrPlus1();
 				DateRange rangeEKV1 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
@@ -75,7 +75,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
 			// Einkommensverschlechterung 2: In mind. 1 Kombination akzeptiert
 			if (finanzDatenDTOAlleine.isEkv2Erfasst() || finanzDatenDTOZuZweit.isEkv2Erfasst()) {
-				int jahr = betreuung.extractGesuchsperiode().getBasisJahrPlus2();
+				int jahr = platz.extractGesuchsperiode().getBasisJahrPlus2();
 				DateRange rangeEKV2 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
 

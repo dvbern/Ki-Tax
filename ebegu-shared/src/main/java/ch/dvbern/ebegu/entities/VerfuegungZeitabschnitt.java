@@ -226,7 +226,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private boolean eingeschult;
 
-	@Transient
+	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
 
 	public VerfuegungZeitabschnitt() {

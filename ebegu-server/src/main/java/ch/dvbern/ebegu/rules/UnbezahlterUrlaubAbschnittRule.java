@@ -27,7 +27,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -58,12 +58,12 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 	 */
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
-		if (!requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+		if (!requireNonNull(platz.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
 			return new ArrayList<>();
 		}
 
-		return super.createVerfuegungsZeitabschnitte(betreuung);
+		return super.createVerfuegungsZeitabschnitte(platz);
 	}
 
 	/**

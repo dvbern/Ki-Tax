@@ -269,7 +269,7 @@ public class BetreuungResource {
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
 
-	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt", response = JaxBetreuung.class)
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
 	@Nonnull
 	@PUT
 	@Path("/schulamt/uebernehmen")
@@ -284,7 +284,7 @@ public class BetreuungResource {
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -517,5 +517,32 @@ public class BetreuungResource {
 
 		Betreuung betreuung = betreuungOptional.get();
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
+	}
+
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt aber die Finanzeil Situation ist "
+		+ "noch nicht geprueft",
+		response =	JaxBetreuung.class)
+	@Nonnull
+	@PUT
+	@Path("/schulamt/akzeptieren")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxBetreuung anmeldungSchulamtModuleAkzeptieren(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getKindId());
+
+		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
+		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+
+		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
+		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
+		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung);
+
+		return converter.platzToJAX(persistedBetreuung);
 	}
 }

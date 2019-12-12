@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -39,11 +39,11 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		betreuung.getBetreuungsangebotTyp();
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		platz.getBetreuungsangebotTyp();
+		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getAusserordentlicherAnspruch();
 			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			// Es wird der grössere der beiden Werte genommen!
