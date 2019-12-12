@@ -223,6 +223,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 		case MUTATION:
 			target.setNextNumberBetreuung(this.getNextNumberBetreuung());
 			copyBetreuungen(target, copyType, targetGesuch);
+			copyAnmeldungen(target, copyType, targetGesuch);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -237,6 +238,15 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 		target.setBetreuungen(new TreeSet<>());
 		for (Betreuung betreuung : this.getBetreuungen()) {
 			target.getBetreuungen().add(betreuung.copyBetreuung(new Betreuung(), copyType, target, targetGesuch.getEingangsart()));
+		}
+	}
+
+	private void copyAnmeldungen(@Nonnull KindContainer target, @Nonnull AntragCopyType copyType,
+		@Nonnull Gesuch targetGesuch) {
+		target.setAnmeldungenTagesschule(new TreeSet<>());
+		for (AnmeldungTagesschule anmeldungTagesschule : this.getAnmeldungenTagesschule()) {
+			target.getAnmeldungenTagesschule().add(anmeldungTagesschule.copyAnmeldungTagesschule(
+				new AnmeldungTagesschule(), copyType, target, targetGesuch.getEingangsart()));
 		}
 	}
 
