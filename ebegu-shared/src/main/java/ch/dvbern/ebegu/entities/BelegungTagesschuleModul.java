@@ -87,11 +87,13 @@ public class BelegungTagesschuleModul extends AbstractEntity implements Comparab
 	}
 
 	@Nonnull
-	public BelegungTagesschuleModul copyBelegungTagesschuleModul(@Nonnull BelegungTagesschuleModul target, @Nonnull AntragCopyType copyType) {
+	public BelegungTagesschuleModul copyBelegungTagesschuleModul(@Nonnull BelegungTagesschuleModul target,
+		@Nonnull AntragCopyType copyType) {
 		switch (copyType) {
 		case MUTATION:
 			target.setIntervall(this.getIntervall());
 			target.setModulTagesschule(this.getModulTagesschule());
+
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
