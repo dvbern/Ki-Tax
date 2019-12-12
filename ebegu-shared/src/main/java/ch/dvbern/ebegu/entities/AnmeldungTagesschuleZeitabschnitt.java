@@ -34,6 +34,8 @@ import org.hibernate.envers.Audited;
 @Audited
 public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
 
+	private static final long serialVersionUID = -9047857320548372570L;
+
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private BigDecimal massgebendesEinkommenInklAbzugFamgr = BigDecimal.ZERO;

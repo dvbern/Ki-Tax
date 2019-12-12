@@ -91,10 +91,10 @@ public class TagesschuleBerechnungHelper {
 		assert anmeldungTagesschule.getBelegungTagesschule() != null;
 		int stundenProWocheMitBetreuung = 0;
 		int minutesProWocheMitBetreuung  = 0;
-		BigDecimal verpflegKostenProWocheMitBetreuung  = MathUtil.toTwoKommastelle(new BigDecimal(0));
+		BigDecimal verpflegKostenProWocheMitBetreuung  = MathUtil.toTwoKommastelle(BigDecimal.ZERO);
 		int stundenProWocheOhneBetreuung = 0;
 		int minutesProWocheOhneBetreuung = 0;
-		BigDecimal verpflegKostenProWocheOhneBetreuung = MathUtil.toTwoKommastelle(new BigDecimal(0));
+		BigDecimal verpflegKostenProWocheOhneBetreuung = MathUtil.toTwoKommastelle(BigDecimal.ZERO);
 		for (BelegungTagesschuleModul belegungTagesschuleModul :
 			anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
 			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
@@ -151,7 +151,7 @@ public class TagesschuleBerechnungHelper {
 			MathUtil.EXACT.multiply(anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(),hoursProWoche);
 		BigDecimal totalKostenMinuten =
 			MathUtil.EXACT.multiply(anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(),minutesProWoche);
-		totalKostenMinuten = MathUtil.EXACT.divide(totalKostenMinuten, new BigDecimal(60));
+		totalKostenMinuten = MathUtil.EXACT.divide(totalKostenMinuten, BigDecimal.ZERO);
 
 		return MathUtil.DEFAULT.addNullSafe(totalKostenStunden, totalKostenMinuten,
 			anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten());
