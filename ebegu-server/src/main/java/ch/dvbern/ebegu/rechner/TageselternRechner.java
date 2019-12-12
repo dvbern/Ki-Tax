@@ -48,7 +48,7 @@ public class TageselternRechner extends AbstractBGRechner {
 		BigDecimal stundenGemaessPensumUndAnteilMonat =
 			MATH.multiplyNullSafe(oeffnungstageProMonat, anteilMonat, pensum, oeffnungsstundenProTag);
 
-		return MathUtil.roundToNearestQuarter(stundenGemaessPensumUndAnteilMonat);
+		return stundenGemaessPensumUndAnteilMonat;
 	}
 
 	@Nonnull
