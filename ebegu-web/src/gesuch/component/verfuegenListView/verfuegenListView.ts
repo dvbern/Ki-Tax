@@ -488,7 +488,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showDokumenteNichtKomplett(): boolean {
-        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status) && this.getGesuch().dokumenteHochgeladen
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status)
+            && this.getGesuch().dokumenteHochgeladen
             && !this.isGesuchReadonly()) : false;
     }
 
