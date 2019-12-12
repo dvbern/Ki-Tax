@@ -1451,7 +1451,7 @@ export class GesuchModelManager {
     }
 
     public isGesuchStatusIn(statuse: TSAntragStatus[]): boolean {
-        return statuse.includes(this.gesuch.status);
+        return this.gesuch ? statuse.includes(this.gesuch.status) : false;
     }
 
     /**

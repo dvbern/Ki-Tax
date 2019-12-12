@@ -484,12 +484,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMahnlaufBeenden(): boolean {
-        return isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly();
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly()) : false;
     }
 
     public showDokumenteNichtKomplett(): boolean {
-        return isAnyStatusOfMahnung(this.getGesuch().status) && this.getGesuch().dokumenteHochgeladen
-            && !this.isGesuchReadonly();
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status) && this.getGesuch().dokumenteHochgeladen
+            && !this.isGesuchReadonly()) : false;
     }
 
     public showZweiteMahnungNichtEingetreten(): boolean {
@@ -584,9 +584,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showKeinKontingent(): boolean {
-        return this.getGesuch().typ !== TSAntragTyp.MUTATION
+        return this.getGesuch() ? (this.getGesuch().typ !== TSAntragTyp.MUTATION
             && this.showVerfuegenStarten()
-            && this.kontingentierungEnabled;
+            && this.kontingentierungEnabled) : false;
     }
 
     public showKontingentVorhanden(): boolean {
