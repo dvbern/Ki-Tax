@@ -177,4 +177,14 @@ public class MathUtilTest {
 		assertEquals(152360, MathUtil.roundIntToFives(152362));
 		assertEquals(152365, MathUtil.roundIntToFives(152363));
 	}
+
+	@Test
+	public void testRoundToNearestQuarter() {
+		assertEquals(new BigDecimal("0.00"), MathUtil.roundToNearestQuarter(new BigDecimal(0)));
+		assertEquals(new BigDecimal("0.00"), MathUtil.roundToNearestQuarter(new BigDecimal(0.12)));
+		assertEquals(new BigDecimal("0.25"), MathUtil.roundToNearestQuarter(new BigDecimal(0.13)));
+		assertEquals(new BigDecimal("0.25"), MathUtil.roundToNearestQuarter(new BigDecimal(0.25)));
+		assertEquals(new BigDecimal("1.00"), MathUtil.roundToNearestQuarter(new BigDecimal(0.9)));
+		assertEquals(new BigDecimal("500.00"), MathUtil.roundToNearestQuarter(new BigDecimal(499.994)));
+	}
 }
