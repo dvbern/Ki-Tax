@@ -573,4 +573,19 @@ public class MailTemplateConfiguration {
 
 		return paramMap;
 	}
+
+	public String getInfoSchulamtAnmeldungAkzeptiert(
+		@Nonnull AbstractAnmeldung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
+
+		return processTemplateAnmeldung(
+			MailTemplate.InfoSchulamtAnmeldungAkzeptiert,
+			betreuung,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
+	}
 }

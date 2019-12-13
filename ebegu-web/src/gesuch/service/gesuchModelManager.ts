@@ -848,6 +848,8 @@ export class GesuchModelManager {
                 return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.BESTAETIGT:
                 return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, this.gesuch.id);
+            case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
+                return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
                 return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
@@ -1451,7 +1453,7 @@ export class GesuchModelManager {
     }
 
     public isGesuchStatusIn(statuse: TSAntragStatus[]): boolean {
-        return statuse.includes(this.gesuch.status);
+        return this.gesuch ? statuse.includes(this.gesuch.status) : false;
     }
 
     /**

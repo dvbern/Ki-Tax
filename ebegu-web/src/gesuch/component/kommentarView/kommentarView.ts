@@ -146,7 +146,7 @@ export class KommentarViewController {
     }
 
     public isPapiergesuch(): boolean {
-        return this.getGesuch().eingangsart === TSEingangsart.PAPIER;
+        return this.getGesuch() ? this.getGesuch().eingangsart === TSEingangsart.PAPIER : false;
     }
 
     public hasPapiergesuch(): boolean {
@@ -247,7 +247,7 @@ export class KommentarViewController {
     }
 
     public isInBearbeitungSTV(): boolean {
-        return this.gesuchModelManager.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV;
+        return  this.getGesuch() ? (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV) : false;
     }
 
     public freigebenSTV(): void {

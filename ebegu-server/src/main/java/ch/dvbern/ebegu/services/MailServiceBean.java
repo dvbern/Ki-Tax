@@ -563,4 +563,16 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		return fallService.getCurrentEmailAddress(gesuch.getFall().getId())
 			.filter(StringUtils::isNotEmpty);
 	}
+
+	@Override
+	public void sendInfoSchulamtAnmeldungAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		sendMail(
+			abstractAnmeldung.extractGesuch(),
+			"InfoSchulamtAnmeldungAkzeptiert",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getInfoSchulamtAnmeldungAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
+			AntragStatus.values()
+		);
+	}
 }
