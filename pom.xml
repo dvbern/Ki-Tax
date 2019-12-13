@@ -20,12 +20,12 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>ch.dvbern.oss.maven</groupId>
-        <version>1.2.1</version>
+        <version>2.0.0</version>
     </parent>
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2019.16.1-SNAPSHOT</version>
+    <version>2019.17.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -723,33 +723,15 @@
             </plugin>
 
             <plugin>
-                <groupId>external.atlassian.jgitflow</groupId>
+                <groupId>ch.dvbern.oss.maven.jgitflow</groupId>
                 <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>1.0-m5.1</version>
+                <version>1.0-m6</version>
                 <configuration>
                     <flowInitContext>
-                        <masterBranchName>master</masterBranchName>
                         <developBranchName>dev</developBranchName>
-                        <featureBranchPrefix>feature/</featureBranchPrefix>
-                        <releaseBranchPrefix>release/</releaseBranchPrefix>
-                        <hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
                         <versionTagPrefix />
                     </flowInitContext>
-                    <allowUntracked>true</allowUntracked>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <!-- Releases werden von einem eigenen Jenkings Job gebaut und deployed,
-					deshalb schalten wir dies hier aus -->
-                    <noDeploy>true</noDeploy>
-                    <noReleaseBuild>true</noReleaseBuild>
-                    <noHotfixBuild>true</noHotfixBuild>
-                    <!-- Nach jgitflow:release-finish sollen release, master und develop Branch gepusht werden -->
-                    <pushHotfixes>true</pushHotfixes>
-                    <pushReleases>true</pushReleases>
-                    <allowSnapshots>true</allowSnapshots>
-                    <!-- Fast Forward merges verhindern -->
-                    <suppressFastForward>true</suppressFastForward>
-                    <!-- Force lf line-endings in pom.xml -->
-                    <eol>lf</eol>
+
                 </configuration>
             </plugin>
             <plugin>

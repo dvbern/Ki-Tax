@@ -255,7 +255,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
-            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
+            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
+            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
@@ -343,7 +344,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            return this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
+            const antragStatus = this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
+            this.refreshKinderListe();
+            return antragStatus;
         });
     }
 
@@ -680,6 +683,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
+                this.refreshKinderListe();
                 return this.gesuchModelManager.getGesuch();
             });
         });

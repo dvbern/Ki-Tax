@@ -43,32 +43,7 @@ import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Benutzer_;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Dossier_;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Fall_;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.Institution_;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -175,10 +150,20 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Join<Gesuch, Gesuchsperiode> joinGesuchsperiode = root.join(Gesuch_.gesuchsperiode, JoinType.INNER);
 
 		SetJoin<Gesuch, KindContainer> joinKindContainers = root.join(Gesuch_.kindContainers, JoinType.LEFT);
+
 		SetJoin<KindContainer, Betreuung> joinBetreuungen = joinKindContainers.join(KindContainer_.betreuungen, JoinType.LEFT);
+		SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule = joinKindContainers.join(KindContainer_.anmeldungenTagesschule, JoinType.LEFT);
+		SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel = joinKindContainers.join(KindContainer_.anmeldungenFerieninsel, JoinType.LEFT);
+
 		Join<KindContainer, Kind> joinKinder = joinKindContainers.join(KindContainer_.kindJA, JoinType.LEFT);
-		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdaten = joinBetreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
-		Join<InstitutionStammdaten, Institution> joinInstitution = joinInstitutionstammdaten.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+
+		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen = joinBetreuungen.join(Betreuung_.institutionStammdaten, JoinType.LEFT);
+		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule = joinAnmeldungTagesschule.join(AbstractPlatz_.institutionStammdaten, JoinType.LEFT);
+		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel = joinAnmeldungFerieninsel.join(AbstractPlatz_.institutionStammdaten, JoinType.LEFT);
+
+		Join<InstitutionStammdaten, Institution> joinInstitutionBetreuungen = joinInstitutionstammdatenBetreuungen.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitutionTagesschule = joinInstitutionstammdatenTagesschule.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> joinInstitutionFerieninsel = joinInstitutionstammdatenFerieninsel.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 
 		//prepare predicates
 		List<Predicate> predicates = new ArrayList<>();
@@ -210,14 +195,24 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			predicates.add(cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft()));
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
+			predicates.add(
+				cb.or(
+					cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
+					cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
+					cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
+				));
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			break;
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 			// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des eingeloggten benutzers
-			predicates.add(cb.equal(joinInstitution, user.getInstitution()));
-			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinBetreuungen, joinInstitutionstammdaten));
+			predicates.add(
+				cb.or(
+					cb.equal(joinInstitutionBetreuungen, user.getInstitution()),
+					cb.equal(joinInstitutionFerieninsel, user.getInstitution()),
+					cb.equal(joinInstitutionTagesschule, user.getInstitution())
+				));
+			predicates.add(createPredicateAusgeloesteSCHJAAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenBetreuungen, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel));
 			break;
 		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
@@ -310,10 +305,26 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				predicates.add(cb.equal(root.get(Gesuch_.dokumenteHochgeladen), predicateObjectDto.getDokumenteHochgeladen()));
 			}
 			if (predicateObjectDto.getAngebote() != null) {
-				predicates.add(cb.equal(joinInstitutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+					case KITA:
+					case TAGESFAMILIEN:
+						predicates.add(cb.equal(joinInstitutionstammdatenBetreuungen.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+						break;
+					case TAGESSCHULE:
+						predicates.add(cb.equal(joinInstitutionstammdatenTagesschule.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+						break;
+					case FERIENINSEL:
+						predicates.add(cb.equal(joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
+						break;
+				}
 			}
 			if (predicateObjectDto.getInstitutionen() != null) {
-				predicates.add(cb.equal(joinInstitution.get(Institution_.name), predicateObjectDto.getInstitutionen()));
+				predicates.add(
+					cb.or(
+						cb.equal(joinInstitutionBetreuungen.get(Institution_.name), predicateObjectDto.getInstitutionen()),
+						cb.equal(joinInstitutionFerieninsel.get(Institution_.name), predicateObjectDto.getInstitutionen()),
+						cb.equal(joinInstitutionTagesschule.get(Institution_.name), predicateObjectDto.getInstitutionen())
+					));
 			}
 			if (predicateObjectDto.getKinder() != null) {
 				predicates.add(cb.like(joinKinder.get(AbstractPersonEntity_.vorname), predicateObjectDto.getKindNameForLike()));
@@ -337,7 +348,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
 			query.select(root.get(AbstractEntity_.id))
 				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-			constructOrderByClause(antragTableFilterDto, cb, query, root, joinKinder, joinGesuchsperiode, joinInstitutionstammdaten, joinInstitution);
+			constructOrderByClause(antragTableFilterDto, cb, query, root, joinKinder, joinGesuchsperiode, joinInstitutionstammdatenBetreuungen, joinInstitutionBetreuungen);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
@@ -401,26 +412,28 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	/**
 	 * ((TS or FI) and notAusgeloest) or (otherAngebotTyps)
 	 */
-	private Predicate createPredicateAusgeloesteSCHJAAngebote(CriteriaBuilder cb, SetJoin<KindContainer, Betreuung> betreuungen,
-		Join<Betreuung, InstitutionStammdaten> institutionstammdaten) {
-
-		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(cb, betreuungen, institutionstammdaten);
-		Predicate predicateNotTSOderFI = createPredicateJAAngebote(cb, institutionstammdaten);
+	private Predicate createPredicateAusgeloesteSCHJAAngebote(CriteriaBuilder cb, SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule, SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel, Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen, Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule, Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
+		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(cb, joinAnmeldungTagesschule, joinAnmeldungFerieninsel, joinInstitutionstammdatenTagesschule, joinInstitutionstammdatenFerieninsel);
+		Predicate predicateNotTSOderFI = createPredicateJAAngebote(cb, joinInstitutionstammdatenBetreuungen);
 		return cb.or(predicateTSOderFINotAusgelost, predicateNotTSOderFI);
 	}
+
 
 	/**
 	 * (TS or FI) and notAusgeloest
 	 */
-	private Predicate createPredicateAusgeloesteSCHAngebote(CriteriaBuilder cb, SetJoin<KindContainer, Betreuung> betreuungen,
-		Join<Betreuung, InstitutionStammdaten> institutionstammdaten) {
+	private Predicate createPredicateAusgeloesteSCHAngebote(CriteriaBuilder cb, SetJoin<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule, SetJoin<KindContainer, AnmeldungFerieninsel> joinAnmeldungFerieninsel, Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule, Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
 
 		//(TS or FI) and notAusgeloest)
-		Predicate predicateTagesschule = cb.equal(institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-		Predicate predicateFerieninsel = cb.equal(institutionstammdaten.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
+		Predicate predicateTagesschule = cb.equal(joinInstitutionstammdatenTagesschule.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+		Predicate predicateFerieninsel = cb.equal(joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
 		Predicate predicateTSOderFI = cb.or(predicateTagesschule, predicateFerieninsel);
-		Predicate predicateNotErfasst = cb.notEqual(betreuungen.get(Betreuung_.betreuungsstatus), Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
-		return cb.and(predicateTSOderFI, predicateNotErfasst);
+
+		Predicate predicateTagesschuleNotErfasst = cb.notEqual(joinAnmeldungTagesschule.get(Betreuung_.betreuungsstatus), Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
+		Predicate predicateFerieninselNotErfasst = cb.notEqual(joinAnmeldungFerieninsel.get(Betreuung_.betreuungsstatus), Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST);
+		Predicate predicateTSOderFINotErfasst = cb.or(predicateTagesschuleNotErfasst, predicateFerieninselNotErfasst);
+
+		return cb.and(predicateTSOderFI, predicateTSOderFINotErfasst);
 	}
 
 	/**

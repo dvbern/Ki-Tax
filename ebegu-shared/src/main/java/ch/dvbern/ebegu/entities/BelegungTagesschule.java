@@ -167,9 +167,11 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	}
 
 	private void copyBelegungTagesschuleModul(@Nonnull BelegungTagesschule target, @Nonnull AntragCopyType copyType) {
-		for (BelegungTagesschuleModul erwerbspensumContainer : this.getBelegungTagesschuleModule()) {
-			BelegungTagesschuleModul belegungTagesschuleModul = erwerbspensumContainer.copyBelegungTagesschuleModul(new BelegungTagesschuleModul(), copyType);
-			target.addBelegungTagesschuleModul(belegungTagesschuleModul);
+		for (BelegungTagesschuleModul belegungTagesschuleModul : this.getBelegungTagesschuleModule()) {
+			BelegungTagesschuleModul belegungTagesschuleModulCopy =
+				belegungTagesschuleModul.copyBelegungTagesschuleModul(new BelegungTagesschuleModul(), copyType);
+			belegungTagesschuleModulCopy.setBelegungTagesschule(this);
+			target.addBelegungTagesschuleModul(belegungTagesschuleModulCopy);
 		}
 	}
 }

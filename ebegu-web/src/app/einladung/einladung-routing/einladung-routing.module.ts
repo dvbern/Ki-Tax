@@ -18,9 +18,11 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {IPromise} from 'angular';
 import {take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ignoreNullAndUndefined} from '../../../utils/rxjs-operators';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
@@ -28,8 +30,9 @@ import {EinladungAbschliessenComponent} from '../einladung-abschliessen/einladun
 import {LoginInfoComponent} from '../login-info/login-info.component';
 import {handleLoggedInUser} from './einladung-helpers';
 
-export function authentication(authService: AuthServiceRS): void {
-    authService.principal$
+authentication.$inject = ['AuthServiceRS'];
+export function authentication(authService: AuthServiceRS): IPromise<TSBenutzer> {
+    return authService.principal$
         .pipe(
             ignoreNullAndUndefined(),
             take(1))
@@ -74,13 +77,10 @@ const states: Ng2StateDeclaration[] = [
             roles: TSRoleUtil.getAllRolesButAnonymous(), // anonyme benutzer werden vom authentication.hook umgeleitet
                                                          // zur loginpage
         },
-        resolve: [
+        resolve:
             {
-                token: 'principal',
-                deps: [AuthServiceRS],
-                resolveFn: authentication,
+                principal: authentication,
             },
-        ],
     },
 ];
 

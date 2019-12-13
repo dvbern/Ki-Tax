@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
@@ -81,10 +82,12 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 
 		BGCalculationResult result = tageselternRechner.calculate(creaateZeitabschnitt(gueltigkeit), parameterDTO);
+		BigDecimal ungerundeterWert = MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(30));
+		Assert.assertNotNull(ungerundeterWert);
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty(
 				"verfuegteAnzahlZeiteinheiten",
-				is(MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(30)))));
+				is(MathUtil.roundToNearestQuarter(ungerundeterWert))));
 	}
 
 	@Nonnull
