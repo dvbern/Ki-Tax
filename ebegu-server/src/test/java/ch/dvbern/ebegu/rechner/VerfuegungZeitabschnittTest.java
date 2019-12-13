@@ -43,7 +43,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenFullMonth_30days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1)).withFullMonths();
 
-		BGCalculationResult result = tageselternRechner.calculate(creaateZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
 	}
@@ -52,7 +52,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenFullMonth_31days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 3, 1)).withFullMonths();
 
-		BGCalculationResult result = tageselternRechner.calculate(creaateZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
 	}
@@ -61,7 +61,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenFullMonth_28days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 2, 1)).withFullMonths();
 
-		BGCalculationResult result = tageselternRechner.calculate(creaateZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
 	}
@@ -70,7 +70,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenHalfMonth() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 15));
 
-		BGCalculationResult result = tageselternRechner.calculate(creaateZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty(
 				"verfuegteAnzahlZeiteinheiten",
@@ -81,7 +81,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenDay() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 
-		BGCalculationResult result = tageselternRechner.calculate(creaateZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
 		BigDecimal ungerundeterWert = MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(30));
 		Assert.assertNotNull(ungerundeterWert);
 		assertThat(result, pojo(BGCalculationResult.class)
@@ -91,7 +91,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt creaateZeitabschnitt(@Nonnull DateRange gueltigkeit) {
+	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setAnspruchberechtigtesPensum(100);
 		zeitabschnitt.setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
