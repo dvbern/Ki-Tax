@@ -26,12 +26,14 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
+import static ch.dvbern.ebegu.util.MathUtil.*;
+
 /**
  * Superklasse für BG-Rechner
  */
 public abstract class AbstractBGRechner {
 
-	protected static final MathUtil MATH = MathUtil.EXACT;
+	protected static final MathUtil MATH = EXACT;
 
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
@@ -74,7 +76,8 @@ public abstract class AbstractBGRechner {
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);
 
-		BigDecimal betreuungspensumZeiteinheit = getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, betreuungspensum);
+		BigDecimal betreuungspensumZeiteinheit =
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, betreuungspensum);
 
 		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
@@ -92,25 +95,25 @@ public abstract class AbstractBGRechner {
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
-		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
+		verguenstigung = roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
 
 		// Resultat
 		BGCalculationResult result = new BGCalculationResult();
-		result.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
+		result.setMinimalerElternbeitrag(roundToFrankenRappen(minBetrag));
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(
-			MathUtil.DEFAULT.from(verguenstigungVorVollkostenUndMinimalbetrag));
-		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(
+			DEFAULT.from(verguenstigungVorVollkostenUndMinimalbetrag));
+		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(roundToFrankenRappen(
 			verguenstigungVorMinimalbetrag));
-		result.setVerguenstigung(MathUtil.DEFAULT.from(verguenstigung));
-		result.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
-		result.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
+		result.setVerguenstigung(DEFAULT.from(verguenstigung));
+		result.setVollkosten(roundToFrankenRappen(vollkosten));
+		result.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
 
 		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen auf 0.25 gerundet werden
-		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.roundToNearestQuarter(MathUtil.DEFAULT.from(verfuegteZeiteinheiten)));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.roundToNearestQuarter(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten)));
+		result.setVerfuegteAnzahlZeiteinheiten(roundToNearestQuarter(verfuegteZeiteinheiten));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(roundToNearestQuarter(anspruchsberechtigteZeiteinheiten));
 		result.setZeiteinheit(getZeiteinheit());
-		result.setBetreuungspensumZeiteinheit(MathUtil.roundToNearestQuarter(betreuungspensumZeiteinheit));
+		result.setBetreuungspensumZeiteinheit(roundToNearestQuarter(betreuungspensumZeiteinheit));
 
 		return result;
 	}
