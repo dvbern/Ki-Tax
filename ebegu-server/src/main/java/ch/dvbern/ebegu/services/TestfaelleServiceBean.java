@@ -963,6 +963,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		anmeldung.setInstitutionStammdaten(firstBetreuung.getInstitutionStammdaten());
 		anmeldung.setKind(firstBetreuung.getKind());
 
+		mailService.sendInfoSchulamtAnmeldungAkzeptiert(anmeldung);
 		mailService.sendInfoSchulamtAnmeldungUebernommen(anmeldung);
 		mailService.sendInfoSchulamtAnmeldungAbgelehnt(anmeldung);
 	}

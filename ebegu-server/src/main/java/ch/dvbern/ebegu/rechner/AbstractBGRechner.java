@@ -106,10 +106,11 @@ public abstract class AbstractBGRechner {
 		result.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		result.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 
-		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(verfuegteZeiteinheiten));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten));
+		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen auf 0.25 gerundet werden
+		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.roundToNearestQuarter(MathUtil.DEFAULT.from(verfuegteZeiteinheiten)));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.roundToNearestQuarter(MathUtil.DEFAULT.from(anspruchsberechtigteZeiteinheiten)));
 		result.setZeiteinheit(getZeiteinheit());
-		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
+		result.setBetreuungspensumZeiteinheit(MathUtil.roundToNearestQuarter(betreuungspensumZeiteinheit));
 
 		return result;
 	}

@@ -23,7 +23,7 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {isVerfuegtOrSTV, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
@@ -477,12 +477,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
         }).then(() => {
+            let betreuungsstatus: TSBetreuungsstatus;
+            (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+               isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
+                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+                this.save(betreuungsstatus,
                     PENDENZEN_BETREUUNG,
                     undefined);
             } else {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+                this.save(betreuungsstatus,
                     GESUCH_BETREUUNGEN,
                     {gesuchId: this.getGesuchId()});
             }
