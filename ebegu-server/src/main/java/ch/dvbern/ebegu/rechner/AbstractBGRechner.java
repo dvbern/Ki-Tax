@@ -108,15 +108,14 @@ public abstract class AbstractBGRechner {
 		result.setVerguenstigung(DEFAULT.from(verguenstigung));
 		result.setVollkosten(roundToFrankenRappen(vollkosten));
 		result.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
-
-		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen auf 0.25 gerundet werden
-		result.setVerfuegteAnzahlZeiteinheiten(roundToNearestQuarter(verfuegteZeiteinheiten));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(roundToNearestQuarter(anspruchsberechtigteZeiteinheiten));
 		result.setZeiteinheit(getZeiteinheit());
-		result.setBetreuungspensumZeiteinheit(roundToNearestQuarter(betreuungspensumZeiteinheit));
+
+		roundIfNecessary(result);
 
 		return result;
 	}
+
+	protected abstract void roundIfNecessary(@Nonnull BGCalculationResult result);
 
 	/**
 	 * Checkt die für alle Angebote benoetigten Argumente auf Null.

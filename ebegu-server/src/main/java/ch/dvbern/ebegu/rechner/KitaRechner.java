@@ -16,12 +16,10 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -77,5 +75,13 @@ public class KitaRechner extends AbstractBGRechner {
 	@Nonnull
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.DAYS;
+	}
+
+	@Override
+	protected void roundIfNecessary(@Nonnull BGCalculationResult result) {
+		// Für Kitas wird auf 2 Nachkommastellen gerundet
+		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.toTwoKommastelle(result.getVerfuegteAnzahlZeiteinheiten()));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.toTwoKommastelle(result.getAnspruchsberechtigteAnzahlZeiteinheiten()));
+		result.setBetreuungspensumZeiteinheit(MathUtil.toTwoKommastelle(result.getBetreuungspensumZeiteinheit()));
 	}
 }

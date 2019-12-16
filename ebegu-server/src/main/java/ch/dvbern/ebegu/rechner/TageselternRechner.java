@@ -22,6 +22,8 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.MathUtil;
 
+import static ch.dvbern.ebegu.util.MathUtil.roundToNearestQuarter;
+
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot Tageseltern.
@@ -80,5 +82,13 @@ public class TageselternRechner extends AbstractBGRechner {
 	@Override
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.HOURS;
+	}
+
+	@Override
+	protected void roundIfNecessary(@Nonnull BGCalculationResult result) {
+		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen auf 0.25 gerundet werden
+		result.setVerfuegteAnzahlZeiteinheiten(roundToNearestQuarter(result.getVerfuegteAnzahlZeiteinheiten()));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(roundToNearestQuarter(result.getAnspruchsberechtigteAnzahlZeiteinheiten()));
+		result.setBetreuungspensumZeiteinheit(roundToNearestQuarter(result.getBetreuungspensumZeiteinheit()));
 	}
 }
