@@ -26,7 +26,9 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static ch.dvbern.ebegu.util.MathUtil.*;
+import static ch.dvbern.ebegu.util.MathUtil.DEFAULT;
+import static ch.dvbern.ebegu.util.MathUtil.EXACT;
+import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
 
 /**
  * Superklasse für BG-Rechner
@@ -108,14 +110,23 @@ public abstract class AbstractBGRechner {
 		result.setVerguenstigung(DEFAULT.from(verguenstigung));
 		result.setVollkosten(roundToFrankenRappen(vollkosten));
 		result.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
-		result.setZeiteinheit(getZeiteinheit());
 
-		roundIfNecessary(result);
+		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
+		result.setVerfuegteAnzahlZeiteinheiten(roundZeitenheit(verfuegteZeiteinheiten));
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(roundZeitenheit(anspruchsberechtigteZeiteinheiten));
+		result.setZeiteinheit(getZeiteinheit());
+		result.setBetreuungspensumZeiteinheit(roundZeitenheit(betreuungspensumZeiteinheit));
 
 		return result;
 	}
 
-	protected abstract void roundIfNecessary(@Nonnull BGCalculationResult result);
+	/**
+	 * Depending on the type of Zeiteinheit, we may have to apply another rounding strategy
+	 *
+	 * @return the rounded value
+	 */
+	@Nonnull
+	protected abstract BigDecimal roundZeitenheit(@Nonnull BigDecimal zeiteinheit);
 
 	/**
 	 * Checkt die für alle Angebote benoetigten Argumente auf Null.

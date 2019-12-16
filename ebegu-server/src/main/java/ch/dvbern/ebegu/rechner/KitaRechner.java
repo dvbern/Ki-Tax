@@ -77,11 +77,12 @@ public class KitaRechner extends AbstractBGRechner {
 		return PensumUnits.DAYS;
 	}
 
+	/**
+	 * Für Kitas wird auf 2 Nachkommastellen gerundet
+	 */
+	@Nonnull
 	@Override
-	protected void roundIfNecessary(@Nonnull BGCalculationResult result) {
-		// Für Kitas wird auf 2 Nachkommastellen gerundet
-		result.setVerfuegteAnzahlZeiteinheiten(MathUtil.toTwoKommastelle(result.getVerfuegteAnzahlZeiteinheiten()));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(MathUtil.toTwoKommastelle(result.getAnspruchsberechtigteAnzahlZeiteinheiten()));
-		result.setBetreuungspensumZeiteinheit(MathUtil.toTwoKommastelle(result.getBetreuungspensumZeiteinheit()));
+	protected BigDecimal roundZeitenheit(@Nonnull BigDecimal zeiteinheit) {
+		return MathUtil.toTwoKommastelle(zeiteinheit);
 	}
 }

@@ -84,11 +84,12 @@ public class TageselternRechner extends AbstractBGRechner {
 		return PensumUnits.HOURS;
 	}
 
+	/**
+	 * Bei Tageseletern wird auf 0.25 Stunden gerundet
+	 */
+	@Nonnull
 	@Override
-	protected void roundIfNecessary(@Nonnull BGCalculationResult result) {
-		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen auf 0.25 gerundet werden
-		result.setVerfuegteAnzahlZeiteinheiten(roundToNearestQuarter(result.getVerfuegteAnzahlZeiteinheiten()));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(roundToNearestQuarter(result.getAnspruchsberechtigteAnzahlZeiteinheiten()));
-		result.setBetreuungspensumZeiteinheit(roundToNearestQuarter(result.getBetreuungspensumZeiteinheit()));
+	protected BigDecimal roundZeitenheit(@Nonnull BigDecimal zeiteinheit) {
+		return roundToNearestQuarter(zeiteinheit);
 	}
 }
