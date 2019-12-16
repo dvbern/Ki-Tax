@@ -408,7 +408,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 		if (checkAnzahlZurueckgezogen && !Objects.equals(anzahlZurueckgezogen,
 			gesuch.getAnzahlGesuchZurueckgezogen())) {
-			throw new EbeguRuntimeException("findGesuchForFreigabe",
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"findGesuchForFreigabe",
 				ErrorCodeEnum.ERROR_GESUCH_DURCH_GS_ZURUECKGEZOGEN);
 		}
 		authorizer.checkReadAuthorizationForFreigabe(gesuch);
