@@ -615,6 +615,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openFinanzielleSituationPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -624,6 +627,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openBegleitschreibenPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -633,6 +639,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openKompletteKorrespondenzPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
