@@ -27,8 +27,6 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
-
 /**
  * Superklasse für BG-Rechner
  */
