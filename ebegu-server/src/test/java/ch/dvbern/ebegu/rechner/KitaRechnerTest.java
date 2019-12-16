@@ -28,10 +28,10 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.hamcrest.Matcher;
+import org.hamcrest.number.BigDecimalCloseTo;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.is;
@@ -176,7 +176,9 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 	@Nonnull
 	private IsPojo<BGCalculationResult> defaultMatcher(double expectedVerguenstigung) {
 		return pojo(BGCalculationResult.class)
-			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expectedVerguenstigung)))
+			.withProperty("verguenstigung",
+				// mit einer Abweichung von +- 0.025 sollte keine Auswirkung auf Rappen feststellbar sein
+				BigDecimalCloseTo.closeTo(MathUtil.DEFAULT.from(expectedVerguenstigung), BigDecimal.valueOf(0.025)))
 			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.DAYS));

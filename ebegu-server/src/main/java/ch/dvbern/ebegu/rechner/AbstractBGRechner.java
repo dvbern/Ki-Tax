@@ -96,8 +96,6 @@ public abstract class AbstractBGRechner {
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
-		// TODO warum wird hier gerundet und nicht erst am Schluss?
-		verguenstigung = roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = EXACT.subtract(vollkosten, verguenstigung);
 
 		// Resultat

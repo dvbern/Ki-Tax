@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -25,10 +26,10 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.hamcrest.number.BigDecimalCloseTo;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -136,7 +137,10 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		BGCalculationResult result = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 
 		assertThat(result, pojo(BGCalculationResult.class)
-			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expected)))
+			.withProperty(
+				"verguenstigung",
+				// mit einer Abweichung von +- 0.025 sollte keine Auswirkung auf Rappen feststellbar sein
+				BigDecimalCloseTo.closeTo(MathUtil.DEFAULT.from(expected), BigDecimal.valueOf(0.025)))
 			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.HOURS))
