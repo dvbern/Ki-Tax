@@ -137,8 +137,8 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expected)))
-			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
-			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.HOURS))
 		);
 	}

@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
@@ -46,9 +47,9 @@ public class TageselternRechner extends AbstractBGRechner {
 		BigDecimal oeffnungstageProJahr = parameterDTO.getOeffnungstageTFO();
 		BigDecimal oeffnungsstundenProTag = parameterDTO.getOeffnungsstundenTFO();
 		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
-		BigDecimal oeffnungstageProMonat = MATH.divide(oeffnungstageProJahr, MATH.from(12));
+		BigDecimal oeffnungstageProMonat = EXACT.divide(oeffnungstageProJahr, EXACT.from(12));
 		BigDecimal stundenGemaessPensumUndAnteilMonat =
-			MATH.multiplyNullSafe(oeffnungstageProMonat, anteilMonat, pensum, oeffnungsstundenProTag);
+			EXACT.multiplyNullSafe(oeffnungstageProMonat, anteilMonat, pensum, oeffnungsstundenProTag);
 
 		return stundenGemaessPensumUndAnteilMonat;
 	}
@@ -89,7 +90,7 @@ public class TageselternRechner extends AbstractBGRechner {
 	 */
 	@Nonnull
 	@Override
-	protected BigDecimal roundZeitenheit(@Nonnull BigDecimal zeiteinheit) {
-		return roundToNearestQuarter(zeiteinheit);
+	protected Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy() {
+		return MathUtil::roundToNearestQuarter;
 	}
 }

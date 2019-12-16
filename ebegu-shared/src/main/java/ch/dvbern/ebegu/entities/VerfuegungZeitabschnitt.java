@@ -157,7 +157,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = true, length = Constants.DB_DEFAULT_SHORT_LENGTH) // nullable, because migration is needed
 	private PensumUnits zeiteinheit = PensumUnits.DAYS;
 
-	// TODO unused in kibon -> remove?
 	@Column(nullable = true)
 	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
 

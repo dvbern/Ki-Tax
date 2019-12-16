@@ -44,7 +44,7 @@ public class KitaRechner extends AbstractBGRechner {
 		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
 		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
 
-		return MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, pensum);
+		return EXACT.multiplyNullSafe(EXACT.divide(oeffnungstage, EXACT.from(12)), anteilMonat, pensum);
 	}
 
 	@Nonnull
@@ -75,14 +75,5 @@ public class KitaRechner extends AbstractBGRechner {
 	@Nonnull
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.DAYS;
-	}
-
-	/**
-	 * Für Kitas wird auf 2 Nachkommastellen gerundet
-	 */
-	@Nonnull
-	@Override
-	protected BigDecimal roundZeitenheit(@Nonnull BigDecimal zeiteinheit) {
-		return MathUtil.toTwoKommastelle(zeiteinheit);
 	}
 }

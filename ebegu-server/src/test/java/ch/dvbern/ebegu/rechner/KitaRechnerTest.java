@@ -177,8 +177,8 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 	private IsPojo<BGCalculationResult> defaultMatcher(double expectedVerguenstigung) {
 		return pojo(BGCalculationResult.class)
 			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expectedVerguenstigung)))
-			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
-			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.DAYS));
 	}
 }
