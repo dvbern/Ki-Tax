@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.hamcrest.Matcher;
+import org.hamcrest.number.BigDecimalCloseTo;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
@@ -70,18 +71,19 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 		assertThat(result, pojo(BGCalculationResult.class)
 			// Minimalbetrag
-			.where(BGCalculationResult::getMinimalerElternbeitrag, of("5.1333333282"))
-			.where(BGCalculationResult::getVerguenstigungOhneBeruecksichtigungMinimalbeitrag, of("38.0393070553"))
-			.where(BGCalculationResult::getVerguenstigungOhneBeruecksichtigungVollkosten, of("38.0393070553"))
+			.where(BGCalculationResult::getMinimalerElternbeitrag, of("5.1333333333"))
+			.where(BGCalculationResult::getVerguenstigungOhneBeruecksichtigungMinimalbeitrag, of("38.0393162393"))
+			// Vergünstigung vor Berücksichtigung Vollkosten
+			.where(BGCalculationResult::getVerguenstigungOhneBeruecksichtigungVollkosten, of("38.0393162393"))
 			// Vollkosten minus Minimaltarif
-			.where(BGCalculationResult::getVerguenstigung, twoDecimalsOf("38.05"))
+			.where(BGCalculationResult::getVerguenstigung, of("38.0393162393"))
 			// Anteil der Vollkosten
 			.where(BGCalculationResult::getVollkosten, of("66.6666666"))
-			.where(BGCalculationResult::getElternbeitrag, of("28.6166666000"))
+			.where(BGCalculationResult::getElternbeitrag, of("28.6273504274"))
 			// Stunden gemäss Pensum und Anteil Monat
-			.where(BGCalculationResult::getVerfuegteAnzahlZeiteinheiten, of("7.333333326"))
-			.where(BGCalculationResult::getAnspruchsberechtigteAnzahlZeiteinheiten, of("7.333333326"))
-			.where(BGCalculationResult::getBetreuungspensumZeiteinheit, of("7.333333326"))
+			.where(BGCalculationResult::getVerfuegteAnzahlZeiteinheiten, of("7.333333333"))
+			.where(BGCalculationResult::getAnspruchsberechtigteAnzahlZeiteinheiten, of("7.333333333"))
+			.where(BGCalculationResult::getBetreuungspensumZeiteinheit, of("7.333333333"))
 		);
 	}
 
@@ -124,7 +126,9 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 			// Rappen
 			.where(VerfuegungZeitabschnitt::getMinimalerElternbeitrag, twoDecimalsOf("1.25"))
 			// Rappen
-			.where(VerfuegungZeitabschnitt::getVerguenstigungOhneBeruecksichtigungMinimalbeitrag, twoDecimalsOf("2.25"))
+			.where(
+				VerfuegungZeitabschnitt::getVerguenstigungOhneBeruecksichtigungMinimalbeitrag,
+				twoDecimalsOf("2.25"))
 			// 2 Kommastellen
 			.where(VerfuegungZeitabschnitt::getVerguenstigungOhneBeruecksichtigungVollkosten, twoDecimalsOf("3.23"))
 			// 2 Kommastellen
@@ -164,7 +168,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 	@Nonnull
 	private Matcher<BigDecimal> of(@Nonnull String value) {
-		return is(MathUtil.EXACT.from(value));
+		return BigDecimalCloseTo.closeTo(MathUtil.EXACT.from(value), new BigDecimal("1e-7"));
 	}
 
 	@Nonnull
