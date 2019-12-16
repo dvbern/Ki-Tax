@@ -50,6 +50,19 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	private final TageselternRechner tageselternRechner = new TageselternRechner();
 
 	@Test
+	public void testVerguenstigungProZeiteinheit() {
+		BigDecimal verguenstigungProZeiteinheit = tageselternRechner.getVerguenstigungProZeiteinheit(
+			parameterDTO,
+			false,
+			false,
+			false,
+			BigDecimal.valueOf(88600),
+			false);
+
+		assertThat(verguenstigungProZeiteinheit, of("5.1871794872"));
+	}
+
+	@Test
 	public void exactBGCalculationResult() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 

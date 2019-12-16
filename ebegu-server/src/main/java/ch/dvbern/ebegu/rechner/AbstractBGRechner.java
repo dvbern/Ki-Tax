@@ -150,7 +150,7 @@ public abstract class AbstractBGRechner {
 	}
 
 	@Nonnull
-	protected BigDecimal getVerguenstigungProZeiteinheit(
+	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
 		@Nonnull Boolean eingeschult,
@@ -167,9 +167,9 @@ public abstract class AbstractBGRechner {
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
 
-		BigDecimal op1 = EXACT.divide(maximaleVerguenstigungProTag, EXACT.subtract(minEinkommen, maxEinkommen));
-		BigDecimal op2 = EXACT.subtract(massgebendesEinkommen, minEinkommen);
-		BigDecimal augment = EXACT.multiplyNullSafe(op1, op2);
+		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
+		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);
+		BigDecimal augment = EXACT.divide(product, EXACT.subtract(minEinkommen, maxEinkommen));
 		BigDecimal verguenstigungProTag = EXACT.add(augment, maximaleVerguenstigungProTag);
 		// Max und Min beachten
 		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
