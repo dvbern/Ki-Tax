@@ -815,28 +815,6 @@ export class GesuchModelManager {
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
 
-    public handleErweiterteBetreuung(): IPromise<TSGesuch> {
-        if (!this.getGesuch() || !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtRoles())) {
-            return this.$q.when(this.getGesuch());
-        }
-
-        if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
-            // Mindestens 1 Kind mit erweitertem Aufwand
-            // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
-            this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
-            return this.updateGesuch();
-        }
-
-        if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
-            // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
-            // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
-            this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
-            return this.updateGesuch();
-        }
-
-        return this.$q.when(this.getGesuch());
-    }
-
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
@@ -1088,10 +1066,7 @@ export class GesuchModelManager {
             this.removeBetreuungFromKind();
 
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
-                this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
-                this.handleErweiterteBetreuung().then(() => {
-                    this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
-                });
+                this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
             });
         });
     }

@@ -253,7 +253,7 @@ export class EbeguUtil {
             && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer.familiensituationJA)
             && EbeguUtil.isFinanzielleSituationRequired(
                 gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger,
-                gesuch.familiensituationContainer.familiensituationJA.antragNurFuerBehinderungszuschlag);
+                gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht);
     }
 
     /**
@@ -261,13 +261,13 @@ export class EbeguUtil {
      * while creating the object but later while filling out the finanzielle situation.
      *
      * For the finanzielle situation to be required:
-     * sozialhilfeBezueger=false and antragNurFuerBehinderungszuschlag=false
+     * sozialhilfeBezueger=false and verguenstigungGewuenscht=true
      */
     public static isFinanzielleSituationRequired(
         sozialhilfeBezueger: boolean,
-        antragNurFuerBehinderungszuschlag: boolean,
+        verguenstigungGewuenscht: boolean,
     ): boolean {
-        return sozialhilfeBezueger === false && antragNurFuerBehinderungszuschlag === false; // tslint:disable-line:no-boolean-literal-compare
+        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true; // tslint:disable-line:no-boolean-literal-compare
     }
 
     public static getAmtsspracheAsString(

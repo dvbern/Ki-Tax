@@ -25,7 +25,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
     public transclude = false;
     public bindings = {
         sozialhilfeBezueger: '=',
-        antragNurFuerBehinderungszuschlag: '=',
+        verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
         form: '=',
     };
@@ -40,7 +40,7 @@ export class DVFinanzielleSituationRequireController implements IController {
 
     public finanzielleSituationRequired: boolean;
     public sozialhilfeBezueger: boolean;
-    public antragNurFuerBehinderungszuschlag: boolean;
+    public verguenstigungGewuenscht: boolean;
 
     public maxMassgebendesEinkommen: string;
 
@@ -65,20 +65,17 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     /**
-     * Das Feld antragNurFuerBehinderungszuschlag wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
-     * nein beantwortet wurde UND wenn mindestens eine Betreuung mit besonderem Betreuungsaufwand zu irgendeinem Zeitpunkt
-     * erfasst war.
+     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
+     * nein beantwortet wurde.
      */
-    public showNurPauschaleFuerBesondereBeduerfnisseGewuenscht(): boolean {
+    public showFinanzielleSituationDeklarieren(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
-            && !this.sozialhilfeBezueger
-            && this.gesuchModelManager.getGesuch()
-            && this.gesuchModelManager.getGesuch().extractFamiliensituation()
-            && this.gesuchModelManager.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            && !this.sozialhilfeBezueger;
     }
 
     public setFinanziellesituationRequired(): void {
-        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.antragNurFuerBehinderungszuschlag);
+        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
+        console.log();
         // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
         if (required !== this.finanzielleSituationRequired && this.gesuchModelManager.getGesuch()) {
             this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
