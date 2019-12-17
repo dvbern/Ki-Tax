@@ -1064,8 +1064,8 @@ export class GesuchModelManager {
             this.gesuch.id
         ).then(() => {
             this.removeBetreuungFromKind();
-
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
+                this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
                 this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
             });
         });
