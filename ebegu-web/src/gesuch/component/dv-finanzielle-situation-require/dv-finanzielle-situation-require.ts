@@ -95,8 +95,8 @@ export class DVFinanzielleSituationRequireController implements IController {
         return this.gesuchModelManager.isKorrekturModusJugendamt();
     }
 
-    public getFalseOptionLabel(): string {
-        return this.$translate.instant('FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT_NEIN',
+    public getLabel(): string {
+        return this.$translate.instant('FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT',
             {maxEinkommen: this.maxMassgebendesEinkommen});
     }
 }
