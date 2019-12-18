@@ -64,7 +64,10 @@ public class TagesschuleBerechnungHelperTest {
 		AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt = anmeldungTagesschuleZeitabschnitts.get(0);
 		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(120000)),
 			anmeldungTagesschuleZeitabschnitt.getMassgebendesEinkommenInklAbzugFamgr());
-		Assert.assertEquals(LocalTime.of(7, 30), anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche());
+		Assert.assertEquals(new BigDecimal(7),
+			anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche());
+		Assert.assertEquals(new BigDecimal(30),
+			anmeldungTagesschuleZeitabschnitt.getBetreuungsminutenProWoche());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(8.32)),
 			anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(20)),
