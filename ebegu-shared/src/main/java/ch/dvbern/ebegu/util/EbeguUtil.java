@@ -175,13 +175,12 @@ public final class EbeguUtil {
 	}
 
 	/**
-	 * finanzielle situation ist by default nicht zwingend, ausser es ist getSozialhilfeBezueger=false und
-	 * getAntragNurFuerBehinderungszuschlag=false
+	 * finanzielle situation ist by default nicht zwingend
 	 */
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAntragNurFuerBehinderungszuschlag());
+			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
