@@ -142,7 +142,8 @@
                                             ng-disabled="!vm.isModuleEditable(mod)"
                                             ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
                                             class="dv-ebegu-calendar--tagesschule">
-                                            <span ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
+                                            <span
+                                                ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
                                         </md-checkbox>
                                     </div>
                                 </div>
@@ -181,8 +182,103 @@
                             </dv-input-container>
                         </div>
                     </div>
-                </div>
+                    <div class="row" ng-if="vm.showTagesschuleTarifeMitBetreuung()">
+                        <br/>
+                        <div class="col-md-8 table-responsive">
+                            <h3 class="md-no-float"
+                                   data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"></h3>
 
+                            <table st-table="tsTarifeMitBetreuungCollection"
+                                   st-safe-src="vm.tagesschuleTarifeMitBetreuung"
+                                   class="table verfuegung-table">
+                                <thead>
+                                <tr class="title-row">
+                                    <th data-translate="BETREUUNG_VON"></th>
+                                    <th data-translate="BETREUUNG_BIS"></th>
+                                    <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
+                                    <th data-translate="GEBUHR_PRO_STUNDE"></th>
+                                    <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
+                                    <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="anmeldungTagesschuleZeitabschnitt in tsTarifeMitBetreuungCollection">
+                                    <!-- Von -->
+                                    <td class="align-left"
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <!-- Bis -->
+                                    <td class="align-left"
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <!-- Betreungsstunden + Minuten Pro Woche -->
+                                    <td class="align-left"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.betreuungsstundenProWoche + ':' + anmeldungTagesschuleZeitabschnitt.betreuungsminutenProWoche"></span>
+                                    </td>
+                                    <!-- Gebühren Pro Stunde -->
+                                    <td class="align-left"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gebuehrProStunde"></span>
+                                    </td>
+                                    <!-- Verpflegungskosten Pro Woche -->
+                                    <td class="align-left"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.verpflegungskosten"></span>
+                                    </td>
+                                    <!-- Total Kosten Pro Woche -->
+                                    <td class="align-left result"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.totalKostenProWoche"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" ng-if="vm.showTagesschuleTarifeOhneBetreuung()">
+                        <br/>
+                        <div class="col-md-8 table-responsive">
+                            <h3 class="md-no-float"
+                                data-translate="TAGESSCHULE_GEBUEHREN_NICHT_BETREUT"></h3>
+
+                            <table st-table="tsTarifeOhneBetreuungCollection"
+                                   st-safe-src="vm.tagesschuleTarifeOhneBetreuung"
+                                   class="table verfuegung-table">
+                                <thead>
+                                <tr class="title-row">
+                                    <th data-translate="BETREUUNG_VON"></th>
+                                    <th data-translate="BETREUUNG_BIS"></th>
+                                    <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
+                                    <th data-translate="GEBUHR_PRO_STUNDE"></th>
+                                    <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
+                                    <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="anmeldungTagesschuleZeitabschnitt in tsTarifeOhneBetreuungCollection">
+                                    <!-- Von -->
+                                    <td class="align-left"
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <!-- Bis -->
+                                    <td class="align-left"
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <!-- Betreungsstunden + Minuten Pro Woche -->
+                                    <td class="align-left"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.betreuungsstundenProWoche + ':' + anmeldungTagesschuleZeitabschnitt.betreuungsminutenProWoche"></span>
+                                    </td>
+                                    <!-- Gebühren Pro Stunde -->
+                                    <td class="align-left"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gebuehrProStunde"></span>
+                                    </td>
+                                    <!-- Verpflegungskosten Pro Woche -->
+                                    <td class="align-left"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.verpflegungskosten"></span>
+                                    </td>
+                                    <!-- Total Kosten Pro Woche -->
+                                    <td class="align-left result"><span
+                                        ng-bind="anmeldungTagesschuleZeitabschnitt.totalKostenProWoche"></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tabelle -->
                 <div class="row" ng-if="vm.showVerfuegungsDetails() && !vm.isTagesschuleVerfuegung()">
@@ -215,10 +311,12 @@
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td>
-                                    <dv-tooltip text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
+                                    <dv-tooltip
+                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="result">
-                                    <dv-tooltip text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
+                                    <dv-tooltip
+                                        text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="result">
                                     <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>

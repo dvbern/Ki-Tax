@@ -1779,5 +1779,11 @@
     "IN_CHF_PLACEHOLDER": "in CHF",
     "EINGABE_BASISJAHR": "Angabe {{ basisjahr }}: {{ wertBasisjahr }} CHF",
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Falls der Standardtext ausgewählt wird, wird am Ende der Verfügungen folgende Rechtsmittelbelehrung eingefügt: <br><br>Rechtsmittelbelehrung<br>Gegen diese Verfügung kann innert 30 Tagen Beschwerde erhoben werden. Die Beschwerdefrist kann nicht verlängert werden. Die Beschwerde ist an die Adresse <i>(Angegebene Adresse wird eingefügt)</i> zuzustellen. Sie muss (a) angeben, welche Entscheidung anstelle der angefochtenen Verfügung beantragt wird; (b) aus welchen Gründen diese andere Entscheidung verlangt wird, (c) die Unterschrift der beschwerdeführenden Partei oder der sie vertretenden Person enthalten. Der Beschwerdeschrift beizulegen sind die Beweismittel, soweit sie greifbar sind, und die angefochtene Verfügung.",
+    "BETREUUNGSTUNDEN_PRO_WOCHE": "Betreuungsstunden pro Woche",
+    "GEBUHR_PRO_STUNDE": "Gebühr pro Stunde",
+    "VERPFLEGUNGSKOSTEN_PRO_WOCHE": "Verpflegungskosten pro Woche",
+    "TOTAL_KOSTEN_PRO_WOCHE": "Total Kosten pro Woche",
+    "TAGESSCHULE_GEBUEHREN_BETREUT": "Gebühren (pädagogisch betreutes Angebot)",
+    "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Gebühren (pädagogisch nicht betreutes Angebot)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

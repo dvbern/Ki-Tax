@@ -27,6 +27,7 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSAnmeldungTagesschuleZeitabschnitt} from '../../../models/TSAnmeldungTagesschuleZeitabschnitt';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -89,6 +90,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showVerfuegung: boolean;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
+    public tagesschuleTarifeMitBetreuung: Array<TSAnmeldungTagesschuleZeitabschnitt>;
+    public tagesschuleTarifeOhneBetreuung: Array<TSAnmeldungTagesschuleZeitabschnitt>;
 
     public constructor(
         private readonly $state: StateService,
@@ -150,6 +153,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         if (this.isTagesschuleVerfuegung()) {
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(), this.gesuchModelManager.getGesuchsperiode(), true);
+            this.tagesschuleTarifeMitBetreuung = this.getTagesschuleTarifeMitBetreuung();
+            this.tagesschuleTarifeOhneBetreuung = this.getTagesschuleTarifeOhneBetreuung();
         }
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
@@ -551,5 +556,57 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public showPensumInPercent(): boolean {
         return !this.isTagesfamilienVerfuegung() || this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public showTagesschuleTarifeMitBetreuung(): boolean {
+        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN)
+            && EbeguUtil.isNotNullOrUndefined(this.getBetreuung().anmeldungTagesschuleZeitabschnitts)
+            && this.hasAtLeastOneZeitabschnittMitBetreuung();
+    }
+
+    private hasAtLeastOneZeitabschnittMitBetreuung(): boolean {
+        let hasZeitabschnittMitBetreuung = false;
+        this.getBetreuung().anmeldungTagesschuleZeitabschnitts.forEach(
+            anmeldungTagesschuleZeitabschnitt => {
+                if (anmeldungTagesschuleZeitabschnitt.pedagogischBetreut) {
+                    hasZeitabschnittMitBetreuung = true;
+                }
+            }
+        );
+        return hasZeitabschnittMitBetreuung;
+    }
+
+    public showTagesschuleTarifeOhneBetreuung(): boolean {
+        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN)
+            && EbeguUtil.isNotNullOrUndefined(this.getBetreuung().anmeldungTagesschuleZeitabschnitts)
+            && this.hasAtLeastOneZeitabschnittOhneBetreuung();
+    }
+
+    private hasAtLeastOneZeitabschnittOhneBetreuung(): boolean {
+        let hasZeitabschnittOhneBetreuung = false;
+        this.getBetreuung().anmeldungTagesschuleZeitabschnitts.forEach(
+            anmeldungTagesschuleZeitabschnitt => {
+                if (!anmeldungTagesschuleZeitabschnitt.pedagogischBetreut) {
+                    hasZeitabschnittOhneBetreuung = true;
+                }
+            }
+        );
+        return hasZeitabschnittOhneBetreuung;
+    }
+
+    private getTagesschuleTarifeMitBetreuung(): Array<TSAnmeldungTagesschuleZeitabschnitt> {
+        if (this.getBetreuung().anmeldungTagesschuleZeitabschnitts) {
+            return this.getBetreuung().anmeldungTagesschuleZeitabschnitts.filter(anmeldungTagesschuleZeitabschnitt =>
+                anmeldungTagesschuleZeitabschnitt.pedagogischBetreut);
+        }
+        return undefined;
+    }
+
+    private getTagesschuleTarifeOhneBetreuung(): Array<TSAnmeldungTagesschuleZeitabschnitt> {
+        if (this.getBetreuung().anmeldungTagesschuleZeitabschnitts) {
+            return this.getBetreuung().anmeldungTagesschuleZeitabschnitts.filter(anmeldungTagesschuleZeitabschnitt =>
+                !anmeldungTagesschuleZeitabschnitt.pedagogischBetreut);
+        }
+        return undefined;
     }
 }

@@ -1779,5 +1779,11 @@
     "IN_CHF_PLACEHOLDER": "en CHF",
     "EINGABE_BASISJAHR": "Angabe {{ basisjahr }}: {{ wertBasisjahr }} CHF",
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Si le text standard est sélectionné, les indication des voies de droit suivantes seront ajoutées à la fin de la décision: <br><br>Indication des voies de droit<br>Les plaintes contre cette décision peuvent être déposées dans les 30 jours. La période de plainte ne peut pas être ralongée. Les plaintes doivent être déposées à l'adresse suivante: <i>(L'adresse sera insérée)</i>. Vous devez nous transmettre, (a) quelle est la décision demandée à la place de celle qui est contestée; (b) pour quelles raisons vous demandez une autre décision, (c) la signature de la partie plaignante ou de la personne qui la représente. Le recours doit être accompagné des preuves dans la mesure où elles sont disponibles et que la décision contestée.",
+    "BETREUUNGSTUNDEN_PRO_WOCHE": "Heures de garde par semaine",
+    "GEBUHR_PRO_STUNDE": "Tarif par heure",
+    "VERPFLEGUNGSKOSTEN_PRO_WOCHE": "Frais de pension par semaine",
+    "TOTAL_KOSTEN_PRO_WOCHE": "Coût total par semaine",
+    "TAGESSCHULE_GEBUEHREN_BETREUT": "Tarifs (offre avec suivi pédagogique)",
+    "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Tarifs (offre sans suivi pédagogique)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
