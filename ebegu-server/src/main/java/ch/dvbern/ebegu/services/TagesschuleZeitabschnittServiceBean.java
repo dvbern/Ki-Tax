@@ -96,7 +96,7 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public List<AnmeldungTagesschuleZeitabschnitt> generateAndPersistZeitabschnitte(@Nonnull String gesuchId,
+	public AnmeldungTagesschule generateAndPersistZeitabschnitte(@Nonnull String gesuchId,
 		@Nonnull String anmeldungTagesschuleId) {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", gesuchId));
@@ -109,17 +109,13 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				anmeldungTagesschuleId));
 
-		List<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = generateZeitabschnitte(gesuch,
-			gemeinde, gesuchsperiode, anmeldungTagesschule);
+		generateZeitabschnitte(gesuch, gemeinde, gesuchsperiode, anmeldungTagesschule);
 
-		persistence.persist(anmeldungTagesschuleZeitabschnitts);
-		persistence.merge(anmeldungTagesschule);
-
-		return anmeldungTagesschuleZeitabschnitts;
+		return persistence.merge(anmeldungTagesschule);
 	}
 
 	@Nonnull
-	private List<AnmeldungTagesschuleZeitabschnitt> generateZeitabschnitte(@Nonnull Gesuch gesuch,
+	private void generateZeitabschnitte(@Nonnull Gesuch gesuch,
 		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule){
 
@@ -131,11 +127,8 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 		List<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts =
 			TagesschuleBerechnungHelper.calculateZeitabschnitte(anmeldungTagesschule, parameterDTO, verfuegungMitFamiliensituation);
 
-		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabscnittsSet = new TreeSet<>();
-		anmeldungTagesschuleZeitabscnittsSet.addAll(anmeldungTagesschuleZeitabschnitts);
+		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabscnittsSet = new TreeSet<>(anmeldungTagesschuleZeitabschnitts);
 		anmeldungTagesschule.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabscnittsSet);
-
-		return anmeldungTagesschuleZeitabschnitts;
 	}
 
 

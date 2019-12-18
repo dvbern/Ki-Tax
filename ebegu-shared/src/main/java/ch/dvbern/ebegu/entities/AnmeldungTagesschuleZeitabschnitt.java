@@ -28,11 +28,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 @Entity
 @Audited
-public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
+public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity implements Comparable<AnmeldungTagesschuleZeitabschnitt>{
 
 	private static final long serialVersionUID = -9047857320548372570L;
 
@@ -46,7 +47,11 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private LocalTime betreuungsstundenProWoche;
+	private BigDecimal betreuungsstundenProWoche;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal betreuungsminutenProWoche;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -84,15 +89,6 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
 	}
 
 	@Nonnull
-	public LocalTime getBetreuungsstundenProWoche() {
-		return betreuungsstundenProWoche;
-	}
-
-	public void setBetreuungsstundenProWoche(@Nonnull LocalTime betreuungsstundenProWoche) {
-		this.betreuungsstundenProWoche = betreuungsstundenProWoche;
-	}
-
-	@Nonnull
 	public BigDecimal getGebuehrProStunde() {
 		return gebuehrProStunde;
 	}
@@ -125,5 +121,33 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity{
 
 	public void setAnmeldungTagesschule(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		this.anmeldungTagesschule = anmeldungTagesschule;
+	}
+
+	@Nonnull
+	public BigDecimal getBetreuungsstundenProWoche() {
+		return betreuungsstundenProWoche;
+	}
+
+	public void setBetreuungsstundenProWoche(@Nonnull BigDecimal betreuungsstundenProWoche) {
+		this.betreuungsstundenProWoche = betreuungsstundenProWoche;
+	}
+
+	@Nonnull
+	public BigDecimal getBetreuungsminutenProWoche() {
+		return betreuungsminutenProWoche;
+	}
+
+	public void setBetreuungsminutenProWoche(@Nonnull BigDecimal betreuungsminutenProWoche) {
+		this.betreuungsminutenProWoche = betreuungsminutenProWoche;
+	}
+
+	@Override
+	public int compareTo(@Nonnull AnmeldungTagesschuleZeitabschnitt other) {
+		CompareToBuilder compareToBuilder = new CompareToBuilder();
+		compareToBuilder.append(this.getGueltigkeit(), other.getGueltigkeit());
+		compareToBuilder.append(this.isPedagogischBetreut(), other.isPedagogischBetreut());
+		// wenn ids nicht gleich sind wollen wir auch compare to nicht gleich
+		compareToBuilder.append(this.getId(), other.getId());
+		return compareToBuilder.toComparison();
 	}
 }

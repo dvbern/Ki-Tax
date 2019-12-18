@@ -17,15 +17,14 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 
 public interface TagesschuleZeitabschnittService {
 
 	@Nonnull
-	List<AnmeldungTagesschuleZeitabschnitt> generateAndPersistZeitabschnitte(@Nonnull String gesuchId,
+	AnmeldungTagesschule generateAndPersistZeitabschnitte(@Nonnull String gesuchId,
 		@Nonnull String anmeldungTagesschuleId);
 }

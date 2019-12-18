@@ -152,6 +152,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	}
 
 	public void setAnmeldungTagesschuleZeitabschnitts(Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts) {
-		this.anmeldungTagesschuleZeitabschnitts = anmeldungTagesschuleZeitabschnitts;
+		this.anmeldungTagesschuleZeitabschnitts.clear();
+		this.anmeldungTagesschuleZeitabschnitts.addAll(anmeldungTagesschuleZeitabschnitts);
 	}
 }

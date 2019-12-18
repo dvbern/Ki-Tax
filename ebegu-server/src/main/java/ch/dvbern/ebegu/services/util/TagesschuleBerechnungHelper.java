@@ -68,15 +68,17 @@ public class TagesschuleBerechnungHelper {
 			if (wirdPedagogosichBetreut) {
 				anmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(parameterDTO.getVerpflegKostenProWocheMitBetreuung());
 				anmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(true);
-				LocalTime betreuungsstundenProWoche = LocalTime.of(parameterDTO.getStundenProWocheMitBetreuung(),
-					parameterDTO.getMinutesProWocheMitBetreuung());
+				BigDecimal betreuungsstundenProWoche = new BigDecimal(parameterDTO.getStundenProWocheMitBetreuung());
+				BigDecimal betreuungsminutenProWoche =	new BigDecimal(parameterDTO.getMinutesProWocheMitBetreuung());
 				anmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(betreuungsstundenProWoche);
+				anmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(betreuungsminutenProWoche);
 			} else {
 				anmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(parameterDTO.getVerpflegKostenProWocheOhneBetreuung());
 				anmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(false);
-				LocalTime betreuungsstundenProWoche = LocalTime.of(parameterDTO.getStundenProWocheOhneBetreuung(),
-					parameterDTO.getMinutesProWocheOhneBetreuung());
+				BigDecimal betreuungsstundenProWoche =  new BigDecimal(parameterDTO.getStundenProWocheOhneBetreuung());
+				BigDecimal betreuungsminutenProWoche =	new BigDecimal(parameterDTO.getMinutesProWocheOhneBetreuung());
 				anmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(betreuungsstundenProWoche);
+				anmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(betreuungsminutenProWoche);
 			}
 			//calculate Total Kosten pro Woche
 			anmeldungTagesschuleZeitabschnitt.setTotalKostenProWoche(calculateTotalKostenProWoche(anmeldungTagesschuleZeitabschnitt));
@@ -143,15 +145,13 @@ public class TagesschuleBerechnungHelper {
 	}
 
 	private static BigDecimal calculateTotalKostenProWoche(AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt){
-		BigDecimal hoursProWoche =
-			new BigDecimal(anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche().getHour());
-		BigDecimal minutesProWoche =
-			new BigDecimal(anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche().getMinute());
+		BigDecimal hoursProWoche = anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche();
+		BigDecimal minutesProWoche = anmeldungTagesschuleZeitabschnitt.getBetreuungsminutenProWoche();
 		BigDecimal totalKostenStunden =
 			MathUtil.EXACT.multiply(anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(),hoursProWoche);
 		BigDecimal totalKostenMinuten =
 			MathUtil.EXACT.multiply(anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(),minutesProWoche);
-		totalKostenMinuten = MathUtil.EXACT.divide(totalKostenMinuten, BigDecimal.ZERO);
+		totalKostenMinuten = MathUtil.EXACT.divide(totalKostenMinuten, new BigDecimal(60));
 
 		return MathUtil.DEFAULT.addNullSafe(totalKostenStunden, totalKostenMinuten,
 			anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten());
