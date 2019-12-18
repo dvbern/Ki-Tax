@@ -61,6 +61,7 @@ public class TagesschuleBerechnungHelper {
 		for(VerfuegungZeitabschnitt verfuegungZeitabschnitt: verfuegungMitFamiliensituation.getZeitabschnitte()){
 			AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt =
 				new AnmeldungTagesschuleZeitabschnitt();
+			anmeldungTagesschuleZeitabschnitt.setGueltigkeit(verfuegungZeitabschnitt.getGueltigkeit());
 			anmeldungTagesschuleZeitabschnitt.setAnmeldungTagesschule(anmeldungTagesschule);
 			anmeldungTagesschuleZeitabschnitt.setMassgebendesEinkommenInklAbzugFamgr(verfuegungZeitabschnitt.getMassgebendesEinkommen());
 			BigDecimal tarif = tagesschuleRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, wirdPedagogosichBetreut);
