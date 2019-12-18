@@ -132,7 +132,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 			// 2 Kommastellen
 			.where(VerfuegungZeitabschnitt::getVerguenstigungOhneBeruecksichtigungVollkosten, twoDecimalsOf("3.23"))
 			// 2 Kommastellen
-			.where(VerfuegungZeitabschnitt::getVerguenstigung, twoDecimalsOf("4.23"))
+			.where(VerfuegungZeitabschnitt::getVerguenstigung, twoDecimalsOf("4.25"))
 			// 2 Kommastellen
 			.where(VerfuegungZeitabschnitt::getVollkosten, twoDecimalsOf("5.23"))
 			// Rappen
