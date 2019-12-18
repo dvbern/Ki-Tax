@@ -62,7 +62,7 @@ public class BGCalculationResult {
 		zeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
 				toTwoKommastelle(verguenstigungOhneBeruecksichtigungVollkosten));
 		zeitabschnitt.setVerguenstigung(roundToFrankenRappen(verguenstigung));
-		zeitabschnitt.setVollkosten(toTwoKommastelle(vollkosten));
+		zeitabschnitt.setVollkosten(roundToFrankenRappen(vollkosten));
 		zeitabschnitt.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
 
 		zeitabschnitt.setBetreuungspensumZeiteinheit(
