@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
@@ -132,6 +133,7 @@ import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
@@ -2978,6 +2980,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
+		List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = betreuungFromServer.getAnmeldungTagesschuleZeitabschnitts().stream()
+			.map(this::anmeldungTagesschuleZeitabschnittToJax)
+			.collect(Collectors.toList());
+		jaxBetreuung.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnitts);
 		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;
 	}
@@ -4747,5 +4753,22 @@ public class JaxBConverter extends AbstractConverter {
 
 	public void lastenausgleichDetailToJAX() {
 		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nullable
+	private JaxAnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittToJax(@Nullable AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittFromServer) {
+		if (anmeldungTagesschuleZeitabschnittFromServer == null) {
+			return null;
+		}
+		final JaxAnmeldungTagesschuleZeitabschnitt jaxAnmeldungTagesschuleZeitabschnitt = new JaxAnmeldungTagesschuleZeitabschnitt();
+		convertAbstractDateRangedFieldsToJAX(anmeldungTagesschuleZeitabschnittFromServer, jaxAnmeldungTagesschuleZeitabschnitt);
+		jaxAnmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getBetreuungsminutenProWoche());
+		jaxAnmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getBetreuungsstundenProWoche());
+		jaxAnmeldungTagesschuleZeitabschnitt.setGebuehrProStunde(anmeldungTagesschuleZeitabschnittFromServer.getGebuehrProStunde());
+		jaxAnmeldungTagesschuleZeitabschnitt.setMassgebendesEinkommenInklAbzugFamgr(anmeldungTagesschuleZeitabschnittFromServer.getMassgebendesEinkommenInklAbzugFamgr());
+		jaxAnmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(anmeldungTagesschuleZeitabschnittFromServer.isPedagogischBetreut());
+		jaxAnmeldungTagesschuleZeitabschnitt.setTotalKostenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getTotalKostenProWoche());
+		jaxAnmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(anmeldungTagesschuleZeitabschnittFromServer.getVerpflegungskosten());
+		return jaxAnmeldungTagesschuleZeitabschnitt;
 	}
 }
