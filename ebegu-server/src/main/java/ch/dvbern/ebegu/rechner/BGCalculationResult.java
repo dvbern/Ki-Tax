@@ -61,7 +61,7 @@ public class BGCalculationResult {
 				roundToFrankenRappen(verguenstigungOhneBeruecksichtigungMinimalbeitrag));
 		zeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
 				toTwoKommastelle(verguenstigungOhneBeruecksichtigungVollkosten));
-		zeitabschnitt.setVerguenstigung(toTwoKommastelle(verguenstigung));
+		zeitabschnitt.setVerguenstigung(roundToFrankenRappen(verguenstigung));
 		zeitabschnitt.setVollkosten(toTwoKommastelle(vollkosten));
 		zeitabschnitt.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
 
