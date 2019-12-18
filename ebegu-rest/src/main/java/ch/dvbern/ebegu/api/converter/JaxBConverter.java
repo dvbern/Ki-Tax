@@ -1899,6 +1899,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setKinderabzugZweitesHalbjahr(persistedKind.getKinderabzugZweitesHalbjahr());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
+		jaxKind.setAusAsylwesen(persistedKind.getAusAsylwesen());
+		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
@@ -2036,6 +2038,8 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setKinderabzugZweitesHalbjahr(kindJAXP.getKinderabzugZweitesHalbjahr());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
+		kind.setAusAsylwesen(kindJAXP.getAusAsylwesen());
+		kind.setZemisNummer(kindJAXP.getZemisNummer());
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 
 		PensumFachstelle updtPensumFachstelle = null;
