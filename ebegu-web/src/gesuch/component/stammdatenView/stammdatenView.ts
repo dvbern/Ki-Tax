@@ -342,7 +342,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showRechnungsadresseCheckbox(): boolean {
         return this.gesuchstellerNumber === 1 &&
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+            this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
     }
 
     public isMailRequired(): boolean {
