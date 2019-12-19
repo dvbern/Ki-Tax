@@ -247,7 +247,7 @@ public class CopyTest {
 		Kind kindErneuerung = erneuerung.getKindContainers().iterator().next().getKindJA();
 		assertNotNull(kindErneuerung);
 		assertEquals("Simon Wälti", kindErneuerung.getFullName());
-		assertEquals(EinschulungTyp.VORSCHULALTER, kindErneuerung.getEinschulungTyp()); // Wird nicht kopiert!
+		assertEquals(null, kindErneuerung.getEinschulungTyp()); // Wird nicht kopiert!
 
 		assertNotNull(mutationNeuesDossier.getKindContainers());
 		assertEquals(1, mutationNeuesDossier.getKindContainers().size());
