@@ -22,6 +22,9 @@ import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 
 public class JaxAnmeldungTagesschuleZeitabschnitt extends JaxAbstractDateRangedDTO {
+
+	private static final long serialVersionUID = 3939072050781289383L;
+
 	@NotNull
 	private BigDecimal massgebendesEinkommenInklAbzugFamgr;
 
