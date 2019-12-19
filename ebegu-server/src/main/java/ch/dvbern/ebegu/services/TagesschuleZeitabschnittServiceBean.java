@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.rechner.TagesschuleRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.rules.tagesschule.TagesschuleRulesExecutor;
 import ch.dvbern.ebegu.services.util.TagesschuleBerechnungHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -122,10 +123,17 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 		Verfuegung verfuegungMitFamiliensituation = evaluateFamiliensituationForTagesschuleAnmeldung(gesuch, gemeinde
 			, gesuchsperiode);
 
+		//Erst wir erweitern die familiensituation Zeitaschnitten mit die Tagesschule Rules:
+		TagesschuleRulesExecutor tagesschuleRulesExecutor = new TagesschuleRulesExecutor();
+		verfuegungMitFamiliensituation.setZeitabschnitte(tagesschuleRulesExecutor.executeAllVerfuegungZeitabschnittRules(gesuch, verfuegungMitFamiliensituation.getZeitabschnitte()));
+
 		TagesschuleRechnerParameterDTO parameterDTO = loadTagesschuleRechnerParameters(gemeinde, gesuchsperiode);
 
 		List<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts =
 			TagesschuleBerechnungHelper.calculateZeitabschnitte(anmeldungTagesschule, parameterDTO, verfuegungMitFamiliensituation);
+
+		//Hier kann man spaeter die Rules fuer die anmeldungTagesschuleZeitabschnitts noch einspielen wenn gebraucht
+		//tagesschuleRulesExecutor.executeAllTagesschuleZeitabschnittRules(...)
 
 		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabscnittsSet = new TreeSet<>(anmeldungTagesschuleZeitabschnitts);
 		anmeldungTagesschule.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabscnittsSet);
