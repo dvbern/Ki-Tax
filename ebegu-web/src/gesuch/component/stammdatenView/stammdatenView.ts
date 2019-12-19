@@ -32,7 +32,6 @@ import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
@@ -343,8 +342,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showRechnungsadresseCheckbox(): boolean {
         return this.gesuchstellerNumber === 1 &&
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
-                this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
     public isMailRequired(): boolean {
