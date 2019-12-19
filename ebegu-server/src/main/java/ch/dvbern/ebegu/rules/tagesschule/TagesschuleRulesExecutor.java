@@ -25,11 +25,15 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TagesschuleRulesExecutor {
 
+	private static final Logger LOG = LoggerFactory.getLogger(TagesschuleRulesExecutor.class);
+
 	public List<VerfuegungZeitabschnitt> executeAllVerfuegungZeitabschnittRules(Gesuch gesuch,
-		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts){
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts) {
 
 		Reflections reflections = new Reflections("ch.dvbern.ebegu.rules.tagesschule");
 		Set<Class<? extends AbstractTagesschuleRule>> tagesschuleRules =
@@ -41,14 +45,14 @@ public class TagesschuleRulesExecutor {
 					abstractTagesschuleRule.executeVerfuegungZeitabschnittRule(gesuch,
 						verfuegungZeitabschnitts);
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.error("Es gab einen Fehler mit einem Rule bei der Tagesschule Verfuegung Zeitabschnitt: " + e.getMessage());
 			}
 		}
 		return verfuegungZeitabschnitts;
 	}
 
 	public List<AnmeldungTagesschuleZeitabschnitt> executeAllTagesschuleZeitabschnittRules(AnmeldungTagesschule anmeldungTagesschule,
-		List<AnmeldungTagesschuleZeitabschnitt> tagesschuleZeitabschnitts){
+		List<AnmeldungTagesschuleZeitabschnitt> tagesschuleZeitabschnitts) {
 
 		Reflections reflections = new Reflections("ch.dvbern.ebegu.rules.tagesschule");
 		Set<Class<? extends AbstractTagesschuleRule>> tagesschuleRules =
@@ -60,7 +64,7 @@ public class TagesschuleRulesExecutor {
 					abstractTagesschuleRule.executeAnmeldungTagesschuleZeitabschnittRule(anmeldungTagesschule,
 						tagesschuleZeitabschnitts);
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.error("Es gab einen Fehler mit einem Rule bei der Tagesschule Zeitabschnitt: " + e.getMessage());
 			}
 		}
 		return tagesschuleZeitabschnitts;
