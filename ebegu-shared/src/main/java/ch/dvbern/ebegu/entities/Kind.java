@@ -50,13 +50,13 @@ public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
 
-	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = true)
+	@Nullable
 	@Enumerated(EnumType.STRING)
 	private Kinderabzug kinderabzugErstesHalbjahr;
 
-	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = true)
+	@Nullable
 	@Enumerated(EnumType.STRING)
 	private Kinderabzug kinderabzugZweitesHalbjahr;
 
@@ -157,21 +157,26 @@ public class Kind extends AbstractPersonEntity {
 		@Nonnull AntragCopyType copyType,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		super.copyAbstractPersonEntity(target, copyType);
-		target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
-		target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		target.setSprichtAmtssprache(this.getSprichtAmtssprache());
 
 		switch (copyType) {
 		case MUTATION:
 			target.setEinschulungTyp(this.getEinschulungTyp());
+			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
+			target.setEinschulungTyp(this.getEinschulungTyp());
+			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
+			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
-			target.setEinschulungTyp(this.getEinschulungTyp());
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
 			break;
@@ -243,5 +248,9 @@ public class Kind extends AbstractPersonEntity {
 			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
 			EbeguUtil.isSameObject(getPensumAusserordentlicherAnspruch(),
 				otherKind.getPensumAusserordentlicherAnspruch());
+	}
+
+	public boolean isGeprueft() {
+		return kinderabzugErstesHalbjahr != null;
 	}
 }

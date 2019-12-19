@@ -786,9 +786,15 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 							.stream()
 							.filter(kindContainer -> kindContainer.getKindJA().getFamilienErgaenzendeBetreuung())
 							.collect(Collectors.toList());
+					final List<KindContainer> nichtGepruefteKinder = kinderFromGesuch
+							.stream()
+							.filter(kindContainer -> !kindContainer.getKindJA().isGeprueft())
+							.collect(Collectors.toList());
 					WizardStepStatus status;
 					if (kinderFromGesuch.isEmpty()) {
 						status = WizardStepStatus.NOK;
+					} else if (!nichtGepruefteKinder.isEmpty()) {
+						status = WizardStepStatus.IN_BEARBEITUNG;
 					} else {
 						status = getWizardStepStatusOkOrMutiert(wizardStep);
 					}

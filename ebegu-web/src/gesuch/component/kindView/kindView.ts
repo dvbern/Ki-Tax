@@ -129,6 +129,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initAusserordentlicherAnspruch();
     }
 
+    public $postLink (): void {
+        if (!this.model.kindJA.isNew() && !this.model.kindJA.isGeprueft()) {
+            this.form.$setSubmitted();
+        }
+    }
+
+
     public getTextSprichtAmtssprache(): string {
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {

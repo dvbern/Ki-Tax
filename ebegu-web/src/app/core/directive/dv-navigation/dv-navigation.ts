@@ -509,7 +509,8 @@ export class NavigatorController implements IController {
         }
 
         if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return !this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+            return (!this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+                || this.gesuchModelManager.isThereAnyNotGeprueftesKind())
                 && !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
         }
         if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {

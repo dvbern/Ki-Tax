@@ -88,4 +88,8 @@ export class TSKind extends TSAbstractPersonEntity {
     public set pensumAusserordentlicherAnspruch(value: TSPensumAusserordentlicherAnspruch) {
         this._pensumAusserordentlicherAnspruch = value;
     }
+
+    public isGeprueft(): boolean {
+        return this._kinderabzugErstesHalbjahr !== null;
+    }
 }
