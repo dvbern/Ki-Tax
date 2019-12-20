@@ -145,6 +145,31 @@ public class LastenausgleichResource {
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
 	}
 
+	@ApiOperation(value = "Erstellt ein CSV Textdokument für den Lastenausgleich", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/csv/")
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public Response getLastenausgleichReportCSV(
+		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo)
+		throws EbeguRuntimeException {
+
+		Objects.requireNonNull(jaxId);
+		String ip = downloadResource.getIP(request);
+		String lastenausgleichId = converter.toEntityId(jaxId);
+
+		UploadFileInfo uploadFileInfo = reportService.generateCSVReportLastenausgleichKibon(lastenausgleichId,
+			Locale.GERMAN);
+		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
+
+		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
+	}
+
 	@ApiOperation("Loescht den Lastenausgleich mit der uebergebenen id aus der DB")
 	@Nullable
 	@DELETE

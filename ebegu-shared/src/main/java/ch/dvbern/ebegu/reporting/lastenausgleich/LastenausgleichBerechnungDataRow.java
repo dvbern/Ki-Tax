@@ -30,10 +30,26 @@ public class LastenausgleichBerechnungDataRow {
 
 	private BigDecimal totalBelegung;
 	private BigDecimal totalGutscheine;
+	private BigDecimal totalAnrechenbar;
 	private BigDecimal kostenPro100ProzentPlatz;
 	private BigDecimal selbstbehaltGemeinde;
 	private BigDecimal eingabeLastenausgleich;
 	private boolean korrektur;
+
+	public LastenausgleichBerechnungDataRow() {}
+
+	protected LastenausgleichBerechnungDataRow(LastenausgleichBerechnungDataRow row) {
+		this.gemeinde = row.getGemeinde();
+		this.bfsNummer = row.getBfsNummer();
+		this.verrechnungsjahr = row.getVerrechnungsjahr();
+		this.totalBelegung = row.getTotalBelegung();
+		this.totalGutscheine = row.getTotalGutscheine();
+		this.totalAnrechenbar = row.getTotalAnrechenbar();
+		this.kostenPro100ProzentPlatz = row.getKostenPro100ProzentPlatz();
+		this.selbstbehaltGemeinde = row.getSelbstbehaltGemeinde();
+		this.eingabeLastenausgleich = row.getEingabeLastenausgleich();
+		this.korrektur = row.isKorrektur();
+	}
 
 	public String getGemeinde() {
 		return gemeinde;
@@ -73,6 +89,14 @@ public class LastenausgleichBerechnungDataRow {
 
 	public void setTotalGutscheine(BigDecimal totalGutscheine) {
 		this.totalGutscheine = totalGutscheine;
+	}
+
+	public BigDecimal getTotalAnrechenbar() {
+		return totalAnrechenbar;
+	}
+
+	public void setTotalAnrechenbar(BigDecimal totalAnrechenbar) {
+		this.totalAnrechenbar = totalAnrechenbar;
 	}
 
 	public BigDecimal getKostenPro100ProzentPlatz() {

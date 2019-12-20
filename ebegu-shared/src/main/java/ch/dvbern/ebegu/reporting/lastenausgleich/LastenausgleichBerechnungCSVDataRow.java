@@ -15,27 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.reporting;
+package ch.dvbern.ebegu.reporting.lastenausgleich;
 
-import java.util.Locale;
+import java.math.BigDecimal;
 
-import javax.annotation.Nonnull;
+/**
+ * DTO für den Lastenausgleich von KiBon
+ */
+public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow {
 
-import ch.dvbern.ebegu.util.UploadFileInfo;
-import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+	private BigDecimal totalRevision;
 
-public interface ReportLastenausgleichBerechnungService {
+	public LastenausgleichBerechnungCSVDataRow(LastenausgleichBerechnungDataRow parent) {
+		super(parent);
+	}
 
-	@Nonnull
-	UploadFileInfo generateExcelReportLastenausgleichKibon(
-		@Nonnull String lastenausgleichId,
-		@Nonnull Locale locale
-	) throws ExcelMergeException;
+	public BigDecimal getTotalRevision() {
+		return totalRevision;
+	}
 
-	@Nonnull
-	UploadFileInfo generateCSVReportLastenausgleichKibon(
-		@Nonnull String lastenausgleichId,
-		@Nonnull Locale locale
-	);
-
+	public void setTotalRevision(BigDecimal totalRevision) {
+		this.totalRevision = totalRevision;
+	}
 }

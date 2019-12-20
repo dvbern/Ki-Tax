@@ -69,6 +69,17 @@ export class LastenausgleichRS {
             });
     }
 
+    public getLastenausgleichReportCSV(lastenausgleichId: string): IPromise<TSDownloadFile> {
+        return this.http.get(`${this.serviceURL}/csv`,
+            {
+                params: {
+                    lastenausgleichId,
+                }})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
+
     public removeLastenausgleich(lastenausgleichId: string): IPromise<any> {
         return this.http.delete(`${this.serviceURL}/${encodeURIComponent(lastenausgleichId)}`)
             .then(value => {

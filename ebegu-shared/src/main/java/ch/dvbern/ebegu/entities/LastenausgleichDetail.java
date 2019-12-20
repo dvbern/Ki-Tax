@@ -64,6 +64,10 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
+	private BigDecimal totalAnrechenbar = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	private BigDecimal totalBetragGutscheine = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
@@ -115,6 +119,15 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	public void setTotalBelegungen(@Nonnull BigDecimal totalBelegungen) {
 		this.totalBelegungen = totalBelegungen;
+	}
+
+	@Nonnull
+	public BigDecimal getTotalAnrechenbar() {
+		return totalAnrechenbar;
+	}
+
+	public void setTotalAnrechenbar(@Nonnull BigDecimal totalAnrechenbar) {
+		this.totalAnrechenbar = totalAnrechenbar;
 	}
 
 	@Nonnull

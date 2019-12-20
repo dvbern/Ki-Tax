@@ -101,8 +101,14 @@ export class LastenausgleichViewController implements IController {
     }
 
     public downloadCsv(lastenausgleich: TSLastenausgleich): void {
-        console.log('Weil lint sonst motzt, dass der parameter unused ist:', lastenausgleich);
-        window.alert('not yet implemented');
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.lastenausgleichRS.getLastenausgleichReportCSV(lastenausgleich.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 
     public isRemoveAllowed(): boolean {
