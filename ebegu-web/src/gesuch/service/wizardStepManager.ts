@@ -272,7 +272,11 @@ export class WizardStepManager {
      * Gibt true zurueck wenn der Status vom naechsten Step != UNBESUCHT ist. D.h. wenn es verfuegbar ist
      */
     public isNextStepBesucht(gesuch: TSGesuch): boolean {
-        return this.getStepByName(this.getNextStep(gesuch)).wizardStepStatus !== TSWizardStepStatus.UNBESUCHT;
+        const step = this.getStepByName(this.getNextStep(gesuch));
+        if (!step) {
+            return false;
+        }
+        return step.wizardStepStatus !== TSWizardStepStatus.UNBESUCHT;
     }
 
     /**

@@ -90,7 +90,9 @@ export class TSFinanzModel {
     }
 
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
-
+        if (!gesuch) {
+            return;
+        }
         this.gemeinsameSteuererklaerung =
             this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
         this.sozialhilfeBezueger =

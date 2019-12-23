@@ -487,12 +487,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMahnlaufBeenden(): boolean {
-        return isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly();
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly()) : false;
     }
 
     public showDokumenteNichtKomplett(): boolean {
-        return isAnyStatusOfMahnung(this.getGesuch().status) && this.getGesuch().dokumenteHochgeladen
-            && !this.isGesuchReadonly();
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status)
+            && this.getGesuch().dokumenteHochgeladen
+            && !this.isGesuchReadonly()) : false;
     }
 
     public showZweiteMahnungNichtEingetreten(): boolean {
@@ -587,9 +588,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showKeinKontingent(): boolean {
-        return this.getGesuch().typ !== TSAntragTyp.MUTATION
+        return this.getGesuch() ? (this.getGesuch().typ !== TSAntragTyp.MUTATION
             && this.showVerfuegenStarten()
-            && this.kontingentierungEnabled;
+            && this.kontingentierungEnabled) : false;
     }
 
     public showKontingentVorhanden(): boolean {
@@ -614,6 +615,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openFinanzielleSituationPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -623,6 +627,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openBegleitschreibenPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -632,6 +639,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openKompletteKorrespondenzPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {

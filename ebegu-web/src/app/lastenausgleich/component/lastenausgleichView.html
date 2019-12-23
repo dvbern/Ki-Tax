@@ -45,12 +45,15 @@
                     <div class="col-md-3">
                         <dv-input-container class="form-group">
                             <label class="md-no-float required" for="selbstbehaltPro100ProzentPlatz" data-translate="LASTENAUSGLEICH_SELBSTBEHALT"></label>
-                            <dv-valueinput input-id="selbstbehaltPro100ProzentPlatz" name="selbstbehaltPro100ProzentPlatz"
-                                           ng-model="vm.selbstbehaltPro100ProzentPlatz"
-                                           class="input-element"
-                                           area-describedby="selbstbehaltPro100ProzentPlatz-error"
-                                           required>
-                            </dv-valueinput>
+                            <input type="number"
+                                   id="selbstbehaltPro100ProzentPlatz"
+                                   name="selbstbehaltPro100ProzentPlatz"
+                                   required
+                                   class="form-control"
+                                   min="0"
+                                   aria-describedby="selbstbehaltPro100ProzentPlatz-error"
+                                   ng-model="vm.selbstbehaltPro100ProzentPlatz"
+                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS">
                             <dv-error-messages input-id="selbstbehaltPro100ProzentPlatz"
                                                for="vm.form.selbstbehaltPro100ProzentPlatz.$error"
                                                class="error"></dv-error-messages>
