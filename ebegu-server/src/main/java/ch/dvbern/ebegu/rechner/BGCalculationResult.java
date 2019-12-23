@@ -28,7 +28,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
-import static ch.dvbern.ebegu.util.MathUtil.toTwoKommastelle;
 
 public class BGCalculationResult {
 

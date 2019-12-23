@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -181,10 +182,21 @@ public class MathUtilTest {
 	@Test
 	public void testRoundToNearestQuarter() {
 		assertEquals(new BigDecimal("0.00"), MathUtil.roundToNearestQuarter(new BigDecimal(0)));
-		assertEquals(new BigDecimal("0.00"), MathUtil.roundToNearestQuarter(new BigDecimal(0.12)));
-		assertEquals(new BigDecimal("0.25"), MathUtil.roundToNearestQuarter(new BigDecimal(0.13)));
-		assertEquals(new BigDecimal("0.25"), MathUtil.roundToNearestQuarter(new BigDecimal(0.25)));
-		assertEquals(new BigDecimal("1.00"), MathUtil.roundToNearestQuarter(new BigDecimal(0.9)));
-		assertEquals(new BigDecimal("500.00"), MathUtil.roundToNearestQuarter(new BigDecimal(499.994)));
+		assertEquals(new BigDecimal("0.00"), MathUtil.roundToNearestQuarter(new BigDecimal("0.12")));
+		assertEquals(new BigDecimal("0.25"), MathUtil.roundToNearestQuarter(new BigDecimal("0.13")));
+		assertEquals(new BigDecimal("0.25"), MathUtil.roundToNearestQuarter(new BigDecimal("0.25")));
+		assertEquals(new BigDecimal("1.00"), MathUtil.roundToNearestQuarter(new BigDecimal("0.9")));
+		assertEquals(new BigDecimal("500.00"), MathUtil.roundToNearestQuarter(new BigDecimal("499.994")));
 	}
+
+	@Test
+	public void testIsClose() {
+		assertTrue(MathUtil.isClose(BigDecimal.valueOf(1.01), BigDecimal.valueOf(1.02), BigDecimal.valueOf(0.01)));
+		assertTrue(MathUtil.isClose(BigDecimal.valueOf(1.01), BigDecimal.valueOf(1.01), BigDecimal.ZERO));
+		assertTrue(MathUtil.isClose(BigDecimal.valueOf(1.01), BigDecimal.valueOf(1.009), BigDecimal.valueOf(0.01)));
+		assertTrue(MathUtil.isClose(BigDecimal.valueOf(1.01), BigDecimal.valueOf(5), BigDecimal.TEN));
+		assertFalse(MathUtil.isClose(BigDecimal.valueOf(1.01), BigDecimal.valueOf(1.02), BigDecimal.valueOf(0.001)));
+		assertFalse(MathUtil.isClose(BigDecimal.valueOf(3.01), BigDecimal.valueOf(1.02), BigDecimal.valueOf(1.01)));
+	}
+
 }
