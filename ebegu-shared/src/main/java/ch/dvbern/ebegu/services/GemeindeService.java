@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -106,4 +107,10 @@ public interface GemeindeService {
 
 	@Nonnull
 	Collection<BfsGemeinde> getAllBfsGemeinden();
+
+	@Nonnull
+	List<BfsGemeinde> findGemeindeVonVerbund(@Nonnull Long verbundBfsNummer);
+
+	@Nonnull
+	Optional<BfsGemeinde> findBfsGemeinde(@Nonnull Long bfsNummer);
 }

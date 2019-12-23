@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -303,8 +304,10 @@ public class GemeindeResource {
 		Objects.requireNonNull(konfiguration.getGesuchsperiode());
 		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
 
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Gesuchsperiode gesuchsperiode =
+			gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
 			saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
@@ -451,12 +454,13 @@ public class GemeindeResource {
 		@Nullable @PathParam("gemeindenTSId") String gemeindenTSIdList) {
 		List<JaxGemeindeRegistrierung> gemeindeRegistrierungList = new ArrayList<>();
 
-		// BG-Gemeinde: Es kann nur 1 geben. Falls sie gesetzt ist, darf sie für TS nicht ein zweites Mal hinzugefügt werden
+		// BG-Gemeinde: Es kann nur 1 geben. Falls sie gesetzt ist, darf sie für TS nicht ein zweites Mal hinzugefügt
+		// werden
 		String gemeindeBGId = null;
 
-		if (gemeindeBGJAXPId != null ){
+		if (gemeindeBGJAXPId != null) {
 			gemeindeBGId = converter.toEntityId(gemeindeBGJAXPId);
-			if(!gemeindeBGId.equals("null")) {
+			if (!gemeindeBGId.equals("null")) {
 				String finalGemeindeBGId = gemeindeBGId;
 				Gemeinde gemeindeBG =
 					gemeindeService.findGemeinde(gemeindeBGId).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -470,27 +474,45 @@ public class GemeindeResource {
 			}
 		}
 
-		if (gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")){
+		if (gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")) {
 			String[] gemeindenTSList = gemeindenTSIdList.split(",");
-			for(String gemeindeTSId : gemeindenTSList){
-				Gemeinde gemeindeTS =
-					gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
-						"findGemeinde",
+			for (String gemeindeTSId : gemeindenTSList) {
+				Gemeinde gemeindeTSVerbund;
+				String gemeindeName;
+				//Wenn der ID kleiner oder gleich als 5 Karaktern ist, es ist dann einen BFS Nummer
+				if(gemeindeTSId.length() <= 5){
+					BfsGemeinde bfsGemeinde =
+						gemeindeService.findBfsGemeinde(Long.parseLong(gemeindeTSId)).orElseThrow(()-> new EbeguEntityNotFoundException(
+						"findBfsGemeinde",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+					gemeindeTSVerbund =
+						gemeindeService.findRegistredGemeindeVerbundIfExist(bfsGemeinde.getBfsNummer()).orElseThrow(()-> new EbeguEntityNotFoundException(
+							"findRegistredGemeindeVerbundIfExist",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, bfsGemeinde.getBfsNummer()));
+					gemeindeName = bfsGemeinde.getName();
+				}
+				else{
+					Gemeinde gemeindeTS =
+						gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
+							"findGemeinde",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+					gemeindeTSVerbund =
+						gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
+					gemeindeName = gemeindeTS.getName();
+				}
 
-				Gemeinde gemeindeTSVerbund =
-					gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
-
-				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde sowohl für BG wie auch
-				// für TS ausgewählt wurde. Fall diese Gemeinde für TS keinem Verbund angehört, muss sie nicht ein zweites Mal hinzugefügt werden
+				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde
+				// sowohl für BG wie auch
+				// für TS ausgewählt wurde. Fall diese Gemeinde für TS keinem Verbund angehört, muss sie nicht ein
+				// zweites Mal hinzugefügt werden
 				if (gemeindeBGId != null && gemeindeBGId.equals(gemeindeTSId) && gemeindeTSVerbund == null) {
 					continue;
 				}
 
 				JaxGemeindeRegistrierung gemeindeRegistrierungTS = new JaxGemeindeRegistrierung();
 				gemeindeRegistrierungTS.setId(gemeindeTSId);
-				gemeindeRegistrierungTS.setName(gemeindeTS.getName());
-				if(gemeindeTSVerbund != null && gemeindeTSVerbund.isAngebotTS()){
+				gemeindeRegistrierungTS.setName(gemeindeName);
+				if (gemeindeTSVerbund != null && gemeindeTSVerbund.isAngebotTS()) {
 					gemeindeRegistrierungTS.setVerbundId(gemeindeTSVerbund.getId());
 					gemeindeRegistrierungTS.setVerbundName(gemeindeTSVerbund.getName());
 				}
@@ -498,5 +520,39 @@ public class GemeindeResource {
 			}
 		}
 		return gemeindeRegistrierungList;
+	}
+
+	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV and all Gemeinde von Schulverbund",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/activeAndSchulverbund")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
+		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeinden().stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);
+		for (JaxGemeinde jaxGemeinde : aktiveGemeinde) {
+			if (jaxGemeinde.getBfsNummer() >= 10000 && jaxGemeinde.getBfsNummer() < 100000 && jaxGemeinde.isAngebotTS()) {
+				List<BfsGemeinde> bfsGemeindeList = gemeindeService.findGemeindeVonVerbund(jaxGemeinde.getBfsNummer());
+				bfsGemeindeList.forEach(bfsGemeinde -> {
+					boolean isAlreadyVorhanden =
+						aktiveUndSchulverbundGemeinden.stream().anyMatch(aktiveJaxGemeinde -> aktiveJaxGemeinde.getBfsNummer() == bfsGemeinde.getBfsNummer());
+					if (!isAlreadyVorhanden) {
+						JaxGemeinde vonSchulVerbund = new JaxGemeinde();
+						vonSchulVerbund.setId(bfsGemeinde.getBfsNummer() + "");
+						vonSchulVerbund.setBfsNummer(bfsGemeinde.getBfsNummer());
+						vonSchulVerbund.setName(bfsGemeinde.getName());
+						vonSchulVerbund.setAngebotBG(false);
+						vonSchulVerbund.setAngebotTS(true);
+						aktiveUndSchulverbundGemeinden.add(vonSchulVerbund);
+					}
+				});
+			}
+		}
+		return aktiveUndSchulverbundGemeinden;
 	}
 }

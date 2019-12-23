@@ -47,10 +47,9 @@ export class OnboardingNeuBenutzerComponent {
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
+        this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
                 gemeinden.sort(EbeguUtil.compareByName);
-
                 return gemeinden;
             }));
         this.gemeindenBG$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(

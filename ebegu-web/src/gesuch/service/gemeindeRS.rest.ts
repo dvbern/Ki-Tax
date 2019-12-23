@@ -219,4 +219,9 @@ export class GemeindeRS implements IEntityRS {
             encodeURIComponent(gemeindenTSIdOrNull) : null}`)
             .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
+
+    public getAktiveUndVonSchulverbundGemeinden(): IPromise<TSGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/activeAndSchulverbund`)
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
 }
