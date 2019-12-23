@@ -999,7 +999,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public boolean isCloseTo(@Nonnull VerfuegungZeitabschnitt that) {
-		BigDecimal rapenError = BigDecimal.valueOf(0.05);
+		BigDecimal rapenError = BigDecimal.valueOf(0.20);
 
 		return getAnspruchberechtigtesPensum() == that.getAnspruchberechtigtesPensum()
 			&& MathUtil.isClose(betreuungspensumProzent, that.getBetreuungspensumProzent(), BigDecimal.valueOf(0.01))

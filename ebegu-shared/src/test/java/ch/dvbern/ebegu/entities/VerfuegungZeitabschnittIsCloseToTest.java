@@ -68,45 +68,45 @@ public class VerfuegungZeitabschnittIsCloseToTest {
 	}
 
 	@Test
-	public void isCloseTo_falseWhenVerguenstigungDiffersMoreThan5Rappen() {
+	public void isCloseTo_falseWhenVerguenstigungDiffersMoreThan20Rappen() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerguenstigung(BigDecimal.valueOf(10.00));
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.setVerguenstigung(BigDecimal.valueOf(10.06));
+		other.setVerguenstigung(BigDecimal.valueOf(10.21));
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(false));
 	}
 
 	@Test
-	public void isCloseTo_trueWhenVerguenstigungDiffers5Rappen() {
+	public void isCloseTo_trueWhenVerguenstigungDiffers20Rappen() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerguenstigung(BigDecimal.valueOf(10.00));
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.setVerguenstigung(BigDecimal.valueOf(10.05));
+		other.setVerguenstigung(BigDecimal.valueOf(10.20));
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}
 
 	@Test
-	public void isCloseTo_falseWhenMinimalerElternbeitragDiffersMoreThan5Rappen() {
+	public void isCloseTo_falseWhenMinimalerElternbeitragDiffersMoreThan20Rappen() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setMinimalerElternbeitrag(BigDecimal.valueOf(10.00));
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.setMinimalerElternbeitrag(BigDecimal.valueOf(10.06));
+		other.setMinimalerElternbeitrag(BigDecimal.valueOf(10.21));
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(false));
 	}
 
 	@Test
-	public void isCloseTo_trueWhenMinimalerElternbeitragDiffers5Rappen() {
+	public void isCloseTo_trueWhenMinimalerElternbeitragDiffers20Rappen() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setMinimalerElternbeitrag(BigDecimal.valueOf(10.00));
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.setMinimalerElternbeitrag(BigDecimal.valueOf(10.05));
+		other.setMinimalerElternbeitrag(BigDecimal.valueOf(10.20));
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}
