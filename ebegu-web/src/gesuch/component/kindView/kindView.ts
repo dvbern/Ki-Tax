@@ -305,6 +305,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return undefined;
     }
 
+    public showAusAsylwesen(): boolean {
+        // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat
+        return this.getModel().familienErgaenzendeBetreuung;
+    }
+
+    public showZemisNummer(): boolean {
+        return this.showAusAsylwesen() && this.getModel().ausAsylwesen;
+    }
+
     public isAusserordentlicherAnspruchRequired(): boolean {
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }

@@ -28,6 +28,8 @@ export class TSKind extends TSAbstractPersonEntity {
     private _einschulungTyp: TSEinschulungTyp;
     private _pensumFachstelle: TSPensumFachstelle;
     private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
+    private _ausAsylwesen: boolean;
+    private _zemisNummer: string;
 
     public constructor() {
         super();
@@ -87,5 +89,21 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set pensumAusserordentlicherAnspruch(value: TSPensumAusserordentlicherAnspruch) {
         this._pensumAusserordentlicherAnspruch = value;
+    }
+
+    public get zemisNummer(): string {
+        return this._zemisNummer;
+    }
+
+    public set zemisNummer(value: string) {
+        this._zemisNummer = value;
+    }
+
+    public get ausAsylwesen(): boolean {
+        return this._ausAsylwesen;
+    }
+
+    public set ausAsylwesen(value: boolean) {
+        this._ausAsylwesen = value;
     }
 }

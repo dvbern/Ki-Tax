@@ -52,6 +52,12 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nullable
 	private JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
 
+	@Nullable
+	private Boolean ausAsylwesen;
+
+	@Nullable
+	private String zemisNummer;
+
 
 	@NotNull
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
@@ -113,5 +119,23 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	public void setPensumAusserordentlicherAnspruch(
 		@Nullable JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
 		this.pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
+	}
+
+	@Nullable
+	public Boolean getAusAsylwesen() {
+		return ausAsylwesen;
+	}
+
+	public void setAusAsylwesen(@Nullable Boolean ausAsylwesen) {
+		this.ausAsylwesen = ausAsylwesen;
+	}
+
+	@Nullable
+	public String getZemisNummer() {
+		return zemisNummer;
+	}
+
+	public void setZemisNummer(@Nullable String zemisNummer) {
+		this.zemisNummer = zemisNummer;
 	}
 }
