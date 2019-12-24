@@ -1002,6 +1002,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		BigDecimal rapenError = BigDecimal.valueOf(0.20);
 
 		return getAnspruchberechtigtesPensum() == that.getAnspruchberechtigtesPensum()
+			&& MathUtil.isSame(getMassgebendesEinkommen(),that.getMassgebendesEinkommen())
 			&& MathUtil.isClose(betreuungspensumProzent, that.getBetreuungspensumProzent(), BigDecimal.valueOf(0.01))
 			&& MathUtil.isClose(verguenstigung, that.getVerguenstigung(), rapenError)
 			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError);
