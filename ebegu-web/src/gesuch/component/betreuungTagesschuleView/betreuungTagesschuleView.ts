@@ -138,7 +138,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         }, (newValue, oldValue) => {
             if (newValue !== oldValue) {
                 this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
-                this.loadErlaeuterungForTagesschule();
+                if (this.betreuung.institutionStammdaten) {
+                    this.loadErlaeuterungForTagesschule();
+                }
             }
         });
     }
