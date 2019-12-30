@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,22 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.reporting.lastenausgleich;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_SELBSTBEHALT,
-	LASTENAUSGLEICH_BERECHNUNG
+import java.math.BigDecimal;
+
+/**
+ * DTO für den Lastenausgleich von KiBon
+ */
+public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow {
+
+	private BigDecimal totalRevision;
+
+	public LastenausgleichBerechnungCSVDataRow(LastenausgleichBerechnungDataRow parent) {
+		super(parent);
+	}
+
+	public BigDecimal getTotalRevision() {
+		return totalRevision;
+	}
+
+	public void setTotalRevision(BigDecimal totalRevision) {
+		this.totalRevision = totalRevision;
+	}
 }

@@ -189,6 +189,8 @@ public class Kind extends AbstractPersonEntity {
 		target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		target.setSprichtAmtssprache(this.getSprichtAmtssprache());
+		target.setAusAsylwesen(this.getAusAsylwesen());
+		target.setZemisNummer(this.getZemisNummer());
 
 		switch (copyType) {
 		case MUTATION:
