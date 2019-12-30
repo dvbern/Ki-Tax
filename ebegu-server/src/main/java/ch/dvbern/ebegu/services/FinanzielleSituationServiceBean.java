@@ -96,7 +96,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
-		@Nonnull Boolean antragNurFuerBehinderungszuschlag,
+		@Nonnull Boolean verguenstigungGewuenscht,
 		@Nonnull String gesuchId
 	) {
 		// Die eigentliche FinSit speichern
@@ -107,7 +107,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Gesuch gesuch = saveFinanzielleSituationFelderAufGesuch(
 			sozialhilfebezueger,
 			gemeinsameSteuererklaerung,
-			antragNurFuerBehinderungszuschlag,
+			verguenstigungGewuenscht,
 			gesuchId
 		);
 
@@ -124,7 +124,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	private Gesuch saveFinanzielleSituationFelderAufGesuch(
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
-		@Nonnull Boolean antragNurFuerBehinderungszuschlag,
+		@Nonnull Boolean verguenstigungGewuenscht,
 		@Nonnull String gesuchId
 	) {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
@@ -134,7 +134,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
-		familiensituation.setAntragNurFuerBehinderungszuschlag(antragNurFuerBehinderungszuschlag);
+		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
 		return gesuch;
 	}
 

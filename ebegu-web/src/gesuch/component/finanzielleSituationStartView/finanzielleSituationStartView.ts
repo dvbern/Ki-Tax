@@ -76,7 +76,6 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             $scope,
             TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
-
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             null);

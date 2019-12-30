@@ -64,7 +64,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		boolean keineFinSitErfasst = false;
 		if (familiensituation != null) {
-			keineFinSitErfasst = Boolean.TRUE.equals(familiensituation.getAntragNurFuerBehinderungszuschlag());
+			keineFinSitErfasst = Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
 			int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 			if (Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);

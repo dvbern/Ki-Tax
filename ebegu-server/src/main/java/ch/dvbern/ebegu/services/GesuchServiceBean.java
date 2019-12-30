@@ -369,7 +369,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation != null) {
 			if (Objects.equals(true, familiensituation.getSozialhilfeBezueger())) {
-				familiensituation.setAntragNurFuerBehinderungszuschlag(null);
+				familiensituation.setVerguenstigungGewuenscht(null);
 			}
 			familiensituation.setGemeinsameSteuererklaerung(null);
 		}
@@ -408,7 +408,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 		if (checkAnzahlZurueckgezogen && !Objects.equals(anzahlZurueckgezogen,
 			gesuch.getAnzahlGesuchZurueckgezogen())) {
-			throw new EbeguRuntimeException("findGesuchForFreigabe",
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"findGesuchForFreigabe",
 				ErrorCodeEnum.ERROR_GESUCH_DURCH_GS_ZURUECKGEZOGEN);
 		}
 		authorizer.checkReadAuthorizationForFreigabe(gesuch);

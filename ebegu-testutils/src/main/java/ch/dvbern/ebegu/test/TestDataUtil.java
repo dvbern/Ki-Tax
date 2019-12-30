@@ -312,7 +312,7 @@ public final class TestDataUtil {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
-		familiensituation.setAntragNurFuerBehinderungszuschlag(false);
+		familiensituation.setVerguenstigungGewuenscht(true);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		return familiensituation;
 	}

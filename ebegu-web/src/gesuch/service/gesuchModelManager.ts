@@ -815,28 +815,6 @@ export class GesuchModelManager {
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
 
-    public handleErweiterteBetreuung(): IPromise<TSGesuch> {
-        if (!this.getGesuch() || !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtRoles())) {
-            return this.$q.when(this.getGesuch());
-        }
-
-        if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
-            // Mindestens 1 Kind mit erweitertem Aufwand
-            // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
-            this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
-            return this.updateGesuch();
-        }
-
-        if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
-            // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
-            // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
-            this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
-            return this.updateGesuch();
-        }
-
-        return this.$q.when(this.getGesuch());
-    }
-
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
@@ -1086,12 +1064,9 @@ export class GesuchModelManager {
             this.gesuch.id
         ).then(() => {
             this.removeBetreuungFromKind();
-
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
                 this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
-                this.handleErweiterteBetreuung().then(() => {
-                    this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
-                });
+                this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
             });
         });
     }
@@ -1304,6 +1279,17 @@ export class GesuchModelManager {
         return false;
     }
 
+    public isThereAnyNotGeprueftesKind(): boolean {
+        const kinderList = this.getKinderList();
+        for (const kind of kinderList) {
+            // das kind muss schon gespeichert sein damit es zahelt
+            if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Gibt true zurueck wenn es mindestens eine Betreuung gibt, dessen Status anders als VERFUEGT oder
      * GESCHLOSSEN_OHNE_VERFUEGUNG oder SCHULAMT ist
@@ -1453,7 +1439,7 @@ export class GesuchModelManager {
     }
 
     public isGesuchStatusIn(statuse: TSAntragStatus[]): boolean {
-        return statuse.includes(this.gesuch.status);
+        return this.gesuch ? statuse.includes(this.gesuch.status) : false;
     }
 
     /**

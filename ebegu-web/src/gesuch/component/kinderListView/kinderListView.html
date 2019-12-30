@@ -42,6 +42,7 @@
                     <th data-translate="DUBLETTEN"
                         dv-show-element
                         dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"></th>
+                    <th ng-if="vm.isThereAnyNotGeprueftesKind()" data-translate="STATUS"></th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -59,6 +60,10 @@
                               ng-click="vm.gotoKindDublette(dublette); $event.stopPropagation();"
                               ng-show="dublette.fallNummer"
                               ng-bind="vm.getFallNummer(dublette) + ($last ? ' ' : ', ')"></span>
+                    </td>
+                    <td  class="betreuung-status ng-class:betreuung.betreuungsstatus; WARTEN" ng-if="vm.isThereAnyNotGeprueftesKind()">
+                        <div ng-if="!row.kindJA.isGeprueft()" data-translate="KINDER_UEBERPRUEFEN_STATUS"></div>
+                        <span ng-if="!row.kindJA.isGeprueft()" class="betreuung-bar"></span>
                     </td>
                     <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
                         <dv-loading-button type="button" button-click="vm.editKind(row);"
@@ -91,7 +96,6 @@
                 </tr>
                 </tbody>
             </table>
-
         </div>
         <div class="col-md-12" style="margin-bottom: 2rem" ng-if="!vm.isGesuchReadonly()">
             <dv-loading-button type="button" button-click="vm.createKind()"
@@ -100,8 +104,14 @@
                 <span data-translate="KIND_HINZUFUEGEN"></span>
             </dv-loading-button>
         </div>
-
     </div>
+
+    <!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
+    <div ng-if="vm.isThereAnyNotGeprueftesKind()" class="well well-status-warten">
+        <p class="ebeguH3" data-translate="KINDER_UEBERPRUEFEN_HINT">
+        </p>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <!--Buttons-->
