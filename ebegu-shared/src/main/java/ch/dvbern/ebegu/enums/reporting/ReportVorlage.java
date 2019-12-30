@@ -125,6 +125,12 @@ public enum ReportVorlage {
 		ReportFileName.LASTENAUSGLEICH_SELBSTBEHALT,
 		Constants.DATA,
 		MergeFieldLastenausgleichSelbstbehalt.class
+	),
+	VORLAGE_REPORT_LASTENAUSGLEICH_BERECHNUNG(
+		"/reporting/LastenausgleichBerechnung.xlsx",
+		ReportFileName.LASTENAUSGLEICH_BERECHNUNG,
+		Constants.DATA,
+		MergeFieldLastenausgleichBerechnung.class
 	);
 
 	@Nonnull

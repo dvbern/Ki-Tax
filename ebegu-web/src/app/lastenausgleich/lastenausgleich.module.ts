@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,22 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
+import {LastenausgleichViewComponentConfig} from './component/lastenausgleichView';
+import {lastenausgleichRun} from './lastenausgleich.route';
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_SELBSTBEHALT,
-	LASTENAUSGLEICH_BERECHNUNG
-}
+export const LASTENAUSGLEICH_VIEW_JS_MODULE =
+    angular.module('ebeguWeb.lastenausgleich', [CORE_JS_MODULE.name])
+        .run(lastenausgleichRun)
+        .component('lastenausgleichView', new LastenausgleichViewComponentConfig());
