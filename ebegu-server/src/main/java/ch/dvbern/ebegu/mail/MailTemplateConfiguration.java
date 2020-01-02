@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -357,6 +358,19 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 
 		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + ".ftl", paramMap);
+	}
+
+	public String getInfoGemeineAngebotAktiviert(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull String empfaengerMail,
+		@Nonnull GemeindeAngebotTyp angebotName,
+		@Nonnull List<Sprache> sprachen
+	) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de")));
+		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr")));
+		paramMap.put("gemeinde", gemeinde);
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
 	}
 
 	private void addContentInLanguage(

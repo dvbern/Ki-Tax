@@ -21,6 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {ITimeoutService} from 'angular';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -61,6 +62,9 @@ export class EditGemeindeComponent implements OnInit {
     public currentTab: number;
     public altBGAdresse: boolean;
     public altTSAdresse: boolean;
+    public initialBGValue: boolean;
+    public initialTSValue: boolean;
+    public initialFIValue: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -106,6 +110,15 @@ export class EditGemeindeComponent implements OnInit {
                 }
                 return stammdaten;
             }));
+
+        this.stammdaten$.subscribe((stammdaten) => {
+            this.initialBGValue = stammdaten.gemeinde.angebotBG;
+            this.initialTSValue = stammdaten.gemeinde.angebotTS;
+            this.initialFIValue = stammdaten.gemeinde.angebotFI;
+        },
+        err => {
+            LOG.error(err);
+        });
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
@@ -174,6 +187,8 @@ export class EditGemeindeComponent implements OnInit {
                     return;
                 }
             });
+
+            this.gemeindeRS.updateAngebote(stammdaten.gemeinde)
 
             // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
             // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!

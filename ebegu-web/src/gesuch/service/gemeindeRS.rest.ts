@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpRequestTransformer, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
@@ -219,4 +219,19 @@ export class GemeindeRS implements IEntityRS {
             encodeURIComponent(gemeindenTSIdOrNull) : null}`)
             .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
+
+    public updateAngebote(gemeinde: TSGemeinde) {
+        let restGemeinde = {};
+        restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
+        return this.$http.put(`${this.serviceURL}/updateangebote`, restGemeinde);
+    }
+
+    public updateAngebotTS(gemeindeId: string, value: boolean) {
+        return this.$http.put(`${this.serviceURL}/updatets/${encodeURIComponent(gemeindeId)}`, value);
+    }
+
+    public updateAngebotFI(gemeindeId: string, value: boolean) {
+        return this.$http.put(`${this.serviceURL}/updatefi/${encodeURIComponent(gemeindeId)}`, value);
+    }
+
 }

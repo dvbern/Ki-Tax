@@ -39,5 +39,6 @@ public enum MailTemplate {
 	InfoBetreuungAbgelehnt,
 	InfoStatistikGeneriert,
 	InfoOffenePendenzenInstitution,
-	InfoSchulamtAnmeldungAkzeptiert
+	InfoSchulamtAnmeldungAkzeptiert,
+	InfoGemeindeAngebotAktiviert
 }
