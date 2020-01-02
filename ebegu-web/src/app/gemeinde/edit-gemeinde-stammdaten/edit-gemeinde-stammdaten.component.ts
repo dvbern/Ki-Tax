@@ -97,7 +97,8 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     }
 
     public isSuperadminOrMandant(): boolean {
-        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT]);
+        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT]);
     }
 
     public keineBeschwerdeAdresseChanged(newVal: boolean): void {
