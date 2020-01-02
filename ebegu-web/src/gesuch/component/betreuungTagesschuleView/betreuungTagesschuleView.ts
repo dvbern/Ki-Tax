@@ -136,11 +136,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
         }, (newValue, oldValue) => {
-            if (newValue !== oldValue) {
-                this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
-                if (this.betreuung.institutionStammdaten) {
-                    this.loadErlaeuterungForTagesschule();
-                }
+            if (newValue === oldValue) {
+                return;
+            }
+            this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+            if (this.betreuung.institutionStammdaten) {
+                this.loadErlaeuterungForTagesschule();
             }
         });
     }
