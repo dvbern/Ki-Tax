@@ -341,8 +341,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public showRechnungsadresseCheckbox(): boolean {
-        return this.gesuchstellerNumber === 1 &&
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        return this.gesuchstellerNumber === 1;
     }
 
     public isMailRequired(): boolean {
