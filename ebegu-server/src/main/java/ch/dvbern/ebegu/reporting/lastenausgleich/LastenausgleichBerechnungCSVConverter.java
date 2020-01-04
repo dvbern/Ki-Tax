@@ -74,7 +74,7 @@ public class LastenausgleichBerechnungCSVConverter {
 			if (!row.isKorrektur()) {
 				// Revisionen mit gleicher Gemeinde finden
 				List<LastenausgleichBerechnungDataRow> revisionenCurrentGemeinde = revisionen.get(row.getBfsNummer());
-				BigDecimal totalRevisionValue = new BigDecimal(0);
+				BigDecimal totalRevisionValue = BigDecimal.ZERO;
 				// Revisionen dieser Gemeinde summieren, falls es welche gibt
 				if (revisionenCurrentGemeinde != null) {
 					for (LastenausgleichBerechnungDataRow revision : revisionenCurrentGemeinde) {

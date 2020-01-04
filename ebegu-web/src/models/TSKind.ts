@@ -106,4 +106,8 @@ export class TSKind extends TSAbstractPersonEntity {
     public set ausAsylwesen(value: boolean) {
         this._ausAsylwesen = value;
     }
+
+    public isGeprueft(): boolean {
+        return this._kinderabzugErstesHalbjahr !== null;
+    }
 }

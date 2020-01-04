@@ -419,6 +419,8 @@
     "KINDER_HINT1": "Bitte erfassen Sie sowohl die familienergänzend betreuten Kinder wie auch die weiteren Kinder, die in Ihrem Haushalt wohnen.",
     "KINDER_HINT2": "Ebenfalls sind Kinder zu erfassen, welche nicht mehr zu Hause wohnen, für die Sie aber noch einen Kinderabzug machen können.",
     "KINDER_TOOLTIP_REQUIRED": "Es muss mindestens ein Kind mit externer Betreuung erfasst werden",
+    "KINDER_UEBERPRUEFEN_STATUS": "Überprüfen",
+    "KINDER_UEBERPRUEFEN_HINT": "Die Kinder-Stammdaten wurden aus dem letztjährigen Gesuch übernommen. Der Kinderabzug, die Schulklasse sowie weitere Daten müssen in jeder Periode neu gesetzt werden. Öffnen Sie die Detailangaben zu den Kindern und ergänzen Sie die fehlenden Informationen.",
     "BETREUUNG_TOOLTIP_REQUIRED": "Es muss mindestens ein Betreuungsangebot erfasst werden",
     "ERWERBSPENSUM_TOOLTIP_REQUIRED": "Es muss mindestens ein Beschäftigungspensum erfasst werden",
     "ERWERBSPENSEN_NOT_REQUIRED": "Beschäftigungspensum muss nur erfasst werden, falls mind. 1 Kita oder 1 Tageseltern Kleinkind Angebot erfasst wurde und mind. eines dieser Kinder keine Fachstelle involviert hat",
