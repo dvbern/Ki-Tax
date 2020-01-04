@@ -38,7 +38,7 @@
     </div>
 
     <!-- Institution -->
-    <div [class]="displayClass" *ngIf="berechtigung.hasInstitutionRole()">
+    <div [class]="displayClass" *ngIf="berechtigung.hasInstitutionInviteRole()">
         <div class="form-group">
             <label translate [for]="institutionId">INSTITUTION</label>
             <div class="dv-select-style">

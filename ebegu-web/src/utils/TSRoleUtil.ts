@@ -517,4 +517,8 @@ export class TSRoleUtil {
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }
+
+    public static isGemeindeOrTagesschulAdmin(role: TSRole): boolean {
+        return TSRole.ADMIN_GEMEINDE === role || TSRole.ADMIN_TS === role;
+    }
 }
