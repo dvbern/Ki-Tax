@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
@@ -37,14 +36,15 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
 	private final TageselternRechner tageselternRechner = new TageselternRechner();
 
+	@Nonnull
 	private static final BigDecimal MAX_STUNDEN_MONTH = MathUtil.DEFAULT.from(220);
 
 	@Test
 	public void whenFullMonth_30days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1)).withFullMonths();
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
-		assertThat(result, pojo(BGCalculationResult.class)
+		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
+		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
 			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
 	}
 
@@ -52,8 +52,8 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenFullMonth_31days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 3, 1)).withFullMonths();
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
-		assertThat(result, pojo(BGCalculationResult.class)
+		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
+		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
 			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
 	}
 
@@ -61,8 +61,8 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenFullMonth_28days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 2, 1)).withFullMonths();
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
-		assertThat(result, pojo(BGCalculationResult.class)
+		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
+		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
 			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
 	}
 
@@ -70,8 +70,8 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenHalfMonth() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 15));
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
-		assertThat(result, pojo(BGCalculationResult.class)
+		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
+		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
 			.withProperty(
 				"verfuegteAnzahlZeiteinheiten",
 				is(MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(2)))));
@@ -81,13 +81,22 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenDay() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
+		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
 		BigDecimal ungerundeterWert = MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(30));
-		Assert.assertNotNull(ungerundeterWert);
-		assertThat(result, pojo(BGCalculationResult.class)
+		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
 			.withProperty(
 				"verfuegteAnzahlZeiteinheiten",
 				is(MathUtil.roundToNearestQuarter(ungerundeterWert))));
+	}
+
+	@Nonnull
+	private VerfuegungZeitabschnitt calculate(@Nonnull DateRange gueltigkeit) {
+		BGCalculationResult calculate = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
+
+		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+		calculate.toVerfuegungZeitabschnitt(zeitabschnitt);
+
+		return zeitabschnitt;
 	}
 
 	@Nonnull

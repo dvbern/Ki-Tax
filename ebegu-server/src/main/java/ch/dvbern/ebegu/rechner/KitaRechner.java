@@ -16,12 +16,10 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -46,7 +44,7 @@ public class KitaRechner extends AbstractBGRechner {
 		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
 		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
 
-		return MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, pensum);
+		return EXACT.multiplyNullSafe(EXACT.divide(oeffnungstage, EXACT.from(12)), anteilMonat, pensum);
 	}
 
 	@Nonnull
