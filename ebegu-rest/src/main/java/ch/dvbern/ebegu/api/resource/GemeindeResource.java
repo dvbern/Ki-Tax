@@ -519,7 +519,6 @@ public class GemeindeResource {
 			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
 				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
 
-
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}

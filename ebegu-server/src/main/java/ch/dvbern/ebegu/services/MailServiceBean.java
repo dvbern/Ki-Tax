@@ -591,7 +591,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 		String mailaddress = stammdaten.getMail();
 		if (StringUtils.isNotEmpty(mailaddress)) {
-			String message = mailTemplateConfig.getInfoGemeineAngebotAktiviert(gemeinde, mailaddress,
+			String message = mailTemplateConfig.getInfoGemeindeAngebotAktiviert(gemeinde, mailaddress,
 				angebot, sprachen);
 			try {
 				sendMessageWithTemplate(message, mailaddress);
@@ -605,8 +605,5 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		} else {
 			LOG.warn("skipping setInfoGemeineAngebotAktiviert because Mitteilungsempfaenger is null");
 		}
-
-
-
 	}
 }

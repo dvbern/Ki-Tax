@@ -360,7 +360,7 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + ".ftl", paramMap);
 	}
 
-	public String getInfoGemeineAngebotAktiviert(
+	public String getInfoGemeindeAngebotAktiviert(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull String empfaengerMail,
 		@Nonnull GemeindeAngebotTyp angebotName,

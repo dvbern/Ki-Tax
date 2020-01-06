@@ -345,7 +345,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void updateAngebotBG(@Nonnull Gemeinde gemeinde, boolean value) {
-
 		gemeinde.setAngebotBG(value);
 		persistence.merge(gemeinde);
 
@@ -357,7 +356,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value) {
-
 		gemeinde.setAngebotTS(value);
 		persistence.merge(gemeinde);
 
@@ -369,7 +367,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value) {
-
 		gemeinde.setAngebotFI(value);
 		persistence.merge(gemeinde);
 
@@ -377,7 +374,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.FERIENINSEL);
 		}
 	}
-
 
 	@Nonnull
 	private Optional<Gemeinde> getAktiveGemeindeByBFSNummer(@Nonnull Long bfsNummer) {
