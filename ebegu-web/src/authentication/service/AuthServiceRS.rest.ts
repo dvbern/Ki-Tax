@@ -270,41 +270,6 @@ export class AuthServiceRS {
 
             case TSRole.ADMIN_BG:
                 return isTagesschuleEnabled
-                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
-                    : PERMISSIONS[Permission.ROLE_BG];
-
-            case TSRole.ADMIN_TS:
-                return isTagesschuleEnabled
-                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
-                    : PERMISSIONS[Permission.ROLE_TS];
-            case TSRole.ADMIN_GEMEINDE:
-            case TSRole.REVISOR:
-                return PERMISSIONS[Permission.ROLE_GEMEINDE];
-
-            default:
-                // by default the role of the user itself. the user can always see his role
-                return [this.getPrincipalRole()];
-        }
-    }
-
-    public getVisibleInvitationRolesForPrincipal(): ReadonlyArray<TSRole> {
-        const isTagesschuleEnabled = this.getPrincipal().mandant.angebotTS;
-        switch (this.getPrincipalRole()) {
-            case TSRole.SUPER_ADMIN:
-                return TSRoleUtil.getAllRolesButAnonymous();
-
-            case TSRole.ADMIN_INSTITUTION:
-                return PERMISSIONS[Permission.ROLE_INSTITUTION];
-
-            case TSRole.ADMIN_TRAEGERSCHAFT:
-                return PERMISSIONS[Permission.ROLE_INSTITUTION]
-                    .concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
-
-            case TSRole.ADMIN_MANDANT:
-                return PERMISSIONS[Permission.ROLE_MANDANT];
-
-            case TSRole.ADMIN_BG:
-                return isTagesschuleEnabled
                     ? PERMISSIONS[Permission.ROLE_INVITATION_GEMEINDE]
                     : PERMISSIONS[Permission.ROLE_BG];
 
@@ -313,7 +278,7 @@ export class AuthServiceRS {
                     ? PERMISSIONS[Permission.ROLE_INVITATION_GEMEINDE]
                     : PERMISSIONS[Permission.ROLE_TS];
             case TSRole.ADMIN_GEMEINDE:
-                return PERMISSIONS[Permission.ROLE_INVITATION_GEMEINDE]
+                return PERMISSIONS[Permission.ROLE_INVITATION_GEMEINDE];
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
 

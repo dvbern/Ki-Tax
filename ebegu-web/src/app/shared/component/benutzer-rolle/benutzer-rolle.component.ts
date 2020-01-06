@@ -48,7 +48,7 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.roles = this.authServiceRS.getVisibleInvitationRolesForPrincipal()
+        this.roles = this.authServiceRS.getVisibleRolesForPrincipal()
             .filter(rolle => !this.excludedRoles.includes(rolle))
             .reduce((rollenMap, rolle) => {
                     return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
