@@ -31,11 +31,12 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -44,7 +45,8 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractEbeguRuleTest {
 
 	private final DateRange defaultGueltigkeit = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
-	private final ErwerbspensumAbschnittRule erwerbspensumRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit, Constants.DEFAULT_LOCALE);
+	private final ErwerbspensumAbschnittRule erwerbspensumRule =
+		new ErwerbspensumAbschnittRule(defaultGueltigkeit, Constants.DEFAULT_LOCALE);
 
 	private static final LocalDate DATUM_1 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.APRIL, 1);
 	private static final LocalDate DATUM_2 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.SEPTEMBER, 1);
@@ -55,7 +57,10 @@ public class AbstractEbeguRuleTest {
 	public void testErwerbspensenUndBetreuungspensen() {
 
 		List<VerfuegungZeitabschnitt> betreuungspensen = new ArrayList<>();
-		betreuungspensen.add(createBetreuungspensum(Constants.START_OF_TIME, Constants.END_OF_TIME, BigDecimal.valueOf(50)));
+		betreuungspensen.add(createBetreuungspensum(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			BigDecimal.valueOf(50)));
 		betreuungspensen.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		betreuungspensen = erwerbspensumRule.mergeZeitabschnitte(betreuungspensen);
 		// 01.01.1900 - DATUM2-1: 50, DATUM2 - DATUM4: 70, DATUM4+1 - 31.12.9999: 50
@@ -148,7 +153,10 @@ public class AbstractEbeguRuleTest {
 	@Test
 	public void testSchnittmenge() {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
-		zeitabschnitte.add(createBetreuungspensum(Constants.START_OF_TIME, Constants.END_OF_TIME, BigDecimal.valueOf(50)));
+		zeitabschnitte.add(createBetreuungspensum(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			BigDecimal.valueOf(50)));
 		zeitabschnitte.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		List<VerfuegungZeitabschnitt> result = erwerbspensumRule.mergeZeitabschnitte(zeitabschnitte);
 
@@ -347,9 +355,15 @@ public class AbstractEbeguRuleTest {
 		int expectedBgPensum,
 		@Nullable MsgKey expectedBemerkungIfAny) {
 
-		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensumProzent());
-		assertEquals(expectedAnspruchsPensum, zeitabschnitt.getAnspruchberechtigtesPensum());
-		assertEquals(MathUtil.DEFAULT.from(expectedBgPensum), zeitabschnitt.getBgPensum());
+		assertThat(zeitabschnitt, pojo(VerfuegungZeitabschnitt.class)
+			.where(
+				VerfuegungZeitabschnitt::getBetreuungspensumProzent,
+				comparesEqualTo(BigDecimal.valueOf(expectedBetreuungspensum)))
+			.where(
+				VerfuegungZeitabschnitt::getAnspruchberechtigtesPensum,
+				comparesEqualTo(expectedAnspruchsPensum))
+			.where(VerfuegungZeitabschnitt::getBgPensum, comparesEqualTo(BigDecimal.valueOf(expectedBgPensum)))
+		);
 
 		final String bemerkungen = zeitabschnitt.getBemerkungen();
 		if (expectedBemerkungIfAny != null) {

@@ -33,7 +33,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.MathUtil;
@@ -56,7 +55,6 @@ public class Lastenausgleich extends AbstractEntity {
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal totalAlleGemeinden = BigDecimal.ZERO;
 
 	@Nonnull

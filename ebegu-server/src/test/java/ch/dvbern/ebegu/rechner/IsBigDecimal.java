@@ -34,7 +34,7 @@ public final class IsBigDecimal {
 	}
 
 	@Nonnull
-	public static Matcher<BigDecimal> greaterZeroWithScale2() {
-		return allOf(greaterThan(BigDecimal.ZERO), pojo(BigDecimal.class).where(BigDecimal::scale, is(2)));
+	public static Matcher<BigDecimal> greaterZeroWithScale10() {
+		return allOf(greaterThan(BigDecimal.ZERO), pojo(BigDecimal.class).where(BigDecimal::scale, is(10)));
 	}
 }

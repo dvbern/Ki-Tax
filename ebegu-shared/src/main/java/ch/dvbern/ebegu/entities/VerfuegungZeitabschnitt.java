@@ -157,7 +157,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = true, length = Constants.DB_DEFAULT_SHORT_LENGTH) // nullable, because migration is needed
 	private PensumUnits zeiteinheit = PensumUnits.DAYS;
 
-	// TODO unused in kibon -> remove?
 	@Column(nullable = true)
 	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
 
@@ -994,11 +993,32 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public boolean isSameBerechnung(VerfuegungZeitabschnitt that) {
 		return MathUtil.isSame(getBgPensum(), that.getBgPensum()) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
 			MathUtil.isSame(verguenstigung, that.verguenstigung) &&
 			MathUtil.isSame(getMinimalerElternbeitragGekuerzt(), that.getMinimalerElternbeitragGekuerzt()) &&
-			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0) &&
-			isSameZeiteinheiten(that);
+			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
+	}
+
+	public boolean isCloseTo(@Nonnull VerfuegungZeitabschnitt that) {
+		BigDecimal rapenError = BigDecimal.valueOf(0.20);
+
+		return getAnspruchberechtigtesPensum() == that.getAnspruchberechtigtesPensum()
+			&& MathUtil.isSame(getMassgebendesEinkommen(),that.getMassgebendesEinkommen())
+			&& MathUtil.isClose(betreuungspensumProzent, that.getBetreuungspensumProzent(), BigDecimal.valueOf(0.01))
+			&& MathUtil.isClose(verguenstigung, that.getVerguenstigung(), rapenError)
+			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError);
+	}
+
+	public void copyCalculationResult(@Nonnull VerfuegungZeitabschnitt that) {
+		betreuungspensumProzent = that.betreuungspensumProzent;
+		minimalerElternbeitrag = that.minimalerElternbeitrag;
+		verguenstigungOhneBeruecksichtigungVollkosten = that.verguenstigungOhneBeruecksichtigungVollkosten;
+		verguenstigung = that.verguenstigung;
+		vollkosten = that.vollkosten;
+		elternbeitrag = that.elternbeitrag;
+		betreuungspensumZeiteinheit = that.betreuungspensumZeiteinheit;
+		verfuegteAnzahlZeiteinheiten = that.verfuegteAnzahlZeiteinheiten;
+		anspruchsberechtigteAnzahlZeiteinheiten = that.anspruchsberechtigteAnzahlZeiteinheiten;
+		zeiteinheit = that.zeiteinheit;
 	}
 
 	@Override
