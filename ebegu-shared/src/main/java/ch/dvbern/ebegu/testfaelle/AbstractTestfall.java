@@ -453,13 +453,13 @@ public abstract class AbstractTestfall {
 	 * Testfällen überschrieben werden.
 	 */
 	private void setFinSitDefaultValues(FinanzielleSituation finanzielleSituation) {
-		finanzielleSituation.setFamilienzulage(new BigDecimal(0));
-		finanzielleSituation.setErsatzeinkommen(new BigDecimal(0));
-		finanzielleSituation.setErhalteneAlimente(new BigDecimal(0));
-		finanzielleSituation.setGeleisteteAlimente(new BigDecimal(0));
+		finanzielleSituation.setFamilienzulage(BigDecimal.ZERO);
+		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
+		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
+		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
 
-		finanzielleSituation.setBruttovermoegen(new BigDecimal(0));
-		finanzielleSituation.setSchulden(new BigDecimal(0));
+		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
+		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}
 
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(
@@ -485,15 +485,31 @@ public abstract class AbstractTestfall {
 
 		if (erstesJahr) {
 			Einkommensverschlechterung ekv1 = new Einkommensverschlechterung();
+			setEinkommensverschlechterungDefaultValues(ekv1);
 			ekvContainer.setEkvJABasisJahrPlus1(ekv1);
 		}
 
 		if (zweitesJahr) {
 			Einkommensverschlechterung ekv2 = new Einkommensverschlechterung();
+			setEinkommensverschlechterungDefaultValues(ekv2);
 			ekvContainer.setEkvJABasisJahrPlus2(ekv2);
 		}
 
 		return ekvContainer;
+	}
+
+	/**
+	 * Schreibt in alle Felder der Einkommenverschlechterung, die nicht Null sein dürfen, eine 0. Diese kann später in
+	 * den Testfällen überschrieben werden.
+	 */
+	private void setEinkommensverschlechterungDefaultValues(Einkommensverschlechterung ekv) {
+		ekv.setFamilienzulage(BigDecimal.ZERO);
+		ekv.setErsatzeinkommen(BigDecimal.ZERO);
+		ekv.setErhalteneAlimente(BigDecimal.ZERO);
+		ekv.setGeleisteteAlimente(BigDecimal.ZERO);
+
+		ekv.setBruttovermoegen(BigDecimal.ZERO);
+		ekv.setSchulden(BigDecimal.ZERO);
 	}
 
 	protected void createEmptyEKVInfoContainer(@Nonnull Gesuch gesuch) {
