@@ -439,10 +439,27 @@ public abstract class AbstractTestfall {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		finanzielleSituation.setSteuerveranlagungErhalten(true);
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
+
+		setFinSitDefaultValues(finanzielleSituation);
+
 		finanzielleSituationContainer.setJahr(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() - 1);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
 
 		return finanzielleSituationContainer;
+	}
+
+	/**
+	 * Schreibt in alle Felder der finanziellenSituation, die nicht Null sein dürfen, eine 0. Diese kann später in den
+	 * Testfällen überschrieben werden.
+	 */
+	private void setFinSitDefaultValues(FinanzielleSituation finanzielleSituation) {
+		finanzielleSituation.setFamilienzulage(new BigDecimal(0));
+		finanzielleSituation.setErsatzeinkommen(new BigDecimal(0));
+		finanzielleSituation.setErhalteneAlimente(new BigDecimal(0));
+		finanzielleSituation.setGeleisteteAlimente(new BigDecimal(0));
+
+		finanzielleSituation.setBruttovermoegen(new BigDecimal(0));
+		finanzielleSituation.setSchulden(new BigDecimal(0));
 	}
 
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(
