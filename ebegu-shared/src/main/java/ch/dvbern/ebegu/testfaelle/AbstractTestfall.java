@@ -452,7 +452,7 @@ public abstract class AbstractTestfall {
 	 * Schreibt in alle Felder der finanziellenSituation, die nicht Null sein dürfen, eine 0. Diese kann später in den
 	 * Testfällen überschrieben werden.
 	 */
-	private void setFinSitDefaultValues(FinanzielleSituation finanzielleSituation) {
+	private void setFinSitDefaultValues(@Nonnull FinanzielleSituation finanzielleSituation) {
 		finanzielleSituation.setFamilienzulage(BigDecimal.ZERO);
 		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
 		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
@@ -502,7 +502,7 @@ public abstract class AbstractTestfall {
 	 * Schreibt in alle Felder der Einkommenverschlechterung, die nicht Null sein dürfen, eine 0. Diese kann später in
 	 * den Testfällen überschrieben werden.
 	 */
-	private void setEinkommensverschlechterungDefaultValues(Einkommensverschlechterung ekv) {
+	private void setEinkommensverschlechterungDefaultValues(@Nonnull Einkommensverschlechterung ekv) {
 		ekv.setFamilienzulage(BigDecimal.ZERO);
 		ekv.setErsatzeinkommen(BigDecimal.ZERO);
 		ekv.setErhalteneAlimente(BigDecimal.ZERO);
