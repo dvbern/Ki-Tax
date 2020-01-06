@@ -24,21 +24,23 @@ import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 public class JaxGemeindeKonfiguration {
-	@NotNull
+	@Nonnull
 	private String gesuchsperiodeName;
 	@Nonnull
+	private String gesuchsperiodeStatusName;
+	@Nonnull
 	private JaxGesuchsperiode gesuchsperiode;
-	@NotNull
+	@Nonnull
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
 
 	private int erwerbspensumZuschlagMax;
 
-
+	@Nonnull
 	public String getGesuchsperiodeName() {
 		return gesuchsperiodeName;
 	}
 
-	public void setGesuchsperiodeName(String gesuchsperiodeName) {
+	public void setGesuchsperiodeName(@Nonnull String gesuchsperiodeName) {
 		this.gesuchsperiodeName = gesuchsperiodeName;
 	}
 
@@ -51,11 +53,12 @@ public class JaxGemeindeKonfiguration {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
+	@Nonnull
 	public List<JaxEinstellung> getKonfigurationen() {
 		return konfigurationen;
 	}
 
-	public void setKonfigurationen(List<JaxEinstellung> konfigurationen) {
+	public void setKonfigurationen(@Nonnull List<JaxEinstellung> konfigurationen) {
 		this.konfigurationen = konfigurationen;
 	}
 
@@ -65,5 +68,14 @@ public class JaxGemeindeKonfiguration {
 
 	public void setErwerbspensumZuschlagMax(int erwerbspensumZuschlagMax) {
 		this.erwerbspensumZuschlagMax = erwerbspensumZuschlagMax;
+	}
+
+	@Nonnull
+	public String getGesuchsperiodeStatusName() {
+		return gesuchsperiodeStatusName;
+	}
+
+	public void setGesuchsperiodeStatusName(@Nonnull String gesuchsperiodeStatusName) {
+		this.gesuchsperiodeStatusName = gesuchsperiodeStatusName;
 	}
 }
