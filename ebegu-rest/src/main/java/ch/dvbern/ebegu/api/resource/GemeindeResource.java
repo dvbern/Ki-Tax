@@ -540,7 +540,7 @@ public class GemeindeResource {
 				List<BfsGemeinde> bfsGemeindeList = gemeindeService.findGemeindeVonVerbund(jaxGemeinde.getBfsNummer());
 				bfsGemeindeList.forEach(bfsGemeinde -> {
 					boolean isAlreadyVorhanden =
-						aktiveUndSchulverbundGemeinden.stream().anyMatch(aktiveJaxGemeinde -> aktiveJaxGemeinde.getBfsNummer() == bfsGemeinde.getBfsNummer());
+						aktiveUndSchulverbundGemeinden.stream().anyMatch(aktiveJaxGemeinde -> aktiveJaxGemeinde.getBfsNummer().equals(bfsGemeinde.getBfsNummer()));
 					if (!isAlreadyVorhanden) {
 						JaxGemeinde vonSchulVerbund = new JaxGemeinde();
 						vonSchulVerbund.setId(bfsGemeinde.getBfsNummer() + "");
