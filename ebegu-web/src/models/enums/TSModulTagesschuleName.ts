@@ -33,6 +33,5 @@ export function getTSModulTagesschuleNameValues(): Array<TSModulTagesschuleName>
         TSModulTagesschuleName.NACHMITTAGS_1_HALB,
         TSModulTagesschuleName.NACHMITTAGS_2,
         TSModulTagesschuleName.NACHMITTAGS_2_HALB,
-        TSModulTagesschuleName.DYNAMISCH,
     ];
 }
