@@ -536,14 +536,14 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);
 		for (JaxGemeinde jaxGemeinde : aktiveGemeinde) {
-			if (jaxGemeinde.getBfsNummer() >= 10000 && jaxGemeinde.getBfsNummer() < 100000 && jaxGemeinde.isAngebotTS()) {
+			if (BfsGemeinde.isBfsNummerVerbund(jaxGemeinde.getBfsNummer()) && jaxGemeinde.isAngebotTS()) {
 				List<BfsGemeinde> bfsGemeindeList = gemeindeService.findGemeindeVonVerbund(jaxGemeinde.getBfsNummer());
 				bfsGemeindeList.forEach(bfsGemeinde -> {
 					boolean isAlreadyVorhanden =
 						aktiveUndSchulverbundGemeinden.stream().anyMatch(aktiveJaxGemeinde -> aktiveJaxGemeinde.getBfsNummer().equals(bfsGemeinde.getBfsNummer()));
 					if (!isAlreadyVorhanden) {
 						JaxGemeinde vonSchulVerbund = new JaxGemeinde();
-						vonSchulVerbund.setId(bfsGemeinde.getBfsNummer() + "");
+						vonSchulVerbund.setId(String.valueOf(bfsGemeinde.getBfsNummer()));
 						vonSchulVerbund.setBfsNummer(bfsGemeinde.getBfsNummer());
 						vonSchulVerbund.setName(bfsGemeinde.getName());
 						vonSchulVerbund.setAngebotBG(false);

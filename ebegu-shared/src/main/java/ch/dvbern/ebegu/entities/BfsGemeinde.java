@@ -134,4 +134,29 @@ public class BfsGemeinde  implements Serializable {
 	public void setVerbund(@Nullable BfsGemeinde verbund) {
 		this.verbund = verbund;
 	}
+
+
+	// Alle Schulverbund Gemeinden haben einen BFS Nummer höher als 10'000 aber kleiner als 11'000. Die neue Range für die "Spezielles Gemeinde" wie École
+	// cantonale de langue française sind ab 100'000 definiert.
+
+	public static boolean isBfsNummerVerbund(@Nullable Long bfsNummer) {
+		if (bfsNummer == null) {
+			return false;
+		}
+		return !isBfsNummerGemeinde(bfsNummer) && !isBfsNummerSpezialgemeinde(bfsNummer);
+	}
+
+	public static boolean isBfsNummerGemeinde(@Nullable Long bfsNummer) {
+		if (bfsNummer == null) {
+			return false;
+		}
+		return bfsNummer < 10000;
+	}
+
+	public static boolean isBfsNummerSpezialgemeinde(@Nullable Long bfsNummer) {
+		if (bfsNummer == null) {
+			return false;
+		}
+		return bfsNummer >= 100000;
+	}
 }
