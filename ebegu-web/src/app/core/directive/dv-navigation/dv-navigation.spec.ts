@@ -543,7 +543,7 @@ describe('dvNavigation', () => {
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
         gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger = false;
-        gesuch.familiensituationContainer.familiensituationJA.antragNurFuerBehinderungszuschlag = false;
+        gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
         spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuch.gesuchsperiode);
         return gesuch;
@@ -569,7 +569,7 @@ describe('dvNavigation', () => {
         spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.when({}));
         navController.dvSubStep = 1;
         const gesuch = mockGesuch();
-        gesuch.familiensituationContainer.familiensituationJA.antragNurFuerBehinderungszuschlag = !famSitRequired;
+        gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = famSitRequired;
         spyOn(gesuchModelManager, 'areThereOnlySchulamtAngebote').and.returnValue(false);
         spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
         callNextStep();

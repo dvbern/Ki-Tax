@@ -864,7 +864,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
-		famsit.setAntragNurFuerBehinderungszuschlag(false);
+		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
 	}
 
@@ -874,7 +874,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
-		famsit.setAntragNurFuerBehinderungszuschlag(false);
+		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
 	}
 

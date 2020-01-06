@@ -317,6 +317,14 @@ public interface GesuchService {
 	int deleteGesucheOhneFreigabeOderQuittung();
 
 	/**
+	 * Löscht eine Gesuche mit eine neue Transaction
+	 * Achtung es muss durch einen anderen EJB angerufen werden, sonst die Transaction parameter ist ignoriert!
+	 * @param gesuch
+	 * @param typ
+	 */
+	void removeGesuchAndPersist(Gesuch gesuch,GesuchDeletionCause typ);
+
+	/**
 	 * gibt alle Gesuche zurueck die nach einer konfigurierten Frist nach Erstellung nicht freigegeben bzw. nach
 	 * Freigabe
 	 * die Quittung nicht geschickt haben.

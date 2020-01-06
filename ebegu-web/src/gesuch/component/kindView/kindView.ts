@@ -129,6 +129,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initAusserordentlicherAnspruch();
     }
 
+    public $postLink (): void {
+        // Bei einer neuen Periode werden gewisse Kinderdaten nicht kopiert. In diesem Fall sollen diese
+        // bereits rot angezeigt werden.
+        if (!this.model.kindJA.isNew() && !this.model.kindJA.isGeprueft()) {
+            this.form.$setSubmitted();
+        }
+    }
+
     public getTextSprichtAmtssprache(): string {
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {
@@ -303,6 +311,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return this.getModel().pensumAusserordentlicherAnspruch;
         }
         return undefined;
+    }
+
+    public showAusAsylwesen(): boolean {
+        // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat
+        return this.getModel().familienErgaenzendeBetreuung;
+    }
+
+    public showZemisNummer(): boolean {
+        return this.showAusAsylwesen() && this.getModel().ausAsylwesen;
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {

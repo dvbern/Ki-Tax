@@ -199,6 +199,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private DossierService dossierService;
 	@Inject
 	private GemeindeService gemeindeService;
+	@Inject
+	private GesuchService self;
 
 	@Nonnull
 	@Override
@@ -369,7 +371,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation != null) {
 			if (Objects.equals(true, familiensituation.getSozialhilfeBezueger())) {
-				familiensituation.setAntragNurFuerBehinderungszuschlag(null);
+				familiensituation.setVerguenstigungGewuenscht(null);
 			}
 			familiensituation.setGemeinsameSteuererklaerung(null);
 		}
@@ -1485,7 +1487,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@RolesAllowed(SUPER_ADMIN)
 	public int deleteGesucheOhneFreigabeOderQuittung() {
 
@@ -1494,7 +1495,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		List<Betreuung> betreuungen = new ArrayList<>();
 		for (Gesuch gesuch : criteriaResults) {
 			try {
-				mailService.sendInfoGesuchGeloescht(gesuch);
 				betreuungen.addAll(gesuch.extractAllBetreuungen());
 				GesuchDeletionCause typ;
 				if (gesuch.getStatus() == AntragStatus.IN_BEARBEITUNG_GS) {
@@ -1502,16 +1502,22 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				} else {
 					typ = GesuchDeletionCause.BATCHJOB_KEINE_QUITTUNG;
 				}
-				removeGesuch(gesuch.getId(), typ);
+				self.removeGesuchAndPersist(gesuch, typ);
+				mailService.sendInfoGesuchGeloescht(gesuch);
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,
 					"Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch",
 					gesuch.getId());
-				anzahl--;
 			}
 		}
 		mailService.sendInfoBetreuungGeloescht(betreuungen);
 		return anzahl;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeGesuchAndPersist(Gesuch gesuch,GesuchDeletionCause typ){
+		removeGesuch(gesuch.getId(), typ);
 	}
 
 	@Override

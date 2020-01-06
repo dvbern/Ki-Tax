@@ -25,7 +25,7 @@ export class TSFinanzModel {
 
     private _gemeinsameSteuererklaerung: boolean;
     private _sozialhilfeBezueger: boolean;
-    private _antragNurFuerBehinderungszuschlag: boolean;
+    private _verguenstigungGewuenscht: boolean;
     private _finanzielleSituationContainerGS1: TSFinanzielleSituationContainer;
     private _finanzielleSituationContainerGS2: TSFinanzielleSituationContainer;
     private _einkommensverschlechterungContainerGS1: TSEinkommensverschlechterungContainer;
@@ -65,12 +65,12 @@ export class TSFinanzModel {
         this._sozialhilfeBezueger = value;
     }
 
-    public get antragNurFuerBehinderungszuschlag(): boolean {
-        return this._antragNurFuerBehinderungszuschlag;
+    public get verguenstigungGewuenscht(): boolean {
+        return this._verguenstigungGewuenscht;
     }
 
-    public set antragNurFuerBehinderungszuschlag(value: boolean) {
-        this._antragNurFuerBehinderungszuschlag = value;
+    public set verguenstigungGewuenscht(value: boolean) {
+        this._verguenstigungGewuenscht = value;
     }
 
     public get finanzielleSituationContainerGS1(): TSFinanzielleSituationContainer {
@@ -97,8 +97,8 @@ export class TSFinanzModel {
             this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
         this.sozialhilfeBezueger =
             this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().sozialhilfeBezueger);
-        this.antragNurFuerBehinderungszuschlag =
-            this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().antragNurFuerBehinderungszuschlag);
+        this.verguenstigungGewuenscht =
+            this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().verguenstigungGewuenscht);
         this.finanzielleSituationContainerGS1 = angular.copy(gesuch.gesuchsteller1.finanzielleSituationContainer);
         if (gesuch.gesuchsteller2) {
             this.finanzielleSituationContainerGS2 = angular.copy(gesuch.gesuchsteller2.finanzielleSituationContainer);
@@ -147,7 +147,7 @@ export class TSFinanzModel {
     public copyFinSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
         gesuch.extractFamiliensituation().gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
         gesuch.extractFamiliensituation().sozialhilfeBezueger = this.sozialhilfeBezueger;
-        gesuch.extractFamiliensituation().antragNurFuerBehinderungszuschlag = this.antragNurFuerBehinderungszuschlag;
+        gesuch.extractFamiliensituation().verguenstigungGewuenscht = this.verguenstigungGewuenscht;
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
@@ -304,6 +304,6 @@ export class TSFinanzModel {
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
     public isFinanzielleSituationRequired(): boolean {
-        return EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.antragNurFuerBehinderungszuschlag);
+        return EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
     }
 }
