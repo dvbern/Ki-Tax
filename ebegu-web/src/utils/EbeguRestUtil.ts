@@ -553,10 +553,8 @@ export class EbeguRestUtil {
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
-            restFamiliensituation.antragNurFuerBehinderungszuschlag =
-                familiensituation.antragNurFuerBehinderungszuschlag;
-            restFamiliensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
-                familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            restFamiliensituation.verguenstigungGewuenscht =
+                familiensituation.verguenstigungGewuenscht;
             return restFamiliensituation;
         }
         return undefined;
@@ -616,10 +614,8 @@ export class EbeguRestUtil {
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
-            familiensituation.antragNurFuerBehinderungszuschlag =
-                familiensituationFromServer.antragNurFuerBehinderungszuschlag;
-            familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
-                familiensituationFromServer.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            familiensituation.verguenstigungGewuenscht =
+                familiensituationFromServer.verguenstigungGewuenscht;
             return familiensituation;
         }
         return undefined;
@@ -923,6 +919,7 @@ export class EbeguRestUtil {
         if (konfigurationFromServer) {
             konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeStatusName = konfigurationFromServer.gesuchsperiodeStatusName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
@@ -1609,6 +1606,8 @@ export class EbeguRestUtil {
         restKind.kinderabzugErstesHalbjahr = kind.kinderabzugErstesHalbjahr;
         restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
+        restKind.ausAsylwesen = kind.ausAsylwesen;
+        restKind.zemisNummer = kind.zemisNummer;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -1670,6 +1669,8 @@ export class EbeguRestUtil {
             kindTS.kinderabzugErstesHalbjahr = kindFromServer.kinderabzugErstesHalbjahr;
             kindTS.kinderabzugZweitesHalbjahr = kindFromServer.kinderabzugZweitesHalbjahr;
             kindTS.sprichtAmtssprache = kindFromServer.sprichtAmtssprache;
+            kindTS.ausAsylwesen = kindFromServer.ausAsylwesen;
+            kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             if (kindFromServer.pensumFachstelle) {
@@ -3554,6 +3555,15 @@ export class EbeguRestUtil {
             return gemeindeRegistrierungTS;
         }
         return undefined;
+    }
+
+    public parseLastenausgleichList(data: any): TSLastenausgleich[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLastenausgleich(new TSLastenausgleich(), item))
+            : [];
     }
 
     public parseLastenausgleich(

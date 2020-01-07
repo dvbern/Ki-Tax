@@ -368,7 +368,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
-            this.gesuchModelManager.handleErweiterteBetreuung();
             this.isSavingData = false;
             this.form.$setPristine();
             this.$state.go(nextStep, params);
@@ -1018,9 +1017,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
         const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
         const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
-        const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
-        return gmdeHasTS || betreuungIsTS;
+        const isNew = this.getBetreuungModel().isNew();
+        if (!isNew) {
+            const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
+            const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
+            return gmdeHasTS || betreuungIsTS;
+        }
+        return gmdeHasTS;
     }
 
     /**
@@ -1086,6 +1089,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         } else {
+            this.getBetreuungModel().vertrag = true;
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }

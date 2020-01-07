@@ -60,6 +60,11 @@
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
                     <dv-posteingang uiSref="posteingang.view"></dv-posteingang>
                 </li>
+                <li uiSrefActive="active"
+                    class="dv-ng-navbar-element uppercase"
+                    *dvNgShowElement="true; roles: TSRoleUtil.getMandantRoles()">
+                    <a uiSref="lastenausgleich.view" [textContent]="'MENU_LASTENAUSGLEICH' | translate"></a>
+                </li>
             </ul>
         </div> <!--/.nav-collapse -->
 
