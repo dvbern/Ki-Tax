@@ -61,6 +61,9 @@ export class EditGemeindeComponent implements OnInit {
     public currentTab: number;
     public altBGAdresse: boolean;
     public altTSAdresse: boolean;
+    public initialBGValue: boolean;
+    public initialTSValue: boolean;
+    public initialFIValue: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -106,6 +109,15 @@ export class EditGemeindeComponent implements OnInit {
                 }
                 return stammdaten;
             }));
+
+        this.stammdaten$.subscribe(stammdaten => {
+            this.initialBGValue = stammdaten.gemeinde.angebotBG;
+            this.initialTSValue = stammdaten.gemeinde.angebotTS;
+            this.initialFIValue = stammdaten.gemeinde.angebotFI;
+        },
+        err => {
+            LOG.error(err);
+        });
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
@@ -174,6 +186,8 @@ export class EditGemeindeComponent implements OnInit {
                     return;
                 }
             });
+
+            this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
 
             // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
             // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!

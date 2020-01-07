@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output, EventEmitter} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
@@ -96,8 +96,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             && !stammdaten.gemeinde.angebotFI;
     }
 
-    public isSuperadmin(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    public isSuperadminOrMandant(): boolean {
+        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT]);
     }
 
     public keineBeschwerdeAdresseChanged(newVal: boolean): void {
