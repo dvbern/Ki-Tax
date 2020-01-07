@@ -28,10 +28,10 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.hamcrest.Matcher;
+import org.hamcrest.number.BigDecimalCloseTo;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.is;
@@ -58,19 +58,19 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
 	public void test() {
-		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 20, 100000, 120.90);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 20, 100000, 60.45);
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 20, 50000, 147.75);
+		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 20, 100000, 120.879);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 20, 100000, 60.440);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 20, 50000, 147.741);
 
-		testWithParams(geburtstagKind, false, false, false, intervallTag, 20, 20, 100000, 7.35);
-		testWithParams(geburtstagKind, true, false, false, intervallTag, 20, 20, 100000, 5.50);
-		testWithParams(geburtstagKind, false, true, true, intervallTag, 20, 20, 100000, 14.45);
-		testWithParams(geburtstagKind, true, true, true, intervallTag, 20, 20, 100000, 12.65);
+		testWithParams(geburtstagKind, false, false, false, intervallTag, 20, 20, 100000, 7.3261);
+		testWithParams(geburtstagKind, true, false, false, intervallTag, 20, 20, 100000, 5.495);
+		testWithParams(geburtstagKind, false, true, true, intervallTag, 20, 20, 100000, 14.469);
+		testWithParams(geburtstagKind, true, true, true, intervallTag, 20, 20, 100000, 12.637);
 
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 20, 150000, 13.45);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 20, 150000, 10.05);
-		testWithParams(geburtstagKind, false, true, true, intervall, 20, 20, 150000, 92.00);
-		testWithParams(geburtstagKind, true, true, true, intervall, 20, 20, 150000, 88.65);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 20, 150000, 13.431);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 20, 150000, 10.073);
+		testWithParams(geburtstagKind, false, true, true, intervall, 20, 20, 150000, 92.002);
+		testWithParams(geburtstagKind, true, true, true, intervall, 20, 20, 150000, 88.645);
 	}
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
@@ -86,21 +86,21 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
 
 		// Normalfall Kind
-		testWithParams(kind, false, false, false, halberAugust, 50, 50, 68712, 352.35);
-		testWithParams(kind, false, false, false, ganzerSeptember, 50, 50, 68712, 780.25);
-		testWithParams(baby, false, false, false, halberAugust, 50, 50, 68712, 528.55); // 528.55
-		testWithParams(baby, false, false, false, ganzerSeptember, 50, 50, 68712, 1170.35); // 1170.35
+		testWithParams(kind, false, false, false, halberAugust, 50, 50, 68712, 352.366);
+		testWithParams(kind, false, false, false, ganzerSeptember, 50, 50, 68712, 780.239);
+		testWithParams(baby, false, false, false, halberAugust, 50, 50, 68712, 528.549);
+		testWithParams(baby, false, false, false, ganzerSeptember, 50, 50, 68712, 1170.359);
 		// Normalfall Baby
 		testWithParams(baby, false, false, false, halberAugust, 50, 50, 185447, 0.00);
 		testWithParams(baby, false, false, false, ganzerSeptember, 50, 50, 185447, 0.00);
-		testWithParams(baby, false, true, true, halberAugust, 50, 50, 185447, 225.80);
+		testWithParams(baby, false, true, true, halberAugust, 50, 50, 185447, 225.806);
 		testWithParams(baby, false, true, true, ganzerSeptember, 50, 50, 185447, 500.00);
 		// Besondere Beduerfnisse
-		testWithParams(baby, false, true, true, halberAugust, 50, 50, 35447, 871.60); // 871.60
-		testWithParams(baby, false, true, true, ganzerSeptember, 50, 50, 35447, 1930.00); // 1930.00
+		testWithParams(baby, false, true, true, halberAugust, 50, 50, 35447, 871.613);
+		testWithParams(baby, false, true, true, ganzerSeptember, 50, 50, 35447, 1930.00);
 		// Eingeschult
-		testWithParams(kind, true, false, false, halberAugust, 50, 50, 68712, 264.30);
-		testWithParams(kind, true, false, false, ganzerSeptember, 50, 50, 68712, 585.20);
+		testWithParams(kind, true, false, false, halberAugust, 50, 50, 68712, 264.275);
+		testWithParams(kind, true, false, false, ganzerSeptember, 50, 50, 68712, 585.179);
 	}
 
 	@Test
@@ -176,9 +176,10 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 	@Nonnull
 	private IsPojo<BGCalculationResult> defaultMatcher(double expectedVerguenstigung) {
 		return pojo(BGCalculationResult.class)
-			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expectedVerguenstigung)))
-			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
-			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty("verguenstigung",
+				BigDecimalCloseTo.closeTo(BigDecimal.valueOf(expectedVerguenstigung), BigDecimal.valueOf(0.0005)))
+			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.DAYS));
 	}
 }

@@ -25,23 +25,25 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldLastenausgleichBerechnung implements MergeFieldProvider {
 
 	// This template exists only in german, since its use is intern
-	berechnungsjahr(new SimpleMergeField<>("berechnungsjahr", BIGDECIMAL_CONVERTER)),
-	durchschnittlicheKostenPro100ProzentPlatz(new SimpleMergeField<>("durchschnittlicheKostenPro100ProzentPlatz", BIGDECIMAL_CONVERTER)),
+	berechnungsjahr(new SimpleMergeField<>("berechnungsjahr", STRING_CONVERTER)),
+	selbstbehaltProHundertProzentPlatz(new SimpleMergeField<>("selbstbehaltProHundertProzentPlatz", BIGDECIMAL_CONVERTER)),
 
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	bfsNummer(new SimpleMergeField<>("bfsNummer", STRING_CONVERTER)),
 	verrechnungsjahr(new SimpleMergeField<>("verrechnungsjahr", STRING_CONVERTER)),
 	totalBelegung(new SimpleMergeField<>("totalBelegung", PERCENT_CONVERTER)),
 	totalGutscheine(new SimpleMergeField<>("totalGutscheine", BIGDECIMAL_CONVERTER)),
-	kostenPro100ProzentPlatz(new SimpleMergeField<>("kostenPro100ProzentPlatz", BIGDECIMAL_CONVERTER)),
+	kostenProHundertProzentPlatz(new SimpleMergeField<>("kostenProHundertProzentPlatz", BIGDECIMAL_CONVERTER)),
 	selbstbehaltGemeinde(new SimpleMergeField<>("selbstbehaltGemeinde", BIGDECIMAL_CONVERTER)),
 	eingabeLastenausgleich(new SimpleMergeField<>("eingabeLastenausgleich", BIGDECIMAL_CONVERTER)),
+	korrektur(new SimpleMergeField<>("korrektur", BOOLEAN_X_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 

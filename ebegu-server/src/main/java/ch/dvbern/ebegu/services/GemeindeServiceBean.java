@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -73,14 +74,21 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private Persistence persistence;
+
 	@Inject
 	private PrincipalBean principalBean;
+
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
 	@Inject
 	private SequenceService sequenceService;
+
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private MailService mailService;
 
 	@Nonnull
 	@Override
@@ -332,6 +340,39 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		CriteriaQuery<BfsGemeinde> all = query.select(root);
 		List<BfsGemeinde> allBfsGemeinden = persistence.getCriteriaResults(all);
 		return allBfsGemeinden;
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void updateAngebotBG(@Nonnull Gemeinde gemeinde, boolean value) {
+		gemeinde.setAngebotBG(value);
+		persistence.merge(gemeinde);
+
+		if (value) {
+			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.BETREUUNGSGUTSCHEIN);
+		}
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value) {
+		gemeinde.setAngebotTS(value);
+		persistence.merge(gemeinde);
+
+		if (value) {
+			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.TAGESSCHULE);
+		}
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value) {
+		gemeinde.setAngebotFI(value);
+		persistence.merge(gemeinde);
+
+		if (value) {
+			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.FERIENINSEL);
+		}
 	}
 
 	@Nonnull

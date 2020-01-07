@@ -188,8 +188,10 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		DateRange gueltigkeit = this.getGueltigkeit();
 
 		return Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigAb()) + " - "
-			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis())
-			+ ' ' + ServerMessageUtil.getMessage("Gesuchsperiode_KONFIGURATION", locale)
-			+ " (" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
+			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis());
+	}
+
+	public String getGesuchsperiodeStatusName(@Nonnull Locale locale) {
+		return "(" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
 	}
 }

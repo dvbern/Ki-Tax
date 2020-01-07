@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,6 +80,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Resource fuer Gemeinde
@@ -299,9 +300,9 @@ public class GemeindeResource {
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration
 	) {
-		Objects.requireNonNull(konfiguration);
-		Objects.requireNonNull(konfiguration.getGesuchsperiode());
-		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+		requireNonNull(konfiguration);
+		requireNonNull(konfiguration.getGesuchsperiode());
+		requireNonNull(konfiguration.getGesuchsperiode().getId());
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
@@ -315,9 +316,9 @@ public class GemeindeResource {
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration
 	) {
-		Objects.requireNonNull(konfiguration);
-		Objects.requireNonNull(konfiguration.getGesuchsperiode());
-		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+		requireNonNull(konfiguration);
+		requireNonNull(konfiguration.getGesuchsperiode());
+		requireNonNull(konfiguration.getGesuchsperiode().getId());
 
 		Collection<Gesuchsperiode> gesuchsperioden =
 			gesuchsperiodeService.findThisAndFutureGesuchsperioden(konfiguration.getGesuchsperiode().getId());
@@ -498,5 +499,36 @@ public class GemeindeResource {
 			}
 		}
 		return gemeindeRegistrierungList;
+	}
+
+	@ApiOperation(
+		value = "Updated die Angebot Flags (BG/TS/FI) der Gemeinde",
+		response = Response.class)
+	@Nonnull
+	@PUT
+	@Path("/updateangebote")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateAngebotTS(
+		@Nonnull @NotNull @Valid JaxGemeinde jaxGemeinde
+	) {
+		requireNonNull(jaxGemeinde);
+		requireNonNull(jaxGemeinde.getId());
+
+		Gemeinde gemeinde =
+			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
+				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
+
+		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
+			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
+		}
+		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS()) {
+			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS());
+		}
+		if (gemeinde.isAngebotFI() != jaxGemeinde.isAngebotFI()) {
+			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());
+		}
+
+		return Response.ok().build();
 	}
 }

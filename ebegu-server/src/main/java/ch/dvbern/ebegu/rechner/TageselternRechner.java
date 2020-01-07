@@ -16,11 +16,14 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import static ch.dvbern.ebegu.util.MathUtil.roundToNearestQuarter;
 
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
@@ -44,9 +47,9 @@ public class TageselternRechner extends AbstractBGRechner {
 		BigDecimal oeffnungstageProJahr = parameterDTO.getOeffnungstageTFO();
 		BigDecimal oeffnungsstundenProTag = parameterDTO.getOeffnungsstundenTFO();
 		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
-		BigDecimal oeffnungstageProMonat = MATH.divide(oeffnungstageProJahr, MATH.from(12));
+		BigDecimal oeffnungstageProMonat = EXACT.divide(oeffnungstageProJahr, EXACT.from(12));
 		BigDecimal stundenGemaessPensumUndAnteilMonat =
-			MATH.multiplyNullSafe(oeffnungstageProMonat, anteilMonat, pensum, oeffnungsstundenProTag);
+			EXACT.multiplyNullSafe(oeffnungstageProMonat, anteilMonat, pensum, oeffnungsstundenProTag);
 
 		return stundenGemaessPensumUndAnteilMonat;
 	}
@@ -80,5 +83,14 @@ public class TageselternRechner extends AbstractBGRechner {
 	@Override
 	protected PensumUnits getZeiteinheit() {
 		return PensumUnits.HOURS;
+	}
+
+	/**
+	 * Bei Tageseletern wird auf 0.25 Stunden gerundet
+	 */
+	@Nonnull
+	@Override
+	protected Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy() {
+		return MathUtil::roundToNearestQuarter;
 	}
 }

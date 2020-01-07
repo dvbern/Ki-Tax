@@ -79,6 +79,10 @@ public enum Betreuungsstatus {
 			|| SCHULAMT_MODULE_AKZEPTIERT == this;
 	}
 
+	public boolean isSchulamtAnmeldungUebernommen() {
+		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+	}
+
 	public boolean isStorniert() {
 		return STORNIERT == this;
 	}

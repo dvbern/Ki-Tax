@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,8 @@ import org.slf4j.LoggerFactory;
 import static java.util.Objects.requireNonNull;
 
 /**
- * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the Betreuungsgutschein
+ * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the
+ * Betreuungsgutschein
  */
 public class BetreuungsgutscheinEvaluator {
 
@@ -66,22 +68,24 @@ public class BetreuungsgutscheinEvaluator {
 		this.isDebug = enableDebugOutput;
 	}
 
-
 	/**
-	 * Berechnet nur die Familiengroesse und Abzuege fuer den Print der Familiensituation, es muss min eine Betreuung existieren
+	 * Berechnet nur die Familiengroesse und Abzuege fuer den Print der Familiensituation, es muss min eine Betreuung
+	 * existieren
 	 */
 	@Nonnull
-	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale) {
+	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale, boolean executeMonatsRule) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
-			throw new IllegalStateException("Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
+			throw new IllegalStateException(
+				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 
-		// Fuer die Familiensituation ist die Betreuung nicht relevant. Wir brauchen aber eine, da die Signatur der Rules
-		// mit Betreuungen funktioniert. Wir nehmen einfach die erste von irgendeinem Kind, das heisst ohne betreuung koennen wir nicht berechnen
-		// Fuer ein Gesuch im Status KEIN_ANGEBOT wir können keine Betreuung finden, da es keine gibt.
+		// Fuer die Familiensituation ist die Betreuung nicht relevant. Wir brauchen aber eine, da die Signatur der
+		// Rules mit Betreuungen funktioniert. Wir nehmen einfach die erste von irgendeinem Kind, das heisst ohne
+		// betreuung koennen wir nicht berechnen Fuer ein Gesuch im Status KEIN_ANGEBOT wir können keine Betreuung
+		// finden, da es keine gibt.
 		AbstractPlatz firstBetreuungOfGesuch = gesuch.getStatus() == AntragStatus.KEIN_ANGEBOT
 			? null
 			: gesuch.getFirstBetreuung();
@@ -100,14 +104,16 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte = rule.calculate(firstBetreuungOfGesuch, zeitabschnitte);
 				}
 			}
-			//TODO (NEFR): Falls die Aufteilung in Monate nicht gewuenscht wird, muesste folgende Regel (konfigurierbar) ausgeschaltet werden
-			// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-			zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+
+			if(executeMonatsRule){
+				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+			}
 
 			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte, locale);
 
-			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten,
+			// diese auch noch mergen
 			zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
@@ -129,18 +135,21 @@ public class BetreuungsgutscheinEvaluator {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
-			throw new IllegalStateException("Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
+			throw new IllegalStateException(
+				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 		List<KindContainer> kinder = new ArrayList<>(gesuch.getKindContainers());
 		Collections.sort(kinder);
 		for (KindContainer kindContainer : kinder) {
-			// Pro Kind werden (je nach Angebot) die Anspruchspensen aufsummiert. Wir müssen uns also nach jeder Betreuung
-			// den "Restanspruch" merken für die Berechnung der nächsten Betreuung,
-			// am Schluss kommt dann jeweils eine Reduktionsregel die den Anspruch auf den Restanspruch beschraenkt
-			List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode());
+			// Pro Kind werden (je nach Angebot) die Anspruchspensen aufsummiert. Wir müssen uns also nach jeder
+			// Betreuung den "Restanspruch" merken für die Berechnung der nächsten Betreuung, am Schluss kommt dann
+			// jeweils eine Reduktionsregel die den Anspruch auf den Restanspruch beschraenkt
+			List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte =
+				createInitialenRestanspruch(gesuch.getGesuchsperiode());
 
-			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel EBEGU-561)
+			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
+			// EBEGU-561)
 			List<Betreuung> betreuungen = new ArrayList<>(kindContainer.getBetreuungen());
 			betreuungen.sort(new BetreuungComparator());
 
@@ -153,8 +162,9 @@ public class BetreuungsgutscheinEvaluator {
 				if ((betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
 					&& betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
 					|| betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
-					// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen Vorgaenger und keine aktuelle
-					//verfuegung und wir muessen keinen restanspruch berechnen (vergl EBEGU-890)
+					// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen
+					// Vorgaenger und keine aktuelle verfuegung und wir muessen keinen restanspruch berechnen (vergl
+					// EBEGU-890)
 					continue;
 				}
 				if (betreuung.getBetreuungsstatus().isGeschlossenJA()) {
@@ -178,7 +188,11 @@ public class BetreuungsgutscheinEvaluator {
 				for (Rule rule : rulesToRun) {
 					zeitabschnitte = rule.calculate(betreuung, zeitabschnitte);
 					if (isDebug) {
-						LOG.info("{} ({}: {}" + ')', rule.getClass().getSimpleName(), rule.getRuleKey().name(), rule.getRuleType().name());
+						LOG.info(
+							"{} ({}: {}" + ')',
+							rule.getClass().getSimpleName(),
+							rule.getRuleKey().name(),
+							rule.getRuleType().name());
 						for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 							LOG.info(verfuegungZeitabschnitt.toString());
 						}
@@ -200,7 +214,8 @@ public class BetreuungsgutscheinEvaluator {
 				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 				zeitabschnitte = MutationsMerger.execute(betreuung, zeitabschnitte, locale);
 
-				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
+				// Daten, diese auch noch mergen
 				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 
 				// Die Verfügung erstellen
@@ -213,9 +228,16 @@ public class BetreuungsgutscheinEvaluator {
 				// Den richtigen Rechner anwerfen
 				AbstractBGRechner rechner = BGRechnerFactory.getRechner(betreuung);
 				if (rechner != null) {
-					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
 						result.toVerfuegungZeitabschnitt(verfuegungZeitabschnitt);
+						verfuegungZeitabschnitt.setBetreuungspensumProzent(
+							MathUtil.toTwoKommastelle(verfuegungZeitabschnitt.getBetreuungspensumProzent()));
+					});
+
+					Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
+					if (vorgaengerVerfuegung != null) {
+						usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
 					}
 				}
 				// Und die Resultate in die Verfügung schreiben
@@ -226,6 +248,24 @@ public class BetreuungsgutscheinEvaluator {
 				setZahlungRelevanteDaten(betreuung);
 			}
 		}
+	}
+
+	/**
+	 * replaces the calcuation results in {@code zeitabschnitte} with the values of an earlier Verfuegung, in case
+	 * there is a matching VerfuegungZeitabschnitt, with a calculation result withing the rounding tolerance.
+	 * Thus, a mutation only triggers changes, when there is a signification change.
+	 * Prevents changes due to increased rounding precision.
+	 */
+	private void usePersistedCalculationResult(
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
+		@Nonnull Verfuegung vorgaengerVerfuegung) {
+
+		List<VerfuegungZeitabschnitt> vorgaenger = vorgaengerVerfuegung.getZeitabschnitte();
+
+		zeitabschnitte
+			.forEach(zeitabschnitt -> VerfuegungUtil.findZeitabschnittSameGueltigkeit(vorgaenger, zeitabschnitt)
+				.filter(zeitabschnitt::isCloseTo)
+				.ifPresent(zeitabschnitt::copyCalculationResult));
 	}
 
 	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
@@ -249,15 +289,17 @@ public class BetreuungsgutscheinEvaluator {
 	}
 
 	/**
-	 * Wenn eine Verfuegung schon Freigegeben ist wird sie nicht mehr neu berechnet, trotzdem muessen wir den Restanspruch
-	 * beruecksichtigen
+	 * Wenn eine Verfuegung schon Freigegeben ist wird sie nicht mehr neu berechnet, trotzdem muessen wir den
+	 * Restanspruch beruecksichtigen
 	 */
 	@Nonnull
 	private List<VerfuegungZeitabschnitt> getRestanspruchForVerfuegteBetreung(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte;
 		Verfuegung verfuegungForRestanspruch = betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung();
 		if (verfuegungForRestanspruch == null) {
-			String message = "Ungueltiger Zustand, geschlossene Betreuung ohne Verfuegung oder Vorgaengerverfuegung (" + betreuung.getId() + ')';
+			String message = "Ungueltiger Zustand, geschlossene Betreuung ohne Verfuegung oder Vorgaengerverfuegung ("
+				+ betreuung.getId()
+				+ ')';
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		restanspruchZeitabschnitte = RestanspruchInitializer.execute(
@@ -282,7 +324,8 @@ public class BetreuungsgutscheinEvaluator {
 	public static List<VerfuegungZeitabschnitt> createInitialenRestanspruch(Gesuchsperiode gesuchsperiode) {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
 		VerfuegungZeitabschnitt initialerRestanspruch = new VerfuegungZeitabschnitt(gesuchsperiode.getGueltigkeit());
-		initialerRestanspruch.setAnspruchspensumRest(-1); // Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
+		// Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
+		initialerRestanspruch.setAnspruchspensumRest(-1);
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
 	}

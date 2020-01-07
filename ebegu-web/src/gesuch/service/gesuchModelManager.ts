@@ -1279,6 +1279,17 @@ export class GesuchModelManager {
         return false;
     }
 
+    public isThereAnyNotGeprueftesKind(): boolean {
+        const kinderList = this.getKinderList();
+        for (const kind of kinderList) {
+            // das kind muss schon gespeichert sein damit es zahelt
+            if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Gibt true zurueck wenn es mindestens eine Betreuung gibt, dessen Status anders als VERFUEGT oder
      * GESCHLOSSEN_OHNE_VERFUEGUNG oder SCHULAMT ist
