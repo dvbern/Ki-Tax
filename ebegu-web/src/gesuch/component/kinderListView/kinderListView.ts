@@ -75,7 +75,8 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     private initViewModel(): void {
         this.gesuchModelManager.initKinder();
 
-        if (this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()) {
+        if (!this.gesuchModelManager.isThereAnyNotGeprueftesKind()
+            && this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.KINDER,
                 TSWizardStepStatus.OK);
@@ -88,6 +89,10 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     public getKinderList(): Array<TSKindContainer> {
         return this.gesuchModelManager.getKinderList();
+    }
+
+    public isThereAnyNotGeprueftesKind(): boolean {
+        return this.gesuchModelManager.isThereAnyNotGeprueftesKind();
     }
 
     public createKind(): void {

@@ -129,6 +129,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initAusserordentlicherAnspruch();
     }
 
+    public $postLink (): void {
+        // Bei einer neuen Periode werden gewisse Kinderdaten nicht kopiert. In diesem Fall sollen diese
+        // bereits rot angezeigt werden.
+        if (!this.model.kindJA.isNew() && !this.model.kindJA.isGeprueft()) {
+            this.form.$setSubmitted();
+        }
+    }
+
     public getTextSprichtAmtssprache(): string {
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {

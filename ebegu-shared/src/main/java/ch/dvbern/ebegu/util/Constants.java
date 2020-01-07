@@ -126,6 +126,9 @@ public final class Constants {
 	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
 	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE= "00000000-0000-0000-0000-000000000002";
 
+	public static final String CSV_DELIMITER = ";";
+	public static final String CSV_NEW_LINE = "\n";
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :

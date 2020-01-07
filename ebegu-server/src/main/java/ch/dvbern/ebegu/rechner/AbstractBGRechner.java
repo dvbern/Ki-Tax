@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,14 +27,12 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static ch.dvbern.ebegu.util.MathUtil.*;
-
 /**
  * Superklasse für BG-Rechner
  */
 public abstract class AbstractBGRechner {
 
-	protected static final MathUtil MATH = EXACT;
+	protected static final MathUtil EXACT = MathUtil.EXACT;
 
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
@@ -72,50 +71,56 @@ public abstract class AbstractBGRechner {
 		BigDecimal verfuegteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
 
-		BigDecimal anspruchPensum = MATH.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+		BigDecimal anspruchPensum = EXACT.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);
 
 		BigDecimal betreuungspensumZeiteinheit =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, betreuungspensum);
 
-		BigDecimal minBetrag = MATH.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
+		BigDecimal minBetrag = EXACT.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
-			MATH.multiplyNullSafe(verfuegteZeiteinheiten, verguenstigungProZeiteinheit);
+			EXACT.multiplyNullSafe(verfuegteZeiteinheiten, verguenstigungProZeiteinheit);
 
 		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
 		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
 			anteilVerguenstigesPensumAmBetreuungspensum =
-				MATH.divide(bgPensum, betreuungspensum);
+				EXACT.divide(bgPensum, betreuungspensum);
 		}
 		BigDecimal vollkostenFuerVerguenstigtesPensum =
-			MATH.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
-		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
-		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
+			EXACT.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
+		BigDecimal vollkosten = EXACT.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
+		BigDecimal vollkostenMinusMinimaltarif = EXACT.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
-		verguenstigung = roundToFrankenRappen(verguenstigung);
-		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
+		BigDecimal elternbeitrag = EXACT.subtract(vollkosten, verguenstigung);
 
 		// Resultat
 		BGCalculationResult result = new BGCalculationResult();
-		result.setMinimalerElternbeitrag(roundToFrankenRappen(minBetrag));
-		result.setVerguenstigungOhneBeruecksichtigungVollkosten(
-			DEFAULT.from(verguenstigungVorVollkostenUndMinimalbetrag));
-		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(roundToFrankenRappen(
-			verguenstigungVorMinimalbetrag));
-		result.setVerguenstigung(DEFAULT.from(verguenstigung));
-		result.setVollkosten(roundToFrankenRappen(vollkosten));
-		result.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
+		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
+		result.setMinimalerElternbeitrag(minBetrag);
+		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
+		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
+		result.setVerguenstigung(verguenstigung);
+		result.setVollkosten(vollkosten);
+		result.setElternbeitrag(elternbeitrag);
 
-		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen auf 0.25 gerundet werden
-		result.setVerfuegteAnzahlZeiteinheiten(roundToNearestQuarter(verfuegteZeiteinheiten));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(roundToNearestQuarter(anspruchsberechtigteZeiteinheiten));
+		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
+		result.setVerfuegteAnzahlZeiteinheiten(verfuegteZeiteinheiten);
+		result.setAnspruchsberechtigteAnzahlZeiteinheiten(anspruchsberechtigteZeiteinheiten);
 		result.setZeiteinheit(getZeiteinheit());
-		result.setBetreuungspensumZeiteinheit(roundToNearestQuarter(betreuungspensumZeiteinheit));
+		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
 		return result;
+	}
+
+	/**
+	 * Depending on the type of Zeiteinheit, we may want to apply another rounding strategy
+	 */
+	@Nonnull
+	protected Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy() {
+		return MathUtil::toTwoKommastelle;
 	}
 
 	/**
@@ -141,7 +146,7 @@ public abstract class AbstractBGRechner {
 	}
 
 	@Nonnull
-	protected BigDecimal getVerguenstigungProZeiteinheit(
+	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
 		@Nonnull Boolean eingeschult,
@@ -158,17 +163,17 @@ public abstract class AbstractBGRechner {
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
 
-		BigDecimal op1 = MATH.divide(maximaleVerguenstigungProTag, MATH.subtract(minEinkommen, maxEinkommen));
-		BigDecimal op2 = MATH.subtract(massgebendesEinkommen, minEinkommen);
-		BigDecimal augment = MATH.multiplyNullSafe(op1, op2);
-		BigDecimal verguenstigungProTag = MATH.add(augment, maximaleVerguenstigungProTag);
+		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
+		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);
+		BigDecimal augment = EXACT.divide(product, EXACT.subtract(minEinkommen, maxEinkommen));
+		BigDecimal verguenstigungProTag = EXACT.add(augment, maximaleVerguenstigungProTag);
 		// Max und Min beachten
 		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
 		verguenstigungProTag = verguenstigungProTag.max(BigDecimal.ZERO);
 		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
 		BigDecimal zuschlagFuerBesondereBeduerfnisse =
 			getZuschlagFuerBesondereBeduerfnisse(parameterDTO, besonderebeduerfnisse);
-		return MATH.add(verguenstigungProTag, zuschlagFuerBesondereBeduerfnisse);
+		return EXACT.add(verguenstigungProTag, zuschlagFuerBesondereBeduerfnisse);
 	}
 
 	@Nonnull

@@ -275,10 +275,14 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Eingabe Lastenausgleich = Total Gutscheine - Selbstbehalt Gemeinde
 		BigDecimal eingabeLastenausgleich = MathUtil.DEFAULT.subtractNullSafe(totalGutscheine, selbstbehaltGemeinde);
 
+		// Total anrechenbar = total belegung * Kosten pro 100% Platz
+		BigDecimal totalAnrechenbar = MathUtil.DEFAULT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
+
 		LastenausgleichDetail detail = new LastenausgleichDetail();
 		detail.setJahr(grundlagen.getJahr());
 		detail.setGemeinde(gemeinde);
 		detail.setTotalBelegungen(totalBelegungInProzent);
+		detail.setTotalAnrechenbar(totalAnrechenbar);
 		detail.setTotalBetragGutscheine(totalGutscheine);
 		detail.setSelbstbehaltGemeinde(selbstbehaltGemeinde);
 		detail.setBetragLastenausgleich(eingabeLastenausgleich);
@@ -293,6 +297,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull LastenausgleichDetail detail
 	) {
 		detail.setTotalBelegungen(detail.getTotalBelegungen().negate());
+		detail.setTotalAnrechenbar(detail.getTotalAnrechenbar().negate());
 		detail.setTotalBetragGutscheine(detail.getTotalBetragGutscheine().negate());
 		detail.setSelbstbehaltGemeinde(detail.getSelbstbehaltGemeinde().negate());
 		detail.setBetragLastenausgleich(detail.getBetragLastenausgleich().negate());

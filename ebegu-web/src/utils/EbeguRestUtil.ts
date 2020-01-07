@@ -918,6 +918,7 @@ export class EbeguRestUtil {
         if (konfigurationFromServer) {
             konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeStatusName = konfigurationFromServer.gesuchsperiodeStatusName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
