@@ -4398,6 +4398,7 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
 		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
 		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
+		jaxGemeinde.setKey(persistedGemeinde.getId());
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());

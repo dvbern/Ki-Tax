@@ -60,6 +60,9 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
 
+	@Nonnull
+	private String key;
+
 
 	@Nonnull
 	public String getName() {
@@ -127,6 +130,15 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setAngebotFI(boolean angebotFI) {
 		this.angebotFI = angebotFI;
+	}
+
+	@Nonnull
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(@Nonnull String key) {
+		this.key = key;
 	}
 
 	@Override

@@ -64,8 +64,8 @@ export class OnboardingNeuBenutzerComponent {
         }
         const listIds: string[] = [];
         this._gemeindeList.forEach(gemeinde => {
-            if (listIds.indexOf(gemeinde.id) === -1) {
-                listIds.push(gemeinde.id);
+            if (listIds.indexOf(gemeinde.key) === -1) {
+                listIds.push(gemeinde.key);
             }
         });
         this.stateService.go(this.nextState, {

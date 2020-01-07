@@ -769,6 +769,7 @@ export class EbeguRestUtil {
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
+            gemeindeTS.key = gemeindeFromServer.key;
             return gemeindeTS;
         }
         return undefined;

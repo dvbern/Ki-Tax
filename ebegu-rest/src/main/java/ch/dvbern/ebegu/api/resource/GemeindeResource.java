@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
@@ -479,19 +480,9 @@ public class GemeindeResource {
 			for (String gemeindeTSId : gemeindenTSList) {
 				Gemeinde gemeindeTSVerbund;
 				String gemeindeName;
-				//Wenn der ID kleiner oder gleich als 5 Karaktern ist, es ist dann einen BFS Nummer
-				if(gemeindeTSId.length() <= 5){
-					BfsGemeinde bfsGemeinde =
-						gemeindeService.findBfsGemeinde(Long.parseLong(gemeindeTSId)).orElseThrow(()-> new EbeguEntityNotFoundException(
-						"findBfsGemeinde",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
-					gemeindeTSVerbund =
-						gemeindeService.findRegistredGemeindeVerbundIfExist(bfsGemeinde.getBfsNummer()).orElseThrow(()-> new EbeguEntityNotFoundException(
-							"findRegistredGemeindeVerbundIfExist",
-							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, bfsGemeinde.getBfsNummer()));
-					gemeindeName = bfsGemeinde.getName();
-				}
-				else{
+				//Wir pruefen ob der ID ist einen UUID, sonst es ist einen BFS Nummer und der Gemeinde existiert noch
+				// nicht so es heisst das es einen Kind von einen Schulverbund ist
+				if(gemeindeTSId.matches(Constants.REGEX_UUID)){
 					Gemeinde gemeindeTS =
 						gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
 							"findGemeinde",
@@ -499,6 +490,17 @@ public class GemeindeResource {
 					gemeindeTSVerbund =
 						gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
 					gemeindeName = gemeindeTS.getName();
+				}
+				else{
+					BfsGemeinde bfsGemeinde =
+						gemeindeService.findBfsGemeinde(Long.parseLong(gemeindeTSId)).orElseThrow(()-> new EbeguEntityNotFoundException(
+							"findBfsGemeinde",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+					gemeindeTSVerbund =
+						gemeindeService.findRegistredGemeindeVerbundIfExist(bfsGemeinde.getBfsNummer()).orElseThrow(()-> new EbeguEntityNotFoundException(
+							"findRegistredGemeindeVerbundIfExist",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, bfsGemeinde.getBfsNummer()));
+					gemeindeName = bfsGemeinde.getName();
 				}
 
 				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde
@@ -543,7 +545,8 @@ public class GemeindeResource {
 						aktiveUndSchulverbundGemeinden.stream().anyMatch(aktiveJaxGemeinde -> aktiveJaxGemeinde.getBfsNummer().equals(bfsGemeinde.getBfsNummer()));
 					if (!isAlreadyVorhanden) {
 						JaxGemeinde vonSchulVerbund = new JaxGemeinde();
-						vonSchulVerbund.setId(String.valueOf(bfsGemeinde.getBfsNummer()));
+						vonSchulVerbund.setKey(String.valueOf(bfsGemeinde.getBfsNummer()));
+						vonSchulVerbund.setId(bfsGemeinde.getId());
 						vonSchulVerbund.setBfsNummer(bfsGemeinde.getBfsNummer());
 						vonSchulVerbund.setName(bfsGemeinde.getName());
 						vonSchulVerbund.setAngebotBG(false);
