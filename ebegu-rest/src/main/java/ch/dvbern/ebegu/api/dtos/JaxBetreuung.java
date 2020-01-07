@@ -118,6 +118,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	private boolean keineDetailinformationen = false;
 
+	@NotNull
+	private List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new ArrayList<>();
+
 	// transient (Not stored on server, just an information for client)
 	private String bgNummer;
 
@@ -345,5 +348,13 @@ public class JaxBetreuung extends JaxAbstractDTO {
 			return getBetreuungNummer().compareTo(other.getBetreuungNummer());
 		}
 		return super.compareTo(o);
+	}
+
+	public List<JaxAnmeldungTagesschuleZeitabschnitt> getAnmeldungTagesschuleZeitabschnitts() {
+		return anmeldungTagesschuleZeitabschnitts;
+	}
+
+	public void setAnmeldungTagesschuleZeitabschnitts(List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts) {
+		this.anmeldungTagesschuleZeitabschnitts = anmeldungTagesschuleZeitabschnitts;
 	}
 }

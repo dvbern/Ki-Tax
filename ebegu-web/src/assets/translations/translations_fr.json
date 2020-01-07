@@ -1802,5 +1802,11 @@
     "LASTENAUSGLEICH_LOESCHEN_DIALOG_TITLE": "Voulez-vous vraiment effacer la compensation des charges?",
     "LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT": "Cette action ne peut pas être annulée!",
     "LASTENAUSGLEICH_REMOVE": "Effacer",
+    "BETREUUNGSTUNDEN_PRO_WOCHE": "Heures de garde par semaine",
+    "GEBUHR_PRO_STUNDE": "Tarif par heure",
+    "VERPFLEGUNGSKOSTEN_PRO_WOCHE": "Frais de pension par semaine",
+    "TOTAL_KOSTEN_PRO_WOCHE": "Coût total par semaine",
+    "TAGESSCHULE_GEBUEHREN_BETREUT": "Tarifs (offre avec suivi pédagogique)",
+    "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Tarifs (offre sans suivi pédagogique)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

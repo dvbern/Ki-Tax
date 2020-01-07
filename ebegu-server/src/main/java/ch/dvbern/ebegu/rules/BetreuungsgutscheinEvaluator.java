@@ -73,7 +73,7 @@ public class BetreuungsgutscheinEvaluator {
 	 * existieren
 	 */
 	@Nonnull
-	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale) {
+	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale, boolean executeMonatsRule) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -104,10 +104,10 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte = rule.calculate(firstBetreuungOfGesuch, zeitabschnitte);
 				}
 			}
-			//TODO (NEFR): Falls die Aufteilung in Monate nicht gewuenscht wird, muesste folgende Regel
-			// (konfigurierbar) ausgeschaltet werden
-			// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-			zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+
+			if(executeMonatsRule){
+				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+			}
 
 			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte, locale);

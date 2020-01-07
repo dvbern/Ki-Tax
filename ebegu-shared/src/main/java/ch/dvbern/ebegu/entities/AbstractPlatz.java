@@ -172,6 +172,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			} else {
 				target.setBetreuungsstatus(this.getBetreuungsstatus());
 			}
+			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
+				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+			}
 			target.setKind(targetKindContainer);
 			target.setInstitutionStammdaten(this.getInstitutionStammdaten());
 			target.setBetreuungNummer(this.getBetreuungNummer());

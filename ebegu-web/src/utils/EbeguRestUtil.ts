@@ -34,6 +34,7 @@ import {TSAbwesenheitContainer} from '../models/TSAbwesenheitContainer';
 import {TSAdresse} from '../models/TSAdresse';
 import {TSAdresseContainer} from '../models/TSAdresseContainer';
 import {TSAnmeldungDTO} from '../models/TSAnmeldungDTO';
+import {TSAnmeldungTagesschuleZeitabschnitt} from '../models/TSAnmeldungTagesschuleZeitabschnitt';
 import {TSAntragDTO} from '../models/TSAntragDTO';
 import {TSAntragStatusHistory} from '../models/TSAntragStatusHistory';
 import {TSApplicationProperty} from '../models/TSApplicationProperty';
@@ -1937,6 +1938,7 @@ export class EbeguRestUtil {
             betreuungTS.bgNummer = betreuungFromServer.bgNummer;
             betreuungTS.betreuungspensumAbweichungen =
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
+            betreuungTS.anmeldungTagesschuleZeitabschnitts = this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             return betreuungTS;
         }
         return undefined;
@@ -3572,5 +3574,33 @@ export class EbeguRestUtil {
         tsLastenausgleich.jahr = receivedLastenausgleich.jahr;
         tsLastenausgleich.totalAlleGemeinden = receivedLastenausgleich.totalAlleGemeinden;
         return tsLastenausgleich;
+    }
+
+    public parseAnmeldungTagesschuleZeitabschnitts(data: Array<any>): TSAnmeldungTagesschuleZeitabschnitt[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(
+                item => this.parseAnmeldungTagesschuleZeitabschnitt(new TSAnmeldungTagesschuleZeitabschnitt(), item))
+            : [this.parseAnmeldungTagesschuleZeitabschnitt(new TSAnmeldungTagesschuleZeitabschnitt(), data)];
+    }
+
+    public parseAnmeldungTagesschuleZeitabschnitt(
+        anmeldungTagesschuleZeitabschnittTS: TSAnmeldungTagesschuleZeitabschnitt,
+        anmeldungTagesschuleZeitabschnittFromServer: any,
+    ): TSAnmeldungTagesschuleZeitabschnitt {
+        if (anmeldungTagesschuleZeitabschnittFromServer) {
+            this.parseDateRangeEntity(anmeldungTagesschuleZeitabschnittTS, anmeldungTagesschuleZeitabschnittFromServer);
+            anmeldungTagesschuleZeitabschnittTS.betreuungsminutenProWoche = anmeldungTagesschuleZeitabschnittFromServer.betreuungsminutenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.betreuungsstundenProWoche = anmeldungTagesschuleZeitabschnittFromServer.betreuungsstundenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.gebuehrProStunde = anmeldungTagesschuleZeitabschnittFromServer.gebuehrProStunde;
+            anmeldungTagesschuleZeitabschnittTS.massgebendesEinkommenInklAbzugFamgr = anmeldungTagesschuleZeitabschnittFromServer.massgebendesEinkommenInklAbzugFamgr;
+            anmeldungTagesschuleZeitabschnittTS.pedagogischBetreut = anmeldungTagesschuleZeitabschnittFromServer.pedagogischBetreut;
+            anmeldungTagesschuleZeitabschnittTS.totalKostenProWoche = anmeldungTagesschuleZeitabschnittFromServer.totalKostenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.verpflegungskosten = anmeldungTagesschuleZeitabschnittFromServer.verpflegungskosten;
+            return anmeldungTagesschuleZeitabschnittTS;
+        }
+        return undefined;
     }
 }
