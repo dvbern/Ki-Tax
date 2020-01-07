@@ -165,7 +165,11 @@
 
                 <!-- Beschwerde-Adresse Checkbox -->
                 <div class="col-sm-6">
-                    <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
+                    <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE
+                        <dv-tooltip inputId="keineBeschwerdeAdresse_id"
+                                    [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
+                    </h3>
+
                     <div class="form-group">
                         <mat-radio-group name="creationType"
                                          [(ngModel)]="stammdaten.standardRechtsmittelbelehrung"
@@ -223,8 +227,6 @@
                                       (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
                             {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                         </mat-checkbox>
-                        <dv-tooltip inputId="keineBeschwerdeAdresseTooltip"
-                                    [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
                     </div>
                     <div *ngIf="!keineBeschwerdeAdresse">
                         <div class="col-sm-12">
