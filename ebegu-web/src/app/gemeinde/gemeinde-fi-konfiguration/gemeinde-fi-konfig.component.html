@@ -23,7 +23,11 @@
                 [tabid]="i">
                 <tab-title>
                     <div class="message-header">
-                        <p class="fa fa-angle-right"></p>{{konf.gesuchsperiodeName}}
+                        <p class="fa fa-angle-right"></p>
+                        <span translate
+                              [translateParams]="{fromTo: konf.gesuchsperiodeName, status: konf.gesuchsperiodeStatusName}">
+                                GEMEINDE_TAB_FI_GP_TITLE
+                        </span>
                     </div>
                 </tab-title>
                 <tab-body>

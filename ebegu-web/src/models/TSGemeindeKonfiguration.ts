@@ -25,6 +25,7 @@ import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSGemeindeKonfiguration {
     public gesuchsperiodeName: string;
+    public gesuchsperiodeStatusName: string;
     public gesuchsperiode: TSGesuchsperiode;
     public konfigKontingentierung: boolean; // only on client
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
