@@ -17,14 +17,13 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
+import ch.dvbern.ebegu.util.AnmeldungTagesschuleZeitabschnittUtil;
 import ch.dvbern.ebegu.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -39,6 +38,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -66,7 +66,10 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		"PdfGeneration_AnmeldungBestaetigung_IntroModule";
 	private static final String BESTAETIGUNG_OHNE_TARIF = "PdfGeneration_AnmeldungBestaetigung_ohneTarif";
 	private static final String ABT_BILDUNG_BERN = "PdfGeneration_AnmeldungBestaetigung_AbteilungBildungBern";
-	private static final String GEBUEHREN = "PdfGeneration_AnmeldungBestaetigung_gebuehren";
+	private static final String GEBUEHREN_MIT_PEDAGOGISCHER_BETREUUNG =
+		"PdfGeneration_AnmeldungBestaetigung_gebuehrenMit";
+	private static final String GEBUEHREN_OHNE_PEDAGOGISCHER_BETREUUNG =
+		"PdfGeneration_AnmeldungBestaetigung_gebuehrenOhne";
 	private static final String TEILANGEBOT = "PdfGeneration_AnmeldungBestaetigung_Teilangebot";
 	private static final String ZEIT = "PdfGeneration_AnmeldungBestaetigung_Zeit";
 	private static final String MONTAG = "PdfGeneration_Montag";
@@ -127,28 +130,40 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				bemerkungTitleParagraph.add(new Phrase(translate(BEMERKUNG), getPageConfiguration().getFont()));
 				bemerkungTitleParagraph.setSpacingAfter(0);
 				Paragraph bemerkungParagraph = new Paragraph();
-				bemerkungParagraph.add(new Phrase( "- " + anmeldungTagesschule.getBelegungTagesschule().getBemerkung(),
-					getPageConfiguration().getFont()));
+				bemerkungParagraph.add(new Phrase( "- " + anmeldungTagesschule.getBelegungTagesschule()
+				 .getBemerkung(), getPageConfiguration().getFont()));
+				bemerkungParagraph.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				document.add(bemerkungTitleParagraph);
 				document.add(bemerkungParagraph);
 			}
-
+			List<Element> bestaetigungUndGruesseElements = Lists.newArrayList();
 			if (art == Art.OHNE_TARIF) {
 				Paragraph bestaetigungOhneTarifParagraph = new Paragraph();
-				bestaetigungOhneTarifParagraph.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				bestaetigungOhneTarifParagraph.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				bestaetigungOhneTarifParagraph.add(new Phrase(translate(BESTAETIGUNG_OHNE_TARIF),
 					getPageConfiguration().getFont()));
-				document.add(bestaetigungOhneTarifParagraph);
+				bestaetigungUndGruesseElements.add(bestaetigungOhneTarifParagraph);
 			} else {
-				Paragraph gebuhren = new Paragraph();
-				gebuhren.add(new Phrase(translate(GEBUEHREN), getPageConfiguration().getFont()));
-				gebuhren.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				gebuhren.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				document.add(gebuhren);
-				PdfPTable gebuehrenTable = createGebuehrenTableHeader();
-				fillGebuehrenTable(gebuehrenTable);
-				document.add(gebuehrenTable);
+				if(AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule)) {
+					Paragraph gebuhren = new Paragraph();
+					gebuhren.add(new Phrase(translate(GEBUEHREN_MIT_PEDAGOGISCHER_BETREUUNG), getPageConfiguration().getFont()));
+					gebuhren.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+					document.add(gebuhren);
+					PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+					fillGebuehrenTable(gebuehrenTable, true);
+					document.add(gebuehrenTable);
+				}
+				if(AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittOhnePedagogischeBetreuung(anmeldungTagesschule)) {
+					Paragraph gebuhrenOhnePedagogischeBetreuung = new Paragraph();
+					gebuhrenOhnePedagogischeBetreuung.add(new Phrase(translate(GEBUEHREN_OHNE_PEDAGOGISCHER_BETREUUNG),
+						getPageConfiguration().getFont()));
+					gebuhrenOhnePedagogischeBetreuung.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+					gebuhrenOhnePedagogischeBetreuung.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+					document.add(gebuhrenOhnePedagogischeBetreuung);
+					PdfPTable gebuehrenTableOhnePedagogischeBetreuung = createGebuehrenTableHeader();
+					fillGebuehrenTable(gebuehrenTableOhnePedagogischeBetreuung, false);
+					document.add(gebuehrenTableOhnePedagogischeBetreuung);
+				}
 				Paragraph endCommunicationTitle = new Paragraph();
 				endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
 					getPageConfiguration().getFontBold()));
@@ -159,12 +174,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
 					getPageConfiguration().getFont()));
 				endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				document.add(endCommunication);
+				bestaetigungUndGruesseElements.add(endCommunication);
 			}
-			document.add(createParagraphGruss());
+			bestaetigungUndGruesseElements.add(createParagraphGruss());
 			Paragraph bernAmtParagraph = new Paragraph();
 			bernAmtParagraph.add(new Phrase(translate(ABT_BILDUNG_BERN), getPageConfiguration().getFont()));
-			document.add(bernAmtParagraph);
+			bestaetigungUndGruesseElements.add(bernAmtParagraph);
+			document.add(PdfUtil.createKeepTogetherTable(bestaetigungUndGruesseElements, 2, 0));
 		};
 	}
 
@@ -295,59 +311,24 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		return table;
 	}
 
-	public void fillGebuehrenTable(PdfPTable table) {
+	public void fillGebuehrenTable(PdfPTable table, boolean mitPedagogischerBetreuug) {
 
-		int startJahr = this.getGesuch().getGesuchsperiode().getBasisJahr();
-
-		assert anmeldungTagesschule.getBelegungTagesschule() != null;
-		int stundenProWoche = 0;
-		int minutesProWoche = 0;
-		BigDecimal verpflegKostenProWoche = new BigDecimal("0.0");
-		for (BelegungTagesschuleModul belegungTagesschuleModul :
-			anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule()) {
-			ModulTagesschule modulTagesschule = belegungTagesschuleModul.getModulTagesschule();
-			int hours = modulTagesschule.getModulTagesschuleGroup().getZeitVon().getHour();
-			int minutes = modulTagesschule.getModulTagesschuleGroup().getZeitVon().getMinute();
-			LocalTime zeitBis = modulTagesschule.getModulTagesschuleGroup().getZeitBis();
-			zeitBis = zeitBis.minusHours(hours);
-			zeitBis = zeitBis.minusMinutes(minutes);
-			stundenProWoche += zeitBis.getHour();
-			minutesProWoche += zeitBis.getMinute();
-
-			if (modulTagesschule.getModulTagesschuleGroup().getVerpflegungskosten() != null) {
-				verpflegKostenProWoche =
-					verpflegKostenProWoche.add(modulTagesschule.getModulTagesschuleGroup().getVerpflegungskosten());
+		for(AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt:
+		anmeldungTagesschule.getAnmeldungTagesschuleZeitabschnitts()){
+			if(anmeldungTagesschuleZeitabschnitt.isPedagogischBetreut() == mitPedagogischerBetreuug){
+				table.addCell(new Phrase(Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigAb()),
+					getPageConfiguration().getFont()));
+				table.addCell(new Phrase(Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigBis()),
+					getPageConfiguration().getFont()));
+				table.addCell(new Phrase(anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche() + ":" + anmeldungTagesschuleZeitabschnitt.getBetreuungsminutenProWoche(),
+					getPageConfiguration().getFont()));
+				table.addCell(new Phrase(CHF + anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(), getPageConfiguration().getFont()));
+				table.addCell(new Phrase(CHF + anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten(),
+					getPageConfiguration().getFont()));
+				table.addCell(new Phrase(CHF + anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche(),
+					getPageConfiguration().getFont()));
 			}
 		}
-
-		Double additionalHours = minutesProWoche / 60.0;
-		if (additionalHours >= 1.0) {
-			int hoursToAdd = additionalHours.intValue();
-			stundenProWoche += hoursToAdd;
-			minutesProWoche -= hoursToAdd * 60;
-		}
-		// TODO wir wissen noch nicht von wo kommen diese Werten
-		Double gebuehrProStundeFirstPeriod = 3.5;
-		Double gebuehrProStundeSecondPeriod = 3.5;
-		Double totalKostenFirstPeriod =
-			gebuehrProStundeFirstPeriod * stundenProWoche + ((gebuehrProStundeFirstPeriod * minutesProWoche) / 60) + verpflegKostenProWoche.doubleValue();
-
-		Double totalKostenSecondPeriod =
-			gebuehrProStundeFirstPeriod * stundenProWoche + ((gebuehrProStundeSecondPeriod * minutesProWoche) / 60) + verpflegKostenProWoche.doubleValue();
-
-		table.addCell(new Phrase("01.08." + startJahr, getPageConfiguration().getFont()));
-		table.addCell(new Phrase("31.12." + startJahr, getPageConfiguration().getFont()));
-		table.addCell(new Phrase(stundenProWoche + ":" + minutesProWoche, getPageConfiguration().getFont()));
-		table.addCell(new Phrase(CHF + gebuehrProStundeFirstPeriod.toString(), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(CHF + verpflegKostenProWoche.toString(), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(CHF + totalKostenFirstPeriod.toString(), getPageConfiguration().getFont()));
-
-		table.addCell(new Phrase("01.01." + (startJahr + 1), getPageConfiguration().getFont()));
-		table.addCell(new Phrase("31.07." + (startJahr + 1), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(stundenProWoche + ":" + minutesProWoche, getPageConfiguration().getFont()));
-		table.addCell(new Phrase(CHF + gebuehrProStundeSecondPeriod.toString(), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(CHF + verpflegKostenProWoche.toString(), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(CHF + totalKostenSecondPeriod.toString(), getPageConfiguration().getFont()));
 	}
 
 	private PdfPCell getCellForDay(boolean isSelected) {
