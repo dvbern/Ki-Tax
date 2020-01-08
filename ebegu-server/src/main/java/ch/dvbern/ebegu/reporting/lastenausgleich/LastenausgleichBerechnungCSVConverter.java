@@ -104,7 +104,7 @@ public class LastenausgleichBerechnungCSVConverter {
 	private String dataRowToCSV(LastenausgleichBerechnungCSVDataRow row) {
 		return convertToCSVLine(new String[] {
 			row.getBfsNummer(),
-			row.getTotalBelegung().multiply(new BigDecimal(100)).toString(), // csv in Prozent
+			row.getTotalBelegung().toString(),
 			row.getTotalGutscheine().toString(),
 			row.getTotalAnrechenbar().toString(),
 			row.getEingabeLastenausgleich().toString(),
