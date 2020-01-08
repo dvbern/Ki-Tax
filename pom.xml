@@ -42,7 +42,7 @@
 
         <!-- keep in sync with dependencies from Wildfly BOM -->
         <version.hibernate>5.3.6.Final</version.hibernate>
-        <version.org.hibernate.validator>6.0.13.Final</version.org.hibernate.validator>
+        <version.org.hibernate.validator>6.1.0.Final</version.org.hibernate.validator>
         <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
         <hibernate-search.version>5.10.3.Final</hibernate-search.version>
         <version.infinispan>9.3.1.Final</version.infinispan>
