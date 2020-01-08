@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns:response="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoResponse"
+		   xmlns:gerestype="http://geres.bedag.ch/schemas/20180101/GeresEchTypes"
+		   xmlns:tns="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoService"
+		   targetNamespace="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoService"
+		   elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://geres.bedag.ch/schemas/20180101/GeresEchTypes"
+			   schemaLocation="GeresEchTypes.xsd"/>
+	<xs:import namespace="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoResponse"
+			   schemaLocation="GeresResidentInfoResponse.xsd"/>
+	
+	<!-- Request Format -->
+	<xs:element name="ResidentInfoFull">
+		<xs:annotation>
+			<xs:documentation>Request format</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ResidentInfoParameters" type="tns:ResidentInfoParametersType"/>
+				<xs:element name="validityDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="searchMax" type="gerestype:baseNumberMax10DigitsType" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="ResidentInfoFast">
+		<xs:annotation>
+			<xs:documentation>Request format</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ResidentInfoParameters" type="tns:ResidentInfoParametersType"/>
+				<xs:element name="validityDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="searchMax" type="gerestype:baseNumberMax10DigitsType" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- Response Format - nillable is used solely for the purpose of forcing the wsdl2java generation
+	  to use a ResidentInfoResponse object for return parameter, rather than a "wrapped" type.  "Wrapped" is a
+	  technical CXF term that actually means that the contents of ResidentInfoResponse are unwrapped,
+	  in a bizarre twist of misguided nomenclature. Probably there's a better way to force this behavior
+	  than declaring this element nillable, but I didn't find it. -->
+	<xs:element name="ResidentInfoFullResponse" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Response format</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="baseDelivery" type="response:baseDeliveryType" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="ResidentInfoFastResponse" nillable="true">
+		<xs:annotation>
+			<xs:documentation>Response format</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="totalNumberOfResults" type="xs:int" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Total number of persons found with the given search criterias
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="numberOfDeliveredResults" type="xs:int" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Number of persons included in the response
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="baseDelivery" type="response:baseDeliveryType" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Search Criteria Definition -->
+	<xs:complexType name="ResidentInfoParametersType">
+		<xs:annotation>
+			<xs:documentation>
+				Search Criteria - specific properties of a person to match
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0">
+			<xs:element name="dbPersonId" type="gerestype:baseNumberMax10DigitsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						Internal ID of the Person in the database
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="personId" type="gerestype:idType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						ID Category and ID Value pair
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="personStatus" type="gerestype:personStatusType" minOccurs="0" maxOccurs="3">
+				<xs:annotation>
+					<xs:documentation>
+						List of Person Statuses to include.  Accepted List Values: "ACTIVE", "DEAD", "MOVED_OUT"
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="officialName" type="gerestype:baseStringMax100Type" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						Official (last) name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="firstName" type="gerestype:baseStringMax100Type" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>First name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="sex" type="gerestype:baseNumberMax1aType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sex (1: man, 2: woman)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="dateOfBirth" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Date of birth</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="dateOfBirthAfter" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Return persons born on or after this date.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="dateOfBirthBefore" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Return persons born on or before this date.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+				<xs:element name="dateOfDeathAfter" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Return persons who died on or after this date.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="dateOfDeathBefore" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Return persons who died on or before this date.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="maritalStatus" type="gerestype:baseNumberMax1bType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Marital status (1: single, 2: married, 3: widowed, 4: divorced, 5: not married, 6: registered partnership, 7: separated partnership).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="streetName" type="gerestype:baseStringMax60Type" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Street name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="houseNumber" type="gerestype:baseStringMax12Type" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>House Number on the street, as it appears on the residence address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="swissZipCode" type="gerestype:swissZipCodeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Swiss zip code</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="town" type="gerestype:baseStringMax40Type" minOccurs="0" >
+				<xs:annotation>
+					<xs:documentation>
+						Name of the town where the person lives.  This is the town on the person's address, not the Municipality.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="municipalityNumber" type="gerestype:municipalityNumberType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Municipality number</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="egid" type="gerestype:egidType" minOccurs="0" >
+				<xs:annotation>
+					<xs:documentation>EGID federal building id </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="ewid" type="gerestype:ewidType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>EWID federal dwelling id</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name="changedSince" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Return Person who has been changed since the
+						date. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+
+			<xs:element name="originalName" type="gerestype:baseStringMax100Type"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Original name, maiden name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

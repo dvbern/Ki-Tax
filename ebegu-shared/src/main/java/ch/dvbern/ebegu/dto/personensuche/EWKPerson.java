@@ -26,29 +26,29 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * DTO für Personen aus dem EWK
+ * Note: this class has a natural ordering that is inconsistent with equals.
  */
 @XmlRootElement(name = "ewkPerson")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class EWKPerson implements Serializable {
+@SuppressFBWarnings("EQ_COMPARETO_USE_OBJECT_EQUALS")
+public class EWKPerson implements Serializable, Comparable<EWKPerson> {
 
 	private static final long serialVersionUID = -3920969107353572301L;
 
 	private String personID;
 
-	private List<EWKEinwohnercode> einwohnercodes = new ArrayList<>();
-
 	private String nachname;
 
-	private String ledigname;
-
 	private String vorname;
-
-	private String rufname;
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate geburtsdatum;
@@ -56,27 +56,27 @@ public class EWKPerson implements Serializable {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate zuzugsdatum;
 
-	private String nationalitaet;
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate wegzugsdatum;
 
 	private String zivilstand;
-
-	private String zivilstandTxt;
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate zivilstandsdatum;
 
 	private Geschlecht geschlecht;
 
-	private String bewilligungsart;
-
-	private String bewilligungsartTxt;
-
-	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	private LocalDate bewilligungBis;
-
-	private List<EWKAdresse> adressen = new ArrayList<>();
+	private EWKAdresse adresse;
 
 	private List<EWKBeziehung> beziehungen = new ArrayList<>();
+
+	private boolean kind;
+
+	private boolean gesuchsteller;
+
+	private boolean haushalt;
+
+	private boolean nichtGefunden;
 
 	public EWKPerson() {
 	}
@@ -89,14 +89,6 @@ public class EWKPerson implements Serializable {
 		this.personID = personID;
 	}
 
-	public List<EWKEinwohnercode> getEinwohnercodes() {
-		return einwohnercodes;
-	}
-
-	public void setEinwohnercodes(List<EWKEinwohnercode> einwohnercodes) {
-		this.einwohnercodes = einwohnercodes;
-	}
-
 	public String getNachname() {
 		return nachname;
 	}
@@ -105,28 +97,12 @@ public class EWKPerson implements Serializable {
 		this.nachname = nachname;
 	}
 
-	public String getLedigname() {
-		return ledigname;
-	}
-
-	public void setLedigname(String ledigname) {
-		this.ledigname = ledigname;
-	}
-
 	public String getVorname() {
 		return vorname;
 	}
 
 	public void setVorname(String vorname) {
 		this.vorname = vorname;
-	}
-
-	public String getRufname() {
-		return rufname;
-	}
-
-	public void setRufname(String rufname) {
-		this.rufname = rufname;
 	}
 
 	public LocalDate getGeburtsdatum() {
@@ -145,12 +121,12 @@ public class EWKPerson implements Serializable {
 		this.zuzugsdatum = zuzugsdatum;
 	}
 
-	public String getNationalitaet() {
-		return nationalitaet;
+	public LocalDate getWegzugsdatum() {
+		return wegzugsdatum;
 	}
 
-	public void setNationalitaet(String nationalitaet) {
-		this.nationalitaet = nationalitaet;
+	public void setWegzugsdatum(LocalDate wegzugsdatum) {
+		this.wegzugsdatum = wegzugsdatum;
 	}
 
 	public String getZivilstand() {
@@ -159,14 +135,6 @@ public class EWKPerson implements Serializable {
 
 	public void setZivilstand(String zivilstand) {
 		this.zivilstand = zivilstand;
-	}
-
-	public String getZivilstandTxt() {
-		return zivilstandTxt;
-	}
-
-	public void setZivilstandTxt(String zivilstandTxt) {
-		this.zivilstandTxt = zivilstandTxt;
 	}
 
 	public LocalDate getZivilstandsdatum() {
@@ -185,36 +153,12 @@ public class EWKPerson implements Serializable {
 		this.geschlecht = geschlecht;
 	}
 
-	public String getBewilligungsart() {
-		return bewilligungsart;
+	public EWKAdresse getAdresse() {
+		return adresse;
 	}
 
-	public void setBewilligungsart(String bewilligungsart) {
-		this.bewilligungsart = bewilligungsart;
-	}
-
-	public String getBewilligungsartTxt() {
-		return bewilligungsartTxt;
-	}
-
-	public void setBewilligungsartTxt(String bewilligungsartTxt) {
-		this.bewilligungsartTxt = bewilligungsartTxt;
-	}
-
-	public LocalDate getBewilligungBis() {
-		return bewilligungBis;
-	}
-
-	public void setBewilligungBis(LocalDate bewilligungBis) {
-		this.bewilligungBis = bewilligungBis;
-	}
-
-	public List<EWKAdresse> getAdressen() {
-		return adressen;
-	}
-
-	public void setAdressen(List<EWKAdresse> adressen) {
-		this.adressen = adressen;
+	public void setAdresse(EWKAdresse adresse) {
+		this.adresse = adresse;
 	}
 
 	public List<EWKBeziehung> getBeziehungen() {
@@ -223,5 +167,53 @@ public class EWKPerson implements Serializable {
 
 	public void setBeziehungen(List<EWKBeziehung> beziehungen) {
 		this.beziehungen = beziehungen;
+	}
+
+	public boolean isKind() {
+		return kind;
+	}
+
+	public void setKind(boolean kind) {
+		this.kind = kind;
+	}
+
+	public boolean isGesuchsteller() {
+		return gesuchsteller;
+	}
+
+	public void setGesuchsteller(boolean gesuchsteller) {
+		this.gesuchsteller = gesuchsteller;
+	}
+
+	public boolean isHaushalt() {
+		return haushalt;
+	}
+
+	public void setHaushalt(boolean haushalt) {
+		this.haushalt = haushalt;
+	}
+
+	public boolean isNichtGefunden() {
+		return nichtGefunden;
+	}
+
+	public void setNichtGefunden(boolean nichtGefunden) {
+		this.nichtGefunden = nichtGefunden;
+	}
+
+	public boolean isWohnsitzInPeriode(Gesuchsperiode gesuchsperiode) {
+		return (getZuzugsdatum() == null || getZuzugsdatum().isBefore(gesuchsperiode.getGueltigkeit().getGueltigBis()))
+			&& (getWegzugsdatum() == null || getWegzugsdatum().isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()));
+	}
+
+	@Override
+	public int compareTo(@NotNull EWKPerson other) {
+		CompareToBuilder builder = new CompareToBuilder();
+		builder.append(other.gesuchsteller, this.gesuchsteller);
+		builder.append(other.kind, this.kind);
+		builder.append(other.haushalt, this.haushalt);
+		builder.append(other.nachname, this.nachname);
+		builder.append(other.vorname, this.vorname);
+		return builder.toComparison();
 	}
 }
