@@ -224,7 +224,7 @@ export class TestDataUtil {
         const gemeinde = new TSGemeinde();
         TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
-        gemeinde.key = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
+        gemeinde.key = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
         gemeinde.gemeindeNummer = 1;
         gemeinde.bfsNummer = 99998;
