@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,7 +26,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,14 +33,13 @@ public class LastenausgleichBerechnungCSVConverter {
 
 	@Nonnull
 	public String createLastenausgleichCSV(
-		@Nonnull List<LastenausgleichBerechnungDataRow> data,
-		@Nonnull Locale locale
+		@Nonnull List<LastenausgleichBerechnungDataRow> data
 	) {
 		checkNotNull(data);
 
 		StringBuilder csvString = new StringBuilder();
 
-		String header = generateCSVHeader(locale);
+		String header = generateCSVHeader();
 		csvString.append(appendNewLine(header));
 
 		List<LastenausgleichBerechnungCSVDataRow> readyForCSV = mergeRevisionenIntoErhebungen(data);
@@ -89,22 +86,22 @@ public class LastenausgleichBerechnungCSVConverter {
 		return result;
 	}
 
-	private String generateCSVHeader(Locale locale) {
+	private String generateCSVHeader() {
 		return convertToCSVLine(new String[] {
-			ServerMessageUtil.getMessage("Reports_lastenausgleichBFSNummer", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonBelegung", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonGutscheine", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonAnrechenbar", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonErhebung", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonRevision", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonSelbstbehalt", locale)
+			"bfs",
+			"kibon_Belegung",
+			"kibon_Gutscheine",
+			"kibon_Anrechenbar",
+			"kibon_Erhebung",
+			"kibon_Revision",
+			"kibon_Selbstbehalt"
 		});
 	}
 
 	private String dataRowToCSV(LastenausgleichBerechnungCSVDataRow row) {
 		return convertToCSVLine(new String[] {
 			row.getBfsNummer(),
-			row.getTotalBelegung().multiply(new BigDecimal(100)).toString(), // csv in Prozent
+			row.getTotalBelegung().toString(),
 			row.getTotalGutscheine().toString(),
 			row.getTotalAnrechenbar().toString(),
 			row.getEingabeLastenausgleich().toString(),
@@ -117,7 +114,7 @@ public class LastenausgleichBerechnungCSVConverter {
 		String escapedData = data.replaceAll("\\R", " ");
 		if (data.contains(Constants.CSV_DELIMITER) || data.contains("\"") || data.contains("'") || data.contains("|")) {
 			data = data.replace("\"", "\"\"");
-			escapedData = "\"" + data + "\"";
+			escapedData = '"' + data + '"';
 		}
 		return escapedData;
 	}

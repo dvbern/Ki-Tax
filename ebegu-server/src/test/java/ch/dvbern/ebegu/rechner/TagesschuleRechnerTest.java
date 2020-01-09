@@ -89,11 +89,7 @@ public class TagesschuleRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
 		verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
-		BelegungTagesschuleModul modul = new BelegungTagesschuleModul();
-		modul.setModulTagesschule(new ModulTagesschule());
-		modul.getModulTagesschule().setModulTagesschuleGroup(new ModulTagesschuleGroup());
-		modul.getModulTagesschule().getModulTagesschuleGroup().setWirdPaedagogischBetreut(paedagogischBetreut);
-		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, modul);
+		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, paedagogischBetreut);
 
 		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
 	}
@@ -102,11 +98,7 @@ public class TagesschuleRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
 		verfuegungZeitabschnitt.setAbzugFamGroesse(MathUtil.DEFAULT.fromNullSafe(11400.00));
-		BelegungTagesschuleModul modul = new BelegungTagesschuleModul();
-		modul.setModulTagesschule(new ModulTagesschule());
-		modul.getModulTagesschule().setModulTagesschuleGroup(new ModulTagesschuleGroup());
-		modul.getModulTagesschule().getModulTagesschuleGroup().setWirdPaedagogischBetreut(paedagogischBetreut);
-		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, modul);
+		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, paedagogischBetreut);
 
 		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
 	}
@@ -116,7 +108,7 @@ public class TagesschuleRechnerTest {
 		dto.setMaxMassgebendesEinkommen(MAXIMAL_MASSGEGEBENES_EINKOMMEN);
 		dto.setMinMassgebendesEinkommen(MINIMAL_MASSGEGEBENES_EINKOMMEN);
 		dto.setMaxTarifMitPaedagogischerBetreuung(MATA_MIT_PEDAGOGISCHE_BETREUUNG);
-		dto.setMaxTarifOhnePaedagogischeBetreuung(MATA_OHNE_PEDAGOGISCHE_BETREUUNG);
+		dto.setMaxTarifOhnePaedagogischerBetreuung(MATA_OHNE_PEDAGOGISCHE_BETREUUNG);
 		dto.setMinTarif(MITA);
 		return dto;
 	}

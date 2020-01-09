@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.errors.MailException;
 
 /**
  * Service zum Verwalten von Gemeinden
@@ -113,4 +114,19 @@ public interface GemeindeService {
 
 	@Nonnull
 	Optional<BfsGemeinde> findBfsGemeinde(@Nonnull Long bfsNummer);
+
+	/**
+	 * aktiviert oder deaktiviert das BG Angebot
+	 */
+	void updateAngebotBG(@Nonnull Gemeinde gemeinde, boolean value);
+
+	/**
+	 * aktiviert oder deaktiviert das TS Angebot
+	 */
+	void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value);
+
+	/**
+	 * aktiviert oder deaktiviert das FI Angebot
+	 */
+	void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value);
 }

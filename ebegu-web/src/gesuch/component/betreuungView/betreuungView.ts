@@ -1017,9 +1017,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
         const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
         const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
-        const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
-        return gmdeHasTS || betreuungIsTS;
+        const isNew = this.getBetreuungModel().isNew();
+        if (!isNew) {
+            const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
+            const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
+            return gmdeHasTS || betreuungIsTS;
+        }
+        return gmdeHasTS;
     }
 
     /**
@@ -1085,6 +1089,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         } else {
+            this.getBetreuungModel().vertrag = true;
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }

@@ -165,7 +165,11 @@
 
                 <!-- Beschwerde-Adresse Checkbox -->
                 <div class="col-sm-6">
-                    <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
+                    <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE
+                        <dv-tooltip inputId="keineBeschwerdeAdresse_id"
+                                    [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
+                    </h3>
+
                     <div class="form-group">
                         <mat-radio-group name="creationType"
                                          [(ngModel)]="stammdaten.standardRechtsmittelbelehrung"
@@ -223,8 +227,6 @@
                                       (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
                             {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                         </mat-checkbox>
-                        <dv-tooltip inputId="keineBeschwerdeAdresseTooltip"
-                                    [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
                     </div>
                     <div *ngIf="!keineBeschwerdeAdresse">
                         <div class="col-sm-12">
@@ -314,7 +316,7 @@
                         <mat-checkbox id="angebotBG" name="angebotBG"
                                       [(ngModel)]="stammdaten.gemeinde.angebotBG"
                                       *ngIf="tageschuleEnabledForMandant"
-                                      [disabled]="!(isSuperadmin())">
+                                      [disabled]="!(isSuperadminOrMandant())">
                             {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
                         <div class="form-group" *ngIf="stammdaten.gemeinde.angebotBG">
@@ -323,7 +325,7 @@
                                    name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
                                    [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
                                    [matDatepicker]="begu_start"
-                                   [disabled]="!(isSuperadmin())"
+                                   [disabled]="!(isSuperadminOrMandant())"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
                             <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
                             <mat-datepicker #begu_start></mat-datepicker>
@@ -333,6 +335,7 @@
                         </div>
 
                         <mat-checkbox id="angebotTS" name="angebotTS"
+                                      [disabled]="!(isSuperadminOrMandant())"
                                       [(ngModel)]="stammdaten.gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
                             {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
