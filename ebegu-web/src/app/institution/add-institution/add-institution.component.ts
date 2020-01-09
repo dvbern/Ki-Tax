@@ -118,7 +118,7 @@ export class AddInstitutionComponent implements OnInit {
             this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
         ).then(neueinstitution => {
             this.institution = neueinstitution;
-            this.navigateBack();
+            this.goToNextView();
         }).catch((exception: TSExceptionReport[]) => {
             if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
@@ -164,7 +164,7 @@ export class AddInstitutionComponent implements OnInit {
             this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
         ).then(neueinstitution => {
             this.institution = neueinstitution;
-            this.navigateBack();
+            this.goToNextView();
             });
     }
 
@@ -175,8 +175,24 @@ export class AddInstitutionComponent implements OnInit {
             TSInstitutionStatus.KONFIGURATION;
     }
 
+    private goToNextView(): void {
+        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE ||
+            this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+            this.navigateToEdit();
+        } else {
+            this.navigateBack();
+        }
+    }
+
     private navigateBack(): void {
         this.$state.go('institution.list');
+    }
+
+    private navigateToEdit(): void {
+        this.$state.go('institution.edit', {
+            institutionId: this.institution.id,
+            editMode: true
+        });
     }
 
     public loadGemeindenList(): void {
