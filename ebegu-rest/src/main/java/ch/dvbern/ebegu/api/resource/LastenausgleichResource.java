@@ -163,8 +163,7 @@ public class LastenausgleichResource {
 		String ip = downloadResource.getIP(request);
 		String lastenausgleichId = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo = reportService.generateCSVReportLastenausgleichKibon(lastenausgleichId,
-			Locale.GERMAN);
+		UploadFileInfo uploadFileInfo = reportService.generateCSVReportLastenausgleichKibon(lastenausgleichId);
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
