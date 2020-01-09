@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -84,7 +85,9 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.util.BetreuungUtil;
@@ -152,6 +155,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private PrincipalBean principalBean;
 	@Inject
 	private TagesschuleZeitabschnittService tagesschuleZeitabschnittService;
+	@Inject
+	private GeneratedDokumentService generatedDokumentService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -395,6 +400,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
+
+		generateAnmeldebestaetigungDokument(persistedBetreuung, true);
+
 		return persistedBetreuung;
 	}
 
@@ -414,7 +422,29 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
+		generateAnmeldebestaetigungDokument(persistedBetreuung, false);
+
 		return persistedBetreuung;
+	}
+
+	/**
+	 * Generiert das Anmeldebestaetigungsdokument.
+	 *
+	 * @param anmeldung AbstractAnmeldung, fuer die das Dokument generiert werden soll.
+	 */
+	private void generateAnmeldebestaetigungDokument(@Nonnull AbstractAnmeldung anmeldung, boolean mitTarif) {
+		try {
+			Gesuch gesuch = anmeldung.extractGesuch();
+
+			//noinspection ResultOfMethodCallIgnored
+			generatedDokumentService.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung,
+				mitTarif,	true);
+		} catch (MimeTypeParseException | MergeDocException e) {
+			throw new EbeguRuntimeException(
+				"AnmeldebestaetigungsDokument",
+				"Anmeldebestaetigung-Dokument konnte nicht erstellt werden"
+					+ anmeldung.getId(), e);
+		}
 	}
 
 	@Override

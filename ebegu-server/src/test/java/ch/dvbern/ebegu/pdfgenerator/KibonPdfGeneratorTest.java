@@ -244,7 +244,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	public void createAnmeldebestaetigungenTagesschule() throws FileNotFoundException, InvoiceGeneratorException {
 		KindContainer kindContainer = gesuch_tagesschule.getKindContainers().iterator().next();
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF,kindContainer,
+			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF,
 			kindContainer.getAnmeldungenTagesschule().iterator().next());
 		generator.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_ohneTarif.pdf"));
 
@@ -252,7 +252,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		fillAnmeldungTagesschuleZeitabschnitten(anmeldungTagesschule);
 
 		final AnmeldebestaetigungTSPDFGenerator generator2 = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF,kindContainer,
+			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF,
 			kindContainer.getAnmeldungenTagesschule().iterator().next());
 		generator2.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_mitTarif.pdf"));
 	}

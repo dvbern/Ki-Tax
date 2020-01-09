@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.util.AnmeldungTagesschuleZeitabschnittUtil;
 import ch.dvbern.ebegu.util.Constants;
 
@@ -31,7 +32,6 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -97,14 +97,12 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 
 	@Nonnull
 	private final Art art;
-	private final KindContainer kindContainer;
 	private final AnmeldungTagesschule anmeldungTagesschule;
 
-	protected AnmeldebestaetigungTSPDFGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, @Nonnull KindContainer kindContainer, AnmeldungTagesschule anmeldungTagesschule) {
+	public AnmeldebestaetigungTSPDFGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten,
+		@Nonnull Art art, AnmeldungTagesschule anmeldungTagesschule) {
 		super(gesuch, stammdaten);
 		this.art = art;
-		this.kindContainer = kindContainer;
 		this.anmeldungTagesschule = anmeldungTagesschule;
 	}
 
@@ -196,11 +194,11 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(new Phrase(translate(INSTITUTION), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName(),
 			getPageConfiguration().getFont()));
+
+		Kind kind = anmeldungTagesschule.getKind().getKindJA();
 		// Row: Name + Eintrittsdatum
 		table.addCell(new Phrase(translate(KIND_NAME), getPageConfiguration().getFont()));
-		table.addCell(new Phrase(kindContainer.getKindGS() != null ? kindContainer.getKindGS().getFullName() :
-			kindContainer.getKindJA().getFullName(),
-			getPageConfiguration().getFont()));
+		table.addCell(new Phrase(kind.getFullName(), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(translate(EINTRITTSDATUM), getPageConfiguration().getFont()));
 		assert anmeldungTagesschule.getBelegungTagesschule() != null;
 		table.addCell(new Phrase(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum().toString(),
@@ -209,8 +207,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(new Phrase(translate(ANGEBOT), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(translate(ANGEBOT_TAGESSCHULE), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(translate(KLASSE), getPageConfiguration().getFont()));
-		EinschulungTyp einschulungTyp = kindContainer.getKindGS() != null ?
-			kindContainer.getKindGS().getEinschulungTyp() : kindContainer.getKindJA().getEinschulungTyp();
+		EinschulungTyp einschulungTyp = kind.getEinschulungTyp();
 		if (einschulungTyp != null) {
 			String einschulungString = einschulungTyp.name();
 			table.addCell(new Phrase(translate(ANMELDUNG_BESTAETIGUNG_PFAD + einschulungString),
