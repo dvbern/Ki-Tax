@@ -19,12 +19,16 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 
 import java.math.BigDecimal;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * DTO für den Lastenausgleich von KiBon
  */
-public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow {
+public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow implements Comparable<LastenausgleichBerechnungCSVDataRow> {
 
 	private BigDecimal totalRevision;
+
+	public LastenausgleichBerechnungCSVDataRow() {};
 
 	public LastenausgleichBerechnungCSVDataRow(LastenausgleichBerechnungDataRow parent) {
 		super(parent);
@@ -36,5 +40,9 @@ public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnu
 
 	public void setTotalRevision(BigDecimal totalRevision) {
 		this.totalRevision = totalRevision;
+	}
+
+	public int compareTo(@NotNull LastenausgleichBerechnungCSVDataRow compare) {
+		return this.getBfsNummer().compareTo(compare.getBfsNummer());
 	}
 }
