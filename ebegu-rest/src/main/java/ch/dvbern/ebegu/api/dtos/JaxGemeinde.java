@@ -60,6 +60,10 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
 
+	// Dieses Feld wird *nur* für die Komponente gemeinde-multiselect.component verwendet
+	// Wir haben dort das Problem, dass in gewissen Einzelfällen die Id der Gemeinde (noch) nicht bekannt ist,
+	// da diese in kiBon noch nicht registriert ist: Beim Onboarding, Gemeindeauswahl für Tagessschulen, wenn ich
+	// eine Gemeinde explizit auswähle, die einem Verbund angehört und selber nicht in kiBon mitmacht.
 	@Nonnull
 	private String key;
 

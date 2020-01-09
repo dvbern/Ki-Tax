@@ -740,7 +740,7 @@ export class EbeguRestUtil {
             : [this.parseGemeinde(new TSGemeinde(), data)];
     }
 
-    public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
+    public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): any {
         if (gemeinde) {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
@@ -752,7 +752,6 @@ export class EbeguRestUtil {
             restGemeinde.angebotBG = gemeinde.angebotBG;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
-            restGemeinde.key = gemeinde.id;
             return restGemeinde;
         }
         return undefined;
