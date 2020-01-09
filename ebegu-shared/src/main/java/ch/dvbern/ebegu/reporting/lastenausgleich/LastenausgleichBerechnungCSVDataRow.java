@@ -46,7 +46,11 @@ public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnu
 		return this.getBfsNummer().compareTo(compare.getBfsNummer());
 	}
 
-	public boolean equals(@NotNull LastenausgleichBerechnungCSVDataRow compare) {
-		return compareTo(compare) == 0;
+	@Override
+	public boolean equals(@NotNull Object o) {
+		if (getClass() != o.getClass()) {
+			return false;
+		}
+		return compareTo((LastenausgleichBerechnungCSVDataRow) o) == 0;
 	}
 }
