@@ -262,10 +262,13 @@ public class BetreuungsgutscheinEvaluator {
 
 		List<VerfuegungZeitabschnitt> vorgaenger = vorgaengerVerfuegung.getZeitabschnitte();
 
-		zeitabschnitte
-			.forEach(zeitabschnitt -> VerfuegungUtil.findZeitabschnittSameGueltigkeit(vorgaenger, zeitabschnitt)
-				.filter(zeitabschnitt::isCloseTo)
-				.ifPresent(zeitabschnitt::copyCalculationResult));
+		// Der folgende Hack gilt nur für die Gesuchsperiode 2019/20 (2018), da die Rundung geändert wurde
+		if (vorgaengerVerfuegung.getBetreuung().extractGesuchsperiode().getBasisJahr() == 2018) {
+			zeitabschnitte
+				.forEach(zeitabschnitt -> VerfuegungUtil.findZeitabschnittSameGueltigkeit(vorgaenger, zeitabschnitt)
+					.filter(zeitabschnitt::isCloseTo)
+					.ifPresent(zeitabschnitt::copyCalculationResult));
+		}
 	}
 
 	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {

@@ -203,7 +203,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_zeitabschnitt_verfuegung_id"), nullable = false)
 	@ManyToOne(optional = false)
-	private @NotNull Verfuegung verfuegung;
+	private @NotNull
+	Verfuegung verfuegung;
 
 	@Column(nullable = false)
 	private @NotNull boolean zuSpaetEingereicht;
@@ -213,11 +214,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private @NotNull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus =
+	private @NotNull
+	VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus =
 		VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	@OneToMany(mappedBy = "verfuegungZeitabschnitt")
-	private @NotNull List<Zahlungsposition> zahlungsposition = new ArrayList<>();
+	private @NotNull
+	List<Zahlungsposition> zahlungsposition = new ArrayList<>();
 
 	@Transient
 	private boolean babyTarif;
@@ -1000,25 +1003,23 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public boolean isCloseTo(@Nonnull VerfuegungZeitabschnitt that) {
 		BigDecimal rapenError = BigDecimal.valueOf(0.20);
-		return getAnspruchberechtigtesPensum() == that.getAnspruchberechtigtesPensum()
-			&& MathUtil.isSame(getMassgebendesEinkommen(),that.getMassgebendesEinkommen())
+		// Folgende Attribute sollen bei einer "kleinen" Änderung nicht zu einer Neuberechnung führen:
+		return MathUtil.isSame(getMassgebendesEinkommen(),that.getMassgebendesEinkommen())
 			&& MathUtil.isSame(vollkosten, that.vollkosten)
-			&& MathUtil.isClose(betreuungspensumProzent, that.getBetreuungspensumProzent(), BigDecimal.valueOf(0.01))
-			&& MathUtil.isClose(verguenstigung, that.getVerguenstigung(), rapenError)
-			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError);
+			&& MathUtil.isClose(getBgPensum(), that.getBgPensum(), BigDecimal.valueOf(0.01))
+			&& MathUtil.isClose(elternbeitrag, that.getElternbeitrag(), rapenError)
+			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError)
+			&& MathUtil.isClose(verguenstigungOhneBeruecksichtigungVollkosten, that.getVerguenstigungOhneBeruecksichtigungVollkosten(), rapenError)
+			&& MathUtil.isClose(verguenstigungOhneBeruecksichtigungMinimalbeitrag, that.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(), rapenError)
+			&& MathUtil.isClose(verguenstigung, that.getVerguenstigung(), rapenError);
 	}
 
 	public void copyCalculationResult(@Nonnull VerfuegungZeitabschnitt that) {
-		betreuungspensumProzent = that.betreuungspensumProzent;
+		elternbeitrag = that.elternbeitrag;
 		minimalerElternbeitrag = that.minimalerElternbeitrag;
 		verguenstigungOhneBeruecksichtigungVollkosten = that.verguenstigungOhneBeruecksichtigungVollkosten;
+		verguenstigungOhneBeruecksichtigungMinimalbeitrag = that.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 		verguenstigung = that.verguenstigung;
-		vollkosten = that.vollkosten;
-		elternbeitrag = that.elternbeitrag;
-		betreuungspensumZeiteinheit = that.betreuungspensumZeiteinheit;
-		verfuegteAnzahlZeiteinheiten = that.verfuegteAnzahlZeiteinheiten;
-		anspruchsberechtigteAnzahlZeiteinheiten = that.anspruchsberechtigteAnzahlZeiteinheiten;
-		zeiteinheit = that.zeiteinheit;
 	}
 
 	@Override
