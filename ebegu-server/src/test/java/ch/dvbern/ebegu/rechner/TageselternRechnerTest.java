@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -25,10 +26,10 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.hamcrest.number.BigDecimalCloseTo;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -53,29 +54,29 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void test() {
-		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 100000, 113.00);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 100000, 75.35);
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 50000, 138.15);
+		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 100000, 113.022);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 100000, 75.348);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 50000, 138.138);
 
-		testWithParams(geburtstagKind, false, false, false, intervallTag, 20, 100000, 6.85);
-		testWithParams(geburtstagKind, true, false, false, intervallTag, 20, 100000, 6.85);
-		testWithParams(geburtstagKind, false, true, true, intervallTag, 20, 100000, 13.55);
-		testWithParams(geburtstagKind, true, true, true, intervallTag, 20, 100000, 13.55);
+		testWithParams(geburtstagKind, false, false, false, intervallTag, 20, 100000, 6.850);
+		testWithParams(geburtstagKind, true, false, false, intervallTag, 20, 100000, 6.850);
+		testWithParams(geburtstagKind, false, true, true, intervallTag, 20, 100000, 13.528);
+		testWithParams(geburtstagKind, true, true, true, intervallTag, 20, 100000, 13.528);
 
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 150000, 12.55);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 150000, 12.55);
-		testWithParams(geburtstagKind, false, true, true, intervall, 20, 150000, 86.00);
-		testWithParams(geburtstagKind, true, true, true, intervall, 20, 150000, 86.00);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 150000, 12.558);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 150000, 12.558);
+		testWithParams(geburtstagKind, false, true, true, intervall, 20, 150000, 86.022);
+		testWithParams(geburtstagKind, true, true, true, intervall, 20, 150000, 86.022);
 
-		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 100000, 113.00);
-		testWithParams(geburtstagBaby, true, false, false, intervall, 20, 100000, 113.00);
-		testWithParams(geburtstagBaby, false, true, true, intervall, 20, 100000, 186.50);
-		testWithParams(geburtstagBaby, true, true, true, intervall, 20, 100000, 186.50);
+		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 100000, 113.022);
+		testWithParams(geburtstagBaby, true, false, false, intervall, 20, 100000, 113.022);
+		testWithParams(geburtstagBaby, false, true, true, intervall, 20, 100000, 186.486);
+		testWithParams(geburtstagBaby, true, true, true, intervall, 20, 100000, 186.486);
 
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 100000, 75.35);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 100000, 75.35);
-		testWithParams(geburtstagKind, false, true, true, intervall, 20, 100000, 148.80);
-		testWithParams(geburtstagKind, true, true, true, intervall, 20, 100000, 148.80);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 100000, 75.348);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 100000, 75.348);
+		testWithParams(geburtstagKind, false, true, true, intervall, 20, 100000, 148.812);
+		testWithParams(geburtstagKind, true, true, true, intervall, 20, 100000, 148.812);
 	}
 
 	@Test
@@ -89,21 +90,21 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 			LocalDate.of(2018, Month.SEPTEMBER, 1),
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
 
-		testWithParams(kind, false, false, false, halberAugust, 50, 68712, 329.45);
-		testWithParams(kind, false, false, false, ganzerSeptember, 50, 68712, 729.50);
-		testWithParams(baby, false, false, false, halberAugust, 50, 68712, 494.20);
-		testWithParams(baby, false, false, false, ganzerSeptember, 50, 68712, 1094.30);
+		testWithParams(kind, false, false, false, halberAugust, 50, 68712, 329.462);
+		testWithParams(kind, false, false, false, ganzerSeptember, 50, 68712, 729.524);
+		testWithParams(baby, false, false, false, halberAugust, 50, 68712, 494.194);
+		testWithParams(baby, false, false, false, ganzerSeptember, 50, 68712, 1094.286);
 
-		testWithParams(baby, false, false, false, halberAugust, 50, 185447, 0.00);
-		testWithParams(baby, false, false, false, ganzerSeptember, 50, 185447, 0.00);
-		testWithParams(baby, false, true, true, halberAugust, 50, 185447, 211.15);
-		testWithParams(baby, false, true, true, ganzerSeptember, 50, 185447, 467.50);
+		testWithParams(baby, false, false, false, halberAugust, 50, 185447, 0.000);
+		testWithParams(baby, false, false, false, ganzerSeptember, 50, 185447, 0.000);
+		testWithParams(baby, false, true, true, halberAugust, 50, 185447, 211.129);
+		testWithParams(baby, false, true, true, ganzerSeptember, 50, 185447, 467.500);
 
-		testWithParams(baby, false, true, true, halberAugust, 50, 35447, 844.50);
-		testWithParams(baby, false, true, true, ganzerSeptember, 50, 35447, 1870.00);
+		testWithParams(baby, false, true, true, halberAugust, 50, 35447, 844.516);
+		testWithParams(baby, false, true, true, ganzerSeptember, 50, 35447, 1870.000);
 
-		testWithParams(kind, true, false, false, halberAugust, 50, 68712, 329.45);
-		testWithParams(kind, true, false, false, ganzerSeptember, 50, 68712, 729.50);
+		testWithParams(kind, true, false, false, halberAugust, 50, 68712, 329.462);
+		testWithParams(kind, true, false, false, ganzerSeptember, 50, 68712, 729.524);
 	}
 
 	private void testWithParams(
@@ -136,9 +137,11 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		BGCalculationResult result = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 
 		assertThat(result, pojo(BGCalculationResult.class)
-			.withProperty("verguenstigung", equalTo(MathUtil.DEFAULT.from(expected)))
-			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
-			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale2())
+			.withProperty(
+				"verguenstigung",
+				BigDecimalCloseTo.closeTo(BigDecimal.valueOf(expected), BigDecimal.valueOf(0.0005)))
+			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.HOURS))
 		);
 	}

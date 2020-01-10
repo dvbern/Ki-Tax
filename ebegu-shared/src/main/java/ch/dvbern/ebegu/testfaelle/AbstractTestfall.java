@@ -439,10 +439,27 @@ public abstract class AbstractTestfall {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		finanzielleSituation.setSteuerveranlagungErhalten(true);
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
+
+		setFinSitDefaultValues(finanzielleSituation);
+
 		finanzielleSituationContainer.setJahr(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() - 1);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
 
 		return finanzielleSituationContainer;
+	}
+
+	/**
+	 * Schreibt in alle Felder der finanziellenSituation, die nicht Null sein dürfen, eine 0. Diese kann später in den
+	 * Testfällen überschrieben werden.
+	 */
+	private void setFinSitDefaultValues(@Nonnull FinanzielleSituation finanzielleSituation) {
+		finanzielleSituation.setFamilienzulage(BigDecimal.ZERO);
+		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
+		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
+		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
+
+		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
+		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}
 
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(
@@ -468,15 +485,31 @@ public abstract class AbstractTestfall {
 
 		if (erstesJahr) {
 			Einkommensverschlechterung ekv1 = new Einkommensverschlechterung();
+			setEinkommensverschlechterungDefaultValues(ekv1);
 			ekvContainer.setEkvJABasisJahrPlus1(ekv1);
 		}
 
 		if (zweitesJahr) {
 			Einkommensverschlechterung ekv2 = new Einkommensverschlechterung();
+			setEinkommensverschlechterungDefaultValues(ekv2);
 			ekvContainer.setEkvJABasisJahrPlus2(ekv2);
 		}
 
 		return ekvContainer;
+	}
+
+	/**
+	 * Schreibt in alle Felder der Einkommenverschlechterung, die nicht Null sein dürfen, eine 0. Diese kann später in
+	 * den Testfällen überschrieben werden.
+	 */
+	private void setEinkommensverschlechterungDefaultValues(@Nonnull Einkommensverschlechterung ekv) {
+		ekv.setFamilienzulage(BigDecimal.ZERO);
+		ekv.setErsatzeinkommen(BigDecimal.ZERO);
+		ekv.setErhalteneAlimente(BigDecimal.ZERO);
+		ekv.setGeleisteteAlimente(BigDecimal.ZERO);
+
+		ekv.setBruttovermoegen(BigDecimal.ZERO);
+		ekv.setSchulden(BigDecimal.ZERO);
 	}
 
 	protected void createEmptyEKVInfoContainer(@Nonnull Gesuch gesuch) {

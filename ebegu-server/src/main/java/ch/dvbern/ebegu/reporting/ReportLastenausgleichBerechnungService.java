@@ -34,8 +34,7 @@ public interface ReportLastenausgleichBerechnungService {
 
 	@Nonnull
 	UploadFileInfo generateCSVReportLastenausgleichKibon(
-		@Nonnull String lastenausgleichId,
-		@Nonnull Locale locale
+		@Nonnull String lastenausgleichId
 	);
 
 }

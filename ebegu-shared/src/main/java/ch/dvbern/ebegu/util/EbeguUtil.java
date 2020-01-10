@@ -267,7 +267,7 @@ public final class EbeguUtil {
 	}
 
 	/**
-	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * Will look for the language(s) of the given Gemeinde and return them as a list.
 	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */

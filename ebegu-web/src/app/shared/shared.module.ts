@@ -54,7 +54,7 @@ import {MaterialModule} from './material.module';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
-    return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
+    return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
 }
 
 @NgModule({

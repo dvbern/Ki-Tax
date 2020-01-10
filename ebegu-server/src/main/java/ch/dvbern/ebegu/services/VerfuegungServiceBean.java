@@ -443,7 +443,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(), true);
 	}
 
 	@Override
