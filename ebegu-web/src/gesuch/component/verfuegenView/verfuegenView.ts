@@ -636,4 +636,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
+
+    public formatBetreuungsZeit(betreuungsZeit: number): string {
+        if(betreuungsZeit < 10){
+            return '0' + betreuungsZeit;
+        }
+        return '' + betreuungsZeit;
+    }
 }
