@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAntragDTO from './TSAntragDTO';
+import {TSAntragDTO} from './TSAntragDTO';
 
-export default class TSAntragSearchresultDTO {
+export class TSAntragSearchresultDTO {
 
     private _antragDTOs: Array<TSAntragDTO>;
     private _totalResultSize: number;

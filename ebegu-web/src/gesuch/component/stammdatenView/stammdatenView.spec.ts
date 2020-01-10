@@ -15,17 +15,17 @@
 
 import {async} from '@angular/core/testing';
 import {IQService, IScope, ITimeoutService} from 'angular';
-import EwkRS from '../../../app/core/service/ewkRS.rest';
+import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import TSGesuchsteller from '../../../models/TSGesuchsteller';
-import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {IStammdatenStateParams} from '../../gesuch.route';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
 import {StammdatenViewController} from './stammdatenView';
 
 describe('stammdatenView', () => {

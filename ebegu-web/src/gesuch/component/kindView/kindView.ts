@@ -16,8 +16,8 @@
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
@@ -25,22 +25,22 @@ import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSEinstellung from '../../../models/TSEinstellung';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFachstelle} from '../../../models/TSFachstelle';
-import TSKind from '../../../models/TSKind';
-import TSKindContainer from '../../../models/TSKindContainer';
+import {TSKind} from '../../../models/TSKind';
+import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IKindStateParams} from '../../gesuch.route';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import GlobalCacheService from '../../service/globalCacheService';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GlobalCacheService} from '../../service/globalCacheService';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -127,6 +127,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
+    }
+
+    public $postLink (): void {
+        // Bei einer neuen Periode werden gewisse Kinderdaten nicht kopiert. In diesem Fall sollen diese
+        // bereits rot angezeigt werden.
+        if (!this.model.kindJA.isNew() && !this.model.kindJA.isGeprueft()) {
+            this.form.$setSubmitted();
+        }
     }
 
     public getTextSprichtAmtssprache(): string {
@@ -305,6 +313,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return undefined;
     }
 
+    public showAusAsylwesen(): boolean {
+        // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat
+        return this.getModel().familienErgaenzendeBetreuung;
+    }
+
+    public showZemisNummer(): boolean {
+        return this.showAusAsylwesen() && this.getModel().ausAsylwesen;
+    }
+
     public isAusserordentlicherAnspruchRequired(): boolean {
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
@@ -352,14 +369,20 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public hasAngebotBGOnly(): boolean {
-        return this.getGesuch().dossier.gemeinde.angebotBG && !this.getGesuch().dossier.gemeinde.angebotTS;
+        return this.getGesuch().dossier
+            && this.getGesuch().dossier.gemeinde.angebotBG
+            && !this.getGesuch().dossier.gemeinde.angebotTS;
     }
 
     public hasAngebotTSOnly(): boolean {
-        return this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.angebotBG;
+        return this.getGesuch().dossier
+            && this.getGesuch().dossier.gemeinde.angebotTS
+            && !this.getGesuch().dossier.gemeinde.angebotBG;
     }
 
     public hasAngebotBGAndTS(): boolean {
-        return this.getGesuch().dossier.gemeinde.angebotTS && this.getGesuch().dossier.gemeinde.angebotBG;
+        return this.getGesuch().dossier
+            && this.getGesuch().dossier.gemeinde.angebotTS
+            && this.getGesuch().dossier.gemeinde.angebotBG;
     }
 }

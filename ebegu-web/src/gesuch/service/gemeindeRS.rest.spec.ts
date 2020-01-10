@@ -19,10 +19,10 @@ import {IHttpBackendService} from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSGemeinde from '../../models/TSGemeinde';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
-import GemeindeRS from './gemeindeRS.rest';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSGemeinde} from '../../models/TSGemeinde';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
+import {GemeindeRS} from './gemeindeRS.rest';
 
 describe('GemeindeRS', () => {
 

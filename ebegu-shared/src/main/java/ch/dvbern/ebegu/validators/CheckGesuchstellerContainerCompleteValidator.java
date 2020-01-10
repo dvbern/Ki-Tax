@@ -44,7 +44,7 @@ public class CheckGesuchstellerContainerCompleteValidator implements
 			valid = false;
 		}
 		// The check if the finanzielleSitutionContaier is empty can not be done here any more since it can now be empty for a given set of Angebote
-		// it should be checked that FinSit is not empty according to the values of sozialhilfe and antragNurFuerBehinderungszuschlag
+		// it should be checked that FinSit is not empty according to the values of sozialhilfe and verguenstigungGewuenscht
 		// but this cannot be checked here since we have no access to the Gesuch
 		return valid;
 	}

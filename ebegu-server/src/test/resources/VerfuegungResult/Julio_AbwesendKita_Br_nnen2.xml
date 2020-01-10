@@ -8,7 +8,7 @@
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).
 Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsangebote besucht, verbleiben noch 20%.</bemerkungen>
-        <betreuungspensum>0</betreuungspensum>
+        <betreuungspensumProzent>0</betreuungspensumProzent>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.08.2017</gueltigAb>
@@ -20,7 +20,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).
 Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsangebote besucht, verbleiben noch 20%.</bemerkungen>
-        <betreuungspensum>0</betreuungspensum>
+        <betreuungspensumProzent>0</betreuungspensumProzent>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.09.2017</gueltigAb>
@@ -32,7 +32,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).
 Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsangebote besucht, verbleiben noch 20%.</bemerkungen>
-        <betreuungspensum>0</betreuungspensum>
+        <betreuungspensumProzent>0</betreuungspensumProzent>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.10.2017</gueltigAb>
@@ -44,7 +44,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).
 Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsangebote besucht, verbleiben noch 20%.</bemerkungen>
-        <betreuungspensum>0</betreuungspensum>
+        <betreuungspensumProzent>0</betreuungspensumProzent>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.11.2017</gueltigAb>
@@ -56,7 +56,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).
 Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsangebote besucht, verbleiben noch 20%.</bemerkungen>
-        <betreuungspensum>0</betreuungspensum>
+        <betreuungspensumProzent>0</betreuungspensumProzent>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.12.2017</gueltigAb>
@@ -68,7 +68,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).
 Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsangebote besucht, verbleiben noch 20%.</bemerkungen>
-        <betreuungspensum>0</betreuungspensum>
+        <betreuungspensumProzent>0</betreuungspensumProzent>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.01.2018</gueltigAb>
@@ -79,7 +79,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <abzugFamGroesse>0.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>40.00</betreuungspensum>
+        <betreuungspensumProzent>40.00</betreuungspensumProzent>
         <elternbeitrag>1274.35</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.02.2018</gueltigAb>
@@ -90,7 +90,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <abzugFamGroesse>0.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>40.00</betreuungspensum>
+        <betreuungspensumProzent>40.00</betreuungspensumProzent>
         <elternbeitrag>1274.35</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.03.2018</gueltigAb>
@@ -101,7 +101,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <abzugFamGroesse>0.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>40.00</betreuungspensum>
+        <betreuungspensumProzent>40.00</betreuungspensumProzent>
         <elternbeitrag>1274.35</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.04.2018</gueltigAb>
@@ -112,7 +112,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <abzugFamGroesse>0.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>40.00</betreuungspensum>
+        <betreuungspensumProzent>40.00</betreuungspensumProzent>
         <elternbeitrag>1274.35</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.05.2018</gueltigAb>
@@ -123,7 +123,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <abzugFamGroesse>0.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>40.00</betreuungspensum>
+        <betreuungspensumProzent>40.00</betreuungspensumProzent>
         <elternbeitrag>1274.35</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.06.2018</gueltigAb>
@@ -134,7 +134,7 @@ Ihr anspruchsberechtigtes Pensum beträgt 100%. Da das Kind weitere Betreuungsan
         <abzugFamGroesse>0.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
         <bemerkungen>Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 34d ASIV).</bemerkungen>
-        <betreuungspensum>40.00</betreuungspensum>
+        <betreuungspensumProzent>40.00</betreuungspensumProzent>
         <elternbeitrag>1274.35</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.07.2018</gueltigAb>

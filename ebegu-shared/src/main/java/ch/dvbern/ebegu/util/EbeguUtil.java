@@ -175,13 +175,12 @@ public final class EbeguUtil {
 	}
 
 	/**
-	 * finanzielle situation ist by default nicht zwingend, ausser es ist getSozialhilfeBezueger=false und
-	 * getAntragNurFuerBehinderungszuschlag=false
+	 * finanzielle situation ist by default nicht zwingend
 	 */
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAntragNurFuerBehinderungszuschlag());
+			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
@@ -268,7 +267,7 @@ public final class EbeguUtil {
 	}
 
 	/**
-	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * Will look for the language(s) of the given Gemeinde and return them as a list.
 	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */

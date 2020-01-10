@@ -16,8 +16,8 @@
 import {IHttpResponse} from 'angular';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
-import TSExceptionReport from '../../../../models/TSExceptionReport';
-import ErrorService from './ErrorService';
+import {TSExceptionReport} from '../../../../models/TSExceptionReport';
+import {ErrorService} from './ErrorService';
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
 import IQService = angular.IQService;
@@ -33,7 +33,7 @@ export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
                 .includes('emaillogin/gui/registration/createmaillogin'));
 }
 
-export default class HttpErrorInterceptor implements IHttpInterceptor {
+export class HttpErrorInterceptor implements IHttpInterceptor {
 
     public static $inject = ['$q', 'ErrorService', '$log'];
 

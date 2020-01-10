@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSAbwesenheit from './TSAbwesenheit';
+import {TSAbwesenheit} from './TSAbwesenheit';
 
-export default class TSAbwesenheitContainer extends TSAbstractMutableEntity {
+export class TSAbwesenheitContainer extends TSAbstractMutableEntity {
 
     private _abwesenheitGS: TSAbwesenheit;
     private _abwesenheitJA: TSAbwesenheit;

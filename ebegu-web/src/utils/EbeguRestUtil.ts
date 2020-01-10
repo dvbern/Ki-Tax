@@ -14,121 +14,122 @@
  */
 
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
-import TSDokumenteDTO from '../models/dto/TSDokumenteDTO';
-import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSituationResultateDTO';
-import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
-import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
+import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
+import {TSFinanzielleSituationResultateDTO} from '../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
+import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
-import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
+import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
-import TSAbstractEntity from '../models/TSAbstractEntity';
-import TSAbstractFinanzielleSituation from '../models/TSAbstractFinanzielleSituation';
+import {TSAbstractEntity} from '../models/TSAbstractEntity';
+import {TSAbstractFinanzielleSituation} from '../models/TSAbstractFinanzielleSituation';
 import {TSAbstractIntegerPensumEntity} from '../models/TSAbstractIntegerPensumEntity';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
-import TSAbstractPersonEntity from '../models/TSAbstractPersonEntity';
-import TSAbwesenheit from '../models/TSAbwesenheit';
-import TSAbwesenheitContainer from '../models/TSAbwesenheitContainer';
-import TSAdresse from '../models/TSAdresse';
-import TSAdresseContainer from '../models/TSAdresseContainer';
-import TSAnmeldungDTO from '../models/TSAnmeldungDTO';
-import TSAntragDTO from '../models/TSAntragDTO';
-import TSAntragStatusHistory from '../models/TSAntragStatusHistory';
-import TSApplicationProperty from '../models/TSApplicationProperty';
-import TSBatchJobInformation from '../models/TSBatchJobInformation';
-import TSBelegungFerieninsel from '../models/TSBelegungFerieninsel';
-import TSBelegungFerieninselTag from '../models/TSBelegungFerieninselTag';
-import TSBelegungTagesschule from '../models/TSBelegungTagesschule';
-import TSBelegungTagesschuleModul from '../models/TSBelegungTagesschuleModul';
-import TSBenutzer from '../models/TSBenutzer';
-import TSBerechtigung from '../models/TSBerechtigung';
-import TSBerechtigungHistory from '../models/TSBerechtigungHistory';
-import TSBetreuung from '../models/TSBetreuung';
-import TSBetreuungsmitteilung from '../models/TSBetreuungsmitteilung';
-import TSBetreuungsmitteilungPensum from '../models/TSBetreuungsmitteilungPensum';
-import TSBetreuungspensum from '../models/TSBetreuungspensum';
-import TSBetreuungspensumAbweichung from '../models/TSBetreuungspensumAbweichung';
-import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
-import TSBfsGemeinde from '../models/TSBfsGemeinde';
-import TSDokument from '../models/TSDokument';
-import TSDokumentGrund from '../models/TSDokumentGrund';
-import TSDossier from '../models/TSDossier';
-import TSDownloadFile from '../models/TSDownloadFile';
-import TSEbeguVorlage from '../models/TSEbeguVorlage';
-import TSEinkommensverschlechterung from '../models/TSEinkommensverschlechterung';
-import TSEinkommensverschlechterungContainer from '../models/TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterungInfo from '../models/TSEinkommensverschlechterungInfo';
-import TSEinkommensverschlechterungInfoContainer from '../models/TSEinkommensverschlechterungInfoContainer';
-import TSEinstellung from '../models/TSEinstellung';
-import TSEinstellungenTagesschule from '../models/TSEinstellungenTagesschule';
-import TSErweiterteBetreuung from '../models/TSErweiterteBetreuung';
-import TSErweiterteBetreuungContainer from '../models/TSErweiterteBetreuungContainer';
-import TSErwerbspensum from '../models/TSErwerbspensum';
-import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
-import TSEWKAdresse from '../models/TSEWKAdresse';
-import TSEWKBeziehung from '../models/TSEWKBeziehung';
-import TSEWKEinwohnercode from '../models/TSEWKEinwohnercode';
-import TSEWKPerson from '../models/TSEWKPerson';
-import TSEWKResultat from '../models/TSEWKResultat';
-import TSExternalClient from '../models/TSExternalClient';
-import TSExternalClientAssignment from '../models/TSExternalClientAssignment';
+import {TSAbstractPersonEntity} from '../models/TSAbstractPersonEntity';
+import {TSAbwesenheit} from '../models/TSAbwesenheit';
+import {TSAbwesenheitContainer} from '../models/TSAbwesenheitContainer';
+import {TSAdresse} from '../models/TSAdresse';
+import {TSAdresseContainer} from '../models/TSAdresseContainer';
+import {TSAnmeldungDTO} from '../models/TSAnmeldungDTO';
+import {TSAnmeldungTagesschuleZeitabschnitt} from '../models/TSAnmeldungTagesschuleZeitabschnitt';
+import {TSAntragDTO} from '../models/TSAntragDTO';
+import {TSAntragStatusHistory} from '../models/TSAntragStatusHistory';
+import {TSApplicationProperty} from '../models/TSApplicationProperty';
+import {TSBatchJobInformation} from '../models/TSBatchJobInformation';
+import {TSBelegungFerieninsel} from '../models/TSBelegungFerieninsel';
+import {TSBelegungFerieninselTag} from '../models/TSBelegungFerieninselTag';
+import {TSBelegungTagesschule} from '../models/TSBelegungTagesschule';
+import {TSBelegungTagesschuleModul} from '../models/TSBelegungTagesschuleModul';
+import {TSBenutzer} from '../models/TSBenutzer';
+import {TSBerechtigung} from '../models/TSBerechtigung';
+import {TSBerechtigungHistory} from '../models/TSBerechtigungHistory';
+import {TSBetreuung} from '../models/TSBetreuung';
+import {TSBetreuungsmitteilung} from '../models/TSBetreuungsmitteilung';
+import {TSBetreuungsmitteilungPensum} from '../models/TSBetreuungsmitteilungPensum';
+import {TSBetreuungspensum} from '../models/TSBetreuungspensum';
+import {TSBetreuungspensumAbweichung} from '../models/TSBetreuungspensumAbweichung';
+import {TSBetreuungspensumContainer} from '../models/TSBetreuungspensumContainer';
+import {TSBfsGemeinde} from '../models/TSBfsGemeinde';
+import {TSDokument} from '../models/TSDokument';
+import {TSDokumentGrund} from '../models/TSDokumentGrund';
+import {TSDossier} from '../models/TSDossier';
+import {TSDownloadFile} from '../models/TSDownloadFile';
+import {TSEbeguVorlage} from '../models/TSEbeguVorlage';
+import {TSEinkommensverschlechterung} from '../models/TSEinkommensverschlechterung';
+import {TSEinkommensverschlechterungContainer} from '../models/TSEinkommensverschlechterungContainer';
+import {TSEinkommensverschlechterungInfo} from '../models/TSEinkommensverschlechterungInfo';
+import {TSEinkommensverschlechterungInfoContainer} from '../models/TSEinkommensverschlechterungInfoContainer';
+import {TSEinstellung} from '../models/TSEinstellung';
+import {TSEinstellungenTagesschule} from '../models/TSEinstellungenTagesschule';
+import {TSErweiterteBetreuung} from '../models/TSErweiterteBetreuung';
+import {TSErweiterteBetreuungContainer} from '../models/TSErweiterteBetreuungContainer';
+import {TSErwerbspensum} from '../models/TSErwerbspensum';
+import {TSErwerbspensumContainer} from '../models/TSErwerbspensumContainer';
+import {TSEWKAdresse} from '../models/TSEWKAdresse';
+import {TSEWKBeziehung} from '../models/TSEWKBeziehung';
+import {TSEWKEinwohnercode} from '../models/TSEWKEinwohnercode';
+import {TSEWKPerson} from '../models/TSEWKPerson';
+import {TSEWKResultat} from '../models/TSEWKResultat';
+import {TSExternalClient} from '../models/TSExternalClient';
+import {TSExternalClientAssignment} from '../models/TSExternalClientAssignment';
 import {TSFachstelle} from '../models/TSFachstelle';
-import TSFall from '../models/TSFall';
-import TSFallAntragDTO from '../models/TSFallAntragDTO';
-import TSFamiliensituation from '../models/TSFamiliensituation';
-import TSFamiliensituationContainer from '../models/TSFamiliensituationContainer';
-import TSFerieninselStammdaten from '../models/TSFerieninselStammdaten';
-import TSFerieninselZeitraum from '../models/TSFerieninselZeitraum';
-import TSFile from '../models/TSFile';
-import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
-import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
-import TSFinanzModel from '../models/TSFinanzModel';
-import TSGemeinde from '../models/TSGemeinde';
-import TSGemeindeKonfiguration from '../models/TSGemeindeKonfiguration';
-import TSGemeindeRegistrierung from '../models/TSGemeindeRegistrierung';
-import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
-import TSGesuch from '../models/TSGesuch';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
-import TSGesuchsteller from '../models/TSGesuchsteller';
-import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
-import TSInstitution from '../models/TSInstitution';
-import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
-import TSInstitutionStammdatenBetreuungsgutscheine from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
-import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
-import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
-import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
-import TSInstitutionUpdate from '../models/TSInstitutionUpdate';
-import TSKind from '../models/TSKind';
-import TSKindContainer from '../models/TSKindContainer';
-import TSKindDublette from '../models/TSKindDublette';
-import TSLastenausgleich from '../models/TSLastenausgleich';
-import TSMahnung from '../models/TSMahnung';
+import {TSFall} from '../models/TSFall';
+import {TSFallAntragDTO} from '../models/TSFallAntragDTO';
+import {TSFamiliensituation} from '../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../models/TSFamiliensituationContainer';
+import {TSFerieninselStammdaten} from '../models/TSFerieninselStammdaten';
+import {TSFerieninselZeitraum} from '../models/TSFerieninselZeitraum';
+import {TSFile} from '../models/TSFile';
+import {TSFinanzielleSituation} from '../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../models/TSFinanzModel';
+import {TSGemeinde} from '../models/TSGemeinde';
+import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
+import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
+import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGesuch} from '../models/TSGesuch';
+import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
+import {TSGesuchsteller} from '../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
+import {TSInstitution} from '../models/TSInstitution';
+import {TSInstitutionStammdaten} from '../models/TSInstitutionStammdaten';
+import {TSInstitutionStammdatenBetreuungsgutscheine} from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
+import {TSInstitutionStammdatenFerieninsel} from '../models/TSInstitutionStammdatenFerieninsel';
+import {TSInstitutionStammdatenSummary} from '../models/TSInstitutionStammdatenSummary';
+import {TSInstitutionStammdatenTagesschule} from '../models/TSInstitutionStammdatenTagesschule';
+import {TSInstitutionUpdate} from '../models/TSInstitutionUpdate';
+import {TSKind} from '../models/TSKind';
+import {TSKindContainer} from '../models/TSKindContainer';
+import {TSKindDublette} from '../models/TSKindDublette';
+import {TSMahnung} from '../models/TSMahnung';
+import {TSLastenausgleich} from '../models/TSLastenausgleich';
 import {TSMandant} from '../models/TSMandant';
-import TSMitteilung from '../models/TSMitteilung';
-import TSModulTagesschule from '../models/TSModulTagesschule';
-import TSModulTagesschuleGroup from '../models/TSModulTagesschuleGroup';
-import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
+import {TSMitteilung} from '../models/TSMitteilung';
+import {TSModulTagesschule} from '../models/TSModulTagesschule';
+import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
+import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
-import TSPublicAppConfig from '../models/TSPublicAppConfig';
-import TSSupportAnfrage from '../models/TSSupportAnfrage';
-import TSTextRessource from '../models/TSTextRessource';
+import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
+import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
-import TSUnbezahlterUrlaub from '../models/TSUnbezahlterUrlaub';
-import TSVerfuegung from '../models/TSVerfuegung';
-import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
-import TSVorlage from '../models/TSVorlage';
-import TSWizardStep from '../models/TSWizardStep';
-import TSWorkJob from '../models/TSWorkJob';
-import TSZahlung from '../models/TSZahlung';
-import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
+import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
+import {TSVerfuegung} from '../models/TSVerfuegung';
+import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
+import {TSVorlage} from '../models/TSVorlage';
+import {TSWizardStep} from '../models/TSWizardStep';
+import {TSWorkJob} from '../models/TSWorkJob';
+import {TSZahlung} from '../models/TSZahlung';
+import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
-import TSLand from '../models/types/TSLand';
-import DateUtil from './DateUtil';
+import {TSLand} from '../models/types/TSLand';
+import {DateUtil} from './DateUtil';
 
-export default class EbeguRestUtil {
+export class EbeguRestUtil {
 
     public constructor() {
     }
@@ -552,10 +553,8 @@ export default class EbeguRestUtil {
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
-            restFamiliensituation.antragNurFuerBehinderungszuschlag =
-                familiensituation.antragNurFuerBehinderungszuschlag;
-            restFamiliensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
-                familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            restFamiliensituation.verguenstigungGewuenscht =
+                familiensituation.verguenstigungGewuenscht;
             return restFamiliensituation;
         }
         return undefined;
@@ -615,10 +614,8 @@ export default class EbeguRestUtil {
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
-            familiensituation.antragNurFuerBehinderungszuschlag =
-                familiensituationFromServer.antragNurFuerBehinderungszuschlag;
-            familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
-                familiensituationFromServer.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            familiensituation.verguenstigungGewuenscht =
+                familiensituationFromServer.verguenstigungGewuenscht;
             return familiensituation;
         }
         return undefined;
@@ -922,6 +919,7 @@ export default class EbeguRestUtil {
         if (konfigurationFromServer) {
             konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeStatusName = konfigurationFromServer.gesuchsperiodeStatusName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
@@ -1608,6 +1606,8 @@ export default class EbeguRestUtil {
         restKind.kinderabzugErstesHalbjahr = kind.kinderabzugErstesHalbjahr;
         restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
+        restKind.ausAsylwesen = kind.ausAsylwesen;
+        restKind.zemisNummer = kind.zemisNummer;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -1669,6 +1669,8 @@ export default class EbeguRestUtil {
             kindTS.kinderabzugErstesHalbjahr = kindFromServer.kinderabzugErstesHalbjahr;
             kindTS.kinderabzugZweitesHalbjahr = kindFromServer.kinderabzugZweitesHalbjahr;
             kindTS.sprichtAmtssprache = kindFromServer.sprichtAmtssprache;
+            kindTS.ausAsylwesen = kindFromServer.ausAsylwesen;
+            kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             if (kindFromServer.pensumFachstelle) {
@@ -1936,6 +1938,7 @@ export default class EbeguRestUtil {
             betreuungTS.bgNummer = betreuungFromServer.bgNummer;
             betreuungTS.betreuungspensumAbweichungen =
                 this.parseBetreuungspensumAbweichungen(betreuungFromServer.betreuungspensumAbweichungen);
+            betreuungTS.anmeldungTagesschuleZeitabschnitts = this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             return betreuungTS;
         }
         return undefined;
@@ -2567,8 +2570,8 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.anspruchsberechtigteAnzahlZeiteinheiten = zeitabschnittFromServer.anspruchsberechtigteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.anspruchspensumRest = zeitabschnittFromServer.anspruchspensumRest;
             verfuegungZeitabschnittTS.bemerkungen = zeitabschnittFromServer.bemerkungen;
-            verfuegungZeitabschnittTS.betreuungspensum = zeitabschnittFromServer.betreuungspensum;
-            verfuegungZeitabschnittTS.betreuungsstunden = zeitabschnittFromServer.betreuungsstunden;
+            verfuegungZeitabschnittTS.betreuungspensumProzent = zeitabschnittFromServer.betreuungspensumProzent;
+            verfuegungZeitabschnittTS.betreuungspensumZeiteinheit = zeitabschnittFromServer.betreuungspensumZeiteinheit;
             verfuegungZeitabschnittTS.bgPensum = zeitabschnittFromServer.bgPensum;
             verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
             verfuegungZeitabschnittTS.elternbeitrag = zeitabschnittFromServer.elternbeitrag;
@@ -2591,7 +2594,6 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
-
             return verfuegungZeitabschnittTS;
         }
         return undefined;
@@ -3555,6 +3557,15 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public parseLastenausgleichList(data: any): TSLastenausgleich[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseLastenausgleich(new TSLastenausgleich(), item))
+            : [];
+    }
+
     public parseLastenausgleich(
         tsLastenausgleich: TSLastenausgleich,
         receivedLastenausgleich: any,
@@ -3563,5 +3574,33 @@ export default class EbeguRestUtil {
         tsLastenausgleich.jahr = receivedLastenausgleich.jahr;
         tsLastenausgleich.totalAlleGemeinden = receivedLastenausgleich.totalAlleGemeinden;
         return tsLastenausgleich;
+    }
+
+    public parseAnmeldungTagesschuleZeitabschnitts(data: Array<any>): TSAnmeldungTagesschuleZeitabschnitt[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(
+                item => this.parseAnmeldungTagesschuleZeitabschnitt(new TSAnmeldungTagesschuleZeitabschnitt(), item))
+            : [this.parseAnmeldungTagesschuleZeitabschnitt(new TSAnmeldungTagesschuleZeitabschnitt(), data)];
+    }
+
+    public parseAnmeldungTagesschuleZeitabschnitt(
+        anmeldungTagesschuleZeitabschnittTS: TSAnmeldungTagesschuleZeitabschnitt,
+        anmeldungTagesschuleZeitabschnittFromServer: any,
+    ): TSAnmeldungTagesschuleZeitabschnitt {
+        if (anmeldungTagesschuleZeitabschnittFromServer) {
+            this.parseDateRangeEntity(anmeldungTagesschuleZeitabschnittTS, anmeldungTagesschuleZeitabschnittFromServer);
+            anmeldungTagesschuleZeitabschnittTS.betreuungsminutenProWoche = anmeldungTagesschuleZeitabschnittFromServer.betreuungsminutenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.betreuungsstundenProWoche = anmeldungTagesschuleZeitabschnittFromServer.betreuungsstundenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.gebuehrProStunde = anmeldungTagesschuleZeitabschnittFromServer.gebuehrProStunde;
+            anmeldungTagesschuleZeitabschnittTS.massgebendesEinkommenInklAbzugFamgr = anmeldungTagesschuleZeitabschnittFromServer.massgebendesEinkommenInklAbzugFamgr;
+            anmeldungTagesschuleZeitabschnittTS.pedagogischBetreut = anmeldungTagesschuleZeitabschnittFromServer.pedagogischBetreut;
+            anmeldungTagesschuleZeitabschnittTS.totalKostenProWoche = anmeldungTagesschuleZeitabschnittFromServer.totalKostenProWoche;
+            anmeldungTagesschuleZeitabschnittTS.verpflegungskosten = anmeldungTagesschuleZeitabschnittFromServer.verpflegungskosten;
+            return anmeldungTagesschuleZeitabschnittTS;
+        }
+        return undefined;
     }
 }

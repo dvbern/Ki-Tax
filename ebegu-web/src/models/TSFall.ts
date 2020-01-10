@@ -14,9 +14,9 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBenutzer from './TSBenutzer';
+import {TSBenutzer} from './TSBenutzer';
 
-export default class TSFall extends TSAbstractMutableEntity {
+export class TSFall extends TSAbstractMutableEntity {
 
     private _fallNummer: number;
     private _nextNumberKind: number;

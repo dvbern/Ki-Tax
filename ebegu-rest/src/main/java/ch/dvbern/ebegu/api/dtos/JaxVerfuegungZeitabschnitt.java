@@ -51,7 +51,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	@Min(0)
 	@NotNull
-	private BigDecimal betreuungspensum;
+	private BigDecimal betreuungspensumProzent;
 
 	@Max(100)
 	@Min(0)
@@ -85,7 +85,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private PensumUnits zeiteinheit = null;
 
-	private BigDecimal betreuungsstunden;
+	private BigDecimal betreuungspensumZeiteinheit;
 
 	private BigDecimal vollkosten = BigDecimal.ZERO;
 
@@ -136,12 +136,12 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
 	}
 
-	public BigDecimal getBetreuungspensum() {
-		return betreuungspensum;
+	public BigDecimal getBetreuungspensumProzent() {
+		return betreuungspensumProzent;
 	}
 
-	public void setBetreuungspensum(BigDecimal betreuungspensum) {
-		this.betreuungspensum = betreuungspensum;
+	public void setBetreuungspensumProzent(BigDecimal betreuungspensumProzent) {
+		this.betreuungspensumProzent = betreuungspensumProzent;
 	}
 
 	public int getFachstellenpensum() {
@@ -228,12 +228,12 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.zeiteinheit = zeiteinheit;
 	}
 
-	public BigDecimal getBetreuungsstunden() {
-		return betreuungsstunden;
+	public BigDecimal getBetreuungspensumZeiteinheit() {
+		return betreuungspensumZeiteinheit;
 	}
 
-	public void setBetreuungsstunden(BigDecimal betreuungsstunden) {
-		this.betreuungsstunden = betreuungsstunden;
+	public void setBetreuungspensumZeiteinheit(BigDecimal betreuungspensumZeiteinheit) {
+		this.betreuungspensumZeiteinheit = betreuungspensumZeiteinheit;
 	}
 
 	public BigDecimal getVollkosten() {

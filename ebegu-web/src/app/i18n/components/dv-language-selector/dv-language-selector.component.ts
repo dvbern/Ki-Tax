@@ -16,7 +16,7 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSBrowserLanguage} from '../../../../models/enums/TSBrowserLanguage';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {I18nServiceRSRest} from '../../services/i18nServiceRS.rest';

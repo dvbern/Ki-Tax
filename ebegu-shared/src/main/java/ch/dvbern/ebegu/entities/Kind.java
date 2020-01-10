@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.Pattern;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -50,13 +52,13 @@ public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
 
-	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = true)
+	@Nullable
 	@Enumerated(EnumType.STRING)
 	private Kinderabzug kinderabzugErstesHalbjahr;
 
-	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = true)
+	@Nullable
 	@Enumerated(EnumType.STRING)
 	private Kinderabzug kinderabzugZweitesHalbjahr;
 
@@ -85,6 +87,14 @@ public class Kind extends AbstractPersonEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_pensum_ausserordentlicheranspruch_id"), nullable = true)
 	private PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
 
+	@Column(nullable = true)
+	@Nullable
+	private Boolean ausAsylwesen;
+
+	@Column(nullable = true)
+	@Nullable
+	@Pattern(regexp = Constants.REGEX_ZEMIS, message = "{validator.constraints.zemis.message}")
+	private String zemisNummer;
 
 	public Kind() {
 	}
@@ -151,28 +161,52 @@ public class Kind extends AbstractPersonEntity {
 		this.pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
 	}
 
+	@Nullable
+	public Boolean getAusAsylwesen() {
+		return ausAsylwesen;
+	}
+
+	public void setAusAsylwesen(@Nullable Boolean ausAsylwesen) {
+		this.ausAsylwesen = ausAsylwesen;
+	}
+
+	@Nullable
+	public String getZemisNummer() {
+		return zemisNummer;
+	}
+
+	public void setZemisNummer(@Nullable String zemisNummer) {
+		this.zemisNummer = zemisNummer;
+	}
+
 	@Nonnull
 	public Kind copyKind(
 		@Nonnull Kind target,
 		@Nonnull AntragCopyType copyType,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		super.copyAbstractPersonEntity(target, copyType);
-		target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
-		target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		target.setSprichtAmtssprache(this.getSprichtAmtssprache());
+		target.setAusAsylwesen(this.getAusAsylwesen());
+		target.setZemisNummer(this.getZemisNummer());
 
 		switch (copyType) {
 		case MUTATION:
 			target.setEinschulungTyp(this.getEinschulungTyp());
+			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
+			target.setEinschulungTyp(this.getEinschulungTyp());
+			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
+			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
-			target.setEinschulungTyp(this.getEinschulungTyp());
-			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
 			break;
 		}
@@ -243,5 +277,9 @@ public class Kind extends AbstractPersonEntity {
 			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
 			EbeguUtil.isSameObject(getPensumAusserordentlicherAnspruch(),
 				otherKind.getPensumAusserordentlicherAnspruch());
+	}
+
+	public boolean isGeprueft() {
+		return kinderabzugErstesHalbjahr != null;
 	}
 }

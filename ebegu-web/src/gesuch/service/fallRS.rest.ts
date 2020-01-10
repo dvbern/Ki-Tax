@@ -14,10 +14,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import TSFall from '../../models/TSFall';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import {TSFall} from '../../models/TSFall';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export default class FallRS {
+export class FallRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
     public serviceURL: string;

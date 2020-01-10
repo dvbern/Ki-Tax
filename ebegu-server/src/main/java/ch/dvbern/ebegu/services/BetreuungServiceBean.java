@@ -150,6 +150,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private InstitutionStammdatenService institutionStammdatenService;
 	@Inject
 	private PrincipalBean principalBean;
+	@Inject
+	private TagesschuleZeitabschnittService tagesschuleZeitabschnittService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -378,11 +380,35 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
-		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
-		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
+		Objects.requireNonNull(betreuung.getOwningGesuchId());
+		AbstractAnmeldung persistedAnmeldung =
+			tagesschuleZeitabschnittService.generateAndPersistZeitabschnitte(betreuung.getOwningGesuchId(),
+			betreuung.getId());
+		persistedAnmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		AbstractAnmeldung persistedBetreuung = savePlatz(persistedAnmeldung);
+
 		try {
 			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungUebernommen(persistedBetreuung);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
+				betreuung.getId());
+		}
+		return persistedBetreuung;
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung betreuung) {
+		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
+		try {
+			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
+			mailService.sendInfoSchulamtAnmeldungAkzeptiert(persistedBetreuung);
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e,
 				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",

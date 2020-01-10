@@ -35,7 +35,7 @@ export class RouterHelper {
     }
 }
 
-export default class RouterHelperProvider implements IServiceProvider {
+export class RouterHelperProvider implements IServiceProvider {
     public static $inject = ['$locationProvider', '$stateProvider', '$uiRouterProvider'];
 
     private readonly routerHelper: RouterHelper;

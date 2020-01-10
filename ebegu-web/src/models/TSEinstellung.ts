@@ -19,7 +19,7 @@ import {TSEinstellungKey} from './enums/TSEinstellungKey';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSEinstellung extends TSAbstractDateRangedEntity {
+export class TSEinstellung extends TSAbstractDateRangedEntity {
 
     private _key: TSEinstellungKey;
     private _value: string;

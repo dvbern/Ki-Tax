@@ -18,11 +18,11 @@ import {TSAmt} from './enums/TSAmt';
 import {TSMitteilungStatus} from './enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBenutzer from './TSBenutzer';
-import TSBetreuung from './TSBetreuung';
-import TSDossier from './TSDossier';
+import {TSBenutzer} from './TSBenutzer';
+import {TSBetreuung} from './TSBetreuung';
+import {TSDossier} from './TSDossier';
 
-export default class TSMitteilung extends TSAbstractMutableEntity {
+export class TSMitteilung extends TSAbstractMutableEntity {
 
     private _dossier: TSDossier;
     private _betreuung: TSBetreuung;

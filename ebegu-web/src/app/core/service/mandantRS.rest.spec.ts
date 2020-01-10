@@ -16,8 +16,8 @@
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMandant} from '../../../models/TSMandant';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {MandantRS} from './mandantRS.rest';
 

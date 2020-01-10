@@ -15,20 +15,20 @@
 
 import {IComponentOptions, IPromise} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSFamiliensituation from '../../../models/TSFamiliensituation';
-import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import BerechnungsManager from '../../service/berechnungsManager';
-import FamiliensituationRS from '../../service/familiensituationRS.rest';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {FamiliensituationRS} from '../../service/familiensituationRS.rest';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -237,7 +237,6 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public hasEmptyAenderungPer(): boolean {
         return this.isMutation()
             && !this.getFamiliensituation().aenderungPer
-            && !this.isKorrekturModusJugendamt()
             && !this.getFamiliensituationErstgesuch().isSameFamiliensituation(this.getFamiliensituation());
     }
 
@@ -260,9 +259,4 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             this.resetFamsit();
         }
     }
-
-    public gesuchstellerHasChangedZivilstand(): boolean {
-        return this.getFamiliensituationGS() && !!this.getFamiliensituationGS().aenderungPer;
-    }
-
 }

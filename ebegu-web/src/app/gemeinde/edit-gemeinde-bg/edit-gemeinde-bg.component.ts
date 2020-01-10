@@ -24,9 +24,9 @@ import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../mode
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import TSBenutzer from '../../../models/TSBenutzer';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
-import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
+import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');

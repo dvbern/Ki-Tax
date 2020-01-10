@@ -14,12 +14,12 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBatchJobInformation from './TSBatchJobInformation';
+import {TSBatchJobInformation} from './TSBatchJobInformation';
 
 /**
  * DTO fuer einen WorkJob
  */
-export default class TSWorkJob extends TSAbstractMutableEntity {
+export class TSWorkJob extends TSAbstractMutableEntity {
 
     private _workJobType: string;
     private _startinguser: string;

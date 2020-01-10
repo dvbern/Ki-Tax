@@ -27,9 +27,9 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -60,22 +60,22 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal totalBelegungen = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
+	private BigDecimal totalAnrechenbar = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	private BigDecimal totalBetragGutscheine = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal selbstbehaltGemeinde = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	@Min(0)
 	private BigDecimal betragLastenausgleich = BigDecimal.ZERO;
 
 	@Column(nullable = false)
@@ -119,6 +119,15 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 
 	public void setTotalBelegungen(@Nonnull BigDecimal totalBelegungen) {
 		this.totalBelegungen = totalBelegungen;
+	}
+
+	@Nonnull
+	public BigDecimal getTotalAnrechenbar() {
+		return totalAnrechenbar;
+	}
+
+	public void setTotalAnrechenbar(@Nonnull BigDecimal totalAnrechenbar) {
+		this.totalAnrechenbar = totalAnrechenbar;
 	}
 
 	@Nonnull
@@ -185,9 +194,9 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("LastenausgleichDetail{");
-		sb.append("lastenausgleich=").append(lastenausgleich);
+		sb.append("lastenausgleich=").append(lastenausgleich.getJahr());
 		sb.append(", jahr=").append(jahr);
-		sb.append(", gemeinde=").append(gemeinde);
+		sb.append(", gemeinde=").append(gemeinde.getName());
 		sb.append(", totalBelegungen=").append(totalBelegungen);
 		sb.append(", totalBetragGutscheine=").append(totalBetragGutscheine);
 		sb.append(", selbstbehaltGemeinde=").append(selbstbehaltGemeinde);
@@ -195,5 +204,19 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		sb.append(", korrektur=").append(korrektur);
 		sb.append('}');
 		return sb.toString();
+	}
+
+	public void add(@Nonnull LastenausgleichDetail other) {
+		this.setGemeinde(other.getGemeinde());
+		this.setJahr(other.getJahr());
+		this.setLastenausgleich(other.getLastenausgleich());
+		this.setTotalBelegungen(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungen(), other.getTotalBelegungen()));
+		this.setTotalBetragGutscheine(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheine(), other.getTotalBetragGutscheine()));
+		this.setSelbstbehaltGemeinde(MathUtil.DEFAULT.addNullSafe(this.getSelbstbehaltGemeinde(), other.getSelbstbehaltGemeinde()));
+		this.setBetragLastenausgleich(MathUtil.DEFAULT.addNullSafe(this.getBetragLastenausgleich(), other.getBetragLastenausgleich()));
+	}
+
+	public boolean hasChanged(@Nonnull LastenausgleichDetail detail) {
+		return this.getBetragLastenausgleich().compareTo(detail.getBetragLastenausgleich()) != 0;
 	}
 }

@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Anmeldung entgegengenommen</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Anmeldung für ${betreuung.kind.kindJA.fullName} entgegengenommen</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -24,11 +24,7 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde entgegengenommen. Sie erhalten die
-		definitive Bestätigung der Anmeldung von der gewählten Institution. <br/>
-		Die Betreuungsangebote können
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>
-		eingesehen werden.
+		Wir bestätigen Ihnen Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} an der ${betreuung.institutionStammdaten.institution.name}. Die Module und der berechnete Tarif kann <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">hier</a> eingesehen werden.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

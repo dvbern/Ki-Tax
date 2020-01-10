@@ -26,10 +26,12 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.errors.MailException;
 
 /**
@@ -147,4 +149,16 @@ public interface MailService {
 	 * Sendet eine E-Mail an eine Institution mit der Info, dass es offene Pendenzen gibt
 	 */
 	void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten);
+
+	/**
+	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot ins Backend uebernommen
+	 * wurde
+	 */
+	void sendInfoSchulamtAnmeldungAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
+
+	/**
+	 * Sendet eine Email mit der Information, dass ein Angebot für eine Gemeinde aktiviert wurde
+	 */
+	void sendInfoGemeineAngebotAktiviert(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeAngebotTyp angebot);
+
 }

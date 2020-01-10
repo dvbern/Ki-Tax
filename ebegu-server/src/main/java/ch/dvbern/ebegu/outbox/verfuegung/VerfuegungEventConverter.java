@@ -167,7 +167,7 @@ public class VerfuegungEventConverter {
 			.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb())
 			.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis())
 			.setVerfuegungNr(zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer())
-			.setEffektiveBetreuungPct(ROUND.from(zeitabschnitt.getBetreuungspensum()))
+			.setEffektiveBetreuungPct(ROUND.from(zeitabschnitt.getBetreuungspensumProzent()))
 			.setAnspruchPct(zeitabschnitt.getAnspruchberechtigtesPensum())
 			.setVerguenstigtPct(ROUND.from(zeitabschnitt.getBgPensum()))
 			.setVollkosten(ROUND.from(zeitabschnitt.getVollkosten()))

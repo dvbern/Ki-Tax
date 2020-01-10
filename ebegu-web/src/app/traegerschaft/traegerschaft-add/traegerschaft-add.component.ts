@@ -18,12 +18,12 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/co
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
-import TSExceptionReport from '../../../models/TSExceptionReport';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
+import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({

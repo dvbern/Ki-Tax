@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
@@ -39,9 +39,9 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
-		PensumFachstelle pensumFachstelle = betreuung.getKind().getKindJA().getPensumFachstelle();
+		PensumFachstelle pensumFachstelle = platz.getKind().getKindJA().getPensumFachstelle();
 		if (pensumFachstelle != null) {
 			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensumFachstelle));
 		}

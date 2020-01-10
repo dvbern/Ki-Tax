@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -42,7 +43,11 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+		if (!platz.getBetreuungsangebotTyp().isJugendamt()) {
+			return new ArrayList<>();
+		}
+		Betreuung betreuung = (Betreuung) platz;
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
@@ -63,7 +68,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
-		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
+		zeitabschnitt.setBetreuungspensumProzent(betreuungspensum.getPensum());
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();

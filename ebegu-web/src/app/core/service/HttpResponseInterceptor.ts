@@ -19,7 +19,7 @@ import {TSHTTPEvent} from '../events/TSHTTPEvent';
 /**
  * this interceptor boradcasts a REQUEST_FINISHED event whenever a rest service responds
  */
-export default class HttpResponseInterceptor implements IHttpInterceptor {
+export class HttpResponseInterceptor implements IHttpInterceptor {
 
     public static $inject = ['$rootScope', '$q'];
 

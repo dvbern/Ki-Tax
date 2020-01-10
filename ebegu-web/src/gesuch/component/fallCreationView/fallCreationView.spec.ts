@@ -18,9 +18,9 @@ import {IQService, IScope} from 'angular';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {FallCreationViewController} from './fallCreationView';
 
 describe('fallCreationView', () => {

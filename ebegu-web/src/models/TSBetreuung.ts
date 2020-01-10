@@ -18,18 +18,18 @@ import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {isBetreuungsstatusTSAusgeloest, TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSAbwesenheitContainer from './TSAbwesenheitContainer';
-import TSBelegungFerieninsel from './TSBelegungFerieninsel';
-import TSBelegungTagesschule from './TSBelegungTagesschule';
-import TSBetreuungspensumAbweichung from './TSBetreuungspensumAbweichung';
-import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
-import TSErweiterteBetreuungContainer from './TSErweiterteBetreuungContainer';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
-import TSVerfuegung from './TSVerfuegung';
+import {TSAbwesenheitContainer} from './TSAbwesenheitContainer';
+import {TSAnmeldungTagesschuleZeitabschnitt} from './TSAnmeldungTagesschuleZeitabschnitt';
+import {TSBelegungFerieninsel} from './TSBelegungFerieninsel';
+import {TSBelegungTagesschule} from './TSBelegungTagesschule';
+import {TSBetreuungspensumAbweichung} from './TSBetreuungspensumAbweichung';
+import {TSBetreuungspensumContainer} from './TSBetreuungspensumContainer';
+import {TSErweiterteBetreuungContainer} from './TSErweiterteBetreuungContainer';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSInstitutionStammdatenSummary} from './TSInstitutionStammdatenSummary';
+import {TSVerfuegung} from './TSVerfuegung';
 
-export default class TSBetreuung extends TSAbstractMutableEntity {
-
+export class TSBetreuung extends TSAbstractMutableEntity {
     private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _betreuungsstatus: TSBetreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
     private _betreuungspensumContainers: Array<TSBetreuungspensumContainer> = [];
@@ -55,6 +55,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _anmeldungMutationZustand: TSAnmeldungMutationZustand;
     private _bgNummer: string;
     private _keineDetailinformationen: boolean = false;
+    private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> = [];
 
     public constructor() {
         super();
@@ -311,5 +312,13 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set bgNummer(value: string) {
         this._bgNummer = value;
+    }
+
+    public get anmeldungTagesschuleZeitabschnitts(): Array<TSAnmeldungTagesschuleZeitabschnitt> {
+        return this._anmeldungTagesschuleZeitabschnitts;
+    }
+
+    public set anmeldungTagesschuleZeitabschnitts(value: Array<TSAnmeldungTagesschuleZeitabschnitt>) {
+        this._anmeldungTagesschuleZeitabschnitts = value;
     }
 }

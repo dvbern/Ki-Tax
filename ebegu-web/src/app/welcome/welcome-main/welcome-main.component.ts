@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ITourParams} from '../../../gesuch/gesuch.route';
 import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
 import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';

@@ -13,13 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import TSBenutzer from '../../../../models/TSBenutzer';
-import TSDossier from '../../../../models/TSDossier';
-import TSGesuch from '../../../../models/TSGesuch';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSDossier} from '../../../../models/TSDossier';
+import {TSGesuch} from '../../../../models/TSGesuch';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
-import BenutzerRS from '../../service/benutzerRS.rest';
+import {BenutzerRS} from '../../service/benutzerRS.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;
 

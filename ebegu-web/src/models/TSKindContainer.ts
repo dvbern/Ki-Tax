@@ -14,12 +14,12 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSBetreuung from './TSBetreuung';
+import {TSBetreuung} from './TSBetreuung';
 import {TSFachstelle} from './TSFachstelle';
-import TSKind from './TSKind';
+import {TSKind} from './TSKind';
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
-export default class TSKindContainer extends TSAbstractMutableEntity {
+export class TSKindContainer extends TSAbstractMutableEntity {
 
     private _kindGS: TSKind;
     private _kindJA: TSKind;

@@ -15,14 +15,14 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {Observable, ReplaySubject} from 'rxjs';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
-import TSDossier from '../../../models/TSDossier';
-import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAntragStatusHistory} from '../../../models/TSAntragStatusHistory';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class AntragStatusHistoryRS {
+export class AntragStatusHistoryRS {
 
     public get lastChange$(): Observable<TSAntragStatusHistory | null> {
         return this._lastChange$;

@@ -14,13 +14,13 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
-import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSBetreuungspensumAbweichung from '../../../models/TSBetreuungspensumAbweichung';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSAnmeldungDTO} from '../../../models/TSAnmeldungDTO';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSBetreuungspensumAbweichung} from '../../../models/TSBetreuungspensumAbweichung';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class BetreuungRS {
+export class BetreuungRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
@@ -170,5 +170,15 @@ export default class BetreuungRS {
         const restAnmeldung = this.ebeguRestUtil.anmeldungDTOToRestObject({}, anmeldungDTO);
 
         return this.http.put(`${this.serviceURL}/anmeldung/create/`, restAnmeldung);
+    }
+
+    public anmeldungSchulamtModuleAkzeptiert(
+        betreuung: TSBetreuung,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
+
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        return this.http.put(`${this.serviceURL}/schulamt/akzeptieren`, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
     }
 }

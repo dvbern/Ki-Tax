@@ -17,9 +17,9 @@
 
 import {Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
-import TSSupportAnfrage from '../../models/TSSupportAnfrage';
-import EbeguUtil from '../../utils/EbeguUtil';
-import SupportRS from '../service/supportRS.rest';
+import {TSSupportAnfrage} from '../../models/TSSupportAnfrage';
+import {EbeguUtil} from '../../utils/EbeguUtil';
+import {SupportRS} from '../service/supportRS.rest';
 
 /**
  * This component shows a dialog to send a request of support
@@ -30,8 +30,8 @@ import SupportRS from '../service/supportRS.rest';
 })
 export class DvNgSupportDialogComponent {
 
-    private readonly beschreibung: string;
-    private readonly idLength = 20;
+    public beschreibung: string;
+    public readonly idLength = 20;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSupportDialogComponent>,

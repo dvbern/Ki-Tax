@@ -15,10 +15,10 @@
 
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import TSWizardStep from '../../models/TSWizardStep';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
-import WizardStepRS from './WizardStepRS.rest';
+import {TSWizardStep} from '../../models/TSWizardStep';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
+import {WizardStepRS} from './WizardStepRS.rest';
 import IHttpBackendService = angular.IHttpBackendService;
 
 describe('WizardStepRS', () => {

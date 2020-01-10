@@ -29,30 +29,31 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSAdresse from '../../../models/TSAdresse';
-import TSExternalClient from '../../../models/TSExternalClient';
-import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
-import TSInstitution from '../../../models/TSInstitution';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import TSInstitutionUpdate from '../../../models/TSInstitutionUpdate';
+import {TSAdresse} from '../../../models/TSAdresse';
+import {TSExternalClient} from '../../../models/TSExternalClient';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
+import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 
 @Component({
     selector: 'dv-edit-institution',
@@ -157,6 +158,13 @@ export class EditInstitutionComponent implements OnInit {
         this.initName = stammdaten.institution.name;
         this.editMode = stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
         this.changeDetectorRef.markForCheck();
+
+        if (!this.isTagesschule()) {
+            return;
+        }
+        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
+            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
+        });
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
@@ -227,7 +235,7 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.errorService.clearAll();
         if (this.componentTagesschule
-                && !this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
+            && !this.componentTagesschule.institutionStammdatenTagesschuleValid()) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_MODULE_INVALID'));
             return;
         }
@@ -340,5 +348,9 @@ export class EditInstitutionComponent implements OnInit {
 
     public isFerieninsel(): boolean {
         return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL;
+    }
+
+    public traegerschaftId(traegerschaft: TSTraegerschaft): string {
+        return traegerschaft.id;
     }
 }

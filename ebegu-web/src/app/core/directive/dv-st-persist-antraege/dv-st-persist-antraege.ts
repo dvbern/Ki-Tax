@@ -16,14 +16,14 @@
 import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import {Subscription} from 'rxjs';
 import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {LogFactory} from '../../logging/LogFactory';
-import BenutzerRS from '../../service/benutzerRS.rest';
+import {BenutzerRS} from '../../service/benutzerRS.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 
@@ -33,7 +33,7 @@ const LOG = LogFactory.createLog('DVSTPersistAntraege');
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
  * The information will be stored in an angular-service.
  */
-export default class DVSTPersistAntraege implements IDirective {
+export class DVSTPersistAntraege implements IDirective {
 
     public static $inject: string[] = [
         'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService',

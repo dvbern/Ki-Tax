@@ -24,7 +24,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -36,7 +36,7 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 
-	public AbstractErwerbspensumAbschnittRule(
+	protected AbstractErwerbspensumAbschnittRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
 		@Nonnull DateRange validityPeriod,
@@ -47,9 +47,9 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> erwerbspensumAbschnitte = new ArrayList<>();
-		Gesuch gesuch = betreuung.extractGesuch();
+		Gesuch gesuch = platz.extractGesuch();
 		if (gesuch.getGesuchsteller1() != null) {
 			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,
 				gesuch.getGesuchsteller1(), false));

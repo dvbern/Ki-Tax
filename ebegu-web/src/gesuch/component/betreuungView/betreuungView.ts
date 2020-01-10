@@ -19,11 +19,11 @@ import * as $ from 'jquery';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {isVerfuegtOrSTV, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
@@ -33,32 +33,32 @@ import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
-import TSBelegungTagesschuleModul from '../../../models/TSBelegungTagesschuleModul';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
-import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
-import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
-import TSEinstellung from '../../../models/TSEinstellung';
-import TSErweiterteBetreuung from '../../../models/TSErweiterteBetreuung';
-import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuungContainer';
-import TSExceptionReport from '../../../models/TSExceptionReport';
+import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
+import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
+import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
+import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
+import {TSEinstellung} from '../../../models/TSEinstellung';
+import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
+import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSFachstelle} from '../../../models/TSFachstelle';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import TSInstitutionStammdatenSummary from '../../../models/TSInstitutionStammdatenSummary';
-import TSKindContainer from '../../../models/TSKindContainer';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSInstitutionStammdatenSummary} from '../../../models/TSInstitutionStammdatenSummary';
+import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import GlobalCacheService from '../../service/globalCacheService';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GlobalCacheService} from '../../service/globalCacheService';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -368,7 +368,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
-            this.gesuchModelManager.handleErweiterteBetreuung();
             this.isSavingData = false;
             this.form.$setPristine();
             this.$state.go(nextStep, params);
@@ -477,12 +476,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
         }).then(() => {
+            let betreuungsstatus: TSBetreuungsstatus;
+            (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+               isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
+                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+                this.save(betreuungsstatus,
                     PENDENZEN_BETREUUNG,
                     undefined);
             } else {
-                this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+                this.save(betreuungsstatus,
                     GESUCH_BETREUUNGEN,
                     {gesuchId: this.getGesuchId()});
             }
@@ -1012,9 +1017,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
         const gemeindeKonfiguration = this.gesuchModelManager.gemeindeKonfiguration;
         const gmdeHasTS = gemeindeKonfiguration ? gemeindeKonfiguration.hasTagesschulenAnmeldung() : false;
-        const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
-        const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
-        return gmdeHasTS || betreuungIsTS;
+        const isNew = this.getBetreuungModel().isNew();
+        if (!isNew) {
+            const betreuung = this.gesuchModelManager.getBetreuungToWorkWith();
+            const betreuungIsTS = betreuung ? betreuung.isAngebotTagesschule() : false;
+            return gmdeHasTS || betreuungIsTS;
+        }
+        return gmdeHasTS;
     }
 
     /**
@@ -1080,6 +1089,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         } else {
+            this.getBetreuungModel().vertrag = true;
             this.instStammId = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }

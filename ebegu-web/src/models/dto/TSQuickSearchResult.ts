@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSSearchResultEntry from './TSSearchResultEntry';
+import {TSSearchResultEntry} from './TSSearchResultEntry';
 
-export default class TSQuickSearchResult {
+export class TSQuickSearchResult {
 
     private _resultEntities: Array<TSSearchResultEntry>;
     private _totalResultSize: number;

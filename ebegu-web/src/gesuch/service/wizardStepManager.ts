@@ -16,21 +16,21 @@
 import {IPromise, IQService} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import TSGesuch from '../../models/TSGesuch';
-import TSWizardStep from '../../models/TSWizardStep';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSWizardStep} from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import WizardStepRS from './WizardStepRS.rest';
+import {WizardStepRS} from './WizardStepRS.rest';
 import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 
 const LOG = LogFactory.createLog('WizardStepManager');
 
-export default class WizardStepManager {
+export class WizardStepManager {
 
     public static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
 
@@ -272,7 +272,11 @@ export default class WizardStepManager {
      * Gibt true zurueck wenn der Status vom naechsten Step != UNBESUCHT ist. D.h. wenn es verfuegbar ist
      */
     public isNextStepBesucht(gesuch: TSGesuch): boolean {
-        return this.getStepByName(this.getNextStep(gesuch)).wizardStepStatus !== TSWizardStepStatus.UNBESUCHT;
+        const step = this.getStepByName(this.getNextStep(gesuch));
+        if (!step) {
+            return false;
+        }
+        return step.wizardStepStatus !== TSWizardStepStatus.UNBESUCHT;
     }
 
     /**

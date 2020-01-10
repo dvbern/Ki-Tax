@@ -19,24 +19,24 @@ import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
-import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
+import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import TSDokument from '../../../models/TSDokument';
-import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import TSGesuch from '../../../models/TSGesuch';
-import TSWizardStep from '../../../models/TSWizardStep';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSDokument} from '../../../models/TSDokument';
+import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TSWizardStep} from '../../../models/TSWizardStep';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import DokumenteRS from '../../service/dokumenteRS.rest';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import GesuchRS from '../../service/gesuchRS.rest';
-import GlobalCacheService from '../../service/globalCacheService';
-import WizardStepManager from '../../service/wizardStepManager';
+import {DokumenteRS} from '../../service/dokumenteRS.rest';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
+import {GlobalCacheService} from '../../service/globalCacheService';
+import {WizardStepManager} from '../../service/wizardStepManager';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -146,7 +146,7 @@ export class KommentarViewController {
     }
 
     public isPapiergesuch(): boolean {
-        return this.getGesuch().eingangsart === TSEingangsart.PAPIER;
+        return this.getGesuch() ? this.getGesuch().eingangsart === TSEingangsart.PAPIER : false;
     }
 
     public hasPapiergesuch(): boolean {
@@ -247,7 +247,7 @@ export class KommentarViewController {
     }
 
     public isInBearbeitungSTV(): boolean {
-        return this.gesuchModelManager.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV;
+        return  this.getGesuch() ? (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV) : false;
     }
 
     public freigebenSTV(): void {

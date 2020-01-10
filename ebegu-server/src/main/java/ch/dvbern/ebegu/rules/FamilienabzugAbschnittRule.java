@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -80,9 +80,9 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
-		@Nonnull Betreuung betreuung) {
+		@Nonnull AbstractPlatz platz) {
 
-		Gesuch gesuch = betreuung.extractGesuch();
+		Gesuch gesuch = platz.extractGesuch();
 		final List<VerfuegungZeitabschnitt> familienAbzugZeitabschnitt = createInitialenFamilienAbzug(gesuch);
 
 		Map<LocalDate, Map.Entry<Double, Integer>> famGrMap = new TreeMap<>();

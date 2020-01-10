@@ -15,12 +15,12 @@
 
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
-import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
-import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
-import ErrorService from '../../errors/service/ErrorService';
+import {ErrorService} from '../../errors/service/ErrorService';
 import ITranslateService = angular.translate.ITranslateService;
 
 /**
@@ -509,7 +509,8 @@ export class NavigatorController implements IController {
         }
 
         if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return !this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+            return (!this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
+                || this.gesuchModelManager.isThereAnyNotGeprueftesKind())
                 && !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
         }
         if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {

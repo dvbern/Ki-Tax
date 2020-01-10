@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Inscription acceptée</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Inscription pour ${betreuung.kind.kindJA.fullName} acceptée</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -24,9 +24,7 @@ ${templateConfiguration.mailCss}
 		Chère famille,
 	</p>
 	<p>
-		Votre inscription pour ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} a été acceptée.
-		L'institution choisie vous fera parvenir la confirmation d'inscription définitive. Vous pouvez consulter la liste des offres de prise en charge
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
+		Votre inscription pour ${betreuung.kind.kindJA.fullName} à ${betreuung.institutionStammdaten.institution.name} a été acceptée. Vous pouvez consulter la liste des offres de prise en charge <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">ici</a>.
 	</p>
 	<p>
 		Nous vous présentons nos salutations les meilleures.<br/>

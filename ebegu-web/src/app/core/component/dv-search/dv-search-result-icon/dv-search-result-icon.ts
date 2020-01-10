@@ -14,7 +14,7 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import TSSearchResultEntry from '../../../../../models/dto/TSSearchResultEntry';
+import {TSSearchResultEntry} from '../../../../../models/dto/TSSearchResultEntry';
 
 export class DvSearchResultIconComponentConfig implements IComponentOptions {
 

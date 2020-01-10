@@ -15,10 +15,10 @@
 
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSInstitution from './TSInstitution';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSInstitution} from './TSInstitution';
 
-export default class TSPendenzBetreuung {
+export class TSPendenzBetreuung {
 
     private _betreuungsNummer: string;
     private _betreuungsId: string;

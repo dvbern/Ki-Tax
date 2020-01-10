@@ -19,14 +19,14 @@ import {IDVFocusableController} from '../../../app/core/component/IDVFocusableCo
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSKindDublette from '../../../models/TSKindDublette';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSKindDublette} from '../../../models/TSKindDublette';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
@@ -75,7 +75,8 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     private initViewModel(): void {
         this.gesuchModelManager.initKinder();
 
-        if (this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()) {
+        if (!this.gesuchModelManager.isThereAnyNotGeprueftesKind()
+            && this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()) {
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.KINDER,
                 TSWizardStepStatus.OK);
@@ -88,6 +89,10 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
 
     public getKinderList(): Array<TSKindContainer> {
         return this.gesuchModelManager.getKinderList();
+    }
+
+    public isThereAnyNotGeprueftesKind(): boolean {
+        return this.gesuchModelManager.isThereAnyNotGeprueftesKind();
     }
 
     public createKind(): void {

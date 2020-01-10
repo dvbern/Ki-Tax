@@ -15,7 +15,7 @@
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
 import * as moment from 'moment';
-import DateUtil from '../../../../utils/DateUtil';
+import {DateUtil} from '../../../../utils/DateUtil';
 import IAttributes = angular.IAttributes;
 import ILogService = angular.ILogService;
 import INgModelController = angular.INgModelController;

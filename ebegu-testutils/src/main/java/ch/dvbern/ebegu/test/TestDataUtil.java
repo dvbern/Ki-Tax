@@ -189,6 +189,9 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 
 /**
  * comments homa
@@ -312,7 +315,7 @@ public final class TestDataUtil {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
-		familiensituation.setAntragNurFuerBehinderungszuschlag(false);
+		familiensituation.setVerguenstigungGewuenscht(true);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		return familiensituation;
 	}
@@ -1011,7 +1014,7 @@ public final class TestDataUtil {
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
 	public static Gesuch createAndPersistTestfall11_SchulamtOnly(
-		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
@@ -1446,6 +1449,10 @@ public final class TestDataUtil {
 			Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG,
 			Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode, persistence);
+		saveEinstellung(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode, persistence);
+		saveEinstellung(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode, persistence);
+		saveEinstellung(MIN_TARIF, "0.78", gesuchsperiode, persistence);
+
 	}
 
 	public static void saveEinstellung(
@@ -1870,7 +1877,7 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(10));
+		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(10));
 		zeitabschnitt.setAnspruchberechtigtesPensum(50);
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);

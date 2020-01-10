@@ -46,7 +46,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(60), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(BigDecimal.valueOf(500.50), result.get(0).getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -64,7 +64,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(60), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(BigDecimal.valueOf(200), result.get(0).getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -82,7 +82,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -104,7 +104,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());  //restanspruch wurde noch nie berechnet
@@ -124,7 +124,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(resultBetr2);
 		Assert.assertEquals(1, resultBetr2.size());
 		Assert.assertEquals(Integer.valueOf(80), resultBetr2.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(
 			20,
 			resultBetr2.get(0)
@@ -153,7 +153,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -173,7 +173,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(60), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensumProzent());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());

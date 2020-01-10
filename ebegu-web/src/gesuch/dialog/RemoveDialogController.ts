@@ -14,7 +14,7 @@
  */
 
 import {IPromise} from 'angular';
-import EbeguUtil from '../../utils/EbeguUtil';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import ILogService = angular.ILogService;
 import IQService = angular.IQService;
 import IDialogService = angular.material.IDialogService;

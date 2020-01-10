@@ -14,13 +14,13 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import TSWorkJob from '../../../models/TSWorkJob';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSWorkJob} from '../../../models/TSWorkJob';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 /**
  * liest information ueber batch jobs aus
  */
-export default class BatchJobRS {
+export class BatchJobRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
     public serviceURL: string;

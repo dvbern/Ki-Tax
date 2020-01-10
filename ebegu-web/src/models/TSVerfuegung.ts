@@ -15,9 +15,9 @@
 
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSVerfuegungZeitabschnitt from './TSVerfuegungZeitabschnitt';
+import {TSVerfuegungZeitabschnitt} from './TSVerfuegungZeitabschnitt';
 
-export default class TSVerfuegung extends TSAbstractMutableEntity {
+export class TSVerfuegung extends TSAbstractMutableEntity {
 
     private _generatedBemerkungen: string;
     private _manuelleBemerkungen: string;

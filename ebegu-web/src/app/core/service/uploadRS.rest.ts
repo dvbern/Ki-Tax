@@ -15,8 +15,8 @@
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
 import {TSSprache} from '../../../models/enums/TSSprache';
-import TSDokumentGrund from '../../../models/TSDokumentGrund';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class UploadRS {
 

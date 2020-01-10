@@ -15,7 +15,7 @@
 
 // Es wird empfohlen, Filters als normale Funktionen zu implementieren, denn es bringt nichts, dafuer eine Klasse zu
 // implementieren.
-import EbeguUtil from '../../../../utils/EbeguUtil';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 pendenzBetreuungenFilter.$inject = ['$filter'];
 

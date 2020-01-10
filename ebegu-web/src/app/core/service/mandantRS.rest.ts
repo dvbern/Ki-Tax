@@ -15,7 +15,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSMandant} from '../../../models/TSMandant';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class MandantRS {
 

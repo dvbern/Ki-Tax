@@ -95,4 +95,25 @@ export class DebuggingComponent implements OnInit, OnDestroy {
     public doShowDialog(): void {
         Raven.showReportDialog();
     }
+
+    public findCategory(key: string): Category {
+        switch (key) {
+            case 'RESOLVE': {
+                return Category.RESOLVE;
+            }
+            case 'TRANSITION': {
+                return Category.TRANSITION;
+            }
+            case 'HOOK': {
+                return Category.HOOK;
+            }
+            case 'UIVIEW': {
+                return Category.UIVIEW;
+            }
+            default: {
+                return Category.VIEWCONFIG;
+            }
+        }
+    }
+
 }

@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSExternalClient from './TSExternalClient';
+import {TSExternalClient} from './TSExternalClient';
 
-export default class TSExternalClientAssignment {
+export class TSExternalClientAssignment {
     public availableClients: TSExternalClient[] = [];
     public assignedClients: TSExternalClient[] = [];
 }

@@ -19,7 +19,7 @@ import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uir
 import {map, take} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSRole} from '../../../models/enums/TSRole';
-import AuthServiceRS from '../../service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 import {OnBeforePriorities} from './onBeforePriorities';
 
 const LOG = LogFactory.createLog('authenticationHookRunBlock');

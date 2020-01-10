@@ -18,11 +18,11 @@ import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
-import TSAntragDTO from '../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TestDataUtil from '../../utils/TestDataUtil.spec';
-import SearchRS from './searchRS.rest';
+import {TSAntragDTO} from '../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../utils/TestDataUtil.spec';
+import {SearchRS} from './searchRS.rest';
 
 // tslint:disable:no-magic-numbers
 describe('searchRS', () => {

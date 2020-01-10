@@ -14,8 +14,8 @@
  */
 
 import {IHttpParamSerializer, IHttpService, ILogService, IPromise} from 'angular';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class ReportRS {
 

@@ -78,39 +78,38 @@ public final class VerfuegungUtil {
 		}
 	}
 
-	private static Optional<VerfuegungZeitabschnitt> findZeitabschnittSameGueltigkeit(
-		List<VerfuegungZeitabschnitt> zeitabschnitteGSM,
-		VerfuegungZeitabschnitt newZeitabschnitt
+	@Nonnull
+	public static Optional<VerfuegungZeitabschnitt> findZeitabschnittSameGueltigkeit(
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitteGSM,
+		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt
 	) {
-		for (VerfuegungZeitabschnitt zeitabschnittGSM : zeitabschnitteGSM) {
-			if (zeitabschnittGSM.getGueltigkeit().equals(newZeitabschnitt.getGueltigkeit())) {
-				return Optional.of(zeitabschnittGSM);
-			}
-		}
-		return Optional.empty();
+		return zeitabschnitteGSM.stream()
+			.filter(z -> z.getGueltigkeit().equals(newZeitabschnitt.getGueltigkeit()))
+			.findAny();
 	}
 
-	public static Optional<VerfuegungZeitabschnitt> findZeitabschnittSameGueltigkeitSameBetrag(List<VerfuegungZeitabschnitt> vorgaengerZeitabschnittList,
-		VerfuegungZeitabschnitt
-			newZeitabschnitt) {
-		for (VerfuegungZeitabschnitt zeitabschnittGSM : vorgaengerZeitabschnittList) {
-			if (zeitabschnittGSM.getGueltigkeit().equals(newZeitabschnitt.getGueltigkeit())
-				&& zeitabschnittGSM.getVerguenstigung().compareTo(newZeitabschnitt.getVerguenstigung()) == 0) {
-				return Optional.of(zeitabschnittGSM);
-			}
-		}
-		return Optional.empty();
+	@Nonnull
+	public static Optional<VerfuegungZeitabschnitt> findZeitabschnittSameGueltigkeitSameBetrag(
+		@Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnittList,
+		@Nonnull VerfuegungZeitabschnitt newZeitabschnitt) {
+
+		return vorgaengerZeitabschnittList.stream()
+			.filter(z -> z.getGueltigkeit().equals(newZeitabschnitt.getGueltigkeit()))
+			.filter(z -> z.getVerguenstigung().compareTo(newZeitabschnitt.getVerguenstigung()) == 0)
+			.findAny();
 	}
 
 	public static void setZahlungsstatus(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung verfuegungOnGesuchForMutation) {
-		if (verfuegungOnGesuchForMutation != null) {
-			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
-			final List<VerfuegungZeitabschnitt> zeitabschnitteGSM = verfuegungOnGesuchForMutation.getZeitabschnitte();
+		if (verfuegungOnGesuchForMutation == null) {
+			return;
+		}
 
-			for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
-				VerfuegungsZeitabschnittZahlungsstatus oldStatusZeitabschnitt = findStatusOldZeitabschnitt(zeitabschnitteGSM, newZeitabschnitt);
-				newZeitabschnitt.setZahlungsstatus(oldStatusZeitabschnitt);
-			}
+		List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
+		List<VerfuegungZeitabschnitt> zeitabschnitteGSM = verfuegungOnGesuchForMutation.getZeitabschnitte();
+
+		for (VerfuegungZeitabschnitt newZeitabschnitt : newZeitabschnitte) {
+			VerfuegungsZeitabschnittZahlungsstatus oldStatusZeitabschnitt = findStatusOldZeitabschnitt(zeitabschnitteGSM, newZeitabschnitt);
+			newZeitabschnitt.setZahlungsstatus(oldStatusZeitabschnitt);
 		}
 	}
 

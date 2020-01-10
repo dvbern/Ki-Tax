@@ -15,7 +15,7 @@
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export default class TSAbwesenheit extends TSAbstractDateRangedEntity {
+export class TSAbwesenheit extends TSAbstractDateRangedEntity {
 
     public constructor() {
         super();

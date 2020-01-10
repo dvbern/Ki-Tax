@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
@@ -132,6 +133,7 @@ import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
@@ -671,8 +673,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setAenderungPer(familiensituationJAXP.getAenderungPer());
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
-		familiensituation.setAntragNurFuerBehinderungszuschlag(familiensituationJAXP.getAntragNurFuerBehinderungszuschlag());
-		familiensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(familiensituationJAXP.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
+		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
 
 		return familiensituation;
 	}
@@ -685,8 +686,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
-		jaxFamiliensituation.setAntragNurFuerBehinderungszuschlag(persistedFamiliensituation.getAntragNurFuerBehinderungszuschlag());
-		jaxFamiliensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(persistedFamiliensituation.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
+		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 
 		return jaxFamiliensituation;
 	}
@@ -1899,6 +1899,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setKinderabzugZweitesHalbjahr(persistedKind.getKinderabzugZweitesHalbjahr());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
+		jaxKind.setAusAsylwesen(persistedKind.getAusAsylwesen());
+		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
@@ -2036,6 +2038,8 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setKinderabzugZweitesHalbjahr(kindJAXP.getKinderabzugZweitesHalbjahr());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
+		kind.setAusAsylwesen(kindJAXP.getAusAsylwesen());
+		kind.setZemisNummer(kindJAXP.getZemisNummer());
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 
 		PensumFachstelle updtPensumFachstelle = null;
@@ -2978,6 +2982,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
+		List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = betreuungFromServer.getAnmeldungTagesschuleZeitabschnitts().stream()
+			.map(this::anmeldungTagesschuleZeitabschnittToJax)
+			.collect(Collectors.toList());
+		jaxBetreuung.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnitts);
 		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;
 	}
@@ -3174,12 +3182,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setAbzugFamGroesse(zeitabschnitt.getAbzugFamGroesse());
 		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getErwerbspensumGS1());
 		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getErwerbspensumGS2());
-		jaxZeitabschn.setBetreuungspensum(zeitabschnitt.getBetreuungspensum());
+		jaxZeitabschn.setBetreuungspensumProzent(zeitabschnitt.getBetreuungspensumProzent());
 		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
 		jaxZeitabschn.setAnspruchberechtigtesPensum(zeitabschnitt.getAnspruchberechtigtesPensum());
-		jaxZeitabschn.setBetreuungsstunden(zeitabschnitt.getBetreuungsstunden());
+		jaxZeitabschn.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		jaxZeitabschn.setVollkosten(zeitabschnitt.getVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
@@ -4695,6 +4703,7 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
+		konfiguration.setGesuchsperiodeStatusName(gesuchsperiode.getGesuchsperiodeStatusName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
 		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
 			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
@@ -4747,5 +4756,22 @@ public class JaxBConverter extends AbstractConverter {
 
 	public void lastenausgleichDetailToJAX() {
 		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nullable
+	private JaxAnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittToJax(@Nullable AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittFromServer) {
+		if (anmeldungTagesschuleZeitabschnittFromServer == null) {
+			return null;
+		}
+		final JaxAnmeldungTagesschuleZeitabschnitt jaxAnmeldungTagesschuleZeitabschnitt = new JaxAnmeldungTagesschuleZeitabschnitt();
+		convertAbstractDateRangedFieldsToJAX(anmeldungTagesschuleZeitabschnittFromServer, jaxAnmeldungTagesschuleZeitabschnitt);
+		jaxAnmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getBetreuungsminutenProWoche());
+		jaxAnmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getBetreuungsstundenProWoche());
+		jaxAnmeldungTagesschuleZeitabschnitt.setGebuehrProStunde(anmeldungTagesschuleZeitabschnittFromServer.getGebuehrProStunde());
+		jaxAnmeldungTagesschuleZeitabschnitt.setMassgebendesEinkommenInklAbzugFamgr(anmeldungTagesschuleZeitabschnittFromServer.getMassgebendesEinkommenInklAbzugFamgr());
+		jaxAnmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(anmeldungTagesschuleZeitabschnittFromServer.isPedagogischBetreut());
+		jaxAnmeldungTagesschuleZeitabschnitt.setTotalKostenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getTotalKostenProWoche());
+		jaxAnmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(anmeldungTagesschuleZeitabschnittFromServer.getVerpflegungskosten());
+		return jaxAnmeldungTagesschuleZeitabschnitt;
 	}
 }

@@ -16,18 +16,18 @@
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
-import ErrorService from '../../app/core/errors/service/ErrorService';
-import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
-import BetreuungRS from '../../app/core/service/betreuungRS.rest';
-import ErwerbspensumRS from '../../app/core/service/erwerbspensumRS.rest';
-import EwkRS from '../../app/core/service/ewkRS.rest';
+import {ErrorService} from '../../app/core/errors/service/ErrorService';
+import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
+import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
+import {ErwerbspensumRS} from '../../app/core/service/erwerbspensumRS.rest';
+import {EwkRS} from '../../app/core/service/ewkRS.rest';
 import {FachstelleRS} from '../../app/core/service/fachstelleRS.rest';
-import GesuchstellerRS from '../../app/core/service/gesuchstellerRS.rest';
+import {GesuchstellerRS} from '../../app/core/service/gesuchstellerRS.rest';
 import {InstitutionStammdatenRS} from '../../app/core/service/institutionStammdatenRS.rest';
-import KindRS from '../../app/core/service/kindRS.rest';
-import VerfuegungRS from '../../app/core/service/verfuegungRS.rest';
+import {KindRS} from '../../app/core/service/kindRS.rest';
+import {VerfuegungRS} from '../../app/core/service/verfuegungRS.rest';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
-import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {
     isAnyStatusOfVerfuegt,
@@ -50,44 +50,44 @@ import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus'
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
-import TSAdresse from '../../models/TSAdresse';
-import TSAdresseContainer from '../../models/TSAdresseContainer';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSBetreuung from '../../models/TSBetreuung';
-import TSDossier from '../../models/TSDossier';
-import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
-import TSEinkommensverschlechterungInfoContainer from '../../models/TSEinkommensverschlechterungInfoContainer';
-import TSErwerbspensumContainer from '../../models/TSErwerbspensumContainer';
-import TSEWKPerson from '../../models/TSEWKPerson';
-import TSEWKResultat from '../../models/TSEWKResultat';
-import TSExceptionReport from '../../models/TSExceptionReport';
+import {TSAdresse} from '../../models/TSAdresse';
+import {TSAdresseContainer} from '../../models/TSAdresseContainer';
+import {TSBenutzer} from '../../models/TSBenutzer';
+import {TSBetreuung} from '../../models/TSBetreuung';
+import {TSDossier} from '../../models/TSDossier';
+import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
+import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
+import {TSErwerbspensumContainer} from '../../models/TSErwerbspensumContainer';
+import {TSEWKPerson} from '../../models/TSEWKPerson';
+import {TSEWKResultat} from '../../models/TSEWKResultat';
+import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSFachstelle} from '../../models/TSFachstelle';
-import TSFall from '../../models/TSFall';
-import TSFamiliensituation from '../../models/TSFamiliensituation';
-import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
-import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
-import TSGemeinde from '../../models/TSGemeinde';
-import TSGemeindeKonfiguration from '../../models/TSGemeindeKonfiguration';
-import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
-import TSGesuch from '../../models/TSGesuch';
-import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TSGesuchsteller from '../../models/TSGesuchsteller';
-import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
-import TSInstitutionStammdaten from '../../models/TSInstitutionStammdaten';
-import TSKindContainer from '../../models/TSKindContainer';
-import TSVerfuegung from '../../models/TSVerfuegung';
-import EbeguUtil from '../../utils/EbeguUtil';
+import {TSFall} from '../../models/TSFall';
+import {TSFamiliensituation} from '../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
+import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
+import {TSGemeinde} from '../../models/TSGemeinde';
+import {TSGemeindeKonfiguration} from '../../models/TSGemeindeKonfiguration';
+import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
+import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
+import {TSGesuchsteller} from '../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
+import {TSInstitutionStammdaten} from '../../models/TSInstitutionStammdaten';
+import {TSKindContainer} from '../../models/TSKindContainer';
+import {TSVerfuegung} from '../../models/TSVerfuegung';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import DossierRS from './dossierRS.rest';
-import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
-import FinanzielleSituationRS from './finanzielleSituationRS.rest';
-import GemeindeRS from './gemeindeRS.rest';
+import {DossierRS} from './dossierRS.rest';
+import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
+import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
+import {GemeindeRS} from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
-import GesuchRS from './gesuchRS.rest';
-import GlobalCacheService from './globalCacheService';
-import WizardStepManager from './wizardStepManager';
+import {GesuchRS} from './gesuchRS.rest';
+import {GlobalCacheService} from './globalCacheService';
+import {WizardStepManager} from './wizardStepManager';
 
-export default class GesuchModelManager {
+export class GesuchModelManager {
 
     public static $inject = [
         'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
@@ -815,28 +815,6 @@ export default class GesuchModelManager {
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
 
-    public handleErweiterteBetreuung(): IPromise<TSGesuch> {
-        if (!this.getGesuch() || !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtRoles())) {
-            return this.$q.when(this.getGesuch());
-        }
-
-        if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
-            // Mindestens 1 Kind mit erweitertem Aufwand
-            // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
-            this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
-            return this.updateGesuch();
-        }
-
-        if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
-            // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
-            // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
-            this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
-            return this.updateGesuch();
-        }
-
-        return this.$q.when(this.getGesuch());
-    }
-
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
@@ -848,6 +826,8 @@ export default class GesuchModelManager {
                 return this.betreuungRS.betreuungsPlatzAbweisen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.BESTAETIGT:
                 return this.betreuungRS.betreuungsPlatzBestaetigen(betreuungToSave, this.gesuch.id);
+            case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
+                return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
                 return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
@@ -1084,12 +1064,9 @@ export default class GesuchModelManager {
             this.gesuch.id
         ).then(() => {
             this.removeBetreuungFromKind();
-
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
                 this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
-                this.handleErweiterteBetreuung().then(() => {
-                    this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
-                });
+                this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
             });
         });
     }
@@ -1302,6 +1279,17 @@ export default class GesuchModelManager {
         return false;
     }
 
+    public isThereAnyNotGeprueftesKind(): boolean {
+        const kinderList = this.getKinderList();
+        for (const kind of kinderList) {
+            // das kind muss schon gespeichert sein damit es zahelt
+            if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Gibt true zurueck wenn es mindestens eine Betreuung gibt, dessen Status anders als VERFUEGT oder
      * GESCHLOSSEN_OHNE_VERFUEGUNG oder SCHULAMT ist
@@ -1451,7 +1439,7 @@ export default class GesuchModelManager {
     }
 
     public isGesuchStatusIn(statuse: TSAntragStatus[]): boolean {
-        return statuse.includes(this.gesuch.status);
+        return this.gesuch ? statuse.includes(this.gesuch.status) : false;
     }
 
     /**

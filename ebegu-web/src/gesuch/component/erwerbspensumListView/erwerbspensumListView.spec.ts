@@ -15,11 +15,11 @@
 
 import {IComponentControllerService, IHttpBackendService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSDossier from '../../../models/TSDossier';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSDossier} from '../../../models/TSDossier';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import GemeindeRS from '../../service/gemeindeRS.rest';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {GemeindeRS} from '../../service/gemeindeRS.rest';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {ErwerbspensumListViewController} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
 

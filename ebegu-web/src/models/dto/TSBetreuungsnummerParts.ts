@@ -16,7 +16,7 @@
 /**
  * Hilfsdto welches verwendet werden kann um eine Betreuungsnummer in ihre subteile aufzuteilen
  */
-export default class TSBetreuungsnummerParts {
+export class TSBetreuungsnummerParts {
 
     private _jahr: string;
     private _fallId: string;

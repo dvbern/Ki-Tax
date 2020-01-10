@@ -41,6 +41,8 @@ import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -51,6 +53,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -562,5 +565,45 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	private Optional<String> findEMailAddress(@Nonnull Gesuch gesuch) {
 		return fallService.getCurrentEmailAddress(gesuch.getFall().getId())
 			.filter(StringUtils::isNotEmpty);
+	}
+
+	@Override
+	public void sendInfoSchulamtAnmeldungAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		sendMail(
+			abstractAnmeldung.extractGesuch(),
+			"InfoSchulamtAnmeldungAkzeptiert",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getInfoSchulamtAnmeldungAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
+			AntragStatus.values()
+		);
+	}
+
+	@Override
+	public void sendInfoGemeineAngebotAktiviert(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeAngebotTyp angebot) {
+		List<Sprache> sprachen =
+			EbeguUtil.extractGemeindeSprachen(gemeinde, gemeindeService);
+
+		GemeindeStammdaten stammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() ->
+				new EbeguEntityNotFoundException("sendInfoGemeineAngebotAktiviert",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeinde.getId()));
+
+		String mailaddress = stammdaten.getMail();
+		if (StringUtils.isNotEmpty(mailaddress)) {
+			String message = mailTemplateConfig.getInfoGemeindeAngebotAktiviert(gemeinde, mailaddress,
+				angebot, sprachen);
+			try {
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoGemeineAngebotAktiviert wurde versendet an {}", mailaddress);
+			} catch (Exception e) {
+				logExceptionAccordingToEnvironment(
+					e,
+					"Mail InfoGemeineAngebotAktiviert konnte nicht verschickt werden fuer Gemeinde",
+					gemeinde.getName());
+			}
+		} else {
+			LOG.warn("skipping setInfoGemeineAngebotAktiviert because Mitteilungsempfaenger is null");
+		}
 	}
 }

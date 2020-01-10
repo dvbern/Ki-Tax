@@ -17,15 +17,14 @@ import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSFamiliensituation extends TSAbstractMutableEntity {
+export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
     private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
-    private _antragNurFuerBehinderungszuschlag: boolean;
-    private _behinderungszuschlagFuerMindEinKindEinmalBeantragt: boolean = false;
+    private _verguenstigungGewuenscht: boolean;
 
     public constructor() {
         super();
@@ -71,20 +70,12 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._sozialhilfeBezueger = value;
     }
 
-    public get antragNurFuerBehinderungszuschlag(): boolean {
-        return this._antragNurFuerBehinderungszuschlag;
+    public get verguenstigungGewuenscht(): boolean {
+        return this._verguenstigungGewuenscht;
     }
 
-    public set antragNurFuerBehinderungszuschlag(value: boolean) {
-        this._antragNurFuerBehinderungszuschlag = value;
-    }
-
-    public get behinderungszuschlagFuerMindEinKindEinmalBeantragt(): boolean {
-        return this._behinderungszuschlagFuerMindEinKindEinmalBeantragt;
-    }
-
-    public set behinderungszuschlagFuerMindEinKindEinmalBeantragt(value: boolean) {
-        this._behinderungszuschlagFuerMindEinKindEinmalBeantragt = value;
+    public set verguenstigungGewuenscht(value: boolean) {
+        this._verguenstigungGewuenscht = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {

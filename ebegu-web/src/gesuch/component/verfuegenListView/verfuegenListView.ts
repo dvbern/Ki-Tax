@@ -19,7 +19,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -29,24 +29,24 @@ import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSDownloadFile from '../../../models/TSDownloadFile';
-import TSFall from '../../../models/TSFall';
-import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSKindContainer from '../../../models/TSKindContainer';
-import TSMahnung from '../../../models/TSMahnung';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSFall} from '../../../models/TSFall';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSMahnung} from '../../../models/TSMahnung';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {BemerkungenDialogController} from '../../dialog/BemerkungenDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import BerechnungsManager from '../../service/berechnungsManager';
-import GesuchModelManager from '../../service/gesuchModelManager';
-import GesuchRS from '../../service/gesuchRS.rest';
-import MahnungRS from '../../service/mahnungRS.rest';
-import WizardStepManager from '../../service/wizardStepManager';
-import AbstractGesuchViewController from '../abstractGesuchView';
+import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
+import {MahnungRS} from '../../service/mahnungRS.rest';
+import {WizardStepManager} from '../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -255,7 +255,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
-            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST
+            TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
+            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
@@ -343,7 +344,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            return this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
+            const antragStatus = this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
+            this.refreshKinderListe();
+            return antragStatus;
         });
     }
 
@@ -484,12 +487,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMahnlaufBeenden(): boolean {
-        return isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly();
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status) && !this.isGesuchReadonly()) : false;
     }
 
     public showDokumenteNichtKomplett(): boolean {
-        return isAnyStatusOfMahnung(this.getGesuch().status) && this.getGesuch().dokumenteHochgeladen
-            && !this.isGesuchReadonly();
+        return this.getGesuch() ? (isAnyStatusOfMahnung(this.getGesuch().status)
+            && this.getGesuch().dokumenteHochgeladen
+            && !this.isGesuchReadonly()) : false;
     }
 
     public showZweiteMahnungNichtEingetreten(): boolean {
@@ -584,9 +588,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showKeinKontingent(): boolean {
-        return this.getGesuch().typ !== TSAntragTyp.MUTATION
+        return this.getGesuch() ? (this.getGesuch().typ !== TSAntragTyp.MUTATION
             && this.showVerfuegenStarten()
-            && this.kontingentierungEnabled;
+            && this.kontingentierungEnabled) : false;
     }
 
     public showKontingentVorhanden(): boolean {
@@ -611,6 +615,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openFinanzielleSituationPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getFinSitDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -620,6 +627,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openBegleitschreibenPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getBegleitschreibenDokumentAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -629,6 +639,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public openKompletteKorrespondenzPDF(): void {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return;
+        }
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getKompletteKorrespondenzAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id)
             .then((downloadFile: TSDownloadFile) => {
@@ -679,6 +692,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
+                this.refreshKinderListe();
                 return this.gesuchModelManager.getGesuch();
             });
         });

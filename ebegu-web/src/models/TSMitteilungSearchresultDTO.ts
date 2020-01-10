@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSMitteilung from './TSMitteilung';
+import {TSMitteilung} from './TSMitteilung';
 
-export default class TSMtteilungSearchresultDTO {
+export class TSMtteilungSearchresultDTO {
 
     private _mitteilungen: Array<TSMitteilung>;
     private _totalResultSize: number;

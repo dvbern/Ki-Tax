@@ -53,7 +53,7 @@
                     <div class="row input-row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="bruttovermoegen1">
+                                <label class="md-no-float required" for="bruttovermoegen1">
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_1"
                                           translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
                                     <dv-tooltip input-id="bruttovermoegen1"
@@ -65,10 +65,16 @@
                                                    ng-model="vm.getEinkommensverschlechterungGS1_JA().bruttovermoegen"
                                                    aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_1'|translate}}"
                                                    class="input-element"
-                                                   dv-on-blur="vm.calculate()">
+                                                   dv-on-blur="vm.calculate()" required>
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getEinkommensverschlechterungGS1_GS().bruttovermoegen"
                                                ja="vm.getEinkommensverschlechterungGS1_JA().bruttovermoegen"></dv-bisher>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS1_JA().bruttovermoegen"
+                                        [wert-basisjahr]="vm.model.finanzielleSituationContainerGS1.finanzielleSituationJA.bruttovermoegen"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-error-messages input-id="bruttovermoegen1" for="vm.form.bruttovermoegen1.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -79,7 +85,7 @@
                     <div class="row input-row">
                         <div class="col-sm-12 dv-input-container-medium" ng-if="vm.showGS2()">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="bruttovermoegen2">
+                                <label class="md-no-float required" for="bruttovermoegen2">
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_2"
                                           translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
                                     <dv-tooltip input-id="bruttovermoegen2"
@@ -91,8 +97,14 @@
                                                    ng-model="vm.getEinkommensverschlechterungGS2_JA().bruttovermoegen"
                                                    aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_2'|translate}}"
                                                    class="input-element"
-                                                   dv-on-blur="vm.calculate()">
+                                                   dv-on-blur="vm.calculate()" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS2_JA().bruttovermoegen"
+                                        [wert-basisjahr]="vm.model.finanzielleSituationContainerGS2.finanzielleSituationJA.bruttovermoegen"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher gs="vm.getEinkommensverschlechterungGS2_GS().bruttovermoegen"
                                                ja="vm.getEinkommensverschlechterungGS2_JA().bruttovermoegen"></dv-bisher>
                                     <dv-error-messages input-id="bruttovermoegen2" for="vm.form.bruttovermoegen2.$error"
@@ -106,7 +118,7 @@
                     <div class="row input-row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="schulden1">
+                                <label class="md-no-float required" for="schulden1">
                                     <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_1"
                                           translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
                                     <dv-tooltip input-id="schulden1"
@@ -118,8 +130,14 @@
                                                    ng-model="vm.getEinkommensverschlechterungGS1_JA().schulden"
                                                    aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_1'|translate}}"
                                                    class="input-element"
-                                                   dv-on-blur="vm.calculate()">
+                                                   dv-on-blur="vm.calculate()" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS1_JA().schulden"
+                                        [wert-basisjahr]="vm.model.finanzielleSituationContainerGS1.finanzielleSituationJA.schulden"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher gs="vm.getEinkommensverschlechterungGS1_GS().schulden"
                                                ja="vm.getEinkommensverschlechterungGS1_JA().schulden"></dv-bisher>
                                     <dv-error-messages input-id="schulden1" for="vm.form.schulden1.$error"
@@ -132,7 +150,7 @@
                     <div class="row input-row">
                         <div class="col-sm-12 dv-input-container-medium" ng-if="vm.showGS2()">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="schulden2">
+                                <label class="md-no-float required" for="schulden2">
                                     <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_2"
                                           translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
                                     <dv-tooltip input-id="schulden2"
@@ -144,8 +162,14 @@
                                                    ng-model="vm.getEinkommensverschlechterungGS2_JA().schulden"
                                                    aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_2'|translate}}"
                                                    class="input-element"
-                                                   dv-on-blur="vm.calculate()">
+                                                   dv-on-blur="vm.calculate()" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.getEinkommensverschlechterungGS2_JA().schulden"
+                                        [wert-basisjahr]="vm.model.finanzielleSituationContainerGS2.finanzielleSituationJA.schulden"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher gs="vm.getEinkommensverschlechterungGS2_GS().schulden"
                                                ja="vm.getEinkommensverschlechterungGS2_JA().schulden"></dv-bisher>
                                     <dv-error-messages input-id="schulden2" for="vm.form.schulden2.$error"

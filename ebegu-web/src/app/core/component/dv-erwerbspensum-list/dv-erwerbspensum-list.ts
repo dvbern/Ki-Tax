@@ -14,8 +14,8 @@
  */
 
 import {IComponentOptions, IOnInit} from 'angular';
-import TSErwerbspensum from '../../../../models/TSErwerbspensum';
-import TSErwerbspensumContainer from '../../../../models/TSErwerbspensumContainer';
+import {TSErwerbspensum} from '../../../../models/TSErwerbspensum';
+import {TSErwerbspensumContainer} from '../../../../models/TSErwerbspensumContainer';
 
 export class DVErwerbspensumListConfig implements IComponentOptions {
     public transclude = false;

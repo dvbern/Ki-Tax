@@ -16,12 +16,12 @@
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSExternalClientAssignment from '../../../models/TSExternalClientAssignment';
-import TSInstitution from '../../../models/TSInstitution';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import TSInstitutionUpdate from '../../../models/TSInstitutionUpdate';
-import DateUtil from '../../../utils/DateUtil';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
+import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
+import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class InstitutionRS {
 

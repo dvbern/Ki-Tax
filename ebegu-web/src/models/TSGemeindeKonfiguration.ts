@@ -17,14 +17,15 @@
 
 import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
-import EbeguUtil from '../utils/EbeguUtil';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSEinstellungKey} from './enums/TSEinstellungKey';
-import TSEinstellung from './TSEinstellung';
-import TSGesuchsperiode from './TSGesuchsperiode';
+import {TSEinstellung} from './TSEinstellung';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
 
-export default class TSGemeindeKonfiguration {
+export class TSGemeindeKonfiguration {
     public gesuchsperiodeName: string;
+    public gesuchsperiodeStatusName: string;
     public gesuchsperiode: TSGesuchsperiode;
     public konfigKontingentierung: boolean; // only on client
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client

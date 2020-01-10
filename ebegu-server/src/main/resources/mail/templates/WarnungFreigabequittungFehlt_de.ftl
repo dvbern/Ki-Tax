@@ -33,7 +33,7 @@ ${templateConfiguration.mailCss}
         <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">Hier</a>
 		können Sie Ihre Freigabequittung nochmals herunterladen. Bitte schicken Sie uns die unterschriebene
         Freigabequittung umgehend per Post an ${adresse}.
-		Andernfalls gilt Ihr Gesuch nicht nicht als eingereicht, kann nicht bearbeitet werden und wird am
+		Andernfalls gilt Ihr Gesuch als nicht eingereicht, kann nicht bearbeitet werden und wird am
 		${datumLoeschung} automatisch gelöscht.
 	</p>
 	<p>

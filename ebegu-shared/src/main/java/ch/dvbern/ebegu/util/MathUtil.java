@@ -16,6 +16,7 @@ package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,8 +33,8 @@ public enum MathUtil {
 	EINE_NACHKOMMASTELLE(19, 1, RoundingMode.HALF_UP),
 	ZWEI_NACHKOMMASTELLE(19, 2, RoundingMode.HALF_UP),
 	VIER_NACHKOMMASTELLE(19, 4, RoundingMode.HALF_DOWN),
-	DEFAULT(19, 2, RoundingMode.HALF_UP),    // Am Schluss muss immer mit diesem gerechnet werden, da sonst nicht in DB gespeichert werden kann!
-	EXACT(30, 10, RoundingMode.HALF_UP);    // Für Zwischenresultate
+	DEFAULT(19, 2, RoundingMode.HALF_UP),
+	EXACT(30, 10, RoundingMode.HALF_UP);
 
 	private final int precision;
 	private final int scale;
@@ -162,7 +163,7 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
-		@Contract("null->null; !null->!null")
+	@Contract("null->null; !null->!null")
 	public BigDecimal from(@Nullable Double src) {
 		if (src == null) {
 			return null;
@@ -446,5 +447,40 @@ public enum MathUtil {
 	@Nonnull
 	public static BigDecimal toTwoKommastelle(@Nonnull BigDecimal value) {
 		return MathUtil.DEFAULT.from(value);
+	}
+
+	@Nonnull
+	public static BigDecimal minimum(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2) {
+		if (value1.compareTo(value2) > 0) {
+			return value1;
+		}
+		return value2;
+	}
+
+	@Nonnull
+	public static BigDecimal maximum(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2) {
+		if (value1.compareTo(value2) < 0) {
+			return value1;
+		}
+		return value2;
+	}
+
+	@Nonnull
+	public static BigDecimal roundToNearestQuarter(@Nonnull BigDecimal value) {
+		value = MathUtil.GANZZAHL.multiply(value, new BigDecimal(4));
+		return MathUtil.ZWEI_NACHKOMMASTELLE.divide(value, new BigDecimal(4));
+	}
+
+	/**
+	 * Returns TRUE when {@code value1} is equal to {@code value2} within a range of +/- {@code error}.
+	 * The comparison for equality is done by BigDecimals {@link BigDecimal#compareTo(BigDecimal)} method.
+	 */
+	public static boolean isClose(@Nonnull BigDecimal value1, @Nonnull BigDecimal value2, @Nonnull BigDecimal error) {
+		BigDecimal actualDelta = value1.subtract(value2, MathContext.DECIMAL128)
+			.abs()
+			.subtract(error, MathContext.DECIMAL128)
+			.stripTrailingZeros();
+
+		return actualDelta.compareTo(BigDecimal.ZERO) <= 0;
 	}
 }

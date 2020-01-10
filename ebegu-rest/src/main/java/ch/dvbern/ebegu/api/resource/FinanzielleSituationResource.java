@@ -143,12 +143,14 @@ public class FinanzielleSituationResource {
 		String gesuchstellerId = gesuchsteller1.getId();
 		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
-		Boolean antragNurFuerBehinderungszuschlag = familiensituationJA.getAntragNurFuerBehinderungszuschlag();
+		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 
 		requireNonNull(gesuchstellerId);
 		requireNonNull(sozialhilfeBezueger);
 		requireNonNull(gemeinsameSteuererklaerung);
-		requireNonNull(antragNurFuerBehinderungszuschlag);
+		if (sozialhilfeBezueger != Boolean.TRUE) {
+			requireNonNull(verguenstigungGewuenscht);
+		}
 
 		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
 			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId));
@@ -157,7 +159,7 @@ public class FinanzielleSituationResource {
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
 		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(convertedFinSitCont,
-			sozialhilfeBezueger, gemeinsameSteuererklaerung, antragNurFuerBehinderungszuschlag, gesuchId);
+			sozialhilfeBezueger, gemeinsameSteuererklaerung, verguenstigungGewuenscht, gesuchId);
 		return converter.gesuchToJAX(persistedGesuch);
 	}
 

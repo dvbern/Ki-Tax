@@ -41,17 +41,23 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="FINANZIELLE_SITUATION_NETTOLOHN"
+                                <label class="md-no-float required" data-translate="FINANZIELLE_SITUATION_NETTOLOHN"
                                        for="nettolohn"></label>
                                 <dv-valueinput input-id="nettolohn"
                                                name="nettolohn"
                                                ng-model="vm.model.getEkvToWorkWith().nettolohn"
-                                               class="input-element">
+                                               class="input-element" required>
                                 </dv-valueinput>
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().nettolohn"
                                     ja="vm.model.getEkvToWorkWith().nettolohn"
                                     show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
+                                <dv-eingabe-basisjahr
+                                    [neuer-wert]="vm.model.getEkvToWorkWith().nettolohn"
+                                    [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn"
+                                    [basisjahr]="vm.model.getBasisjahr()"
+                                >
+                                </dv-eingabe-basisjahr>
                                 <dv-error-messages input-id="nettolohn"
                                                    for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
@@ -63,7 +69,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="familienzulage">
+                                <label class="md-no-float required" for="familienzulage">
                                     <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
                                     <dv-tooltip input-id="familienzulage"
                                                 text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
@@ -72,8 +78,14 @@
                                     <dv-valueinput input-id="familienzulage"
                                                    name="familienzulage"
                                                    ng-model="vm.model.getEkvToWorkWith().familienzulage"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.model.getEkvToWorkWith().familienzulage"
+                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.familienzulage"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().familienzulage"
                                         ja="vm.model.getEkvToWorkWith().familienzulage"
@@ -89,7 +101,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="ersatzeinkommen">
+                                <label class="md-no-float required" for="ersatzeinkommen">
                                     <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN"></span>
                                     <dv-tooltip input-id="ersatzeinkommen"
                                                 text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
@@ -97,8 +109,14 @@
                                 <dv-valueinput input-id="ersatzeinkommen"
                                                name="ersatzeinkommen"
                                                ng-model="vm.model.getEkvToWorkWith().ersatzeinkommen"
-                                               class="input-element">
+                                               class="input-element" required>
                                 </dv-valueinput>
+                                <dv-eingabe-basisjahr
+                                    [neuer-wert]="vm.model.getEkvToWorkWith().ersatzeinkommen"
+                                    [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommen"
+                                    [basisjahr]="vm.model.getBasisjahr()"
+                                >
+                                </dv-eingabe-basisjahr>
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommen"
                                     ja="vm.model.getEkvToWorkWith().ersatzeinkommen"
@@ -113,7 +131,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="erhalteneAlimente">
+                                <label class="md-no-float required" for="erhalteneAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
                                     <dv-tooltip input-id="erhalteneAlimente"
                                                 text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
@@ -122,8 +140,14 @@
                                     <dv-valueinput input-id="erhalteneAlimente"
                                                    name="erhalteneAlimente"
                                                    ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.model.getEkvToWorkWith().erhalteneAlimente"
+                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.erhalteneAlimente"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
                                         ja="vm.model.getEkvToWorkWith().erhalteneAlimente"
@@ -169,7 +193,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHR"
                                            for="geschaeftsgewinnBasisjahr"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
                                                    name="geschaeftsgewinnBasisjahr"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr"
@@ -197,7 +221,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus1"
@@ -217,7 +241,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahrMinus1"
@@ -244,7 +268,7 @@
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
                                            for="geschaeftsgewinnBasisjahrMinus2"
-                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()-2}}}"></label>
+                                           translate-values="{basisjahr: {{vm.model.getBasisjahr()-2}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
                                                    name="geschaeftsgewinnBasisjahrMinus2"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus2"
@@ -295,7 +319,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="geleisteteAlimente">
+                                <label class="md-no-float required" for="geleisteteAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
                                     <dv-tooltip input-id="geleisteteAlimente"
                                                 text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
@@ -304,8 +328,14 @@
                                     <dv-valueinput input-id="geleisteteAlimente"
                                                    name="geleisteteAlimente"
                                                    ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
+                                    <dv-eingabe-basisjahr
+                                        [neuer-wert]="vm.model.getEkvToWorkWith().geleisteteAlimente"
+                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.geleisteteAlimente"
+                                        [basisjahr]="vm.model.getBasisjahr()"
+                                    >
+                                    </dv-eingabe-basisjahr>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
                                         ja="vm.model.getEkvToWorkWith().geleisteteAlimente"

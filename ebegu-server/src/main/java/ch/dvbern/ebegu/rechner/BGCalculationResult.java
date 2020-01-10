@@ -18,12 +18,16 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
+
+import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
 
 public class BGCalculationResult {
 
@@ -45,20 +49,30 @@ public class BGCalculationResult {
 	private BigDecimal anspruchsberechtigteAnzahlZeiteinheiten = BigDecimal.ZERO;
 	@Nonnull
 	private PensumUnits zeiteinheit = PensumUnits.DAYS;
+	@Nonnull
+	private BigDecimal betreuungspensumZeiteinheit = BigDecimal.ZERO;
+	@Nonnull
+	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
 
 	public void toVerfuegungZeitabschnitt(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		zeitabschnitt.setMinimalerElternbeitrag(minimalerElternbeitrag);
-		zeitabschnitt
-			.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
-		zeitabschnitt
-			.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungOhneBeruecksichtigungVollkosten);
-		zeitabschnitt.setVerguenstigung(verguenstigung);
-		zeitabschnitt.setVollkosten(vollkosten);
-		zeitabschnitt.setElternbeitrag(elternbeitrag);
+		zeitabschnitt.setMinimalerElternbeitrag(roundToFrankenRappen(minimalerElternbeitrag));
+		zeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(
+				roundToFrankenRappen(verguenstigungOhneBeruecksichtigungMinimalbeitrag));
+		zeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
+				roundToFrankenRappen(verguenstigungOhneBeruecksichtigungVollkosten));
+		zeitabschnitt.setVerguenstigung(roundToFrankenRappen(verguenstigung));
+		zeitabschnitt.setVollkosten(roundToFrankenRappen(vollkosten));
+		zeitabschnitt.setElternbeitrag(roundToFrankenRappen(elternbeitrag));
 
-		zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(verfuegteAnzahlZeiteinheiten);
-		zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(anspruchsberechtigteAnzahlZeiteinheiten);
+		zeitabschnitt.setBetreuungspensumZeiteinheit(
+			zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit));
+		zeitabschnitt.setVerfuegteAnzahlZeiteinheiten(
+			zeiteinheitenRoundingStrategy.apply(verfuegteAnzahlZeiteinheiten));
+		zeitabschnitt.setAnspruchsberechtigteAnzahlZeiteinheiten(
+			zeiteinheitenRoundingStrategy.apply(anspruchsberechtigteAnzahlZeiteinheiten));
+
 		zeitabschnitt.setZeiteinheit(zeiteinheit);
+
 	}
 
 	@Override
@@ -76,6 +90,7 @@ public class BGCalculationResult {
 			.add("verfuegteAnzahlZeiteinheiten", verfuegteAnzahlZeiteinheiten)
 			.add("anspruchsberechtigteAnzahlZeiteinheiten", anspruchsberechtigteAnzahlZeiteinheiten)
 			.add("zeiteinheit", zeiteinheit)
+			.add("betreuungspensumZeiteinheit", betreuungspensumZeiteinheit)
 			.toString();
 	}
 
@@ -161,5 +176,23 @@ public class BGCalculationResult {
 
 	public void setZeiteinheit(@Nonnull PensumUnits zeiteinheit) {
 		this.zeiteinheit = zeiteinheit;
+	}
+
+	@Nonnull
+	public BigDecimal getBetreuungspensumZeiteinheit() {
+		return betreuungspensumZeiteinheit;
+	}
+
+	public void setBetreuungspensumZeiteinheit(@Nonnull BigDecimal betreuungspensumZeiteinheit) {
+		this.betreuungspensumZeiteinheit = betreuungspensumZeiteinheit;
+	}
+
+	@Nonnull
+	public Function<BigDecimal, BigDecimal> getZeiteinheitenRoundingStrategy() {
+		return zeiteinheitenRoundingStrategy;
+	}
+
+	public void setZeiteinheitenRoundingStrategy(@Nonnull Function<BigDecimal, BigDecimal> strategy) {
+		this.zeiteinheitenRoundingStrategy = strategy;
 	}
 }

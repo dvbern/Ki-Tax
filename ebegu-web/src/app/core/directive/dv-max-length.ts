@@ -15,7 +15,7 @@
 
 import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 
-export default class DVMaxLength implements IDirective {
+export class DVMaxLength implements IDirective {
     public static $inject = ['CONSTANTS'];
 
     public restrict = 'A';

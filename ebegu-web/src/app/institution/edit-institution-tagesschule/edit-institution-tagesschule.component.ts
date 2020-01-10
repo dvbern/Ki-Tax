@@ -19,21 +19,22 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import {getTSModulTagesschuleTypen, TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
-import TSEinstellungenTagesschule from '../../../models/TSEinstellungenTagesschule';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
-import TSModulTagesschule from '../../../models/TSModulTagesschule';
-import TSModulTagesschuleGroup from '../../../models/TSModulTagesschuleGroup';
-import TSTextRessource from '../../../models/TSTextRessource';
-import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
+import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {TSTextRessource} from '../../../models/TSTextRessource';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
@@ -61,6 +62,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     public ngOnInit(): void {
         this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
             this.gemeindeList = allGemeinden;
+        });
+        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
+            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
     }
 
@@ -131,6 +135,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         } else {
             einstellungenTagesschule.modulTagesschuleGroups.push(group);
         }
+        einstellungenTagesschule.modulTagesschuleGroups =
+            TagesschuleUtil.sortModulTagesschuleGroups(einstellungenTagesschule.modulTagesschuleGroups);
         // This is a trick to force the list of module to reload when we add an element:
         const element = document.getElementById('typ' + einstellungenTagesschule.id);
         element.focus();
@@ -276,5 +282,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             return `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
         return this.translate.instant(group.modulTagesschuleName);
+    }
+
+    public trackById(einstellungGP: TSEinstellungenTagesschule): string {
+        return einstellungGP.id;
+    }
+
+    public trackByIdentifier(group: TSModulTagesschuleGroup): string {
+        return group.identifier;
     }
 }

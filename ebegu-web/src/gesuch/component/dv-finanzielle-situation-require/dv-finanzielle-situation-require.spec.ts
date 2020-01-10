@@ -17,7 +17,7 @@ import ADMIN_JS_MODULE from '../../../admin/admin.module';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import GesuchModelManager from '../../service/gesuchModelManager';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {DVFinanzielleSituationRequireController} from './dv-finanzielle-situation-require';
 
 // tslint:disable:max-line-length
@@ -56,17 +56,17 @@ describe('finanzielleSituationRequire', () => {
             controller.setFinanziellesituationRequired();
             expect(controller.finanzielleSituationRequired).toBe(false);
         });
-        it('should be true when not sozialhilfeBezueger and not antragNurFuerBehinderungszuschlag',
+        it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
             () => {
                 controller.sozialhilfeBezueger = false;
-                controller.antragNurFuerBehinderungszuschlag = false;
+                controller.verguenstigungGewuenscht = true;
                 controller.setFinanziellesituationRequired();
                 expect(controller.finanzielleSituationRequired).toBe(true);
             });
-        it('should be true when not sozialhilfeBezueger and antragNurFuerBehinderungszuschlag',
+        it('should be true when not sozialhilfeBezueger and not verguenstigungGewuenscht',
             () => {
                 controller.sozialhilfeBezueger = false;
-                controller.antragNurFuerBehinderungszuschlag = true;
+                controller.verguenstigungGewuenscht = false;
                 controller.setFinanziellesituationRequired();
                 expect(controller.finanzielleSituationRequired).toBe(false);
             });

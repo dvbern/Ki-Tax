@@ -16,9 +16,9 @@
  */
 
 import {TSExternalClientType} from './enums/TSExternalClienType';
-import TSAbstractEntity from './TSAbstractEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-export default class TSExternalClient extends TSAbstractEntity {
+export class TSExternalClient extends TSAbstractEntity {
     public clientName: string;
     public type: TSExternalClientType;
 }

@@ -22,6 +22,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -52,7 +53,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 
@@ -60,11 +61,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		// - Sozialhilfeempfaenger: Wir rechnen mit Einkommen = 0
 		// - Keine Vergünstigung gewünscht: Wir rechnen mit dem Maximalen Einkommen
 
-		Familiensituation familiensituation = betreuung.extractGesuch().extractFamiliensituation();
+		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		boolean keineFinSitErfasst = false;
 		if (familiensituation != null) {
-			keineFinSitErfasst = Boolean.TRUE.equals(familiensituation.getAntragNurFuerBehinderungszuschlag());
-			int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
+			keineFinSitErfasst = Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
+			int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 			if (Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
@@ -74,47 +75,52 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			}
 			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
 			// aus. Da Anspruch auf die Pauschale besteht, wird das Anspruchberechtigte Pensum nicht auf 0 gesetzt!
-			if (keineFinSitErfasst && Boolean.TRUE.equals(betreuung.hasErweiterteBetreuung())) {
-				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
-				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
-				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				verfuegungZeitabschnitt.addBemerkung(
-					RuleKey.EINKOMMEN,
-					MsgKey.EINKOMMEN_MSG,
-					getLocale(),
-					NumberFormat.getInstance().format(maximalesEinkommen));
-				return;
+			// Dies betrifft nur Betreuungsgutscheine
+			if (platz.getBetreuungsangebotTyp().isJugendamt()) {
+				Betreuung betreuung = (Betreuung) platz;
+				if (keineFinSitErfasst && Boolean.TRUE.equals(betreuung.hasErweiterteBetreuung())) {
+					verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
+					verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
+					verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMEN_MSG,
+						getLocale(),
+						NumberFormat.getInstance().format(maximalesEinkommen));
+					return;
+				}
 			}
 		}
 
 		// Die Finanzdaten berechnen
 		FinanzDatenDTO finanzDatenDTO;
 		if (verfuegungZeitabschnitt.isHasSecondGesuchstellerForFinanzielleSituation()) {
-			finanzDatenDTO = betreuung.extractGesuch().getFinanzDatenDTO_zuZweit();
+			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_zuZweit();
 			setMassgebendesEinkommen(
 				verfuegungZeitabschnitt.isEkv1ZuZweit(),
 				verfuegungZeitabschnitt.isEkv2ZuZweit(),
 				finanzDatenDTO,
 				verfuegungZeitabschnitt,
-				betreuung,
+				platz,
 				getLocale());
 		} else {
-			finanzDatenDTO = betreuung.extractGesuch().getFinanzDatenDTO_alleine();
+			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_alleine();
 			setMassgebendesEinkommen(
 				verfuegungZeitabschnitt.isEkv1Alleine(),
 				verfuegungZeitabschnitt.isEkv2Alleine(),
 				finanzDatenDTO,
 				verfuegungZeitabschnitt,
-				betreuung,
+				platz,
 				getLocale());
 		}
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
-		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
+		if (requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (keineFinSitErfasst || verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
-				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+					Betreuung betreuung = (Betreuung) platz;
 					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
 					verfuegungZeitabschnitt.addBemerkung(
 						RuleKey.EINKOMMEN,
@@ -142,7 +148,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		boolean isEkv2,
 		FinanzDatenDTO finanzDatenDTO,
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		Betreuung betreuung,
+		AbstractPlatz betreuung,
 		@Nonnull Locale locale
 	) {
 		int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();

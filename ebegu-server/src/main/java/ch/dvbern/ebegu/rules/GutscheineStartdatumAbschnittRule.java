@@ -24,7 +24,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -37,14 +37,14 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
-		@Nonnull Betreuung betreuung) {
+		@Nonnull AbstractPlatz platz) {
 
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 
 		LocalDate startdatum =
-			betreuung.extractGesuch().getDossier().getGemeinde().getBetreuungsgutscheineStartdatum();
+			platz.extractGesuch().getDossier().getGemeinde().getBetreuungsgutscheineStartdatum();
 
-		DateRange gueltigkeit = betreuung.extractGesuchsperiode().getGueltigkeit();
+		DateRange gueltigkeit = platz.extractGesuchsperiode().getGueltigkeit();
 
 		if (gueltigkeit.endsBefore(startdatum)) {
 			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, false));

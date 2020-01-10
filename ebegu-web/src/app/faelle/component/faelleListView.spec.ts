@@ -17,19 +17,19 @@
 
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, ILogService, IQService, IScope} from 'angular';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GesuchModelManager from '../../../gesuch/service/gesuchModelManager';
-import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import SearchRS from '../../../gesuch/service/searchRS.rest';
-import WizardStepManager from '../../../gesuch/service/wizardStepManager';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
+import {SearchRS} from '../../../gesuch/service/searchRS.rest';
+import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import TSAntragDTO from '../../../models/TSAntragDTO';
-import TSAntragSearchresultDTO from '../../../models/TSAntragSearchresultDTO';
-import TSGesuch from '../../../models/TSGesuch';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSAntragDTO} from '../../../models/TSAntragDTO';
+import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
+import {TSGesuch} from '../../../models/TSGesuch';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {FAELLE_JS_MODULE} from '../faelle.module';
 import {FaelleListViewController} from './faelleListView';
 

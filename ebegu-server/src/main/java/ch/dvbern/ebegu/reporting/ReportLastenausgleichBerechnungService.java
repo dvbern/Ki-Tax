@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.reporting;
 
-import java.time.LocalDate;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -25,12 +24,17 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
-public interface ReportLastenausgleichKibonService {
+public interface ReportLastenausgleichBerechnungService {
 
 	@Nonnull
 	UploadFileInfo generateExcelReportLastenausgleichKibon(
-		@Nonnull LocalDate dateFrom,
+		@Nonnull String lastenausgleichId,
 		@Nonnull Locale locale
 	) throws ExcelMergeException;
+
+	@Nonnull
+	UploadFileInfo generateCSVReportLastenausgleichKibon(
+		@Nonnull String lastenausgleichId
+	);
 
 }

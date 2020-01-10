@@ -15,14 +15,14 @@
 
 import {IHttpBackendService, IQService, IRootScopeService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import TSBetreuung from '../../../models/TSBetreuung';
-import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
-import TSDossier from '../../../models/TSDossier';
-import TSFall from '../../../models/TSFall';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
+import {TSDossier} from '../../../models/TSDossier';
+import {TSFall} from '../../../models/TSFall';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import MitteilungRS from './mitteilungRS.rest';
+import {MitteilungRS} from './mitteilungRS.rest';
 
 describe('MitteilungRS', () => {
 

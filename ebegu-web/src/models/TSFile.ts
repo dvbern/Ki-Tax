@@ -15,7 +15,7 @@
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-export default class TSFile extends TSAbstractMutableEntity {
+export class TSFile extends TSAbstractMutableEntity {
 
     private _filename: string;
 

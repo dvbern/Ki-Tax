@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -41,12 +41,12 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		// Fuer Kleinkinderangebote den Restanspruch bereucksichtigen
-		requireNonNull(betreuung.getBetreuungsangebotTyp());
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		requireNonNull(platz.getBetreuungsangebotTyp());
+		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getAnspruchspensumRest();
 			//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben

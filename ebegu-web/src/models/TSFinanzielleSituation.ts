@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSAbstractFinanzielleSituation from './TSAbstractFinanzielleSituation';
+import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
-export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
+export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;

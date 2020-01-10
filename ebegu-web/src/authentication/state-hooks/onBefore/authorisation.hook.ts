@@ -21,7 +21,7 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {hasFromState} from '../../../dvbModules/router/route-helper-provider';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../../utils/AuthenticationUtil';
-import AuthServiceRS from '../../service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 import {OnBeforePriorities} from './onBeforePriorities';
 
 /**

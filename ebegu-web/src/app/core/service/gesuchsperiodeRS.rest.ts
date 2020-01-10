@@ -14,13 +14,13 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
-import GlobalCacheService from '../../../gesuch/service/globalCacheService';
+import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export default class GesuchsperiodeRS {
+export class GesuchsperiodeRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$q', 'GlobalCacheService'];
     public serviceURL: string;

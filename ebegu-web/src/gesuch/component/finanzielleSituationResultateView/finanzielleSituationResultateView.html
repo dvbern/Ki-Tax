@@ -54,7 +54,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="bruttovermoegen1">
+                                <label class="md-no-float required" for="bruttovermoegen1">
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_1"
                                           translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
                                     <dv-tooltip input-id="bruttovermoegen1"
@@ -65,7 +65,7 @@
                                                    aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_1'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
                                                    class="input-element"
-                                                   dv-on-blur="vm.calculate()">
+                                                   dv-on-blur="vm.calculate()" required>
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.bruttovermoegen"
@@ -81,7 +81,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium" ng-if="vm.showGS2()">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="bruttovermoegen2">
+                                <label class="md-no-float required" for="bruttovermoegen2">
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_2"
                                           translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
                                     <dv-tooltip input-id="bruttovermoegen2"
@@ -92,7 +92,7 @@
                                                    aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_2'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
                                                    dv-on-blur="vm.calculate()"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.bruttovermoegen"
@@ -108,7 +108,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="schulden1">
+                                <label class="md-no-float required" for="schulden1">
                                     <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_1"
                                           translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
                                     <dv-tooltip input-id="schulden1"
@@ -119,7 +119,7 @@
                                                    aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_1'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
                                                    dv-on-blur="vm.calculate()"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.schulden"
                                                ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"></dv-bisher>
@@ -135,7 +135,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium" ng-if="vm.showGS2()">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="schulden2">
+                                <label class="md-no-float required" for="schulden2">
                                     <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_2"
                                           translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
                                     <dv-tooltip input-id="schulden2"
@@ -146,7 +146,7 @@
                                                    aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_2'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
                                                    dv-on-blur="vm.calculate()"
-                                                   class="input-element">
+                                                   class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.schulden"
                                                ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"></dv-bisher>

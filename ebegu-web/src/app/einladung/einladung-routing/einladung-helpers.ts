@@ -10,7 +10,7 @@
 
 import {RedirectToResult, TargetState, Transition} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSEinladungTyp} from '../../../models/enums/TSEinladungTyp';
 
 export function getEntityTargetState(transition: Transition): TargetState {

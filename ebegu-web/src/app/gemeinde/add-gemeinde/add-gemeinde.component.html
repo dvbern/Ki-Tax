@@ -89,7 +89,7 @@
                                        required>
                                 <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
                                 <mat-datepicker #begu_start></mat-datepicker>
-                                <dv-error-messages inputid="begu_start_ID"
+                                <dv-error-messages input-id="begu_start_ID"
                                                    [errorObject]="form.controls.begu_start?.errors">
                                 </dv-error-messages>
                             </div>
@@ -115,7 +115,7 @@
                                    [(ngModel)]="adminMail"
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
-                                               inputid="admin_mail_ID">
+                                               input-id="admin_mail_ID">
                             </dv-error-messages>
                         </div>
                     </div>

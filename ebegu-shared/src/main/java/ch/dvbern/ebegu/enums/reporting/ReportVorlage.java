@@ -120,11 +120,17 @@ public enum ReportVorlage {
 		Constants.DATA,
 		MergeFieldVerrechnungKibon.class
 	),
-	VORLAGE_REPORT_LASTENAUSGLEICH_KIBON(
-		"/reporting/LastenausgleichKibon.xlsx",
-		ReportFileName.LASTENAUSGLEICH_KIBON,
+	VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT(
+		"/reporting/LastenausgleichSelbstbehalt.xlsx",
+		ReportFileName.LASTENAUSGLEICH_SELBSTBEHALT,
 		Constants.DATA,
-		MergeFieldLastenausgleichKibon.class
+		MergeFieldLastenausgleichSelbstbehalt.class
+	),
+	VORLAGE_REPORT_LASTENAUSGLEICH_BERECHNUNG(
+		"/reporting/LastenausgleichBerechnung.xlsx",
+		ReportFileName.LASTENAUSGLEICH_BERECHNUNG,
+		Constants.DATA,
+		MergeFieldLastenausgleichBerechnung.class
 	);
 
 	@Nonnull
