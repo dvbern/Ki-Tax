@@ -314,7 +314,8 @@ public class PDFServiceBean implements PDFService {
 		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 
-		AnmeldebestaetigungTSPDFGenerator.Art art = mitTarif ? AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF : AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF;
+		AnmeldebestaetigungTSPDFGenerator.Art art = mitTarif ? AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF :
+			AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF;
 		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
 			stammdaten, art , anmeldungTagesschule);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
