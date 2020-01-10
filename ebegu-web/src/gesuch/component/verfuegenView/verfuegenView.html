@@ -278,6 +278,23 @@
                             </table>
                         </div>
                     </div>
+                    <!--VerfuegungPDF anzeigen-->
+                    <div class="row marginTop20 text-left">
+                        <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN"></span>
+                            </button>
+                        </div>
+                        <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungMitTarifPdfLink()">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openAnmeldebestaetigungMitTarifPDF()">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tabelle -->

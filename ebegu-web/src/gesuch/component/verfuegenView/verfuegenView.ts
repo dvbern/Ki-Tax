@@ -609,4 +609,31 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         return undefined;
     }
+
+    public showAnmeldebestaetigungOhneTarifPdfLink(): boolean {
+        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+    }
+
+    public showAnmeldebestaetigungMitTarifPdfLink(): boolean {
+        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+    }
+
+    public openAnmeldebestaetigungOhneTarifPDF(): void {
+        this.openAnmeldebestaetigungPDF(false);
+    }
+
+    public openAnmeldebestaetigungMitTarifPDF(): void {
+       this.openAnmeldebestaetigungPDF(true);
+    }
+
+    private openAnmeldebestaetigungPDF(mitTarif: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenAnmeldebestaetigungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
+            this.getBetreuung().id, false, mitTarif)
+            .then((downloadFile: TSDownloadFile) => {
+                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(ex => EbeguUtil.handleDownloadError(win, ex));
+    }
 }
