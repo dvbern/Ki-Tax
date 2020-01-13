@@ -30,14 +30,14 @@ describe('OnboardingNeuBenutzerComponent', () => {
     let component: OnboardingNeuBenutzerComponent;
     let fixture: ComponentFixture<OnboardingNeuBenutzerComponent>;
 
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveUndVonSchulverbundGemeinden']);
     const applicationPropertyRSSpy =
         jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
-        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
+        gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden.and.returnValue(of([]).toPromise());
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
 
         TestBed.configureTestingModule({
@@ -67,7 +67,7 @@ describe('OnboardingNeuBenutzerComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load all active Gemeinden', () => {
-        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
+    it('should load all active und von Schulverbund Gemeinden', () => {
+        expect(gemeindeRSSpy.getAktiveUndVonSchulverbundGemeinden).toHaveBeenCalled();
     });
 });

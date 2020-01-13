@@ -31,6 +31,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -394,5 +395,34 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		Gemeinde gemeinde = persistence.getCriteriaSingleResult(query);
 
 		return Optional.ofNullable(gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	public List<BfsGemeinde> findGemeindeVonVerbund(@Nonnull Long verbundBfsNummer) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
+		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+
+		Join<Object, Object> join = root.join(BfsGemeinde_.VERBUND);
+
+		Predicate predicateBFSVerbund = cb.equal(join.get(BfsGemeinde_.BFS_NUMMER), verbundBfsNummer);
+		query.where(predicateBFSVerbund);
+		List<BfsGemeinde> gemeindenVonVerbund = persistence.getCriteriaResults(query);
+
+		return gemeindenVonVerbund;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<BfsGemeinde> findBfsGemeinde(@Nonnull Long bfsNummer) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
+		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+		Predicate predicateBFSVerbund = cb.equal(root.get(BfsGemeinde_.BFS_NUMMER), bfsNummer);
+		query.where(predicateBFSVerbund);
+		BfsGemeinde bfsGemeinde = persistence.getCriteriaSingleResult(query);
+
+		return Optional.ofNullable(bfsGemeinde);
 	}
 }
