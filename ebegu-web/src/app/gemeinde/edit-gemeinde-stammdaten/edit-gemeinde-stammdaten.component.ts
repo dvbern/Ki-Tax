@@ -25,6 +25,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
+import { CONSTANTS } from '../../core/constants/CONSTANTS';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 
@@ -41,6 +42,8 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
+
+    public readonly CONSTANTS = CONSTANTS;
 
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
