@@ -59,8 +59,8 @@ public final class AbschlussNormalizer {
 				if (!keepMonate || isSameMonth(zeitabschnitt, lastZeitabschnitt)) {
 					lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 					// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-					if (zeitabschnitt.getBemerkungenMap() != null && !zeitabschnitt.getBemerkungenMap().isEmpty()) {
-						lastZeitabschnitt.mergeBemerkungenMap(zeitabschnitt.getBemerkungenMap());
+					if (zeitabschnitt.getBgCalculationInput().getBemerkungenMap() != null && !zeitabschnitt.getBgCalculationInput().getBemerkungenMap().isEmpty()) {
+						lastZeitabschnitt.getBgCalculationInput().mergeBemerkungenMap(zeitabschnitt.getBgCalculationInput().getBemerkungenMap());
 					}
 					validZeitabschnitte.remove(indexOfLast);
 					validZeitabschnitte.add(lastZeitabschnitt);

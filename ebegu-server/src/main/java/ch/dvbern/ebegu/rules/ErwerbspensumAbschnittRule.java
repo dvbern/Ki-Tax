@@ -105,16 +105,16 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	@Nonnull
 	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS1(erwerbspensum.getPensum());
+		zeitabschnitt.getBgCalculationInput().getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
+		zeitabschnitt.getBgCalculationInput().setErwerbspensumGS1(erwerbspensum.getPensum());
 		return zeitabschnitt;
 	}
 
 	@Nonnull
 	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS2(erwerbspensum.getPensum());
+		zeitabschnitt.getBgCalculationInput().getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
+		zeitabschnitt.getBgCalculationInput().setErwerbspensumGS2(erwerbspensum.getPensum());
 		return zeitabschnitt;
 	}
 }

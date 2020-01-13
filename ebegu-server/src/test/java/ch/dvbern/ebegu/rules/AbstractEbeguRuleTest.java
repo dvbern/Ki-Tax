@@ -336,8 +336,8 @@ public class AbstractEbeguRuleTest {
 
 	private VerfuegungZeitabschnitt createErwerbspensum(LocalDate von, LocalDate bis, int pensum) {
 		VerfuegungZeitabschnitt zeitabschnitt1 = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt1.setErwerbspensumGS1(pensum);
-		zeitabschnitt1.setErwerbspensumGS2(0);
+		zeitabschnitt1.getBgCalculationInput().setErwerbspensumGS1(pensum);
+		zeitabschnitt1.getBgCalculationInput().setErwerbspensumGS2(0);
 		return zeitabschnitt1;
 	}
 

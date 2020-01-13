@@ -63,9 +63,9 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
 				// EKV1 fuer alleine erfasst
-				abschnittEinkommensverschlechterung1.setEkv1Alleine(finanzDatenDTOAlleine.isEkv1Erfasst());
+				abschnittEinkommensverschlechterung1.getBgCalculationInput().setEkv1Alleine(finanzDatenDTOAlleine.isEkv1Erfasst());
 				// EKV1 fuer zu Zweit erfasst
-				abschnittEinkommensverschlechterung1.setEkv1ZuZweit(finanzDatenDTOZuZweit.isEkv1Erfasst());
+				abschnittEinkommensverschlechterung1.getBgCalculationInput().setEkv1ZuZweit(finanzDatenDTOZuZweit.isEkv1Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung1);
 				// Den vorherigen Zeitabschnitt erst nach der EKV 1 beginnen
@@ -80,9 +80,9 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
 
 				// EKV2 fuer alleine erfasst
-				abschnittEinkommensverschlechterung2.setEkv2Alleine(finanzDatenDTOAlleine.isEkv2Erfasst());
+				abschnittEinkommensverschlechterung2.getBgCalculationInput().setEkv2Alleine(finanzDatenDTOAlleine.isEkv2Erfasst());
 				// EKV2 fuer zu Zweit erfasst
-				abschnittEinkommensverschlechterung2.setEkv2ZuZweit(finanzDatenDTOZuZweit.isEkv2Erfasst());
+				abschnittEinkommensverschlechterung2.getBgCalculationInput().setEkv2ZuZweit(finanzDatenDTOZuZweit.isEkv2Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung2);
 				// Den vorherigen Zeitabschnitt beenden

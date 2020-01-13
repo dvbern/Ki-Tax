@@ -87,7 +87,7 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 
 		final VerfuegungZeitabschnitt zeitabschnitt2 = new VerfuegungZeitabschnitt(
 			new DateRange(volltarifStart, volltarifEnd));
-		zeitabschnitt2.setLongAbwesenheit(true);
+		zeitabschnitt2.getBgCalculationInput().setLongAbwesenheit(true);
 		return zeitabschnitt2;
 	}
 

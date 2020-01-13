@@ -158,7 +158,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	@Nonnull
 	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
+		zeitabschnitt.getBgCalculationInput().setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
 		zeitabschnitt.setAnspruchberechtigtesPensum(100);
 		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
 		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(100));

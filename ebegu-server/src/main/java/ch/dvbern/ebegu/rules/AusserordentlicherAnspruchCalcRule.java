@@ -44,12 +44,12 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 	) {
 		platz.getBetreuungsangebotTyp();
 		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getAusserordentlicherAnspruch();
+			int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getBgCalculationInput().getAusserordentlicherAnspruch();
 			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			// Es wird der grössere der beiden Werte genommen!
 			if (ausserordentlicherAnspruch > pensumAnspruch) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(ausserordentlicherAnspruch);
-				verfuegungZeitabschnitt.addBemerkung(
+				verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
 					RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
 					MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
 					getLocale());

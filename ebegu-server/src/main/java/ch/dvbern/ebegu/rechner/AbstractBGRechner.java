@@ -50,7 +50,7 @@ public abstract class AbstractBGRechner {
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
-		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getBgCalculationInput().getMonatlicheBetreuungskosten();
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
@@ -64,7 +64,7 @@ public abstract class AbstractBGRechner {
 			eingeschult,
 			besonderebeduerfnisse,
 			massgebendesEinkommen,
-			verfuegungZeitabschnitt.isBezahltVollkosten());
+			verfuegungZeitabschnitt.getBgCalculationInput().isBezahltVollkosten());
 
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 

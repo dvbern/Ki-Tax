@@ -67,8 +67,8 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 						// gefuehrt
 						int anspruchVorRegel = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 						verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-						verfuegungZeitabschnitt.setAnspruchspensumRest(anspruchVorRegel);
-						verfuegungZeitabschnitt.addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
+						verfuegungZeitabschnitt.getBgCalculationInput().setAnspruchspensumRest(anspruchVorRegel);
+						verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
 					}
 				}
 			}

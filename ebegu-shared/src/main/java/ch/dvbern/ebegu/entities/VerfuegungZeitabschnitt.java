@@ -17,14 +17,10 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,12 +38,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -65,75 +61,19 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	private static final long serialVersionUID = 7250339356897563374L;
 
+	@Transient
+	private BGCalculationInput bgCalculationInput;
+
+	public BGCalculationInput getBgCalculationInput() {
+		return bgCalculationInput;
+	}
+
+	public void setBgCalculationInput(BGCalculationInput bgCalculationInput) {
+		this.bgCalculationInput = bgCalculationInput;
+	}
+
 	// Zwischenresulate aus DATA-Rules ("Abschnitt")
 
-	@Transient
-	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
-
-	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
-	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
-	@Transient
-	private boolean sameAusbezahlteVerguenstigung;
-
-	@Transient
-	@Nullable
-	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
-
-	@Transient
-	@Nullable
-	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
-
-	@Transient
-	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
-
-	@Transient
-	private int fachstellenpensum;
-
-	@Transient
-	private int ausserordentlicherAnspruch;
-
-	@Transient
-	//es muss by default null sein um zu wissen, wann es nicht definiert wurde
-	private Boolean wohnsitzNichtInGemeindeGS1 = null;
-
-	@Transient
-	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
-	private boolean bezahltVollkosten;
-
-	@Transient
-	private boolean longAbwesenheit;
-
-	@Transient
-	private int anspruchspensumRest;
-
-	@Transient
-	// Achtung, dieses Flag wird erst ab 1. des Folgemonats gesetzt, weil die Finanzielle Situation ab dann gilt. Für
-	// Erwerbspensen zählt der GS2 ab sofort!
-	private boolean hasSecondGesuchstellerForFinanzielleSituation;
-
-	@Transient
-	private boolean ekv1Alleine;
-
-	@Transient
-	private boolean ekv1ZuZweit;
-
-	@Transient
-	private boolean ekv2Alleine;
-
-	@Transient
-	private boolean ekv2ZuZweit;
-
-	@Transient
-	private boolean kategorieMaxEinkommen = false;
-
-	@Transient
-	private boolean kategorieKeinPensum = false;
-
-	@Transient
-	private boolean abschnittLiegtNachBEGUStartdatum = true;
-
-	@Transient
-	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
 	@Column(nullable = false)
 	private @Min(0) @NotNull BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
@@ -191,12 +131,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = false)
 	private @NotNull Integer einkommensjahr;
 
-	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
-	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
-	// "bemerkungen" geschrieben
-	@Transient
-	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
-
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
@@ -240,19 +174,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod" })
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
-		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
-		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
-		this.taetigkeiten = toCopy.taetigkeiten;
-		this.fachstellenpensum = toCopy.fachstellenpensum;
-		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
+		this.bgCalculationInput = new BGCalculationInput(toCopy.bgCalculationInput);
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
-		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
-		this.bezahltVollkosten = toCopy.bezahltVollkosten;
-		this.longAbwesenheit = toCopy.isLongAbwesenheit();
-		this.anspruchspensumRest = toCopy.anspruchspensumRest;
 		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
-		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.anspruchberechtigtesPensum = toCopy.anspruchberechtigtesPensum;
 		this.verfuegteAnzahlZeiteinheiten = toCopy.verfuegteAnzahlZeiteinheiten;
 		this.anspruchsberechtigteAnzahlZeiteinheiten = toCopy.anspruchsberechtigteAnzahlZeiteinheiten;
@@ -267,20 +192,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setAbzugFamGroesse(toCopy.getAbzugFamGroesse());
 		this.setFamGroesse(toCopy.getFamGroesse());
 		this.setMassgebendesEinkommenVorAbzugFamgr(toCopy.getMassgebendesEinkommenVorAbzFamgr());
-		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.einkommensjahr = toCopy.einkommensjahr;
-		this.ekv1Alleine = toCopy.ekv1Alleine;
-		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
-		this.ekv2Alleine = toCopy.ekv2Alleine;
-		this.ekv2ZuZweit = toCopy.ekv2ZuZweit;
 		this.bemerkungen = toCopy.bemerkungen;
-		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
-		this.kategorieMaxEinkommen = toCopy.kategorieMaxEinkommen;
-		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
-		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
 		this.babyTarif = toCopy.babyTarif;
 		this.eingeschult = toCopy.eingeschult;
 		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
@@ -305,32 +221,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// Vorgaenger hat
 	}
 
-	@Nullable
-	public Integer getErwerbspensumGS1() {
-		return erwerbspensumGS1;
-	}
-
-	public void setErwerbspensumGS1(@Nullable Integer erwerbspensumGS1) {
-		this.erwerbspensumGS1 = erwerbspensumGS1;
-	}
-
-	@Nullable
-	public Integer getErwerbspensumGS2() {
-		return erwerbspensumGS2;
-	}
-
-	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS2) {
-		this.erwerbspensumGS2 = erwerbspensumGS2;
-	}
-
-	public Set<Taetigkeit> getTaetigkeiten() {
-		return taetigkeiten;
-	}
-
-	public void setTaetigkeiten(Set<Taetigkeit> taetigkeiten) {
-		this.taetigkeiten = taetigkeiten;
-	}
-
 	@Nonnull
 	public BigDecimal getBetreuungspensumProzent() {
 		return betreuungspensumProzent;
@@ -338,30 +228,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setBetreuungspensumProzent(@Nonnull BigDecimal betreuungspensumProzent) {
 		this.betreuungspensumProzent = betreuungspensumProzent;
-	}
-
-	public int getFachstellenpensum() {
-		return fachstellenpensum;
-	}
-
-	public void setFachstellenpensum(int fachstellenpensum) {
-		this.fachstellenpensum = fachstellenpensum;
-	}
-
-	public int getAusserordentlicherAnspruch() {
-		return ausserordentlicherAnspruch;
-	}
-
-	public void setAusserordentlicherAnspruch(int ausserordentlicherAnspruch) {
-		this.ausserordentlicherAnspruch = ausserordentlicherAnspruch;
-	}
-
-	public int getAnspruchspensumRest() {
-		return anspruchspensumRest;
-	}
-
-	public void setAnspruchspensumRest(int anspruchspensumRest) {
-		this.anspruchspensumRest = anspruchspensumRest;
 	}
 
 	public void setAnspruchberechtigtesPensum(int anspruchberechtigtesPensum) {
@@ -414,14 +280,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.toTwoKommastelle(massgebendesEinkommenVorAbzugFamgr);
 	}
 
-	public boolean isHasSecondGesuchstellerForFinanzielleSituation() {
-		return hasSecondGesuchstellerForFinanzielleSituation;
-	}
-
-	public void setHasSecondGesuchstellerForFinanzielleSituation(boolean hasSecondGesuchstellerForFinanzielleSituation) {
-		this.hasSecondGesuchstellerForFinanzielleSituation = hasSecondGesuchstellerForFinanzielleSituation;
-	}
-
 	@Nullable
 	public String getBemerkungen() {
 		return bemerkungen;
@@ -429,10 +287,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
-	}
-
-	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
-		return bemerkungenMap;
 	}
 
 	@Nonnull
@@ -460,30 +314,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
 	}
 
-	public boolean isBezahltVollkosten() {
-		return bezahltVollkosten;
-	}
-
-	public void setBezahltVollkosten(boolean bezahltVollkosten) {
-		this.bezahltVollkosten = bezahltVollkosten;
-	}
-
-	public boolean isLongAbwesenheit() {
-		return longAbwesenheit;
-	}
-
-	public void setLongAbwesenheit(boolean longAbwesenheit) {
-		this.longAbwesenheit = longAbwesenheit;
-	}
-
-	public boolean isWohnsitzNichtInGemeindeGS1() {
-		return wohnsitzNichtInGemeindeGS1 != null ? wohnsitzNichtInGemeindeGS1 : true;
-	}
-
-	public void setWohnsitzNichtInGemeindeGS1(Boolean wohnsitzNichtInGemeindeGS1) {
-		this.wohnsitzNichtInGemeindeGS1 = wohnsitzNichtInGemeindeGS1;
-	}
-
 	public BigDecimal getFamGroesse() {
 		return famGroesse;
 	}
@@ -502,54 +332,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.einkommensjahr = einkommensjahr;
 	}
 
-	public boolean isEkv1Alleine() {
-		return ekv1Alleine;
-	}
-
-	public void setEkv1Alleine(boolean ekv1Alleine) {
-		this.ekv1Alleine = ekv1Alleine;
-	}
-
-	public boolean isEkv1ZuZweit() {
-		return ekv1ZuZweit;
-	}
-
-	public void setEkv1ZuZweit(boolean ekv1ZuZweit) {
-		this.ekv1ZuZweit = ekv1ZuZweit;
-	}
-
-	public boolean isEkv2Alleine() {
-		return ekv2Alleine;
-	}
-
-	public void setEkv2Alleine(boolean ekv2Alleine) {
-		this.ekv2Alleine = ekv2Alleine;
-	}
-
-	public boolean isEkv2ZuZweit() {
-		return ekv2ZuZweit;
-	}
-
-	public void setEkv2ZuZweit(boolean ekv2ZuZweit) {
-		this.ekv2ZuZweit = ekv2ZuZweit;
-	}
-
-	public boolean isKategorieMaxEinkommen() {
-		return kategorieMaxEinkommen;
-	}
-
-	public void setKategorieMaxEinkommen(boolean kategorieMaxEinkommen) {
-		this.kategorieMaxEinkommen = kategorieMaxEinkommen;
-	}
-
-	public boolean isKategorieKeinPensum() {
-		return kategorieKeinPensum;
-	}
-
-	public void setKategorieKeinPensum(boolean kategorieKeinPensum) {
-		this.kategorieKeinPensum = kategorieKeinPensum;
-	}
-
 	@Nonnull
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
 		return zahlungsstatus;
@@ -566,30 +348,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setZahlungsposition(@Nonnull List<Zahlungsposition> zahlungsposition) {
 		this.zahlungsposition = zahlungsposition;
-	}
-
-	public boolean isSameVerfuegteVerfuegungsrelevanteDaten() {
-		return sameVerfuegteVerfuegungsrelevanteDaten;
-	}
-
-	public void setSameVerfuegteVerfuegungsrelevanteDaten(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
-		this.sameVerfuegteVerfuegungsrelevanteDaten = sameVerfuegteVerfuegungsrelevanteDaten;
-	}
-
-	public boolean isSameAusbezahlteVerguenstigung() {
-		return sameAusbezahlteVerguenstigung;
-	}
-
-	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
-		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
-	}
-
-	public boolean isAbschnittLiegtNachBEGUStartdatum() {
-		return abschnittLiegtNachBEGUStartdatum;
-	}
-
-	public void setAbschnittLiegtNachBEGUStartdatum(boolean abschnittLiegtNachBEGUStartdatum) {
-		this.abschnittLiegtNachBEGUStartdatum = abschnittLiegtNachBEGUStartdatum;
 	}
 
 	public boolean isBabyTarif() {
@@ -658,6 +416,117 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.minimalerElternbeitrag = MathUtil.toTwoKommastelle(minimalerElternbeitrag);
 	}
 
+	/* START Delegation der Attribute auf dem Input-Objekt */
+
+	@Deprecated
+	@Nullable
+	public Integer getErwerbspensumGS1() {
+		return getBgCalculationInput().getErwerbspensumGS1();
+	}
+
+	@Deprecated
+	@Nullable
+	public Integer getErwerbspensumGS2() {
+		return getBgCalculationInput().getErwerbspensumGS2();
+	}
+
+	@Deprecated
+	public Set<Taetigkeit> getTaetigkeiten() {
+		return getBgCalculationInput().getTaetigkeiten();
+	}
+
+	@Deprecated
+	public int getFachstellenpensum() {
+		return getBgCalculationInput().getFachstellenpensum();
+	}
+
+	@Deprecated
+	public int getAusserordentlicherAnspruch() {
+		return getBgCalculationInput().getAusserordentlicherAnspruch();
+	}
+
+	@Deprecated
+	public int getAnspruchspensumRest() {
+		return getBgCalculationInput().getAnspruchspensumRest();
+	}
+
+	@Deprecated
+	public boolean isHasSecondGesuchstellerForFinanzielleSituation() {
+		return getBgCalculationInput().isHasSecondGesuchstellerForFinanzielleSituation();
+	}
+
+	@Deprecated
+	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
+		return getBgCalculationInput().getBemerkungenMap();
+	}
+
+	@Deprecated
+	public boolean isBezahltVollkosten() {
+		return getBgCalculationInput().isBezahltVollkosten();
+	}
+
+	@Deprecated
+	public boolean isLongAbwesenheit() {
+		return getBgCalculationInput().isLongAbwesenheit();
+	}
+
+	@Deprecated
+	public boolean isWohnsitzNichtInGemeindeGS1() {
+		return (getBgCalculationInput().isWohnsitzNichtInGemeindeGS1() != null) ? getBgCalculationInput().isWohnsitzNichtInGemeindeGS1() : true;
+	}
+
+	@Deprecated
+	public boolean isEkv1Alleine() {
+		return getBgCalculationInput().isEkv1Alleine();
+	}
+
+	@Deprecated
+	public boolean isEkv1ZuZweit() {
+		return getBgCalculationInput().isEkv1ZuZweit();
+	}
+
+	@Deprecated
+	public boolean isEkv2Alleine() {
+		return getBgCalculationInput().isEkv2Alleine();
+	}
+
+	@Deprecated
+	public boolean isEkv2ZuZweit() {
+		return getBgCalculationInput().isEkv2ZuZweit();
+	}
+
+	@Deprecated
+	public boolean isKategorieMaxEinkommen() {
+		return getBgCalculationInput().isKategorieMaxEinkommen();
+	}
+
+	@Deprecated
+	public boolean isKategorieKeinPensum() {
+		return getBgCalculationInput().isKategorieKeinPensum();
+	}
+
+	@Deprecated
+	public boolean isSameVerfuegteVerfuegungsrelevanteDaten() {
+		return getBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten();
+	}
+
+	@Deprecated
+	public boolean isSameAusbezahlteVerguenstigung() {
+		return getBgCalculationInput().isSameAusbezahlteVerguenstigung();
+	}
+
+	@Deprecated
+	public boolean isAbschnittLiegtNachBEGUStartdatum() {
+		return getBgCalculationInput().isAbschnittLiegtNachBEGUStartdatum();
+	}
+
+	@Deprecated
+	public BigDecimal getMonatlicheBetreuungskosten() {
+		return getBgCalculationInput().getMonatlicheBetreuungskosten();
+	}
+
+	/* ENDE Delegation der Attribute auf dem Input-Objekt */
+
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
 		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT
@@ -673,22 +542,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount" })
 	public void add(VerfuegungZeitabschnitt other) {
+		this.bgCalculationInput.add(other.bgCalculationInput);
 		this.setBetreuungspensumProzent(this.getBetreuungspensumProzent().add(other.getBetreuungspensumProzent()));
-		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
-		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
-			+ other.getAusserordentlicherAnspruch());
-		this.setAnspruchspensumRest(this.getAnspruchspensumRest() + other.getAnspruchspensumRest());
+
 		this.setAnspruchberechtigtesPensum(this.getAnspruchberechtigtesPensum()
 			+ other.getAnspruchberechtigtesPensum());
-
-		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
-		if (this.getMonatlicheBetreuungskosten() != null) {
-			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
-		}
-		if (other.getMonatlicheBetreuungskosten() != null) {
-			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(other.getMonatlicheBetreuungskosten());
-		}
-		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
 
 		this.setVerfuegteAnzahlZeiteinheiten(other.getVerfuegteAnzahlZeiteinheiten()
 			.add(this.verfuegteAnzahlZeiteinheiten));
@@ -704,34 +562,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		this.setBetreuungspensumZeiteinheit(newBetreuungsstunden);
 
-		if (this.getErwerbspensumGS1() == null && other.getErwerbspensumGS1() == null) {
-			this.setErwerbspensumGS1(null);
-		} else {
-			this.setErwerbspensumGS1((this.getErwerbspensumGS1() != null ? this.getErwerbspensumGS1() : 0)
-				+ (other.getErwerbspensumGS1() != null ? other.getErwerbspensumGS1() : 0));
-		}
-
-		if (this.getErwerbspensumGS2() == null && other.getErwerbspensumGS2() == null) {
-			this.setErwerbspensumGS2(null);
-		} else {
-			this.setErwerbspensumGS2((this.getErwerbspensumGS2() != null ? this.getErwerbspensumGS2() : 0) +
-				(other.getErwerbspensumGS2() != null ? other.getErwerbspensumGS2() : 0));
-		}
-
-		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
-
 		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.addNullSafe(
 			this.getMassgebendesEinkommenVorAbzFamgr(),
 			other.getMassgebendesEinkommenVorAbzFamgr()));
 
-		this.addAllBemerkungen(other.getBemerkungenMap());
 		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
-
-		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
-
-		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
-
-		this.setLongAbwesenheit(this.isLongAbwesenheit() || other.isLongAbwesenheit());
 
 		// Der Familiengroessen Abzug kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
 		if (other.getAbzugFamGroesse() != null) {
@@ -744,54 +579,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			this.setFamGroesse(other.getFamGroesse());
 		}
 		this.setEinkommensjahr(other.getEinkommensjahr());
-		this.setHasSecondGesuchstellerForFinanzielleSituation(this.isHasSecondGesuchstellerForFinanzielleSituation()
-			|| other.isHasSecondGesuchstellerForFinanzielleSituation());
-
-		this.ekv1Alleine = (this.ekv1Alleine || other.ekv1Alleine);
-		this.ekv1ZuZweit = (this.ekv1ZuZweit || other.ekv1ZuZweit);
-		this.ekv2Alleine = (this.ekv2Alleine || other.ekv2Alleine);
-		this.ekv2ZuZweit = (this.ekv2ZuZweit || other.ekv2ZuZweit);
-
-		this.setKategorieKeinPensum(this.kategorieKeinPensum || other.kategorieKeinPensum);
-		this.setKategorieMaxEinkommen(this.kategorieMaxEinkommen || other.kategorieMaxEinkommen);
-		this.setAbschnittLiegtNachBEGUStartdatum(this.abschnittLiegtNachBEGUStartdatum
-			&& other.abschnittLiegtNachBEGUStartdatum);
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisseBestaetigt(this.besondereBeduerfnisseBestaetigt
 			|| other.besondereBeduerfnisseBestaetigt);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
-	}
-
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
-	}
-
-	@SuppressWarnings("OverloadedVarargsMethod")
-	public void addBemerkung(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull MsgKey msgKey,
-		@Nonnull Locale locale,
-		@Nonnull Object... args) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
-	}
-
-	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		this.bemerkungenMap.putAll(otherBemerkungenMap);
-	}
-
-	/**
-	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
-	 */
-	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
-			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
-				this.bemerkungenMap.put(
-					msgKeyVerfuegungsBemerkungEntry.getKey(),
-					msgKeyVerfuegungsBemerkungEntry.getValue());
-			}
-		}
 	}
 
 	/**
@@ -854,11 +647,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
 			+ " Status: " + zahlungsstatus + '\t'
-			+ " EP GS1: " + erwerbspensumGS1 + '\t'
-			+ " EP GS2: " + erwerbspensumGS2 + '\t'
+			+ " EP GS1: " + bgCalculationInput.getErwerbspensumGS1() + '\t'
+			+ " EP GS2: " + bgCalculationInput.getErwerbspensumGS2() + '\t'
 			+ " BetrPensum: " + betreuungspensumProzent + '\t'
 			+ " Anspruch: " + anspruchberechtigtesPensum + '\t'
-			+ " Restanspruch: " + anspruchspensumRest + '\t'
+			+ " Restanspruch: " + bgCalculationInput.getAnspruchspensumRest() + '\t'
 			+ " BG-Pensum: " + getBgPensum() + '\t'
 			+ " Vollkosten: " + vollkosten + '\t'
 			+ " Elternbeitrag: " + elternbeitrag + '\t'
@@ -866,18 +659,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " Einkommensjahr: " + einkommensjahr + '\t'
 			+ " Einkommen: " + massgebendesEinkommenVorAbzugFamgr + '\t'
 			+ " Abzug Fam: " + abzugFamGroesse;
-		return sb;
-	}
-
-	public String toStringFinanzielleSituation() {
-		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
-			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
-			+ " MassgebendesEinkommenVorAbzugFamiliengroesse: " + massgebendesEinkommenVorAbzugFamgr + '\t'
-			+ " AbzugFamiliengroesse: " + abzugFamGroesse + '\t'
-			+ " MassgebendesEinkommen: " + getMassgebendesEinkommen() + '\t'
-			+ " Einkommensjahr: " + einkommensjahr + '\t'
-			+ " Familiengroesse: " + famGroesse + '\t'
-			+ " Bemerkungen: " + bemerkungen;
 		return sb;
 	}
 
@@ -896,15 +677,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			return false;
 		}
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
-		return isSameErwerbspensum(erwerbspensumGS1, otherVerfuegungZeitabschnitt.erwerbspensumGS1) &&
-			isSameErwerbspensum(erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
+		return
+			bgCalculationInput.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInput()) &&
 			MathUtil.isSame(betreuungspensumProzent, otherVerfuegungZeitabschnitt.betreuungspensumProzent) &&
-			fachstellenpensum == otherVerfuegungZeitabschnitt.fachstellenpensum &&
-			ausserordentlicherAnspruch == otherVerfuegungZeitabschnitt.ausserordentlicherAnspruch &&
-			anspruchspensumRest == otherVerfuegungZeitabschnitt.anspruchspensumRest &&
 			anspruchberechtigtesPensum == otherVerfuegungZeitabschnitt.anspruchberechtigtesPensum &&
-			hasSecondGesuchstellerForFinanzielleSituation
-				== otherVerfuegungZeitabschnitt.hasSecondGesuchstellerForFinanzielleSituation &&
 			MathUtil.isSame(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
 			MathUtil.isSame(famGroesse, otherVerfuegungZeitabschnitt.famGroesse) &&
 			MathUtil.isSame(
@@ -912,22 +688,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 				otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
-			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
-			longAbwesenheit == otherVerfuegungZeitabschnitt.longAbwesenheit &&
 			Objects.equals(einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
-			ekv1Alleine == otherVerfuegungZeitabschnitt.ekv1Alleine &&
-			ekv1ZuZweit == otherVerfuegungZeitabschnitt.ekv1ZuZweit &&
-			ekv2Alleine == otherVerfuegungZeitabschnitt.ekv2Alleine &&
-			ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
-			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
 			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
 			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
-			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
-			Objects.equals(bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
-			MathUtil.isSame(monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten) &&
 			isSameZeiteinheiten(otherVerfuegungZeitabschnitt);
 	}
 
@@ -936,8 +702,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (this == that) {
 			return true;
 		}
-
-		return MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
+		return
+			bgCalculationInput.isSameSichtbareDaten(that.getBgCalculationInput()) &&
+			MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
 			MathUtil.isSame(vollkosten, that.vollkosten) &&
@@ -950,14 +717,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			Objects.equals(einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
-			Objects.equals(bemerkungen, that.bemerkungen) &&
-			Objects.equals(bemerkungenMap, that.bemerkungenMap);
-	}
-
-	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
-		return thisErwerbspensumGS == null && thatErwerbspensumGS == null
-			|| !(thisErwerbspensumGS == null || thatErwerbspensumGS == null)
-			&& thisErwerbspensumGS.equals(thatErwerbspensumGS);
+			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
 	private boolean isSameZeiteinheiten(@Nonnull VerfuegungZeitabschnitt other) {
@@ -975,7 +735,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// zuSpaetEingereicht und zahlungsstatus sind hier nicht aufgefuehrt, weil;
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
-		return MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
+		return
+			bgCalculationInput.isSamePersistedValues(that.getBgCalculationInput()) &&
+			MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
 			MathUtil.isSame(vollkosten, that.vollkosten) &&
@@ -986,7 +748,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
-			MathUtil.isSame(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
 			isSameZeiteinheiten(that);
 	}
 
@@ -1028,14 +789,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// wenn ids nicht gleich sind wollen wir auch compare to nicht gleich
 		compareToBuilder.append(this.getId(), other.getId());
 		return compareToBuilder.toComparison();
-	}
-
-	public BigDecimal getMonatlicheBetreuungskosten() {
-		return monatlicheBetreuungskosten;
-	}
-
-	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
-		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
 	public BigDecimal getBetreuungspensumZeiteinheit() {

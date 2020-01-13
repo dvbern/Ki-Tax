@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 
@@ -52,7 +51,7 @@ public class MaxTarifBisFolgendeMonatRule extends AbstractTagesschuleRule{
 					VerfuegungZeitabschnitt verfuegungZeitabschnittVollKosten = new VerfuegungZeitabschnitt();
 					verfuegungZeitabschnittVollKosten.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 					verfuegungZeitabschnittVollKosten.getGueltigkeit().setGueltigBis(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
-					verfuegungZeitabschnittVollKosten.setBezahltVollkosten(true);
+					verfuegungZeitabschnittVollKosten.getBgCalculationInput().setBezahltVollkosten(true);
 					verfuegungZeitabschnittsNeu.add(verfuegungZeitabschnittVollKosten);
 				}
 			}

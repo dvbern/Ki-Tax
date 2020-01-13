@@ -92,7 +92,7 @@ public class AbwesenheitCalcRuleTest {
 	private VerfuegungZeitabschnitt createZeitabschnitt(boolean abwesend) {
 		final VerfuegungZeitabschnitt zeitAbschnitt = new VerfuegungZeitabschnitt();
 		zeitAbschnitt.setGueltigkeit(PERIODE);
-		zeitAbschnitt.setLongAbwesenheit(abwesend);
+		zeitAbschnitt.getBgCalculationInput().setLongAbwesenheit(abwesend);
 		return zeitAbschnitt;
 	}
 }

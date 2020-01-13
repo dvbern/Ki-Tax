@@ -49,14 +49,14 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			Betreuung betreuung = (Betreuung) platz;
-			int pensumFachstelle = verfuegungZeitabschnitt.getFachstellenpensum();
+			int pensumFachstelle = verfuegungZeitabschnitt.getBgCalculationInput().getFachstellenpensum();
 			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 			int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
 			if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedPensumFachstelle);
-				verfuegungZeitabschnitt.addBemerkung(
+				verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
 					RuleKey.FACHSTELLE,
 					MsgKey.FACHSTELLE_MSG,
 					getLocale(),
