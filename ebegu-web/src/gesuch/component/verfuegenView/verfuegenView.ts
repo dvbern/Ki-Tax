@@ -458,7 +458,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
             this.getBetreuung().id, false, this.bemerkungen)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug('accessToken for verfuegung: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -478,7 +478,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(this.getBetreuung().id, false)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug('accessToken for nichteintreten: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -623,7 +623,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public openAnmeldebestaetigungMitTarifPDF(): void {
-       this.openAnmeldebestaetigungPDF(true);
+        this.openAnmeldebestaetigungPDF(true);
     }
 
     private openAnmeldebestaetigungPDF(mitTarif: boolean): void {
@@ -631,16 +631,16 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.downloadRS.getAccessTokenAnmeldebestaetigungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
             this.getBetreuung().id, false, mitTarif)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug('accessToken for Anmeldebestaetigung: ' + downloadFile.accessToken);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public formatBetreuungsZeit(betreuungsZeit: number): string {
-        if(betreuungsZeit < 10){
-            return '0' + betreuungsZeit;
+        if (betreuungsZeit < 10) {
+            return '0' + betreuungsZeit.toString();
         }
-        return '' + betreuungsZeit;
+        return '' + betreuungsZeit.toString();
     }
 }

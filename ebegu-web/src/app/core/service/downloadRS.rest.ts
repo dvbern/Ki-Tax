@@ -258,7 +258,7 @@ export class DownloadRS {
         const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.ANMELDEBESTAETIGUNG]);
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const anmeldungIdEnc = encodeURIComponent(anmeldungId);
-        const url = `${this.serviceURL}/${gesuchIdEnc}/${anmeldungId}/${dokumentTypEnc}/${forceCreation}/${mitTarif}/generated`;
+        const url = `${this.serviceURL}/${gesuchIdEnc}/${anmeldungIdEnc}/${dokumentTypEnc}/${forceCreation}/${mitTarif}/generated`;
 
         return this.http.get(url)
             .then((response: any) => {
