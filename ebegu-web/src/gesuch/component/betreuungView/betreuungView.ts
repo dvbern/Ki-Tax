@@ -1213,4 +1213,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 || (item.adresse.strasse.toLocaleLowerCase().indexOf(searchString) > -1);
         });
     }
+
+    public isAnmeldungTSEditable(): boolean {
+        return !this.isFreigabequittungAusstehend() && (!this.getBetreuungModel().isSchulamtangebotAusgeloest() ||
+            (this.getBetreuungModel().isSchulamtangebotAusgeloest() && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())))
+            && !this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)
+            && !this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+    }
 }

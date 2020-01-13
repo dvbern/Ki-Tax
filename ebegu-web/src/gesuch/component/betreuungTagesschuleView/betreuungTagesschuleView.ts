@@ -305,12 +305,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSAbholungTagesschuleValues();
     }
 
-    public isAnmeldungEditable(): boolean {
-        return !this.isFreigabequittungAusstehend() && !this.getBetreuungModel().isSchulamtangebotAusgeloest();
-    }
-
     public isModuleEditable(modul: TSBelegungTagesschuleModul): boolean {
-        return modul.modulTagesschule.angeboten && this.isAnmeldungEditable();
+        return modul.modulTagesschule.angeboten && this.isAnmeldungTSEditable();
     }
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,

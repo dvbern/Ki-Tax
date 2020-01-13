@@ -16,7 +16,8 @@
 
 <div class="betreuungTagesschuleView">
 
-    <fieldset ng-disabled="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
+    <fieldset
+        ng-disabled="!vm.isAnmeldungTSEditable()">
 
         <div
             ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
@@ -190,7 +191,7 @@
                         </dv-input-container>
                     </div>
                 </div>
-                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly()">
+                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox"
                                      ng-model="vm.agbTSAkzeptiert"
@@ -238,7 +239,6 @@
                     <span data-translate="WARN_ANGEBOT_MUTIERT"></span>
                 </div>
             </div>
-
         </div>
 
     </fieldset>
