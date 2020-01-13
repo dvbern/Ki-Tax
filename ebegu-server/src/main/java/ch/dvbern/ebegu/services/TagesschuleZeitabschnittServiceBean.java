@@ -94,6 +94,9 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
+	@Inject
+	private VerfuegungService verfuegungService;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
@@ -109,6 +112,10 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 				"generateAndPersistZeitabschnitte",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				anmeldungTagesschuleId));
+
+		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
+		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
+		verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 
 		generateZeitabschnitte(gesuch, gemeinde, gesuchsperiode, anmeldungTagesschule);
 
