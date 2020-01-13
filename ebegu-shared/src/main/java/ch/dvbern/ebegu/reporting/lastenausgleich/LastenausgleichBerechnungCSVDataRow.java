@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * DTO für den Lastenausgleich von KiBon
  */
-public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow implements Comparable<LastenausgleichBerechnungCSVDataRow> {
+public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnungDataRow {
 
 	private BigDecimal totalRevision;
 
@@ -40,17 +40,5 @@ public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnu
 
 	public void setTotalRevision(BigDecimal totalRevision) {
 		this.totalRevision = totalRevision;
-	}
-
-	public int compareTo(@NotNull LastenausgleichBerechnungCSVDataRow compare) {
-		return this.getBfsNummer().compareTo(compare.getBfsNummer());
-	}
-
-	@Override
-	public boolean equals(@NotNull Object o) {
-		if (getClass() != o.getClass()) {
-			return false;
-		}
-		return compareTo((LastenausgleichBerechnungCSVDataRow) o) == 0;
 	}
 }

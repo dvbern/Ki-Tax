@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -95,8 +96,9 @@ public class LastenausgleichBerechnungCSVConverter {
 			result.add(toAdd);
 		}
 		// resultat wird nach BFS Nummer sortiert
-		Collections.sort(result);
-		return result;
+		return result.stream()
+			.sorted(Comparator.comparing(LastenausgleichBerechnungCSVDataRow::getBfsNummer))
+			.collect(Collectors.toList());
 	}
 
 	private String generateCSVHeader() {
