@@ -70,8 +70,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@OneToOne(optional = false)
 	private @NotNull Institution institution;
 
-	@Column(nullable = false)
-	private @NotNull
+	@Column(nullable = true)
+	private @Nullable
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	String mail;

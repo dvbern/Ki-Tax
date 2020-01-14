@@ -101,7 +101,7 @@
                 </div>
 
                 <!-- Administrator - E-Mail Adresse | Trägerschaft -->
-                <div class="row">
+                <div class="row" *ngIf="isBGInstitution">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
@@ -113,7 +113,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6" *ngIf="isBGInstitution">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="traegerschaft_id">TRAEGERSCHAFT</label>
                             <mat-select [(ngModel)]="institution.traegerschaft" id="traegerschaft_id"
