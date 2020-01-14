@@ -904,7 +904,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	private void copyGesuchsteller2(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		if (this.getGesuchsteller2() != null && this.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+		if (this.getGesuchsteller2() != null && this.hasSecondGesuchstellerToCopyInMutation()) {
 			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
 	}
@@ -1127,10 +1127,17 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	public boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode() {
-		Familiensituation familiensituation = extractFamiliensituation();
+		return hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(extractFamiliensituation());
+	}
+
+	private boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(final Familiensituation familiensituation) {
 		return familiensituation != null
 			&& (familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigAb())
 			|| familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis()));
+	}
+
+	public boolean hasSecondGesuchstellerToCopyInMutation() {
+		return hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(extractFamiliensituation()) || hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(extractFamiliensituationErstgesuch());
 	}
 
 	public static Gesuch createMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
