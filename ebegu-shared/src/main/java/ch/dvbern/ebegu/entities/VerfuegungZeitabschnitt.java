@@ -72,11 +72,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 * Input-Werte für die Rules. Berechnung nach Spezialwünschen der Gemeinde, optional
 	 */
 	@Transient
-	@Nullable
-	private BGCalculationInput bgCalculationInputGemeinde = null;
+	@Nonnull
+	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput();
 
-
-	// Zwischenresulate aus DATA-Rules ("Abschnitt")
 
 
 	@Column(nullable = false)
@@ -179,6 +177,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
 		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
+		this.bgCalculationInputGemeinde = new BGCalculationInput(toCopy.bgCalculationInputGemeinde);
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
@@ -218,7 +217,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return bgCalculationInputAsiv;
 	}
 
-	@Nullable
+	@Nonnull
 	public BGCalculationInput getBgCalculationInputGemeinde() {
 		return bgCalculationInputGemeinde;
 	}
@@ -557,6 +556,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount" })
 	public void add(VerfuegungZeitabschnitt other) {
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
+		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
+
 		this.setBetreuungspensumProzent(this.getBetreuungspensumProzent().add(other.getBetreuungspensumProzent()));
 
 		this.setAnspruchberechtigtesPensum(this.getAnspruchberechtigtesPensum()
@@ -693,6 +694,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return
 			bgCalculationInputAsiv.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputAsiv()) &&
+			bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde()) &&
 			MathUtil.isSame(betreuungspensumProzent, otherVerfuegungZeitabschnitt.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == otherVerfuegungZeitabschnitt.anspruchberechtigtesPensum &&
 			MathUtil.isSame(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
@@ -718,6 +720,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		return
 			bgCalculationInputAsiv.isSameSichtbareDaten(that.getBgCalculationInputAsiv()) &&
+			bgCalculationInputGemeinde.isSameSichtbareDaten(that.getBgCalculationInputGemeinde()) &&
 			MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
@@ -751,6 +754,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// gelangt sind
 		return
 			bgCalculationInputAsiv.isSamePersistedValues(that.getBgCalculationInputAsiv()) &&
+			bgCalculationInputGemeinde.isSamePersistedValues(that.getBgCalculationInputGemeinde()) &&
 			MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&

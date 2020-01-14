@@ -304,7 +304,7 @@ public class BGCalculationInput {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
-	public void add(BGCalculationInput other) {
+	public void add(@Nonnull BGCalculationInput other) {
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
 			+ other.getAusserordentlicherAnspruch());
