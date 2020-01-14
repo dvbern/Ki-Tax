@@ -62,13 +62,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private static final long serialVersionUID = 7250339356897563374L;
 
 	@Transient
-	private BGCalculationInput bgCalculationInput;
+	@Nonnull
+	private BGCalculationInput bgCalculationInput = new BGCalculationInput();
 
+	@Nonnull
 	public BGCalculationInput getBgCalculationInput() {
 		return bgCalculationInput;
 	}
 
-	public void setBgCalculationInput(BGCalculationInput bgCalculationInput) {
+	public void setBgCalculationInput(@Nonnull BGCalculationInput bgCalculationInput) {
 		this.bgCalculationInput = bgCalculationInput;
 	}
 

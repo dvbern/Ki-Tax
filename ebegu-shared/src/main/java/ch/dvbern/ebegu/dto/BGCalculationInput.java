@@ -113,6 +113,8 @@ public class BGCalculationInput {
 	@Transient
 	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
 
+	public BGCalculationInput() {
+	}
 
 	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
