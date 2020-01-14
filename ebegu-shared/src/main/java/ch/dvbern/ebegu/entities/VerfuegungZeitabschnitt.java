@@ -61,18 +61,20 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	private static final long serialVersionUID = 7250339356897563374L;
 
+	/**
+	 * Input-Werte für die Rules. Berechnung nach ASIV (Standard)
+	 */
 	@Transient
 	@Nonnull
 	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput();
 
-	@Nonnull
-	public BGCalculationInput getBgCalculationInputAsiv() {
-		return bgCalculationInputAsiv;
-	}
+	/**
+	 * Input-Werte für die Rules. Berechnung nach Spezialwünschen der Gemeinde, optional
+	 */
+	@Transient
+	@Nullable
+	private BGCalculationInput bgCalculationInputGemeinde = null;
 
-	public void setBgCalculationInputAsiv(@Nonnull BGCalculationInput bgCalculationInputAsiv) {
-		this.bgCalculationInputAsiv = bgCalculationInputAsiv;
-	}
 
 	// Zwischenresulate aus DATA-Rules ("Abschnitt")
 
@@ -209,6 +211,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	public VerfuegungZeitabschnitt(DateRange gueltigkeit) {
 		this.setGueltigkeit(new DateRange(gueltigkeit));
+	}
+
+	@Nonnull
+	public BGCalculationInput getBgCalculationInputAsiv() {
+		return bgCalculationInputAsiv;
+	}
+
+	@Nullable
+	public BGCalculationInput getBgCalculationInputGemeinde() {
+		return bgCalculationInputGemeinde;
 	}
 
 	@Override
