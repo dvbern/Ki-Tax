@@ -42,7 +42,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
 		if (platz.getBetreuungsangebotTyp().isSchulamt()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-			verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
 		}
 	}
 }

@@ -38,9 +38,9 @@ public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 
-		if (!verfuegungZeitabschnitt.getBgCalculationInput().isAbschnittLiegtNachBEGUStartdatum()) {
+		if (!verfuegungZeitabschnitt.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-			verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 				RuleKey.BEGU_STARTDATUM,
 				MsgKey.BETREUUNG_VOR_BEGU_START,
 				getLocale(),

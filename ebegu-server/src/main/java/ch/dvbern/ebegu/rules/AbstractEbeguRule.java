@@ -195,7 +195,7 @@ public abstract class AbstractEbeguRule implements Rule {
 				// Gleiche Berechnungsgrundlagen: Den alten um den neuen verlängern
 				lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 				// Die Bemerkungen hinzufügen
-				lastZeitabschnitt.getBgCalculationInput().addAllBemerkungen(zeitabschnitt.getBgCalculationInput().getBemerkungenMap());
+				lastZeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 				validZeitabschnitte.remove(indexOfLast);
 				validZeitabschnitte.add(lastZeitabschnitt);
 			} else {

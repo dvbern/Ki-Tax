@@ -108,20 +108,20 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (anspruch <= 0) {
 			anspruch = 0;
 			verfuegungZeitabschnitt.setMinimalesEwpUnterschritten(true);
-			verfuegungZeitabschnitt.getBgCalculationInput().setKategorieKeinPensum(true);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setKategorieKeinPensum(true);
 		}
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
-			verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
 			verfuegungZeitabschnitt.setMinimalesEwpUnterschritten(true);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
 			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(verfuegungZeitabschnitt, locale);
-			verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
@@ -135,7 +135,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull Locale locale
 	) {
-		Integer erwerbspensum = verfuegungZeitabschnitt.getBgCalculationInput().getErwerbspensumGS1() != null ? verfuegungZeitabschnitt.getBgCalculationInput().getErwerbspensumGS1() : 0;
+		Integer erwerbspensum = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1() != null ? verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1() : 0;
 		return calculateErwerbspensum(verfuegungZeitabschnitt, erwerbspensum, MsgKey.ERWERBSPENSUM_GS1_MSG, locale);
 	}
 
@@ -144,7 +144,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull Locale locale
 	) {
-		Integer erwerbspensum = verfuegungZeitabschnitt.getBgCalculationInput().getErwerbspensumGS2() != null ? verfuegungZeitabschnitt.getBgCalculationInput().getErwerbspensumGS2() : 0;
+		Integer erwerbspensum = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS2() != null ? verfuegungZeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS2() : 0;
 		return calculateErwerbspensum(verfuegungZeitabschnitt, erwerbspensum, MsgKey.ERWERBSPENSUM_GS2_MSG, locale);
 	}
 
@@ -153,7 +153,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		@Nonnull Locale locale) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
-			verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung, locale);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung, locale);
 		}
 		return erwerbspensum;
 	}
@@ -174,7 +174,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private String getBeschaeftigungsTypen(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull Locale locale) {
 		StringBuilder sb = new StringBuilder();
-		for (Taetigkeit taetigkeit : abschnitt.getBgCalculationInput().getTaetigkeiten()) {
+		for (Taetigkeit taetigkeit : abschnitt.getBgCalculationInputAsiv().getTaetigkeiten()) {
 			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
 			sb.append(", ");
 		}

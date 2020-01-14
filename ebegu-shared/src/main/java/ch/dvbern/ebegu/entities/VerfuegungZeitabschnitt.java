@@ -63,15 +63,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInput = new BGCalculationInput();
+	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput();
 
 	@Nonnull
-	public BGCalculationInput getBgCalculationInput() {
-		return bgCalculationInput;
+	public BGCalculationInput getBgCalculationInputAsiv() {
+		return bgCalculationInputAsiv;
 	}
 
-	public void setBgCalculationInput(@Nonnull BGCalculationInput bgCalculationInput) {
-		this.bgCalculationInput = bgCalculationInput;
+	public void setBgCalculationInputAsiv(@Nonnull BGCalculationInput bgCalculationInputAsiv) {
+		this.bgCalculationInputAsiv = bgCalculationInputAsiv;
 	}
 
 	// Zwischenresulate aus DATA-Rules ("Abschnitt")
@@ -176,7 +176,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod" })
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
-		this.bgCalculationInput = new BGCalculationInput(toCopy.bgCalculationInput);
+		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
@@ -423,108 +423,108 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Deprecated
 	@Nullable
 	public Integer getErwerbspensumGS1() {
-		return getBgCalculationInput().getErwerbspensumGS1();
+		return getBgCalculationInputAsiv().getErwerbspensumGS1();
 	}
 
 	@Deprecated
 	@Nullable
 	public Integer getErwerbspensumGS2() {
-		return getBgCalculationInput().getErwerbspensumGS2();
+		return getBgCalculationInputAsiv().getErwerbspensumGS2();
 	}
 
 	@Deprecated
 	public Set<Taetigkeit> getTaetigkeiten() {
-		return getBgCalculationInput().getTaetigkeiten();
+		return getBgCalculationInputAsiv().getTaetigkeiten();
 	}
 
 	@Deprecated
 	public int getFachstellenpensum() {
-		return getBgCalculationInput().getFachstellenpensum();
+		return getBgCalculationInputAsiv().getFachstellenpensum();
 	}
 
 	@Deprecated
 	public int getAusserordentlicherAnspruch() {
-		return getBgCalculationInput().getAusserordentlicherAnspruch();
+		return getBgCalculationInputAsiv().getAusserordentlicherAnspruch();
 	}
 
 	@Deprecated
 	public int getAnspruchspensumRest() {
-		return getBgCalculationInput().getAnspruchspensumRest();
+		return getBgCalculationInputAsiv().getAnspruchspensumRest();
 	}
 
 	@Deprecated
 	public boolean isHasSecondGesuchstellerForFinanzielleSituation() {
-		return getBgCalculationInput().isHasSecondGesuchstellerForFinanzielleSituation();
+		return getBgCalculationInputAsiv().isHasSecondGesuchstellerForFinanzielleSituation();
 	}
 
 	@Deprecated
 	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
-		return getBgCalculationInput().getBemerkungenMap();
+		return getBgCalculationInputAsiv().getBemerkungenMap();
 	}
 
 	@Deprecated
 	public boolean isBezahltVollkosten() {
-		return getBgCalculationInput().isBezahltVollkosten();
+		return getBgCalculationInputAsiv().isBezahltVollkosten();
 	}
 
 	@Deprecated
 	public boolean isLongAbwesenheit() {
-		return getBgCalculationInput().isLongAbwesenheit();
+		return getBgCalculationInputAsiv().isLongAbwesenheit();
 	}
 
 	@Deprecated
 	public boolean isWohnsitzNichtInGemeindeGS1() {
-		return (getBgCalculationInput().isWohnsitzNichtInGemeindeGS1() != null) ? getBgCalculationInput().isWohnsitzNichtInGemeindeGS1() : true;
+		return (getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1() != null) ? getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1() : true;
 	}
 
 	@Deprecated
 	public boolean isEkv1Alleine() {
-		return getBgCalculationInput().isEkv1Alleine();
+		return getBgCalculationInputAsiv().isEkv1Alleine();
 	}
 
 	@Deprecated
 	public boolean isEkv1ZuZweit() {
-		return getBgCalculationInput().isEkv1ZuZweit();
+		return getBgCalculationInputAsiv().isEkv1ZuZweit();
 	}
 
 	@Deprecated
 	public boolean isEkv2Alleine() {
-		return getBgCalculationInput().isEkv2Alleine();
+		return getBgCalculationInputAsiv().isEkv2Alleine();
 	}
 
 	@Deprecated
 	public boolean isEkv2ZuZweit() {
-		return getBgCalculationInput().isEkv2ZuZweit();
+		return getBgCalculationInputAsiv().isEkv2ZuZweit();
 	}
 
 	@Deprecated
 	public boolean isKategorieMaxEinkommen() {
-		return getBgCalculationInput().isKategorieMaxEinkommen();
+		return getBgCalculationInputAsiv().isKategorieMaxEinkommen();
 	}
 
 	@Deprecated
 	public boolean isKategorieKeinPensum() {
-		return getBgCalculationInput().isKategorieKeinPensum();
+		return getBgCalculationInputAsiv().isKategorieKeinPensum();
 	}
 
 	@Deprecated
 	public boolean isSameVerfuegteVerfuegungsrelevanteDaten() {
-		return getBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten();
+		return getBgCalculationInputAsiv().isSameVerfuegteVerfuegungsrelevanteDaten();
 	}
 
 	@Deprecated
 	public boolean isSameAusbezahlteVerguenstigung() {
-		return getBgCalculationInput().isSameAusbezahlteVerguenstigung();
+		return getBgCalculationInputAsiv().isSameAusbezahlteVerguenstigung();
 	}
 
 	@Deprecated
 	public boolean isAbschnittLiegtNachBEGUStartdatum() {
-		return getBgCalculationInput().isAbschnittLiegtNachBEGUStartdatum();
+		return getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum();
 	}
 
 	@Deprecated
 	public BigDecimal getMonatlicheBetreuungskosten() {
-		return getBgCalculationInput().getMonatlicheBetreuungskosten();
+		return getBgCalculationInputAsiv().getMonatlicheBetreuungskosten();
 	}
 
 	/* ENDE Delegation der Attribute auf dem Input-Objekt */
@@ -544,7 +544,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount" })
 	public void add(VerfuegungZeitabschnitt other) {
-		this.bgCalculationInput.add(other.bgCalculationInput);
+		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.setBetreuungspensumProzent(this.getBetreuungspensumProzent().add(other.getBetreuungspensumProzent()));
 
 		this.setAnspruchberechtigtesPensum(this.getAnspruchberechtigtesPensum()
@@ -649,11 +649,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
 			+ " Status: " + zahlungsstatus + '\t'
-			+ " EP GS1: " + bgCalculationInput.getErwerbspensumGS1() + '\t'
-			+ " EP GS2: " + bgCalculationInput.getErwerbspensumGS2() + '\t'
+			+ " EP GS1: " + bgCalculationInputAsiv.getErwerbspensumGS1() + '\t'
+			+ " EP GS2: " + bgCalculationInputAsiv.getErwerbspensumGS2() + '\t'
 			+ " BetrPensum: " + betreuungspensumProzent + '\t'
 			+ " Anspruch: " + anspruchberechtigtesPensum + '\t'
-			+ " Restanspruch: " + bgCalculationInput.getAnspruchspensumRest() + '\t'
+			+ " Restanspruch: " + bgCalculationInputAsiv.getAnspruchspensumRest() + '\t'
 			+ " BG-Pensum: " + getBgPensum() + '\t'
 			+ " Vollkosten: " + vollkosten + '\t'
 			+ " Elternbeitrag: " + elternbeitrag + '\t'
@@ -680,7 +680,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return
-			bgCalculationInput.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInput()) &&
+			bgCalculationInputAsiv.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputAsiv()) &&
 			MathUtil.isSame(betreuungspensumProzent, otherVerfuegungZeitabschnitt.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == otherVerfuegungZeitabschnitt.anspruchberechtigtesPensum &&
 			MathUtil.isSame(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
@@ -705,7 +705,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			return true;
 		}
 		return
-			bgCalculationInput.isSameSichtbareDaten(that.getBgCalculationInput()) &&
+			bgCalculationInputAsiv.isSameSichtbareDaten(that.getBgCalculationInputAsiv()) &&
 			MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&
@@ -738,7 +738,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
 		return
-			bgCalculationInput.isSamePersistedValues(that.getBgCalculationInput()) &&
+			bgCalculationInputAsiv.isSamePersistedValues(that.getBgCalculationInputAsiv()) &&
 			MathUtil.isSame(betreuungspensumProzent, that.betreuungspensumProzent) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			MathUtil.isSame(betreuungspensumZeiteinheit, that.betreuungspensumZeiteinheit) &&

@@ -108,7 +108,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	private boolean isWohnsitzNichtInGemeinde(VerfuegungZeitabschnitt zeitabschnitt) {
-		return zeitabschnitt.getBgCalculationInput().isWohnsitzNichtInGemeindeGS1();
+		return zeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 				requireNonNull(gsAdresseGueltigkeit);
 				if (gs1) {
 					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gsAdresseGueltigkeit);
-					zeitabschnitt.getBgCalculationInput().setWohnsitzNichtInGemeindeGS1(gesuchstellerAdresse.extractIsNichtInGemeinde());
+					zeitabschnitt.getBgCalculationInputAsiv().setWohnsitzNichtInGemeindeGS1(gesuchstellerAdresse.extractIsNichtInGemeinde());
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
 					final DateRange gueltigkeit = new DateRange(gsAdresseGueltigkeit);

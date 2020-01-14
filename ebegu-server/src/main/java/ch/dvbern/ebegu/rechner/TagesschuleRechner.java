@@ -45,7 +45,7 @@ public class TagesschuleRechner {
 
 		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
 		// TODO: Sobald im GUI die Frage nach den Vollkosten vorhanden ist, muss sichergestellt werden, dass eine Rule das "isBezahltVollkosten"-Flag setzt
-		if (zeitabschnitt.getBgCalculationInput().isBezahltVollkosten()) {
+		if (zeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten()) {
 			if (wirdPedagogischBetreut) {
 				return parameterDTO.getMaxTarifMitPaedagogischerBetreuung();
 			}

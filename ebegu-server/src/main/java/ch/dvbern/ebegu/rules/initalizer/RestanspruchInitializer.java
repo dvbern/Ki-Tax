@@ -65,15 +65,15 @@ public final class RestanspruchInitializer {
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchberechtigtesPensum();
 			BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
-			int anspruchspensumRest = sourceZeitabschnitt.getBgCalculationInput().getAnspruchspensumRest();
+			int anspruchspensumRest = sourceZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
 			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
 			if (anspruchberechtigtesPensum == 0 && anspruchspensumRest != -1) {
 				// Der Restanspruch war schon initialisiert und bleibt gleich wie auf der vorherigen Betreuung
-				targetZeitabschnitt.getBgCalculationInput().setAnspruchspensumRest(anspruchspensumRest);
+				targetZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchspensumRest);
 			} else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
-				targetZeitabschnitt.getBgCalculationInput().setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
+				targetZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
 			} else {
-				targetZeitabschnitt.getBgCalculationInput().setAnspruchspensumRest(0);
+				targetZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(0);
 			}
 		}
 	}

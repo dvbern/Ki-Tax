@@ -70,7 +70,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
 				return;
 			}
 			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
@@ -82,7 +82,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 					verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 					verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-					verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMEN_MSG,
 						getLocale(),
@@ -94,11 +94,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		// Die Finanzdaten berechnen
 		FinanzDatenDTO finanzDatenDTO;
-		if (verfuegungZeitabschnitt.getBgCalculationInput().isHasSecondGesuchstellerForFinanzielleSituation()) {
+		if (verfuegungZeitabschnitt.getBgCalculationInputAsiv().isHasSecondGesuchstellerForFinanzielleSituation()) {
 			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_zuZweit();
 			setMassgebendesEinkommen(
-				verfuegungZeitabschnitt.getBgCalculationInput().isEkv1ZuZweit(),
-				verfuegungZeitabschnitt.getBgCalculationInput().isEkv2ZuZweit(),
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEkv1ZuZweit(),
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEkv2ZuZweit(),
 				finanzDatenDTO,
 				verfuegungZeitabschnitt,
 				platz,
@@ -106,8 +106,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		} else {
 			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_alleine();
 			setMassgebendesEinkommen(
-				verfuegungZeitabschnitt.getBgCalculationInput().isEkv1Alleine(),
-				verfuegungZeitabschnitt.getBgCalculationInput().isEkv2Alleine(),
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEkv1Alleine(),
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEkv2Alleine(),
 				finanzDatenDTO,
 				verfuegungZeitabschnitt,
 				platz,
@@ -118,11 +118,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		if (requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (keineFinSitErfasst || verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
-				verfuegungZeitabschnitt.getBgCalculationInput().setKategorieMaxEinkommen(true);
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().setKategorieMaxEinkommen(true);
 				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					Betreuung betreuung = (Betreuung) platz;
 					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
-					verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMEN_MSG,
 						getLocale(),
@@ -159,7 +159,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahrPlus1);
-				verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 					RuleKey.EINKOMMEN,
 					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 					locale,
@@ -171,13 +171,13 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 				// Je nachdem, ob es (manuell) annulliert war oder die 20% nicht erreicht hat, kommt eine andere Meldung
 				if (finanzDatenDTO.isEkv1Annulliert()) {
-					verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus1));
 				} else {
-					verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
@@ -190,7 +190,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			if (finanzDatenDTO.isEkv2AcceptedAndNotAnnuliert()) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahrPlus2);
-				verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 					RuleKey.EINKOMMEN,
 					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 					locale,
@@ -200,13 +200,13 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 				if (finanzDatenDTO.isEkv2Annulliert()) {
-					verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus2));
 				} else {
-					verfuegungZeitabschnitt.getBgCalculationInput().addBemerkung(
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,

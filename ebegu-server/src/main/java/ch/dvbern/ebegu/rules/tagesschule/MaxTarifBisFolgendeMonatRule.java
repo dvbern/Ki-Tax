@@ -51,7 +51,7 @@ public class MaxTarifBisFolgendeMonatRule extends AbstractTagesschuleRule{
 					VerfuegungZeitabschnitt verfuegungZeitabschnittVollKosten = new VerfuegungZeitabschnitt();
 					verfuegungZeitabschnittVollKosten.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 					verfuegungZeitabschnittVollKosten.getGueltigkeit().setGueltigBis(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
-					verfuegungZeitabschnittVollKosten.getBgCalculationInput().setBezahltVollkosten(true);
+					verfuegungZeitabschnittVollKosten.getBgCalculationInputAsiv().setBezahltVollkosten(true);
 					verfuegungZeitabschnittsNeu.add(verfuegungZeitabschnittVollKosten);
 				}
 			}
