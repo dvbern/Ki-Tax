@@ -1004,8 +1004,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public boolean isCloseTo(@Nonnull VerfuegungZeitabschnitt that) {
 		BigDecimal rapenError = BigDecimal.valueOf(0.20);
 		// Folgende Attribute sollen bei einer "kleinen" Änderung nicht zu einer Neuberechnung führen:
-		return MathUtil.isSame(getMassgebendesEinkommen(),that.getMassgebendesEinkommen())
-			&& MathUtil.isSame(vollkosten, that.vollkosten)
+		return MathUtil.isSame(vollkosten, that.vollkosten)
 			&& MathUtil.isClose(getBgPensum(), that.getBgPensum(), BigDecimal.valueOf(0.01))
 			&& MathUtil.isClose(elternbeitrag, that.getElternbeitrag(), rapenError)
 			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError)

@@ -220,6 +220,11 @@ export class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
 
+    public getAktiveUndVonSchulverbundGemeinden(): IPromise<TSGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/activeAndSchulverbund`)
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
+
     public updateAngebote(gemeinde: TSGemeinde): any {
         let restGemeinde = {};
         restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
