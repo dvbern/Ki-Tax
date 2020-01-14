@@ -331,4 +331,25 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
         modul.intervall = intervall;
     }
+
+    public saveAnmeldungSchulamtUebernehmen(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtUebernehmen();
+        }
+    }
+
+    public saveAnmeldungSchulamtAblehnen(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtAblehnen();
+        }
+    }
+
+    public saveAnmeldungSchulamtFalscheInstitution(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtFalscheInstitution();
+        }
+    }
 }

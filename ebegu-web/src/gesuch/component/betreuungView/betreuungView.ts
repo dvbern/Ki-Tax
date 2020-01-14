@@ -1217,8 +1217,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isAnmeldungTSEditable(): boolean {
         return !this.isFreigabequittungAusstehend()
             && (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) ||
-                (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
-                    || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)
+                ((this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
+                    || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                     && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())));
     }
 }
