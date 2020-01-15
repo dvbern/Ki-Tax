@@ -147,6 +147,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				//copy erlaeuterung verfuegung from previos Gesuchperiode
 				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.getVerfuegungErlaeuterungenDe());
 				gesuchsperiode.setVerfuegungErlaeuterungenFr(lastGesuchsperiode.getVerfuegungErlaeuterungenFr());
+				// Merkblatt Tagesschulen kopieren
+				gesuchsperiode.setVorlageMerkblattTsDe(lastGesuchsperiode.getVorlageMerkblattTsDe());
+				gesuchsperiode.setVorlageMerkblattTsFr(lastGesuchsperiode.getVorlageMerkblattTsFr());
 			}
 		}
 		return saveGesuchsperiode(gesuchsperiode);
