@@ -26,6 +26,8 @@ public class LastenausgleichBerechnungCSVDataRow extends LastenausgleichBerechnu
 
 	private BigDecimal totalRevision;
 
+	public LastenausgleichBerechnungCSVDataRow() {};
+
 	public LastenausgleichBerechnungCSVDataRow(LastenausgleichBerechnungDataRow parent) {
 		super(parent);
 	}
