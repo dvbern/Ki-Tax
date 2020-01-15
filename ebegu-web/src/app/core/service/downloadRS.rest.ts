@@ -248,4 +248,21 @@ export class DownloadRS {
             this.log.error(`element not found, can not hide ${elementId}`);
         }
     }
+
+    public getAccessTokenAnmeldebestaetigungGeneratedDokument(
+        gesuchId: string,
+        anmeldungId: string,
+        forceCreation: boolean,
+        mitTarif: boolean
+    ): IPromise<TSDownloadFile> {
+        const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.ANMELDEBESTAETIGUNG]);
+        const gesuchIdEnc = encodeURIComponent(gesuchId);
+        const anmeldungIdEnc = encodeURIComponent(anmeldungId);
+        const url = `${this.serviceURL}/${gesuchIdEnc}/${anmeldungIdEnc}/${dokumentTypEnc}/${forceCreation}/${mitTarif}/generated`;
+
+        return this.http.get(url)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
+            });
+    }
 }

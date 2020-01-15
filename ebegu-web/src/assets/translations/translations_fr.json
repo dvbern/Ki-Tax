@@ -1811,5 +1811,7 @@
     "TOTAL_KOSTEN_PRO_WOCHE": "Coût total par semaine",
     "TAGESSCHULE_GEBUEHREN_BETREUT": "Tarifs (offre avec suivi pédagogique)",
     "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Tarifs (offre sans suivi pédagogique)",
+    "PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN": "Télécharger la confirmation d'inscription avec tarif ",
+    "PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN": "Télécharger la confirmation d'inscription sans tarif ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
