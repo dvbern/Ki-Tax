@@ -143,21 +143,25 @@ export class GesuchsperiodeRS {
             });
     }
 
-    public removeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
+    public removeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
+                                        dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
+        // tslint:disable-next-line:max-line-length
         return this.http.delete(`${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
     }
 
     public existDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/existDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
+        return this.http.get(
+            `${this.serviceURL}/existDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
             .then((response: any) => {
                 return response.data;
             });
     }
 
-    public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
-        return this.http
-            .get(`${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
-                {responseType: 'blob'})
+    public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
+                                          dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
+        // tslint:disable-next-line:max-line-length
+        return this.http.get(`${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
+            {responseType: 'blob'})
             .then((response: any) => {
                 return response.data;
             });

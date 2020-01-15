@@ -75,7 +75,8 @@ export class UploadRS {
         });
     }
 
-    public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string, dokumentTyp: TSDokumentTyp): IPromise<any> {
+    public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string,
+                                        dokumentTyp: TSDokumentTyp): IPromise<any> {
         return this.upload.upload({
             url: `${this.serviceURL}/gesuchsperiodeDokument/${sprache}/${periodeID}/${dokumentTyp}`,
             method: 'POST',
