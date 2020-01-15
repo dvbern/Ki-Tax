@@ -74,7 +74,8 @@
                         <input id="telefon_id" type="text" name="telefon_id" #nameTelefon="ngModel"
                                [(ngModel)]="stammdaten.telefon"
                                [maxlength]="255" class="form-control"
-                               required>
+                               required
+                        [pattern]="CONSTANTS.PATTERN_PHONE">
                         <dv-error-messages [errorObject]="nameTelefon.errors"
                                            inputId="telefon_id"></dv-error-messages>
                     </div>
