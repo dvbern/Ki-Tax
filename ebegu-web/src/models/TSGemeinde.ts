@@ -28,4 +28,5 @@ export class TSGemeinde extends TSAbstractEntity {
     public angebotBG: boolean;
     public angebotTS: boolean;
     public angebotFI: boolean;
+    public key: string;
 }
