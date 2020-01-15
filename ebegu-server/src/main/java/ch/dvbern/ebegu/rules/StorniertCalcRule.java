@@ -40,7 +40,7 @@ public class StorniertCalcRule extends AbstractCalcRule {
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		// Bei Betreuungen mit status STORNIERT wird Bemerkung hinzugefügt
 		if (Betreuungsstatus.STORNIERT == platz.getBetreuungsstatus()) {
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG, getLocale());
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG, getLocale());
 		}
 	}
 }
