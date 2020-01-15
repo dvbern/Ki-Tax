@@ -176,12 +176,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
-	@Nonnull
+	@Nullable
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(@Nonnull String mail) {
+	public void setMail(@Nullable String mail) {
 		this.mail = mail;
 	}
 

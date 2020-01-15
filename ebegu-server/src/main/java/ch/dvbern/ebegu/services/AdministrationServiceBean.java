@@ -448,7 +448,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 					append(sb, adresse.getPlz());
 					append(sb, adresse.getOrt());
 					append(sb, adresse.getZusatzzeile());
-					append(sb, stammdaten.getMail());
+					append(sb, stammdaten.getMail() != null ? stammdaten.getMail() : "");
 
 					append(sb, stammdaten.getId());
 					append(sb, stammdaten.getBetreuungsangebotTyp().name());

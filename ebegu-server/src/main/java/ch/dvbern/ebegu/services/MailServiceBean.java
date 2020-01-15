@@ -347,6 +347,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			LocalDate birthdayKind = kind.getGeburtsdatum();
 
 			final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+			assert mailaddress != null;
 			String message = mailTemplateConfig.getInfoBetreuungGeloescht(betreuung, fall, gesuchsteller1, kind,
 				institution, mailaddress, datumErstellung, birthdayKind, sprache);
 
@@ -411,6 +412,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 
+		assert mailaddress != null;
 		String message = mailTemplateConfig.getInfoBetreuungVerfuegt(betreuung, fall, gesuchsteller1, kind,
 			institution, mailaddress, birthdayKind, sprache);
 
