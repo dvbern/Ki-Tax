@@ -549,7 +549,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				.map(gesuchsperiode1 -> gesuchsperiode1.getVorlageMerkblattTsWithSprache(sprache))
 				.orElse(null);
 		}
-		return null;
+		return new byte[0];
 	}
 
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {
