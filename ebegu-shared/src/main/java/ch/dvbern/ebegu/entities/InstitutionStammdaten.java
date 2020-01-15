@@ -71,10 +71,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	private @NotNull Institution institution;
 
 	@Column(nullable = true)
-	private @Nullable
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	String mail;
+	private @Nullable String mail;
 
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
