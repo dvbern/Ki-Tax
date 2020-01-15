@@ -16,6 +16,7 @@
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
 import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -142,20 +143,20 @@ export class GesuchsperiodeRS {
             });
     }
 
-    public removeErlaeuterungVerfuegung(gesuchsperiodeId: string, sprache: TSSprache): IHttpPromise<TSGesuchsperiode> {
-        return this.http.delete(`${this.serviceURL}/erlauterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`);
+    public removeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
+        return this.http.delete(`${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
     }
 
-    public existErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/existErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`)
+    public existDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/existDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
             .then((response: any) => {
                 return response.data;
             });
     }
 
-    public downloadErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<BlobPart> {
+    public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
         return this.http
-            .get(`${this.serviceURL}/downloadErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`,
+            .get(`${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
                 {responseType: 'blob'})
             .then((response: any) => {
                 return response.data;

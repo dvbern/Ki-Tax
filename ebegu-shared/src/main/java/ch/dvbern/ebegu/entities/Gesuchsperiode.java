@@ -72,6 +72,19 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] verfuegungErlaeuterungenFr;
 
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] vorlageMerkblattTsDe;
+
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] vorlageMerkblattTsFr;
+
 
 	public GesuchsperiodeStatus getStatus() {
 		return status;
@@ -145,6 +158,55 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			return this.getVerfuegungErlaeuterungenDe();
 		case FRANZOESISCH:
 			return this.getVerfuegungErlaeuterungenFr();
+		default:
+			return EMPTY_BYTE_ARRAY;
+		}
+	}
+
+	@Nonnull
+	public byte[] getVorlageMerkblattTsDe() {
+		if (vorlageMerkblattTsDe == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(vorlageMerkblattTsDe, vorlageMerkblattTsDe.length);
+	}
+
+	public void setVorlageMerkblattTsDe(@Nullable byte[] vorlageMerkblattTsDe) {
+		if (vorlageMerkblattTsDe == null) {
+			this.vorlageMerkblattTsDe = null;
+		} else {
+			this.vorlageMerkblattTsDe = Arrays.copyOf(vorlageMerkblattTsDe, vorlageMerkblattTsDe.length);
+		}
+	}
+
+	@Nonnull
+	public byte[] getVorlageMerkblattTsFr() {
+		if (vorlageMerkblattTsFr == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(vorlageMerkblattTsFr, vorlageMerkblattTsFr.length);
+	}
+
+	public void setVorlageMerkblattTsFr(@Nullable byte[] vorlageMerkblattTsFr) {
+		if (vorlageMerkblattTsFr == null) {
+			this.vorlageMerkblattTsFr = null;
+		} else {
+			this.vorlageMerkblattTsFr = Arrays.copyOf(vorlageMerkblattTsFr, vorlageMerkblattTsFr.length);
+		}
+	}
+
+	/**
+	 * Returns the correct VerfuegungErlaeuterung for the given language
+	 */
+	@Nonnull
+	public byte[] getVorlageMerkblattTsWithSprache(
+		@Nonnull Sprache sprache
+	) {
+		switch (sprache) {
+		case DEUTSCH:
+			return this.getVorlageMerkblattTsDe();
+		case FRANZOESISCH:
+			return this.getVorlageMerkblattTsFr();
 		default:
 			return EMPTY_BYTE_ARRAY;
 		}

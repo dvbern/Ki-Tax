@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -431,9 +432,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public Gesuchsperiode uploadErlaeuterungenVerfuegung(
+	public Gesuchsperiode uploadGesuchsperiodeDokument(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp,
 		@Nonnull byte[] content) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
@@ -446,21 +448,35 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				gesuchsperiodeId)
 		);
 
-		if (sprache == Sprache.DEUTSCH) {
-			gesuchsperiode.setVerfuegungErlaeuterungenDe(content);
-		} else if (sprache == Sprache.FRANZOESISCH) {
-			gesuchsperiode.setVerfuegungErlaeuterungenFr(content);
-		} else {
-			// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
+		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+			if (sprache == Sprache.DEUTSCH) {
+				gesuchsperiode.setVerfuegungErlaeuterungenDe(content);
+			} else if (sprache == Sprache.FRANZOESISCH) {
+				gesuchsperiode.setVerfuegungErlaeuterungenFr(content);
+			} else {
+				// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
+				return gesuchsperiode;
+			}
+		}
+		else if(dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+			if (sprache == Sprache.DEUTSCH) {
+				gesuchsperiode.setVorlageMerkblattTsDe(content);
+			} else if (sprache == Sprache.FRANZOESISCH) {
+				gesuchsperiode.setVorlageMerkblattTsFr(content);
+			} else {
+				// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
+				return gesuchsperiode;
+			}
+		}
+		else{
 			return gesuchsperiode;
 		}
-
 		return saveGesuchsperiode(gesuchsperiode);
 	}
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public Gesuchsperiode removeErlaeuterungVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache) {
+	public Gesuchsperiode removeGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
 
@@ -470,13 +486,26 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeId)
 		);
-
-		if (sprache == Sprache.DEUTSCH) {
-			gesuchsperiode.setVerfuegungErlaeuterungenDe(null);
-		} else if (sprache == Sprache.FRANZOESISCH) {
-			gesuchsperiode.setVerfuegungErlaeuterungenFr(null);
-		} else {
-			// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
+		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+			if (sprache == Sprache.DEUTSCH) {
+				gesuchsperiode.setVerfuegungErlaeuterungenDe(null);
+			} else if (sprache == Sprache.FRANZOESISCH) {
+				gesuchsperiode.setVerfuegungErlaeuterungenFr(null);
+			} else {
+				// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
+				return gesuchsperiode;
+			}
+		}	else if(dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+			if (sprache == Sprache.DEUTSCH) {
+				gesuchsperiode.setVorlageMerkblattTsDe(null);
+			} else if (sprache == Sprache.FRANZOESISCH) {
+				gesuchsperiode.setVorlageMerkblattTsFr(null);
+			} else {
+				// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
+				return gesuchsperiode;
+			}
+		}
+		else{
 			return gesuchsperiode;
 		}
 
@@ -485,22 +514,21 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public boolean existErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache) {
+	public boolean existDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
 
 		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
 			() -> new EbeguEntityNotFoundException(
-				"existErlaeuterung",
+				"existDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeId)
 		);
-
-		if (sprache == Sprache.DEUTSCH) {
-			return gesuchsperiode.getVerfuegungErlaeuterungenDe().length != 0;
+		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+			return gesuchsperiode.getVerfuegungErlaeuterungWithSprache(sprache).length != 0;
 		}
-		if (sprache == Sprache.FRANZOESISCH) {
-			return gesuchsperiode.getVerfuegungErlaeuterungenFr().length != 0;
+		else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+			return gesuchsperiode.getVorlageMerkblattTsWithSprache(sprache).length != 0;
 		}
 
 		return false;
@@ -508,11 +536,20 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Nullable
 	@Override
-	public byte[] downloadErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache) {
+	public byte[] downloadGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp) {
 		final Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(gesuchsperiodeId);
-		return gesuchsperiode
-			.map(gesuchsperiode1 -> gesuchsperiode1.getVerfuegungErlaeuterungWithSprache(sprache))
-			.orElse(null);
+		if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+			return gesuchsperiode
+				.map(gesuchsperiode1 -> gesuchsperiode1.getVerfuegungErlaeuterungWithSprache(sprache))
+				.orElse(null);
+		}
+		else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+			return gesuchsperiode
+				.map(gesuchsperiode1 -> gesuchsperiode1.getVorlageMerkblattTsWithSprache(sprache))
+				.orElse(null);
+		}
+		return null;
 	}
 
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {

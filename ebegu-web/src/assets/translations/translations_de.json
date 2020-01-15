@@ -1811,5 +1811,8 @@
     "TOTAL_KOSTEN_PRO_WOCHE": "Total Kosten pro Woche",
     "TAGESSCHULE_GEBUEHREN_BETREUT": "Gebühren (pädagogisch betreutes Angebot)",
     "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Gebühren (pädagogisch nicht betreutes Angebot)",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Merkblatt Anmeldung Tagesschule",
+    "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Vorlage Merkblatt Anmeldung Tagesschule Deutsch (.docx)",
+    "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Vorlage Merkblatt Anmeldung Tagesschule Französich (.docx)",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
