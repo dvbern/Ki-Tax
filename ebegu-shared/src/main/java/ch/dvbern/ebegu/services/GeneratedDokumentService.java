@@ -98,11 +98,10 @@ public interface GeneratedDokumentService {
 	void removeFreigabequittungFromGesuch(@Nonnull Gesuch gesuch);
 
 	@Nonnull
-
 	WriteProtectedDokument getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(
 		@Nonnull final Gesuch gesuch,
 		@Nonnull AbstractAnmeldung abstractAnmeldung,
-		@Nonnull boolean mitTarif,
+		@Nonnull Boolean mitTarif,
 		@Nonnull Boolean forceCreation
 	) throws MimeTypeParseException, MergeDocException;
 }

@@ -541,27 +541,28 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("anmeldungId") JaxId jaxAnmledungId,
 		@Nonnull @Valid @PathParam("forceCreation") Boolean forceCreation,
 		@Nonnull @Valid @PathParam("mitTarif") Boolean mitTarif,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo
+	) throws EbeguEntityNotFoundException, MergeDocException,
 		MimeTypeParseException {
 
 		requireNonNull(jaxGesuchId.getId());
 		requireNonNull(jaxAnmledungId.getId());
 		String ip = getIP(request);
 
-		final Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
-		if (gesuchOptional.isPresent()) {
-			AbstractAnmeldung anmeldung =
-				betreuungService.findAnmeldung(converter.toEntityId(jaxAnmledungId)).orElseThrow(() -> new EbeguEntityNotFoundException(
-					"getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxAnmledungId.getId()));;
+		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId))
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + jaxGesuchId.getId()));
 
-			WriteProtectedDokument persistedDokument = generatedDokumentService
-				.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuchOptional.get(), anmeldung,
-					 mitTarif, forceCreation);
-			return getFileDownloadResponse(uriInfo, ip, persistedDokument);
-		}
-		throw new EbeguEntityNotFoundException("getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId not found: " + jaxGesuchId.getId());
+		AbstractAnmeldung anmeldung =
+			betreuungService.findAnmeldung(converter.toEntityId(jaxAnmledungId))
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jaxAnmledungId.getId()));;
+
+		WriteProtectedDokument persistedDokument = generatedDokumentService
+			.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, mitTarif, forceCreation);
+		return getFileDownloadResponse(uriInfo, ip, persistedDokument);
 	}
 }

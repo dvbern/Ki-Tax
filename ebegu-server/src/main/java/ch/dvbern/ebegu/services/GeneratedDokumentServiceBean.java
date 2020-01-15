@@ -984,7 +984,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	public WriteProtectedDokument getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(
 		@Nonnull final Gesuch gesuch,
 		@Nonnull AbstractAnmeldung abstractAnmeldung,
-		@Nonnull boolean mitTarif,
+		@Nonnull Boolean mitTarif,
 		@Nonnull Boolean forceCreation
 	) throws MimeTypeParseException, MergeDocException {
 
@@ -1025,23 +1025,16 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 
 		if (persistedDokument == null) {
-
 			AnmeldungTagesschule anmeldungTagesschule =
 				betreuungService.findAnmeldungTagesschule(abstractAnmeldung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
 					"generateAnmeldebestaetigungDokument",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					abstractAnmeldung.getId()));
-			if(anmeldungTagesschule != null){
-			byte[] data =
-				pdfService.generateAnmeldebestaetigungFuerTagesschule(anmeldungTagesschule, mitTarif, true,
-					sprache.getLocale());
-				persistedDokument = saveGeneratedDokumentInDB(data, mitTarif ? GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF :
-						GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF,
-					gesuch, fileNameForGeneratedDokumentTyp, forceCreation);
-			} else {
-				throw new EbeguEntityNotFoundException("getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Betreuung not found: " + abstractAnmeldung.getId());
-			}
+			byte[] data = pdfService.generateAnmeldebestaetigungFuerTagesschule(
+				anmeldungTagesschule, mitTarif, true, sprache.getLocale());
+			persistedDokument = saveGeneratedDokumentInDB(data, mitTarif ? GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF :
+					GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF,
+				gesuch, fileNameForGeneratedDokumentTyp, forceCreation);
 		}
 		return persistedDokument;
 	}

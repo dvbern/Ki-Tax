@@ -255,6 +255,28 @@ public class PDFServiceBean implements PDFService {
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
+	@Nonnull
+	@Override
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
+		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
+	public byte[] generateAnmeldebestaetigungFuerTagesschule(
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		@Nonnull boolean mitTarif,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
+		Objects.requireNonNull(anmeldungTagesschule, "Das Argument 'anmeldungTagesschule' darf nicht leer sein");
+		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+
+		AnmeldebestaetigungTSPDFGenerator.Art art = mitTarif ? AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF :
+			AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF;
+		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
+			stammdaten, art , anmeldungTagesschule);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
+	}
+
 	/**
 	 * In dieser Methode werden alle DokumentGrunds vom Gesuch einer Liste hinzugefuegt. Die die bereits existieren und die
 	 * die noch nicht hochgeladen wurden
@@ -297,27 +319,5 @@ public class PDFServiceBean implements PDFService {
 			throw new MergeDocException("generateDokument()",
 				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
 		}
-	}
-
-	@Nonnull
-	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
-	public byte[] generateAnmeldebestaetigungFuerTagesschule(
-		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
-		@Nonnull boolean mitTarif,
-		boolean writeProtected,
-		@Nonnull Locale locale
-	) throws MergeDocException {
-
-		Objects.requireNonNull(anmeldungTagesschule, "Das Argument 'anmeldungTagesschule' darf nicht leer sein");
-		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
-		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
-
-		AnmeldebestaetigungTSPDFGenerator.Art art = mitTarif ? AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF :
-			AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF;
-		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
-			stammdaten, art , anmeldungTagesschule);
-		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 }

@@ -18,28 +18,26 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.util.AnmeldungTagesschuleZeitabschnittUtil;
-import ch.dvbern.ebegu.util.Constants;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.util.AnmeldungTagesschuleZeitabschnittUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
@@ -277,31 +275,31 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 					switch (day) {
 					case 1:
 						monday = true;
-						if(btm.getIntervall().equals(BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN)){
+						if(btm.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN){
 							mondayAlleZweiWoche = true;
 						}
 						break;
 					case 2:
 						tuesday = true;
-						if(btm.getIntervall().equals(BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN)){
+						if(btm.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN){
 							tuesdayAlleZweiWoche = true;
 						}
 						break;
 					case 3:
 						wednesday = true;
-						if(btm.getIntervall().equals(BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN)){
+						if(btm.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN){
 							wednesdayAlleZweiWoche = true;
 						}
 						break;
 					case 4:
 						thursday = true;
-						if(btm.getIntervall().equals(BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN)){
+						if(btm.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN){
 							thursdayAlleZweiWoche = true;
 						}
 						break;
 					case 5:
 						friday = true;
-						if(btm.getIntervall().equals(BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN)){
+						if(btm.getIntervall() == BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN){
 							fridayAlleZweiWoche = true;
 						}
 						break;
@@ -312,7 +310,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				table.addCell(new Phrase(isFrench ? mtg.getBezeichnung().getTextFranzoesisch() :
 					mtg.getBezeichnung().getTextDeutsch(),
 					getPageConfiguration().getFont()));
-				table.addCell(new Phrase(mtg.getZeitVon().format(Constants.HOURS_FORMAT) + "-" + mtg.getZeitBis().format(Constants.HOURS_FORMAT), getPageConfiguration().getFont()));
+				table.addCell(new Phrase(mtg.getZeitVon().format(Constants.HOURS_FORMAT) + '-' + mtg.getZeitBis().format(Constants.HOURS_FORMAT), getPageConfiguration().getFont()));
 				table.addCell(getCellForDay(monday, mondayAlleZweiWoche));
 				table.addCell(getCellForDay(tuesday, tuesdayAlleZweiWoche));
 				table.addCell(getCellForDay(wednesday, wednesdayAlleZweiWoche));
@@ -351,7 +349,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 					Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigBis()),
 					null));
 				table.addCell(createCell(Element.ALIGN_RIGHT,
-					formatBetreuungsZeit(anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche()) + ":" + formatBetreuungsZeit(anmeldungTagesschuleZeitabschnitt.getBetreuungsminutenProWoche()),
+					anmeldungTagesschuleZeitabschnitt.getBetreuungszeitFormatted(),
 					null));
 				table.addCell(createCell(Element.ALIGN_RIGHT,
 					CHF + anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(), null));
@@ -383,13 +381,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		return dayCell;
 	}
 
-	private String formatBetreuungsZeit(BigDecimal betreuungsZeit) {
-		if (betreuungsZeit.compareTo(BigDecimal.TEN) < 0) {
-			return "0" + betreuungsZeit;
-		}
-		return "" + betreuungsZeit;
-	}
-
 	private PdfPCell createCell(
 		int alignment,
 		String value,
@@ -403,5 +394,4 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		}
 		return cell;
 	}
-
 }

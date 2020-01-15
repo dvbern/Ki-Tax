@@ -79,7 +79,7 @@ public interface PDFService {
 	@Nonnull
 	byte[] generateAnmeldebestaetigungFuerTagesschule(
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
-		@Nonnull boolean mitTarif,
+		boolean mitTarif,
 		boolean writeProtected,
 		@Nonnull Locale locale
 	) throws MergeDocException;
