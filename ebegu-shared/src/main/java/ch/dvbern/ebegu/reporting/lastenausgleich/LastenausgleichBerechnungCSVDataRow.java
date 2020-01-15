@@ -19,8 +19,6 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 
 import java.math.BigDecimal;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * DTO für den Lastenausgleich von KiBon
  */
