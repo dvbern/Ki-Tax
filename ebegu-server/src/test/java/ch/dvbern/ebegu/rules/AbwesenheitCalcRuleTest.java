@@ -50,7 +50,7 @@ public class AbwesenheitCalcRuleTest {
 		rule.executeRule(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
-		Assert.assertFalse(zeitAbschnitt.isBezahltVollkosten());
+		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		Assert.assertEquals("", zeitAbschnitt.getBemerkungen());
 	}
 
@@ -64,7 +64,7 @@ public class AbwesenheitCalcRuleTest {
 		rule.executeRule(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
-		Assert.assertTrue(zeitAbschnitt.isBezahltVollkosten());
+		Assert.assertTrue(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		Assert.assertEquals(
 			"Das Kind wird länger als 30 aufeinanderfolgende Kalendertage nicht familienergänzend betreut"
 				+ " (z.B. aufgrund einer längeren Reise). Deshalb wird kein Betreuungsgutschein mehr ausbezahlt (Art. 34u Abs. 1).",
@@ -82,7 +82,7 @@ public class AbwesenheitCalcRuleTest {
 		rule.executeRule(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
-		Assert.assertFalse(zeitAbschnitt.isBezahltVollkosten());
+		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		Assert.assertEquals("", zeitAbschnitt.getBemerkungen());
 	}
 
