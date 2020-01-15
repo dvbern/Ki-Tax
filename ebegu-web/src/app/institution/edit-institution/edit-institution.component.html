@@ -83,8 +83,7 @@
                             <label class="required" translate for="anschrift_id">ADRESSE_ANSCHRIFT</label>
                             <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.organisation"
-                                   [maxlength]="255" class="form-control" required
-                                   placeholder="Kita ...">
+                                   [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors"
                                                inputId="anschrift_id"></dv-error-messages>
                         </div>
