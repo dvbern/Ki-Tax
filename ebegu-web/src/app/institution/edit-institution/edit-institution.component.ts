@@ -43,6 +43,7 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
@@ -53,7 +54,6 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
-import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 
 @Component({
     selector: 'dv-edit-institution',
@@ -62,6 +62,7 @@ import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 })
 
 export class EditInstitutionComponent implements OnInit {
+    public readonly CONSTANTS: any = CONSTANTS;
 
     @ViewChildren(NgForm) public forms: QueryList<NgForm>;
     public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');

@@ -42,7 +42,7 @@ public class VerfuegungZeitabschnittIsCloseToTest {
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
 		other.setAnspruchberechtigtesPensum(79);
 
-		assertThat(zeitabschnitt.isCloseTo(other), is(false));
+		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class VerfuegungZeitabschnittIsCloseToTest {
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
 		other.setBetreuungspensumProzent(BigDecimal.valueOf(10.02));
 
-		assertThat(zeitabschnitt.isCloseTo(other), is(false));
+		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}
 
 	@Test
