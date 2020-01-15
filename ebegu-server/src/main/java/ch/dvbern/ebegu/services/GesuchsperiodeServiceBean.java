@@ -38,6 +38,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -266,6 +267,14 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			for (FerieninselStammdaten ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
 			}
+
+			// EinstellungenTagesschule dieser Gesuchsperiode loeschen
+			Collection<EinstellungenTagesschule> einstellungenTagesschuleList =
+				modulTagesschuleService.findEinstellungenTagesschuleByGesuchsperiode(gesuchsperiode);
+			for (EinstellungenTagesschule einstellungenTagesschule : einstellungenTagesschuleList) {
+				persistence.remove(einstellungenTagesschule);
+			}
+
 			// Einstellungen dieser Gesuchsperiode loeschen
 			einstellungService.deleteEinstellungenOfGesuchsperiode(gesuchsperiode);
 			// Gesuchsperiode
