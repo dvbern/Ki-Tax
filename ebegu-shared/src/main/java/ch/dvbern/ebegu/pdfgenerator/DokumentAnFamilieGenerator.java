@@ -120,7 +120,6 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		}
 	}
 
-	@Nonnull
 	public boolean isVerfuegung() {
 		return false;
 	}
