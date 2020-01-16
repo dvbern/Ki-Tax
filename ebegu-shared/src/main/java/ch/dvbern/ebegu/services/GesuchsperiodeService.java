@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 
@@ -122,21 +123,25 @@ public interface GesuchsperiodeService {
 	 * Fügt eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache an.
 	 */
 	@Nonnull
-	Gesuchsperiode uploadErlaeuterungenVerfuegung(
+	Gesuchsperiode uploadGesuchsperiodeDokument(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp,
 		@Nonnull byte[] content);
 
 	/**
 	 * Löscht eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache.
 	 */
 	@Nonnull
-	Gesuchsperiode removeErlaeuterungVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+	Gesuchsperiode removeGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp);
 
 	/**
 	 * retuns true id the VerfuegungErlaeuterung exists for the given language
 	 */
-	boolean existErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+	boolean existDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp);
 
-	byte[] downloadErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+	byte[] downloadGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp);
 }
