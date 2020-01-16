@@ -85,6 +85,7 @@ export class TagesschuleUtil {
                 continue;
             }
             angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
+            angMod.modulTagesschule.angeboten = true;
             group.module.push(angMod);
             foundInAngemeldete = true;
         }
