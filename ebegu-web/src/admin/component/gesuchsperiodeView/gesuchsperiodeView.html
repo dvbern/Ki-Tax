@@ -128,7 +128,8 @@
                                         class="symbol"
                                         tabindex="-1"
                                         ng-click="$event.stopPropagation()">
-                                        <button ngf-select="vm.uploadErlaeuterung($files, 'DEUTSCH')" ngf-multiple="false"
+                                        <button
+                                            ngf-select="vm.uploadGesuchsperiodeDokument($files, 'DEUTSCH', 'ERLAUTERUNG_ZUR_VERFUEGUNG')" ngf-multiple="false"
                                                 accept="application/pdf"
                                                 class="dv-btn fa fa-upload dv-btn-operation"
                                                 title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
@@ -139,7 +140,8 @@
                                     <td width="2%"
                                         class="symbol"
                                         tabindex="-1">
-                                        <button ng-click="vm.downloadErlaeuterung('DEUTSCH');$event.stopPropagation()"
+                                        <button
+                                            ng-click="vm.downloadGesuchsperiodeDokument('DEUTSCH', 'ERLAUTERUNG_ZUR_VERFUEGUNG');$event.stopPropagation()"
                                                 ng-disabled="!vm.isErlaeuterungDE"
                                                 class="dv-btn fa fa-eye dv-btn-operation"
                                                 aria-hidden="true"
@@ -148,7 +150,7 @@
                                     <td width="2%"
                                         class="symbol"
                                         tabindex="-1">
-                                        <button ng-click="vm.removeErlaeuterung('DEUTSCH');$event.stopPropagation()"
+                                        <button ng-click="vm.removeGesuchsperiodeDokument('DEUTSCH', 'ERLAUTERUNG_ZUR_VERFUEGUNG');$event.stopPropagation()"
                                                 ng-disabled="!vm.isErlaeuterungDE"
                                                 class="dv-btn fa fa-trash dv-btn-operation"
                                                 aria-hidden="true"
@@ -161,7 +163,8 @@
                                         class="symbol"
                                         tabindex="-1"
                                         ng-click="$event.stopPropagation()">
-                                        <button ngf-select="vm.uploadErlaeuterung($files, 'FRANZOESISCH')" ngf-multiple="false"
+                                        <button ngf-select="vm.uploadGesuchsperiodeDokument($files, 'FRANZOESISCH', 'ERLAUTERUNG_ZUR_VERFUEGUNG')"
+                                                ngf-multiple="false"
                                                 accept="application/pdf"
                                                 class="dv-btn fa fa-upload dv-btn-operation"
                                                 title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
@@ -172,7 +175,8 @@
                                     <td width="2%"
                                         class="symbol"
                                         tabindex="-1">
-                                        <button ng-click="vm.downloadErlaeuterung('FRANZOESISCH');$event.stopPropagation()"
+                                        <button
+                                            ng-click="vm.downloadGesuchsperiodeDokument('FRANZOESISCH', 'ERLAUTERUNG_ZUR_VERFUEGUNG');$event.stopPropagation()"
                                                 ng-disabled="!vm.isErlaeuterungFR"
                                                 class="dv-btn fa fa-eye dv-btn-operation"
                                                 aria-hidden="true"
@@ -181,8 +185,90 @@
                                     <td width="2%"
                                         class="symbol"
                                         tabindex="-1">
-                                        <button ng-click="vm.removeErlaeuterung('FRANZOESISCH');$event.stopPropagation()"
+                                        <button ng-click="vm.removeGesuchsperiodeDokument('FRANZOESISCH', 'ERLAUTERUNG_ZUR_VERFUEGUNG');$event.stopPropagation()"
                                                 ng-disabled="!vm.isErlaeuterungFR"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--Merkblatt Anmeldung Tagesschule-->
+                    <div class="row viewTitle marginTop30" ng-if="vm.gesuchsperiode && !vm.gesuchsperiode.isNew()">
+                        <div class="col-md-12">
+                            <h1>
+                                <span data-translate="MERKBLATT_ANMELDUNG_TAGESSCHULE"></span>
+                            </h1>
+                            <hr class="header"/>
+                            <table class="table table-striped" width="100%">
+                                <tr>
+                                    <td
+                                        translate="VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE"></td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()">
+                                        <button
+                                            ngf-select="vm.uploadGesuchsperiodeDokument($files, 'DEUTSCH', 'VORLAGE_MERKBLATT_TS')"
+                                                ngf-multiple="false"
+                                                accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                class="dv-btn fa fa-upload dv-btn-operation"
+                                                title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                tabindex="0">
+                                        </button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.downloadGesuchsperiodeDokument('DEUTSCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageMerkblattDE"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.removeGesuchsperiodeDokument('DEUTSCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageMerkblattDE"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td translate="VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1"
+                                        ng-click="$event.stopPropagation()">
+                                        <button ngf-select="vm.uploadGesuchsperiodeDokument($files, 'FRANZOESISCH', 'VORLAGE_MERKBLATT_TS')"
+                                                ngf-multiple="false"
+                                                accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                class="dv-btn fa fa-upload dv-btn-operation"
+                                                title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                tabindex="0">
+                                        </button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.downloadGesuchsperiodeDokument('FRANZOESISCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageMerkblattFR"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                    </td>
+                                    <td width="2%"
+                                        class="symbol"
+                                        tabindex="-1">
+                                        <button ng-click="vm.removeGesuchsperiodeDokument('FRANZOESISCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
+                                                ng-disabled="!vm.isVorlageMerkblattFR"
                                                 class="dv-btn fa fa-trash dv-btn-operation"
                                                 aria-hidden="true"
                                                 tabindex="0"></button>
