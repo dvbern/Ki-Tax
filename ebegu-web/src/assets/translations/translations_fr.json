@@ -1814,5 +1814,7 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Conditions d'inscriptions aux écoles à journée continue",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Modèle de conditions d'inscriptions aux écoles à journée continue allemand (.docx)",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Modèle de conditions d'inscriptions aux écoles à journée continue français (.docx)",
+    "PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN": "Télécharger la confirmation d'inscription avec tarif ",
+    "PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN": "Télécharger la confirmation d'inscription sans tarif ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

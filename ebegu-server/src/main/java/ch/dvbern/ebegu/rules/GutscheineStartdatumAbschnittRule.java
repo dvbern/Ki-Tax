@@ -70,7 +70,7 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 		boolean abschnittLiegtNachBEGUStartdatum) {
 
 		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(dateRange);
-		abschnitt.setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+		abschnitt.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
 
 		return abschnitt;
 	}

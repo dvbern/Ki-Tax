@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.FileMetadata;
@@ -526,5 +527,42 @@ public class DownloadResource {
 		} else {
 			return ipAddress;
 		}
+	}
+
+	@ApiOperation("Erstellt ein Token fuer den Download der Anmeldebestaetigung fuer die Betreuung mit der " +
+		"gebenen Id.")
+	@Nonnull
+	@GET
+	@Path("/{gesuchId}/{anmeldungId}/ANMELDEBESTAETIGUNG/{forceCreation}/{mitTarif}/generated")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument(
+		@Nonnull @Valid @PathParam("gesuchId") JaxId jaxGesuchId,
+		@Nonnull @Valid @PathParam("anmeldungId") JaxId jaxAnmledungId,
+		@Nonnull @Valid @PathParam("forceCreation") Boolean forceCreation,
+		@Nonnull @Valid @PathParam("mitTarif") Boolean mitTarif,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo
+	) throws EbeguEntityNotFoundException, MergeDocException,
+		MimeTypeParseException {
+
+		requireNonNull(jaxGesuchId.getId());
+		requireNonNull(jaxAnmledungId.getId());
+		String ip = getIP(request);
+
+		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId))
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + jaxGesuchId.getId()));
+
+		AbstractAnmeldung anmeldung =
+			betreuungService.findAnmeldung(converter.toEntityId(jaxAnmledungId))
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getAnmeldebestaetigungDokumentAccessTokenGeneratedDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jaxAnmledungId.getId()));;
+
+		WriteProtectedDokument persistedDokument = generatedDokumentService
+			.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, mitTarif, forceCreation);
+		return getFileDownloadResponse(uriInfo, ip, persistedDokument);
 	}
 }

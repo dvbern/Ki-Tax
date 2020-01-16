@@ -135,14 +135,14 @@ public class AbwesenheitAbschnittRuleTest {
 	}
 
 	private void checkAbwesenheitAbschnitte(AbwesenheitContainer abwesenheit, AbwesenheitContainer second, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		assertTrue(zeitabschnitte.get(0).isLongAbwesenheit());
+		assertTrue(zeitabschnitte.get(0).getBgCalculationInputAsiv().isLongAbwesenheit());
 		assertEquals(abwesenheit.getAbwesenheitJA().getGueltigkeit().getGueltigAb().plusDays(TestDataUtil.ABWESENHEIT_DAYS_LIMIT),
 			zeitabschnitte.get(0).getGueltigkeit().getGueltigAb());
 		assertEquals(abwesenheit.getAbwesenheitJA().getGueltigkeit().getGueltigBis(),
 			zeitabschnitte.get(0).getGueltigkeit().getGueltigBis());
 
 		if (second != null) {
-			assertTrue(zeitabschnitte.get(1).isLongAbwesenheit());
+			assertTrue(zeitabschnitte.get(1).getBgCalculationInputAsiv().isLongAbwesenheit());
 			assertEquals(second.getAbwesenheitJA().getGueltigkeit().getGueltigAb().plusDays(TestDataUtil.ABWESENHEIT_DAYS_LIMIT),
 				zeitabschnitte.get(1).getGueltigkeit().getGueltigAb());
 			assertEquals(second.getAbwesenheitJA().getGueltigkeit().getGueltigBis(),

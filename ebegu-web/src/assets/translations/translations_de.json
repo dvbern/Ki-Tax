@@ -1814,5 +1814,7 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Merkblatt Anmeldung Tagesschule",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Vorlage Merkblatt Anmeldung Tagesschule Deutsch (.docx)",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Vorlage Merkblatt Anmeldung Tagesschule Französich (.docx)",
+    "PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN": "Download Anmeldebestätigung mit Tarif ",
+    "PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN": "Download Anmeldebestätigung ohne Tarif ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
