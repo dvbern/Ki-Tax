@@ -212,8 +212,7 @@ export class AddInstitutionComponent implements OnInit {
 
         if (this.isBGInstitution || nextMonthBegin >= TSMandant.earliestDateOfTSAnmeldung) {
             return nextMonthBegin;
-        } else {
-            return TSMandant.earliestDateOfTSAnmeldung;
         }
+        return TSMandant.earliestDateOfTSAnmeldung;
     }
 }
