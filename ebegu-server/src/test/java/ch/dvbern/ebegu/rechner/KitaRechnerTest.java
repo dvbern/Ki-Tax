@@ -21,6 +21,7 @@ import java.time.Month;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -161,8 +162,8 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
-		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		verfuegungZeitabschnitt.setBetreuungspensumProzent(MathUtil.DEFAULT.from(betreuungspensum));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruch);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(betreuungspensum));
 		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);

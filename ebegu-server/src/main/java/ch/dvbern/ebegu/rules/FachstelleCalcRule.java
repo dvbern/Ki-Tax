@@ -55,7 +55,7 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 			int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
 			if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedPensumFachstelle);
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(roundedPensumFachstelle);
 				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 					RuleKey.FACHSTELLE,
 					MsgKey.FACHSTELLE_MSG,

@@ -22,6 +22,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -96,6 +97,12 @@ public abstract class AbstractBGRechner {
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 		BigDecimal elternbeitrag = EXACT.subtract(vollkosten, verguenstigung);
 
+		BigDecimal minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.from(0);
+		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT.subtract(vollkosten, verguenstigungVorMinimalbetrag);
+		if (vollkostenMinusVerguenstigung.compareTo(minBetrag) <= 0) {
+			minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.subtract(minBetrag, vollkostenMinusVerguenstigung);
+		}
+
 		// Resultat
 		BGCalculationResult result = new BGCalculationResult();
 		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
@@ -105,13 +112,15 @@ public abstract class AbstractBGRechner {
 		result.setVerguenstigung(verguenstigung);
 		result.setVollkosten(vollkosten);
 		result.setElternbeitrag(elternbeitrag);
+		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
 
 		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
-		result.setVerfuegteAnzahlZeiteinheiten(verfuegteZeiteinheiten);
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(anspruchsberechtigteZeiteinheiten);
+		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
+		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
+		result.roundAllValues();
 		return result;
 	}
 

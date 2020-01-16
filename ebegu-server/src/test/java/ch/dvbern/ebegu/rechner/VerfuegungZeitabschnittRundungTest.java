@@ -22,6 +22,7 @@ import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -81,8 +82,8 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 			.where(BGCalculationResult::getVollkosten, of("66.6666666"))
 			.where(BGCalculationResult::getElternbeitrag, of("28.6273504274"))
 			// Stunden gemäss Pensum und Anteil Monat
-			.where(BGCalculationResult::getVerfuegteAnzahlZeiteinheiten, of("7.333333333"))
-			.where(BGCalculationResult::getAnspruchsberechtigteAnzahlZeiteinheiten, of("7.333333333"))
+			.where(BGCalculationResult::getBgPensumZeiteinheit, of("7.333333333"))
+			.where(BGCalculationResult::getAnspruchspensumZeiteinheit, of("7.333333333"))
 			.where(BGCalculationResult::getBetreuungspensumZeiteinheit, of("7.333333333"))
 		);
 	}
@@ -93,7 +94,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 
-		result.toVerfuegungZeitabschnitt(zeitabschnitt);
+		result.roundAllValues();
 
 		// Default: Stunden mit 2 Kommastellen
 		assertThat(zeitabschnitt, calculationResultMatcher()
@@ -110,7 +111,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 
-		result.toVerfuegungZeitabschnitt(zeitabschnitt);
+		result.roundAllValues();
 
 		// Stunden in in Viertel
 		assertThat(zeitabschnitt, calculationResultMatcher()
@@ -148,8 +149,8 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 		result.setVerguenstigung(BigDecimal.valueOf(4.2345));
 		result.setVollkosten(BigDecimal.valueOf(5.2345));
 		result.setElternbeitrag(BigDecimal.valueOf(6.2345));
-		result.setVerfuegteAnzahlZeiteinheiten(BigDecimal.valueOf(7.2345));
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(BigDecimal.valueOf(8.2345));
+		result.setBgPensumZeiteinheit(BigDecimal.valueOf(7.2345));
+		result.setAnspruchspensumZeiteinheit(BigDecimal.valueOf(8.2345));
 		result.setBetreuungspensumZeiteinheit(BigDecimal.valueOf(9.2345));
 
 		return result;
@@ -159,9 +160,9 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
-		zeitabschnitt.setAnspruchberechtigtesPensum(100);
+		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
 		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
-		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(100));
 
 		return zeitabschnitt;
 	}

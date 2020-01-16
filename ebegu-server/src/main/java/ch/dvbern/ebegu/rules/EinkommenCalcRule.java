@@ -138,7 +138,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	 */
 	private void reduceAnspruchInNormalCase(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		if (!betreuung.hasErweiterteBetreuung()) {
-			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
 		}
 	}
 

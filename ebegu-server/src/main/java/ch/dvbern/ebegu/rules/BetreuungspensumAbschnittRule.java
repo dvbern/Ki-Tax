@@ -68,7 +68,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
-		zeitabschnitt.setBetreuungspensumProzent(betreuungspensum.getPensum());
+		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(betreuungspensum.getPensum());
 		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();

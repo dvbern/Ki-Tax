@@ -304,6 +304,15 @@ public class BGCalculationInput {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
+
+	@Override
+	public String toString() {
+		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
+			+ " EP GS2: " + getErwerbspensumGS2() + '\t'
+			+ " Restanspruch: " + getAnspruchspensumRest();
+		return sb;
+	}
+
 	public void add(@Nonnull BGCalculationInput other) {
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()

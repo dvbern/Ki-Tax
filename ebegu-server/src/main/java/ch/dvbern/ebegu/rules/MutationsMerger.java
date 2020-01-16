@@ -162,7 +162,7 @@ public final class MutationsMerger {
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-				zeitabschnitt.setAnspruchberechtigtesPensum(anspruchAufVorgaengerVerfuegung);
+				zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {

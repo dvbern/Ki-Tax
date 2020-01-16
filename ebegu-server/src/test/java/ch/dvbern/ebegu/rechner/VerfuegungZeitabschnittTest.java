@@ -22,6 +22,7 @@ import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -94,7 +95,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 		BGCalculationResult calculate = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		calculate.toVerfuegungZeitabschnitt(zeitabschnitt);
+		calculate.roundAllValues();
 
 		return zeitabschnitt;
 	}
@@ -102,8 +103,8 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	@Nonnull
 	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.setAnspruchberechtigtesPensum(100);
-		zeitabschnitt.setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
+		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
+		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
 
 		return zeitabschnitt;
 	}

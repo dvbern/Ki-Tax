@@ -1877,8 +1877,8 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(10));
-		zeitabschnitt.setAnspruchberechtigtesPensum(50);
+		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
+		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);
 		return zeitabschnitt;

@@ -81,7 +81,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
 			int minimum = getMinimumErwerbspensum(platz);
 			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum, erwerbspensumOffset, getLocale());
-			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(roundedAnspruch);
 		}
 	}
 
