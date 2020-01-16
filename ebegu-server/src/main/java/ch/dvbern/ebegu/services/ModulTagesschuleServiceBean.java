@@ -80,13 +80,20 @@ public class ModulTagesschuleServiceBean extends AbstractBaseService implements 
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
+	public Collection<EinstellungenTagesschule> findEinstellungenTagesschuleByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		return
+			criteriaQueryHelper.getEntitiesByAttribute(
+				EinstellungenTagesschule.class, gesuchsperiode, EinstellungenTagesschule_.gesuchsperiode);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
 	public void copyModuleTagesschuleToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
 		@Nonnull Gesuchsperiode lastGesuchsperiode
 	) {
 		Collection<EinstellungenTagesschule> lastEinstellungenTagesschule =
-			criteriaQueryHelper.getEntitiesByAttribute(
-				EinstellungenTagesschule.class, lastGesuchsperiode, EinstellungenTagesschule_.gesuchsperiode);
+			findEinstellungenTagesschuleByGesuchsperiode(lastGesuchsperiode);
 		lastEinstellungenTagesschule.forEach(lastEinstellung -> {
 			EinstellungenTagesschule newEinstellung = lastEinstellung.copyForGesuchsperiode(gesuchsperiodeToCreate);
 			persistence.merge(newEinstellung);
