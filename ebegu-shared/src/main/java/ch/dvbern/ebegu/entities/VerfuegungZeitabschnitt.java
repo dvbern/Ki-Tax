@@ -255,7 +255,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
-		return getBgCalculationResultAsiv().getMinimalerElternbeitragGekuerzt();
+		return getBgCalculationResultAsiv().getMinimalerElternbeitragGekuerztNullSafe();
 	}
 
 	@Nonnull

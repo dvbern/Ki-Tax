@@ -46,6 +46,7 @@ public class BGCalculationResult extends AbstractEntity {
 	private static final long serialVersionUID = 6727717920099112569L;
 
 	// Dies wird benötigt für die Migration der Daten und kann im nächsten Release wieder entfernt werden
+	@SuppressWarnings("PMD.UnusedPrivateField")
 	@Column(nullable = true)
 	private String tempIdZeitabschnitt;
 
@@ -69,7 +70,7 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private BigDecimal elternbeitrag = BigDecimal.ZERO; //TODO (hefr) brauchts mich?
 
-	@Nonnull
+	@Nullable // Aktuell noch nullable, wegen bereits verfuegten Gesuchen!
 	@Column(nullable = true)
 	private BigDecimal minimalerElternbeitragGekuerzt = BigDecimal.ZERO; // Punkt VII auf der Verfuegung
 
@@ -139,9 +140,9 @@ public class BGCalculationResult extends AbstractEntity {
 			&& MathUtil.isClose(verguenstigungOhneBeruecksichtigungMinimalbeitrag, that.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag(), rapenError)
 			&& MathUtil.isClose(minimalerElternbeitrag, that.getMinimalerElternbeitrag(), rapenError)
 			&& MathUtil.isClose(elternbeitrag, that.getElternbeitrag(), rapenError)
-			&& MathUtil.isClose(minimalerElternbeitragGekuerzt, that.getMinimalerElternbeitragGekuerzt(), rapenError)
+			&& MathUtil.isClose(this.getMinimalerElternbeitragGekuerztNullSafe(), that.getMinimalerElternbeitragGekuerztNullSafe(), rapenError)
 			&& MathUtil.isClose(verguenstigung, that.getVerguenstigung(), rapenError)
-			&& MathUtil.isClose(getBgPensumProzent(), that.getBgPensumProzent(), rapenError);
+			&& MathUtil.isClose(this.getBgPensumProzent(), that.getBgPensumProzent(), rapenError);
 	}
 
 	public void copyCalculationResult(@Nullable BGCalculationResult that) {
@@ -311,9 +312,27 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
 		return minimalerElternbeitragGekuerzt;
+	}
+
+	@Nonnull
+	public BigDecimal getMinimalerElternbeitragGekuerztNullSafe() {
+		// Spezialfall: Dieses Feld wurde frueher nicht gespeichert sondern immer neu berechnet
+		// Dies bedeutet dass in allen bereits verfügten Gesuchen der Wert nie mehr gesetzt werden
+		// kann!
+		// Kann entfernt werden, wenn Gesuschsperiode 2019/20 gelöscht wurde,
+		// minimalerElternbeitragGekuerzt kann dann Nonnull gesetzt werden
+		if (getMinimalerElternbeitragGekuerzt() != null) {
+			return getMinimalerElternbeitragGekuerzt();
+		}
+		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT
+			.subtract(getVollkosten(), getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		if (vollkostenMinusVerguenstigung.compareTo(getMinimalerElternbeitrag()) > 0) {
+			return MathUtil.DEFAULT.from(0);
+		}
+		return MathUtil.DEFAULT.subtract(getMinimalerElternbeitrag(), vollkostenMinusVerguenstigung);
 	}
 
 	public void setMinimalerElternbeitragGekuerzt(@Nonnull BigDecimal minimalerElternbeitragGekuerzt) {
