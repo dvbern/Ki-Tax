@@ -95,7 +95,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatGemeinde"), nullable = true)
 	private BGCalculationResult bgCalculationResultGemeinde;
 
-	@NotNull @Nonnull
+	@NotNull
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_zeitabschnitt_verfuegung_id"), nullable = false)
 	@ManyToOne(optional = false)
 	private Verfuegung verfuegung;
@@ -127,16 +127,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
 
 	@Column(nullable = false)
-	private @NotNull boolean zuSpaetEingereicht;
+	private boolean zuSpaetEingereicht;
 
 	@Column(nullable = false)
-	private @NotNull boolean minimalesEwpUnterschritten;
-
-	@Transient
-	private boolean babyTarif;
-
-	@Transient
-	private boolean eingeschult;
+	private boolean minimalesEwpUnterschritten;
 
 	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
@@ -157,7 +151,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (toCopy.getBgCalculationResultGemeinde() != null) {
 			this.bgCalculationResultGemeinde = new BGCalculationResult(toCopy.getBgCalculationResultGemeinde());
 		}
-
+		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
+		this.verfuegung = null;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.setAbzugFamGroesse(toCopy.getAbzugFamGroesse());
@@ -165,11 +160,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setMassgebendesEinkommenVorAbzugFamgr(toCopy.getMassgebendesEinkommenVorAbzFamgr());
 		this.einkommensjahr = toCopy.einkommensjahr;
 		this.bemerkungen = toCopy.bemerkungen;
-		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
-		this.verfuegung = null;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
-		this.babyTarif = toCopy.babyTarif;
-		this.eingeschult = toCopy.eingeschult;
 		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 	}
 
@@ -393,22 +384,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
-	public boolean isBabyTarif() {
-		return babyTarif;
-	}
-
-	public void setBabyTarif(boolean babyTarif) {
-		this.babyTarif = babyTarif;
-	}
-
-	public boolean isEingeschult() {
-		return eingeschult;
-	}
-
-	public void setEingeschult(boolean eingeschult) {
-		this.eingeschult = eingeschult;
-	}
-
 	public boolean isBesondereBeduerfnisseBestaetigt() {
 		return besondereBeduerfnisseBestaetigt;
 	}
@@ -450,8 +425,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		this.setEinkommensjahr(other.getEinkommensjahr());
 
-		this.setBabyTarif(this.babyTarif || other.babyTarif);
-		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisseBestaetigt(this.besondereBeduerfnisseBestaetigt
 			|| other.besondereBeduerfnisseBestaetigt);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
@@ -503,8 +476,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
 			Objects.equals(einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
-			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
-			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
 			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
@@ -524,8 +495,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
 			MathUtil.isSame(famGroesse, that.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
-			babyTarif == that.babyTarif &&
-			eingeschult == that.eingeschult &&
 			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			Objects.equals(einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&

@@ -44,8 +44,8 @@ public abstract class AbstractBGRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		// Benoetigte Daten
-		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
-		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
+		boolean unter12Monate = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
+		boolean eingeschult = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
