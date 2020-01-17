@@ -15,18 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import {TSDokumentTyp} from '../../models/enums/TSDokumentTyp';
 import {TSRole} from '../../models/enums/TSRole';
+import {TSSprache} from '../../models/enums/TSSprache';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../models/TSBfsGemeinde';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
 import {TSGemeindeRegistrierung} from '../../models/TSGemeindeRegistrierung';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {GlobalCacheService} from './globalCacheService';
@@ -216,7 +219,7 @@ export class GemeindeRS implements IEntityRS {
                 : gemeindenTSIdOrNull += encodeURIComponent(id)));
         return this.$http.get(
             `${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${gemeindenTSIdOrNull.length !== 0 ?
-            encodeURIComponent(gemeindenTSIdOrNull) : null}`)
+                encodeURIComponent(gemeindenTSIdOrNull) : null}`)
             .then(response => this.ebeguRestUtil.parseGemeindeRegistrierungList(response.data));
     }
 
@@ -229,5 +232,30 @@ export class GemeindeRS implements IEntityRS {
         let restGemeinde = {};
         restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
         return this.$http.put(`${this.serviceURL}/updateangebote`, restGemeinde);
+    }
+
+    public removeGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
+                                        dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
+        // tslint:disable-next-line:max-line-length
+        return this.$http.delete(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
+    }
+
+    public existGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
+                                               dokumentTyp: TSDokumentTyp): IPromise<boolean> {
+        // tslint:disable-next-line:max-line-length
+        return this.$http.get(`${this.serviceURL}/existGemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public downloadGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
+                                                  dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
+        // tslint:disable-next-line:max-line-length
+        return this.$http.get(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
+            {responseType: 'blob'})
+            .then((response: any) => {
+                return response.data;
+            });
     }
 }

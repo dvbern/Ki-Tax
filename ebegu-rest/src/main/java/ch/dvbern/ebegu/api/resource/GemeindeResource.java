@@ -594,35 +594,11 @@ public class GemeindeResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation("Stores the Merkblatt Anmeldung Tagesschule PDF for a Gemeinde and a Gesuchsperiode")
-	@POST
-	@Path("/uploadGesuchsperiodeGemeindeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadMerkblattAnmeldungTagesschule(
-		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
-		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
-		@Nonnull @PathParam("sprache") Sprache sprache,
-		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
-		@Nonnull @NotNull MultipartFormDataInput input) {
 
-		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-
-		Validate.notEmpty(fileList, "Need to upload something");
-
-		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
-
-		TransferFile file = fileList.get(0);
-
-		gemeindeService.uploadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp, file.getContent());
-
-		return Response.ok().build();
-	}
 
 	@ApiOperation("Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
 	@GET
-	@Path("/downloadGesuchsperiodeGemeindeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response downloadGemeindeDokument(
@@ -650,7 +626,7 @@ public class GemeindeResource {
 
 	@Nullable
 	@DELETE
-	@Path("/gesuchsperiodeGemeindeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	public Response removeGesuchsperiodeDokument(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
@@ -674,7 +650,7 @@ public class GemeindeResource {
 	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
 		response = boolean.class)
 	@GET
-	@Path("/existGesuchsperiodeGemeindeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Path("/existGemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean existDokument(

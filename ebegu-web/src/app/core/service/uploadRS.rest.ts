@@ -91,6 +91,22 @@ export class UploadRS {
         });
     }
 
+    public uploadGemeindeGesuchsperiodeDokument(file: any, sprache: TSSprache, gemeindeId: string, periodeID: string,
+                                        dokumentTyp: TSDokumentTyp): IPromise<any> {
+        return this.upload.upload({
+            url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(periodeID)}/${sprache}/${dokumentTyp}`,
+            method: 'POST',
+            data: {
+                file
+            },
+        }).then((response: any) => {
+            return response.data;
+        }, (response: any) => {
+            console.log('Upload Gesuchsperiode Gemeinde File: NOT SUCCESS');
+            return this.q.reject(response);
+        });
+    }
+
     public getServiceName(): string {
         return 'UploadRS';
     }
