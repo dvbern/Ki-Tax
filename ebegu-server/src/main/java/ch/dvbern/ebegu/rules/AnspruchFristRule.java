@@ -68,14 +68,14 @@ public final class AnspruchFristRule {
 
 						// Ab dem naechsten Monat gilt der neue Anspruch
 						zeitabschnitt.setAnspruchberechtigtesPensum(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
-						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
+						zeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(vorangehenderAbschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
 						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
 						zeitabschnitt.setAnspruchberechtigtesPensum(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
-						zeitabschnitt.getBemerkungenMap().clear();
-						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
+						zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().clear();
+						zeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(vorangehenderAbschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 						vorangehenderAbschnitt = zeitabschnitt;
 					}
 				} else {

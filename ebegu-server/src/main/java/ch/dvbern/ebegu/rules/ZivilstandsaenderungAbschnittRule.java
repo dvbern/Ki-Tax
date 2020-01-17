@@ -92,7 +92,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				stichtag,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittNachMutation.addBemerkung(ruleKey, msgKey, getLocale());
+			abschnittNachMutation.getBgCalculationInputAsiv().addBemerkung(ruleKey, msgKey, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
@@ -115,7 +115,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				startKonkubinatPlusFive,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittKonkubinat2GS.addBemerkung(ruleKey, MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
+			abschnittKonkubinat2GS.getBgCalculationInputAsiv().addBemerkung(ruleKey, MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittKonkubinat2GS);
 
 		} else {
@@ -137,7 +137,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull LocalDate dateBis
 	) {
 		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(new DateRange(dateAb, dateBis));
-		abschnitt.setHasSecondGesuchstellerForFinanzielleSituation(
+		abschnitt.getBgCalculationInputAsiv().setHasSecondGesuchstellerForFinanzielleSituation(
 			familiensituation.hasSecondGesuchsteller(
 				// it must be checked at the end of the zeitabschnitt
 				abschnitt.getGueltigkeit().getGueltigBis()

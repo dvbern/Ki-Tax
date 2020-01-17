@@ -123,6 +123,12 @@ public final class DokumenteUtil {
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FREIGABEQUITTUNG, locale, identificationNumber);
 		case PAIN001:
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.PAIN001, locale, identificationNumber);
+		case ANMELDEBESTAETIGUNGMITTARIF:
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, locale,
+				identificationNumber);
+		case ANMELDEBESTAETIGUNGOHNETARIF:
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, locale,
+				identificationNumber);
 		default:
 			return "file.pdf";
 		}
