@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
+import org.apache.commons.lang.Validate;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
@@ -72,7 +74,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@Nullable // Aktuell noch nullable, wegen bereits verfuegten Gesuchen!
 	@Column(nullable = true)
-	private BigDecimal minimalerElternbeitragGekuerzt = BigDecimal.ZERO; // Punkt VII auf der Verfuegung
+	private BigDecimal minimalerElternbeitragGekuerzt; // Punkt VII auf der Verfuegung
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -107,6 +109,32 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private BigDecimal bgPensumZeiteinheit = BigDecimal.ZERO;
 
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Integer einkommensjahr;
+
+	@NotNull @Nonnull //TODO bisher @Nullable
+	@Column(nullable = false)
+	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
+
+	@NotNull @Nonnull //TODO bisher @Nullable
+	@Column(nullable = false)
+	private BigDecimal famGroesse = BigDecimal.ZERO;
+
+	@NotNull @Nonnull //TODO bisher @Nullable
+	@Column(nullable = false)
+	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
+
+	@Column(nullable = false)
+	private boolean zuSpaetEingereicht;
+
+	@Column(nullable = false)
+	private boolean minimalesEwpUnterschritten;
+
+	@Column(nullable = false)
+	private boolean besondereBeduerfnisseBestaetigt;
+
+
 	@Transient
 	@Nonnull
 	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
@@ -130,6 +158,15 @@ public class BGCalculationResult extends AbstractEntity {
 		this.anspruchspensumProzent = toCopy.anspruchspensumProzent;
 		this.anspruchspensumZeiteinheit = toCopy.anspruchspensumZeiteinheit;
 		this.bgPensumZeiteinheit = toCopy.bgPensumZeiteinheit;
+
+		this.einkommensjahr = toCopy.einkommensjahr;
+		this.abzugFamGroesse = toCopy.abzugFamGroesse;
+		this.famGroesse = toCopy.famGroesse;
+		this.massgebendesEinkommenVorAbzugFamgr = toCopy.massgebendesEinkommenVorAbzugFamgr;
+
+		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
+		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
+		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -170,6 +207,15 @@ public class BGCalculationResult extends AbstractEntity {
 		this.betreuungspensumProzent = zeiteinheitenRoundingStrategy.apply(betreuungspensumProzent);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
 		this.bgPensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(bgPensumZeiteinheit);
+
+		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
+
+		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		this.massgebendesEinkommenVorAbzugFamgr = zeiteinheitenRoundingStrategy.apply(massgebendesEinkommenVorAbzugFamgr);
+		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
 	}
 
 	@Override
@@ -188,8 +234,12 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("betreuungspensumProzent", betreuungspensumProzent)
 			.add("anspruchsberechtigteAnzahlZeiteinheiten", anspruchspensumZeiteinheit)
 			.add("anspruchberechtigtesPensum", anspruchspensumProzent)
-			.add("bgPensumZeiteinheit", getBgPensumProzent())
+			.add("getBgPensumProzent", getBgPensumProzent())
 			.add("bgPensumZeiteinheit", bgPensumZeiteinheit)
+
+			.add("einkommensjahr", einkommensjahr)
+			.add("massgebendesEinkommenVorAbzugFamgr", massgebendesEinkommenVorAbzugFamgr)
+			.add("abzugFamGroesse", abzugFamGroesse)
 			.toString();
 	}
 
@@ -208,7 +258,14 @@ public class BGCalculationResult extends AbstractEntity {
 		final BGCalculationResult otherResult = (BGCalculationResult) other;
 		return isSameZeiteinheiten(this, otherResult) &&
 			MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == otherResult.anspruchspensumProzent;
+			this.anspruchspensumProzent == otherResult.anspruchspensumProzent &&
+			MathUtil.isSame(abzugFamGroesse, otherResult.abzugFamGroesse) &&
+			MathUtil.isSame(famGroesse, otherResult.famGroesse) &&
+			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, otherResult.massgebendesEinkommenVorAbzugFamgr) &&
+			zuSpaetEingereicht == otherResult.zuSpaetEingereicht &&
+			minimalesEwpUnterschritten == otherResult.minimalesEwpUnterschritten &&
+			Objects.equals(einkommensjahr, otherResult.einkommensjahr) &&
+			besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt;
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -218,7 +275,13 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.vollkosten, otherEntity.vollkosten) &&
 				MathUtil.isSame(thisEntity.elternbeitrag, otherEntity.elternbeitrag) &&
 				MathUtil.isSame(thisEntity.betreuungspensumProzent, otherEntity.betreuungspensumProzent) &&
-				thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent
+				thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
+				MathUtil.isSame(thisEntity.abzugFamGroesse, otherEntity.abzugFamGroesse) &&
+				MathUtil.isSame(thisEntity.famGroesse, otherEntity.famGroesse) &&
+				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
+				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
+				(thisEntity.besondereBeduerfnisseBestaetigt == otherEntity.besondereBeduerfnisseBestaetigt) &&
+				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten)
 			));
 	}
 
@@ -251,6 +314,11 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.elternbeitrag, otherEntity.elternbeitrag) &&
 				MathUtil.isSame(thisEntity.betreuungspensumProzent, otherEntity.betreuungspensumProzent) &&
 				thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
+				MathUtil.isSame(thisEntity.abzugFamGroesse, otherEntity.abzugFamGroesse) &&
+				MathUtil.isSame(thisEntity.famGroesse, otherEntity.famGroesse) &&
+				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
+				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
+				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
 				isSameZeiteinheiten(thisEntity, otherEntity)
 		));
 	}
@@ -261,6 +329,23 @@ public class BGCalculationResult extends AbstractEntity {
 		this.anspruchspensumZeiteinheit = this.anspruchspensumZeiteinheit.add(other.anspruchspensumZeiteinheit);
 		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
 		this.bgPensumZeiteinheit = this.bgPensumZeiteinheit.add(other.bgPensumZeiteinheit);
+
+		this.einkommensjahr = other.einkommensjahr;
+		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
+
+		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
+		Validate.isTrue(
+			this.famGroesse.compareTo(BigDecimal.ZERO) == 0 || other.famGroesse.compareTo(BigDecimal.ZERO) == 0,
+			"Eines der beiden muss 0 sein");
+		this.famGroesse = other.famGroesse;
+		Validate.isTrue(
+			this.abzugFamGroesse.compareTo(BigDecimal.ZERO) == 0 || other.abzugFamGroesse.compareTo(BigDecimal.ZERO) == 0,
+			"Eines der beiden muss 0 sein");
+		this.abzugFamGroesse = other.abzugFamGroesse;
+
+		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
+		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
+		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
 	}
 
 	private static boolean isSameZeiteinheiten(@Nonnull BGCalculationResult thisEntity, @Nonnull BGCalculationResult otherEntity) {
@@ -284,6 +369,35 @@ public class BGCalculationResult extends AbstractEntity {
 	public BigDecimal getBgPensumProzent() {
 		return getBetreuungspensumProzent().min(MathUtil.DEFAULT.from(getAnspruchspensumProzent()));
 	}
+
+	/**
+	 * @return berechneter Wert. Zieht vom massgebenenEinkommenVorAbzug den Familiengroessen Abzug ab
+	 */
+	@Nonnull
+	public BigDecimal getMassgebendesEinkommen() {
+		BigDecimal abzugFamSize = this.abzugFamGroesse;
+		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
+	}
+
+	@Nonnull
+	public BigDecimal getMinimalerElternbeitragGekuerztNullSafe() {
+		// Spezialfall: Dieses Feld wurde frueher nicht gespeichert sondern immer neu berechnet
+		// Dies bedeutet dass in allen bereits verfügten Gesuchen der Wert nie mehr gesetzt werden
+		// kann!
+		// Kann entfernt werden, wenn Gesuschsperiode 2019/20 gelöscht wurde,
+		// minimalerElternbeitragGekuerzt kann dann Nonnull gesetzt werden
+		if (getMinimalerElternbeitragGekuerzt() != null) {
+			return getMinimalerElternbeitragGekuerzt();
+		}
+		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT
+			.subtract(getVollkosten(), getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		if (vollkostenMinusVerguenstigung.compareTo(getMinimalerElternbeitrag()) > 0) {
+			return MathUtil.DEFAULT.from(0);
+		}
+		return MathUtil.DEFAULT.subtract(getMinimalerElternbeitrag(), vollkostenMinusVerguenstigung);
+	}
+
+
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitrag() {
@@ -315,24 +429,6 @@ public class BGCalculationResult extends AbstractEntity {
 	@Nullable
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
 		return minimalerElternbeitragGekuerzt;
-	}
-
-	@Nonnull
-	public BigDecimal getMinimalerElternbeitragGekuerztNullSafe() {
-		// Spezialfall: Dieses Feld wurde frueher nicht gespeichert sondern immer neu berechnet
-		// Dies bedeutet dass in allen bereits verfügten Gesuchen der Wert nie mehr gesetzt werden
-		// kann!
-		// Kann entfernt werden, wenn Gesuschsperiode 2019/20 gelöscht wurde,
-		// minimalerElternbeitragGekuerzt kann dann Nonnull gesetzt werden
-		if (getMinimalerElternbeitragGekuerzt() != null) {
-			return getMinimalerElternbeitragGekuerzt();
-		}
-		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT
-			.subtract(getVollkosten(), getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
-		if (vollkostenMinusVerguenstigung.compareTo(getMinimalerElternbeitrag()) > 0) {
-			return MathUtil.DEFAULT.from(0);
-		}
-		return MathUtil.DEFAULT.subtract(getMinimalerElternbeitrag(), vollkostenMinusVerguenstigung);
 	}
 
 	public void setMinimalerElternbeitragGekuerzt(@Nonnull BigDecimal minimalerElternbeitragGekuerzt) {
@@ -427,5 +523,65 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
 		this.anspruchspensumProzent = anspruchspensumProzent;
+	}
+
+	@Nonnull
+	public Integer getEinkommensjahr() {
+		return einkommensjahr;
+	}
+
+	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
+		this.einkommensjahr = einkommensjahr;
+	}
+
+	@Nonnull
+	public BigDecimal getAbzugFamGroesse() {
+		return abzugFamGroesse;
+	}
+
+	public void setAbzugFamGroesse(@Nonnull BigDecimal abzugFamGroesse) {
+		this.abzugFamGroesse = abzugFamGroesse;
+	}
+
+	@Nonnull
+	public BigDecimal getFamGroesse() {
+		return famGroesse;
+	}
+
+	public void setFamGroesse(@Nonnull BigDecimal famGroesse) {
+		this.famGroesse = famGroesse;
+	}
+
+	@Nonnull
+	public BigDecimal getMassgebendesEinkommenVorAbzugFamgr() {
+		return massgebendesEinkommenVorAbzugFamgr;
+	}
+
+	public void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
+		this.massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommenVorAbzugFamgr;
+	}
+
+	public boolean isZuSpaetEingereicht() {
+		return zuSpaetEingereicht;
+	}
+
+	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
+		this.zuSpaetEingereicht = zuSpaetEingereicht;
+	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return minimalesEwpUnterschritten;
+	}
+
+	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
+		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
+	}
+
+	public boolean isBesondereBeduerfnisseBestaetigt() {
+		return besondereBeduerfnisseBestaetigt;
+	}
+
+	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
 	}
 }

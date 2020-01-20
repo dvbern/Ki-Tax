@@ -167,7 +167,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEingeschult(eingeschult);
-		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
 		BGCalculationResult result = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 

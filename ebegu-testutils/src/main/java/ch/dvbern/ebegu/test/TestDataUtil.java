@@ -1879,8 +1879,8 @@ public final class TestDataUtil {
 		zeitabschnitt.setVerfuegung(verfuegung);
 		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
 		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
-		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
-		zeitabschnitt.setZuSpaetEingereicht(false);
+		zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(PERIODE_JAHR_1);
+		zeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(false);
 		return zeitabschnitt;
 	}
 

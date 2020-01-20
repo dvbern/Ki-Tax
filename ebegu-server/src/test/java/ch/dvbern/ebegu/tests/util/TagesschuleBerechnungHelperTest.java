@@ -162,11 +162,11 @@ public class TagesschuleBerechnungHelperTest {
 		Verfuegung verfuegung = new Verfuegung();
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(120000));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(120000));
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(false);
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnittZwei = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnittZwei.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(100000));
+		verfuegungZeitabschnittZwei.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(100000));
 		verfuegungZeitabschnittZwei.getBgCalculationInputAsiv().setBezahltVollkosten(false);
 
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList = new ArrayList<>();

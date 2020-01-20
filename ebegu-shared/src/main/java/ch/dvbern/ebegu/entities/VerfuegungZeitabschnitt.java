@@ -45,8 +45,6 @@ import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -109,31 +107,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Enumerated(EnumType.STRING)
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
-	@Column(nullable = false)
-	private @NotNull Integer einkommensjahr;
-
-	@Column(nullable = true)
-	private BigDecimal abzugFamGroesse = null;
-
-	@Column(nullable = true)
-	private BigDecimal famGroesse = null;
-
-	@Column(nullable = true)
-	@Nonnull
-	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
-
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
-
-	@Column(nullable = false)
-	private boolean zuSpaetEingereicht;
-
-	@Column(nullable = false)
-	private boolean minimalesEwpUnterschritten;
-
-	@Column(nullable = false)
-	private boolean besondereBeduerfnisseBestaetigt;
 
 	public VerfuegungZeitabschnitt() {
 	}
@@ -153,15 +129,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
-		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
-		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
-		this.setAbzugFamGroesse(toCopy.getAbzugFamGroesse());
-		this.setFamGroesse(toCopy.getFamGroesse());
-		this.setMassgebendesEinkommenVorAbzugFamgr(toCopy.getMassgebendesEinkommenVorAbzFamgr());
-		this.einkommensjahr = toCopy.einkommensjahr;
 		this.bemerkungen = toCopy.bemerkungen;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
-		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 	}
 
 	/**
@@ -284,35 +253,44 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getBgCalculationResultAsiv().getBetreuungspensumZeiteinheit();
 	}
 
-	/* Ende Delegator-Methoden */
-
+	@Nonnull
 	public BigDecimal getAbzugFamGroesse() {
-		return abzugFamGroesse;
+		return getBgCalculationResultAsiv().getAbzugFamGroesse();
 	}
 
-	public void setAbzugFamGroesse(BigDecimal abzugFamGroesse) {
-		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
-		this.abzugFamGroesse = MathUtil.toTwoKommastelle(abzugFamGroesse);
-	}
-
-	/**
-	 * @return berechneter Wert. Zieht vom massgebenenEinkommenVorAbzug den Familiengroessen Abzug ab
-	 */
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommen() {
-		BigDecimal abzugFamSize = this.abzugFamGroesse == null ? BigDecimal.ZERO : this.abzugFamGroesse;
-		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
+		return getBgCalculationResultAsiv().getMassgebendesEinkommen();
 	}
 
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommenVorAbzFamgr() {
-		return massgebendesEinkommenVorAbzugFamgr;
+		return getBgCalculationResultAsiv().getMassgebendesEinkommenVorAbzugFamgr();
 	}
 
-	public void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
-		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
-		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.toTwoKommastelle(massgebendesEinkommenVorAbzugFamgr);
+	public boolean isZuSpaetEingereicht() {
+		return getBgCalculationResultAsiv().isZuSpaetEingereicht();
 	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return getBgCalculationResultAsiv().isMinimalesEwpUnterschritten();
+	}
+
+	@Nonnull
+	public BigDecimal getFamGroesse() {
+		return getBgCalculationResultAsiv().getFamGroesse();
+	}
+
+	@Nonnull
+	public Integer getEinkommensjahr() {
+		return getBgCalculationResultAsiv().getEinkommensjahr();
+	}
+
+	public boolean isBesondereBeduerfnisseBestaetigt() {
+		return getBgCalculationResultAsiv().isBesondereBeduerfnisseBestaetigt();
+	}
+
+	/* Ende Delegator-Methoden */
 
 	@Nullable
 	public String getBemerkungen() {
@@ -330,40 +308,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setVerfuegung(@Nonnull Verfuegung verfuegung) {
 		this.verfuegung = verfuegung;
-	}
-
-	public boolean isZuSpaetEingereicht() {
-		return zuSpaetEingereicht;
-	}
-
-	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
-		this.zuSpaetEingereicht = zuSpaetEingereicht;
-	}
-
-	public boolean isMinimalesEwpUnterschritten() {
-		return minimalesEwpUnterschritten;
-	}
-
-	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
-		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
-	}
-
-	public BigDecimal getFamGroesse() {
-		return famGroesse;
-	}
-
-	public void setFamGroesse(BigDecimal famGroesse) {
-		// Wir stellen direkt im setter sicher, dass wir die FamGroesse mit 1 Nachkommastelle speichern
-		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
-	}
-
-	@Nonnull
-	public Integer getEinkommensjahr() {
-		return einkommensjahr;
-	}
-
-	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
-		this.einkommensjahr = einkommensjahr;
 	}
 
 	@Nonnull
@@ -384,14 +328,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
-	public boolean isBesondereBeduerfnisseBestaetigt() {
-		return besondereBeduerfnisseBestaetigt;
-	}
-
-	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
-		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
-	}
-
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -406,28 +342,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			}
 			this.bgCalculationResultGemeinde.add(other.getBgCalculationResultGemeinde());
 		}
-
-		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.addNullSafe(
-			this.getMassgebendesEinkommenVorAbzFamgr(),
-			other.getMassgebendesEinkommenVorAbzFamgr()));
-
-		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
-
-		// Der Familiengroessen Abzug kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
-		if (other.getAbzugFamGroesse() != null) {
-			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
-			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
-		}
-		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
-		if (other.getFamGroesse() != null) {
-			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
-			this.setFamGroesse(other.getFamGroesse());
-		}
-		this.setEinkommensjahr(other.getEinkommensjahr());
-
-		this.setBesondereBeduerfnisseBestaetigt(this.besondereBeduerfnisseBestaetigt
-			|| other.besondereBeduerfnisseBestaetigt);
-		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 
 	@Override
@@ -440,10 +354,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
-			+ " Bemerkungen: " + bemerkungen + '\t'
-			+ " Einkommensjahr: " + einkommensjahr + '\t'
-			+ " Einkommen: " + massgebendesEinkommenVorAbzugFamgr + '\t'
-			+ " Abzug Fam: " + abzugFamGroesse;
+			+ " Bemerkungen: " + bemerkungen;
 		return sb;
 	}
 
@@ -467,16 +378,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde()) &&
 			EbeguUtil.isSameObject(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSameObject(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
-
-			MathUtil.isSame(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
-			MathUtil.isSame(famGroesse, otherVerfuegungZeitabschnitt.famGroesse) &&
-			MathUtil.isSame(
-				massgebendesEinkommenVorAbzugFamgr,
-				otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
-			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
-			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
-			Objects.equals(einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
-			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}
@@ -491,13 +392,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
-
-			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
-			MathUtil.isSame(famGroesse, that.famGroesse) &&
-			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
-			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
-			Objects.equals(einkommensjahr, that.einkommensjahr) &&
-			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
@@ -515,13 +409,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			this.bgCalculationInputGemeinde.isSamePersistedValues(that.bgCalculationInputGemeinde) &&
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
-
-			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
-			MathUtil.isSame(famGroesse, that.famGroesse) &&
-			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
-			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
-			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
-			Objects.equals(this.einkommensjahr, that.einkommensjahr);
+			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0;
 	}
 
 	/**

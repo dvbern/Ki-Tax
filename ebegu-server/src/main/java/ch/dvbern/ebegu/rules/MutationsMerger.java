@@ -115,7 +115,7 @@ public final class MutationsMerger {
 			&& !vorangehenderAbschnitt.isBesondereBeduerfnisseBestaetigt()
 			&& !zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
 		) {
-			zeitabschnitt.setBesondereBeduerfnisseBestaetigt(false);
+			zeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(false);
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
@@ -135,10 +135,10 @@ public final class MutationsMerger {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
 				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
-				zeitabschnitt.setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
-				zeitabschnitt.setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
-				zeitabschnitt.setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
+				zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
+				zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
+				zeitabschnitt.getBgCalculationResultAsiv().setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
+				zeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
 				if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
 					zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
