@@ -20,7 +20,7 @@
         <dv-accordion class="konfigurationList" allow-multiple-sections="true">
             <dv-accordion-tab
                 *ngFor="let konf of konfigurationsListe; let i = index"
-                [tabid]="i">
+                [tabid]="i" (click)="reload()" id="accordion-tab-{{konfigurationsListe[i].gesuchsperiode.id}}">
                 <tab-title>
                     <div class="message-header">
                         <p class="fa fa-angle-right"></p>
@@ -88,78 +88,81 @@
                                             class="symbol"
                                             tabindex="-1"
                                             ng-click="$event.stopPropagation()">
-                                                <button
-                                                   ngf-select="uploadGemeindeGesuchsperiodeDokument($files, 'DEUTSCH', 'VORLAGE_MERKBLATT_TS')"
-                                                   ngf-multiple="false"
-                                                   accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                   class="dv-btn fa fa-upload dv-btn-operation"
-                                                   title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                                   [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
-                                                   tabindex="0">
-                                               </button>
-                                           </td>
-                                           <td width="2%"
-                                               class="symbol"
-                                               tabindex="-1">
-                                                    <button
-                                                          ng-click="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, 'DEUTSCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
-                                                          ng-disabled="!vm.isVorlageMerkblattDE"
-                                                          class="dv-btn fa fa-eye dv-btn-operation"
-                                                          aria-hidden="true"
-                                                          tabindex="0"></button>
-                                               </td>
-                                               <td width="2%"
-                                                   class="symbol"
-                                                   tabindex="-1">
-                                                  <button
-                                                       ng-click="vm.removeGesuchsperiodeDokument('DEUTSCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
-                                                       ng-disabled="!vm.isVorlageMerkblattDE"
-                                                       class="dv-btn fa fa-trash dv-btn-operation"
-                                                       aria-hidden="true"
-                                                       tabindex="0"></button>
-                                               </td>
-                                           </tr>
-                                           <!--
-                                           <tr>
-                                               <td translate="VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
-                                               <td width="2%"
-                                                   class="symbol"
-                                                   tabindex="-1"
-                                                   ng-click="$event.stopPropagation()">
-                                                   <button
-                                                       ngf-select="vm.uploadGesuchsperiodeDokument($files, 'FRANZOESISCH', 'VORLAGE_MERKBLATT_TS')"
-                                                       ngf-multiple="false"
-                                                       accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                                       class="dv-btn fa fa-upload dv-btn-operation"
-                                                       title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                                       aria-label="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
-                                                       tabindex="0">
-                                                   </button>
-                                               </td>
-                                               <td width="2%"
-                                                   class="symbol"
-                                                   tabindex="-1">
-                                                   <button
-                                                       ng-click="vm.downloadGesuchsperiodeDokument('FRANZOESISCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
-                                                       ng-disabled="!vm.isVorlageMerkblattFR"
-                                                       class="dv-btn fa fa-eye dv-btn-operation"
-                                                       aria-hidden="true"
-                                                       tabindex="0"></button>
-                                               </td>
-                                               <td width="2%"
-                                                   class="symbol"
-                                                   tabindex="-1">
-                                                   <button
-                                                       ng-click="vm.removeGesuchsperiodeDokument('FRANZOESISCH', 'VORLAGE_MERKBLATT_TS');$event.stopPropagation()"
-                                                       ng-disabled="!vm.isVorlageMerkblattFR"
-                                                       class="dv-btn fa fa-trash dv-btn-operation"
-                                                       aria-hidden="true"
-                                                       tabindex="0"></button>
-                                               </td>
-                                           </tr>  -->
+                                            <input type="file" style="display: none"
+												   #fileInput
+                                                   accept="application/pdf"
+                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"/>
+                                            <button mat-raised-button
+                                                    (click)="fileInput.click()"
+                                                    class="dv-btn fa fa-upload dv-btn-operation"
+                                                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                    [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                                                    tabindex="0">
+                                            </button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            translate="VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1"
+                                            ng-click="$event.stopPropagation()">
+                                            <input type="file" style="display: none"
+												   #fileInput
+                                                   accept="application/pdf"
+                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"/>
+                                            <button mat-raised-button
+                                                    (click)="fileInput.click()"
+                                                    class="dv-btn fa fa-upload dv-btn-operation"
+                                                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                    [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                                                    tabindex="0">
+                                            </button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                    </tr>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </tab-body>

@@ -17,12 +17,10 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogController';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -30,6 +28,7 @@ import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
+import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS, MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
@@ -46,9 +45,11 @@ export class GemeindeTsKonfigComponent implements OnInit {
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;
-    @Input() private readonly gemeindeId: string;
+    @Input() public gemeindeId: string;
 
     private navigationDest: StateDeclaration;
+    private _merkblattAnmeldungTSDE: { [key: string]: boolean} = {};
+    private _merkblattAnmeldungTSFR: { [key: string]: boolean} = {};
 
     public constructor(
         private readonly $transition$: Transition,
@@ -56,6 +57,8 @@ export class GemeindeTsKonfigComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly downloadRS: DownloadRS,
         private readonly uploadRS: UploadRS,
+        private readonly dialog: MatDialog,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -103,24 +106,25 @@ export class GemeindeTsKonfigComponent implements OnInit {
     private initProperties(): void {
         this.konfigurationsListe.forEach(config => {
             config.initProperties();
+            this.existMerkblattAnmeldungTS(config.gesuchsperiode.id, TSSprache.DEUTSCH);
+            this.existMerkblattAnmeldungTS(config.gesuchsperiode.id, TSSprache.FRANZOESISCH);
         });
     }
 
-    public uploadGemeindeGesuchsperiodeDokument(gesuchsperiodeId: string, file: any[], sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
-        if (file.length <= 0) {
+    public uploadGemeindeGesuchsperiodeDokument(gesuchsperiodeId: string, event: any, sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
+        if (event.target.files.length <= 0) {
             return;
         }
-        const selectedFile = file[0];
+        const selectedFile = event.target.files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: this.$translate.instant('FILE_ZU_GROSS'),
-            });
-        } // warum hier keine unterbrechung wenn der File ist zu gross ???
+            this.showFileTooBigDialog();
+            return;
+        }
 
         this.uploadRS.uploadGemeindeGesuchsperiodeDokument(selectedFile, sprache, this.gemeindeId, gesuchsperiodeId, dokumentTyp)
             .then(() => {
                 if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
-                    this.setVorlageMerkblattTSBoolean(true, sprache);
+                    this.setMerkblattAnmeldungTSBoolean(gesuchsperiodeId,true, sprache);
                 }
             });
     }
@@ -129,7 +133,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
         this.gemeindeRS.removeGemeindeGesuchsperiodeDokument(this.gemeindeId ,gesuchsperiodeId, sprache, dokumentTyp)
             .then(() => {
               if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
-                    this.setVorlageMerkblattTSBoolean(false, sprache);
+                    this.setMerkblattAnmeldungTSBoolean(gesuchsperiodeId,false, sprache);
                 }
             });
     }
@@ -145,5 +149,49 @@ export class GemeindeTsKonfigComponent implements OnInit {
                 const fileURL = URL.createObjectURL(file);
                 this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
             });
+    }
+
+    private existMerkblattAnmeldungTS(gesuchsperiodeId: string, sprache: TSSprache): void {
+        this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gemeindeId, gesuchsperiodeId, sprache, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
+            result => {
+                this.setMerkblattAnmeldungTSBoolean(gesuchsperiodeId, result, sprache);
+            });
+    }
+
+    private setMerkblattAnmeldungTSBoolean(gesuchsperiodeId: string, value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this._merkblattAnmeldungTSFR[gesuchsperiodeId] = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this._merkblattAnmeldungTSDE[gesuchsperiodeId] = value;
+                break;
+            default:
+                return;
+        }
+        this.reloadButton(gesuchsperiodeId);
+    }
+
+    private showFileTooBigDialog(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: this.translate.instant('FILE_ZU_GROSS')
+        };
+        this.dialog
+            .open(DvNgOkDialogComponent, dialogConfig);
+    }
+
+    public get sprache() { return TSSprache;}
+    public get dokumentTyp() { return TSDokumentTyp;}
+    public get merkblattAnmeldungTSDE() {return this._merkblattAnmeldungTSDE;}
+    public get merkblattAnmeldungTSFR() {return this._merkblattAnmeldungTSFR;}
+
+    private reloadButton(gesuchsperiodeId: string): void {
+        const element2 = document.getElementById('accordion-tab-' + gesuchsperiodeId);
+        element2.click();
+    }
+
+    public reload(): void{
+        //force Angular to update the form
     }
 }

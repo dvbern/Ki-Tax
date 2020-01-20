@@ -496,16 +496,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
 			cb.createQuery(GemeindeStammdatenGesuchsperiode.class);
 		Root<GemeindeStammdatenGesuchsperiode> root = query.from(GemeindeStammdatenGesuchsperiode.class);
-		List<Predicate> predicates = new ArrayList<>();
 		Predicate predicateGemeinde =
 			cb.equal(root.get(GemeindeStammdatenGesuchsperiode_.gemeinde).get(AbstractEntity_.id),
 				gemeindeId);
-		predicates.add(predicateGemeinde);
 		Predicate predicateGesuchsperiode =
 			cb.equal(root.get(GemeindeStammdatenGesuchsperiode_.gesuchsperiode).get(AbstractEntity_.id),
 				gesuchsperiodeId);
-		predicates.add(predicateGesuchsperiode);
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.where(predicateGemeinde, predicateGesuchsperiode);
 		GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode = persistence.getCriteriaSingleResult(query);
 		if (gemeindeStammdatenGesuchsperiode != null) {
 			authorizer.checkReadAuthorization(gemeindeStammdatenGesuchsperiode.getGemeinde());

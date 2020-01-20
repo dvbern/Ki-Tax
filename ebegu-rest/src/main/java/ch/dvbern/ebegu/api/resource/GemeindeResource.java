@@ -609,7 +609,7 @@ public class GemeindeResource {
 		) {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-		String gesuchsperiodeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
 
 		final byte[] content = gemeindeService.downloadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId,
 		 sprache, dokumentTyp);
@@ -636,7 +636,7 @@ public class GemeindeResource {
 		@Context HttpServletResponse response) {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-		String gesuchsperiodeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
 
 		requireNonNull(gemeindeId);
 		requireNonNull(gesuchsperiodeId);
@@ -661,7 +661,7 @@ public class GemeindeResource {
 		@Context HttpServletResponse response
 	) {
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-		String gesuchsperiodeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
 		requireNonNull(gemeindeId);
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);

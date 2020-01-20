@@ -146,7 +146,7 @@
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
                 [editMode]="editMode"
-                [gemeindeId]="gemeindeId">
+                [gemeindeId]="stammdaten.gemeinde.id">
             </dv-gemeinde-ts-konfiguration>
         </fieldset>
     </div>
@@ -197,7 +197,8 @@
                 <dv-gemeinde-ts-konfiguration
                     [konfigurationsListe]="stammdaten.konfigurationsListe"
                     [gemeindeStatus]="stammdaten.gemeinde.status"
-                    [editMode]="editMode">
+                    [editMode]="editMode"
+                    [gemeindeId]="stammdaten.gemeinde.id">
                 </dv-gemeinde-ts-konfiguration>
             </div>
         </fieldset>
