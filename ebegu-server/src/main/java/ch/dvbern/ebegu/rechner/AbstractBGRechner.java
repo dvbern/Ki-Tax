@@ -121,7 +121,6 @@ public abstract class AbstractBGRechner {
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
-		result.roundAllValues();
 		return result;
 	}
 

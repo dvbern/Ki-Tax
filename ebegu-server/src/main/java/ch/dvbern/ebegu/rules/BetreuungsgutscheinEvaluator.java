@@ -229,6 +229,7 @@ public class BetreuungsgutscheinEvaluator {
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
+						result.roundAllValues();
 						verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 					});
 
