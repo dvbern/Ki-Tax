@@ -457,7 +457,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		if (gemeindeStammdatenGesuchsperiode == null) {
 			gemeindeStammdatenGesuchsperiode = createGemeindeStammdatenGesuchsperiode(gemeindeId, gesuchsperiodeId);
 		}
-		if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
+		if (dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gemeindeStammdatenGesuchsperiode.setMerkblattAnmeldungTagesschuleDe(content);
 			} else if (sprache == Sprache.FRANZOESISCH) {
@@ -482,7 +482,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		@Nonnull DokumentTyp dokumentTyp) {
 		final Optional<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiode =
 			findGemeindeStammdatenGesuchsperiode(gemeindeId, gesuchsperiodeId);
-		if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)) {
+		if (dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)) {
 			return gemeindeStammdatenGesuchsperiode
 				.map(gemeindeStammdatenGesuchsperiode1 -> gemeindeStammdatenGesuchsperiode1.getMerkblattAnmeldungTagesschuleWithSprache(sprache))
 				.orElse(null);
@@ -549,7 +549,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeId)
 		);
-		if(dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+		if(dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)){
 			if (sprache == Sprache.DEUTSCH) {
 				gemeindeStammdatenGesuchsperiode.setMerkblattAnmeldungTagesschuleDe(null);
 			} else if (sprache == Sprache.FRANZOESISCH) {
@@ -582,7 +582,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					gesuchsperiodeId)
 			);
-		if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+		if (dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)){
 			return gemeindeStammdatenGesuchsperiode.getMerkblattAnmeldungTagesschuleWithSprache(sprache).length != 0;
 		}
 

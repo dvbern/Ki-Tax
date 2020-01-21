@@ -32,6 +32,7 @@ import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-
 import {CONSTANTS, MAX_FILE_SIZE} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
+import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {UploadRS} from '../../core/service/uploadRS.rest';
 
 @Component({
@@ -46,10 +47,14 @@ export class GemeindeTsKonfigComponent implements OnInit {
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;
     @Input() public gemeindeId: string;
+    @Input() public korrespondenzspracheDe: boolean;
+    @Input() public korrespondenzspracheFr: boolean;
 
     private navigationDest: StateDeclaration;
     private _merkblattAnmeldungTSDE: { [key: string]: boolean} = {};
     private _merkblattAnmeldungTSFR: { [key: string]: boolean} = {};
+    private _vorlageMerkblattAnmeldungTSDE: { [key: string]: boolean} = {};
+    private _vorlageMerkblattAnmeldungTSFR: { [key: string]: boolean} = {};
 
     public constructor(
         private readonly $transition$: Transition,
@@ -59,6 +64,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
         private readonly uploadRS: UploadRS,
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
     ) {
     }
 
@@ -108,6 +114,8 @@ export class GemeindeTsKonfigComponent implements OnInit {
             config.initProperties();
             this.existMerkblattAnmeldungTS(config.gesuchsperiode.id, TSSprache.DEUTSCH);
             this.existMerkblattAnmeldungTS(config.gesuchsperiode.id, TSSprache.FRANZOESISCH);
+            this.existVorlageMerkblattAnmeldungTS(config.gesuchsperiode.id, TSSprache.DEUTSCH)
+            this.existVorlageMerkblattAnmeldungTS(config.gesuchsperiode.id, TSSprache.FRANZOESISCH)
         });
     }
 
@@ -123,7 +131,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
 
         this.uploadRS.uploadGemeindeGesuchsperiodeDokument(selectedFile, sprache, this.gemeindeId, gesuchsperiodeId, dokumentTyp)
             .then(() => {
-                if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+                if (dokumentTyp === TSDokumentTyp.MERKBLATT_ANMELDUNG_TS) {
                     this.setMerkblattAnmeldungTSBoolean(gesuchsperiodeId,true, sprache);
                 }
             });
@@ -132,7 +140,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
     public removeGemeindeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
         this.gemeindeRS.removeGemeindeGesuchsperiodeDokument(this.gemeindeId ,gesuchsperiodeId, sprache, dokumentTyp)
             .then(() => {
-              if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+              if (dokumentTyp === TSDokumentTyp.MERKBLATT_ANMELDUNG_TS) {
                     this.setMerkblattAnmeldungTSBoolean(gesuchsperiodeId,false, sprache);
                 }
             });
@@ -143,18 +151,26 @@ export class GemeindeTsKonfigComponent implements OnInit {
         this.gemeindeRS.downloadGemeindeGesuchsperiodeDokument(this.gemeindeId, gesuchsperiodeId, sprache, dokumentTyp).then(
             response => {
                 let file;
-                 if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+                 if (dokumentTyp === TSDokumentTyp.MERKBLATT_ANMELDUNG_TS) {
                     file = new Blob([response], {type: 'application/pdf'});
                 }
                 const fileURL = URL.createObjectURL(file);
-                this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
+                this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, this.translate.instant('MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME'));
             });
     }
 
     private existMerkblattAnmeldungTS(gesuchsperiodeId: string, sprache: TSSprache): void {
-        this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gemeindeId, gesuchsperiodeId, sprache, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
+        this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gemeindeId, gesuchsperiodeId, sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
             result => {
                 this.setMerkblattAnmeldungTSBoolean(gesuchsperiodeId, result, sprache);
+            });
+    }
+
+    private existVorlageMerkblattAnmeldungTS(gesuchsperiodeId: string, sprache: TSSprache): void {
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiodeId, sprache, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
+            result => {
+                this.setVorlageMerkblattAnmeldungTSBoolean(gesuchsperiodeId, result, sprache);
             });
     }
 
@@ -165,6 +181,20 @@ export class GemeindeTsKonfigComponent implements OnInit {
                 break;
             case TSSprache.DEUTSCH:
                 this._merkblattAnmeldungTSDE[gesuchsperiodeId] = value;
+                break;
+            default:
+                return;
+        }
+        this.reloadButton(gesuchsperiodeId);
+    }
+
+    private setVorlageMerkblattAnmeldungTSBoolean(gesuchsperiodeId: string, value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this._vorlageMerkblattAnmeldungTSFR[gesuchsperiodeId] = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this._vorlageMerkblattAnmeldungTSDE[gesuchsperiodeId] = value;
                 break;
             default:
                 return;
@@ -185,6 +215,8 @@ export class GemeindeTsKonfigComponent implements OnInit {
     public get dokumentTyp() { return TSDokumentTyp;}
     public get merkblattAnmeldungTSDE() {return this._merkblattAnmeldungTSDE;}
     public get merkblattAnmeldungTSFR() {return this._merkblattAnmeldungTSFR;}
+    public get vorlageMerkblattAnmeldungTSDE() {return this._vorlageMerkblattAnmeldungTSDE;}
+    public get vorlageMerkblattAnmeldungTSFR() {return this._vorlageMerkblattAnmeldungTSFR;}
 
     private reloadButton(gesuchsperiodeId: string): void {
         const element2 = document.getElementById('accordion-tab-' + gesuchsperiodeId);
@@ -193,5 +225,19 @@ export class GemeindeTsKonfigComponent implements OnInit {
 
     public reload(): void{
         //force Angular to update the form
+    }
+
+    public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): void{
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.gesuchsperiodeRS.downloadGesuchsperiodeDokument(gesuchsperiodeId, sprache, dokumentTyp).then(
+            response => {
+                let file;
+                if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+                    file = new Blob([response],
+                        {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                }
+                const fileURL = URL.createObjectURL(file);
+                this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
+            });
     }
 }

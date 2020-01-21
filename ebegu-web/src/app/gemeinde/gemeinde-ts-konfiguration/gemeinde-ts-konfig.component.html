@@ -77,13 +77,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h1>
-                                    <span translate="MERKBLATT_ANMELDUNG_TAGESSCHULE"></span>
+                                    <span translate="AGB_HOCHLADEN"></span>
                                 </h1>
                                 <hr class="header"/>
                                 <table class="table table-striped" width="100%">
-                                    <tr>
+                                    <tr *ngIf="korrespondenzspracheDe">
                                         <td
-                                            translate="VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE"></td>
+                                            translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_DE"></td>
                                         <td width="2%"
                                             class="symbol"
                                             tabindex="-1"
@@ -91,7 +91,7 @@
                                             <input type="file" style="display: none"
 												   #fileInput
                                                    accept="application/pdf"
-                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"/>
+                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
                                             <button mat-raised-button
                                                     (click)="fileInput.click()"
                                                     class="dv-btn fa fa-upload dv-btn-operation"
@@ -104,7 +104,7 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
-                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-eye dv-btn-operation"
                                                 aria-hidden="true"
@@ -114,16 +114,26 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
-                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!vorlageMerkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-file-word-o dv-btn-operation"
                                                 aria-hidden="true"
                                                 tabindex="0"></button>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr *ngIf="korrespondenzspracheFr">
                                         <td
-                                            translate="VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
+                                            translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
                                         <td width="2%"
                                             class="symbol"
                                             tabindex="-1"
@@ -131,7 +141,7 @@
                                             <input type="file" style="display: none"
 												   #fileInput
                                                    accept="application/pdf"
-                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"/>
+                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
                                             <button mat-raised-button
                                                     (click)="fileInput.click()"
                                                     class="dv-btn fa fa-upload dv-btn-operation"
@@ -144,7 +154,7 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
-                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-eye dv-btn-operation"
                                                 aria-hidden="true"
@@ -154,9 +164,19 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
-                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!vorlageMerkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-file-word-o dv-btn-operation"
                                                 aria-hidden="true"
                                                 tabindex="0"></button>
                                         </td>
