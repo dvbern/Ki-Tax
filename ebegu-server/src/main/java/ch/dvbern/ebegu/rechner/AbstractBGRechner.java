@@ -104,7 +104,8 @@ public abstract class AbstractBGRechner {
 		}
 
 		// Resultat
-		BGCalculationResult result = new BGCalculationResult();
+		BGCalculationResult result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+
 		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
 		result.setMinimalerElternbeitrag(minBetrag);
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
