@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gemeinde" type="ch.dvbern.ebegu.entities.Gemeinde" -->
 <#-- @ftlvariable name="angebotNameDe" type="java.lang.String" -->
+<#-- @ftlvariable name="angebotNameFr" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Angebot ${angebotNameDe} wurde aktiviert</@base64Header>
