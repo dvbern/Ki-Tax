@@ -26,11 +26,8 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.junit.Assert;
 import org.junit.Test;
-
-import static com.spotify.hamcrest.pojo.IsPojo.pojo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 
@@ -44,60 +41,48 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	public void whenFullMonth_30days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1)).withFullMonths();
 
-		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
-		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
-			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
+		BGCalculationResult result = calculate(gueltigkeit);
+		Assert.assertEquals(MAX_STUNDEN_MONTH, result.getBgPensumZeiteinheit());
 	}
 
 	@Test
 	public void whenFullMonth_31days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 3, 1)).withFullMonths();
 
-		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
-		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
-			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
+		BGCalculationResult result = calculate(gueltigkeit);
+		Assert.assertEquals(MAX_STUNDEN_MONTH, result.getBgPensumZeiteinheit());
 	}
 
 	@Test
 	public void whenFullMonth_28days_maxStunden() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 2, 1)).withFullMonths();
 
-		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
-		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
-			.withProperty("verfuegteAnzahlZeiteinheiten", is(MAX_STUNDEN_MONTH)));
+		BGCalculationResult result = calculate(gueltigkeit);
+		Assert.assertEquals(MAX_STUNDEN_MONTH, result.getBgPensumZeiteinheit());
 	}
 
 	@Test
 	public void whenHalfMonth() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 15));
 
-		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
-		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
-			.withProperty(
-				"verfuegteAnzahlZeiteinheiten",
-				is(MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(2)))));
+		BGCalculationResult result = calculate(gueltigkeit);
+		Assert.assertEquals(MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(2)), result.getBgPensumZeiteinheit());
 	}
 
 	@Test
 	public void whenDay() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 
-		VerfuegungZeitabschnitt result = calculate(gueltigkeit);
+		BGCalculationResult result = calculate(gueltigkeit);
 		BigDecimal ungerundeterWert = MathUtil.DEFAULT.divide(MAX_STUNDEN_MONTH, BigDecimal.valueOf(30));
-		assertThat(result, pojo(VerfuegungZeitabschnitt.class)
-			.withProperty(
-				"verfuegteAnzahlZeiteinheiten",
-				is(MathUtil.roundToNearestQuarter(ungerundeterWert))));
+		Assert.assertEquals(MathUtil.roundToNearestQuarter(ungerundeterWert), result.getBgPensumZeiteinheit());
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt calculate(@Nonnull DateRange gueltigkeit) {
-		BGCalculationResult calculate = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
-
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		calculate.roundAllValues();
-
-		return zeitabschnitt;
+	private BGCalculationResult calculate(@Nonnull DateRange gueltigkeit) {
+		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
+		result.roundAllValues();
+		return result;
 	}
 
 	@Nonnull

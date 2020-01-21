@@ -141,8 +141,8 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 			.withProperty(
 				"verguenstigung",
 				BigDecimalCloseTo.closeTo(BigDecimal.valueOf(expected), BigDecimal.valueOf(0.0005)))
-			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
-			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("bgPensumZeiteinheit", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("anspruchspensumZeiteinheit", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.HOURS))
 		);
 	}

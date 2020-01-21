@@ -253,7 +253,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getBgCalculationResultAsiv().getBetreuungspensumZeiteinheit();
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAbzugFamGroesse() {
 		return getBgCalculationResultAsiv().getAbzugFamGroesse();
 	}
@@ -276,7 +276,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getBgCalculationResultAsiv().isMinimalesEwpUnterschritten();
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getFamGroesse() {
 		return getBgCalculationResultAsiv().getFamGroesse();
 	}

@@ -113,15 +113,15 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
-	@NotNull @Nonnull //TODO bisher @Nullable
-	@Column(nullable = false)
-	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal abzugFamGroesse = null;
 
-	@NotNull @Nonnull //TODO bisher @Nullable
-	@Column(nullable = false)
-	private BigDecimal famGroesse = BigDecimal.ZERO;
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal famGroesse = null;
 
-	@NotNull @Nonnull //TODO bisher @Nullable
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
 
@@ -209,7 +209,9 @@ public class BGCalculationResult extends AbstractEntity {
 		this.bgPensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(bgPensumZeiteinheit);
 
 		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
-		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
+		if (this.famGroesse != null) {
+			this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
+		}
 
 		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = zeiteinheitenRoundingStrategy.apply(massgebendesEinkommenVorAbzugFamgr);
@@ -334,14 +336,15 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
-		Validate.isTrue(
-			this.famGroesse.compareTo(BigDecimal.ZERO) == 0 || other.famGroesse.compareTo(BigDecimal.ZERO) == 0,
-			"Eines der beiden muss 0 sein");
-		this.famGroesse = other.famGroesse;
-		Validate.isTrue(
-			this.abzugFamGroesse.compareTo(BigDecimal.ZERO) == 0 || other.abzugFamGroesse.compareTo(BigDecimal.ZERO) == 0,
-			"Eines der beiden muss 0 sein");
-		this.abzugFamGroesse = other.abzugFamGroesse;
+		if (other.getAbzugFamGroesse() != null) {
+			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
+			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
+		}
+		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
+		if (other.getFamGroesse() != null) {
+			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
+			this.setFamGroesse(other.getFamGroesse());
+		}
 
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
 		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
@@ -534,21 +537,21 @@ public class BGCalculationResult extends AbstractEntity {
 		this.einkommensjahr = einkommensjahr;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getAbzugFamGroesse() {
 		return abzugFamGroesse;
 	}
 
-	public void setAbzugFamGroesse(@Nonnull BigDecimal abzugFamGroesse) {
+	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
 		this.abzugFamGroesse = abzugFamGroesse;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getFamGroesse() {
 		return famGroesse;
 	}
 
-	public void setFamGroesse(@Nonnull BigDecimal famGroesse) {
+	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
 		this.famGroesse = famGroesse;
 	}
 

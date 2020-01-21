@@ -91,16 +91,13 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	@Test
 	public void testBGCalculation_toVerfuegungZeitabschnitt() {
 		BGCalculationResult result = createCalculationResult();
-
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-
 		result.roundAllValues();
 
 		// Default: Stunden mit 2 Kommastellen
-		assertThat(zeitabschnitt, calculationResultMatcher()
-			.where(VerfuegungZeitabschnitt::getVerfuegteAnzahlZeiteinheiten, twoDecimalsOf("7.23"))
-			.where(VerfuegungZeitabschnitt::getAnspruchsberechtigteAnzahlZeiteinheiten, twoDecimalsOf("8.23"))
-			.where(VerfuegungZeitabschnitt::getBetreuungspensumZeiteinheit, twoDecimalsOf("9.23"))
+		assertThat(result, calculationResultMatcher()
+			.where(BGCalculationResult::getBgPensumZeiteinheit, twoDecimalsOf("7.23"))
+			.where(BGCalculationResult::getAnspruchspensumZeiteinheit, twoDecimalsOf("8.23"))
+			.where(BGCalculationResult::getBetreuungspensumZeiteinheit, twoDecimalsOf("9.23"))
 		);
 	}
 
@@ -108,36 +105,33 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	public void testBGCalculation_toVerfuegungZeitabschnitt_zeiteinheitenStrategy() {
 		BGCalculationResult result = createCalculationResult();
 		result.setZeiteinheitenRoundingStrategy(MathUtil::roundToNearestQuarter);
-
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-
 		result.roundAllValues();
 
 		// Stunden in in Viertel
-		assertThat(zeitabschnitt, calculationResultMatcher()
-			.where(VerfuegungZeitabschnitt::getVerfuegteAnzahlZeiteinheiten, twoDecimalsOf("7.25"))
-			.where(VerfuegungZeitabschnitt::getAnspruchsberechtigteAnzahlZeiteinheiten, twoDecimalsOf("8.25"))
-			.where(VerfuegungZeitabschnitt::getBetreuungspensumZeiteinheit, twoDecimalsOf("9.25"))
+		assertThat(result, calculationResultMatcher()
+			.where(BGCalculationResult::getBgPensumZeiteinheit, twoDecimalsOf("7.25"))
+			.where(BGCalculationResult::getAnspruchspensumZeiteinheit, twoDecimalsOf("8.25"))
+			.where(BGCalculationResult::getBetreuungspensumZeiteinheit, twoDecimalsOf("9.25"))
 		);
 	}
 
 	@Nonnull
-	private IsPojo<VerfuegungZeitabschnitt> calculationResultMatcher() {
-		return pojo(VerfuegungZeitabschnitt.class)
+	private IsPojo<BGCalculationResult> calculationResultMatcher() {
+		return pojo(BGCalculationResult.class)
 			// Rappen
-			.where(VerfuegungZeitabschnitt::getMinimalerElternbeitrag, twoDecimalsOf("1.25"))
+			.where(BGCalculationResult::getMinimalerElternbeitrag, twoDecimalsOf("1.25"))
 			// Rappen
 			.where(
-				VerfuegungZeitabschnitt::getVerguenstigungOhneBeruecksichtigungMinimalbeitrag,
+				BGCalculationResult::getVerguenstigungOhneBeruecksichtigungMinimalbeitrag,
 				twoDecimalsOf("2.25"))
 			// 2 Kommastellen
-			.where(VerfuegungZeitabschnitt::getVerguenstigungOhneBeruecksichtigungVollkosten, twoDecimalsOf("3.25"))
+			.where(BGCalculationResult::getVerguenstigungOhneBeruecksichtigungVollkosten, twoDecimalsOf("3.25"))
 			// 2 Kommastellen
-			.where(VerfuegungZeitabschnitt::getVerguenstigung, twoDecimalsOf("4.25"))
+			.where(BGCalculationResult::getVerguenstigung, twoDecimalsOf("4.25"))
 			// 2 Kommastellen
-			.where(VerfuegungZeitabschnitt::getVollkosten, twoDecimalsOf("5.25"))
+			.where(BGCalculationResult::getVollkosten, twoDecimalsOf("5.25"))
 			// Rappen
-			.where(VerfuegungZeitabschnitt::getElternbeitrag, twoDecimalsOf("6.25"));
+			.where(BGCalculationResult::getElternbeitrag, twoDecimalsOf("6.25"));
 	}
 
 	@Nonnull
