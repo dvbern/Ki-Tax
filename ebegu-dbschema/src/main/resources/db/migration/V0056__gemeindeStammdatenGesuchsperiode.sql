@@ -37,3 +37,8 @@ ALTER TABLE gemeinde_stammdaten_gesuchsperiode
 	ADD CONSTRAINT FK_gemeinde_stammdaten_gesuchsperiode_gesuchsperiode_id
 FOREIGN KEY (gesuchsperiode_id)
 REFERENCES gesuchsperiode(id);
+
+alter table gemeinde_stammdaten_gesuchsperiode_aud
+	add constraint FK_gemeinde_stammdaten_gesuchsperiode_aud_revinfo
+foreign key (rev)
+references revinfo (rev);
