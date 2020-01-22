@@ -147,15 +147,13 @@ export class GemeindeTsKonfigComponent implements OnInit {
     }
 
     public downloadGemeindeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
-        const win = this.downloadRS.prepareDownloadWindow();
         this.gemeindeRS.downloadGemeindeGesuchsperiodeDokument(this.gemeindeId, gesuchsperiodeId, sprache, dokumentTyp).then(
             response => {
                 let file;
                  if (dokumentTyp === TSDokumentTyp.MERKBLATT_ANMELDUNG_TS) {
                     file = new Blob([response], {type: 'application/pdf'});
                 }
-                const fileURL = URL.createObjectURL(file);
-                this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, this.translate.instant('MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME'));
+                this.downloadRS.openDownload(file, this.translate.instant('MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME'));
             });
     }
 
@@ -228,7 +226,6 @@ export class GemeindeTsKonfigComponent implements OnInit {
     }
 
     public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): void{
-        const win = this.downloadRS.prepareDownloadWindow();
         this.gesuchsperiodeRS.downloadGesuchsperiodeDokument(gesuchsperiodeId, sprache, dokumentTyp).then(
             response => {
                 let file;
@@ -236,8 +233,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
                     file = new Blob([response],
                         {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
                 }
-                const fileURL = URL.createObjectURL(file);
-                this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
+                this.downloadRS.openDownload(file, this.translate.instant('VORLAGE_MERKBLATT_TAGESSCHULE_DATEI_NAME'));
             });
     }
 }

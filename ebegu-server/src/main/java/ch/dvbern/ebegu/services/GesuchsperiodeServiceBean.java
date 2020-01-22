@@ -101,6 +101,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	private ModulTagesschuleService modulTagesschuleService;
 
 	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
@@ -143,6 +146,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
 				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+
+				//Die Gemeinde Gesuchsperiode Stammdaten sollen also für die neue Gesuchsperiode übernommen werden
+				gemeindeService.copyGesuchsperiodeGemeindeStammdaten(gesuchsperiode, lastGesuchsperiode);
 
 				//copy erlaeuterung verfuegung from previos Gesuchperiode
 				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.getVerfuegungErlaeuterungenDe());

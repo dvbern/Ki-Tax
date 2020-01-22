@@ -1816,8 +1816,11 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Conditions d'inscriptions aux écoles à journée continue",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Modèle de conditions d'inscriptions aux écoles à journée continue allemand (.docx)",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Modèle de conditions d'inscriptions aux écoles à journée continue français (.docx)",
+    "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": "modele_condition_inscription_ecole_continue.docx",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Conditions d'inscriptions aux écoles à journée continue allemand",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Conditions d'inscriptions aux écoles à journée continue français",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": " condition_inscription_ecole_continue.pdf",
     "AGB_HOCHLADEN": "Télécharger les conditions",
+    "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "explications.pdf",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

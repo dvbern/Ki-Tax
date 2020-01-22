@@ -1816,9 +1816,11 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Merkblatt Anmeldung Tagesschule",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Vorlage Merkblatt Anmeldung Tagesschule Deutsch (.docx)",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Vorlage Merkblatt Anmeldung Tagesschule Französich (.docx)",
+    "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": "Vorlage_Merkblatt_Anmeldung_Tagesschule.docx",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": " Merkblatt Anmeldung Tagesschule Deutsch",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Merkblatt Anmeldung Tagesschule Französich",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": " Merkblatt_Anmeldung_Tagesschule.pdf",
     "AGB_HOCHLADEN": "AGBs Hochladen",
+    "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "Erlaeuterung_zur_Verfuegung.pdf",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

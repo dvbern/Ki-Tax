@@ -510,6 +510,20 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return Optional.ofNullable(gemeindeStammdatenGesuchsperiode);
 	}
 
+
+	private Collection<GemeindeStammdatenGesuchsperiode> getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
+		requireNonNull(gesuchsperiodeId, "id muss gesetzt sein");
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
+			cb.createQuery(GemeindeStammdatenGesuchsperiode.class);
+		Root<GemeindeStammdatenGesuchsperiode> root = query.from(GemeindeStammdatenGesuchsperiode.class);
+		Predicate predicateGesuchsperiode =
+			cb.equal(root.get(GemeindeStammdatenGesuchsperiode_.gesuchsperiode).get(AbstractEntity_.id),
+				gesuchsperiodeId);
+		query.where(predicateGesuchsperiode);
+		return persistence.getCriteriaResults(query);
+	}
+
 	@Nonnull
 	private GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode stammdaten) {
 		requireNonNull(stammdaten);
@@ -587,5 +601,17 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		}
 
 		return false;
+	}
+
+	@Override
+	public void copyGesuchsperiodeGemeindeStammdaten(@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
+		@Nonnull Gesuchsperiode lastGesuchsperiode) {
+		getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(lastGesuchsperiode.getId()).stream().forEach(
+			gemeindeStammdatenGesuchsperiode -> {
+				GemeindeStammdatenGesuchsperiode newGemeindeStammdatenGesuchsperiode =
+					gemeindeStammdatenGesuchsperiode.copyForGesuchsperiode(gesuchsperiodeToCreate);
+				persistence.merge(newGemeindeStammdatenGesuchsperiode);
+			}
+		);
 	}
 }

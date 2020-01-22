@@ -138,4 +138,14 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 			return EMPTY_BYTE_ARRAY;
 		}
 	}
+
+	@Nonnull
+	public GemeindeStammdatenGesuchsperiode copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate){
+		GemeindeStammdatenGesuchsperiode copy = new GemeindeStammdatenGesuchsperiode();
+		copy.setGemeinde(this.gemeinde);
+		copy.setMerkblattAnmeldungTagesschuleDe(this.merkblattAnmeldungTagesschuleDe);
+		copy.setMerkblattAnmeldungTagesschuleFr(this.merkblattAnmeldungTagesschuleFr);
+		copy.setGesuchsperiode(gesuchsperiodeToCreate);
+		return copy;
+	}
 }
