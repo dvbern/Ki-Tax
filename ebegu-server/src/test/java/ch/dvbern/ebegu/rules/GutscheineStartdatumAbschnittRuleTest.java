@@ -54,7 +54,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 		Assert.assertEquals(1, results.size());
 		VerfuegungZeitabschnitt result = results.get(0);
 
-		Assert.assertTrue(result.isAbschnittLiegtNachBEGUStartdatum());
+		Assert.assertTrue(result.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum());
 		Assert.assertEquals(Constants.GESUCHSPERIODE_17_18, result.getGueltigkeit());
 	}
 
@@ -67,7 +67,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 
 		Assert.assertEquals(1, results.size());
 		VerfuegungZeitabschnitt result = results.get(0);
-		Assert.assertFalse(result.isAbschnittLiegtNachBEGUStartdatum());
+		Assert.assertFalse(result.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum());
 		Assert.assertEquals(Constants.GESUCHSPERIODE_17_18, result.getGueltigkeit());
 	}
 
@@ -80,7 +80,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 
 		Assert.assertEquals(1, results.size());
 		VerfuegungZeitabschnitt result = results.get(0);
-		Assert.assertTrue(result.isAbschnittLiegtNachBEGUStartdatum());
+		Assert.assertTrue(result.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum());
 		Assert.assertEquals(Constants.GESUCHSPERIODE_17_18, result.getGueltigkeit());
 	}
 
@@ -94,14 +94,14 @@ public class GutscheineStartdatumAbschnittRuleTest {
 		Assert.assertEquals(2, results.size());
 
 		VerfuegungZeitabschnitt beforeStartdatumResult = results.get(0);
-		Assert.assertFalse(beforeStartdatumResult.isAbschnittLiegtNachBEGUStartdatum());
+		Assert.assertFalse(beforeStartdatumResult.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum());
 		DateRange rangeBeforeStartdatum = new DateRange(
 			Constants.GESUCHSPERIODE_17_18_AB,
 			Constants.GESUCHSPERIODE_17_18_BIS.minusDays(1));
 		Assert.assertEquals(rangeBeforeStartdatum, beforeStartdatumResult.getGueltigkeit());
 
 		VerfuegungZeitabschnitt afterStartdatumResult = results.get(1);
-		Assert.assertTrue(afterStartdatumResult.isAbschnittLiegtNachBEGUStartdatum());
+		Assert.assertTrue(afterStartdatumResult.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum());
 		DateRange rangeAfterStartdatum = new DateRange(
 			Constants.GESUCHSPERIODE_17_18_BIS,
 			Constants.GESUCHSPERIODE_17_18_BIS);

@@ -144,7 +144,23 @@ export class AuthServiceRS {
 
             if (linktext && this.isBeLoginLink(linktext)) {
                 LOG.debug('Burn BE-Login timeout page at ' + linktext);
-                return this.$http.get(linktext, {withCredentials: true}).then(() =>
+                // the no-cors options will prevent the browser to log an error because be-login has not
+                // set Access-Control-Allow-Origin: * that would allow us to fetch the page from javascript
+                // instead it will prevent js code from even trying to use the response but we don't need that anyway
+                let fetchPromise: IPromise<any>;
+                if ('fetch' in window) { // if available get page using fetch api to be able to use no-cors
+                    fetchPromise = fetch(linktext, {
+                        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'no-cors', // no-cors, *cors, same-origin
+                        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                        credentials: 'include', // include, *same-origin, omit
+                        redirect: 'follow', // manual, *follow, error
+                    });
+                } else {
+                    fetchPromise = this.$http.get(linktext, {withCredentials: true});
+                }
+
+                return fetchPromise.then(() =>
                         LOG.debug('retrieved portal account creation page to burn unwanted timeout warning')
                     , () => LOG.debug(`failed to read ${linktext} during burnrequest but this is expected`));
             }

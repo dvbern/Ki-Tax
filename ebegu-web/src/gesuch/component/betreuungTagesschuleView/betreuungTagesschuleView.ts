@@ -305,12 +305,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSAbholungTagesschuleValues();
     }
 
-    public isAnmeldungEditable(): boolean {
-        return !this.isFreigabequittungAusstehend() && !this.getBetreuungModel().isSchulamtangebotAusgeloest();
-    }
-
     public isModuleEditable(modul: TSBelegungTagesschuleModul): boolean {
-        return modul.modulTagesschule.angeboten && this.isAnmeldungEditable();
+        return modul.modulTagesschule.angeboten && this.isAnmeldungTSEditable();
     }
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
@@ -334,5 +330,26 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
         modul.intervall = intervall;
+    }
+
+    public saveAnmeldungSchulamtUebernehmen(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtUebernehmen();
+        }
+    }
+
+    public saveAnmeldungSchulamtAblehnen(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtAblehnen();
+        }
+    }
+
+    public saveAnmeldungSchulamtFalscheInstitution(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtFalscheInstitution();
+        }
     }
 }

@@ -45,7 +45,7 @@ public class RestanspruchLimitRuleTest {
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
 		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
 		//hat anspruch 100, braucht 30, fuer die naechste betreuung bleibt 70
-		Assert.assertEquals(70, nextInitialabschnitt.getAnspruchspensumRest());
+		Assert.assertEquals(70, nextInitialabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 
 	}
 
@@ -56,7 +56,7 @@ public class RestanspruchLimitRuleTest {
 		Assert.assertNotNull(restansprchZeitabschnittList);
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
 		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
-		Assert.assertEquals(0, nextInitialabschnitt.getAnspruchspensumRest());
+		Assert.assertEquals(0, nextInitialabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 
 	}
 
@@ -68,7 +68,7 @@ public class RestanspruchLimitRuleTest {
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
 		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
 		// hat von seinen 100% anspruch 50 verbraucht, nun hat er 30 prozent betreuung in kita, der Restanspruch fuer die nachste Betreuung ist also 20
-		Assert.assertEquals(20, nextInitialabschnitt.getAnspruchspensumRest());
+		Assert.assertEquals(20, nextInitialabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 
 	}
 
@@ -82,7 +82,7 @@ public class RestanspruchLimitRuleTest {
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
 		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
 		//hat in der "1." betreuung von seinen 70 prozent anspruch 70 verbraucht, nun macht er eine neue Betreuung Kita fuer 30% -> Restanspruch bleibt 0
-		Assert.assertEquals(0, nextInitialabschnitt.getAnspruchspensumRest());
+		Assert.assertEquals(0, nextInitialabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 
 	}
 
