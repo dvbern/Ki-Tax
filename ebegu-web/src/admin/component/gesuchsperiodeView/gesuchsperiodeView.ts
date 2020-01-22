@@ -231,7 +231,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
                 title: this.$translate.instant('FILE_ZU_GROSS'),
             });
-        } // warum hier keine unterbrechung wenn der File ist zu gross ???
+            return;
+        }
 
         this.uploadRS.uploadGesuchsperiodeDokument(selectedFile, sprache, this.gesuchsperiode.id, dokumentTyp)
             .then(() => {

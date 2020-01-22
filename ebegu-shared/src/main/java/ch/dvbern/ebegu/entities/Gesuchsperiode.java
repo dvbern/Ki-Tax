@@ -50,7 +50,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	private static final long serialVersionUID = -9132257370971574570L;
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private GesuchsperiodeStatus status = GesuchsperiodeStatus.ENTWURF;
@@ -78,7 +78,6 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] vorlageMerkblattTsDe;
 
-
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
@@ -86,11 +85,12 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	private byte[] vorlageMerkblattTsFr;
 
 
+	@Nonnull
 	public GesuchsperiodeStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(GesuchsperiodeStatus status) {
+	public void setStatus(@Nonnull GesuchsperiodeStatus status) {
 		this.status = status;
 	}
 
