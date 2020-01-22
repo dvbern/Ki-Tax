@@ -36,12 +36,12 @@ import org.junit.Test;
  */
 public class EinkommenAbschnittRuleTest {
 
-	private static final BigDecimal EINKOMMEN_FINANZIELLE_SITUATION = new BigDecimal("100000");
-	private static final BigDecimal EINKOMMEN_EKV_ABGELEHNT = new BigDecimal("80001");
-	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN = new BigDecimal("79990");
-	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN_TIEFER = new BigDecimal("60000");
+	private static final BigDecimal EINKOMMEN_FINANZIELLE_SITUATION = new BigDecimal("100000.00");
+	private static final BigDecimal EINKOMMEN_EKV_ABGELEHNT = new BigDecimal("80001.00");
+	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN = new BigDecimal("79990.00");
+	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN_TIEFER = new BigDecimal("60000.00");
 
-	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000");
+	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000.00");
 	private final EinkommenAbschnittRule einkommenAbschnittRule =
 		new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private final EinkommenCalcRule einkommenCalcRule =
@@ -141,6 +141,7 @@ public class EinkommenAbschnittRuleTest {
 		Assert.assertEquals(expectedResults.length, zeitabschnitte.size());
 		int i = 0;
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().roundAllValues();
 			ExpectedResult expectedResult = expectedResults[i++];
 			Assert.assertEquals(MathUtil.DEFAULT.from(expectedResult.massgebendesEinkommen), verfuegungZeitabschnitt.getMassgebendesEinkommen());
 			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getEinkommensjahr());

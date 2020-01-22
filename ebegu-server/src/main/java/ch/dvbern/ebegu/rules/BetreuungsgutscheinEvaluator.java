@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -34,13 +35,11 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractBGRechner;
-import ch.dvbern.ebegu.rechner.BGCalculationResult;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -230,9 +229,8 @@ public class BetreuungsgutscheinEvaluator {
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
-						result.toVerfuegungZeitabschnitt(verfuegungZeitabschnitt);
-						verfuegungZeitabschnitt.setBetreuungspensumProzent(
-							MathUtil.toTwoKommastelle(verfuegungZeitabschnitt.getBetreuungspensumProzent()));
+						result.roundAllValues();
+						verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 					});
 
 					Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
