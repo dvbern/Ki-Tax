@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IDocumentService, IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
+import {IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
 import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSMahnung} from '../../../models/TSMahnung';

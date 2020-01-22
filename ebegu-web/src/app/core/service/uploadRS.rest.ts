@@ -92,8 +92,9 @@ export class UploadRS {
     }
 
     public uploadGemeindeGesuchsperiodeDokument(file: any, sprache: TSSprache, gemeindeId: string, periodeID: string,
-                                        dokumentTyp: TSDokumentTyp): IPromise<any> {
+                                                dokumentTyp: TSDokumentTyp): IPromise<any> {
         return this.upload.upload({
+            // tslint:disable-next-line:max-line-length
             url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(periodeID)}/${sprache}/${dokumentTyp}`,
             method: 'POST',
             data: {

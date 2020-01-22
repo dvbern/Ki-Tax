@@ -140,7 +140,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
-		requireNonNull(id, "id muss gesetzt sein");
+		requireNonNull(id, "Gemeinde id muss gesetzt sein");
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
 		return Optional.ofNullable(gemeinde);
 	}
@@ -210,7 +210,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id) {
-		requireNonNull(id, "id muss gesetzt sein");
+		requireNonNull(id, "Gemeinde Stammdaten id muss gesetzt sein");
 		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, id);
 		if (stammdaten != null) {
 			authorizer.checkReadAuthorization(stammdaten.getGemeinde());
@@ -222,7 +222,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	@PermitAll
 	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId) {
-		requireNonNull(gemeindeId, "id muss gesetzt sein");
+		requireNonNull(gemeindeId, "Gemeinde id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
@@ -512,7 +512,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 
 	private Collection<GemeindeStammdatenGesuchsperiode> getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
-		requireNonNull(gesuchsperiodeId, "id muss gesetzt sein");
+		requireNonNull(gesuchsperiodeId, "Gesuschsperiode id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
 			cb.createQuery(GemeindeStammdatenGesuchsperiode.class);

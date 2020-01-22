@@ -235,7 +235,7 @@ export class GemeindeRS implements IEntityRS {
     }
 
     public removeGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
-                                        dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
+                                                dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
         // tslint:disable-next-line:max-line-length
         return this.$http.delete(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
     }
