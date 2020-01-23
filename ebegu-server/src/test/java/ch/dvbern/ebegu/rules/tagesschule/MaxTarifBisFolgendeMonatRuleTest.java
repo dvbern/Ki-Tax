@@ -44,7 +44,7 @@ public class MaxTarifBisFolgendeMonatRuleTest {
 		MaxTarifBisFolgendeMonatRule maxTarifRule = new MaxTarifBisFolgendeMonatRule();
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(100000));
+		zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(100000));
 		zeitabschnitt.setGueltigkeit(gesuch.getGesuchsperiode().getGueltigkeit());
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts = new ArrayList<>();
 		verfuegungZeitabschnitts.add(zeitabschnitt);

@@ -58,7 +58,7 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 					anspruchberechtigtesPensum,
 					verfuegbarerRestanspruch
 				);
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(verfuegbarerRestanspruch);
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(verfuegbarerRestanspruch);
 			}
 		}
 	}

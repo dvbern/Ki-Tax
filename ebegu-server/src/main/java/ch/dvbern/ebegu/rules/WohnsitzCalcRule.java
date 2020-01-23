@@ -46,7 +46,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	) {
 		if (Objects.requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (areNotInBern(verfuegungZeitabschnitt)) {
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
 				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 					RuleKey.WOHNSITZ,
 					MsgKey.WOHNSITZ_MSG,
