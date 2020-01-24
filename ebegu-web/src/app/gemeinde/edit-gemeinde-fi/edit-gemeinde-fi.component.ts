@@ -33,6 +33,7 @@ export class EditGemeindeComponentFI implements OnInit {
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
     @Input() public fiAnmeldungenStartDatum: Moment;
+    @Input() public fiAnmeldungenStartStr: string;
 
     public constructor(
     ) {
