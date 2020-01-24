@@ -96,10 +96,16 @@ public class Verfuegung extends AbstractMutableEntity {
 		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
 	}
 
-	public Verfuegung(Betreuung betreuung) {
+	public Verfuegung(@Nonnull Betreuung betreuung) {
 		this.betreuung = betreuung;
 		setId(betreuung.getId());
 		this.betreuung.setVerfuegung(this);
+	}
+
+	public Verfuegung(@Nonnull AnmeldungTagesschule anmeldung) {
+		this.anmeldungTagesschule = anmeldung;
+		setId(anmeldung.getId());
+		this.anmeldungTagesschule.setVerfuegung(this);
 	}
 
 	@Nullable

@@ -100,6 +100,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		this.keineDetailinformationen = keineDetailinformationen;
 	}
 
+	@Override
 	@Nullable
 	public Verfuegung getVerfuegung() {
 		return verfuegung;

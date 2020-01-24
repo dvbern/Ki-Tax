@@ -131,6 +131,9 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 		this.gueltig = gueltig;
 	}
 
+	@Nullable
+	public abstract Verfuegung getVerfuegung();
+
 	/**
 	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
 	 */

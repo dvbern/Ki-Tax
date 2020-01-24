@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -155,5 +156,21 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity 
 	public String getBetreuungszeitFormatted() {
 		return StringUtils.leftPad(betreuungsstundenProWoche.toString(), 2, '0')
 			+ ':' + StringUtils.leftPad(betreuungsminutenProWoche.toString(), 2, '0');
+	}
+
+	@Override
+	public String toString() {
+		String sb = '['
+			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
+			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
+			+ ", massgebendesEinkommenInklAbzugFamgr=" + massgebendesEinkommenInklAbzugFamgr
+			+ ", verpflegungskosten=" + verpflegungskosten
+			+ ", betreuungsstundenProWoche=" + betreuungsstundenProWoche
+			+ ", betreuungsminutenProWoche=" + betreuungsminutenProWoche
+			+ ", gebuehrProStunde=" + gebuehrProStunde
+			+ ", totalKostenProWoche=" + totalKostenProWoche
+			+ ", pedagogischBetreut=" + pedagogischBetreut
+			+ '}';
+		return sb;
 	}
 }

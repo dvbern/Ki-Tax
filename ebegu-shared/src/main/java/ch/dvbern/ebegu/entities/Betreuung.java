@@ -193,6 +193,7 @@ public class Betreuung extends AbstractPlatz {
 		this.grundAblehnung = grundAblehnung;
 	}
 
+	@Override
 	@Nullable
 	public Verfuegung getVerfuegung() {
 		return verfuegung;

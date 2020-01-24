@@ -20,7 +20,9 @@ ALTER TABLE verfuegung_aud MODIFY id BINARY(16) NOT NULL;
 
 ALTER TABLE verfuegung_aud ADD anmeldung_tagesschule_id BINARY(16);
 
-ALTER TABLE verfuegung_aud MODIFY betreuung_id BINARY(16);
+ALTER TABLE verfuegung_aud DROP betreuung_id;
+ALTER TABLE verfuegung_aud ADD betreuung_id BINARY(16);
+UPDATE verfuegung_aud SET betreuung_id = id;
 
 ALTER TABLE verfuegung_aud DROP PRIMARY KEY;
 ALTER TABLE verfuegung_aud ADD PRIMARY KEY (id, rev);
@@ -36,3 +38,4 @@ FOREIGN KEY (betreuung_id)
 REFERENCES betreuung(id);
 
 ALTER TABLE verfuegung_zeitabschnitt CHANGE verfuegung_betreuung_id verfuegung_id BINARY(16) NOT NULL;
+ALTER TABLE verfuegung_zeitabschnitt_aud CHANGE verfuegung_betreuung_id verfuegung_id BINARY(16);

@@ -74,6 +74,12 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 		this.belegungFerieninsel = belegungFerieninsel;
 	}
 
+	@Nullable
+	@Override
+	public Verfuegung getVerfuegung() {
+		return null;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

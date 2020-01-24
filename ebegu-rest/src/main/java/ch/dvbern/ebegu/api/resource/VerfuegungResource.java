@@ -221,6 +221,9 @@ public class VerfuegungResource {
 		for (KindContainer betreuung : gesuch.getKindContainers()) {
 			for (AnmeldungTagesschule anmeldungTagesschule : betreuung.getAnmeldungenTagesschule()) {
 				anmeldungTagesschule.getAnmeldungTagesschuleZeitabschnitts().size();
+				if (anmeldungTagesschule.getBelegungTagesschule() != null) {
+					anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule().size();
+				}
 			}
 			betreuung.getAnmeldungenFerieninsel().size();
 		}

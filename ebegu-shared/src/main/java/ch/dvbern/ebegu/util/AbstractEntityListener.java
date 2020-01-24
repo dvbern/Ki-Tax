@@ -114,7 +114,8 @@ public class AbstractEntityListener {
 		} else if (entity instanceof Verfuegung) {
 			// Verfuegung darf erst erstellt werden, wenn die Betreuung verfuegt ist
 			Verfuegung verfuegung = (Verfuegung) entity;
-			if (!verfuegung.getBetreuung().getBetreuungsstatus().isGeschlossenJA()) {
+			if (!(verfuegung.getPlatz().getBetreuungsstatus().isGeschlossenJA()
+				|| verfuegung.getPlatz().getBetreuungsstatus().isSchulamtAnmeldungUebernommen())) {
 				throw new IllegalStateException("Verfuegung darf nicht gespeichert werden, wenn die Betreuung nicht verfuegt ist");
 			}
 		}
