@@ -36,6 +36,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -72,6 +73,12 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@OrderBy("gueltigkeit ASC")
 	private Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new TreeSet<>();
 
+	@Nullable
+	@Valid
+	@OneToOne(optional = true, cascade = {CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
+	private Verfuegung verfuegung;
+
+
 	public AnmeldungTagesschule() {
 	}
 
@@ -91,6 +98,15 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 
 	public void setKeineDetailinformationen(boolean keineDetailinformationen) {
 		this.keineDetailinformationen = keineDetailinformationen;
+	}
+
+	@Nullable
+	public Verfuegung getVerfuegung() {
+		return verfuegung;
+	}
+
+	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
+		this.verfuegung = verfuegung;
 	}
 
 	@Override

@@ -593,7 +593,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final CriteriaQuery<T> query = cb.createQuery(clazz);
 
 		Root<T> root = query.from(clazz);
-		final Join<T, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
+		final Join<T, KindContainer> kindjoin = root.join(AbstractAnmeldung_.kind, JoinType.LEFT);
 		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
 			KindContainer_.gesuch,
 			JoinType.LEFT);

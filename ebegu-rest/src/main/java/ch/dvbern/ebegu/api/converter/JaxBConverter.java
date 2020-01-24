@@ -2985,6 +2985,9 @@ public class JaxBConverter extends AbstractConverter {
 		List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = betreuungFromServer.getAnmeldungTagesschuleZeitabschnitts().stream()
 			.map(this::anmeldungTagesschuleZeitabschnittToJax)
 			.collect(Collectors.toList());
+		if (betreuungFromServer.getVerfuegung() != null) {
+			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegung()));
+		}
 		jaxBetreuung.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnitts);
 		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;

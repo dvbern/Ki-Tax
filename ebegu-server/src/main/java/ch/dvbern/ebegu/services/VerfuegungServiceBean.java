@@ -168,6 +168,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		// Dokument erstellen
 		Betreuung betreuung = persistedVerfuegung.getBetreuung();
+		Objects.requireNonNull(betreuung);
 		generateVerfuegungDokument(betreuung);
 
 		event.fire(verfuegungEventConverter.of(persistedVerfuegung));
@@ -204,6 +205,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 */
 	private void setZahlungsstatus(@Nonnull Verfuegung verfuegung, boolean ignorieren) {
 		Betreuung betreuung = verfuegung.getBetreuung();
+		Objects.requireNonNull(betreuung);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		// Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA und TAGESELTERN aktualisiert werden
@@ -329,6 +331,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	public Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId) {
 
 		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
+		Objects.requireNonNull(verfuegung.getBetreuung());
 
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
@@ -356,12 +359,14 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		setVerfuegungsKategorien(verfuegung);
 		Betreuung betreuung = verfuegung.getBetreuung();
+		Objects.requireNonNull(betreuung);
 		betreuung.setBetreuungsstatus(betreuungsstatus);
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		betreuung.setGueltig(true);
 		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(betreuung);
 		if (vorgaengerVerfuegungOptional.isPresent()) {
 			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOptional.get();
+			Objects.requireNonNull(vorgaengerVerfuegung.getBetreuung());
 			vorgaengerVerfuegung.getBetreuung().setGueltig(false);
 		}
 		// setting all depending objects
@@ -492,21 +497,21 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 */
 	@Nonnull
 	private Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung) {
-		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-		if (betreuung.getVorgaengerId() == null) {
-			return Optional.empty();
-		}
-
-		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
-		// Leseberechtigt bin, fuer die Mutation aber schon!
-		Betreuung vorgaengerbetreuung = persistence.find(Betreuung.class, betreuung.getVorgaengerId());
-		if (vorgaengerbetreuung != null) {
-			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-				&& isAusbezahlt(vorgaengerbetreuung)) {
-				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
-				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
+			Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
+			if (betreuung.getVorgaengerId() == null) {
+				return Optional.empty();
 			}
-			return findVorgaengerAusbezahlteVerfuegung(vorgaengerbetreuung);
+
+			// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
+			// Leseberechtigt bin, fuer die Mutation aber schon!
+			Betreuung vorgaengerbetreuung = persistence.find(Betreuung.class, betreuung.getVorgaengerId());
+			if (vorgaengerbetreuung != null) {
+				if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+					&& isAusbezahlt(vorgaengerbetreuung)) {
+					// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
+					return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
+				}
+				return findVorgaengerAusbezahlteVerfuegung(vorgaengerbetreuung);
 		}
 		return Optional.empty();
 	}
@@ -557,6 +562,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					vorgaengerZeitabschnitte.add(zeitabschnitt);
 				} else {
 					Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+					Objects.requireNonNull(vorgaengerBetreuung);
 					// Es gab keine bereits Verrechneten Zeitabschnitte auf dieser Verfuegung -> eins weiter
 					// zurueckgehen
 					findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(

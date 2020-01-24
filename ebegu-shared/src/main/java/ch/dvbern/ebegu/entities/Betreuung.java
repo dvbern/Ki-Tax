@@ -129,7 +129,7 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String grundAblehnung;
 
-	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = true, cascade = {CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval = true, mappedBy = "betreuung")
 	@Nullable
 	private @Valid Verfuegung verfuegung;
 
