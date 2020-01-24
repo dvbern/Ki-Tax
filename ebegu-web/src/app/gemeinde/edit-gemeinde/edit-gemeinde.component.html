@@ -17,7 +17,7 @@
 
 <dv-full-height-inner-padding-container>
     <form role="form"
-          #form="ngForm"
+		  #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="stammdaten$ | async as stammdaten"
           (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
@@ -49,7 +49,8 @@
                                      [gemeindeId]="gemeindeId"
                                      [beguStartStr]="beguStartStr"
                                      [editMode]="editModeForBG()"
-                                     [(altBGAdresse)]="altBGAdresse">
+                                     [(altBGAdresse)]="altBGAdresse"
+                                     [beguStartDatum]="beguStartDatum">
                 </dv-edit-gemeinde-bg>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"
@@ -57,14 +58,17 @@
                 <dv-edit-gemeinde-ts [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()"
-                                     [(altTSAdresse)]="altTSAdresse">
+                                     [(altTSAdresse)]="altTSAdresse"
+                                     [tsAnmeldungenStartStr]="tsAnmeldungenStartStr"
+                                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotFI">
                 <dv-edit-gemeinde-fi [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
-                                     [editMode]="editModeForTSFI()">
+                                     [editMode]="editModeForTSFI()"
+                                     [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum">
                 </dv-edit-gemeinde-fi>
             </mat-tab>
         </mat-tab-group>

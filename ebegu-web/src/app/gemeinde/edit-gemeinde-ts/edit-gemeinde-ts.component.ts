@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {Moment} from 'moment';
 import {Observable} from 'rxjs';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
@@ -33,6 +34,8 @@ export class EditGemeindeComponentTS implements OnInit {
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
     @Input() public altTSAdresse: boolean;
+    @Input() public tsAnmeldungenStartDatum: Moment;
+    @Input() public tsAnmeldungenStartStr: string;
 
     @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
