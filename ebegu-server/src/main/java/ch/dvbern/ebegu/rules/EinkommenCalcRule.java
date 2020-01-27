@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -26,9 +28,13 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -48,6 +54,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	) {
 		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 		this.maximalesEinkommen = maximalesEinkommen;
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")

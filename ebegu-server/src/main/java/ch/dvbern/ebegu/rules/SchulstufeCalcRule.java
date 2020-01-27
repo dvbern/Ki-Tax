@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -22,9 +24,12 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 
 /**
  * Regel, welche den Anspruch für das Angebot Kita für die gesamte Periode auf 0 stellen kann
@@ -53,23 +58,26 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 		this.einschulungsTypAnspruchsgrenze = einschulungsTypAnspruchsgrenze;
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		// Die Regel gilt nur fuer Kita
+		return Arrays.asList(KITA);
+	}
+
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		// Die Regel gilt nur fuer Kita
-		if (platz.getBetreuungsangebotTyp().isKita()) {
-			if (platz.getKind().getKindJA() != null) {
-				final Kind kindJA = platz.getKind().getKindJA();
-				EinschulungTyp einschulungTyp = kindJA.getEinschulungTyp();
-				if (einschulungTyp != null) {
-					if (einschulungTyp.ordinal() > einschulungsTypAnspruchsgrenze.ordinal()) {
-						// Der Anspruch wird (nur fuer diese Betreuung!) auf 0 gesetzt. Dafuer wird der vorher berechnete Anspruch wieder als Restanspruch
-						// gefuehrt
-						int anspruchVorRegel = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-						verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-						verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchVorRegel);
-						verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
-					}
+		if (platz.getKind().getKindJA() != null) {
+			final Kind kindJA = platz.getKind().getKindJA();
+			EinschulungTyp einschulungTyp = kindJA.getEinschulungTyp();
+			if (einschulungTyp != null) {
+				if (einschulungTyp.ordinal() > einschulungsTypAnspruchsgrenze.ordinal()) {
+					// Der Anspruch wird (nur fuer diese Betreuung!) auf 0 gesetzt. Dafuer wird der vorher berechnete Anspruch wieder als Restanspruch
+					// gefuehrt
+					int anspruchVorRegel = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
+					verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchVorRegel);
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
 				}
 			}
 		}

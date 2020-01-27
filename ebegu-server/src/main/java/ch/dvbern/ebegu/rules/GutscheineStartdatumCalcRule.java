@@ -17,14 +17,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 
@@ -33,11 +39,15 @@ public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-
 		if (!verfuegungZeitabschnitt.getBgCalculationInputAsiv().isAbschnittLiegtNachBEGUStartdatum()) {
 			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(

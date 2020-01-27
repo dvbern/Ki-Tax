@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,10 +30,13 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -48,6 +52,11 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
 	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
 	}
 
 	@Nonnull

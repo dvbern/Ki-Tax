@@ -32,6 +32,7 @@ import javax.validation.Valid;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -119,6 +120,10 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Override
 	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
+		if (!isAnwendbarForAngebot(platz)) {
+			return zeitabschnitte;
+		}
+
 		Collections.sort(zeitabschnitte);
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
@@ -144,6 +149,12 @@ public abstract class AbstractEbeguRule implements Rule {
 		}
 		return normalizedZeitabschn;
 	}
+
+	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) {
+		return getAnwendbareAngebote().contains(platz.getBetreuungsangebotTyp());
+	}
+
+	protected abstract List<BetreuungsangebotTyp> getAnwendbareAngebote();
 
 	/**
 	 * Prüft, dass die Zeitabschnitte innerhalb der Gesuchperiode liegen (und kürzt sie falls nötig bzw. lässt

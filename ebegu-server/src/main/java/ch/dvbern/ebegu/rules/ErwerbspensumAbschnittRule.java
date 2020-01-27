@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -31,7 +32,11 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Berechnet die hoehe des ErwerbspensumRule eines bestimmten Erwerbspensums
@@ -43,6 +48,11 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 
 	public ErwerbspensumAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
 	}
 
 	@Override

@@ -17,14 +17,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für den ausserordentlichen Anspruch. Sie beachtet:
@@ -38,22 +44,24 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		platz.getBetreuungsangebotTyp();
-		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch();
-			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-			// Es wird der grössere der beiden Werte genommen!
-			if (ausserordentlicherAnspruch > pensumAnspruch) {
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(ausserordentlicherAnspruch);
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-					RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
-					MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
-					getLocale());
-			}
+		int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch();
+		int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
+		// Es wird der grössere der beiden Werte genommen!
+		if (ausserordentlicherAnspruch > pensumAnspruch) {
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(ausserordentlicherAnspruch);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+				RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
+				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
+				getLocale());
 		}
 	}
 }

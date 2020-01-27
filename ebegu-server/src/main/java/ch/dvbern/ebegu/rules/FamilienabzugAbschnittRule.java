@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,12 +38,17 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Umsetzung der ASIV Revision
@@ -75,6 +81,11 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;
 		this.pauschalabzugProPersonFamiliengroesse6 = pauschalabzugProPersonFamiliengroesse6;
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Override

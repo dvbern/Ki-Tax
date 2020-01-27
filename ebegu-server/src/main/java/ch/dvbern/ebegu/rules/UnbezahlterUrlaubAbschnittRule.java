@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -27,7 +28,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -35,10 +35,12 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
-import static java.util.Objects.requireNonNull;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für unbezahlten Urlaub. In dem Teil des Urlaubs, welcher 3 Monate übersteigt, verfällt der Anspruch (für dieses Erwerbspensum!)
@@ -50,20 +52,9 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
-	/**
-	 * Die Abwesenheiten der Betreuung werden zuerst nach gueltigkeit sortiert. Danach suchen wir die erste lange Abweseneheit und erstellen
-	 * die 2 entsprechenden Zeitabschnitte. Alle anderen Abwesenheiten werden nicht beruecksichtigt
-	 * Sollte es keine lange Abwesenheit geben, wird eine leere Liste zurueckgegeben
-	 * Nur fuer Betreuungen die isAngebotJugendamtKleinkind
-	 */
-	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		if (!requireNonNull(platz.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
-			return new ArrayList<>();
-		}
-
-		return super.createVerfuegungsZeitabschnitte(platz);
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
 	}
 
 	/**

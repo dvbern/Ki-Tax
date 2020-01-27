@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,7 +27,12 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Setzt das massgebende Einkommen in die benoetigten Zeitabschnitte.
@@ -36,6 +42,11 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
 	public EinkommenAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Nonnull
@@ -96,5 +107,4 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 	public boolean isRelevantForFamiliensituation() {
 		return true;
 	}
-
 }

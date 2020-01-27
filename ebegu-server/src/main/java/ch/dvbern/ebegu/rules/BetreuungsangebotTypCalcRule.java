@@ -15,15 +15,19 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Regel für Betreuungsangebot: Es werden nur die Nicht-Schulamt-Angebote berechnet.
@@ -35,14 +39,16 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(TAGESSCHULE);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
-		if (platz.getBetreuungsangebotTyp().isSchulamt()) {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
-		}
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
 	}
 }

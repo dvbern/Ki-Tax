@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -29,7 +30,11 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel bezüglich der Einreichungsfrist des Gesuchs:
@@ -48,13 +53,15 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return Arrays.asList(KITA, TAGESFAMILIEN);
+	}
+
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
-		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			return einreichungsfristAbschnitte;
-		}
 		Betreuung betreuung = (Betreuung) platz;
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
@@ -77,5 +84,10 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 			}
 		}
 		return einreichungsfristAbschnitte;
+	}
+
+	@Override
+	public boolean isRelevantForFamiliensituation() {
+		return true;
 	}
 }
