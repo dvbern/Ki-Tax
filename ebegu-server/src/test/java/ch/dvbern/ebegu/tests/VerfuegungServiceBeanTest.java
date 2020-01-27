@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -98,6 +100,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
 		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);
+		Assert.assertNotEquals("Die (nicht gespeicherte) Betreuung darf noch nicht verfügt sein", Betreuungsstatus.VERFUEGT, betreuung.getBetreuungsstatus());
+		Assert.assertEquals("Die gespeicherte Betreuung muss jetzt verfügt sein", Betreuungsstatus.VERFUEGT, persistedBetreuung.getBetreuungsstatus());
 	}
 
 	@Test
@@ -193,6 +197,13 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void getAll() {
 		Verfuegung verfuegung = insertVerfuegung();
+		Assert.assertNotNull(verfuegung.getBetreuung());
+		Assert.assertEquals(Betreuungsstatus.VERFUEGT, verfuegung.getBetreuung().getBetreuungsstatus());
+
+		Betreuung betreuung = persistence.find(Betreuung.class, verfuegung.getBetreuung().getId());
+		Assert.assertNotNull(betreuung);
+		Assert.assertEquals(Betreuungsstatus.VERFUEGT, betreuung.getBetreuungsstatus());
+
 		Verfuegung verfuegung2 = insertVerfuegung();
 		Collection<Verfuegung> allVerfuegungen = this.verfuegungService.getAllVerfuegungen();
 		Assert.assertEquals(2, allVerfuegungen.size());

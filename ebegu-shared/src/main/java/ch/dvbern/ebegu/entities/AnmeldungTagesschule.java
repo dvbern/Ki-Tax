@@ -75,7 +75,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = {CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
+	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
 	private Verfuegung verfuegung;
 
 

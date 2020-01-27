@@ -46,7 +46,6 @@ import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
@@ -58,6 +57,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.VerfuegungService;
+import ch.dvbern.ebegu.services.util.DetachUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -126,7 +126,7 @@ public class VerfuegungResource {
 			Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 
 			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-			loadRelationsAndDetach(gesuchWithCalcVerfuegung);
+			DetachUtil.loadRelationsAndDetach(gesuchWithCalcVerfuegung, persistence);
 
 			Set<JaxKindContainer> kindContainers = new HashSet<>();
 			for (KindContainer kindContainer : gesuchWithCalcVerfuegung.getKindContainers()) {
@@ -211,35 +211,6 @@ public class VerfuegungResource {
 
 		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(gesuchId, betreuungId);
 		return converter.verfuegungToJax(persistedVerfuegung);
-	}
-
-	/**
-	 * Hack, welcher das Gesuch detached, damit es auf keinen Fall gespeichert wird. Vorher muessen die Lazy geloadeten
-	 * Listen geladen werden, da danach keine Session mehr zur Verfuegung steht!
-	 */
-	private void loadRelationsAndDetach(Gesuch gesuch) {
-		for (KindContainer betreuung : gesuch.getKindContainers()) {
-			for (AnmeldungTagesschule anmeldungTagesschule : betreuung.getAnmeldungenTagesschule()) {
-				anmeldungTagesschule.getAnmeldungTagesschuleZeitabschnitts().size();
-				if (anmeldungTagesschule.getBelegungTagesschule() != null) {
-					anmeldungTagesschule.getBelegungTagesschule().getBelegungTagesschuleModule().size();
-				}
-			}
-			betreuung.getAnmeldungenFerieninsel().size();
-		}
-		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-			betreuung.getBetreuungspensumContainers().size();
-			betreuung.getAbwesenheitContainers().size();
-		}
-		if (gesuch.getGesuchsteller1() != null) {
-			gesuch.getGesuchsteller1().getAdressen().size();
-			gesuch.getGesuchsteller1().getErwerbspensenContainers().size();
-		}
-		if (gesuch.getGesuchsteller2() != null) {
-			gesuch.getGesuchsteller2().getAdressen().size();
-			gesuch.getGesuchsteller2().getErwerbspensenContainers().size();
-		}
-		persistence.getEntityManager().detach(gesuch);
 	}
 }
 

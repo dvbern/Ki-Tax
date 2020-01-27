@@ -34,6 +34,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -94,8 +95,10 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
+@NamedQuery(name = Betreuung.Q_BETREUUNG_STATE_UPDATE, query = "update Betreuung betr set betr.betreuungsstatus = :status where betr.id = :betrId")
 public class Betreuung extends AbstractPlatz {
 
+	public static final String Q_BETREUUNG_STATE_UPDATE = "Q_BETREUUNG_STATE_UPDATE";
 	private static final long serialVersionUID = -6776987863150835840L;
 
 	/**
@@ -129,7 +132,7 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String grundAblehnung;
 
-	@OneToOne(optional = true, cascade = {CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "betreuung")
 	@Nullable
 	private @Valid Verfuegung verfuegung;
 

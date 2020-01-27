@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.services.util.DetachUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -360,7 +361,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		setVerfuegungsKategorien(verfuegung);
 		Betreuung betreuung = verfuegung.getBetreuung();
 		Objects.requireNonNull(betreuung);
-		betreuung.setBetreuungsstatus(betreuungsstatus);
+		this.changeStatusOfBetreuung(betreuung, betreuungsstatus);
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		betreuung.setGueltig(true);
 		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(betreuung);
@@ -376,7 +377,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		authorizer.checkWriteAuthorization(verfuegung);
 
 		Verfuegung persist = persistence.persist(verfuegung);
-		persistence.merge(betreuung);
+//		persist.setBetreuung(betreuung);
 		return persist;
 	}
 
@@ -695,6 +696,19 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.map(Betreuung::getVerfuegung)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", betreuungId));
 
+		DetachUtil.loadRelationsAndDetach(gesuchWithCalcVerfuegung, persistence);
+
 		return verfuegungToPersist;
+	}
+
+
+
+	private void changeStatusOfBetreuung(Betreuung betreuung, @Nonnull Betreuungsstatus status) {
+		betreuung.setBetreuungsstatus(status); // hack den wir brauchen weil wir auch bei detachtten betreuungen im pre-persist der verfuegung den Status
+		// pruefen
+		persistence.getEntityManager().createNamedQuery(Betreuung.Q_BETREUUNG_STATE_UPDATE)
+			.setParameter("betrId", betreuung.getId())
+			.setParameter("status", status)
+			.executeUpdate();
 	}
 }
