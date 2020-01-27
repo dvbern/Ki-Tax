@@ -296,7 +296,7 @@ public class BetreuungsgutscheinEvaluator {
 	@Nonnull
 	private List<VerfuegungZeitabschnitt> getRestanspruchForVerfuegteBetreung(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte;
-		Verfuegung verfuegungForRestanspruch = betreuung.getVorgaengerVerfuegung();
+		Verfuegung verfuegungForRestanspruch = betreuung.getVerfuegungOrVorgaengerVerfuegung();
 		if (verfuegungForRestanspruch == null) {
 			String message = "Ungueltiger Zustand, geschlossene Betreuung ohne Verfuegung oder Vorgaengerverfuegung ("
 				+ betreuung.getId()
