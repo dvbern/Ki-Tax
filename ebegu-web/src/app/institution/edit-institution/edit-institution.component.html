@@ -17,7 +17,7 @@
 
 <dv-full-height-inner-padding-container>
     <form role="form"
-		  #form="ngForm"
+          #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
           *ngIf="stammdaten"
           (ngSubmit)="onSubmit()"
@@ -130,7 +130,9 @@
                             <label translate for="telefon_id">TELEFON</label>
                             <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.telefon"
-                                   [maxlength]="255" class="form-control">
+                                   [maxlength]="255" class="form-control"
+                                   [pattern]="CONSTANTS.PATTERN_PHONE"
+                                   >
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
                                                inputId="telefon_id"></dv-error-messages>
                         </div>

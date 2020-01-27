@@ -202,6 +202,18 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getSchulamtInstitutionRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_TS,
+        ];
+    }
+
     public static getAdministratorJugendamtRole(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,

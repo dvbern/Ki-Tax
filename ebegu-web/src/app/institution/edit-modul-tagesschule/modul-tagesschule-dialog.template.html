@@ -106,40 +106,40 @@
                     <div class="form-group">
                         <div class="form-group" id="verfuegbar">
                             <div class="row">
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <label for="montag" translate>MONDAY_SHORT</label>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <label for="dienstag" translate>TUESDAY_SHORT</label>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <label for="mittwoch" translate>WEDNESDAY_SHORT</label>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <label for="donnerstag" translate>THURSDAY_SHORT</label>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <label for="freitag" translate>FRIDAY_SHORT</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <mat-checkbox id="montag" name="montag"
                                                   [(ngModel)]="modulTagesschuleGroup.tempModulMonday.angeboten"></mat-checkbox>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <mat-checkbox id="dienstag" name="dienstag"
                                                   [(ngModel)]="modulTagesschuleGroup.tempModulTuesday.angeboten"></mat-checkbox>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <mat-checkbox id="mittwoch" name="mittwoch"
                                                   [(ngModel)]="modulTagesschuleGroup.tempModulWednesday.angeboten"></mat-checkbox>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <mat-checkbox id="donnerstag" name="donnerstag"
                                                   [(ngModel)]="modulTagesschuleGroup.tempModulThursday.angeboten"></mat-checkbox>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-xs-1">
                                     <mat-checkbox id="freitag" name="freitag"
                                                   [(ngModel)]="modulTagesschuleGroup.tempModulFriday.angeboten"></mat-checkbox>
                                 </div>
@@ -180,7 +180,7 @@
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button class="dv-btn" (click)="save()" [textContent]="'OK' | translate"></button>
+            <button type="button" class="dv-btn" (click)="save()" [textContent]="'OK' | translate"></button>
             <button type="button" class="dv-btn" (click)="close()" [textContent]="'CANCEL' | translate"></button>
         </div>
     </mat-dialog-actions>

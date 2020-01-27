@@ -1127,7 +1127,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	public boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode() {
-		Familiensituation familiensituation = extractFamiliensituation();
+		return hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(extractFamiliensituation()) ||
+			hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(extractFamiliensituationErstgesuch());
+	}
+
+	private boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode(@Nullable final Familiensituation familiensituation) {
 		return familiensituation != null
 			&& (familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigAb())
 			|| familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis()));
@@ -1158,6 +1162,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			+ ", fallNummer: " + this.getJahrFallAndGemeindenummer();
 	}
 
+	@Nullable
 	public Benutzer getVerantwortlicherAccordingToBetreuungen() {
 		if (hasOnlyBetreuungenOfSchulamt()) {
 			return getDossier().getVerantwortlicherTS();

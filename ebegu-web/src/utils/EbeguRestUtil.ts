@@ -741,7 +741,7 @@ export class EbeguRestUtil {
             : [this.parseGemeinde(new TSGemeinde(), data)];
     }
 
-    public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
+    public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): any {
         if (gemeinde) {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
@@ -770,6 +770,7 @@ export class EbeguRestUtil {
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
+            gemeindeTS.key = gemeindeFromServer.key;
             return gemeindeTS;
         }
         return undefined;
@@ -2583,6 +2584,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.massgebendesEinkommenVorAbzugFamgr = zeitabschnittFromServer.massgebendesEinkommenVorAbzugFamgr;
             verfuegungZeitabschnittTS.minimalerElternbeitrag = zeitabschnittFromServer.minimalerElternbeitrag;
+            verfuegungZeitabschnittTS.minimalerElternbeitragGekuerzt = zeitabschnittFromServer.minimalerElternbeitragGekuerzt;
             verfuegungZeitabschnittTS.minimalesEwpUnterschritten = zeitabschnittFromServer.minimalesEwpUnterschritten;
             verfuegungZeitabschnittTS.sameAusbezahlteVerguenstigung = zeitabschnittFromServer.sameAusbezahlteVerguenstigung;
             verfuegungZeitabschnittTS.sameVerfuegteVerfuegungsrelevanteDaten = zeitabschnittFromServer.sameVerfuegteVerfuegungsrelevanteDaten;

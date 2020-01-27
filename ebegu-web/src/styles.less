@@ -571,9 +571,20 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
 
     .dv-btn {
         text-transform: uppercase;
-        flex: 1;
-        margin: 0 auto;
+        flex-grow:1;
+        flex-shrink:0;
+        flex-basis:100%;
+        // flex:1; is not the same in IE11 as in other browsers:
+        margin: 0 0.2rem;
         max-width: 25rem;
+    }
+}
+@media (min-width: 992px) {
+    .dv-dialog-actions {
+
+        .dv-btn {
+            margin: 0 auto;
+        }
     }
 }
 

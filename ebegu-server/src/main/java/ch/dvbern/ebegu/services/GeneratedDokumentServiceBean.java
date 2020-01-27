@@ -46,9 +46,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.FileMetadata_;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -164,6 +166,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	@Inject
 	private Pain001Service pain001Service;
+
+	@Inject
+	private BetreuungService betreuungService;
 
 
 	@Override
@@ -972,5 +977,65 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		Objects.requireNonNull(gesuch);
 		this.authorizer.checkReadAuthorization(gesuch);
 		return criteriaQueryHelper.getEntitiesByAttribute(GeneratedDokument.class, gesuch, GeneratedDokument_.gesuch);
+	}
+
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(
+		@Nonnull final Gesuch gesuch,
+		@Nonnull AbstractAnmeldung abstractAnmeldung,
+		@Nonnull Boolean mitTarif,
+		@Nonnull Boolean forceCreation
+	) throws MimeTypeParseException, MergeDocException {
+
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+		String bgNummer = abstractAnmeldung.getBGNummer();
+		String fileNameForGeneratedDokumentTyp = "";
+		if(mitTarif) {
+			fileNameForGeneratedDokumentTyp = DokumenteUtil
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, bgNummer, sprache.getLocale());
+		}
+		else {
+			fileNameForGeneratedDokumentTyp = DokumenteUtil
+				.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, bgNummer,
+					sprache.getLocale());
+		}
+
+		WriteProtectedDokument documentIfExistsAndIsWriteProtected =
+			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
+		if (documentIfExistsAndIsWriteProtected != null) {
+			return documentIfExistsAndIsWriteProtected;
+		}
+
+		WriteProtectedDokument persistedDokument = null;
+
+		if (!forceCreation && Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN == abstractAnmeldung.getBetreuungsstatus()
+		|| Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == abstractAnmeldung.getBetreuungsstatus()) {
+			persistedDokument = findGeneratedDokument(gesuch.getId(), fileNameForGeneratedDokumentTyp);
+			if (persistedDokument == null) {
+				String expectedFilepath = ebeguConfiguration.getDocumentFilePath() + '/' + gesuch.getId();
+				LOGGER.error(
+					"Das Dokument vom Typ: {} fuer Betreuungsnummer {} konnte unter dem Pfad {} " +
+						"nicht gefunden  werden obwohl es existieren muesste. Wird neu generiert!",
+					 mitTarif ? GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF.name() :
+						 GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF.name(),
+					bgNummer,
+					expectedFilepath);
+			}
+		}
+
+		if (persistedDokument == null) {
+			AnmeldungTagesschule anmeldungTagesschule =
+				betreuungService.findAnmeldungTagesschule(abstractAnmeldung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"generateAnmeldebestaetigungDokument",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					abstractAnmeldung.getId()));
+			byte[] data = pdfService.generateAnmeldebestaetigungFuerTagesschule(
+				anmeldungTagesschule, mitTarif, true, sprache.getLocale());
+			persistedDokument = saveGeneratedDokumentInDB(data, mitTarif ? GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF :
+					GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF,
+				gesuch, fileNameForGeneratedDokumentTyp, forceCreation);
+		}
+		return persistedDokument;
 	}
 }

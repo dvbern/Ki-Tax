@@ -245,7 +245,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		addBemerkungenIfAvailable(document, true);
 	}
 
-	@Nonnull
+	@Override
 	public boolean isVerfuegung() {
 		return true;
 	}

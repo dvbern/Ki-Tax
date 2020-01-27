@@ -47,10 +47,9 @@ export class OnboardingNeuBenutzerComponent {
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
     ) {
-        this.gemeinden$ = from(this.gemeindeRS.getAktiveGemeinden())
+        this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
                 gemeinden.sort(EbeguUtil.compareByName);
-
                 return gemeinden;
             }));
         this.gemeindenBG$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
@@ -65,8 +64,8 @@ export class OnboardingNeuBenutzerComponent {
         }
         const listIds: string[] = [];
         this._gemeindeList.forEach(gemeinde => {
-            if (listIds.indexOf(gemeinde.id) === -1) {
-                listIds.push(gemeinde.id);
+            if (listIds.indexOf(gemeinde.key) === -1) {
+                listIds.push(gemeinde.key);
             }
         });
         this.stateService.go(this.nextState, {

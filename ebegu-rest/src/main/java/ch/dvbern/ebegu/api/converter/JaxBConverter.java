@@ -3180,19 +3180,20 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxVerfuegungZeitabschnitt jaxZeitabschn = new JaxVerfuegungZeitabschnitt();
 		convertAbstractDateRangedFieldsToJAX(zeitabschnitt, jaxZeitabschn);
 		jaxZeitabschn.setAbzugFamGroesse(zeitabschnitt.getAbzugFamGroesse());
-		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getErwerbspensumGS1());
-		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getErwerbspensumGS2());
+		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
+		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS2());
 		jaxZeitabschn.setBetreuungspensumProzent(zeitabschnitt.getBetreuungspensumProzent());
-		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getFachstellenpensum());
-		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getAnspruchspensumRest());
+		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum());
+		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
-		jaxZeitabschn.setAnspruchberechtigtesPensum(zeitabschnitt.getAnspruchberechtigtesPensum());
+		jaxZeitabschn.setAnspruchspensumProzent(zeitabschnitt.getAnspruchberechtigtesPensum());
 		jaxZeitabschn.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		jaxZeitabschn.setVollkosten(zeitabschnitt.getVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		jaxZeitabschn.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 		jaxZeitabschn.setMinimalerElternbeitrag(zeitabschnitt.getMinimalerElternbeitrag());
+		jaxZeitabschn.setMinimalerElternbeitragGekuerzt(zeitabschnitt.getMinimalerElternbeitragGekuerzt());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		jaxZeitabschn.setMassgebendesEinkommenVorAbzugFamgr(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
 		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
@@ -3201,13 +3202,13 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
 		jaxZeitabschn.setAnspruchsberechtigteAnzahlZeiteinheiten(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
 		jaxZeitabschn.setZeiteinheit(zeitabschnitt.getZeiteinheit());
-		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.isKategorieKeinPensum());
-		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.isKategorieMaxEinkommen());
+		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum());
+		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.isSameVerfuegteVerfuegungsrelevanteDaten());
-		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.isSameAusbezahlteVerguenstigung());
+		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getBgCalculationInputAsiv().isSameVerfuegteVerfuegungsrelevanteDaten());
+		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getBgCalculationInputAsiv().isSameAusbezahlteVerguenstigung());
 
 		return jaxZeitabschn;
 	}
@@ -4404,6 +4405,7 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
 		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
 		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
+		jaxGemeinde.setKey(persistedGemeinde.getId());
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
