@@ -68,8 +68,8 @@ public class GutscheineStartdatumCalcRuleTest {
 	@Nonnull
 	private VerfuegungZeitabschnitt initZeitabschnitt(boolean liegtNachStartdatum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-		zeitabschnitt.setAnspruchberechtigtesPensum(100);
-		zeitabschnitt.setAbschnittLiegtNachBEGUStartdatum(liegtNachStartdatum);
+		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
+		zeitabschnitt.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(liegtNachStartdatum);
 		return zeitabschnitt;
 	}
 }

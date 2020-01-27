@@ -22,6 +22,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -43,14 +44,14 @@ public abstract class AbstractBGRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		// Benoetigte Daten
-		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
-		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
+		boolean unter12Monate = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
+		boolean eingeschult = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
-		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMonatlicheBetreuungskosten();
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
@@ -64,7 +65,7 @@ public abstract class AbstractBGRechner {
 			eingeschult,
 			besonderebeduerfnisse,
 			massgebendesEinkommen,
-			verfuegungZeitabschnitt.isBezahltVollkosten());
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 
@@ -96,8 +97,15 @@ public abstract class AbstractBGRechner {
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 		BigDecimal elternbeitrag = EXACT.subtract(vollkosten, verguenstigung);
 
+		BigDecimal minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.from(0);
+		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT.subtract(vollkosten, verguenstigungVorMinimalbetrag);
+		if (vollkostenMinusVerguenstigung.compareTo(minBetrag) <= 0) {
+			minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.subtract(minBetrag, vollkostenMinusVerguenstigung);
+		}
+
 		// Resultat
-		BGCalculationResult result = new BGCalculationResult();
+		BGCalculationResult result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+
 		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
 		result.setMinimalerElternbeitrag(minBetrag);
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
@@ -105,10 +113,11 @@ public abstract class AbstractBGRechner {
 		result.setVerguenstigung(verguenstigung);
 		result.setVollkosten(vollkosten);
 		result.setElternbeitrag(elternbeitrag);
+		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
 
 		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
-		result.setVerfuegteAnzahlZeiteinheiten(verfuegteZeiteinheiten);
-		result.setAnspruchsberechtigteAnzahlZeiteinheiten(anspruchsberechtigteZeiteinheiten);
+		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
+		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 

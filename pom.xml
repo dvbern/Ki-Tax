@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2020.2.0-SNAPSHOT</version>
+    <version>2020.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -45,10 +45,10 @@
 
         <!-- keep in sync with dependencies from Wildfly BOM -->
         <version.hibernate>5.3.6.Final</version.hibernate>
-        <version.org.hibernate.validator>6.0.13.Final</version.org.hibernate.validator>
+        <version.org.hibernate.validator>6.1.0.Final</version.org.hibernate.validator>
         <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
         <hibernate-search.version>5.10.3.Final</hibernate-search.version>
-        <version.infinispan>9.3.1.Final</version.infinispan>
+        <version.infinispan>10.0.0.Final</version.infinispan>
         <version.org.glassfish.javax.el-impl>3.0.1-b08-jbossorg-1</version.org.glassfish.javax.el-impl>
 
         <version.flyway>6.1.0</version.flyway>
@@ -57,7 +57,7 @@
         <version.wildfly.container>14.0.1.Final</version.wildfly.container>
         <version.sentry>1.7.16</version.sentry>
         <version.bouncycastle>1.60</version.bouncycastle>
-        <version.jackson>2.9.10.20191020</version.jackson>
+        <version.jackson>2.9.10.20200103</version.jackson>
         <version.hamcrest>2.2</version.hamcrest>
         <version.poi>3.17</version.poi>
 
@@ -476,12 +476,12 @@
             <dependency>
                 <groupId>ch.dvbern.oss.beanvalidation</groupId>
                 <artifactId>beanvalidation</artifactId>
-                <version>1.0.10</version>
+                <version>1.0.11</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.cdipersistence</groupId>
                 <artifactId>cdi-persistence-api</artifactId>
-                <version>2.0.3</version>
+                <version>2.0.5</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.iso20022</groupId>

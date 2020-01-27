@@ -15,10 +15,12 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 
@@ -51,6 +53,11 @@ public interface ModulTagesschuleService {
 	 * @param modulTagesschuleId des zu entfernenden Moduls
 	 */
 	void removeModul(@Nonnull String modulTagesschuleId);
+
+	/**
+	 * Gibt die Tagesschule Einstellungen fuer die uebergebene GP zuruedk
+	 */
+	Collection<EinstellungenTagesschule> findEinstellungenTagesschuleByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Kopiert alle vorhandenen ModulTagesschule zur neuen Gesuchsperiode

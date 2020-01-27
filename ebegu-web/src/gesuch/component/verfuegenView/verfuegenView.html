@@ -184,9 +184,9 @@
                     </div>
                     <div class="row" ng-if="vm.showTagesschuleTarifeMitBetreuung()">
                         <br/>
-                        <div class="col-md-8 table-responsive">
+                        <div class="col-md-12 table-responsive">
                             <h3 class="md-no-float"
-                                   data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"></h3>
+                                data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"></h3>
 
                             <table st-table="tsTarifeMitBetreuungCollection"
                                    st-safe-src="vm.tagesschuleTarifeMitBetreuung"
@@ -204,25 +204,21 @@
                                 <tbody>
                                 <tr ng-repeat="anmeldungTagesschuleZeitabschnitt in tsTarifeMitBetreuungCollection">
                                     <!-- Von -->
-                                    <td class="align-left"
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <td ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                                     <!-- Bis -->
-                                    <td class="align-left"
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <td ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                     <!-- Betreungsstunden + Minuten Pro Woche -->
-                                    <td class="align-left"><span
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.betreuungsstundenProWoche + ':' + anmeldungTagesschuleZeitabschnitt.betreuungsminutenProWoche"></span>
+                                    <td><span
+                                        ng-bind="vm.formatBetreuungsZeit(anmeldungTagesschuleZeitabschnitt.betreuungsstundenProWoche) + ':' + vm.formatBetreuungsZeit(anmeldungTagesschuleZeitabschnitt.betreuungsminutenProWoche)"></span>
                                     </td>
                                     <!-- Gebühren Pro Stunde -->
-                                    <td class="align-left"><span
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gebuehrProStunde"></span>
+                                    <td><span ng-bind="anmeldungTagesschuleZeitabschnitt.gebuehrProStunde"></span>
                                     </td>
                                     <!-- Verpflegungskosten Pro Woche -->
-                                    <td class="align-left"><span
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.verpflegungskosten"></span>
+                                    <td><span ng-bind="anmeldungTagesschuleZeitabschnitt.verpflegungskosten"></span>
                                     </td>
                                     <!-- Total Kosten Pro Woche -->
-                                    <td class="align-left result"><span
+                                    <td class="result"><span
                                         ng-bind="anmeldungTagesschuleZeitabschnitt.totalKostenProWoche"></span>
                                     </td>
                                 </tr>
@@ -232,7 +228,7 @@
                     </div>
                     <div class="row" ng-if="vm.showTagesschuleTarifeOhneBetreuung()">
                         <br/>
-                        <div class="col-md-8 table-responsive">
+                        <div class="col-md-12 table-responsive">
                             <h3 class="md-no-float"
                                 data-translate="TAGESSCHULE_GEBUEHREN_NICHT_BETREUT"></h3>
 
@@ -252,30 +248,43 @@
                                 <tbody>
                                 <tr ng-repeat="anmeldungTagesschuleZeitabschnitt in tsTarifeOhneBetreuungCollection">
                                     <!-- Von -->
-                                    <td class="align-left"
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <td ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                                     <!-- Bis -->
-                                    <td class="align-left"
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                    <td ng-bind="anmeldungTagesschuleZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                     <!-- Betreungsstunden + Minuten Pro Woche -->
-                                    <td class="align-left"><span
+                                    <td><span
                                         ng-bind="anmeldungTagesschuleZeitabschnitt.betreuungsstundenProWoche + ':' + anmeldungTagesschuleZeitabschnitt.betreuungsminutenProWoche"></span>
                                     </td>
                                     <!-- Gebühren Pro Stunde -->
-                                    <td class="align-left"><span
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.gebuehrProStunde"></span>
+                                    <td><span ng-bind="anmeldungTagesschuleZeitabschnitt.gebuehrProStunde"></span>
                                     </td>
                                     <!-- Verpflegungskosten Pro Woche -->
-                                    <td class="align-left"><span
-                                        ng-bind="anmeldungTagesschuleZeitabschnitt.verpflegungskosten"></span>
+                                    <td><span ng-bind="anmeldungTagesschuleZeitabschnitt.verpflegungskosten"></span>
                                     </td>
                                     <!-- Total Kosten Pro Woche -->
-                                    <td class="align-left result"><span
+                                    <td class="result"><span
                                         ng-bind="anmeldungTagesschuleZeitabschnitt.totalKostenProWoche"></span>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <!--VerfuegungPDF anzeigen-->
+                    <div class="row marginTop20 text-left">
+                        <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN"></span>
+                            </button>
+                        </div>
+                        <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungMitTarifPdfLink()">
+                            <button type="button" class="dv-btn btn-link link-underline"
+                                    ng-click="vm.openAnmeldebestaetigungMitTarifPDF()">
+                                <i class="fa fa-file-text-o"></i>
+                                <span data-translate="PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -378,7 +387,7 @@
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
                                 <!-- Minimaler Elternbeitrag -->
                                 <td class="result"
-                                    ng-bind="verfuegungZeitabschnitt.getMinimalerElternbeitragGekuerzt() | currency : '' : 2"></td>
+                                    ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"></td>
                                 <!-- An Kita überwiesen (Gutschein) -->
                                 <td class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>

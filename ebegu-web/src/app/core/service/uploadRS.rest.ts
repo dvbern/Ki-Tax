@@ -14,6 +14,7 @@
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -74,9 +75,10 @@ export class UploadRS {
         });
     }
 
-    public uploadErlaeuterungVerfuegung(file: any, sprache: TSSprache, periodeID: string): IPromise<any> {
+    public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string,
+                                        dokumentTyp: TSDokumentTyp): IPromise<any> {
         return this.upload.upload({
-            url: `${this.serviceURL}/erlaeuterung/${sprache}/${periodeID}`,
+            url: `${this.serviceURL}/gesuchsperiodeDokument/${sprache}/${periodeID}/${dokumentTyp}`,
             method: 'POST',
             data: {
                 file

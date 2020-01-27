@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -251,15 +252,16 @@ public class GesuchsperiodeResource {
 
 	@Nullable
 	@DELETE
-	@Path("/erlauterung/{gesuchsperiodeId}/{sprache}")
+	@Path("/gesuchsperiodeDokument/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
-	public Response removeErlaeuterungVerfuegung(
+	public Response removeGesuchsperiodeDokument(
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
 		@Context HttpServletResponse response) {
 
 		requireNonNull(gesuchsperiodeId);
-		gesuchsperiodeService.removeErlaeuterungVerfuegung(gesuchsperiodeId, sprache);
+		gesuchsperiodeService.removeGesuchsperiodeDokument(gesuchsperiodeId, sprache, dokumentTyp);
 		return Response.ok().build();
 
 	}
@@ -267,42 +269,53 @@ public class GesuchsperiodeResource {
 	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
 		response = boolean.class)
 	@GET
-	@Path("/existErlaeuterung/{gesuchsperiodeId}/{sprache}")
+	@Path("/existDokument/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean existErlaeuterung(
+	public boolean existDokument(
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
 		@Context HttpServletResponse response
 	) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
-		return gesuchsperiodeService.existErlaeuterung(gesuchsperiodeId, sprache);
+		requireNonNull(dokumentTyp);
+		return gesuchsperiodeService.existDokument(gesuchsperiodeId, sprache, dokumentTyp);
 	}
 
 	@ApiOperation("return the VerfuegungErlaeuterung for the given language")
 	@GET
-	@Path("/downloadErlaeuterung/{gesuchsperiodeId}/{sprache}")
+	@Path("/downloadGesuchsperiodeDokument/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response downloadErlaeuterung(
+	public Response downloadGesuchsperiodeDokument(
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
 		@Context HttpServletResponse response
 	) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
+		requireNonNull(dokumentTyp);
 
-		final byte[] content = gesuchsperiodeService.downloadErlaeuterung(gesuchsperiodeId, sprache);
+		final byte[] content = gesuchsperiodeService.downloadGesuchsperiodeDokument(gesuchsperiodeId, sprache, dokumentTyp);
 
 		if (content != null && content.length > 0) {
 			try {
-				//noinspection StringConcatenationMissingWhitespace
-				return RestUtil.buildDownloadResponse(true, "erlaeuterung" + sprache + ".pdf",
-					"application/octet-stream", content);
+				if(dokumentTyp.equals(DokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG)) {
+					//noinspection StringConcatenationMissingWhitespace
+					return RestUtil.buildDownloadResponse(true, "erlaeuterung" + sprache + ".pdf",
+						"application/octet-stream", content);
+				}
+				else if (dokumentTyp.equals(DokumentTyp.VORLAGE_MERKBLATT_TS)){
+					//noinspection StringConcatenationMissingWhitespace
+					return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".docx",
+						"application/octet-stream", content);
+				}
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND)
-					.entity("Verfügung Erläuterung kann nicht gelesen werden")
+					.entity("Gesuchsperiode Dokument: " + dokumentTyp.toString() + " kann nicht gelesen werden")
 					.build();
 			}
 		}
