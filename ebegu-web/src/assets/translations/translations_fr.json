@@ -1267,7 +1267,7 @@
     "FREISCHALTUNG_TAGESSCHULE_NONE": "Aucune inscription possible pour l'école à journée continue",
     "FREISCHALTUNG_TAGESSCHULE_DIALOG_TITLE": "Voulez-vous vraiment activer les inscriptions pour l'école à journée continue ?",
     "FREISCHALTUNG_TAGESSCHULE_DIALOG_TEXT": "A partir de ce moment, les inscriptions pour l'école à journée continue sont ouvertes. ",
-    "FREISCHALTUNG_TAGESSCHULE_INFO": "Il n'est pas possible de s'inscrire pour l'instant. Il sera possible de s'inscrire en mai au plus tôt.",
+    "FREISCHALTUNG_TAGESSCHULE_INFO": "Il n'est pas possible de s'inscrire pour l'instant.",
     "FREISCHALTUNG_TAGESSCHULE_AB_INFO": "L'inscription n'est pas possible pour l'instant. Elle peut être effectuée au plus tôt le {{termin}}.",
     "ERSTER_SCHULTAG_TAGESSCHULE": "Première journée d'école",
     "SOMMERFERIEN": "Vacances d'été",
