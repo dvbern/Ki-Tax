@@ -20,7 +20,6 @@ import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {Moment} from 'moment';
 import * as moment from 'moment';
 import {take} from 'rxjs/operators';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -207,7 +206,7 @@ export class AddInstitutionComponent implements OnInit {
     Für Tagesschulen und Ferieninseln ist ein Minimaldatum für "Anmeldungen akzeptieren ab" definiert
     da Anmeldungen bei Tagesschulen frühstens ab der Periode 20/21 möglich sein können.
      */
-    private getStartDate(): Moment {
+    private getStartDate(): moment.Moment {
         const nextMonthBegin = moment().add(1, 'M').startOf('month');
 
         if (this.isBGInstitution || nextMonthBegin >= TSMandant.earliestDateOfTSAnmeldung) {

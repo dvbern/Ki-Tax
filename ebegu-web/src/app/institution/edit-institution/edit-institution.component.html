@@ -189,8 +189,10 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label *ngIf="isBetreuungsgutschein()" translate>INSTITUTION_BEGU_START_END</label>
-                            <label *ngIf="isTagesschule() || isFerieninsel()" translate>
-                                INSTITUTION_ANMELDUNG_START_END</label>
+                            <label *ngIf="isTagesschule()" translate>
+                                TAGESSCHULE_ANMELDUNG_START_END</label>
+                            <label *ngIf="isFerieninsel()" translate>
+                                FERIENINSEL_ANMELDUNG_START_END</label>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <input class="dv-mat-datepicker"
@@ -199,8 +201,9 @@
                                            id="begu_start_id"
                                            aria-describedby="begu_start_end_id"
                                            [matDatepicker]="begu_start_id"
-                                           [disabled]="isBetreuungsgutscheineAkzeptierenDisabled()"
+                                           [disabled]="isDateStartEndDisabled()"
                                            required
+                                           [min]="getMinStartDate()"
                                            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                            [(ngModel)]="stammdaten.gueltigkeit.gueltigAb">
                                     <mat-datepicker-toggle matSuffix [for]="begu_start_id"></mat-datepicker-toggle>
@@ -217,7 +220,7 @@
                                            aria-describedby="begu_start_end_id"
                                            [matDatepicker]="begu_ende_id"
                                            [min]="tomorrow"
-                                           [disabled]="isBetreuungsgutscheineAkzeptierenDisabled()"
+                                           [disabled]="isDateStartEndDisabled()"
                                            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                            [(ngModel)]="stammdaten.gueltigkeit.gueltigBis">
                                     <mat-datepicker-toggle matSuffix [for]="begu_ende_id"></mat-datepicker-toggle>
@@ -311,9 +314,11 @@
                         <!-- Betreuungsgutschien akzeptieren ab / bis -->
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <h3 *ngIf="isBetreuungsgutschein()" translate>INSTITUTION_BEGU_AKZEPTIEREN</h3>
-                                <h3 *ngIf="isTagesschule() || isFerieninsel()" translate>
-                                    INSTITUTION_ANMELDUNG_AKZEPTIEREN</h3>
+                                <h3 *ngIf="isBetreuungsgutschein()" translate>INSTITUTION_BEGU_START_END</h3>
+                                <h3 *ngIf="isTagesschule()" translate>
+                                    TAGESSCHULE_ANMELDUNG_START_END</h3>
+                                <h3 *ngIf="isFerieninsel()" translate>
+                                    FERIENINSEL_ANMELDUNG_START_END</h3>
                                 <p>{{getGueltigkeitTodisplay()}}</p>
                             </div>
                         </div>
