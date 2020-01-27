@@ -81,7 +81,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
 			int minimum = getMinimumErwerbspensum(platz);
 			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum, erwerbspensumOffset, getLocale());
-			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(roundedAnspruch);
 		}
 	}
 
@@ -107,7 +107,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	) {
 		if (anspruch <= 0) {
 			anspruch = 0;
-			verfuegungZeitabschnitt.setMinimalesEwpUnterschritten(true);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMinimalesEwpUnterschritten(true);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setKategorieKeinPensum(true);
 		}
 		// Minimum pruefen
@@ -115,7 +115,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
-			verfuegungZeitabschnitt.setMinimalesEwpUnterschritten(true);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMinimalesEwpUnterschritten(true);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;

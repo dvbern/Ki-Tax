@@ -3186,13 +3186,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
-		jaxZeitabschn.setAnspruchberechtigtesPensum(zeitabschnitt.getAnspruchberechtigtesPensum());
+		jaxZeitabschn.setAnspruchspensumProzent(zeitabschnitt.getAnspruchberechtigtesPensum());
 		jaxZeitabschn.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		jaxZeitabschn.setVollkosten(zeitabschnitt.getVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		jaxZeitabschn.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 		jaxZeitabschn.setMinimalerElternbeitrag(zeitabschnitt.getMinimalerElternbeitrag());
+		jaxZeitabschn.setMinimalerElternbeitragGekuerzt(zeitabschnitt.getMinimalerElternbeitragGekuerzt());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		jaxZeitabschn.setMassgebendesEinkommenVorAbzugFamgr(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
 		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());

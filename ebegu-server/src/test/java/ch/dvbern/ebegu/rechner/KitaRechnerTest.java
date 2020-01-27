@@ -21,6 +21,7 @@ import java.time.Month;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -161,12 +162,12 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
-		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		verfuegungZeitabschnitt.setBetreuungspensumProzent(MathUtil.DEFAULT.from(betreuungspensum));
-		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1)
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruch);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(betreuungspensum));
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
-		verfuegungZeitabschnitt.setEingeschult(eingeschult);
-		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEingeschult(eingeschult);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
 		BGCalculationResult result = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 
@@ -178,8 +179,8 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		return pojo(BGCalculationResult.class)
 			.withProperty("verguenstigung",
 				BigDecimalCloseTo.closeTo(BigDecimal.valueOf(expectedVerguenstigung), BigDecimal.valueOf(0.0005)))
-			.withProperty("verfuegteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
-			.withProperty("anspruchsberechtigteAnzahlZeiteinheiten", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("bgPensumZeiteinheit", IsBigDecimal.greaterZeroWithScale10())
+			.withProperty("anspruchspensumZeiteinheit", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.DAYS));
 	}
 }

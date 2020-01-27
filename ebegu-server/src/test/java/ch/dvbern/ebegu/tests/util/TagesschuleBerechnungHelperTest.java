@@ -36,15 +36,17 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.TagesschuleRechnerParameterDTO;
 import ch.dvbern.ebegu.services.util.TagesschuleBerechnungHelper;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 
 public class TagesschuleBerechnungHelperTest {
 
-	AnmeldungTagesschule anmeldungTagesschule;
-	TagesschuleRechnerParameterDTO parameterDTO;
-	Verfuegung verfuegungMitFamiliensituation;
+	private AnmeldungTagesschule anmeldungTagesschule;
+	private TagesschuleRechnerParameterDTO parameterDTO;
+	private Verfuegung verfuegungMitFamiliensituation;
+
+	private static final MathUtil MATH = MathUtil.DEFAULT;
 
 	@Before
 	public void setUp() {
@@ -62,43 +64,43 @@ public class TagesschuleBerechnungHelperTest {
 		Assert.assertEquals(4, anmeldungTagesschuleZeitabschnitts.size());
 
 		AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt = anmeldungTagesschuleZeitabschnitts.get(0);
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(120000)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(120000)),
 			anmeldungTagesschuleZeitabschnitt.getMassgebendesEinkommenInklAbzugFamgr());
 		Assert.assertEquals(new BigDecimal(7),
 			anmeldungTagesschuleZeitabschnitt.getBetreuungsstundenProWoche());
 		Assert.assertEquals(new BigDecimal(30),
 			anmeldungTagesschuleZeitabschnitt.getBetreuungsminutenProWoche());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(8.32)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(8.32)),
 			anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(20)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20.00)),
 			anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(82.40)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(82.40)),
 			anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche());
 
 		anmeldungTagesschuleZeitabschnitt = anmeldungTagesschuleZeitabschnitts.get(1);
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(100000)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(100000)),
 			anmeldungTagesschuleZeitabschnitt.getMassgebendesEinkommenInklAbzugFamgr());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(6.36)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(6.36)),
 			anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(20)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)),
 			anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(67.70)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(67.70)),
 			anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche());
 
 		anmeldungTagesschuleZeitabschnitt = anmeldungTagesschuleZeitabschnitts.get(2);
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(4.29)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(4.29)),
 			anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(20)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)),
 			anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(52.18)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(52.18)),
 			anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche());
 
 		anmeldungTagesschuleZeitabschnitt = anmeldungTagesschuleZeitabschnitts.get(3);
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(3.38)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(3.38)),
 			anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(20)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)),
 			anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(new BigDecimal(45.35)),
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(45.35)),
 			anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche());
 	}
 
@@ -127,7 +129,7 @@ public class TagesschuleBerechnungHelperTest {
 		ModulTagesschuleGroup modulTagesschuleGroupPedagogischBetreut = new ModulTagesschuleGroup();
 		modulTagesschuleGroupPedagogischBetreut.setZeitVon(LocalTime.of(8,0));
 		modulTagesschuleGroupPedagogischBetreut.setZeitBis(LocalTime.of(11,45));
-		modulTagesschuleGroupPedagogischBetreut.setVerpflegungskosten(new BigDecimal(10));
+		modulTagesschuleGroupPedagogischBetreut.setVerpflegungskosten(MATH.from(10));
 		modulTagesschuleGroupPedagogischBetreut.setWirdPaedagogischBetreut(wirdPedagogischBetreut);
 
 		ModulTagesschule modulTagesschuleMonday = new ModulTagesschule();
@@ -149,11 +151,11 @@ public class TagesschuleBerechnungHelperTest {
 
 	private TagesschuleRechnerParameterDTO initTagesschuleRechnerParameterDTO(){
 		TagesschuleRechnerParameterDTO tagesschuleRechnerParameterDTO = new TagesschuleRechnerParameterDTO();
-		tagesschuleRechnerParameterDTO.setMaxTarifMitPaedagogischerBetreuung(new BigDecimal(12.24));
-		tagesschuleRechnerParameterDTO.setMaxTarifOhnePaedagogischerBetreuung(new BigDecimal(6.11));
-		tagesschuleRechnerParameterDTO.setMinTarif(new BigDecimal(0.78));
-		tagesschuleRechnerParameterDTO.setMaxMassgebendesEinkommen(new BigDecimal(160000));
-		tagesschuleRechnerParameterDTO.setMinMassgebendesEinkommen(new BigDecimal(43000));
+		tagesschuleRechnerParameterDTO.setMaxTarifMitPaedagogischerBetreuung(MATH.from(12.24));
+		tagesschuleRechnerParameterDTO.setMaxTarifOhnePaedagogischerBetreuung(MATH.from(6.11));
+		tagesschuleRechnerParameterDTO.setMinTarif(MATH.from(0.78));
+		tagesschuleRechnerParameterDTO.setMaxMassgebendesEinkommen(MATH.from(160000));
+		tagesschuleRechnerParameterDTO.setMinMassgebendesEinkommen(MATH.from(43000));
 
 		return tagesschuleRechnerParameterDTO;
 	}
@@ -162,11 +164,11 @@ public class TagesschuleBerechnungHelperTest {
 		Verfuegung verfuegung = new Verfuegung();
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(120000));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MATH.from(120000));
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(false);
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnittZwei = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnittZwei.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(100000));
+		verfuegungZeitabschnittZwei.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MATH.from(100000));
 		verfuegungZeitabschnittZwei.getBgCalculationInputAsiv().setBezahltVollkosten(false);
 
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList = new ArrayList<>();

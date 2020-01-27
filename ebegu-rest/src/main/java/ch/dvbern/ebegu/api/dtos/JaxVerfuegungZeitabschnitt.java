@@ -97,6 +97,8 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private BigDecimal minimalerElternbeitrag;
 
+	private BigDecimal minimalerElternbeitragGekuerzt;
+
 	private BigDecimal elternbeitrag = BigDecimal.ZERO;
 
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
@@ -164,7 +166,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		return anspruchberechtigtesPensum;
 	}
 
-	public void setAnspruchberechtigtesPensum(int anspruchberechtigtesPensum) {
+	public void setAnspruchspensumProzent(int anspruchberechtigtesPensum) {
 		this.anspruchberechtigtesPensum = anspruchberechtigtesPensum;
 	}
 
@@ -355,5 +357,13 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
 		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
+	}
+
+	public BigDecimal getMinimalerElternbeitragGekuerzt() {
+		return minimalerElternbeitragGekuerzt;
+	}
+
+	public void setMinimalerElternbeitragGekuerzt(BigDecimal minimalerElternbeitragGekuerzt) {
+		this.minimalerElternbeitragGekuerzt = minimalerElternbeitragGekuerzt;
 	}
 }

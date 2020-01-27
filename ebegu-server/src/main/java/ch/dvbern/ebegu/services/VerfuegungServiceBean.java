@@ -333,7 +333,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		verfuegung.getZeitabschnitte()
-			.forEach(z -> z.setAnspruchberechtigtesPensum(0));
+			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
 		verfuegung.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
 		Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, Betreuungsstatus.NICHT_EINGETRETEN);
