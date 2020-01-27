@@ -25,12 +25,15 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2019.17.0-SNAPSHOT</version>
+    <version>2020.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
 
     <properties>
+
+        <dvb.git.serverId>git.dvbern.ch</dvb.git.serverId>
+
         <!-- Wird ggf. im Profil "development-mode' ueberschrieben -->
         <skip-code-validation>false</skip-code-validation>
 
@@ -727,11 +730,11 @@
                 <artifactId>jgitflow-maven-plugin</artifactId>
                 <version>1.0-m6</version>
                 <configuration>
+                    <serverId>git.dvbern.ch</serverId>
                     <flowInitContext>
                         <developBranchName>dev</developBranchName>
                         <versionTagPrefix />
                     </flowInitContext>
-
                 </configuration>
             </plugin>
             <plugin>
