@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +25,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
@@ -40,7 +40,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return Collections.singletonList(TAGESSCHULE);
+		return ImmutableList.of(TAGESSCHULE);
 	}
 
 	@Override

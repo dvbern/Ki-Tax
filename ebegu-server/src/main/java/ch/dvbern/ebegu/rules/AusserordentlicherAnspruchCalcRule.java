@@ -45,7 +45,6 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 

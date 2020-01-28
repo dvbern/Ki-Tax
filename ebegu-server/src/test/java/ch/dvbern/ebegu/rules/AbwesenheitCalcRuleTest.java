@@ -40,7 +40,20 @@ public class AbwesenheitCalcRuleTest {
 	private final LocalDate ENDE_PERIODE = LocalDate.of(2017, Month.JULY, 31);
 	private final DateRange PERIODE = new DateRange(START_PERIODE, ENDE_PERIODE);
 
-	 //todo homa kibon-1016 testSchulamtBetreuungWithAbwesenheit  brauchts nicht mehr
+	@Test
+	public void testSchulamtBetreuungWithAbwesenheit() {
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
+		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(true);
+		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
+		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+
+		rule.executeRuleInternal(betreuung, zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
+
+		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		Assert.assertEquals("", zeitAbschnitt.getBemerkungen());
+	}
+
 	@Test
 	public void testJABetreuungWithAbwesenheit() {
 		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
@@ -48,7 +61,7 @@ public class AbwesenheitCalcRuleTest {
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		rule.executeRule(betreuung, zeitAbschnitt);
+		rule.executeRuleInternal(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertTrue(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
@@ -66,7 +79,7 @@ public class AbwesenheitCalcRuleTest {
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		rule.executeRule(betreuung, zeitAbschnitt);
+		rule.executeRuleInternal(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());

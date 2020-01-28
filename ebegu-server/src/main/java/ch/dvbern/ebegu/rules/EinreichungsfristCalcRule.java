@@ -58,7 +58,6 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		//todo homa review kobin-1016 fachlich gleich aber leicht anders zusammengesetzt?
 		if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
 			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());

@@ -85,10 +85,4 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		}
 		return einreichungsfristAbschnitte;
 	}
-
-	@Override
-	public boolean isRelevantForFamiliensituation() {
-		// todo homa review kibon-1016
-		return true;
-	}
 }

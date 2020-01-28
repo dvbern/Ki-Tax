@@ -52,9 +52,6 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
-
-	//todho homa review kibon-1016 createVerfuegungsZeitabschnitte  gab es vorher und wenn nicht anwendbar kam leere liste zurueck
-
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -101,11 +102,27 @@ public abstract class AbstractEbeguRule implements Rule {
 		return locale;
 	}
 
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteInternal(@Nonnull AbstractPlatz platz) {
+		if (isAnwendbarForAngebot(platz)) {
+			return createVerfuegungsZeitabschnitte(platz);
+		} else {
+			return new ArrayList<>();
+		}
+	}
+
+
 	/**
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
 	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+
+
+	protected void executeRuleInternal(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		if (isAnwendbarForAngebot(platz)) {
+			executeRule(platz, verfuegungZeitabschnitt);
+		}
+	}
 
 	/**
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
@@ -120,16 +137,11 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Override
 	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
-		// Regel nur anwenden wenn sie fuer den Betreuungstyp Anwendbar ist
-		if (!isAnwendbarForAngebot(platz)) {
-			return zeitabschnitte;
-		}
-
 		Collections.sort(zeitabschnitte);
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
 
-		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(platz);
+		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitteInternal(platz);
 		Collections.sort(abschnitteCreatedInRule);
 
 		// In dieser Funktion muss sichergestellt werden, dass in der neuen Liste keine Ueberschneidungen mehr bestehen
@@ -146,7 +158,7 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Die eigentliche Rule anwenden
 		for (VerfuegungZeitabschnitt zeitabschnitt : normalizedZeitabschn) {
-			executeRule(platz, zeitabschnitt);
+			executeRuleInternal(platz, zeitabschnitt);
 		}
 		return normalizedZeitabschn;
 	}
@@ -156,8 +168,9 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * @param platz (Betreuung, Tageschhulplatz etc)
 	 * @return true wenn die Regel anwendbar ist
 	 */
-	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) { // todo homa review KIBON-1016 tpy mitgeben
-	//todo homa review  kibon-1016 frueher hatten wir immr noch ein requireNonnull auf typ
+	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) {
+		Objects.requireNonNull(platz);
+		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
 		return getAnwendbareAngebote().contains(platz.getBetreuungsangebotTyp());
 	}
 

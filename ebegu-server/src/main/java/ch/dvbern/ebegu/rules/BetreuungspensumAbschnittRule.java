@@ -54,7 +54,6 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		// todo homa review kibon-1016
 		Betreuung betreuung = (Betreuung) platz;
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
