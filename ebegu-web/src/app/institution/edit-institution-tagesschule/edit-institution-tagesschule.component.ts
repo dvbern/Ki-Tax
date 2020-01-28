@@ -15,26 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
+import {Observable} from 'rxjs';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
-import {getTSModulTagesschuleTypen, TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
+import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSTextRessource} from '../../../models/TSTextRessource';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
-import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {DialogImportFromOtherInstitution} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
 
 @Component({
     selector: 'dv-edit-institution-tagesschule',
@@ -53,9 +58,12 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
+        private readonly institutionRS: InstitutionRS,
+        private readonly institutionStammdatenRS: InstitutionStammdatenRS,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
+        private ref: ChangeDetectorRef
     ) {
     }
 
@@ -137,10 +145,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         }
         einstellungenTagesschule.modulTagesschuleGroups =
             TagesschuleUtil.sortModulTagesschuleGroups(einstellungenTagesschule.modulTagesschuleGroups);
-        // This is a trick to force the list of module to reload when we add an element:
-        const element = document.getElementById('typ' + einstellungenTagesschule.id);
-        element.focus();
-        element.blur();
+        this.ref.markForCheck();
     }
 
     public getIndexOfElementwithIdentifier(entityToSearch: TSModulTagesschuleGroup,
@@ -157,23 +162,12 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return -1;
     }
 
-    public getModulTagesschuleTypen(): TSModulTagesschuleTyp[] {
-        return getTSModulTagesschuleTypen();
-    }
-
     public isModulTagesschuleTypScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
         return einstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS;
     }
 
-    public changeModulTagesschuleTyp(einstellungenTagesschule: TSEinstellungenTagesschule): void {
-        if (einstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS) {
-            this.changeToScolaris(einstellungenTagesschule);
-        } else {
-            this.changeToDynamisch(einstellungenTagesschule);
-        }
-    }
-
-    private changeToDynamisch(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+    public changeToDynamisch(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'MODUL_TYP_DYNAMISCH_TITLE',
@@ -187,10 +181,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.SCOLARIS;
                         return;
                     }
-                    // Die Module sind neu dynamisch -> Alle eventuell vorhandenen auf DYNAMISCH setzen
-                    einstellungenTagesschule.modulTagesschuleGroups.forEach(group => {
-                        group.modulTagesschuleName = TSModulTagesschuleName.DYNAMISCH;
-                    });
+                    einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
+                    // Die Module sind neu dynamisch -> Alle eventuell vorhandenen löschen
+                    einstellungenTagesschule.modulTagesschuleGroups = [];
+                    this.ref.markForCheck();
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
@@ -198,7 +192,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             );
     }
 
-    private changeToScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+    public changeToScolaris(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'MODUL_TYP_SCOLARIS_TITLE',
@@ -212,8 +206,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
                         return;
                     }
+                    einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.SCOLARIS;
                     // Die Module sind neu nach Scolaris -> Alle eventuell vorhandenen werden gelöscht
                     this.createModulGroupsScolaris(einstellungenTagesschule);
+                    this.ref.markForCheck();
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
@@ -261,6 +257,30 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         const freitag = new TSModulTagesschule();
         freitag.wochentag = TSDayOfWeek.FRIDAY;
         group.module.push(freitag);
+    }
+
+    public importFromOtherInstitution(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
+        // todo: es sollen nur TS abgefragt werden, nicht alle institutionen
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then((institutionList: TSInstitution[]) => {
+            this.openDialogImportFromOtherInstitution(institutionList).subscribe((modules: TSModulTagesschuleGroup[]) => {
+                einstellungenTagesschule.modulTagesschuleGroups = modules;
+                this.ref.markForCheck();
+            });
+        });
+    }
+
+    private openDialogImportFromOtherInstitution(institutionList: TSInstitution[]): Observable<TSModulTagesschuleGroup[]> {
+        if (!this.editMode) {
+            return undefined;
+        }
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            institutionList
+        };
+        dialogConfig.panelClass = 'dialog-import-from-other-institution';
+        // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
+        return this.dialog.open(DialogImportFromOtherInstitution, dialogConfig).afterClosed();
     }
 
     public compareGemeinde(b1: TSGemeinde, b2: TSGemeinde): boolean {

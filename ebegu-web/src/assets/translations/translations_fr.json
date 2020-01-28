@@ -1736,7 +1736,6 @@
     "SCOLARIS": "Créer un dodule pour Scolaris (fixe)",
     "DYNAMISCH": "Créer un module dynamiquement",
     "MODUL_TYP_DYNAMISCH_TITLE": "Passer en mode création de module dynamiquement",
-    "MODUL_TYP_DYNAMISCH_INFO": "Attention: les modules ne pourront plus être synchroniser ultérieurement avec Scolaris via l'interface",
     "MODUL_TYP_SCOLARIS_TITLE": "Passer en mode création de module selon Scolaris",
     "MODUL_TYP_SCOLARIS_INFO": "Attention: tous les modules déjà présent vont être effacé!",
     "WOECHENTLICH": "Hebdomadaire",
