@@ -39,6 +39,7 @@ import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssign
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -177,8 +178,11 @@ export class EditInstitutionComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
-    public isBetreuungsgutscheineAkzeptierenDisabled(): boolean {
-        return !this.isSuperAdmin();
+    public isDateStartEndDisabled(): boolean {
+        if (this.isBetreuungsgutschein()) {
+            return !this.isSuperAdmin();
+        }
+        return false;
     }
 
     public isSuperAdmin(): boolean {
@@ -353,5 +357,12 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftId(traegerschaft: TSTraegerschaft): string {
         return traegerschaft.id;
+    }
+
+    public getMinStartDate(): Date {
+        if (this.isFerieninsel() || this.isTagesschule()) {
+            return TSMandant.earliestDateOfTSAnmeldung.toDate();
+        }
+        return new Date(0);
     }
 }

@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 
 export class TSMandant extends TSAbstractMutableEntity {
 
@@ -24,5 +26,10 @@ export class TSMandant extends TSAbstractMutableEntity {
     public constructor(name?: string) {
         super();
         this.name = name;
+    }
+
+    // TODO: dies muss beim Mandanten gespeichert werden, sobald Mandantenfähigkeit umgesetzt wird
+    public static get earliestDateOfTSAnmeldung(): moment.Moment {
+        return moment(CONSTANTS.EARLIEST_DATE_OF_TS_ANMELDUNG);
     }
 }

@@ -50,12 +50,12 @@ export class InstitutionRS {
     }
 
     /**
-     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so
+     * It sends all required parameters (new Institution, startDate, Betreuungsangebot and User) to the server so
      * the server can create all required objects within a single transaction.
      */
     public createInstitution(
         institution: TSInstitution,
-        beguStartDatum: moment.Moment,
+        startDate: moment.Moment,
         betreuungsangebot: TSBetreuungsangebotTyp,
         adminMail: string,
         gemeindeId: string,
@@ -64,7 +64,7 @@ export class InstitutionRS {
         return this.$http.post(this.serviceURL, restInstitution,
             {
                 params: {
-                    date: DateUtil.momentToLocalDate(beguStartDatum),
+                    date: DateUtil.momentToLocalDate(startDate),
                     betreuung: betreuungsangebot,
                     adminMail,
                     gemeindeId,
