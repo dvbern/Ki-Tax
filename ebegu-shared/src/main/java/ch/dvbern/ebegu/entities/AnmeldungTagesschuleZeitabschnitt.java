@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -28,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -149,5 +149,11 @@ public class AnmeldungTagesschuleZeitabschnitt extends AbstractDateRangedEntity 
 		// wenn ids nicht gleich sind wollen wir auch compare to nicht gleich
 		compareToBuilder.append(this.getId(), other.getId());
 		return compareToBuilder.toComparison();
+	}
+
+	@Nonnull
+	public String getBetreuungszeitFormatted() {
+		return StringUtils.leftPad(betreuungsstundenProWoche.toString(), 2, '0')
+			+ ':' + StringUtils.leftPad(betreuungsminutenProWoche.toString(), 2, '0');
 	}
 }

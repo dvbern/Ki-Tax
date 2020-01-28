@@ -16,7 +16,8 @@
 
 <div class="betreuungTagesschuleView">
 
-    <fieldset ng-disabled="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
+    <fieldset
+        ng-disabled="!vm.isAnmeldungTSEditable()">
 
         <div
             ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
@@ -47,7 +48,7 @@
                                        ng-model="vm.betreuung.belegungTagesschule.eintrittsdatum"
                                        ng-required="true"
                                        class="input-element "
-                                       dv-min-date="vm.datumErsterSchultag">
+                                       dv-min-date="vm.minEintrittsdatum">
                         </dv-datepicker>
                         <dv-error-messages input-id="eintrittsdatum_ID"
                                            for="vm.form.eintrittsdatum.$error"></dv-error-messages>
@@ -190,7 +191,7 @@
                         </dv-input-container>
                     </div>
                 </div>
-                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly()">
+                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox"
                                      ng-model="vm.agbTSAkzeptiert"
@@ -238,7 +239,6 @@
                     <span data-translate="WARN_ANGEBOT_MUTIERT"></span>
                 </div>
             </div>
-
         </div>
 
     </fieldset>
@@ -282,19 +282,19 @@
              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionSchulamtRoles()"
              dv-show-expression="vm.showButtonsInstitution() && vm.aktuellGueltig">
             <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtUebernehmen()"
+                               button-click="vm.saveAnmeldungSchulamtUebernehmen()"
                                type="button"
                                button-class="save">
                 <span data-translate="SCHULAMT_ANMELDUNG_AKZEPTIEREN"></span>
             </dv-loading-button>
             <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtAblehnen()"
+                               button-click="vm.saveAnmeldungSchulamtAblehnen()"
                                type="button"
                                button-class="save">
                 <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
             <dv-loading-button class="dv-navigation-item"
-                               button-click="vm.anmeldungSchulamtFalscheInstitution()"
+                               button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
                                type="button"
                                button-class="save">
                 <span data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>

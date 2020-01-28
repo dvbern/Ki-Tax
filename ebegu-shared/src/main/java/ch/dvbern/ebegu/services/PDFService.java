@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -75,4 +76,11 @@ public interface PDFService {
 		@Nonnull Locale locale
 	) throws MergeDocException;
 
+	@Nonnull
+	byte[] generateAnmeldebestaetigungFuerTagesschule(
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		boolean mitTarif,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 }

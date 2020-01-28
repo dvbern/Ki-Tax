@@ -123,19 +123,18 @@ public class InstitutionResource {
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
 		@Nonnull @NotNull @Valid @QueryParam("betreuung") BetreuungsangebotTyp betreuungsangebot,
-		@Nullable @Valid @QueryParam("adminMail") String adminMail,
+		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
 		@Nullable @Valid @QueryParam("gemeindeId") String gemeindeId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
+		requireNonNull(adminMail);
 		Institution convertedInstitution = converter.institutionToNewEntity(institutionJAXP);
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
 		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail, gemeindeId);
 
 		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
-			requireNonNull(adminMail);
-
 			Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 				.map(b -> {
 					if ((b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT && b.getRole() != UserRole.GESUCHSTELLER) ||
@@ -165,10 +164,10 @@ public class InstitutionResource {
 	}
 
 	private void initInstitutionStammdaten(
-		@Nonnull String stringDateBeguStart,
+		@Nonnull String stringDateStartDate,
 		@Nonnull BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull Institution persistedInstitution,
-		@Nullable String adminMail,
+		@Nonnull String adminMail,
 		@Nullable String gemeindeId
 	) {
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
@@ -176,12 +175,7 @@ public class InstitutionResource {
 		switch (betreuungsangebot) {
 		case KITA:
 		case TAGESFAMILIEN:
-			requireNonNull(adminMail);
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(new InstitutionStammdatenBetreuungsgutscheine());
-			LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
-			DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
-			institutionStammdaten.setGueltigkeit(gueltigkeit);
-			institutionStammdaten.setMail(adminMail);
 			break;
 		case TAGESSCHULE:
 			gemeinde = getGemeindeOrThrowException(gemeindeId);
@@ -218,6 +212,12 @@ public class InstitutionResource {
 		institutionStammdaten.setAdresse(adresse);
 		institutionStammdaten.setBetreuungsangebotTyp(betreuungsangebot);
 		institutionStammdaten.setInstitution(persistedInstitution);
+		institutionStammdaten.setMail(adminMail);
+
+		LocalDate startDate = LocalDate.parse(stringDateStartDate, Constants.SQL_DATE_FORMAT);
+		DateRange gueltigkeit = new DateRange(startDate, Constants.END_OF_TIME);
+		institutionStammdaten.setGueltigkeit(gueltigkeit);
+
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 	}
 

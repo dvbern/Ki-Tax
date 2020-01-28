@@ -34,6 +34,30 @@ public enum EinstellungKey {
 	// Erster Schultag der Tagesschule
 	GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG(EinstellungTyp.GEMEINDE),
 
+	// Die Gemeinde gewährt einen zusätzlichen Beitrag zum Gutschein
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED(EinstellungTyp.GEMEINDE),
+
+	// Betrag des zusätzlichen Beitrags zum Gutschein
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA(EinstellungTyp.GEMEINDE),
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO(EinstellungTyp.GEMEINDE),
+
+	// Zusaetzlichen Gutschein anbieten bis und mit
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA(EinstellungTyp.GEMEINDE),
+	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO(EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde gewährt einen Zusatzbetrag für Babies
+	GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED(EinstellungTyp.GEMEINDE),
+
+	// Betrag des zusätzlichen Gutscheins für Babies
+	GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA(EinstellungTyp.GEMEINDE),
+	GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO(EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde akzeptiert Freiwilligenarbeit als Erwerbspensum mit Anspruch
+	GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED(EinstellungTyp.GEMEINDE),
+
+	// Maximale Prozente, zu welchen Freiwilligenarbeit zu einem Anspruch führt
+	GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT(EinstellungTyp.GEMEINDE),
+
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 

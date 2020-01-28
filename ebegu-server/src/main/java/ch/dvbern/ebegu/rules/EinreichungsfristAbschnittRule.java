@@ -68,7 +68,7 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 					// Der Anspruch beginnt erst am 1. des Monats der Einreichung
 					verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 					verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(firstOfMonthDesEinreichungsMonats.minusDays(1));
-					verfuegungZeitabschnitt.setZuSpaetEingereicht(true);
+					verfuegungZeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(true);
 					// Sicherstellen, dass nicht der ganze Zeitraum vor dem Einreichungsdatum liegt
 					if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {
 						einreichungsfristAbschnitte.add(verfuegungZeitabschnitt);

@@ -32,6 +32,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -250,6 +252,28 @@ public class PDFServiceBean implements PDFService {
 			stammdaten,
 			art,
 			showInfoKontingentierung);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
+		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
+	public byte[] generateAnmeldebestaetigungFuerTagesschule(
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		@Nonnull boolean mitTarif,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
+		Objects.requireNonNull(anmeldungTagesschule, "Das Argument 'anmeldungTagesschule' darf nicht leer sein");
+		Gesuch gesuch = anmeldungTagesschule.extractGesuch();
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+
+		AnmeldebestaetigungTSPDFGenerator.Art art = mitTarif ? AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF :
+			AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF;
+		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
+			stammdaten, art , anmeldungTagesschule);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 

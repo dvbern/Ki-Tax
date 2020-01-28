@@ -46,8 +46,8 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	) {
 		if (Objects.requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (areNotInBern(verfuegungZeitabschnitt)) {
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-				verfuegungZeitabschnitt.addBemerkung(
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 					RuleKey.WOHNSITZ,
 					MsgKey.WOHNSITZ_MSG,
 					getLocale(),
@@ -61,7 +61,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	 * Nur GS 1 ist relevant. GS 2 muss per Definition bei GS 1 wohnen
 	 */
 	private boolean areNotInBern(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		return verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1();
+		return verfuegungZeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
 	}
 
 }
