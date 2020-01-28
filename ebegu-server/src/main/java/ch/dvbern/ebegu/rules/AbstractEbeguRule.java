@@ -102,23 +102,28 @@ public abstract class AbstractEbeguRule implements Rule {
 		return locale;
 	}
 
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteInternal(@Nonnull AbstractPlatz platz) {
+	/**
+	 * Stellt die Zeitabschnitte der aktuellen Rule zusammen, falls die Rule für den
+	 * aktuellen Betreuungstyp relevant ist
+	 */
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteIfApplicable(@Nonnull AbstractPlatz platz) {
 		if (isAnwendbarForAngebot(platz)) {
 			return createVerfuegungsZeitabschnitte(platz);
-		} else {
-			return new ArrayList<>();
 		}
+		return new ArrayList<>();
 	}
-
 
 	/**
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
-	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+	abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
 
-
-	protected void executeRuleInternal(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	/**
+	 * Führt die aktuelle Rule aus, falls die Rule für den
+	 * aktuellen Betreuungstyp relevant ist
+	 */
+	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		if (isAnwendbarForAngebot(platz)) {
 			executeRule(platz, verfuegungZeitabschnitt);
 		}
@@ -128,7 +133,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
 	 * Hier kann man davon ausgehen, dass die Zeitabschnitte schon validiert und gemergt sind.
 	 */
-	protected abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
+	abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
 
 	/**
 	 * Hauptmethode der Regelberechnung. Diese wird von Aussen aufgerufen
@@ -141,7 +146,7 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
 
-		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitteInternal(platz);
+		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitteIfApplicable(platz);
 		Collections.sort(abschnitteCreatedInRule);
 
 		// In dieser Funktion muss sichergestellt werden, dass in der neuen Liste keine Ueberschneidungen mehr bestehen
@@ -158,7 +163,7 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Die eigentliche Rule anwenden
 		for (VerfuegungZeitabschnitt zeitabschnitt : normalizedZeitabschn) {
-			executeRuleInternal(platz, zeitabschnitt);
+			executeRuleIfApplicable(platz, zeitabschnitt);
 		}
 		return normalizedZeitabschn;
 	}

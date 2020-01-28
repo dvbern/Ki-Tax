@@ -41,7 +41,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getKind().setGesuch(TestDataUtil.createDefaultGesuch());
 
-		rule.executeRule(betreuung, zeitabschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitabschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
 		assertEquals(0, zeitabschnitt.getAnspruchberechtigtesPensum());
@@ -57,7 +57,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		VerfuegungZeitabschnitt zeitabschnitt = initZeitabschnitt(true);
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 
-		rule.executeRule(betreuung, zeitabschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitabschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
 		assertEquals(100, zeitabschnitt.getAnspruchberechtigtesPensum());

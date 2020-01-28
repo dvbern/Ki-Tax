@@ -47,7 +47,7 @@ public class AbwesenheitCalcRuleTest {
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 
-		rule.executeRuleInternal(betreuung, zeitAbschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
@@ -61,7 +61,7 @@ public class AbwesenheitCalcRuleTest {
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		rule.executeRuleInternal(betreuung, zeitAbschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertTrue(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
@@ -79,7 +79,7 @@ public class AbwesenheitCalcRuleTest {
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		rule.executeRuleInternal(betreuung, zeitAbschnitt);
+		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());

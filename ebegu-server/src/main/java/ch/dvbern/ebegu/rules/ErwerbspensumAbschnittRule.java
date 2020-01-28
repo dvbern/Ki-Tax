@@ -24,7 +24,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -53,12 +52,6 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
-	}
-
-	@Override
-	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		return super.createVerfuegungsZeitabschnitte(platz);
 	}
 
 	/**
