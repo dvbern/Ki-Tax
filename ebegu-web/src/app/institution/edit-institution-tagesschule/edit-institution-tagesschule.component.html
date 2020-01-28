@@ -98,11 +98,14 @@
 								{{group.intervall | translate}}
 							</td>
 							<td *ngIf="editMode">
-                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)"
+                                [disabled]="!canEditModule(einstellungGP)">
                                     <i class="fa fa-lg fa-edit"></i>
                                 </button>
                                 &nbsp;
-								<button type="button" class="dv-btn dv-btn-operation" (click)="removeModulTagesschuleGroup(einstellungGP, group)">
+								<button type="button" class="dv-btn dv-btn-operation"
+                                        (click)="removeModulTagesschuleGroup(einstellungGP, group)"
+                                        [disabled]="!canEditModule(einstellungGP)">
 									<i class="fa fa-lg fa-trash-o"></i>
 								</button>
 							</td>
