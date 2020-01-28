@@ -1902,7 +1902,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1942,8 +1942,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return convertToInstitutionenDataRow(stammdaten, locale);
 	}
 
-	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer,
-		@Nonnull InstitutionStammdaten institution) {
+	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer, @Nonnull InstitutionStammdaten institution) {
 		if (currentBenutzer.getRole().isRoleTsOnly()) {
 			return institution.getBetreuungsangebotTyp().isSchulamt();
 		}
@@ -1996,9 +1995,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
-		if (institutionStammdaten.getMail() != null) {
-			row.setEmail(institutionStammdaten.getMail());
-		}
+		row.setEmail(institutionStammdaten.getMail());
 		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBG =
 			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		row.setBaby(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieBaby());

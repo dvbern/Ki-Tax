@@ -70,10 +70,11 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@OneToOne(optional = false)
 	private @NotNull Institution institution;
 
-	@Column(nullable = true)
+	@Column(nullable = false)
+	private @NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	private @Nullable String mail;
+	String mail;
 
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
@@ -175,12 +176,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
-	@Nullable
+	@Nonnull
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(@Nullable String mail) {
+	public void setMail(@Nonnull String mail) {
 		this.mail = mail;
 	}
 

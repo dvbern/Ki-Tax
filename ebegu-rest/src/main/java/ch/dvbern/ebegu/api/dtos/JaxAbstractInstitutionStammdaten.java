@@ -42,7 +42,7 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	private JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 	@Nullable
 	private JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninsel;
-	@Nullable
+	@NotNull @Nonnull
 	private String mail;
 	@Nullable
 	private String telefon;
@@ -110,12 +110,12 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
 
-	@Nullable
+	@Nonnull
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(@Nullable String mail) {
+	public void setMail(@Nonnull String mail) {
 		this.mail = mail;
 	}
 

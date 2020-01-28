@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
@@ -348,7 +347,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			LocalDate birthdayKind = kind.getGeburtsdatum();
 
 			final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-			Objects.requireNonNull(mailaddress);
 			String message = mailTemplateConfig.getInfoBetreuungGeloescht(betreuung, fall, gesuchsteller1, kind,
 				institution, mailaddress, datumErstellung, birthdayKind, sprache);
 
@@ -413,7 +411,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 
-		Objects.requireNonNull(mailaddress);
 		String message = mailTemplateConfig.getInfoBetreuungVerfuegt(betreuung, fall, gesuchsteller1, kind,
 			institution, mailaddress, birthdayKind, sprache);
 
