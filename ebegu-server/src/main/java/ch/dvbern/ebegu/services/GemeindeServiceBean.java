@@ -457,7 +457,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		if (gemeindeStammdatenGesuchsperiode == null) {
 			gemeindeStammdatenGesuchsperiode = createGemeindeStammdatenGesuchsperiode(gemeindeId, gesuchsperiodeId);
 		}
-		// todo homa review: aktuell wird nur genau dieser typ unterstuetzt?
+		// Aktuell hat man nur einen Typ bei allen anderen macht nichts
 		if (dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gemeindeStammdatenGesuchsperiode.setMerkblattAnmeldungTagesschuleDe(content);
@@ -511,6 +511,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return Optional.ofNullable(gemeindeStammdatenGesuchsperiode);
 	}
 
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public Collection<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		return
+			criteriaQueryHelper.getEntitiesByAttribute(GemeindeStammdatenGesuchsperiode.class, gesuchsperiode,
+				GemeindeStammdatenGesuchsperiode_.gesuchsperiode);
+	}
 
 	private Collection<GemeindeStammdatenGesuchsperiode> getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
 		requireNonNull(gesuchsperiodeId, "Gesuschsperiode id muss gesetzt sein");
@@ -591,12 +598,11 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		requireNonNull(sprache);
 
 		final GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode =
-			findGemeindeStammdatenGesuchsperiode(gemeindeId, gesuchsperiodeId).orElseThrow(
-				() -> new EbeguEntityNotFoundException(
-					"removeGemeindeGesuchsperiodeDokument",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					gesuchsperiodeId)
-			);
+			findGemeindeStammdatenGesuchsperiode(gemeindeId, gesuchsperiodeId).orElse(null);
+		if (gemeindeStammdatenGesuchsperiode == null) {
+			return false;
+		}
+
 		if (dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)){
 			return gemeindeStammdatenGesuchsperiode.getMerkblattAnmeldungTagesschuleWithSprache(sprache).length != 0;
 		}

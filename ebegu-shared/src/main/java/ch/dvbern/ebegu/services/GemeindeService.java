@@ -155,4 +155,6 @@ public interface GemeindeService {
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp);
 
 	void copyGesuchsperiodeGemeindeStammdaten(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	Collection<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 }

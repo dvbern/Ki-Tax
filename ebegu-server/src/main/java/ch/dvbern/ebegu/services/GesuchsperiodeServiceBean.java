@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FerieninselStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -280,7 +281,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			for (EinstellungenTagesschule einstellungenTagesschule : einstellungenTagesschuleList) {
 				persistence.remove(einstellungenTagesschule);
 			}
-			//todo homa review 712 muesste hier nicht gemeidnestammdaten fuer periode geloescht werden?
+
+			// GemeindeGesuchsperiode Stammdaten dieser Gesuchsperiode loeschen
+			Collection<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeList =
+				gemeindeService.findGemeindeStammdatenGesuchsperiode(gesuchsperiode);
+			for(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode: gemeindeStammdatenGesuchsperiodeList){
+				persistence.remove(gemeindeStammdatenGesuchsperiode);
+			}
 
 			// Einstellungen dieser Gesuchsperiode loeschen
 			einstellungService.deleteEinstellungenOfGesuchsperiode(gesuchsperiode);

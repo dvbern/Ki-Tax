@@ -48,14 +48,14 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 
 	@NotNull
 	@Nonnull
-	@ManyToOne(optional = true)
-	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_einstellung_gemeinde_id"))
+	@ManyToOne(optional = false)
+	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gesuchsperiode_gemeinde_id"))
 	private Gemeinde gemeinde;
 
 	@NotNull
 	@Nonnull
 	@ManyToOne(optional = false)
-	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_einstellung_gesuchsperiode_id"))
+	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gesuchsperiode_gesuchsperiode_id"))
 	private Gesuchsperiode gesuchsperiode;
 
 	@Nullable
