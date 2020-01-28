@@ -224,9 +224,9 @@ export class EditInstitutionComponent implements OnInit {
             this.editMode = false;
             this.$transition$.params().editMode = false;
             this.ngOnInit();
-        } else {
-            this.navigateBack();
+            return;
         }
+        this.navigateBack();
     }
 
     private persistStammdaten(): void {
