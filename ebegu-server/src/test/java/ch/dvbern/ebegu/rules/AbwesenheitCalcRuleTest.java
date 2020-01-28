@@ -40,7 +40,7 @@ public class AbwesenheitCalcRuleTest {
 	private final LocalDate ENDE_PERIODE = LocalDate.of(2017, Month.JULY, 31);
 	private final DateRange PERIODE = new DateRange(START_PERIODE, ENDE_PERIODE);
 
-
+	 //todo homa kibon-1016 testSchulamtBetreuungWithAbwesenheit  brauchts nicht mehr
 	@Test
 	public void testJABetreuungWithAbwesenheit() {
 		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);

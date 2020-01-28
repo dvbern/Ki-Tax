@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +29,7 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -49,7 +49,7 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return Arrays.asList(KITA, TAGESFAMILIEN);
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	@Override

@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,6 +24,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -49,7 +49,7 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return Arrays.asList(KITA, TAGESFAMILIEN);
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
@@ -58,6 +58,7 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
+		//todo homa review kobin-1016 fachlich gleich aber leicht anders zusammengesetzt?
 		if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
 			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());

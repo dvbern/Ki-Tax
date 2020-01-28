@@ -120,6 +120,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Override
 	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
+		// Regel nur anwenden wenn sie fuer den Betreuungstyp Anwendbar ist
 		if (!isAnwendbarForAngebot(platz)) {
 			return zeitabschnitte;
 		}
@@ -150,7 +151,13 @@ public abstract class AbstractEbeguRule implements Rule {
 		return normalizedZeitabschn;
 	}
 
-	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) {
+	/**
+	 *
+	 * @param platz (Betreuung, Tageschhulplatz etc)
+	 * @return true wenn die Regel anwendbar ist
+	 */
+	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) { // todo homa review KIBON-1016 tpy mitgeben
+	//todo homa review  kibon-1016 frueher hatten wir immr noch ein requireNonnull auf typ
 		return getAnwendbareAngebote().contains(platz.getBetreuungsangebotTyp());
 	}
 

@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -38,6 +37,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -52,9 +52,12 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
+
+	//todho homa review kibon-1016 createVerfuegungsZeitabschnitte  gab es vorher und wenn nicht anwendbar kam leere liste zurueck
+
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return Arrays.asList(KITA, TAGESFAMILIEN);
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	/**

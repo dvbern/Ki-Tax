@@ -15,7 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +40,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return Arrays.asList(TAGESSCHULE);
+		return Collections.singletonList(TAGESSCHULE);
 	}
 
 	@Override
