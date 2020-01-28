@@ -218,11 +218,10 @@ public class BetreuungsgutscheinEvaluator {
 				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 
 				// Die Verfügung erstellen
-				if (betreuung.getVerfuegung() == null) {
-					Verfuegung verfuegung = new Verfuegung(betreuung);
-					betreuung.setVerfuegung(verfuegung);
-					verfuegung.setBetreuung(betreuung);
-				}
+				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird
+				// die Berechnung in einer (transienten) Preview-Verfügung geschrieben
+				Verfuegung verfuegungPreview = new Verfuegung();
+				betreuung.setVerfuegungPreview(verfuegungPreview);
 
 				// Den richtigen Rechner anwerfen
 				AbstractBGRechner rechner = BGRechnerFactory.getRechner(betreuung);
@@ -239,9 +238,9 @@ public class BetreuungsgutscheinEvaluator {
 					}
 				}
 				// Und die Resultate in die Verfügung schreiben
-				betreuung.getVerfuegung().setZeitabschnitte(zeitabschnitte);
+				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
-				betreuung.getVerfuegung().setGeneratedBemerkungen(bemerkungenToShow);
+				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 
 				setZahlungRelevanteDaten(betreuung);
 			}

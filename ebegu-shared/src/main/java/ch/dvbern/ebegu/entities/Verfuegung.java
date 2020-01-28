@@ -93,7 +93,6 @@ public class Verfuegung extends AbstractMutableEntity {
 	private @NotNull boolean eventPublished = true;
 
 	public Verfuegung() {
-		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
 	}
 
 	public Verfuegung(@Nonnull Betreuung betreuung) {

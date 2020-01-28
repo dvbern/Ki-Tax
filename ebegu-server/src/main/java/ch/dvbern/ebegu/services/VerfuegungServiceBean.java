@@ -69,7 +69,6 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
-import ch.dvbern.ebegu.services.util.DetachUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -158,24 +157,25 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		boolean ignorieren,
 		boolean sendEmail) {
 
-		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
+		Betreuung betreuungMitVerfuegungPreview = calculateAndExtractBetreuung(gesuchId, betreuungId);
+		Objects.requireNonNull(betreuungMitVerfuegungPreview);
+		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
+		Objects.requireNonNull(verfuegungPreview);
 		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
-		String bemerkungen = manuelleBemerkungen == null ? verfuegung.getGeneratedBemerkungen() : manuelleBemerkungen;
-		verfuegung.setManuelleBemerkungen(bemerkungen);
-		setZahlungsstatus(verfuegung, ignorieren);
-		final Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, Betreuungsstatus.VERFUEGT);
+		String bemerkungen = manuelleBemerkungen == null ? verfuegungPreview.getGeneratedBemerkungen() : manuelleBemerkungen;
+		verfuegungPreview.setManuelleBemerkungen(bemerkungen);
+		setZahlungsstatus(verfuegungPreview, ignorieren);
+		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.VERFUEGT);
 		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 
 		// Dokument erstellen
-		Betreuung betreuung = persistedVerfuegung.getBetreuung();
-		Objects.requireNonNull(betreuung);
-		generateVerfuegungDokument(betreuung);
+		generateVerfuegungDokument(betreuungMitVerfuegungPreview);
 
 		event.fire(verfuegungEventConverter.of(persistedVerfuegung));
 
 		if (sendEmail) {
-			mailService.sendInfoBetreuungVerfuegt(betreuung);
+			mailService.sendInfoBetreuungVerfuegt(betreuungMitVerfuegungPreview);
 		}
 
 		return persistedVerfuegung;
@@ -331,23 +331,24 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId) {
 
-		Verfuegung verfuegung = calculateAndExtractVerfuegung(gesuchId, betreuungId);
-		Objects.requireNonNull(verfuegung.getBetreuung());
+		Betreuung betreuungMitVerfuegungPreview = calculateAndExtractBetreuung(gesuchId, betreuungId);
+		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegung();
+		Objects.requireNonNull(verfuegungPreview);
+		Objects.requireNonNull(verfuegungPreview.getBetreuung());
 
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
-		verfuegung.getZeitabschnitte()
+		verfuegungPreview.getZeitabschnitte()
 			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
-		verfuegung.setKategorieNichtEintreten(true);
-		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
-		Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, Betreuungsstatus.NICHT_EINGETRETEN);
+		verfuegungPreview.setKategorieNichtEintreten(true);
+		initializeVorgaengerVerfuegungen(betreuungMitVerfuegungPreview.extractGesuch());
+		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.NICHT_EINGETRETEN);
 		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen
-		Betreuung betreuung = verfuegung.getBetreuung();
 		try {
 			//noinspection ResultOfMethodCallIgnored
-			generatedDokumentService.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuung, true);
+			generatedDokumentService.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuungMitVerfuegungPreview, true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException("nichtEintreten", "Nichteintretensverfuegung-Dokument konnte nicht "
 				+ "erstellt werden" + betreuungId, e);
@@ -356,12 +357,16 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Nonnull
-	private Verfuegung persistVerfuegung(@Nonnull Verfuegung verfuegung, @Nonnull Betreuungsstatus betreuungsstatus) {
+	private Verfuegung persistVerfuegung(@Nonnull Betreuung betreuungWithPreviewVerfuegung, @Nonnull Betreuungsstatus betreuungsstatus) {
+		Verfuegung verfuegung = betreuungWithPreviewVerfuegung.getVerfuegungPreview();
+		Objects.requireNonNull(verfuegung);
+		betreuungWithPreviewVerfuegung.setVerfuegung(verfuegung);
+		betreuungWithPreviewVerfuegung.setVerfuegungPreview(null);
 
 		setVerfuegungsKategorien(verfuegung);
 		Betreuung betreuung = verfuegung.getBetreuung();
 		Objects.requireNonNull(betreuung);
-		this.changeStatusOfBetreuung(betreuung, betreuungsstatus);
+		betreuung.setBetreuungsstatus(betreuungsstatus);
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		betreuung.setGueltig(true);
 		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(betreuung);
@@ -377,7 +382,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		authorizer.checkWriteAuthorization(verfuegung);
 
 		Verfuegung persist = persistence.persist(verfuegung);
-//		persist.setBetreuung(betreuung);
+		persistence.merge(betreuung);
 		return persist;
 	}
 
@@ -684,31 +689,16 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Nonnull
-	private Verfuegung calculateAndExtractVerfuegung(@Nonnull String gesuchId, @Nonnull String betreuungId) {
+	private Betreuung calculateAndExtractBetreuung(@Nonnull String gesuchId, @Nonnull String betreuungId) {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", gesuchId));
 		// Wir muessen hier die Berechnung der Verfuegung nochmals neu vornehmen
 		Gesuch gesuchWithCalcVerfuegung = calculateVerfuegung(gesuch);
 		// Die berechnete Verfügung ermitteln
-		Verfuegung verfuegungToPersist = gesuchWithCalcVerfuegung.extractAllBetreuungen().stream()
+		Betreuung verfuegungToPersist = gesuchWithCalcVerfuegung.extractAllBetreuungen().stream()
 			.filter(betreuung -> betreuungId.equals(betreuung.getId()))
 			.findFirst()
-			.map(Betreuung::getVerfuegung)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("calculateAndExtractVerfuegung", betreuungId));
-
-		DetachUtil.loadRelationsAndDetach(gesuchWithCalcVerfuegung, persistence);
-
 		return verfuegungToPersist;
-	}
-
-
-
-	private void changeStatusOfBetreuung(Betreuung betreuung, @Nonnull Betreuungsstatus status) {
-		betreuung.setBetreuungsstatus(status); // hack den wir brauchen weil wir auch bei detachtten betreuungen im pre-persist der verfuegung den Status
-		// pruefen
-		persistence.getEntityManager().createNamedQuery(Betreuung.Q_BETREUUNG_STATE_UPDATE)
-			.setParameter("betrId", betreuung.getId())
-			.setParameter("status", status)
-			.executeUpdate();
 	}
 }

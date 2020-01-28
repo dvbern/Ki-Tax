@@ -95,10 +95,8 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-@NamedQuery(name = Betreuung.Q_BETREUUNG_STATE_UPDATE, query = "update Betreuung betr set betr.betreuungsstatus = :status where betr.id = :betrId")
 public class Betreuung extends AbstractPlatz {
 
-	public static final String Q_BETREUUNG_STATE_UPDATE = "Q_BETREUUNG_STATE_UPDATE";
 	private static final long serialVersionUID = -6776987863150835840L;
 
 	/**
@@ -135,6 +133,10 @@ public class Betreuung extends AbstractPlatz {
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "betreuung")
 	@Nullable
 	private @Valid Verfuegung verfuegung;
+
+	@Transient
+	@Nullable
+	private Verfuegung verfuegungPreview;
 
 	@Column(nullable = false)
 	private @NotNull Boolean vertrag = false;
@@ -257,6 +259,15 @@ public class Betreuung extends AbstractPlatz {
 
 	public void setBetreuungspensumAbweichungen(Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
+	}
+
+	@Nullable
+	public Verfuegung getVerfuegungPreview() {
+		return verfuegungPreview;
+	}
+
+	public void setVerfuegungPreview(@Nullable Verfuegung verfuegungPreview) {
+		this.verfuegungPreview = verfuegungPreview;
 	}
 
 	@Override

@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.VerfuegungService;
-import ch.dvbern.ebegu.services.util.DetachUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -118,42 +117,28 @@ public class VerfuegungResource {
 
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchstellerId.getId());
 
-		try {
-			if (!gesuchOptional.isPresent()) {
-				return null;
-			}
-			Gesuch gesuch = gesuchOptional.get();
-			Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
-
-			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-			DetachUtil.loadRelationsAndDetach(gesuchWithCalcVerfuegung, persistence);
-
-			Set<JaxKindContainer> kindContainers = new HashSet<>();
-			for (KindContainer kindContainer : gesuchWithCalcVerfuegung.getKindContainers()) {
-				kindContainers.add(converter.kindContainerToJAX(kindContainer));
-			}
-			// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder
-			// gefiltert, damit nur die relevanten Kinder geschickt werden
-			if (principalBean.isCallerInAnyOfRole(
-				ADMIN_TRAEGERSCHAFT,
-				SACHBEARBEITER_TRAEGERSCHAFT,
-				ADMIN_INSTITUTION,
-				SACHBEARBEITER_INSTITUTION)) {
-				Collection<Institution> instForCurrBenutzer =
-					institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-				RestUtil.purgeKinderAndBetreuungenOfInstitutionen(kindContainers, instForCurrBenutzer);
-			}
-			return Response.ok(kindContainers).build();
-
-		} finally {
-			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum Transaktion rollbacken
-			// Dies muss insbesondere auch im Fehlerfall geschehen!
-			try {
-				context.setRollbackOnly();
-			} catch (IllegalStateException ise) {
-				LOG.error("Could not rollback Transaction!", ise);
-			}
+		if (!gesuchOptional.isPresent()) {
+			return null;
 		}
+		Gesuch gesuch = gesuchOptional.get();
+		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
+
+		Set<JaxKindContainer> kindContainers = new HashSet<>();
+		for (KindContainer kindContainer : gesuchWithCalcVerfuegung.getKindContainers()) {
+			kindContainers.add(converter.kindContainerToJAX(kindContainer));
+		}
+		// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder
+		// gefiltert, damit nur die relevanten Kinder geschickt werden
+		if (principalBean.isCallerInAnyOfRole(
+			ADMIN_TRAEGERSCHAFT,
+			SACHBEARBEITER_TRAEGERSCHAFT,
+			ADMIN_INSTITUTION,
+			SACHBEARBEITER_INSTITUTION)) {
+			Collection<Institution> instForCurrBenutzer =
+				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(kindContainers, instForCurrBenutzer);
+		}
+		return Response.ok(kindContainers).build();
 	}
 
 	@ApiOperation(value = "Generiert eine Verfuegung und speichert diese in der Datenbank", response = JaxVerfuegung.class)

@@ -139,7 +139,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			.getBetreuungen()
 			.iterator()
 			.next()
-			.getVerfuegung());
+			.getVerfuegungPreview());
 		checkTestfall01WaeltiDagmar(gesuch);
 	}
 
