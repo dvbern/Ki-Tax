@@ -457,6 +457,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		if (gemeindeStammdatenGesuchsperiode == null) {
 			gemeindeStammdatenGesuchsperiode = createGemeindeStammdatenGesuchsperiode(gemeindeId, gesuchsperiodeId);
 		}
+		// todo homa review: aktuell wird nur genau dieser typ unterstuetzt?
 		if (dokumentTyp.equals(DokumentTyp.MERKBLATT_ANMELDUNG_TS)) {
 			if (sprache == Sprache.DEUTSCH) {
 				gemeindeStammdatenGesuchsperiode.setMerkblattAnmeldungTagesschuleDe(content);

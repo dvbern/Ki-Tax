@@ -51,6 +51,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
     @Input() public korrespondenzspracheFr: boolean;
 
     private navigationDest: StateDeclaration;
+    // todo homa review fragen: was ist das hier fuer ein konstrukt? objekz mit gesuchsperiode als key und dann ein boolean?
     private readonly _merkblattAnmeldungTSDE: { [key: string]: boolean } = {};
     private readonly _merkblattAnmeldungTSFR: { [key: string]: boolean } = {};
     private readonly _vorlageMerkblattAnmeldungTSDE: { [key: string]: boolean } = {};

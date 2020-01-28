@@ -221,7 +221,7 @@ public class UploadResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation("Stores the Merkblatt Anmeldung Tagesschule PDF for a Gemeinde and a Gesuchsperiode")
+	@ApiOperation("Stores Dokument of Typ dokumentTyp  for a Gemeinde and a Gesuchsperiode")
 	@POST
 	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

@@ -36,6 +36,9 @@ import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
+/**
+ * Stammdaten der Gemeinde die nur fuer eine bestimmte Gesuchsperiode gelten
+ */
 @Audited
 @Entity
 public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {

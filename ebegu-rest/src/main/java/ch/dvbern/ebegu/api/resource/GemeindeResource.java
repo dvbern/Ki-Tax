@@ -596,7 +596,7 @@ public class GemeindeResource {
 
 
 
-	@ApiOperation("Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
+	@ApiOperation("Returns a specific document of the Gemeinde with the given type or an errorcode if none is available")
 	@GET
 	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
@@ -647,7 +647,7 @@ public class GemeindeResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
+	@ApiOperation(value = "retuns true if the Dokument Typ exists for this gemeinde exists for the given language",
 		response = boolean.class)
 	@GET
 	@Path("/existGemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")

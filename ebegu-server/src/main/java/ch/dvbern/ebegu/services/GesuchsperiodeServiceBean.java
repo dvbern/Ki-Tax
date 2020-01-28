@@ -148,7 +148,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
 				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
 
-				//Die Gemeinde Gesuchsperiode Stammdaten sollen also für die neue Gesuchsperiode übernommen werden
+				//Die Gemeinde Gesuchsperiode Stammdaten sollen auch für die neue Gesuchsperiode übernommen werden
 				gemeindeService.copyGesuchsperiodeGemeindeStammdaten(gesuchsperiode, lastGesuchsperiode);
 
 				//copy erlaeuterung verfuegung from previos Gesuchperiode
@@ -280,6 +280,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			for (EinstellungenTagesschule einstellungenTagesschule : einstellungenTagesschuleList) {
 				persistence.remove(einstellungenTagesschule);
 			}
+			//todo homa review 712 muesste hier nicht gemeidnestammdaten fuer periode geloescht werden?
 
 			// Einstellungen dieser Gesuchsperiode loeschen
 			einstellungService.deleteEinstellungenOfGesuchsperiode(gesuchsperiode);
