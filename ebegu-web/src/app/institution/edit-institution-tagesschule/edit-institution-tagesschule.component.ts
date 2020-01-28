@@ -63,7 +63,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
-        private ref: ChangeDetectorRef
+        private readonly ref: ChangeDetectorRef
     ) {
     }
 
@@ -263,14 +263,16 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
         // todo: es sollen nur TS abgefragt werden, nicht alle institutionen
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then((institutionList: TSInstitution[]) => {
-            this.openDialogImportFromOtherInstitution(institutionList).subscribe((modules: TSModulTagesschuleGroup[]) => {
+            this.openDialogImportFromOtherInstitution$(institutionList).subscribe((modules: TSModulTagesschuleGroup[]) => {
                 einstellungenTagesschule.modulTagesschuleGroups = modules;
                 this.ref.markForCheck();
+            }, () => {
+                this.errorService.addMesageAsError('error');
             });
         });
     }
 
-    private openDialogImportFromOtherInstitution(institutionList: TSInstitution[]): Observable<TSModulTagesschuleGroup[]> {
+    private openDialogImportFromOtherInstitution$(institutionList: TSInstitution[]): Observable<TSModulTagesschuleGroup[]> {
         if (!this.editMode) {
             return undefined;
         }
