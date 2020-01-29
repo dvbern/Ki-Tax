@@ -168,21 +168,24 @@ export class GesuchModelManager {
             .then(gesuch => this.wizardStepManager.findStepsFromGesuch(gesuchId)
                 .then(() => {
                     if (gesuch) {
-                        this.setGesuch(gesuch);
+                        this.setGesuchDaten(gesuch);
                     }
-
+                }).then(() => this.loadGemeindeStammdaten().then(stammdaten => {
+                    if (gesuch) {
+                        this.gemeindeStammdaten = stammdaten;
+                        this.initGemeindeKonfiguration();
+                    }
                     return gesuch;
-                }),
+                }))
             );
     }
 
     /**
-     * In dieser Methode wird das Gesuch ersetzt. Das Gesuch ist jetzt private und darf nur ueber diese Methode
-     * geaendert werden.
+     * In dieser Methode wird das Gesuch ohne die Gemeinde Stammdaten ersetzt.
      *
      * @param gesuch das Gesuch. Null und undefined werden erlaubt.
      */
-    public setGesuch(gesuch: TSGesuch): TSGesuch {
+    private setGesuchDaten(gesuch: TSGesuch): TSGesuch {
         this.gesuch = gesuch;
         this.neustesGesuch = undefined;
         if (this.gesuch && !this.getGesuch().isNew()) {
@@ -206,9 +209,23 @@ export class GesuchModelManager {
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
         this.activInstitutionenForGemeindeList = undefined;
-        this.loadGemeindeStammdaten();
-        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
+        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
+        return gesuch;
+    }
+
+    /**
+     * In dieser Methode wird das Gesuch ersetzt. Das Gesuch ist jetzt private und darf nur ueber diese Methode
+     * geaendert werden.
+     *
+     * @param gesuch das Gesuch. Null und undefined werden erlaubt.
+     */
+    public setGesuch(gesuch: TSGesuch): TSGesuch {
+        this.setGesuchDaten(gesuch);
+        this.loadGemeindeStammdaten().then(stammdaten => {
+            this.gemeindeStammdaten = stammdaten;
+            this.initGemeindeKonfiguration();
+        });
         return gesuch;
     }
 
@@ -258,21 +275,17 @@ export class GesuchModelManager {
      * Loads the Stammdaten of the gemiende of the current Dossier so we can access them
      * while filling out the Gesuch, wihtout having to load it from server again and again
      */
-    private loadGemeindeStammdaten(): void {
+    private loadGemeindeStammdaten(): IPromise<TSGemeindeStammdaten> {
         if (!(this.getDossier() && this.getDossier().gemeinde)) {
-            return;
+            return undefined;
         }
-        this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id)
-            .then(stammdaten => {
-                this.gemeindeStammdaten = stammdaten;
-                this.loadGemeindeKonfiguration();
-            });
+        return this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id);
     }
 
     /**
      * Loads the GemeindeKonfiguration for the current Gesuch, i.e. the current Gemeinde and Gesuchsperiode
      */
-    private loadGemeindeKonfiguration(): void {
+    private initGemeindeKonfiguration(): void {
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
             // tslint:disable-next-line:early-exit
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
