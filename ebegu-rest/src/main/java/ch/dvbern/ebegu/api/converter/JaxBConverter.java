@@ -115,6 +115,7 @@ import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
@@ -198,6 +199,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
@@ -2985,8 +2987,8 @@ public class JaxBConverter extends AbstractConverter {
 		List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = betreuungFromServer.getAnmeldungTagesschuleZeitabschnitts().stream()
 			.map(this::anmeldungTagesschuleZeitabschnittToJax)
 			.collect(Collectors.toList());
-		if (betreuungFromServer.getVerfuegung() != null) {
-			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegung()));
+		if (betreuungFromServer.getVerfuegungOrVerfuegungPreview() != null) {
+			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegungOrVerfuegungPreview()));
 		}
 		jaxBetreuung.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnitts);
 		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
@@ -3215,8 +3217,27 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getBgCalculationInputAsiv().isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getBgCalculationInputAsiv().isSameAusbezahlteVerguenstigung());
-
+		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
+			tsCalculationResultToJax(
+				zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung()));
+		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
+			tsCalculationResultToJax(
+				zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung()));
 		return jaxZeitabschn;
+	}
+
+	@Nullable
+	private JaxTsCalculationResult tsCalculationResultToJax(@Nullable TSCalculationResult zeitabschnitt) {
+		if (zeitabschnitt == null) {
+			return null;
+		}
+		JaxTsCalculationResult result = new JaxTsCalculationResult();
+		result.setBetreuungszeitProWoche(zeitabschnitt.getBetreuungszeitProWoche());
+		result.setBetreuungszeitProWocheFormatted(zeitabschnitt.getBetreuungszeitProWocheFormatted());
+		result.setVerpflegungskosten(zeitabschnitt.getVerpflegungskosten());
+		result.setGebuehrProStunde(zeitabschnitt.getGebuehrProStunde());
+		result.setTotalKostenProWoche(zeitabschnitt.getTotalKostenProWoche());
+		return result;
 	}
 
 	/**

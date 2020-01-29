@@ -117,6 +117,7 @@ import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
 import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
+import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
@@ -2596,7 +2597,26 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
+            verfuegungZeitabschnittTS.tsCalculationResultMitPaedagogischerBetreuung =
+                this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultMitPaedagogischerBetreuung);
+            verfuegungZeitabschnittTS.tsCalculationResultOhnePaedagogischerBetreuung =
+                this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             return verfuegungZeitabschnittTS;
+        }
+        return undefined;
+    }
+
+    public parseTsCalculationResult(
+        resultFromServer: any,
+    ): TSTsCalculationResult {
+        if (resultFromServer) {
+            const resultTS: TSTsCalculationResult = new TSTsCalculationResult();
+            resultTS.betreuungszeitProWoche = resultFromServer.betreuungszeitProWoche;
+            resultTS.betreuungszeitProWocheFormatted = resultFromServer.betreuungszeitProWocheFormatted;
+            resultTS.verpflegungskosten = resultFromServer.verpflegungskosten;
+            resultTS.gebuehrProStunde = resultFromServer.gebuehrProStunde;
+            resultTS.totalKostenProWoche = resultFromServer.totalKostenProWoche;
+            return resultTS;
         }
         return undefined;
     }

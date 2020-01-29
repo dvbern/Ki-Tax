@@ -16,6 +16,7 @@
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSTsCalculationResult} from './TSTsCalculationResult';
 
 export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public abzugFamGroesse: number;
@@ -48,5 +49,6 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
     public zeiteinheit: TSPensumUnits;
     public zuSpaetEingereicht: boolean;
-
+    public tsCalculationResultMitPaedagogischerBetreuung: TSTsCalculationResult;
+    public tsCalculationResultOhnePaedagogischerBetreuung: TSTsCalculationResult;
 }

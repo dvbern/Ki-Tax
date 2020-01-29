@@ -23,10 +23,12 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -134,6 +136,13 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
 
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "bgCalculationResult")
+	private TSCalculationResult tsCalculationResultMitPaedagogischerBetreuung;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "bgCalculationResult")
+	private TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
 
 	@Transient
 	@Nonnull
@@ -586,5 +595,23 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
 		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
+	}
+
+	@Nullable
+	public TSCalculationResult getTsCalculationResultMitPaedagogischerBetreuung() {
+		return tsCalculationResultMitPaedagogischerBetreuung;
+	}
+
+	public void setTsCalculationResultMitPaedagogischerBetreuung(@Nullable TSCalculationResult tsCalculationResultMitPaedagogischerBetreuung) {
+		this.tsCalculationResultMitPaedagogischerBetreuung = tsCalculationResultMitPaedagogischerBetreuung;
+	}
+
+	@Nullable
+	public TSCalculationResult getTsCalculationResultOhnePaedagogischerBetreuung() {
+		return tsCalculationResultOhnePaedagogischerBetreuung;
+	}
+
+	public void setTsCalculationResultOhnePaedagogischerBetreuung(@Nullable TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung) {
+		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 }

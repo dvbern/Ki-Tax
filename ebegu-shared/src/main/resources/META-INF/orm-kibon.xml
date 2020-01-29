@@ -371,4 +371,5 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.Lastenausgleich"/>
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
 	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
+	<entity class="ch.dvbern.ebegu.entities.TSCalculationResult"/>
 </entity-mappings>
