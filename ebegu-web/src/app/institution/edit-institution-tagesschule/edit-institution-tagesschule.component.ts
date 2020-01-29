@@ -27,7 +27,6 @@ import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../
 import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
-import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
@@ -261,10 +260,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public importFromOtherInstitution(einstellungenTagesschule: TSEinstellungenTagesschule): void {
         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
-        // todo: es sollen nur TS abgefragt werden, nicht alle institutionen
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then((institutionList: TSInstitution[]) => {
-            this.openDialogImportFromOtherInstitution$(institutionList).subscribe((modules: TSModulTagesschuleGroup[]) => {
-                einstellungenTagesschule.modulTagesschuleGroups = modules;
+        this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer().then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
+            this.openDialogImportFromOtherInstitution$(institutionStammdatenList).subscribe((modules: TSModulTagesschuleGroup[]) => {
+                if (!modules) {
+                    return;
+                }
+                einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
+                        .concat(modules);
                 this.ref.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError('error');
@@ -272,13 +274,14 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         });
     }
 
-    private openDialogImportFromOtherInstitution$(institutionList: TSInstitution[]): Observable<TSModulTagesschuleGroup[]> {
+    private openDialogImportFromOtherInstitution$(institutionList: TSInstitutionStammdaten[]): Observable<TSModulTagesschuleGroup[]> {
         if (!this.editMode) {
             return undefined;
         }
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            institutionList
+            institutionList,
+            currentTagesschule: this.stammdaten.institution
         };
         dialogConfig.panelClass = 'dialog-import-from-other-institution';
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
