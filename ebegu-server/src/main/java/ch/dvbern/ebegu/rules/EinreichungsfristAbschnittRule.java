@@ -29,7 +29,12 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel bezüglich der Einreichungsfrist des Gesuchs:
@@ -48,13 +53,15 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
-		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			return einreichungsfristAbschnitte;
-		}
 		Betreuung betreuung = (Betreuung) platz;
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();

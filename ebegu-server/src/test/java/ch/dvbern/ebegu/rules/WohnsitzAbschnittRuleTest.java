@@ -60,7 +60,7 @@ public class WohnsitzAbschnittRuleTest {
 
 		Assert.assertNotNull(gesuch.getGesuchsteller2());
 
-		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
 		Assert.assertNotNull(verfuegungsZeitabschnitte);
@@ -104,7 +104,7 @@ public class WohnsitzAbschnittRuleTest {
 		Assert.assertNotNull(familiensituation);
 		familiensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
-		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
 		Assert.assertNotNull(verfuegungsZeitabschnitte);
@@ -154,7 +154,7 @@ public class WohnsitzAbschnittRuleTest {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		familiensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
-		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
@@ -215,7 +215,7 @@ public class WohnsitzAbschnittRuleTest {
 
 		gesuch.getGesuchsteller1().setAdressen(adressen1);
 
-		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
 		Assert.assertNotNull(verfuegungsZeitabschnitte);
@@ -255,7 +255,7 @@ public class WohnsitzAbschnittRuleTest {
 
 		gesuch.getGesuchsteller1().setAdressen(adressen1);
 
-		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
 		// Hinzug vor dem Start der Periode -> Es gilt für die ganze Periode -> 1 Abschnitt. Es wird aber VORNE nicht abgeschnitten (hinten schon)
@@ -289,7 +289,7 @@ public class WohnsitzAbschnittRuleTest {
 
 		gesuch.getGesuchsteller1().setAdressen(adressen1);
 
-		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
