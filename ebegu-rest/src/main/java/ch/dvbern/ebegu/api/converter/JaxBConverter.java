@@ -3024,10 +3024,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
 		// Für die Anzeige auf dem GUI interessiert es uns nicht, ob es eine echte/gespeicherte Verfügung
 		// oder eine Preview-Verfügung ist
-		if (betreuungFromServer.getVerfuegung() != null) {
-			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegung()));
-		} else if (betreuungFromServer.getVerfuegungPreview() != null) {
-			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegungPreview()));
+		if (betreuungFromServer.getVerfuegungOrVerfuegungPreview() != null) {
+			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegungOrVerfuegungPreview()));
 		}
 
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());

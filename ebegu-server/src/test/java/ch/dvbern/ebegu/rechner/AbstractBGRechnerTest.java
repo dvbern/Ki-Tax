@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
@@ -294,7 +296,7 @@ public abstract class AbstractBGRechnerTest {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
-					Verfuegung verfuegung = betreuung.getVerfuegung();
+					Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(53872, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -308,7 +310,7 @@ public abstract class AbstractBGRechnerTest {
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
 					assertZeitabschnitt(februar, MathUtil.DEFAULT.from(0.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
 				} else {     //KITA Bruennen
-					Verfuegung verfuegung = betreuung.getVerfuegung();
+					Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(53872, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -332,11 +334,16 @@ public abstract class AbstractBGRechnerTest {
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall02FeutzYvonne(Gesuch gesuch) {
-		for (KindContainer kindContainer : gesuch.getKindContainers()) {
+		Set<KindContainer> kinderList = gesuch.getKindContainers();
+		Assert.assertEquals(2, kinderList.size());
+		Assert.assertEquals(2,
+			kinderList.stream().map(KindContainer::getKindJA).map(AbstractPersonEntity::getVorname).filter(s -> s.equals("Leonard") || s.equals(
+			"Tamara")).count());
+		for (KindContainer kindContainer : kinderList) {
 			if ("Leonard".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -352,7 +359,7 @@ public abstract class AbstractBGRechnerTest {
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -377,7 +384,7 @@ public abstract class AbstractBGRechnerTest {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(68678, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -397,21 +404,23 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall04WaltherLaura(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			if ("Jose".equals(kindContainer.getKindJA().getVorname())) {
+			if ("Lorenz".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.DEFAULT.from(162126.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
 				assertZeitabschnitt(juli, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
+			} else  {
+				Assert.fail("Nur ein Kind names Lorenz sollte vorhanden sein!");
 			}
 		}
 	}
@@ -426,7 +435,7 @@ public abstract class AbstractBGRechnerTest {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(98830, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -462,7 +471,7 @@ public abstract class AbstractBGRechnerTest {
 			assertEquals(1, kindContainer.getBetreuungen().size());
 			Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-			Verfuegung verfuegung = betreuung.getVerfuegung();
+			Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 			Assert.assertNotNull(verfuegung);
 			assertEquals(12, verfuegung.getZeitabschnitte().size());
 			assertEquals(-7600, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());

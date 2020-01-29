@@ -276,6 +276,14 @@ public class Betreuung extends AbstractPlatz {
 		return this.isSame(other, false, false);
 	}
 
+	@Nullable
+	public Verfuegung getVerfuegungOrVerfuegungPreview() {
+		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
+			return getVerfuegung();
+		}
+		return getVerfuegungPreview();
+	}
+
 	public boolean isSame(AbstractEntity other, boolean inklAbwesenheiten, boolean inklStatus) {
 		//noinspection ObjectEquality
 		if (this == other) {

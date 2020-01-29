@@ -164,8 +164,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
 		String bemerkungen = manuelleBemerkungen == null ? verfuegungPreview.getGeneratedBemerkungen() : manuelleBemerkungen;
 		verfuegungPreview.setManuelleBemerkungen(bemerkungen);
-		setZahlungsstatus(verfuegungPreview, ignorieren);
+
 		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.VERFUEGT);
+		setZahlungsstatus(persistedVerfuegung, ignorieren);
 		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 
@@ -362,6 +363,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Objects.requireNonNull(verfuegung);
 		betreuungWithPreviewVerfuegung.setVerfuegung(verfuegung);
 		betreuungWithPreviewVerfuegung.setVerfuegungPreview(null);
+		verfuegung.setBetreuung(betreuungWithPreviewVerfuegung);
 
 		setVerfuegungsKategorien(verfuegung);
 		Betreuung betreuung = verfuegung.getBetreuung();
