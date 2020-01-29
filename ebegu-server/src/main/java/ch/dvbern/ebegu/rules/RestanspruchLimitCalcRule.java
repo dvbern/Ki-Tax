@@ -15,16 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
-import static java.util.Objects.requireNonNull;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Als allerletzte Reduktionsregel läuft eine Regel die das Feld "AnspruchberechtigtesPensum"
@@ -40,28 +44,28 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		// Fuer Kleinkinderangebote den Restanspruch bereucksichtigen, fuer Schulkinder wird nichts gemacht
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		// Fuer Kleinkinderangebote den Restanspruch bereucksichtigen
-		requireNonNull(platz.getBetreuungsangebotTyp());
-		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-			int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
-			//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
-			if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-					RuleKey.RESTANSPRUCH,
-					MsgKey.RESTANSPRUCH_MSG,
-					getLocale(),
-					anspruchberechtigtesPensum,
-					verfuegbarerRestanspruch
-				);
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(verfuegbarerRestanspruch);
-			}
+		int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
+		int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
+		//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
+		if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+				RuleKey.RESTANSPRUCH,
+				MsgKey.RESTANSPRUCH_MSG,
+				getLocale(),
+				anspruchberechtigtesPensum,
+				verfuegbarerRestanspruch
+			);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
 	}
-	// fuer Schulkinder wird nichts gemacht
-
 }
