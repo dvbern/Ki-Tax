@@ -21,6 +21,7 @@ import {TSModulTagesschuleTyp} from '../../../../models/enums/TSModulTagesschule
 import {TSEinstellungenTagesschule} from '../../../../models/TSEinstellungenTagesschule';
 import {TSInstitution} from '../../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../../models/TSInstitutionStammdaten';
+import {TSModulTagesschuleGroup} from '../../../../models/TSModulTagesschuleGroup';
 import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
 
 @Component({
@@ -90,7 +91,12 @@ export class DialogImportFromOtherInstitution implements OnInit {
 
     public save(): void {
         this.dialogRef.close(this.selectedEinstellungTagesschule ?
-            this.selectedEinstellungTagesschule.modulTagesschuleGroups : undefined);
+            this.copyModules() : undefined);
+    }
+
+    // module müssen kopiert werden, um sicherzustellen, dass nicht dieselben ids verwendet werden.
+    private copyModules(): TSModulTagesschuleGroup[]  {
+        return this.selectedEinstellungTagesschule.modulTagesschuleGroups.map(module => module.getCopy());
     }
 
     public close(): void {
