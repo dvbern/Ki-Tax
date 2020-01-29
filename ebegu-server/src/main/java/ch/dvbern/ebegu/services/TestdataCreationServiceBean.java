@@ -184,7 +184,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 			}
 		}
 		mutation = gesuchService.updateGesuch(mutation, false, null);
-		testfaelleService.gesuchVerfuegenUndSpeichern(
+		testfaelleService.gesuchVerfuegenUndSpeichern( //verfuegung durchfuehren
 			config.isVerfuegt(),
 			mutation,
 			true,
