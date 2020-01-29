@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test der die vom JA gemeldeten Testfaelle ueberprueft.
+ * Test der die vom JA	 gemeldeten Testfaelle ueberprueft.
  */
 public class TestfaelleTest extends AbstractBGRechnerTest {
 

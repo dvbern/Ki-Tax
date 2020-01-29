@@ -34,7 +34,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -113,6 +112,13 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
 
+	/**
+	 * Contains a calculatedVerfuegung that we do not want to store in the database yet
+	 */
+	@Transient
+	@Nullable
+	private Verfuegung verfuegungPreview;
+
 	@Transient
 	private boolean vorgaengerInitialized = false;
 
@@ -134,9 +140,6 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	private @Valid Verfuegung verfuegung;
 
-	@Transient
-	@Nullable
-	private Verfuegung verfuegungPreview;
 
 	@Column(nullable = false)
 	private @NotNull Boolean vertrag = false;

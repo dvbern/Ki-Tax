@@ -78,7 +78,10 @@ public interface VerfuegungService {
 	/**
 	 * Berechnet die Verfuegung fuer ein Gesuch
 	 *
-	 * @return gibt die Betreuung mit der berechneten angehangten Verfuegung zurueck
+	 * @return gibt die Betreuung mit der berechneten angehangten Verfuegung im property verfuegungPreview zurueck
+	 * Grund fuer das verfuegungPreview Feld ist, dass dies nicht in der DB gespeichert wird. Erst wenn wir
+	 * wir wirklich die definitive Verfuegung speichern wollen setzen wir die Betreuung.previewVerfuegung nach
+	 * Betreuung.verfuegung
 	 */
 	@Nonnull
 	Gesuch calculateVerfuegung(@Nonnull Gesuch gesuch);

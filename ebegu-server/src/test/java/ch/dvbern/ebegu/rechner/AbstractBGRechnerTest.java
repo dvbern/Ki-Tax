@@ -486,8 +486,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_01(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -513,8 +513,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_02(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -540,8 +540,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_03(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -567,8 +567,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_04(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -594,8 +594,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_05(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -622,8 +622,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_06(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -650,8 +650,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_07(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -678,8 +678,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_08(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -706,8 +706,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_09(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(13, result.size());
@@ -736,8 +736,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_10(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(13, result.size());
