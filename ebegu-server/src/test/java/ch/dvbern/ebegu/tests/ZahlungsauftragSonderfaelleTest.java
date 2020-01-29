@@ -107,7 +107,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 	public void leereMutationDarfNichtsAendern() {
 		// *** Mutation 1: Keine Anpassungen. Flag Ignorieren? kommt nicht. Verrechnungszustand bleibt gleich
 		MutationConfig configEmptyMutation = MutationConfig.createEmptyMutationVerfuegt(
-			eingangsdatum.plusDays(1), lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
+			eingangsdatum.plusDays(2), lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
 		Gesuch mutation = testdataCreationService.createMutation(configEmptyMutation, erstgesuch);
 
 		Assert.assertNotNull(mutation);

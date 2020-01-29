@@ -269,7 +269,8 @@ public class BetreuungsgutscheinEvaluator {
 	}
 
 	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
-		if (betreuung.getVerfuegung() == null) {
+		Verfuegung verfuegungZuBerechnen = betreuung.getVerfuegungOrVerfuegungPreview();
+		if (verfuegungZuBerechnen == null) {
 			return;
 		}
 		Verfuegung ausbezahlteVorgaenger = betreuung.getVorgaengerAusbezahlteVerfuegung();
@@ -278,13 +279,13 @@ public class BetreuungsgutscheinEvaluator {
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
 		if (ausbezahlteVorgaenger != null) {
 			// Zahlungsstatus aus vorgaenger uebernehmen
-			VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
-			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(betreuung.getVerfuegung(), ausbezahlteVorgaenger);
+			VerfuegungUtil.setZahlungsstatus(verfuegungZuBerechnen, ausbezahlteVorgaenger);
+			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen, ausbezahlteVorgaenger);
 		}
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {
 			// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
-			VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), vorgaengerVerfuegung);
+			VerfuegungUtil.setIsSameVerfuegungsdaten(verfuegungZuBerechnen, vorgaengerVerfuegung);
 		}
 	}
 

@@ -254,13 +254,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			voraengerIgnoriertUndAusbezahlt);
 
 		// Es gelten folgende Regeln:
-		// - Wenn ein Zeitraum bereits einmal ignoriert und ausbezahlt wurde, muss er auch kuenftig immer
-		//   ausbezahlt werden
+		// - Wenn ein Zeitraum bereits einmal ignoriert und im Zahlungslauf behandelt wurde, muss er auch kuenftig immer
+		//   ignoriert werden
 		// - Wenn ein Zeitraum noch nie verrechnet wurde, erhaelt er den Status neu
 		// - Wenn der Zeitraum verrechnet wurde -> VERRECHNEND (wir muessen nochmals auszahlen), *ausser*
 		//     es wurde das "ignorieren" Flag gesetzt -> IGNORIEREND
 		// 	   => Wenn der Betrag nicht geändert hat, sollten wir nicht auf IGNORIEREND setzen, egal wie das
-		// 	   Flag war.
+		// 	   Flag war sondern auf VERRECHNEND.
 		//     Wichtig ist, dass auf dieser Verfuegung (die noch nicht ausbezahlt war) nie ein "behandelter"
 		//     Status gesetzt wird da wir sonst bei einer weiteren Mutation die falsche Vorgängerverfügung
 		//     verwenden!
