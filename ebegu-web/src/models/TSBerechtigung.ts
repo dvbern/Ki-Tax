@@ -113,10 +113,6 @@ export class TSBerechtigung extends TSAbstractDateRangedEntity {
         return TSRoleUtil.getSuperAdminRoles().includes(this.role);
     }
 
-    public hasInstitutionInviteRole(): boolean {
-        return this.hasInstitutionRole() || TSRoleUtil.isGemeindeOrTagesschulAdmin(this.role);
-    }
-
     public prepareForSave(): void {
         if (!this.hasGemeindeRole()) {
             this.gemeindeList = [];
