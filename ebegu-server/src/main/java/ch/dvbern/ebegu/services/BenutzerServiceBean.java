@@ -171,9 +171,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private MitteilungService mitteilungService;
 
-	@Inject
-	private InstitutionService institutionService;
-
 	@Nonnull
 	@Override
 	@PermitAll
@@ -906,6 +903,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode) {
 
+		final String methodName = "searchBenutzer";
+
 		// if the caller is in any administrative Gemeinde role, we need to select the Institution users separatly
 		// because there is no obvious link between an Institution and Gemeinde but is extractable by joining
 		// InstitutionStammdatenTagesschule
@@ -914,8 +913,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		@SuppressWarnings("rawtypes") // Je nach Abfrage ist es String oder Long
-		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, "searchBenutzer");
-		CriteriaQuery queryTS = SearchUtil.getQueryForSearchMode(cb, mode, "searchBenutzer");
+		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, methodName);
+		CriteriaQuery queryTS = SearchUtil.getQueryForSearchMode(cb, mode, methodName);
 
 		// Construct from-clause
 		@SuppressWarnings("unchecked") // Je nach Abfrage ist das Query String oder Long
@@ -935,7 +934,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		// General role based predicates
 		Benutzer user =
-			getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged "
+			getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(methodName, "No User is logged "
 				+ "in"));
 
 		// TODO reviewer KIBON-854: scheinbar sind die berechtigungen nicht geladen, weswegen ich hier zuerst ein
@@ -945,7 +944,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		if (addInstitutionUsers) {
 			if (userGemeinden.isEmpty()) {
-				throw new EbeguRuntimeException("searchBenutzer", "user does not have any Gemeinde");
+				throw new EbeguRuntimeException(methodName, "user does not have any Gemeinde");
 			}
 			Root<Benutzer> rootTS = queryTS.from(Benutzer.class);
 			Join<Benutzer, Berechtigung> currentBerechtigungJoinTS = rootTS.join(Benutzer_.berechtigungen);
