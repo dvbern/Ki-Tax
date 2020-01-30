@@ -54,6 +54,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     @Input() public editMode: boolean = false;
 
     public gemeindeList: TSGemeinde[] = [];
+    private readonly panelClass = 'dv-mat-dialog-ts';
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -113,7 +114,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         }
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {modulTagesschuleGroup: group};
-        dialogConfig.panelClass = 'dv-mat-dialog-ts';
+        dialogConfig.panelClass = this.panelClass;
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
         this.dialog.open(ModulTagesschuleDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
             if (EbeguUtil.isNotNullOrUndefined(result)) {
@@ -197,7 +198,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             title: 'MODUL_TYP_SCOLARIS_TITLE',
             text: 'MODUL_TYP_SCOLARIS_INFO',
         };
-        dialogConfig.panelClass = 'dv-mat-dialog-ts';
+        dialogConfig.panelClass = this.panelClass;
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
                 userAccepted => {
@@ -284,7 +285,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             institutionList,
             currentTagesschule: this.stammdaten.institution
         };
-        dialogConfig.panelClass = 'dv-mat-dialog-ts';
+        dialogConfig.panelClass = this.panelClass;
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
         return this.dialog.open(DialogImportFromOtherInstitution, dialogConfig).afterClosed();
     }
