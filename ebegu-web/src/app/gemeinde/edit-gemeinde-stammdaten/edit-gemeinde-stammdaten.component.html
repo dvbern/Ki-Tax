@@ -340,9 +340,42 @@
                                       [(ngModel)]="stammdaten.gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
                             {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
+                        <div class="form-group" *ngIf="stammdaten.gemeinde.angebotTS">
+                            <label class="md-no-float" translate for="begu_start_ID">TS_START</label>
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="ts_start" id="ts_start_ID" #tsStartDate="ngModel"
+                                   [(ngModel)]="stammdaten.gemeinde.tagesschulanmeldungenStartdatum"
+                                   [matDatepicker]="ts_start"
+                                   [min]="minDateTSFI"
+                                   [disabled]="!(isSuperadminOrMandant())"
+                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                            <mat-datepicker-toggle matSuffix [for]="ts_start"></mat-datepicker-toggle>
+                            <mat-datepicker #ts_start></mat-datepicker>
+                            <dv-error-messages input-id="ts_start_ID"
+                                               [errorObject]="tsStartDate.errors">
+                            </dv-error-messages>
+                        </div>
+
                         <mat-checkbox id="angebotFI" name="angebotFI"
+                                      [disabled]="!(isSuperadminOrMandant())"
                                       [(ngModel)]="stammdaten.gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
                             {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
+
+                        <div class="form-group" *ngIf="stammdaten.gemeinde.angebotFI">
+                            <label class="md-no-float" translate for="begu_start_ID">FI_START</label>
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="fi_start" id="fi_start_ID" #fiStartDate="ngModel"
+                                   [(ngModel)]="stammdaten.gemeinde.ferieninselanmeldungenStartdatum"
+                                   [matDatepicker]="fi_start"
+                                   [min]="minDateTSFI"
+                                   [disabled]="!(isSuperadminOrMandant())"
+                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                            <mat-datepicker-toggle matSuffix [for]="fi_start"></mat-datepicker-toggle>
+                            <mat-datepicker #fi_start></mat-datepicker>
+                            <dv-error-messages input-id="fi_start_ID"
+                                               [errorObject]="fiStartDate.errors">
+                            </dv-error-messages>
+                        </div>
 
                         <div class="dv-error-messages" *ngIf="showMessageKeinAngebotSelected">
                             <span>{{'GEMEINDE_ANGEBOT_EMPTY_SELECTION' | translate}}</span>

@@ -168,6 +168,8 @@ public abstract class AbstractTestfall {
 		testGemeinde.setStatus(GemeindeStatus.AKTIV);
 		testGemeinde.setName("Testgemeinde");
 		testGemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		testGemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2018,8,1));
+		testGemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2018,8,1));
 		return testGemeinde;
 	}
 

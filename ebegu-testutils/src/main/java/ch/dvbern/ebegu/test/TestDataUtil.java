@@ -387,6 +387,8 @@ public final class TestDataUtil {
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
 			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+			gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+			gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
@@ -424,6 +426,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99998L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
 		stammdaten.setId(GEMEINDE_PARIS_ID);
 		return gemeinde;
@@ -439,6 +443,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99999L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
 		stammdaten.setId(GEMEINDE_LONDON_ID);
 		return gemeinde;
