@@ -357,6 +357,7 @@
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"
+                                      [disabled]="!(isSuperadminOrMandant())"
                                       [(ngModel)]="stammdaten.gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
                             {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
