@@ -66,6 +66,9 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
@@ -143,6 +146,18 @@ public abstract class AbstractBGRechnerTest {
 		Einstellung erwerbspensumZuschlag = new Einstellung(
 			EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, "20", gesuchsperiode);
 		einstellungen.put(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, erwerbspensumZuschlag);
+
+		Einstellung maxTarifTsMitBetreuung = new Einstellung(
+			MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode);
+		einstellungen.put(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, maxTarifTsMitBetreuung);
+
+		Einstellung maxTarifTsOhneBetreuung = new Einstellung(
+			MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode);
+		einstellungen.put(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, maxTarifTsOhneBetreuung);
+
+		Einstellung minTarifTs = new Einstellung(
+			MIN_TARIF, "0.78", gesuchsperiode);
+		einstellungen.put(MIN_TARIF, minTarifTs);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
@@ -224,6 +239,9 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
 		parameterDTO.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
 		parameterDTO.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
+		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
+		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
+		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		return parameterDTO;
 	}
 
