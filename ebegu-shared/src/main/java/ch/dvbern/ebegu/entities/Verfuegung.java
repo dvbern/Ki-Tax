@@ -171,8 +171,9 @@ public class Verfuegung extends AbstractMutableEntity {
 			setBetreuung((Betreuung) platz);
 		} else if (platz instanceof AnmeldungTagesschule) {
 			setAnmeldungTagesschule((AnmeldungTagesschule) platz);
+		} else {
+			throw new EbeguRuntimeException("setPlatz", "Verfuegung gibts nur für Betreuung/AnmeldungTagesschule: " + getId());
 		}
-		throw new EbeguRuntimeException("setPlatz", "Verfuegung gibts nur für Betreuung/AnmeldungTagesschule: " + getId());
 	}
 
 	public boolean isKategorieNormal() {
