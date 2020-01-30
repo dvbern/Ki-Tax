@@ -2610,7 +2610,7 @@ export class EbeguRestUtil {
         resultFromServer: any,
     ): TSTsCalculationResult {
         if (resultFromServer) {
-            const resultTS: TSTsCalculationResult = new TSTsCalculationResult();
+            const resultTS = new TSTsCalculationResult();
             resultTS.betreuungszeitProWoche = resultFromServer.betreuungszeitProWoche;
             resultTS.betreuungszeitProWocheFormatted = resultFromServer.betreuungszeitProWocheFormatted;
             resultTS.verpflegungskosten = resultFromServer.verpflegungskosten;
