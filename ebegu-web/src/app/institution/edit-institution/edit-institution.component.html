@@ -172,7 +172,7 @@
                         </div>
                     </div>
                     <!-- Öffnungszeiten -->
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" *ngIf="isBetreuungsgutschein()">
                         <div class="form-group">
                             <label class="required" translate for="oeffnungszeiten_id">OEFFNUNGSZEITEN</label>
                             <input id="oeffnungszeiten_id" type="text" name="oeffnungszeiten_id" #name="ngModel"
