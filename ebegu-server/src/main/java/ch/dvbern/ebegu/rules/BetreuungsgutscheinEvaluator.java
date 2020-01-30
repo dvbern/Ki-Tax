@@ -89,7 +89,7 @@ public class BetreuungsgutscheinEvaluator {
 			: gesuch.getFirstBetreuung();
 		// Für die Berechnung der Familiensituation-Finanzen genügt auch eine Tagesschul-Anmeldung
 		if (firstBetreuungOfGesuch == null) {
-			firstBetreuungOfGesuch = gesuch.getFirstAnmeldung();
+			firstBetreuungOfGesuch = gesuch.getFirstAnmeldungTagesschule();
 		}
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
