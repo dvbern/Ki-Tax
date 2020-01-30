@@ -15,8 +15,10 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-import java.util.Objects;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.Constants;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,12 +29,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import org.hibernate.envers.Audited;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -61,12 +58,6 @@ public class Gesuchsteller extends AbstractPersonEntity {
 
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String telefonAusland;
-
-	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String ewkPersonId;
-
-	@Column(nullable = true)
-	private LocalDate ewkAbfrageDatum;
 
 	@NotNull
 	private boolean diplomatenstatus;
@@ -113,22 +104,6 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		this.telefonAusland = telefonAusland;
 	}
 
-	public String getEwkPersonId() {
-		return ewkPersonId;
-	}
-
-	public void setEwkPersonId(final String ewkPersonId) {
-		this.ewkPersonId = ewkPersonId;
-	}
-
-	public LocalDate getEwkAbfrageDatum() {
-		return ewkAbfrageDatum;
-	}
-
-	public void setEwkAbfrageDatum(LocalDate ewkAbfrageDatum) {
-		this.ewkAbfrageDatum = ewkAbfrageDatum;
-	}
-
 	public boolean isDiplomatenstatus() {
 		return diplomatenstatus;
 	}
@@ -153,8 +128,6 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		target.setMobile(this.getMobile());
 		target.setTelefon(this.getTelefon());
 		target.setTelefonAusland(this.getTelefonAusland());
-		target.setEwkPersonId(this.getEwkPersonId());
-		target.setEwkAbfrageDatum(this.getEwkAbfrageDatum());
 		target.setDiplomatenstatus(this.isDiplomatenstatus());
 		target.setKorrespondenzSprache(this.getKorrespondenzSprache());
 		return target;
@@ -180,7 +153,6 @@ public class Gesuchsteller extends AbstractPersonEntity {
 			Objects.equals(getMobile(), otherGesuchsteller.getMobile()) &&
 			Objects.equals(getTelefon(), otherGesuchsteller.getTelefon()) &&
 			Objects.equals(getTelefonAusland(), otherGesuchsteller.getTelefonAusland()) &&
-			EbeguUtil.isSameOrNullStrings(getEwkPersonId(), otherGesuchsteller.getEwkPersonId()) &&
 			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus()) &&
 			getKorrespondenzSprache() == otherGesuchsteller.getKorrespondenzSprache();
 	}

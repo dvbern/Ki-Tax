@@ -15,18 +15,14 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDate;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.Constants;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -50,11 +46,6 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	private String telefon;
 
 	private String telefonAusland;
-
-	private String ewkPersonId;
-
-	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	private LocalDate ewkAbfrageDatum;
 
 	private boolean diplomatenstatus;
 
@@ -92,22 +83,6 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 
 	public void setTelefonAusland(final String telefonAusland) {
 		this.telefonAusland = telefonAusland;
-	}
-
-	public String getEwkPersonId() {
-		return ewkPersonId;
-	}
-
-	public void setEwkPersonId(final String ewkPersonId) {
-		this.ewkPersonId = ewkPersonId;
-	}
-
-	public LocalDate getEwkAbfrageDatum() {
-		return ewkAbfrageDatum;
-	}
-
-	public void setEwkAbfrageDatum(LocalDate ewkAbfrageDatum) {
-		this.ewkAbfrageDatum = ewkAbfrageDatum;
 	}
 
 	public boolean isDiplomatenstatus() {

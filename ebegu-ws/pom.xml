@@ -14,7 +14,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses />.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
@@ -48,19 +50,46 @@
                         <goals>
                             <goal>wsimport</goal>
                         </goals>
+
+                        <configuration>
+                            <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>Stadt_Bern_E-BEGU_Personensuche_v1.2.wsdl</wsdlFile>
+                                <wsdlFile>geres/GeresResidentInfo_v1801.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <verbose>true</verbose>
+
+                            <bindingFiles>
+                                <bindingFile>${basedir}/src/main/resources/wsdl/jaxb-bindings.xjb</bindingFile>
+                            </bindingFiles>
+                        </configuration>
+
+                    </execution>
+
+                    <execution>
+                        <id>sts service generation</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+
+                        <configuration>
+                            <wsdlDirectory>${basedir}/src/main/resources/wsdl/sts</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>ZertSTSWebservice.wsdl</wsdlFile>
+                                <wsdlFile>RenewalAssertionWebservice.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <verbose>true</verbose>
+                            <!-- use converter that uses UTC for its date representation instead of the local time zone-->
+                            <bindingFiles>
+                               <bindingFile>${basedir}/src/main/resources/wsdl/sts/jaxb-bindings-zonedTime.xjb</bindingFile>
+                           </bindingFiles>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
-                    <wsdlFiles>
-                        <wsdlFile>Stadt_Bern_E-BEGU_Personensuche_v1.2.wsdl</wsdlFile>
-                    </wsdlFiles>
-                    <verbose>true</verbose>
-                    <sei />
-                    <bindingFiles>
-                        <bindingFile>${basedir}/src/main/resources/wsdl/jaxb-bindings.xjb</bindingFile>
-                    </bindingFiles>
+                    <sei/>
                 </configuration>
+
             </plugin>
         </plugins>
     </build>

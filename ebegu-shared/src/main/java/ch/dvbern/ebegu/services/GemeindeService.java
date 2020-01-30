@@ -26,8 +26,11 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 
 /**
  * Service zum Verwalten von Gemeinden
@@ -36,6 +39,7 @@ public interface GemeindeService {
 
 	/**
 	 * Speichert die Gemeinde neu in der DB falls der Key noch nicht existiert.
+	 *
 	 * @param gemeinde Die Gemeinde
 	 */
 	@Nonnull
@@ -79,6 +83,7 @@ public interface GemeindeService {
 
 	/**
 	 * Speichert die GemeindeStammdaten neu in der DB falls der Key noch nicht existiert.
+	 *
 	 * @param stammdaten Die GemeindeStammdaten
 	 */
 	@Nonnull
@@ -129,4 +134,26 @@ public interface GemeindeService {
 	 * aktiviert oder deaktiviert das FI Angebot
 	 */
 	void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value);
+
+	GemeindeStammdatenGesuchsperiode uploadGemeindeGesuchsperiodeDokument(
+		@Nonnull String gemeindeId,
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nonnull byte[] content);
+
+	byte[] downloadGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache,
+		@Nonnull DokumentTyp dokumentTyp);
+
+	GemeindeStammdatenGesuchsperiode removeGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId,
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp);
+
+	boolean existGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp);
+
+	void copyGesuchsperiodeGemeindeStammdaten(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	Collection<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 }
