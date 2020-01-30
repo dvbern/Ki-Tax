@@ -452,8 +452,8 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	public boolean hasAnspruch() {
-		if (getVerfuegung() != null) {
-			List<VerfuegungZeitabschnitt> vzList = getVerfuegung().getZeitabschnitte();
+		if (getVerfuegungOrVerfuegungPreview() != null) {
+			List<VerfuegungZeitabschnitt> vzList = getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 			BigDecimal value = vzList.stream()
 				.map(VerfuegungZeitabschnitt::getBgPensum)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);

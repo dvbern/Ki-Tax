@@ -95,11 +95,11 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void saveVerfuegung() {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
-		Assert.assertNull(betreuung.getVerfuegung());
+		Assert.assertNull(betreuung.getVerfuegungOrVerfuegungPreview());
 		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(betreuung.extractGesuch().getId(), betreuung.getId(), null, false, true);
 		Betreuung persistedBetreuung = persistence.find(Betreuung.class, betreuung.getId());
 		Assert.assertEquals(persistedVerfuegung.getBetreuung(), persistedBetreuung);
-		Assert.assertEquals(persistedBetreuung.getVerfuegung(), persistedVerfuegung);
+		Assert.assertEquals(persistedBetreuung.getVerfuegungOrVerfuegungPreview(), persistedVerfuegung);
 		Assert.assertNotEquals("Die (nicht gespeicherte) Betreuung darf noch nicht verfügt sein", Betreuungsstatus.VERFUEGT, betreuung.getBetreuungsstatus());
 		Assert.assertEquals("Die gespeicherte Betreuung muss jetzt verfügt sein", Betreuungsstatus.VERFUEGT, persistedBetreuung.getBetreuungsstatus());
 	}
@@ -162,7 +162,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		kind.setBetreuungen(verfuegteBetr);
 		Betreuung betreuung = verfuegteBetr.iterator().next();
 		Integer betreuungNummer = betreuung.getBetreuungNummer();
-		Verfuegung verfuegung1 = betreuung.getVerfuegung();
+		Verfuegung verfuegung1 = betreuung.getVerfuegungOrVerfuegungPreview();
 		LocalDateTime timestampVerfuegt = LocalDateTime.of(2016, Month.APRIL, 1, 0, 0);
 		gesuch.setTimestampVerfuegt(timestampVerfuegt);
 		gesuch.setGueltig(true);

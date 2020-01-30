@@ -120,7 +120,7 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 			for (JaxBetreuung jaxBetreuung : betreuungen) {
 				Betreuung betreuung = persistence.find(Betreuung.class, jaxBetreuung.getId());
 				Assert.assertNotNull(betreuung);
-				Assert.assertNull(betreuung.getVerfuegung());
+				Assert.assertNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			}
 		}
 
