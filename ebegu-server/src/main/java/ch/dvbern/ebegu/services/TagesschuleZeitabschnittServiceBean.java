@@ -44,6 +44,8 @@ import ch.dvbern.ebegu.rules.tagesschule.TagesschuleRulesExecutor;
 import ch.dvbern.ebegu.services.util.TagesschuleBerechnungHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -72,6 +74,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 	ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
 	STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS })
 public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService implements TagesschuleZeitabschnittService{
+
+	private static final Logger LOG = LoggerFactory.getLogger(TagesschuleZeitabschnittServiceBean.class);
+
 
 	@Inject
 	private Persistence persistence;
@@ -142,7 +147,16 @@ public class TagesschuleZeitabschnittServiceBean extends AbstractBaseService imp
 		//Hier kann man spaeter die Rules fuer die anmeldungTagesschuleZeitabschnitts noch einspielen wenn gebraucht
 		//tagesschuleRulesExecutor.executeAllTagesschuleZeitabschnittRules(...)
 
-		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabscnittsSet = new TreeSet<>(anmeldungTagesschuleZeitabschnitts);
+		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabscnittsSet = new TreeSet<>();
+		for (AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt : anmeldungTagesschuleZeitabschnitts) {
+			// Hack, um die ungültigen Zeitabschnitte wieder zu entfernen, da es sonst nicht gespeich
+			// Siehe auch MaxTarifBisFolgendeMonatRuleTest: es werden zwar zwei Zeitabschnitte erstellt, aber einer davon ist ungültig (Datum-Überschneidung)
+			if (anmeldungTagesschuleZeitabschnitt.getGueltigkeit().isValid()) {
+				anmeldungTagesschuleZeitabscnittsSet.add(anmeldungTagesschuleZeitabschnitt);
+			} else {
+				LOG.warn("Entferne Zeitabschnitt, da ungültig: {}", anmeldungTagesschuleZeitabschnitt.getGueltigkeit().toRangeString());
+			}
+		}
 		anmeldungTagesschule.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabscnittsSet);
 	}
 
