@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +35,9 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
@@ -50,6 +55,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
@@ -145,6 +151,44 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 					getPageConfiguration().getFont()));
 				bestaetigungUndGruesseElements.add(bestaetigungOhneTarifParagraph);
 			} else {
+
+				Verfuegung verfuegung = anmeldungTagesschule.getVerfuegungOrVerfuegungPreview();
+
+				// TODO (hefr) die neue Berechnung; Später nur diese und Objects.requireNonNull(verfuegung);
+				if (verfuegung != null) {
+					Objects.requireNonNull(verfuegung);
+
+					document.add(new Paragraph("NEUE BERECHNUNG"));
+
+					List<VerfuegungZeitabschnitt> abschnitteMitBetreuung =
+						verfuegung.getZeitabschnitte()
+							.stream()
+							.filter(verfuegungZeitabschnitt ->
+								verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() != null)
+							.collect(Collectors.toList());
+					if (CollectionUtils.isNotEmpty(abschnitteMitBetreuung)) {
+						document.add(createGebuehrTabelleTitle(true, false));
+						PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+						fillGebuehrenTable(gebuehrenTable, abschnitteMitBetreuung, true);
+						document.add(gebuehrenTable);
+					}
+
+					List<VerfuegungZeitabschnitt> abschnitteOhneBetreuung =
+						verfuegung.getZeitabschnitte()
+							.stream()
+							.filter(verfuegungZeitabschnitt ->
+								verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
+							.collect(Collectors.toList());
+					if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
+						document.add(createGebuehrTabelleTitle(true, false));
+						PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+						fillGebuehrenTable(gebuehrenTable, abschnitteOhneBetreuung, false);
+						document.add(gebuehrenTable);
+					}
+				}
+
+				document.add(new Paragraph("ALTE BERECHNUNG"));
+
 				boolean hasZeitAbschnittMitPadagogicherBetreuung =
 					AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule);
 				if (hasZeitAbschnittMitPadagogicherBetreuung) {
@@ -360,6 +404,33 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 					CHF + anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche(),
 					null));
 			}
+		}
+	}
+
+	private void fillGebuehrenTable(PdfPTable table, List<VerfuegungZeitabschnitt> abschnitte, boolean mitPedagogischerBetreuug) {
+		for (VerfuegungZeitabschnitt anmeldungTagesschuleZeitabschnitt : abschnitte) {
+			TSCalculationResult tsResult = mitPedagogischerBetreuug ?
+				anmeldungTagesschuleZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() :
+				anmeldungTagesschuleZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung();
+			Objects.requireNonNull(tsResult);
+
+			table.addCell(createCell(Element.ALIGN_RIGHT,
+				Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigAb()),
+				null));
+			table.addCell(createCell(Element.ALIGN_RIGHT,
+				Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigBis()),
+				null));
+			table.addCell(createCell(Element.ALIGN_RIGHT,
+				tsResult.getBetreuungszeitProWocheFormatted(),
+				null));
+			table.addCell(createCell(Element.ALIGN_RIGHT,
+				CHF + PdfUtil.printBigDecimal(tsResult.getGebuehrProStunde()), null));
+			table.addCell(createCell(Element.ALIGN_RIGHT,
+				CHF + PdfUtil.printBigDecimal(tsResult.getVerpflegungskosten()),
+				null));
+			table.addCell(createCell(Element.ALIGN_RIGHT,
+				CHF + PdfUtil.printBigDecimal(tsResult.getTotalKostenProWoche()),
+				null));
 		}
 	}
 
