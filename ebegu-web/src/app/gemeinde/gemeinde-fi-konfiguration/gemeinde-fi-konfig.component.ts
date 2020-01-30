@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@ang
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {Moment} from 'moment';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
@@ -34,6 +35,7 @@ export class GemeindeFiKonfigComponent implements OnInit {
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;
+    @Input() public fiAnmeldungenStartDatum: Moment;
 
     private navigationDest: StateDeclaration;
 

@@ -36,6 +36,7 @@ import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleM
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -99,7 +100,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public form: IFormController;
     public betreuung: TSBetreuung;
     public showErrorMessageNoModule: boolean;
-    public datumErsterSchultag: moment.Moment;
+    public minEintrittsdatum: moment.Moment;
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
@@ -153,7 +154,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.loadErlaeuterungForTagesschule();
         }
         if (this.betreuung.isEnabled()) {
-            this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
+            this.minEintrittsdatum = this.getMinErsterSchultag();
             this.setErsterSchultag();
         }
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
@@ -348,5 +349,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.preSave();
             this.anmeldungSchulamtFalscheInstitution();
         }
+    }
+
+    private getMinErsterSchultag(): moment.Moment {
+        return this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+            this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
+            TSMandant.earliestDateOfTSAnmeldung
+        );
     }
 }

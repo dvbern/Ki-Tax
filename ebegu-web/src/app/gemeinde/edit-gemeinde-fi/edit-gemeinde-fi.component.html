@@ -17,20 +17,40 @@
 
 <div class="dv-content" *ngIf="stammdaten$ | async as stammdaten">
     <div *ngIf="editMode; else viewModeTemplate">
+        <div class="row">
+            <!-- Anmeldungen akzeptieren ab -->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <h3 translate>FI_START</h3>
+                    <p>{{fiAnmeldungenStartStr}}</p>
+                </div>
+            </div>
+        </div>
         <fieldset ngModelGroup="dv-edit-gemeinde-fi">
             <dv-gemeinde-fi-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
-                [editMode]="editMode">
+                [editMode]="editMode"
+                [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum">
             </dv-gemeinde-fi-konfiguration>
         </fieldset>
     </div>
     <ng-template #viewModeTemplate>
         <fieldset>
+            <div class="row">
+                <!-- Anmeldungen akzeptieren ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>FI_START</h3>
+                        <p>{{fiAnmeldungenStartStr}}</p>
+                    </div>
+                </div>
+            </div>
             <dv-gemeinde-fi-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
-                [editMode]="editMode">
+                [editMode]="editMode"
+                [fiAnmeldungenStartDatum]="fiAnmeldungenStartDatum">
             </dv-gemeinde-fi-konfiguration>
         </fieldset>
     </ng-template>
