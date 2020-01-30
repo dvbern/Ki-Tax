@@ -797,7 +797,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return !anmeldungTagesschules.isEmpty() ||!anmeldungFerienInsel.isEmpty();
 	}
 
-	@Nullable
+	@Nonnull
 	@Transient
 	public LocalDate getRegelStartDatum() {
 		if (null != getRegelnGueltigAb()) {

@@ -176,6 +176,9 @@ public class BGCalculationResult extends AbstractEntity {
 		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
+
+		this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
+		this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultOhnePaedagogischerBetreuung);
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -358,6 +361,19 @@ public class BGCalculationResult extends AbstractEntity {
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
 		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
 		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
+
+		if (other.tsCalculationResultMitPaedagogischerBetreuung != null) {
+			if (this.tsCalculationResultMitPaedagogischerBetreuung == null) {
+				this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult();
+			}
+			this.tsCalculationResultMitPaedagogischerBetreuung.add(other.tsCalculationResultMitPaedagogischerBetreuung);
+		}
+		if (other.tsCalculationResultOhnePaedagogischerBetreuung != null) {
+			if (this.tsCalculationResultOhnePaedagogischerBetreuung == null) {
+				this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult();
+			}
+			this.tsCalculationResultOhnePaedagogischerBetreuung.add(other.tsCalculationResultOhnePaedagogischerBetreuung);
+		}
 	}
 
 	private static boolean isSameZeiteinheiten(@Nonnull BGCalculationResult thisEntity, @Nonnull BGCalculationResult otherEntity) {

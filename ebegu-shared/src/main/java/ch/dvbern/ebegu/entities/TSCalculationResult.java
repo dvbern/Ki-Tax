@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,6 +60,15 @@ public class TSCalculationResult extends AbstractEntity {
 
 
 	public TSCalculationResult() {
+	}
+
+	public TSCalculationResult(@Nullable TSCalculationResult toCopy) {
+		if (toCopy != null) {
+			this.betreuungszeitProWoche = toCopy.betreuungszeitProWoche;
+			this.verpflegungskosten = toCopy.verpflegungskosten;
+			this.gebuehrProStunde = toCopy.gebuehrProStunde;
+			this.bgCalculationResult = toCopy.bgCalculationResult;
+		}
 	}
 
 	@Nonnull
@@ -138,5 +148,23 @@ public class TSCalculationResult extends AbstractEntity {
 		long minutes = betreuungszeitProWoche.longValue() % 60;
 		return StringUtils.leftPad(Long.toString(hours), 2, '0')
 			+ ':' + StringUtils.leftPad(Long.toString(minutes), 2, '0');
+	}
+
+	public void add(@Nonnull TSCalculationResult other) {
+		betreuungszeitProWoche = MathUtil.DEFAULT.addNullSafe(this.betreuungszeitProWoche, other.betreuungszeitProWoche);
+		verpflegungskosten = MathUtil.DEFAULT.addNullSafe(this.verpflegungskosten, other.verpflegungskosten);
+		gebuehrProStunde = MathUtil.DEFAULT.addNullSafe(this.gebuehrProStunde, other.gebuehrProStunde);
+	}
+
+	public static void add(@Nullable TSCalculationResult result, @Nullable TSCalculationResult other) {
+		if (other == null) {
+			return;
+		}
+		if (result == null) {
+			result = new TSCalculationResult();
+		}
+		result.betreuungszeitProWoche = MathUtil.DEFAULT.addNullSafe(result.betreuungszeitProWoche, other.betreuungszeitProWoche);
+		result.verpflegungskosten = MathUtil.DEFAULT.addNullSafe(result.verpflegungskosten, other.verpflegungskosten);
+		result.gebuehrProStunde = MathUtil.DEFAULT.addNullSafe(result.gebuehrProStunde, other.gebuehrProStunde);
 	}
 }

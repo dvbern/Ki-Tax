@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -58,6 +59,7 @@ public final class EbeguRuleTestsHelper {
 		new AusserordentlicherAnspruchCalcRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private static final KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+	private static final TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule = new TagesschuleBetreuungszeitAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 	private static final EinkommenCalcRule maximalesEinkommenCalcRule = new EinkommenCalcRule(DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, Constants.DEFAULT_LOCALE);
@@ -124,13 +126,15 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	@Nonnull
-	private static List<VerfuegungZeitabschnitt> calculateAllRules(Betreuung betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte, boolean doMonatsstueckelungen) {
+	private static List<VerfuegungZeitabschnitt> calculateAllRules(AbstractPlatz betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte,
+		boolean doMonatsstueckelungen) {
 		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
 		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
 		result = urlaubAbschnittRule.calculate(betreuung, result);
 		result = familienabzugAbschnittRule.calculate(betreuung, result);
 		result = kindTarifAbschnittRule.calculate(betreuung, result);
 		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
+		result = tagesschuleAbschnittRule.calculate(betreuung, result);
 		result = fachstelleAbschnittRule.calculate(betreuung, result);
 		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
 		result = einkommenAbschnittRule.calculate(betreuung, result);

@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -31,12 +32,18 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
  * 2. Falls beide Angebote dasselbe Startdatum haben, wird die Kita mit dem höheren Pensum berücksichtigt.
  * 3. Falls beide Angebote dasselbe Startdatum und dasselbe Pensum haben, wird die Kita zuerst berücksichtigt, die als erstes erfasst wurde.
  */
-public class BetreuungComparator implements Comparator<Betreuung>, Serializable {
+public class BetreuungComparator implements Comparator<AbstractPlatz>, Serializable {
 
 	private static final long serialVersionUID = -309383917391346314L;
 
 	@Override
-	public int compare(Betreuung betreuung1, Betreuung betreuung2) {
+	public int compare(AbstractPlatz platz1, AbstractPlatz platz2) {
+		if (platz1.getBetreuungsangebotTyp().isTagesschule() || platz2.getBetreuungsangebotTyp().isTagesschule()) {
+			return 0;
+		}
+
+		Betreuung betreuung1 = (Betreuung) platz1;
+		Betreuung betreuung2 = (Betreuung) platz2;
 
 		// Neue Sortierung: Nach Beginn des ersten Betreuungspensums
 		List<BetreuungspensumContainer> betreuungenSorted1 = new LinkedList<>(betreuung1.getBetreuungspensumContainers());

@@ -21,20 +21,74 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 
-public class TagesschuleRechner {
+public class TagesschuleRechner extends AbstractRechner {
 
 
 	public TagesschuleRechner() {
+	}
 
+	@Nonnull
+	@Override
+	public BGCalculationResult calculate(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO) {
+		BigDecimal minTarif = parameterDTO.getMinTarifTagesschule();
+		if (verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() != null) {
+			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleMitPaedagogischerBetreuung();
+			BigDecimal tarifProStunde = calculateTarif(verfuegungZeitabschnitt, maxTarif, minTarif, parameterDTO);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung().setGebuehrProStunde(tarifProStunde);
+		}
+		if (verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
+			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleOhnePaedagogischerBetreuung();
+			BigDecimal tarifProStunde = calculateTarif(verfuegungZeitabschnitt, maxTarif, minTarif, parameterDTO);
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung().setGebuehrProStunde(tarifProStunde);
+		}
+		return verfuegungZeitabschnitt.getBgCalculationResultAsiv();
 	}
 
 	/**
 	 * Berechnet den Tarif pro Stunde für einen gegebenen Zeitabschnit und für ein Modul. Es werden diverse Parameter benoetigt
 	 * diese werden in einem DTO uebergeben.
 	 */
+	public BigDecimal calculateTarif(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull BigDecimal maxTarif,
+		@Nonnull BigDecimal minTarif,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		// Massgebendes Einkommen der Familie. Mit Maximal und Minimalwerten "verrechnen"
+		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
+
+		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
+		if (zeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten() || zeitabschnitt.getBgCalculationResultAsiv().isZuSpaetEingereicht()) {
+			return maxTarif;
+		}
+
+		BigDecimal mataMinusMita = MathUtil.EXACT.subtract(maxTarif, minTarif);
+		BigDecimal maxmEMinusMinmE = MathUtil.EXACT.subtract(parameterDTO.getMaxMassgebendesEinkommen(),
+			parameterDTO.getMinMassgebendesEinkommen());
+		BigDecimal divided = MathUtil.EXACT.divide(mataMinusMita, maxmEMinusMinmE);
+
+		BigDecimal meMinusMinmE = MathUtil.EXACT.subtract(massgebendesEinkommen,
+			parameterDTO.getMinMassgebendesEinkommen());
+
+		BigDecimal multiplyDividedMeMinusMinmE = MathUtil.EXACT.multiply(divided, meMinusMinmE);
+
+		BigDecimal tarif = MathUtil.DEFAULT.addNullSafe(multiplyDividedMeMinusMinmE,
+			parameterDTO.getMinTarifTagesschule());
+
+		tarif = MathUtil.minimum(tarif, minTarif);
+		tarif = MathUtil.maximum(tarif, maxTarif);
+		return tarif;
+	}
+
+	/**
+	 * Berechnet den Tarif pro Stunde für einen gegebenen Zeitabschnit und für ein Modul. Es werden diverse Parameter benoetigt
+	 * diese werden in einem DTO uebergeben.
+	 */
+	@Deprecated
 	public BigDecimal calculateTarif(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull TagesschuleRechnerParameterDTO parameterDTO,

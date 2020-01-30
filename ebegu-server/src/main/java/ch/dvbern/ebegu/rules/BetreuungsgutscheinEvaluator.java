@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -34,7 +35,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.rechner.AbstractBGRechner;
+import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
@@ -43,8 +44,6 @@ import ch.dvbern.ebegu.util.BetreuungComparator;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the
@@ -149,35 +148,35 @@ public class BetreuungsgutscheinEvaluator {
 
 			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
 			// EBEGU-561)
-			List<Betreuung> betreuungen = new ArrayList<>(kindContainer.getBetreuungen());
-			betreuungen.sort(new BetreuungComparator());
+			List<AbstractPlatz> plaetzeList = new ArrayList<>(kindContainer.getBetreuungen());
+			plaetzeList.addAll(kindContainer.getAnmeldungenTagesschule());
+			plaetzeList.sort(new BetreuungComparator());
 
-			for (Betreuung betreuung : betreuungen) {
-				if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt()) {
-					continue;
-				}
+			for (AbstractPlatz platz : plaetzeList) {
+
+				boolean isTagesschule = platz.getBetreuungsangebotTyp().isTagesschule();
 
 				//initiale Restansprueche vorberechnen
-				if ((betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-					&& betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
-					|| betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
+				if ((platz.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+					&& platz.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
+					|| platz.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
 					// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen
 					// Vorgaenger und keine aktuelle verfuegung und wir muessen keinen restanspruch berechnen (vergl
 					// EBEGU-890)
 					continue;
 				}
-				if (betreuung.getBetreuungsstatus().isGeschlossenJA()) {
+				if (platz.getBetreuungsstatus().isGeschlossenJA() && !isTagesschule) {
 					// Verfuegte Betreuungen duerfen nicht neu berechnet werden
 					LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
 					// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
-					restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung(betreuung);
+					restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
 					continue;
 				}
 
 				// Die Initialen Zeitabschnitte sind die "Restansprüche" aus der letzten Betreuung
 				List<VerfuegungZeitabschnitt> zeitabschnitte = restanspruchZeitabschnitte;
 				if (isDebug) {
-					LOG.info("BG-Nummer: {}", betreuung.getBGNummer());
+					LOG.info("BG-Nummer: {}", platz.getBGNummer());
 					LOG.info("{}: ", RestanspruchInitializer.class.getSimpleName());
 					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 						LOG.info(verfuegungZeitabschnitt.toString());
@@ -185,7 +184,7 @@ public class BetreuungsgutscheinEvaluator {
 				}
 
 				for (Rule rule : rulesToRun) {
-					zeitabschnitte = rule.calculate(betreuung, zeitabschnitte);
+					zeitabschnitte = rule.calculate(platz, zeitabschnitte);
 					if (isDebug) {
 						LOG.info(
 							"{} ({}: {}" + ')',
@@ -198,33 +197,37 @@ public class BetreuungsgutscheinEvaluator {
 					}
 				}
 
-				// Innerhalb eines Monats darf der Anspruch nie sinken
-				zeitabschnitte = AnspruchFristRule.execute(zeitabschnitte);
+				if (!isTagesschule) {
+					// Innerhalb eines Monats darf der Anspruch nie sinken
+					zeitabschnitte = AnspruchFristRule.execute(zeitabschnitte);
 
-				// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
-				restanspruchZeitabschnitte = RestanspruchInitializer.execute(betreuung, zeitabschnitte);
+					// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
+					restanspruchZeitabschnitte = RestanspruchInitializer.execute(platz, zeitabschnitte);
 
-				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
+					// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
 
-				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+					// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
+					zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+				}
 
 				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-				zeitabschnitte = MutationsMerger.execute(betreuung, zeitabschnitte, locale);
+				zeitabschnitte = MutationsMerger.execute(platz, zeitabschnitte, locale);
 
-				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
-				// Daten, diese auch noch mergen
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
+				if (!isTagesschule) {
+					// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
+					// Daten, diese auch noch mergen
+					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
+				}
 
 				// Die Verfügung erstellen
 				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird
 				// die Berechnung in einer (transienten) Preview-Verfügung geschrieben
 				Verfuegung verfuegungPreview = new Verfuegung();
-				betreuung.setVerfuegungPreview(verfuegungPreview);
+				platz.setVerfuegungPreview(verfuegungPreview);
 
 				// Den richtigen Rechner anwerfen
-				AbstractBGRechner rechner = BGRechnerFactory.getRechner(betreuung);
+				AbstractRechner rechner = BGRechnerFactory.getRechner(platz);
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
@@ -232,7 +235,7 @@ public class BetreuungsgutscheinEvaluator {
 						verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 					});
 
-					Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
+					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
 					if (vorgaengerVerfuegung != null) {
 						usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
 					}
@@ -241,8 +244,9 @@ public class BetreuungsgutscheinEvaluator {
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
-
-				setZahlungRelevanteDaten(betreuung);
+				if (!isTagesschule) {
+					setZahlungRelevanteDaten((Betreuung) platz);
+				}
 			}
 		}
 	}
@@ -260,7 +264,7 @@ public class BetreuungsgutscheinEvaluator {
 		List<VerfuegungZeitabschnitt> vorgaenger = vorgaengerVerfuegung.getZeitabschnitte();
 
 		// Der folgende Hack gilt nur für die Gesuchsperiode 2019/20 (2018), da die Rundung geändert wurde
-		if (vorgaengerVerfuegung.getBetreuung().extractGesuchsperiode().getBasisJahr() == 2018) {
+		if (vorgaengerVerfuegung.getPlatz().extractGesuchsperiode().getBasisJahr() == 2018) {
 			zeitabschnitte
 				.forEach(zeitabschnitt -> VerfuegungUtil.findZeitabschnittSameGueltigkeit(vorgaenger, zeitabschnitt)
 					.filter(zeitabschnitt::isCloseTo)
@@ -303,6 +307,7 @@ public class BetreuungsgutscheinEvaluator {
 				+ ')';
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
+		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
 		restanspruchZeitabschnitte = RestanspruchInitializer.execute(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 

@@ -134,6 +134,10 @@ public class BetreuungsgutscheinConfigurator {
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(betreuungspensumAbschnittRule);
 
+		// - Pensum Tagesschule
+		TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule = new TagesschuleBetreuungszeitAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(tagesschuleAbschnittRule);
+
 		// - Fachstelle
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(fachstelleAbschnittRule);
