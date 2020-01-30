@@ -283,7 +283,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             institutionList,
             currentTagesschule: this.stammdaten.institution
         };
-        dialogConfig.panelClass = 'dialog-import-from-other-institution';
+        dialogConfig.panelClass = 'dv-mat-dialog-ts';
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
         return this.dialog.open(DialogImportFromOtherInstitution, dialogConfig).afterClosed();
     }

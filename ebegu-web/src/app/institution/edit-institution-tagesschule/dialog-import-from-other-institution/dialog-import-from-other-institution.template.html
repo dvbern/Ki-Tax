@@ -23,7 +23,7 @@
         <p>{{ 'WARNING_APPEND_OTHER_MODULES' | translate }}</p>
         <p [textContent]="'INSTITUTION_AUSWAEHLEN' | translate" class="dv-dialog-text" id="dv-dialog-text-institution"></p>
 
-        <div class="dv-select-style dv-dialog-select">
+        <div class="dv-content">
             <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text-institution" name="institution"
                     id="institution"
                     [(ngModel)]="selectedInstitutionStammdaten"
@@ -38,7 +38,7 @@
             <p [textContent]="'GESUCHSPERIODE_AUSWAEHLEN' | translate" class="dv-dialog-text"
                id="dv-dialog-text-gesuchsperiode"></p>
 
-            <div class="dv-select-style dv-dialog-select">
+            <div class="dv-content">
                 <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text-gesuchsperiode"
                         name="gesuchsperiode"
                         id="gesuchsperiode"
