@@ -56,19 +56,6 @@
         </tab-title>
         <tab-body>
             <div>
-                <div class="row" *ngIf="editMode">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label translate for="typ{{einstellungGP?.id}}">MODUL_CREATION_TYP</label>
-                            <mat-select id="typ{{einstellungGP?.id}}" name="typ" class="form-control"
-                                        [(ngModel)]="einstellungGP.modulTagesschuleTyp"
-                                        (selectionChange)="changeModulTagesschuleTyp(einstellungGP)">
-                                <mat-option *ngFor="let option of getModulTagesschuleTypen()"
-                                            [value]="option">{{option | translate}} </mat-option>
-                            </mat-select>
-                        </div>
-                    </div>
-                </div>
 
                 <table class="table fixedtable table-hover" title="Title">
                     <thead>
@@ -81,9 +68,9 @@
                         <th *ngIf="editMode"></th>
                     </tr>
                     </thead>
-                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length > 0">
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
 						<tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier">
-							<td title="{{group.bezeichnung}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+							<td title="{{getBezeichnung(group)}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                 <span>{{getBezeichnung(group)}}</span>
 							</td>
 							<td title="{{group.getZeitraumString()}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
@@ -132,12 +119,31 @@
                         </div>
                     </div>
                 </div>
-
-                <button *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)" type="button"
-                        (click)="addModulTagesschuleGroup(einstellungGP)" class="dv-btn dv-btn-operation">
-                    <i class="fa fa-lg fa-plus-circle"></i>
-                    <span translate>MODUL_HINZUFUEGEN</span>
-                </button>
+                <div *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)">
+                    <div>
+                        <button type="button" (click)="addModulTagesschuleGroup(einstellungGP)"
+                                class="dv-btn dv-btn-operation add-module-button">
+                            <i class="fa fa-lg fa-plus-circle"></i>
+                            <span translate>MODUL_HINZUFUEGEN</span>
+                        </button>
+                    </div>
+                    <div>
+                        <a class="pointer" (click)="changeToScolaris(einstellungGP)">
+                            <span>{{'SCOLARIS' | translate}}</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a class="pointer" (click)="importFromOtherInstitution(einstellungGP)">
+                            <span>{{'IMPORT_FROM_OTHER_INSTITUTION' | translate}}</span>
+                        </a>
+                    </div>
+                </div>
+                <div *ngIf="editMode && isModulTagesschuleTypScolaris(einstellungGP)">
+                    <p>{{ 'MODULE_FUER_SCOLARIS_ERSTELLT' | translate }}
+                        <a (click)="changeToDynamisch(einstellungGP)" class="pointer">
+                            {{ 'ZURUECKWECHSELN_ZU_DYNAMISCH' | translate }}
+                        </a></p>
+                </div>
             </div>
 
         </tab-body>
