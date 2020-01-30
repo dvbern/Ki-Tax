@@ -73,6 +73,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
             einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
+        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
+            TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
+                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+            );
     }
 
     public onPrePersist(): void {

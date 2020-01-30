@@ -21,19 +21,19 @@
     <mat-dialog-content class="modul-tagesschule-dialog">
 
         <div *ngIf="modulTagesschuleGroup">
-            <div class="row" class="dv-content">
+            <div class="col-md-12 popup-error-message">
+                <div class="dv-error-messages" *ngIf="noDaySelected">
+                    <div class="error">
+                        <li translate>ERROR_NO_MODUL_SELECTED</li>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="dv-content">
                 <div class="col-md-6" *ngIf="!isModulErfassungDynamisch()">
                     <div class="form-group">
                         <label translate>MODUL_NAME</label>
                         {{modulTagesschuleGroup.modulTagesschuleName}}
-                    </div>
-                </div>
-                <div class="col-md-12 popup-error-message">
-                    <div class="dv-error-messages" *ngIf="noDaySelected">
-                        <div class="error">
-                            <li translate>ERROR_NO_MODUL_SELECTED</li>
-                            <br/>
-                        </div>
                     </div>
                 </div>
                 <!-- TODO team müssen die Modulbezeichnungen wirklich für ALLE in beiden Sprachen erfasst werden -->
