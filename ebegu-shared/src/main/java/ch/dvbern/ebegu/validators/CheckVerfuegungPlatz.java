@@ -29,7 +29,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Eine Verfuegung muss zwingend mit einem Platz verknuepft sein. Dieser kann eine Betreuung
+ * Eine Verfuegung muss zwingend mit exakt  einem Platz verknuepft sein. Dieser kann eine Betreuung
  * oder eine AnmeldungFerieninsel sein. Es darf nur ein Platz verknuepft sein
  */
 @Target({ TYPE, ANNOTATION_TYPE })

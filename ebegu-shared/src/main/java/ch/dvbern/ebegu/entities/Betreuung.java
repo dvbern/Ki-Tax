@@ -140,7 +140,6 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	private @Valid Verfuegung verfuegung;
 
-
 	@Column(nullable = false)
 	private @NotNull Boolean vertrag = false;
 
@@ -279,6 +278,12 @@ public class Betreuung extends AbstractPlatz {
 		return this.isSame(other, false, false);
 	}
 
+	/**
+	 *
+	 * @return wenn der Status der Betreuung so ist dass eine definitive Verfuegung vorhanden ist
+	 * gibt diese zurueck.
+	 * Ansonsten wird der im verfuegungPreview gespeicherte werd zurueck gegeben
+	 */
 	@Nullable
 	public Verfuegung getVerfuegungOrVerfuegungPreview() {
 		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
