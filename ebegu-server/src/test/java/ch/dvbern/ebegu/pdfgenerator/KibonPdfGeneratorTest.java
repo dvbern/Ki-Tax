@@ -152,8 +152,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-			Objects.requireNonNull(betreuung.getVerfuegungPreview());
-			betreuung.getVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
+			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
+			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
 		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, VerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung);
 		generator.generate(new FileOutputStream(pfad + dokumentname));

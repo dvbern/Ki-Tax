@@ -98,7 +98,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
-				LOG.info("{}", betreuung.getVerfuegung());
+				LOG.info("{}", betreuung.getVerfuegungOrVerfuegungPreview());
 			}
 		}
 	}

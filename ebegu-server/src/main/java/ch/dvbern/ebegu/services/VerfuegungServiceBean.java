@@ -333,9 +333,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	public Verfuegung nichtEintreten(@Nonnull String gesuchId, @Nonnull String betreuungId) {
 
 		Betreuung betreuungMitVerfuegungPreview = calculateAndExtractBetreuung(gesuchId, betreuungId);
-		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegung();
+		Objects.requireNonNull(betreuungMitVerfuegungPreview);
+		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegungPreview);
-		Objects.requireNonNull(verfuegungPreview.getBetreuung());
+
 
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
