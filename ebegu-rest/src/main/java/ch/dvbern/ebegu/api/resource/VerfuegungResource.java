@@ -16,9 +16,9 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,7 +47,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -111,10 +110,10 @@ public class VerfuegungResource {
 		Gesuch gesuch = gesuchOptional.get();
 		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 
-		Set<JaxKindContainer> kindContainers = new HashSet<>();
-		for (KindContainer kindContainer : gesuchWithCalcVerfuegung.getKindContainers()) {
-			kindContainers.add(converter.kindContainerToJAX(kindContainer));
-		}
+		// wir muessen nur die kind container mappen nicht das ganze gesuch
+		Set<JaxKindContainer> kindContainers = gesuchWithCalcVerfuegung.getKindContainers().stream()
+				.map(kindContainer -> converter.kindContainerToJAX(kindContainer))
+				.collect(Collectors.toSet());
 		// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder
 		// gefiltert, damit nur die relevanten Kinder geschickt werden
 		if (principalBean.isCallerInAnyOfRole(

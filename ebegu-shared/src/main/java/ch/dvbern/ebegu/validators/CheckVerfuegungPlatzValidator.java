@@ -37,6 +37,6 @@ public class CheckVerfuegungPlatzValidator implements ConstraintValidator<CheckV
 	public boolean isValid(Verfuegung verfuegung, ConstraintValidatorContext context) {
 		boolean isBetreuung = verfuegung.getBetreuung() != null;
 		boolean isTagesschule = verfuegung.getAnmeldungTagesschule() != null;
-		return (isBetreuung && !isTagesschule) || (!isBetreuung && isTagesschule);
+		return isBetreuung ^ isTagesschule;     // XOR
 	}
 }

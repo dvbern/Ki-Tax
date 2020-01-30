@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
+import {Moment} from 'moment';
 import {Observable} from 'rxjs';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -44,6 +45,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() private readonly gemeindeId: string;
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
+    @Input() public beguStartDatum: Moment;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
 

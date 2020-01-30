@@ -751,6 +751,10 @@ export class EbeguRestUtil {
             restGemeinde.bfsNummer = gemeinde.bfsNummer;
             restGemeinde.betreuungsgutscheineStartdatum = DateUtil
                 .momentToLocalDate(gemeinde.betreuungsgutscheineStartdatum);
+            restGemeinde.tagesschulanmeldungenStartdatum = DateUtil
+                .momentToLocalDate(gemeinde.tagesschulanmeldungenStartdatum);
+            restGemeinde.ferieninselanmeldungenStartdatum = DateUtil
+                .momentToLocalDate(gemeinde.ferieninselanmeldungenStartdatum);
             restGemeinde.angebotBG = gemeinde.angebotBG;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
@@ -768,6 +772,10 @@ export class EbeguRestUtil {
             gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
             gemeindeTS.betreuungsgutscheineStartdatum = DateUtil
                 .localDateToMoment(gemeindeFromServer.betreuungsgutscheineStartdatum);
+            gemeindeTS.tagesschulanmeldungenStartdatum = DateUtil
+                .localDateToMoment(gemeindeFromServer.tagesschulanmeldungenStartdatum);
+            gemeindeTS.ferieninselanmeldungenStartdatum = DateUtil
+                .localDateToMoment(gemeindeFromServer.ferieninselanmeldungenStartdatum);
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;

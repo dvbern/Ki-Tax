@@ -21,6 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {Moment} from 'moment';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -51,6 +52,8 @@ export class EditGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public beguStartStr: string;
+    public tsAnmeldungenStartStr: string;
+    public fiAnmeldungenStartStr: string;
     private navigationSource: StateDeclaration;
     public gemeindeId: string;
     private fileToUpload: File;
@@ -64,6 +67,10 @@ export class EditGemeindeComponent implements OnInit {
     public initialBGValue: boolean;
     public initialTSValue: boolean;
     public initialFIValue: boolean;
+    public beguStartDatum: Moment;
+    public tsAnmeldungenStartDatum: Moment;
+    public fiAnmeldungenStartDatum: Moment;
+    private readonly startDatumFormat = 'DD.MM.YYYY';
 
     public constructor(
         private readonly $transition$: Transition,
@@ -105,7 +112,16 @@ export class EditGemeindeComponent implements OnInit {
                     stammdaten.adresse = new TSAdresse();
                 }
                 if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
-                    this.beguStartStr = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+                    this.beguStartDatum = stammdaten.gemeinde.betreuungsgutscheineStartdatum;
+                    this.beguStartStr = this.beguStartDatum.format(this.startDatumFormat);
+                }
+                if (stammdaten.gemeinde && stammdaten.gemeinde.tagesschulanmeldungenStartdatum) {
+                    this.tsAnmeldungenStartDatum = stammdaten.gemeinde.tagesschulanmeldungenStartdatum;
+                    this.tsAnmeldungenStartStr = this.tsAnmeldungenStartDatum.format(this.startDatumFormat);
+                }
+                if (stammdaten.gemeinde && stammdaten.gemeinde.ferieninselanmeldungenStartdatum) {
+                    this.fiAnmeldungenStartDatum = stammdaten.gemeinde.ferieninselanmeldungenStartdatum;
+                    this.fiAnmeldungenStartStr = this.fiAnmeldungenStartDatum.format(this.startDatumFormat);
                 }
                 return stammdaten;
             }));

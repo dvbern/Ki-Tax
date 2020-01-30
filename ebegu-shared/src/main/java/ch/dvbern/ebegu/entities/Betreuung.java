@@ -140,7 +140,6 @@ public class Betreuung extends AbstractPlatz {
 	@Nullable
 	private @Valid Verfuegung verfuegung;
 
-
 	@Column(nullable = false)
 	private @NotNull Boolean vertrag = false;
 
