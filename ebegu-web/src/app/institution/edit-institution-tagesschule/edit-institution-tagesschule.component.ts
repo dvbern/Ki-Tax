@@ -197,6 +197,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             title: 'MODUL_TYP_SCOLARIS_TITLE',
             text: 'MODUL_TYP_SCOLARIS_INFO',
         };
+        dialogConfig.panelClass = 'dv-mat-dialog-ts';
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
                 userAccepted => {
