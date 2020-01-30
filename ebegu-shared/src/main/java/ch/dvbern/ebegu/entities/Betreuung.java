@@ -207,6 +207,7 @@ public class Betreuung extends AbstractPlatz {
 		return verfuegung;
 	}
 
+	@Override
 	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
 		this.verfuegung = verfuegung;
 	}
@@ -264,11 +265,13 @@ public class Betreuung extends AbstractPlatz {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
+	@Override
 	@Nullable
 	public Verfuegung getVerfuegungPreview() {
 		return verfuegungPreview;
 	}
 
+	@Override
 	public void setVerfuegungPreview(@Nullable Verfuegung verfuegungPreview) {
 		this.verfuegungPreview = verfuegungPreview;
 	}
@@ -277,14 +280,6 @@ public class Betreuung extends AbstractPlatz {
 	public boolean isSame(AbstractEntity other) {
 		//by default just the fields that belong to the Betreuung itself
 		return this.isSame(other, false, false);
-	}
-
-	@Nullable
-	public Verfuegung getVerfuegungOrVerfuegungPreview() {
-		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
-			return getVerfuegung();
-		}
-		return getVerfuegungPreview();
 	}
 
 	public boolean isSame(AbstractEntity other, boolean inklAbwesenheiten, boolean inklStatus) {

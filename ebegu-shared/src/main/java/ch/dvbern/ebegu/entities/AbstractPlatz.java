@@ -134,6 +134,21 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Nullable
 	public abstract Verfuegung getVerfuegung();
 
+	public abstract void setVerfuegung(@Nullable Verfuegung verfuegung);
+
+	@Nullable
+	public abstract Verfuegung getVerfuegungPreview();
+
+	public abstract void setVerfuegungPreview(@Nullable Verfuegung verfuegung);
+
+	@Nullable
+	public Verfuegung getVerfuegungOrVerfuegungPreview() {
+		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
+			return getVerfuegung();
+		}
+		return getVerfuegungPreview();
+	}
+
 	/**
 	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
 	 */

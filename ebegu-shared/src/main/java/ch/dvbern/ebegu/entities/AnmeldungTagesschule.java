@@ -35,6 +35,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 
@@ -78,6 +79,10 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
 	private Verfuegung verfuegung;
 
+	@Transient
+	@Nullable
+	private Verfuegung verfuegungPreview;
+
 
 	public AnmeldungTagesschule() {
 	}
@@ -106,8 +111,20 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		return verfuegung;
 	}
 
+	@Override
 	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
 		this.verfuegung = verfuegung;
+	}
+
+	@Override
+	@Nullable
+	public Verfuegung getVerfuegungPreview() {
+		return verfuegungPreview;
+	}
+
+	@Override
+	public void setVerfuegungPreview(@Nullable Verfuegung verfuegungPreview) {
+		this.verfuegungPreview = verfuegungPreview;
 	}
 
 	@Override
