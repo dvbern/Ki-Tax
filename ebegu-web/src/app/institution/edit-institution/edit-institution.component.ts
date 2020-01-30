@@ -113,6 +113,7 @@ export class EditInstitutionComponent implements OnInit {
             return;
         }
         this.isRegisteringInstitution = this.$transition$.params().isRegistering;
+        this.editMode = this.$transition$.params().editMode;
 
         this.traegerschaftRS.getAllActiveTraegerschaften().then(allTraegerschaften => {
             this.traegerschaftenList = allTraegerschaften;
@@ -158,7 +159,8 @@ export class EditInstitutionComponent implements OnInit {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
         this.initName = stammdaten.institution.name;
-        this.editMode = stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
+        // editMode kann bereits true sein, wenn dies in state params ist.
+        this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
         this.changeDetectorRef.markForCheck();
 
         if (!this.isTagesschule()) {
@@ -220,10 +222,11 @@ export class EditInstitutionComponent implements OnInit {
     public cancel(): void {
         if (this.editMode) {
             this.editMode = false;
+            this.$transition$.params().editMode = false;
             this.ngOnInit();
-        } else {
-            this.navigateBack();
+            return;
         }
+        this.navigateBack();
     }
 
     private persistStammdaten(): void {

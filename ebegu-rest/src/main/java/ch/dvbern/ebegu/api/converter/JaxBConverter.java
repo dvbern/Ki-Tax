@@ -4394,14 +4394,16 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(gemeinde);
 		requireNonNull(jaxGemeinde);
 		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());
 		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
 		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
-		if (jaxGemeinde.getBetreuungsgutscheineStartdatum() != null) {
-			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
-		}
+		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
 		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
@@ -4417,6 +4419,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
 		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
+		jaxGemeinde.setTagesschulanmeldungenStartdatum(persistedGemeinde.getTagesschulanmeldungenStartdatum());
+		jaxGemeinde.setFerieninselanmeldungenStartdatum(persistedGemeinde.getFerieninselanmeldungenStartdatum());
 		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
