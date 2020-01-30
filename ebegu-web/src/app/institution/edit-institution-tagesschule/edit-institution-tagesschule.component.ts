@@ -105,7 +105,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        if (this.canEditModule(einstellungenTagesschule)) {
+        if (this.canEditModule(einstellungenTagesschule, group)) {
             this.openModul(einstellungenTagesschule, group);
         }
     }
@@ -305,7 +305,11 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         return group.identifier;
     }
 
-    public canEditModule(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+    public canEditModule(einstellungenTagesschule: TSEinstellungenTagesschule,
+                         group: TSModulTagesschuleGroup): boolean {
+        if (group.isNew()) {
+            return true;
+        }
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
@@ -313,5 +317,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             return konfiguration.konfigTagesschuleAktivierungsdatum.isAfter(moment([]));
         }
         return false;
+    }
+
+    public getEditDeleteButtonTooltip(einstellungenTagesschule: TSEinstellungenTagesschule,
+                                      group: TSModulTagesschuleGroup): string {
+        if (!this.canEditModule(einstellungenTagesschule, group)) {
+            return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');
+        }
+        return '';
     }
 }
