@@ -277,7 +277,7 @@ export class GesuchModelManager {
      */
     private loadGemeindeStammdaten(): IPromise<TSGemeindeStammdaten> {
         if (!(this.getDossier() && this.getDossier().gemeinde)) {
-            return undefined;
+            return Promise.resolve(undefined);
         }
         return this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id);
     }
