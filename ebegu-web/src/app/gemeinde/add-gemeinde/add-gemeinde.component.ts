@@ -51,6 +51,7 @@ export class AddGemeindeComponent implements OnInit {
     public adminMail: string = undefined;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
     public maxBFSNummer: number = 6806;
+    public minDateTSFI = moment('20200801', 'YYYYMMDD');
 
     public unregisteredGemeinden$: Observable<TSBfsGemeinde[]>;
     public selectedUnregisteredGemeinde: TSBfsGemeinde;
@@ -90,6 +91,8 @@ export class AddGemeindeComponent implements OnInit {
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.gemeinde.betreuungsgutscheineStartdatum = futureMonthBegin;
+        this.gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        this.gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
 
         this.initializeFlags();

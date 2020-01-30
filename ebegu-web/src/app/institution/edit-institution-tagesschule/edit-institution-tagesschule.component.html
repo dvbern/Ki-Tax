@@ -22,11 +22,12 @@
     <div class="col-sm-6">
         <div class="form-group" *ngIf="editMode">
             <h3 translate for="gemeinde">GEMEINDE</h3>
-            <mat-select [(ngModel)]="stammdaten.institutionStammdatenTagesschule.gemeinde"
+            <mat-select [value]="stammdaten.institutionStammdatenTagesschule.gemeinde"
                         [compareWith]="compareGemeinde"
                         id="gemeinde" name="gemeinde"
                         class="form-control"
                         disabled>
+                <mat-option *ngFor="let gemeinde of gemeindeList" [value]="gemeinde">{{gemeinde.name}}</mat-option>
             </mat-select>
         </div>
         <div class="form-group" *ngIf="!editMode">
@@ -97,12 +98,15 @@
 							<td title="{{group.intervall | translate}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
 								{{group.intervall | translate}}
 							</td>
-							<td *ngIf="editMode">
-                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+							<td *ngIf="editMode" [title]="getEditDeleteButtonTooltip(einstellungGP, group)">
+                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)"
+                                [disabled]="!canEditModule(einstellungGP, group)">
                                     <i class="fa fa-lg fa-edit"></i>
                                 </button>
                                 &nbsp;
-								<button type="button" class="dv-btn dv-btn-operation" (click)="removeModulTagesschuleGroup(einstellungGP, group)">
+								<button type="button" class="dv-btn dv-btn-operation"
+                                        (click)="removeModulTagesschuleGroup(einstellungGP, group)"
+                                        [disabled]="!canEditModule(einstellungGP, group)">
 									<i class="fa fa-lg fa-trash-o"></i>
 								</button>
 							</td>

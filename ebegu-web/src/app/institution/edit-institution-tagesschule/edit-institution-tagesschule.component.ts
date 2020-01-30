@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
@@ -26,6 +27,7 @@ import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../
 import {getTSModulTagesschuleTypen, TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
@@ -50,6 +52,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
     @Input() public editMode: boolean = false;
 
     public gemeindeList: TSGemeinde[] = [];
+    private konfigurationsListe: TSGemeindeKonfiguration[];
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -66,6 +69,14 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
             einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
+
+        this.gemeindeRS.getGemeindeStammdaten(this.stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
+            gemeindeStammdaten => {
+                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
+                this.konfigurationsListe.forEach(config => {
+                    config.initProperties();
+                });
+            });
     }
 
     public onPrePersist(): void {
@@ -94,7 +105,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): void {
-        this.openModul(einstellungenTagesschule, group);
+        if (this.canEditModule(einstellungenTagesschule, group)) {
+            this.openModul(einstellungenTagesschule, group);
+        }
     }
 
     private openModul(
@@ -290,5 +303,27 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     public trackByIdentifier(group: TSModulTagesschuleGroup): string {
         return group.identifier;
+    }
+
+    public canEditModule(einstellungenTagesschule: TSEinstellungenTagesschule,
+                         group: TSModulTagesschuleGroup): boolean {
+        if (group.isNew()) {
+            return true;
+        }
+        const konfiguration = this.konfigurationsListe.find(
+            gemeindeKonfiguration =>
+                gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
+        if (konfiguration) {
+            return konfiguration.konfigTagesschuleAktivierungsdatum.isAfter(moment([]));
+        }
+        return false;
+    }
+
+    public getEditDeleteButtonTooltip(einstellungenTagesschule: TSEinstellungenTagesschule,
+                                      group: TSModulTagesschuleGroup): string {
+        if (!this.canEditModule(einstellungenTagesschule, group)) {
+            return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');
+        }
+        return '';
     }
 }

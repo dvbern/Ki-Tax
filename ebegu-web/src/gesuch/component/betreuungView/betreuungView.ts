@@ -100,9 +100,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
-    // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
+    // der ausgewaehlte instStamm wird hier gespeichert und dann in die entsprechende
     // InstitutionStammdaten umgewandert
-    public instStammId: any;
+    public instStamm: TSInstitutionStammdatenSummary;
     public isSavingData: boolean; // Semaphore
     public initialBetreuung: TSBetreuung;
     public flagErrorVertrag: boolean;
@@ -263,7 +263,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isSavingData = false;
         this.flagErrorVertrag = false;
         if (this.getInstitutionSD()) {
-            this.instStammId = this.getInstitutionSD().id;
+            this.instStamm = this.getInstitutionSD();
             this.betreuungsangebot = this.getBetreuungsangebotFromInstitutionList();
         }
         this.startEmptyListOfBetreuungspensen();
@@ -339,7 +339,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.cleanInstitutionStammdaten();
         }
         this.cleanBelegungen();
-        this.instStammId = undefined;
+        this.instStamm = undefined;
     }
 
     public setErsterSchultag(): void {
@@ -527,7 +527,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
                 this.gesuchModelManager.isTagesschulangebotEnabled(),
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
-                this.gesuchModelManager.getGemeinde());
+                this.gesuchModelManager.getGemeinde(),
+                this.gesuchModelManager.getGesuchsperiode());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
     }
@@ -620,17 +621,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    // please do not blame me, blame mdAutocomplete instead...
     public extractInstStammId(): string {
-        if (this.instStammId.id) {
-            return this.instStammId.id;
-        }
-
-        return this.instStammId;
+        return this.instStamm.id;
     }
 
     public setSelectedInstitutionStammdaten(): void {
-        if (!this.instStammId) {
+        if (!this.instStamm) {
             return;
         }
         const instStamList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList();
@@ -640,7 +636,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             // reset
             this.model.institutionStammdaten = undefined;
-            console.error('Institution not found!', this.instStammId);
+            console.error('Institution not found!', this.instStamm.id);
         }
     }
 
@@ -1079,18 +1075,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // clear
         this.getBetreuungModel().betreuungspensumContainers = [];
         this.cleanInstitutionStammdaten();
-        this.instStammId = null;
+        this.instStamm = null;
         this.provisorischeBetreuung = false;
 
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
-            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+            this.instStamm = new TSInstitutionStammdatenSummary();
+            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
             this.getBetreuungModel().vertrag = false;
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         } else {
             this.getBetreuungModel().vertrag = true;
-            this.instStammId = undefined;
+            this.instStamm = undefined;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }
     }
@@ -1126,7 +1123,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.getBetreuungModel().betreuungspensumContainers = [];
         // Die unbekannte Institution ermitteln und lesen
         this.setUnbekannteInstitutionAccordingToAngebot();
-        this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStammId)
+        this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStamm.id)
             .then((stammdaten: TSInstitutionStammdaten) => {
                 this.getBetreuungModel().institutionStammdaten = stammdaten;
             });
@@ -1142,12 +1139,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {
         // tslint:disable:prefer-conditional-expression
+        this.instStamm = new TSInstitutionStammdatenSummary();
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
+            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
         } else {
-            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
+            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
         }
     }
 
@@ -1155,7 +1153,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // clear
         this.getBetreuungModel().betreuungspensumContainers = [];
         this.cleanInstitutionStammdaten();
-        this.instStammId = null;
+        this.instStamm = null;
         this.provisorischeBetreuung = false;
 
         // init prov. betreuung

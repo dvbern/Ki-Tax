@@ -56,6 +56,8 @@
 			  bfs_nummer="351"
 			  mandant_id="43NuuG7vQO+eUparSNjyIA=="
 			  betreuungsgutscheine_startdatum="2016-01-01"
+			  tagesschulanmeldungen_startdatum="2020-08-01"
+			  ferieninselanmeldungen_startdatum="2020-08-01"
 			  angebotbg="true"
 			  angebotts="false"
 			  angebotfi="false"/>
@@ -71,6 +73,8 @@
 			  bfs_nummer="363"
 			  mandant_id="43NuuG7vQO+eUparSNjyIA=="
 			  betreuungsgutscheine_startdatum="2016-01-01"
+			  tagesschulanmeldungen_startdatum="2020-08-01"
+			  ferieninselanmeldungen_startdatum="2020-08-01"
 			  angebotbg="true"
 			  angebotts="false"
 			  angebotfi="false"/>

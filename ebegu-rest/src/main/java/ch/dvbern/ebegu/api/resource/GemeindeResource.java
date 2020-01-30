@@ -576,11 +576,17 @@ public class GemeindeResource {
 	) {
 		requireNonNull(jaxGemeinde);
 		requireNonNull(jaxGemeinde.getId());
+		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 
 		Gemeinde gemeinde =
 			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
 				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
-
+		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+		gemeinde = gemeindeService.saveGemeinde(gemeinde);
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}
@@ -590,6 +596,7 @@ public class GemeindeResource {
 		if (gemeinde.isAngebotFI() != jaxGemeinde.isAngebotFI()) {
 			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());
 		}
+
 
 		return Response.ok().build();
 	}

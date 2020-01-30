@@ -39,6 +39,7 @@ import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssign
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -112,6 +113,7 @@ export class EditInstitutionComponent implements OnInit {
             return;
         }
         this.isRegisteringInstitution = this.$transition$.params().isRegistering;
+        this.editMode = this.$transition$.params().editMode;
 
         this.traegerschaftRS.getAllActiveTraegerschaften().then(allTraegerschaften => {
             this.traegerschaftenList = allTraegerschaften;
@@ -157,7 +159,8 @@ export class EditInstitutionComponent implements OnInit {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
         this.initName = stammdaten.institution.name;
-        this.editMode = stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
+        // editMode kann bereits true sein, wenn dies in state params ist.
+        this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
         this.changeDetectorRef.markForCheck();
 
         if (!this.isTagesschule()) {
@@ -177,8 +180,11 @@ export class EditInstitutionComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
-    public isBetreuungsgutscheineAkzeptierenDisabled(): boolean {
-        return !this.isSuperAdmin();
+    public isDateStartEndDisabled(): boolean {
+        if (this.isBetreuungsgutschein()) {
+            return !this.isSuperAdmin();
+        }
+        return false;
     }
 
     public isSuperAdmin(): boolean {
@@ -216,10 +222,11 @@ export class EditInstitutionComponent implements OnInit {
     public cancel(): void {
         if (this.editMode) {
             this.editMode = false;
+            this.$transition$.params().editMode = false;
             this.ngOnInit();
-        } else {
-            this.navigateBack();
+            return;
         }
+        this.navigateBack();
     }
 
     private persistStammdaten(): void {
@@ -353,5 +360,12 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftId(traegerschaft: TSTraegerschaft): string {
         return traegerschaft.id;
+    }
+
+    public getMinStartDate(): Date {
+        if (this.isFerieninsel() || this.isTagesschule()) {
+            return TSMandant.earliestDateOfTSAnmeldung.toDate();
+        }
+        return new Date(0);
     }
 }

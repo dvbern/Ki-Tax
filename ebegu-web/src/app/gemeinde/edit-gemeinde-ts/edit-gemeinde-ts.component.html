@@ -130,6 +130,15 @@
                 </div>
             </div>
             <div class="row">
+                <!-- Anmeldungen akzeptieren ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>TS_START</h3>
+                        <p>{{tsAnmeldungenStartStr}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group checkbox-with-tooltip">
                         <mat-checkbox id="benachrichtigungTsEmailAuto_id"
@@ -145,6 +154,8 @@
             <dv-gemeinde-ts-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
                 [gemeindeStatus]="stammdaten.gemeinde.status"
+                [editMode]="editMode"
+                [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
                 [editMode]="editMode"
                 [gemeindeId]="stammdaten.gemeinde.id"
                 [korrespondenzspracheDe]="stammdaten.korrespondenzspracheDe"
@@ -185,6 +196,15 @@
                 </div>
             </div>
             <div class="row">
+                <!-- Anmeldungen akzeptieren ab -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>TS_START</h3>
+                        <p>{{tsAnmeldungenStartStr}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-12">
                     <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">
                         {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
@@ -202,7 +222,9 @@
                     [editMode]="editMode"
                     [gemeindeId]="stammdaten.gemeinde.id"
                     [korrespondenzspracheDe]="stammdaten.korrespondenzspracheDe"
-                    [korrespondenzspracheFr]="stammdaten.korrespondenzspracheFr">
+                    [korrespondenzspracheFr]="stammdaten.korrespondenzspracheFr"
+                    [editMode]="editMode"
+                    [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum">
                 </dv-gemeinde-ts-konfiguration>
             </div>
         </fieldset>

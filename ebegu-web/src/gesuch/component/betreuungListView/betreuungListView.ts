@@ -247,15 +247,23 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public showButtonAnmeldungTagesschule(): boolean {
-        return this.gesuchModelManager.getGemeinde()
-            && this.gesuchModelManager.getGemeinde().angebotTS
-            && this.showButtonAnmeldungSchulamt();
+        const gemeinde = this.gesuchModelManager.getGemeinde();
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        return gemeinde
+            && gemeinde.angebotTS
+            && this.showButtonAnmeldungSchulamt()
+            && gesuchsperiode
+            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
     }
 
     public showButtonAnmeldungFerieninsel(): boolean {
-        return this.gesuchModelManager.getGemeinde()
-            && this.gesuchModelManager.getGemeinde().angebotFI
-            && this.showButtonAnmeldungSchulamt();
+        const gemeinde = this.gesuchModelManager.getGemeinde();
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        return gemeinde
+            && gemeinde.angebotFI
+            && this.showButtonAnmeldungSchulamt()
+            && gesuchsperiode
+            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum);
     }
 
     public showButtonAnmeldungSchulamt(): boolean {

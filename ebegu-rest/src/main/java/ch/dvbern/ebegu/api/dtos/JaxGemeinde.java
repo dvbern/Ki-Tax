@@ -56,6 +56,14 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate betreuungsgutscheineStartdatum;
 
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate tagesschulanmeldungenStartdatum;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate ferieninselanmeldungenStartdatum;
+
 	private boolean angebotBG = false;
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
@@ -158,5 +166,23 @@ public class JaxGemeinde extends JaxAbstractDTO {
 			return builder.toComparison();
 		}
 		return builder.toComparison();
+	}
+
+	@Nullable
+	public LocalDate getTagesschulanmeldungenStartdatum() {
+		return tagesschulanmeldungenStartdatum;
+	}
+
+	public void setTagesschulanmeldungenStartdatum(@Nullable LocalDate tagesschulanmeldungenStartdatum) {
+		this.tagesschulanmeldungenStartdatum = tagesschulanmeldungenStartdatum;
+	}
+
+	@Nullable
+	public LocalDate getFerieninselanmeldungenStartdatum() {
+		return ferieninselanmeldungenStartdatum;
+	}
+
+	public void setFerieninselanmeldungenStartdatum(@Nullable LocalDate ferieninselanmeldungenStartdatum) {
+		this.ferieninselanmeldungenStartdatum = ferieninselanmeldungenStartdatum;
 	}
 }

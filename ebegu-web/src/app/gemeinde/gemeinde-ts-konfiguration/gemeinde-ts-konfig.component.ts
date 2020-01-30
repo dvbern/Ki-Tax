@@ -21,6 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {Moment} from 'moment';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -46,6 +47,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
     @Input() public editMode: boolean = false;
+    @Input() public tsAnmeldungenStartDatum: Moment;
     @Input() public gemeindeId: string;
     @Input() public korrespondenzspracheDe: boolean;
     @Input() public korrespondenzspracheFr: boolean;
