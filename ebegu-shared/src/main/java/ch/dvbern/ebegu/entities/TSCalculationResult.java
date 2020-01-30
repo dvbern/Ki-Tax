@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
@@ -41,7 +42,7 @@ public class TSCalculationResult extends AbstractEntity {
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
-	private BigDecimal betreuungszeitProWoche = BigDecimal.ZERO;
+	private Integer betreuungszeitProWoche = 0;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -62,11 +63,11 @@ public class TSCalculationResult extends AbstractEntity {
 	}
 
 	@Nonnull
-	public BigDecimal getBetreuungszeitProWoche() {
+	public Integer getBetreuungszeitProWoche() {
 		return betreuungszeitProWoche;
 	}
 
-	public void setBetreuungszeitProWoche(@Nonnull BigDecimal betreuungszeitProWoche) {
+	public void setBetreuungszeitProWoche(@Nonnull Integer betreuungszeitProWoche) {
 		this.betreuungszeitProWoche = betreuungszeitProWoche;
 	}
 
@@ -118,7 +119,7 @@ public class TSCalculationResult extends AbstractEntity {
 			return false;
 		}
 		TSCalculationResult that = (TSCalculationResult) other;
-		return MathUtil.isSame(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
+		return Objects.equals(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
 			MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
 			MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde);
 	}
@@ -126,16 +127,16 @@ public class TSCalculationResult extends AbstractEntity {
 	@Nonnull
 	public BigDecimal getTotalKostenProWoche() {
 		BigDecimal totalKostenMinuten =
-			MathUtil.EXACT.multiply(getGebuehrProStunde(), getBetreuungszeitProWoche());
+			MathUtil.EXACT.multiply(getGebuehrProStunde(), BigDecimal.valueOf(getBetreuungszeitProWoche()));
 		totalKostenMinuten = MathUtil.EXACT.divide(totalKostenMinuten, new BigDecimal(60));
-
+		// todo homa review KIBON-1016 hefr fragen wollen wir heir default runden? wird damit nicht gerechnet?
 		return MathUtil.DEFAULT.addNullSafe(totalKostenMinuten, this.getVerpflegungskosten());
 	}
 
 	@Nonnull
 	public String getBetreuungszeitProWocheFormatted() {
-		long hours = betreuungszeitProWoche.longValue() / 60;
-		long minutes = betreuungszeitProWoche.longValue() % 60;
+		long hours = betreuungszeitProWoche.longValue() / 60;   // integer division gibt stunden
+		long minutes = betreuungszeitProWoche.longValue() % 60; // rest minuten
 		return StringUtils.leftPad(Long.toString(hours), 2, '0')
 			+ ':' + StringUtils.leftPad(Long.toString(minutes), 2, '0');
 	}

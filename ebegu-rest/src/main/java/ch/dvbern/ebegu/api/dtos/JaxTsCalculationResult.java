@@ -32,7 +32,7 @@ public class JaxTsCalculationResult extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -2142241603064978250L;
 
-	private BigDecimal betreuungszeitProWoche = BigDecimal.ZERO;
+	private Integer betreuungszeitProWoche = 0;
 
 	private BigDecimal verpflegungskosten = BigDecimal.ZERO;
 
@@ -42,11 +42,11 @@ public class JaxTsCalculationResult extends JaxAbstractDTO {
 
 	private String betreuungszeitProWocheFormatted;
 
-	public BigDecimal getBetreuungszeitProWoche() {
+	public Integer getBetreuungszeitProWoche() {
 		return betreuungszeitProWoche;
 	}
 
-	public void setBetreuungszeitProWoche(BigDecimal betreuungszeitProWoche) {
+	public void setBetreuungszeitProWoche(Integer betreuungszeitProWoche) {
 		this.betreuungszeitProWoche = betreuungszeitProWoche;
 	}
 
