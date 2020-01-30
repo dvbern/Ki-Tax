@@ -87,7 +87,7 @@ public final class EbeguRuleTestsHelper {
 	private EbeguRuleTestsHelper() {
 	}
 
-	public static List<VerfuegungZeitabschnitt> calculate(Betreuung betreuung) {
+	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		// Abschnitte
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
@@ -116,7 +116,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	@Nonnull
-	private static List<VerfuegungZeitabschnitt> calculate(Betreuung betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte) {
+	private static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte) {
 		return calculateAllRules(betreuung, initialenRestanspruchAbschnitte, false);
 	}
 
