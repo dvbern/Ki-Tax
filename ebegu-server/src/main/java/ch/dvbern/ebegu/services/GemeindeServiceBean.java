@@ -520,7 +520,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	private Collection<GemeindeStammdatenGesuchsperiode> getGemeindeStammdatenGesuchsperiodeByGesuchsperiodeId(@Nonnull String gesuchsperiodeId) {
-		requireNonNull(gesuchsperiodeId, "Gesuschsperiode id muss gesetzt sein");
+		requireNonNull(gesuchsperiodeId, "Gesuchsperiode id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
 			cb.createQuery(GemeindeStammdatenGesuchsperiode.class);
@@ -592,7 +592,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
 		SACHBEARBEITER_GEMEINDE,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public boolean existGemeindeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
+	public boolean existGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);

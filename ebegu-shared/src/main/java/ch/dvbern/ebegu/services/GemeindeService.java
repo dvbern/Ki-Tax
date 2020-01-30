@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.errors.MailException;
 
 /**
  * Service zum Verwalten von Gemeinden
@@ -151,7 +150,7 @@ public interface GemeindeService {
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp);
 
-	boolean existGemeindeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
+	boolean existGemeindeGesuchsperiodeDokument(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp);
 
 	void copyGesuchsperiodeGemeindeStammdaten(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gesuchsperiode lastGesuchsperiode);

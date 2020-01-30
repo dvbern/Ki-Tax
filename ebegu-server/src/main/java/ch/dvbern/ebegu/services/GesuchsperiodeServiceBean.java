@@ -252,7 +252,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			"deleteGesuchsperiodeAndGesuche",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			gesuchsPeriodeId));
-		LOGGER.info("Handling Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
+		LOGGER.info("Handling deleton of Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
 		if (gesuchsperiode.getStatus() == GesuchsperiodeStatus.GESCHLOSSEN) {
 			// Gesuche der Periode loeschen
 			Collection<Gesuch> gesucheOfPeriode =
@@ -282,7 +282,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				persistence.remove(einstellungenTagesschule);
 			}
 
-			// GemeindeGesuchsperiode Stammdaten dieser Gesuchsperiode loeschen
+			// GemeindeGesuchsperiodeStammdaten dieser Gesuchsperiode loeschen
 			Collection<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeList =
 				gemeindeService.findGemeindeStammdatenGesuchsperiode(gesuchsperiode);
 			for(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode: gemeindeStammdatenGesuchsperiodeList){

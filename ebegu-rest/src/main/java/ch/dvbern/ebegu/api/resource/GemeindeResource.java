@@ -673,6 +673,6 @@ public class GemeindeResource {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
 		requireNonNull(dokumentTyp);
-		return gemeindeService.existGemeindeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp);
+		return gemeindeService.existGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp);
 	}
 }
