@@ -156,7 +156,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		@Nullable String manuelleBemerkungen,
 		boolean ignorieren,
 		boolean sendEmail) {
-
+		// verfuegung in das preview Feld der Betreuung berechnen lassen
 		Betreuung betreuungMitVerfuegungPreview = calculateAndExtractBetreuung(gesuchId, betreuungId);
 		Objects.requireNonNull(betreuungMitVerfuegungPreview);
 		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
@@ -360,6 +360,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Nonnull
 	private Verfuegung persistVerfuegung(@Nonnull Betreuung betreuungWithPreviewVerfuegung, @Nonnull Betreuungsstatus betreuungsstatus) {
+		// preview verfuegung als definitive verfuegung einhaengen
 		Verfuegung verfuegung = betreuungWithPreviewVerfuegung.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegung);
 		betreuungWithPreviewVerfuegung.setVerfuegung(verfuegung);

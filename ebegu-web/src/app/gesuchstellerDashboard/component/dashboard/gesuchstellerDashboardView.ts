@@ -244,14 +244,15 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public showAnmeldungTagesschuleCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
-            return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreate(periode);
-        }
+            return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreate(periode)
+                && periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.tagesschulanmeldungenStartdatum);        }
         return undefined;
     }
 
     public showAnmeldungFerieninselCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
-            return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreate(periode);
+            return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreate(periode) &&
+            periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.ferieninselanmeldungenStartdatum);
         }
         return undefined;
     }

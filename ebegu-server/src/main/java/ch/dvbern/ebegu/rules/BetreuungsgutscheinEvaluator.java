@@ -272,6 +272,12 @@ public class BetreuungsgutscheinEvaluator {
 		}
 	}
 
+	/**
+	 * Fuer das Auszahlen ist es relevant ob in einer VorgaengerVerfuegung schon etwas
+	 * ausbezahlt wurde. Wir schrieben daher den Zahlungsstatus der alten Zeitabschnitte
+	 * in die ueberlappenden neuen Zeitabschnitte
+	 * @param betreuung in deren zu berechnenend verfuegung die Zahlungsrelevanten Daten gesetzt wurden
+	 */
 	private void setZahlungRelevanteDaten(@Nonnull Betreuung betreuung) {
 		Verfuegung verfuegungZuBerechnen = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegungZuBerechnen == null) {

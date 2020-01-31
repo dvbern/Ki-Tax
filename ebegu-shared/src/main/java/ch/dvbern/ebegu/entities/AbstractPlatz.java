@@ -152,6 +152,13 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	public abstract void setVerfuegungPreview(@Nullable Verfuegung verfuegung);
 
+
+	/**
+	 *
+	 * @return wenn der Status der Betreuung so ist dass eine definitive Verfuegung vorhanden ist
+	 * gibt diese zurueck.
+	 * Ansonsten wird der im verfuegungPreview gespeicherte werd zurueck gegeben
+	 */
 	@Nullable
 	public Verfuegung getVerfuegungOrVerfuegungPreview() {
 		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
