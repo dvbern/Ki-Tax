@@ -166,7 +166,7 @@ public class VerfuegungEventConverterTest {
 
 		kind.setKindNummer(1);
 		kind.setGesuch(gesuch);
-		Verfuegung verfuegung = new Verfuegung(betreuung);
+		Verfuegung verfuegung = new Verfuegung();
 
 		VerfuegungZeitabschnitt defaultZeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
 		verfuegung.getZeitabschnitte().add(defaultZeitabschnitt);

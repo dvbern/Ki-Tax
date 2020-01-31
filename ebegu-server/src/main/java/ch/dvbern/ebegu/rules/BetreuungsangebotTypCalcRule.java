@@ -48,7 +48,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
 	}
 }

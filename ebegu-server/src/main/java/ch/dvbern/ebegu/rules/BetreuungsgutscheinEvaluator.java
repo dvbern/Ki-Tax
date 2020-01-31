@@ -165,11 +165,13 @@ public class BetreuungsgutscheinEvaluator {
 					// EBEGU-890)
 					continue;
 				}
-				if (platz.getBetreuungsstatus().isGeschlossenJA() && !isTagesschule) {
+				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus().isGeschlossenSchulamt()) {
 					// Verfuegte Betreuungen duerfen nicht neu berechnet werden
 					LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
-					// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
-					restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
+					if (platz.getBetreuungsstatus().isGeschlossenJA()) {
+						// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
+						restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
+					}
 					continue;
 				}
 
@@ -208,18 +210,15 @@ public class BetreuungsgutscheinEvaluator {
 				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
 
-
-				if (!isTagesschule) {
-					// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-					zeitabschnitte = MonatsRule.execute(zeitabschnitte);
-				}
+				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
+				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 
 				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 				zeitabschnitte = MutationsMerger.execute(platz, zeitabschnitte, locale);
 
 				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
-				// Daten, diese auch noch mergen
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
+				// Daten, diese auch noch mergen, ausser es ist Tagesschule
+				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, !isTagesschule);
 
 				// Die Verfügung erstellen
 				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird

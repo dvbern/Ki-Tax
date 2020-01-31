@@ -22,13 +22,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.MathUtil;
@@ -57,28 +52,15 @@ public class TSCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private BigDecimal totalKostenProWoche = BigDecimal.ZERO;
 
-	@Valid
-	@NotNull @Nonnull
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_tsCalculationResult_bgCalculationResult"), nullable = false)
-	private BGCalculationResult bgCalculationResult;
-
 
 	public TSCalculationResult() {
 	}
 
-	public TSCalculationResult(@Nonnull BGCalculationResult parent) {
-		this.bgCalculationResult = parent;
-	}
-
-	public TSCalculationResult(@Nullable TSCalculationResult toCopy) {
-		if (toCopy != null) {
-			this.betreuungszeitProWoche = toCopy.betreuungszeitProWoche;
-			this.verpflegungskosten = toCopy.verpflegungskosten;
-			this.gebuehrProStunde = toCopy.gebuehrProStunde;
-			this.totalKostenProWoche = toCopy.totalKostenProWoche;
-			this.bgCalculationResult = toCopy.bgCalculationResult;
-		}
+	public TSCalculationResult(@Nonnull TSCalculationResult toCopy) {
+		this.betreuungszeitProWoche = toCopy.betreuungszeitProWoche;
+		this.verpflegungskosten = toCopy.verpflegungskosten;
+		this.gebuehrProStunde = toCopy.gebuehrProStunde;
+		this.totalKostenProWoche = toCopy.totalKostenProWoche;
 	}
 
 	@Nonnull
@@ -115,15 +97,6 @@ public class TSCalculationResult extends AbstractEntity {
 
 	public void setTotalKostenProWoche(@Nonnull BigDecimal totalKostenProWoche) {
 		this.totalKostenProWoche = totalKostenProWoche;
-	}
-
-	@Nonnull
-	public BGCalculationResult getBgCalculationResult() {
-		return bgCalculationResult;
-	}
-
-	public void setBgCalculationResult(@Nonnull BGCalculationResult bgCalculationResult) {
-		this.bgCalculationResult = bgCalculationResult;
 	}
 
 	@Override

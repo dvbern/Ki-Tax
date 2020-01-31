@@ -160,6 +160,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 				target.setBelegungTagesschule(belegungTagesschule.copyBelegungTagesschule(new BelegungTagesschule(), copyType));
 			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			target.setVerfuegung(null);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

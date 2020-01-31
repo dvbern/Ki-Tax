@@ -28,8 +28,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -136,12 +139,16 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
 
+	@Valid
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "bgCalculationResult")
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_BGCalculationResult_tsCalculationResultMitBetreuung"), nullable = true)
 	private TSCalculationResult tsCalculationResultMitPaedagogischerBetreuung;
 
+	@Valid
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "bgCalculationResult")
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_BGCalculationResult_tsCalculationResultOhneBetreuung"), nullable = true)
 	private TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
 
 	@Transient
@@ -177,8 +184,12 @@ public class BGCalculationResult extends AbstractEntity {
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 
-		this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
-		this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultOhnePaedagogischerBetreuung);
+		if (toCopy.tsCalculationResultMitPaedagogischerBetreuung != null) {
+			this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
+		}
+		if (toCopy.tsCalculationResultOhnePaedagogischerBetreuung != null) {
+			this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultOhnePaedagogischerBetreuung);
+		}
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -370,13 +381,13 @@ public class BGCalculationResult extends AbstractEntity {
 
 		if (other.tsCalculationResultMitPaedagogischerBetreuung != null) {
 			if (this.tsCalculationResultMitPaedagogischerBetreuung == null) {
-				this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(this);
+				this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult();
 			}
 			this.tsCalculationResultMitPaedagogischerBetreuung.add(other.tsCalculationResultMitPaedagogischerBetreuung);
 		}
 		if (other.tsCalculationResultOhnePaedagogischerBetreuung != null) {
 			if (this.tsCalculationResultOhnePaedagogischerBetreuung == null) {
-				this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(this);
+				this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult();
 			}
 			this.tsCalculationResultOhnePaedagogischerBetreuung.add(other.tsCalculationResultOhnePaedagogischerBetreuung);
 		}
