@@ -72,6 +72,7 @@ public class TSCalculationResult extends AbstractEntity {
 			this.betreuungszeitProWoche = toCopy.betreuungszeitProWoche;
 			this.verpflegungskosten = toCopy.verpflegungskosten;
 			this.gebuehrProStunde = toCopy.gebuehrProStunde;
+			this.totalKostenProWoche = toCopy.totalKostenProWoche;
 			this.bgCalculationResult = toCopy.bgCalculationResult;
 		}
 	}
@@ -144,7 +145,7 @@ public class TSCalculationResult extends AbstractEntity {
 		TSCalculationResult that = (TSCalculationResult) other;
 		return Objects.equals(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
 			MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
-			MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde)&&
+			MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde) &&
 			MathUtil.isSame(totalKostenProWoche, that.totalKostenProWoche);
 	}
 
@@ -157,20 +158,7 @@ public class TSCalculationResult extends AbstractEntity {
 	}
 
 	public void add(@Nonnull TSCalculationResult other) {
-		betreuungszeitProWoche = MathUtil.DEFAULT.addNullSafe(this.betreuungszeitProWoche, other.betreuungszeitProWoche);
+		betreuungszeitProWoche = this.betreuungszeitProWoche + other.betreuungszeitProWoche;
 		verpflegungskosten = MathUtil.DEFAULT.addNullSafe(this.verpflegungskosten, other.verpflegungskosten);
-		gebuehrProStunde = MathUtil.DEFAULT.addNullSafe(this.gebuehrProStunde, other.gebuehrProStunde);
-	}
-
-	public static void add(@Nullable TSCalculationResult result, @Nullable TSCalculationResult other) {
-		if (other == null) {
-			return;
-		}
-		if (result == null) {
-			result = new TSCalculationResult();
-		}
-		result.betreuungszeitProWoche = MathUtil.DEFAULT.addNullSafe(result.betreuungszeitProWoche, other.betreuungszeitProWoche);
-		result.verpflegungskosten = MathUtil.DEFAULT.addNullSafe(result.verpflegungskosten, other.verpflegungskosten);
-		result.gebuehrProStunde = MathUtil.DEFAULT.addNullSafe(result.gebuehrProStunde, other.gebuehrProStunde);
 	}
 }
