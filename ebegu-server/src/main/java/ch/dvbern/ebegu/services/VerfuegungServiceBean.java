@@ -433,9 +433,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			Objects.requireNonNull(vorgaengerVerfuegung.getBetreuung());
 			vorgaengerVerfuegung.getBetreuung().setGueltig(false);
 		}
-		// setting all depending objects
-		verfuegung.setPlatz(platz);
-		platz.setVerfuegung(verfuegung);
 		verfuegung.getZeitabschnitte().forEach(verfZeitabsch -> verfZeitabsch.setVerfuegung(verfuegung));
 		authorizer.checkWriteAuthorization(verfuegung);
 
