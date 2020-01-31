@@ -32,13 +32,13 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
  * 2. Falls beide Angebote dasselbe Startdatum haben, wird die Kita mit dem höheren Pensum berücksichtigt.
  * 3. Falls beide Angebote dasselbe Startdatum und dasselbe Pensum haben, wird die Kita zuerst berücksichtigt, die als erstes erfasst wurde.
  */
-public class BetreuungComparator implements Comparator<AbstractPlatz>, Serializable {
+public class PlatzComparator implements Comparator<AbstractPlatz>, Serializable {
 
 	private static final long serialVersionUID = -309383917391346314L;
 
 	@Override
 	public int compare(AbstractPlatz platz1, AbstractPlatz platz2) {
-		if (platz1.getBetreuungsangebotTyp().isTagesschule() || platz2.getBetreuungsangebotTyp().isTagesschule()) {
+		if (!(platz1 instanceof Betreuung && platz2 instanceof Betreuung)) {
 			return 0;
 		}
 
