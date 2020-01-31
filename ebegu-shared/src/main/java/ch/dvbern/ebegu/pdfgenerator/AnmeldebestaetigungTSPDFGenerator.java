@@ -180,40 +180,15 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 								verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
 							.collect(Collectors.toList());
 					if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
-						document.add(createGebuehrTabelleTitle(true, false));
+						document.add(createGebuehrTabelleTitle(false, false));
 						PdfPTable gebuehrenTable = createGebuehrenTableHeader();
 						fillGebuehrenTable(gebuehrenTable, abschnitteOhneBetreuung, false);
 						document.add(gebuehrenTable);
 					}
 				}
 
-				document.add(new Paragraph("ALTE BERECHNUNG"));
-
-				boolean hasZeitAbschnittMitPadagogicherBetreuung =
-					AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule);
-				if (hasZeitAbschnittMitPadagogicherBetreuung) {
-					document.add(createGebuehrTabelleTitle(true, false));
-					PdfPTable gebuehrenTable = createGebuehrenTableHeader();
-					fillGebuehrenTable(gebuehrenTable, true);
-					document.add(gebuehrenTable);
-				}
-				if (AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittOhnePedagogischeBetreuung(anmeldungTagesschule)) {
-					document.add(createGebuehrTabelleTitle(false, AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule)));
-					PdfPTable gebuehrenTableOhnePedagogischeBetreuung = createGebuehrenTableHeader();
-					fillGebuehrenTable(gebuehrenTableOhnePedagogischeBetreuung, hasZeitAbschnittMitPadagogicherBetreuung);
-					document.add(gebuehrenTableOhnePedagogischeBetreuung);
-				}
-				Paragraph endCommunicationTitle = new Paragraph();
-				endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
-					getPageConfiguration().getFontBold()));
-				endCommunicationTitle.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				endCommunicationTitle.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				document.add(endCommunicationTitle);
-				Paragraph endCommunication = new Paragraph();
-				endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
-					getPageConfiguration().getFont()));
-				endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				bestaetigungUndGruesseElements.add(endCommunication);
+				// TODO (hefr) delete
+				berechnungBisher(document, bestaetigungUndGruesseElements);
 			}
 			bestaetigungUndGruesseElements.add(createParagraphGruss());
 			Paragraph bernAmtParagraph = new Paragraph();
@@ -221,6 +196,36 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			bestaetigungUndGruesseElements.add(bernAmtParagraph);
 			document.add(PdfUtil.createKeepTogetherTable(bestaetigungUndGruesseElements, 2, 0));
 		};
+	}
+
+	private void berechnungBisher(@Nonnull Document document, @Nonnull List<Element> bestaetigungUndGruesseElements) {
+		document.add(new Paragraph("ALTE BERECHNUNG"));
+
+		boolean hasZeitAbschnittMitPadagogicherBetreuung =
+			AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule);
+		if (hasZeitAbschnittMitPadagogicherBetreuung) {
+			document.add(createGebuehrTabelleTitle(true, false));
+			PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+			fillGebuehrenTable(gebuehrenTable, true);
+			document.add(gebuehrenTable);
+		}
+		if (AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittOhnePedagogischeBetreuung(anmeldungTagesschule)) {
+			document.add(createGebuehrTabelleTitle(false, AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule)));
+			PdfPTable gebuehrenTableOhnePedagogischeBetreuung = createGebuehrenTableHeader();
+			fillGebuehrenTable(gebuehrenTableOhnePedagogischeBetreuung, hasZeitAbschnittMitPadagogicherBetreuung);
+			document.add(gebuehrenTableOhnePedagogischeBetreuung);
+		}
+		Paragraph endCommunicationTitle = new Paragraph();
+		endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
+			getPageConfiguration().getFontBold()));
+		endCommunicationTitle.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		endCommunicationTitle.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		document.add(endCommunicationTitle);
+		Paragraph endCommunication = new Paragraph();
+		endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
+			getPageConfiguration().getFont()));
+		endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		bestaetigungUndGruesseElements.add(endCommunication);
 	}
 
 	private Paragraph createGebuehrTabelleTitle(boolean pedagogischerBetreut, boolean setSpacingBefore){
