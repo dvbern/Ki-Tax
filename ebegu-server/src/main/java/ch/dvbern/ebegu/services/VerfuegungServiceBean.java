@@ -430,8 +430,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(platz);
 		if (vorgaengerVerfuegungOptional.isPresent()) {
 			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOptional.get();
-			Objects.requireNonNull(vorgaengerVerfuegung.getBetreuung());
-			vorgaengerVerfuegung.getBetreuung().setGueltig(false);
+			Objects.requireNonNull(vorgaengerVerfuegung.getPlatz());
+			vorgaengerVerfuegung.getPlatz().setGueltig(false);
 		}
 		verfuegung.getZeitabschnitte().forEach(verfZeitabsch -> verfZeitabsch.setVerfuegung(verfuegung));
 		authorizer.checkWriteAuthorization(verfuegung);
