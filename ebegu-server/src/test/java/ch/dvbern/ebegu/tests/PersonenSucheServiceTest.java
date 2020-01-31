@@ -69,7 +69,7 @@ public class PersonenSucheServiceTest extends AbstractEbeguLoginTest {
 		EWKPerson kindResult = kinderResults.get(0);
 		Assert.assertEquals(LocalDate.of(2014,4,13), kindResult.getGeburtsdatum());
 		Assert.assertEquals("Simon", kindResult.getVorname());
-		Assert.assertEquals("Wälti[-Muster]", kindResult.getNachname());
+		Assert.assertEquals("Wälti-Muster", kindResult.getNachname());
 	}
 
 
