@@ -9,6 +9,7 @@ CREATE TABLE tscalculation_result_aud (
 	betreuungszeit_pro_woche INTEGER,
 	gebuehr_pro_stunde DECIMAL(19, 2),
 	verpflegungskosten DECIMAL(19, 2),
+	total_kosten_pro_woche DECIMAL(19, 2),
 	bg_calculation_result_id BINARY(16),
 	PRIMARY KEY (id, rev)
 );
@@ -23,6 +24,7 @@ CREATE TABLE tscalculation_result (
 	betreuungszeit_pro_woche INTEGER NOT NULL,
 	gebuehr_pro_stunde DECIMAL(19, 2) NOT NULL,
 	verpflegungskosten DECIMAL(19, 2) NOT NULL,
+	total_kosten_pro_woche DECIMAL(19, 2) NOT NULL,
 	bg_calculation_result_id BINARY(16) NOT NULL,
 	PRIMARY KEY (id)
 );
