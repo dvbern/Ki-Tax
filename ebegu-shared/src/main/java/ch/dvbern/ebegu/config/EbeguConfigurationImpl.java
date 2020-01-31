@@ -58,7 +58,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_PERSONENSUCHE_STS_KEYSTORE_PW = "ebegu.personensuche.sts.keystore.pw";
 	public static final String EBEGU_PERSONENSUCHE_STS_PRIVATE_KEY_ALIAS = "ebegu.personensuche.sts.private.key.alias";
 
-	public static final String EBEGU_PERSONENSUCHE_STS_BASE_PATH = "ebegu.personensuche.sts.wsdl";
+	public static final String EBEGU_PERSONENSUCHE_STS_BASE_PATH = "ebegu.personensuche.sts.base.path";
 	public static final String EBEGU_PERSONENSUCHE_STS_WSDL = "ebegu.personensuche.sts.wsdl";
 	public static final String EBEGU_PERSONENSUCHE_STS_ENDPOINT = "ebegu.personensuche.sts.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_WSDL = "ebegu.personensuche.sts.renewal.assertion.wsdl";
@@ -319,10 +319,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	@Override
 	public String getEbeguPersonensucheGERESEndpoint() {
-//		return getString(EBEGU_PERSONENSUCHE_GERES_ENDPOINT, "https://a5ku-www-geres-b.be.ch/ech/services/GeresResidentInfoService_v1801");
-		//todo homa scheinbar bin ich nicht fuer diesen endpunkt zugelassen
 		return getString(EBEGU_PERSONENSUCHE_GERES_ENDPOINT, "https://testv3-geres.be.ch/ech/services/GeresResidentInfoService_v1801");
-//		return getString(EBEGU_PERSONENSUCHE_GERES_ENDPOINT, "https://geres.be.ch/ech/services/GeresResidentInfoService_v1801");
+//		return getString(EBEGU_PERSONENSUCHE_GERES_ENDPOINT, "https://geres.be.ch/ech/services/GeresResidentInfoService_v1801");     // produktion
 
 
 	}
