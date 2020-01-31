@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,15 +40,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
+import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -81,6 +86,9 @@ public class VerfuegungResource {
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private ResourceHelper resourceHelper;
 
 	@Inject
 	private JaxBConverter converter;
@@ -183,6 +191,31 @@ public class VerfuegungResource {
 
 		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(gesuchId, betreuungId);
 		return converter.verfuegungToJax(persistedVerfuegung);
+	}
+
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
+	@Nonnull
+	@GET
+	@Path("/tagesschulanmeldung/uebernehmen/{gesuchId}/{anmeldungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxBetreuung anmeldungSchulamtUebernehmen(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
+		@Nonnull @NotNull @PathParam("anmeldungId") JaxId anmeldungJaxId) {
+
+		Objects.requireNonNull(gesuchJaxId.getId());
+		Objects.requireNonNull(anmeldungJaxId.getId());
+
+		String gesuchId = converter.toEntityId(gesuchJaxId);
+		String anmeldungId = converter.toEntityId(anmeldungJaxId);
+
+		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
+		resourceHelper.assertBetreuungStatusEqual(anmeldungId,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+
+		AnmeldungTagesschule persistedBetreuung = this.verfuegungService.anmeldungSchulamtUebernehmen(gesuchId, anmeldungId);
+
+		return converter.platzToJAX(persistedBetreuung);
 	}
 }
 
