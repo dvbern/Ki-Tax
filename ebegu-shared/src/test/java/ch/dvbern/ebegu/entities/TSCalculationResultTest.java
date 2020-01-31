@@ -34,34 +34,24 @@ public class TSCalculationResultTest {
 		tsCalculationResult.setGebuehrProStunde(BigDecimal.valueOf(15.5));
 		tsCalculationResult.setBetreuungszeitProWoche(118);
 		Assert.assertEquals("01:58", tsCalculationResult.getBetreuungszeitProWocheFormatted());
-		Assert.assertEquals(new BigDecimal("30.48"), tsCalculationResult.getTotalKostenProWoche());
 
 		tsCalculationResult.setBetreuungszeitProWoche(20);
 		Assert.assertEquals("00:20", tsCalculationResult.getBetreuungszeitProWocheFormatted());
-		Assert.assertEquals(new BigDecimal("5.17"), tsCalculationResult.getTotalKostenProWoche());
-
 
 		tsCalculationResult.setBetreuungszeitProWoche(480);
 		tsCalculationResult.setVerpflegungskosten(new BigDecimal(25));
 		Assert.assertEquals("08:00", tsCalculationResult.getBetreuungszeitProWocheFormatted());
-		Assert.assertEquals(new BigDecimal("149.00"), tsCalculationResult.getTotalKostenProWoche());
 
 		tsCalculationResult.setBetreuungszeitProWoche(40*60);
 		tsCalculationResult.setVerpflegungskosten(new BigDecimal(0));
 		Assert.assertEquals("40:00", tsCalculationResult.getBetreuungszeitProWocheFormatted());
-		Assert.assertEquals(new BigDecimal("620.00"), tsCalculationResult.getTotalKostenProWoche());
 
 		tsCalculationResult.setBetreuungszeitProWoche(0);
 		tsCalculationResult.setVerpflegungskosten(new BigDecimal(0));
 		Assert.assertEquals("00:00", tsCalculationResult.getBetreuungszeitProWocheFormatted());
-		Assert.assertEquals(new BigDecimal("0.00"), tsCalculationResult.getTotalKostenProWoche());
 
 		tsCalculationResult.setBetreuungszeitProWoche(0);
 		tsCalculationResult.setVerpflegungskosten(new BigDecimal(78.935));
 		Assert.assertEquals("00:00", tsCalculationResult.getBetreuungszeitProWocheFormatted());
-		Assert.assertEquals(new BigDecimal("78.94"), tsCalculationResult.getTotalKostenProWoche());
-
 	}
-
-
 }
