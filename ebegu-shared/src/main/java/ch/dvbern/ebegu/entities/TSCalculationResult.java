@@ -67,6 +67,10 @@ public class TSCalculationResult extends AbstractEntity {
 	public TSCalculationResult() {
 	}
 
+	public TSCalculationResult(@Nonnull BGCalculationResult parent) {
+		this.bgCalculationResult = parent;
+	}
+
 	public TSCalculationResult(@Nullable TSCalculationResult toCopy) {
 		if (toCopy != null) {
 			this.betreuungszeitProWoche = toCopy.betreuungszeitProWoche;
@@ -147,6 +151,16 @@ public class TSCalculationResult extends AbstractEntity {
 			MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
 			MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde) &&
 			MathUtil.isSame(totalKostenProWoche, that.totalKostenProWoche);
+	}
+
+	public static boolean isSameSichtbareDaten(@Nullable TSCalculationResult thisEntity, @Nullable TSCalculationResult otherEntity) {
+		return (thisEntity == null && otherEntity == null)
+			|| (thisEntity != null && otherEntity != null && (
+				Objects.equals(thisEntity.betreuungszeitProWoche, otherEntity.betreuungszeitProWoche) &&
+				MathUtil.isSame(thisEntity.verpflegungskosten, otherEntity.verpflegungskosten) &&
+				MathUtil.isSame(thisEntity.gebuehrProStunde, otherEntity.gebuehrProStunde) &&
+				MathUtil.isSame(thisEntity.totalKostenProWoche, otherEntity.totalKostenProWoche)
+		));
 	}
 
 	@Nonnull

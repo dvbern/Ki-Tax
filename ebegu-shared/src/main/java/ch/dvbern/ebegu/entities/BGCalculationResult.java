@@ -295,7 +295,13 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
 				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
 				(thisEntity.besondereBeduerfnisseBestaetigt == otherEntity.besondereBeduerfnisseBestaetigt) &&
-				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten)
+				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
+				TSCalculationResult.isSameSichtbareDaten(
+					thisEntity.tsCalculationResultMitPaedagogischerBetreuung,
+					otherEntity.tsCalculationResultMitPaedagogischerBetreuung) &&
+				TSCalculationResult.isSameSichtbareDaten(
+					thisEntity.tsCalculationResultOhnePaedagogischerBetreuung,
+					otherEntity.tsCalculationResultOhnePaedagogischerBetreuung)
 			));
 	}
 
@@ -364,13 +370,13 @@ public class BGCalculationResult extends AbstractEntity {
 
 		if (other.tsCalculationResultMitPaedagogischerBetreuung != null) {
 			if (this.tsCalculationResultMitPaedagogischerBetreuung == null) {
-				this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult();
+				this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(this);
 			}
 			this.tsCalculationResultMitPaedagogischerBetreuung.add(other.tsCalculationResultMitPaedagogischerBetreuung);
 		}
 		if (other.tsCalculationResultOhnePaedagogischerBetreuung != null) {
 			if (this.tsCalculationResultOhnePaedagogischerBetreuung == null) {
-				this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult();
+				this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(this);
 			}
 			this.tsCalculationResultOhnePaedagogischerBetreuung.add(other.tsCalculationResultOhnePaedagogischerBetreuung);
 		}
