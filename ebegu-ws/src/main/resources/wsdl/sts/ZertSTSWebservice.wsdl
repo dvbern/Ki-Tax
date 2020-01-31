@@ -14,11 +14,11 @@
         <xs:schema xmlns="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService"
             targetNamespace="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService">
 
-            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" schemaLocation="https://a6hu-www-sts-b.be.ch:443/securityService/zertsts/schemas/sv-context.xsd" />
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" schemaLocation="sv-context.xsd" />
 
-            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="https://a6hu-www-sts-b.be.ch:443/securityService/zertsts/schemas/sv-faults.xsd" />
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="sv-faults.xsd" />
 
-            <xs:include schemaLocation="https://a6hu-www-sts-b.be.ch:443/securityService/zertsts/schemas/zertsts.xsd" />
+            <xs:include schemaLocation="zertsts.xsd" />
 
         </xs:schema>
 

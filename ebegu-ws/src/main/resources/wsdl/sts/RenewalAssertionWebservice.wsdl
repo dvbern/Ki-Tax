@@ -16,10 +16,10 @@
         <xs:schema xmlns="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService"
             targetNamespace="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService">
 
-            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" schemaLocation="https://a6hu-www-sts-b.be.ch:443/securityService/samlrenew/schemas/sv-context.xsd" />
-            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="https://a6hu-www-sts-b.be.ch:443/securityService/samlrenew/schemas/sv-faults.xsd" />
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" schemaLocation="sv-context.xsd" />
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="sv-faults.xsd" />
 
-            <xs:include schemaLocation="https://a6hu-www-sts-b.be.ch:443/securityService/samlrenew/schemas/samlrenew.xsd" />
+            <xs:include schemaLocation="samlrenew.xsd" />
         </xs:schema>
 
     </wsdl:types>
