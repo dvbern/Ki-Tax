@@ -97,13 +97,13 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 
 		if (dauerProWocheInMinutenMitBetreuung > 0) {
 			TSCalculationResult resultMitBetreuung = new TSCalculationResult();
-			resultMitBetreuung.setBetreuungszeitProWoche(BigDecimal.valueOf(dauerProWocheInMinutenMitBetreuung));
+			resultMitBetreuung.setBetreuungszeitProWoche(Long.valueOf(dauerProWocheInMinutenMitBetreuung).intValue());
 			resultMitBetreuung.setVerpflegungskosten(verpflegKostenProWocheMitBetreuung);
 			zeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultMitPaedagogischerBetreuung(resultMitBetreuung);
 		}
 		if (dauerProWocheInMinutenOhneBetreuung > 0) {
 			TSCalculationResult resultOhneBetreuung = new TSCalculationResult();
-			resultOhneBetreuung.setBetreuungszeitProWoche(BigDecimal.valueOf(dauerProWocheInMinutenOhneBetreuung));
+			resultOhneBetreuung.setBetreuungszeitProWoche(Long.valueOf(dauerProWocheInMinutenOhneBetreuung).intValue());
 			resultOhneBetreuung.setVerpflegungskosten(verpflegKostenProWocheOhneBetreuung);
 			zeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultOhnePaedagogischerBetreuung(resultOhneBetreuung);
 		}
