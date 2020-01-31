@@ -53,6 +53,10 @@ public class TSCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private BigDecimal gebuehrProStunde = BigDecimal.ZERO;
 
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal totalKostenProWoche = BigDecimal.ZERO;
+
 	@Valid
 	@NotNull @Nonnull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -100,6 +104,15 @@ public class TSCalculationResult extends AbstractEntity {
 	}
 
 	@Nonnull
+	public BigDecimal getTotalKostenProWoche() {
+		return totalKostenProWoche;
+	}
+
+	public void setTotalKostenProWoche(@Nonnull BigDecimal totalKostenProWoche) {
+		this.totalKostenProWoche = totalKostenProWoche;
+	}
+
+	@Nonnull
 	public BGCalculationResult getBgCalculationResult() {
 		return bgCalculationResult;
 	}
@@ -113,7 +126,7 @@ public class TSCalculationResult extends AbstractEntity {
 		String sb = "betreuungszeitProWoche=" + getBetreuungszeitProWocheFormatted()
 			+ ", verpflegungskosten=" + verpflegungskosten
 			+ ", gebuehrProStunde=" + gebuehrProStunde
-			+ ", totalKostenProWoche=" + getTotalKostenProWoche();
+			+ ", totalKostenProWoche=" + totalKostenProWoche;
 		return sb;
 	}
 
@@ -131,16 +144,8 @@ public class TSCalculationResult extends AbstractEntity {
 		TSCalculationResult that = (TSCalculationResult) other;
 		return Objects.equals(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
 			MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
-			MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde);
-	}
-
-	@Nonnull
-	public BigDecimal getTotalKostenProWoche() {
-		BigDecimal totalKostenMinuten =
-			MathUtil.EXACT.multiply(getGebuehrProStunde(), BigDecimal.valueOf(getBetreuungszeitProWoche()));
-		totalKostenMinuten = MathUtil.EXACT.divide(totalKostenMinuten, new BigDecimal(60));
-		// todo homa review KIBON-1016 hefr fragen wollen wir heir default runden? wird damit nicht gerechnet?
-		return MathUtil.DEFAULT.addNullSafe(totalKostenMinuten, this.getVerpflegungskosten());
+			MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde)&&
+			MathUtil.isSame(totalKostenProWoche, that.totalKostenProWoche);
 	}
 
 	@Nonnull
