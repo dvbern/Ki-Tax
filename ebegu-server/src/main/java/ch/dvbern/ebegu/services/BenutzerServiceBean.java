@@ -937,8 +937,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(methodName, "No User is logged "
 				+ "in"));
 
-		// TODO reviewer KIBON-854: scheinbar sind die berechtigungen nicht geladen, weswegen ich hier zuerst ein
-		//  getCurrentBerechtigung() mache. somit werden sie geladen. das könnte aber ein allgemeines problem sein
+		// Scheinbar sind die berechtigungen nicht geladen, weswegen ich hier zuerst ein
+		// getCurrentBerechtigung() mache. somit werden sie geladen. das könnte aber ein allgemeines problem sein
 		user.getCurrentBerechtigung();
 		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
 
