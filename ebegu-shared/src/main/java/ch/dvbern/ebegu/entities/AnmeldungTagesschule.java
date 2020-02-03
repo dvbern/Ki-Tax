@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,12 +26,9 @@ import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -68,11 +63,6 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  mappedBy = "anmeldungTagesschule", fetch =
-		FetchType.LAZY)
-	@OrderBy("gueltigkeit ASC")
-	private Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = new TreeSet<>();
 
 	@Nullable
 	@Valid
@@ -180,14 +170,5 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 				this.setBelegungTagesschule(that.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
 			}
 		}
-	}
-
-	public Set<AnmeldungTagesschuleZeitabschnitt> getAnmeldungTagesschuleZeitabschnitts() {
-		return anmeldungTagesschuleZeitabschnitts;
-	}
-
-	public void setAnmeldungTagesschuleZeitabschnitts(Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts) {
-		this.anmeldungTagesschuleZeitabschnitts.clear();
-		this.anmeldungTagesschuleZeitabschnitts.addAll(anmeldungTagesschuleZeitabschnitts);
 	}
 }

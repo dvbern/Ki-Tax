@@ -21,18 +21,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -248,7 +244,6 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	@Test
 	public void createAnmeldebestaetigungenTagesschule() throws FileNotFoundException, InvoiceGeneratorException {
 		AnmeldungTagesschule anmeldungTagesschule = prepareAnmeldungTagesschuleWithModule();
-		fillAnmeldungTagesschuleZeitabschnitten(anmeldungTagesschule);
 
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
 			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF,
@@ -263,7 +258,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	private AnmeldungTagesschule prepareAnmeldungTagesschuleWithModule() {
 		KindContainer kindContainer = gesuch_tagesschule.getKindContainers().iterator().next();
-		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschule(kindContainer, gesuch_tagesschule.getGesuchsperiode());
+		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch_tagesschule.getGesuchsperiode());
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 			rechner.calculate(verfuegungZeitabschnitt, getParameter());
@@ -272,34 +267,6 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		verfuegungPreview.setZeitabschnitte(zeitabschnitte);
 		anmeldungTagesschule.setVerfuegungPreview(verfuegungPreview);
 		return anmeldungTagesschule;
-	}
-
-	private void fillAnmeldungTagesschuleZeitabschnitten(AnmeldungTagesschule anmeldungTagesschule){
-		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnittSet = new TreeSet<>();
-		AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt = new AnmeldungTagesschuleZeitabschnitt();
-		anmeldungTagesschuleZeitabschnitt.setGueltigkeit(gesuch_tagesschule.getGesuchsperiode().getGueltigkeit());
-		anmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(BigDecimal.ZERO);
-		anmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(new BigDecimal(12));
-		anmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(true);
-		anmeldungTagesschuleZeitabschnitt.setGebuehrProStunde(new BigDecimal(10.00));
-		anmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(new BigDecimal(22.00));
-		anmeldungTagesschuleZeitabschnitt.setTotalKostenProWoche(new BigDecimal(142.00));
-		anmeldungTagesschuleZeitabschnitt.setAnmeldungTagesschule(anmeldungTagesschule);
-		anmeldungTagesschuleZeitabschnittSet.add(anmeldungTagesschuleZeitabschnitt);
-
-		AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittOhne=
-			new AnmeldungTagesschuleZeitabschnitt();
-		anmeldungTagesschuleZeitabschnittOhne.setGueltigkeit(gesuch_tagesschule.getGesuchsperiode().getGueltigkeit());
-		anmeldungTagesschuleZeitabschnittOhne.setBetreuungsminutenProWoche(BigDecimal.ZERO);
-		anmeldungTagesschuleZeitabschnittOhne.setBetreuungsstundenProWoche(new BigDecimal(9));
-		anmeldungTagesschuleZeitabschnittOhne.setPedagogischBetreut(false);
-		anmeldungTagesschuleZeitabschnittOhne.setGebuehrProStunde(new BigDecimal(5.00));
-		anmeldungTagesschuleZeitabschnittOhne.setVerpflegungskosten(new BigDecimal(22.00));
-		anmeldungTagesschuleZeitabschnittOhne.setTotalKostenProWoche(new BigDecimal(67.00));
-		anmeldungTagesschuleZeitabschnittOhne.setAnmeldungTagesschule(anmeldungTagesschule);
-		anmeldungTagesschuleZeitabschnittSet.add(anmeldungTagesschuleZeitabschnittOhne);
-
-		anmeldungTagesschule.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnittSet);
 	}
 
 	@Test

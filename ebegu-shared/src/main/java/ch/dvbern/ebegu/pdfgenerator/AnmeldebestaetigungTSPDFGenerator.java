@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -41,7 +40,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
-import ch.dvbern.ebegu.util.AnmeldungTagesschuleZeitabschnittUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
@@ -153,79 +151,52 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			} else {
 
 				Verfuegung verfuegung = anmeldungTagesschule.getVerfuegungOrVerfuegungPreview();
+				Objects.requireNonNull(verfuegung);
 
-				// TODO (hefr) die neue Berechnung; Später nur diese und Objects.requireNonNull(verfuegung);
-				if (verfuegung != null) {
-					Objects.requireNonNull(verfuegung);
-
-					document.add(new Paragraph("NEUE BERECHNUNG"));
-
-					List<VerfuegungZeitabschnitt> abschnitteMitBetreuung =
-						verfuegung.getZeitabschnitte()
-							.stream()
-							.filter(verfuegungZeitabschnitt ->
-								verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() != null)
-							.collect(Collectors.toList());
-					if (CollectionUtils.isNotEmpty(abschnitteMitBetreuung)) {
-						document.add(createGebuehrTabelleTitle(true, false));
-						PdfPTable gebuehrenTable = createGebuehrenTableHeader();
-						fillGebuehrenTable(gebuehrenTable, abschnitteMitBetreuung, true);
-						document.add(gebuehrenTable);
-					}
-
-					List<VerfuegungZeitabschnitt> abschnitteOhneBetreuung =
-						verfuegung.getZeitabschnitte()
-							.stream()
-							.filter(verfuegungZeitabschnitt ->
-								verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
-							.collect(Collectors.toList());
-					if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
-						document.add(createGebuehrTabelleTitle(false, false));
-						PdfPTable gebuehrenTable = createGebuehrenTableHeader();
-						fillGebuehrenTable(gebuehrenTable, abschnitteOhneBetreuung, false);
-						document.add(gebuehrenTable);
-					}
+				List<VerfuegungZeitabschnitt> abschnitteMitBetreuung =
+					verfuegung.getZeitabschnitte()
+						.stream()
+						.filter(verfuegungZeitabschnitt ->
+							verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() != null)
+						.collect(Collectors.toList());
+				if (CollectionUtils.isNotEmpty(abschnitteMitBetreuung)) {
+					document.add(createGebuehrTabelleTitle(true, false));
+					PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+					fillGebuehrenTable(gebuehrenTable, abschnitteMitBetreuung, true);
+					document.add(gebuehrenTable);
 				}
 
-				// TODO (hefr) delete
-				berechnungBisher(document, bestaetigungUndGruesseElements);
+				List<VerfuegungZeitabschnitt> abschnitteOhneBetreuung =
+					verfuegung.getZeitabschnitte()
+						.stream()
+						.filter(verfuegungZeitabschnitt ->
+							verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
+						.collect(Collectors.toList());
+				if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
+					document.add(createGebuehrTabelleTitle(false, false));
+					PdfPTable gebuehrenTable = createGebuehrenTableHeader();
+					fillGebuehrenTable(gebuehrenTable, abschnitteOhneBetreuung, false);
+					document.add(gebuehrenTable);
+				}
 			}
+			Paragraph endCommunicationTitle = new Paragraph();
+			endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
+				getPageConfiguration().getFontBold()));
+			endCommunicationTitle.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			endCommunicationTitle.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			document.add(endCommunicationTitle);
+			Paragraph endCommunication = new Paragraph();
+			endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
+				getPageConfiguration().getFont()));
+			endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			bestaetigungUndGruesseElements.add(endCommunication);
+
 			bestaetigungUndGruesseElements.add(createParagraphGruss());
 			Paragraph bernAmtParagraph = new Paragraph();
 			bernAmtParagraph.add(new Phrase(translate(ABT_BILDUNG_BERN), getPageConfiguration().getFont()));
 			bestaetigungUndGruesseElements.add(bernAmtParagraph);
 			document.add(PdfUtil.createKeepTogetherTable(bestaetigungUndGruesseElements, 2, 0));
 		};
-	}
-
-	private void berechnungBisher(@Nonnull Document document, @Nonnull List<Element> bestaetigungUndGruesseElements) {
-		document.add(new Paragraph("ALTE BERECHNUNG"));
-
-		boolean hasZeitAbschnittMitPadagogicherBetreuung =
-			AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule);
-		if (hasZeitAbschnittMitPadagogicherBetreuung) {
-			document.add(createGebuehrTabelleTitle(true, false));
-			PdfPTable gebuehrenTable = createGebuehrenTableHeader();
-			fillGebuehrenTable(gebuehrenTable, true);
-			document.add(gebuehrenTable);
-		}
-		if (AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittOhnePedagogischeBetreuung(anmeldungTagesschule)) {
-			document.add(createGebuehrTabelleTitle(false, AnmeldungTagesschuleZeitabschnittUtil.hasZeitabschnittMitPedagogischerBetreuung(anmeldungTagesschule)));
-			PdfPTable gebuehrenTableOhnePedagogischeBetreuung = createGebuehrenTableHeader();
-			fillGebuehrenTable(gebuehrenTableOhnePedagogischeBetreuung, hasZeitAbschnittMitPadagogicherBetreuung);
-			document.add(gebuehrenTableOhnePedagogischeBetreuung);
-		}
-		Paragraph endCommunicationTitle = new Paragraph();
-		endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
-			getPageConfiguration().getFontBold()));
-		endCommunicationTitle.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		endCommunicationTitle.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		document.add(endCommunicationTitle);
-		Paragraph endCommunication = new Paragraph();
-		endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
-			getPageConfiguration().getFont()));
-		endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		bestaetigungUndGruesseElements.add(endCommunication);
 	}
 
 	private Paragraph createGebuehrTabelleTitle(boolean pedagogischerBetreut, boolean setSpacingBefore){
@@ -385,31 +356,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(VERPFLEGUNGSKOSTEN_PRO_WOCHE), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(TOTAL_PRO_WOCHE), Color.LIGHT_GRAY));
 		return table;
-	}
-
-	private void fillGebuehrenTable(PdfPTable table, boolean mitPedagogischerBetreuug) {
-		for (AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt :
-			anmeldungTagesschule.getAnmeldungTagesschuleZeitabschnitts()) {
-			if (anmeldungTagesschuleZeitabschnitt.isPedagogischBetreut() == mitPedagogischerBetreuug) {
-				table.addCell(createCell(Element.ALIGN_RIGHT,
-					Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigAb()),
-					null));
-				table.addCell(createCell(Element.ALIGN_RIGHT,
-					Constants.DATE_FORMATTER.format(anmeldungTagesschuleZeitabschnitt.getGueltigkeit().getGueltigBis()),
-					null));
-				table.addCell(createCell(Element.ALIGN_RIGHT,
-					anmeldungTagesschuleZeitabschnitt.getBetreuungszeitFormatted(),
-					null));
-				table.addCell(createCell(Element.ALIGN_RIGHT,
-					CHF + anmeldungTagesschuleZeitabschnitt.getGebuehrProStunde(), null));
-				table.addCell(createCell(Element.ALIGN_RIGHT,
-					CHF + anmeldungTagesschuleZeitabschnitt.getVerpflegungskosten(),
-					null));
-				table.addCell(createCell(Element.ALIGN_RIGHT,
-					CHF + anmeldungTagesschuleZeitabschnitt.getTotalKostenProWoche(),
-					null));
-			}
-		}
 	}
 
 	private void fillGebuehrenTable(PdfPTable table, List<VerfuegungZeitabschnitt> abschnitte, boolean mitPedagogischerBetreuug) {

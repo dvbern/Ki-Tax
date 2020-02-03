@@ -154,8 +154,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Inject
 	private PrincipalBean principalBean;
 	@Inject
-	private TagesschuleZeitabschnittService tagesschuleZeitabschnittService;
-	@Inject
 	private GeneratedDokumentService generatedDokumentService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
@@ -377,19 +375,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				betreuung.getId());
 		}
 		return persistedBetreuung;
-	}
-
-	@Override
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung anmeldung) {
-		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
-		Objects.requireNonNull(anmeldung.getOwningGesuchId());
-		AbstractAnmeldung persistedAnmeldung =
-			tagesschuleZeitabschnittService.generateAndPersistZeitabschnitte(anmeldung.getOwningGesuchId(),
-				anmeldung.getId());
-		return persistedAnmeldung;
 	}
 
 	@Override

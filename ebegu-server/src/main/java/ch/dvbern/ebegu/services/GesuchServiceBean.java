@@ -359,9 +359,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					kindContainerToWorkWith.getAnmeldungenTagesschule().toArray(new AnmeldungTagesschule[kindContainerToWorkWith.getAnmeldungenTagesschule().size()]);
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
-					//TODO (hefr) hier wird es beim VERFUEGEN STARTEN auf UEBERNOMMEN gesetzt
 					if (anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)) {
-						this.betreuungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
 						this.verfuegungService.anmeldungSchulamtUebernehmen(gesuch.getId(), anmeldungTagesschule.getId());
 					}
 				}
