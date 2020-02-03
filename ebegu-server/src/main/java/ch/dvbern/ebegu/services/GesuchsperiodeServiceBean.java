@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FerieninselStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -102,6 +103,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	private ModulTagesschuleService modulTagesschuleService;
 
 	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
@@ -144,6 +148,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
 				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+
+				//Die Gemeinde Gesuchsperiode Stammdaten sollen auch für die neue Gesuchsperiode übernommen werden
+				gemeindeService.copyGesuchsperiodeGemeindeStammdaten(gesuchsperiode, lastGesuchsperiode);
 
 				//copy erlaeuterung verfuegung from previos Gesuchperiode
 				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.getVerfuegungErlaeuterungenDe());
@@ -245,7 +252,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			"deleteGesuchsperiodeAndGesuche",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			gesuchsPeriodeId));
-		LOGGER.info("Handling Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
+		LOGGER.info("Handling deleton of Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
 		if (gesuchsperiode.getStatus() == GesuchsperiodeStatus.GESCHLOSSEN) {
 			// Gesuche der Periode loeschen
 			Collection<Gesuch> gesucheOfPeriode =
@@ -273,6 +280,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				modulTagesschuleService.findEinstellungenTagesschuleByGesuchsperiode(gesuchsperiode);
 			for (EinstellungenTagesschule einstellungenTagesschule : einstellungenTagesschuleList) {
 				persistence.remove(einstellungenTagesschule);
+			}
+
+			// GemeindeGesuchsperiodeStammdaten dieser Gesuchsperiode loeschen
+			Collection<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeList =
+				gemeindeService.findGemeindeStammdatenGesuchsperiode(gesuchsperiode);
+			for(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode: gemeindeStammdatenGesuchsperiodeList){
+				persistence.remove(gemeindeStammdatenGesuchsperiode);
 			}
 
 			// Einstellungen dieser Gesuchsperiode loeschen

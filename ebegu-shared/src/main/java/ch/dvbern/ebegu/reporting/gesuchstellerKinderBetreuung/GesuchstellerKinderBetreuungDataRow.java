@@ -44,7 +44,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String gs1Zusatzzeile;
 	@Nullable private String gs1Plz;
 	@Nullable private String gs1Ort;
-	@Nullable private String gs1EwkId;
 	@Nullable private Boolean gs1Diplomatenstatus;
 	private Integer gs1EwpAngestellt;
 	private Integer gs1EwpAusbildung;
@@ -61,7 +60,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String gs2Zusatzzeile;
 	@Nullable private String gs2Plz;
 	@Nullable private String gs2Ort;
-	@Nullable private String gs2EwkId;
 	@Nullable private Boolean gs2Diplomatenstatus;
 	private Integer gs2EwpAngestellt;
 	private Integer gs2EwpAusbildung;
@@ -248,15 +246,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public String getGs1EwkId() {
-		return gs1EwkId;
-	}
-
-	public void setGs1EwkId(@Nullable String gs1EwkId) {
-		this.gs1EwkId = gs1EwkId;
-	}
-
-	@Nullable
 	public Boolean getGs1Diplomatenstatus() {
 		return gs1Diplomatenstatus;
 	}
@@ -366,15 +355,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setGs2Ort(@Nullable String gs2Ort) {
 		this.gs2Ort = gs2Ort;
-	}
-
-	@Nullable
-	public String getGs2EwkId() {
-		return gs2EwkId;
-	}
-
-	public void setGs2EwkId(@Nullable String gs2EwkId) {
-		this.gs2EwkId = gs2EwkId;
 	}
 
 	@Nullable

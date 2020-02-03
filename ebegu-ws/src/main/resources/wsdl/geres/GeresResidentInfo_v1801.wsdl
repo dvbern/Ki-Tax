@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="GeresResidentInfoService" targetNamespace="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoService"
+		xmlns="http://schemas.xmlsoap.org/wsdl/"
+			 xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+			 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			 xmlns:tns="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoService"
+			 xmlns:echtype="http://geres.bedag.ch/schemas/20180101/GeresEchTypes"
+			 xmlns:xhtml="http://www.w3.org/1999/xhtml"
+			 >
+
+	<documentation>
+		Web service for querying person information from the eCH-Server based on eCH-0020v3 forgiving.
+		<xhtml:br />
+		Developer L. Kuster, I. Marcu, J. Gnos
+	</documentation>
+
+	<!-- Data types used by the web service -->
+	<types>
+		<xs:schema
+			targetNamespace="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoService"
+			elementFormDefault="qualified">
+			<xs:include schemaLocation="GeresResidentInfo.xsd" />
+		</xs:schema>
+	</types>
+
+	<!-- Requests -->
+	<message name="ResidentInfoFull">
+		<part name="parameters" element="tns:ResidentInfoFull" />
+	</message>
+	<message name="Test" />
+	<message name="ResidentInfoFast">
+		<part name="parameters" element="tns:ResidentInfoFast" />
+	</message>
+
+	<!-- Response -->
+	<message name="ResidentInfoFullResponse">
+		<part name="parameters" element="tns:ResidentInfoFullResponse" />
+	</message>
+	<message name="TestResponse">
+		<part name="parameters" element="echtype:TestResponse" />
+	</message>
+	<message name="ResidentInfoFastResponse">
+		<part name="parameters" element="tns:ResidentInfoFastResponse" />
+	</message>
+
+	<!-- Errors/Warnings. -->
+	<message name="InfrastructureFault">
+		<part name="error" element="echtype:InfrastructureFault" />
+	</message>
+	<message name="PermissionDeniedFault">
+		<part name="error" element="echtype:PermissionDeniedFault" />
+	</message>
+	<message name="InvalidArgumentsFault">
+		<part name="error" element="echtype:InvalidArgumentsFault" />
+	</message>
+
+	<!-- Define the web service operations. -->
+	<portType name="ResidentInfoPortType">
+		<documentation>Web service operations.</documentation>
+		<operation name="ResidentInfoFull">
+			<documentation>Person Information Query with all attributes in result
+				set</documentation>
+			<input message="tns:ResidentInfoFull" />
+			<output message="tns:ResidentInfoFullResponse" />
+			<fault name="InfrastructureFault" message="tns:InfrastructureFault" />
+			<fault name="PermissionDeniedFault" message="tns:PermissionDeniedFault" />
+			<fault name="InvalidArgumentsFault" message="tns:InvalidArgumentsFault" />
+		</operation>
+		<operation name="Test">
+			<documentation>Verify that the ResidentInfo service is active.
+			</documentation>
+			<input message="tns:Test" />
+			<output message="tns:TestResponse" />
+			<fault name="InfrastructureFault" message="tns:InfrastructureFault" />
+			<fault name="PermissionDeniedFault" message="tns:PermissionDeniedFault" />
+		</operation>
+		<operation name="ResidentInfoFast">
+			<documentation>Person Information Query with reduced, but faster
+				result set</documentation>
+			<input message="tns:ResidentInfoFast" />
+			<output message="tns:ResidentInfoFastResponse" />
+			<fault name="InfrastructureFault" message="tns:InfrastructureFault" />
+			<fault name="PermissionDeniedFault" message="tns:PermissionDeniedFault" />
+			<fault name="InvalidArgumentsFault" message="tns:InvalidArgumentsFault" />
+		</operation>
+	</portType>
+
+	<binding name="GeresResidentInfoSOAPBinding" type="tns:ResidentInfoPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="ResidentInfoFull">
+			<soap:operation soapAction="ResidentInfoFull" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="InfrastructureFault">
+				<soap:fault name="InfrastructureFault" use="literal" />
+			</fault>
+			<fault name="PermissionDeniedFault">
+				<soap:fault name="PermissionDeniedFault" use="literal" />
+			</fault>
+			<fault name="InvalidArgumentsFault">
+				<soap:fault name="InvalidArgumentsFault" use="literal" />
+			</fault>
+		</operation>
+		<operation name="Test">
+			<soap:operation soapAction="Test" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="InfrastructureFault">
+				<soap:fault name="InfrastructureFault" use="literal" />
+			</fault>
+			<fault name="PermissionDeniedFault">
+				<soap:fault name="PermissionDeniedFault" use="literal" />
+			</fault>
+		</operation>
+		<operation name="ResidentInfoFast">
+			<soap:operation soapAction="ResidentInfoFast" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="InfrastructureFault">
+				<soap:fault name="InfrastructureFault" use="literal" />
+			</fault>
+			<fault name="PermissionDeniedFault">
+				<soap:fault name="PermissionDeniedFault" use="literal" />
+			</fault>
+			<fault name="InvalidArgumentsFault">
+				<soap:fault name="InvalidArgumentsFault" use="literal" />
+			</fault>
+		</operation>
+	</binding>
+
+	<service name="GeresResidentInfoService">
+		<documentation>
+			Service for querying Geres person data.
+		</documentation>
+		<port name="ResidentInfoPort" binding="tns:GeresResidentInfoSOAPBinding">
+			<soap:address location="urn:DynamicEndpoint" />
+		</port>
+	</service>
+</definitions>

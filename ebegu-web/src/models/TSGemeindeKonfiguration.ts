@@ -57,6 +57,11 @@ export class TSGemeindeKonfiguration {
         return EbeguUtil.isNotNullOrUndefined(this.konfigTagesschuleAktivierungsdatum);
     }
 
+    public isTagesschulAnmeldungBeforePeriode(): boolean {
+        return this.hasTagesschulenAnmeldung()
+            && this.konfigTagesschuleAktivierungsdatum.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);
+    }
+
     public initProperties(): void {
         this.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
         this.konfigKontingentierung = false;

@@ -48,67 +48,63 @@
         <dv-accordion-tab
             *ngFor="let einstellungGP of stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule; trackBy:
         trackById; let i = index"
-            [tabid]="i">
-            <tab-title>
-                <div class="message-header">
-                    <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
-                </div>
-            </tab-title>
-            <tab-body>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <table class="table fixedtable table-hover" title="Title">
-                            <thead>
-                            <tr class="no-border-top">
-                                <th translate>MODUL_BEZEICHNUNG</th>
-                                <th translate>MODUL_ZEITRAUM</th>
-                                <th translate>MODUL_VERPFLEGUNG</th>
-                                <th translate>MODUL_VERFUEGBAR</th>
-                                <th translate>MODUL_INTERVALL</th>
-                                <th *ngIf="editMode"></th>
-                            </tr>
-                            </thead>
-                            <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
-                            <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier">
-                                <td title="{{getBezeichnung(group)}}"
-                                    (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                    <span>{{getBezeichnung(group)}}</span>
-                                </td>
-                                <td title="{{group.getZeitraumString()}}"
-                                    (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                    {{group.getZeitraumString()}}
-                                </td>
-                                <td title="{{group.verpflegungskosten}}"
-                                    (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                    {{group.verpflegungskosten}}
-                                </td>
-                                <td title="{{getWochentageAsString(group)}}"
-                                    (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                    {{getWochentageAsString(group)}}
-                                </td>
-                                <td title="{{group.intervall | translate}}"
-                                    (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                    {{group.intervall | translate}}
-                                </td>
-                                <td *ngIf="editMode">
-                                    <button type="button" class="dv-btn dv-btn-operation"
-                                            (click)="editModulTagesschuleGroup(einstellungGP, group)">
-                                        <i class="fa fa-lg fa-edit"></i>
-                                    </button>
-                                    &nbsp;
-                                    <button type="button" class="dv-btn dv-btn-operation"
-                                            (click)="removeModulTagesschuleGroup(einstellungGP, group)">
-                                        <i class="fa fa-lg fa-trash-o"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length === 0">
-                            <tr>
-                                <td colspan="6" class="empty-table" translate>KEIN_EINTRAG</td>
-                            </tr>
-                            </tbody>
-                        </table>
+        [tabid]="i">
+        <tab-title>
+            <div class="message-header">
+                <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
+            </div>
+        </tab-title>
+        <tab-body>
+            <div>
+
+                <table class="table fixedtable table-hover" title="Title">
+                    <thead>
+                    <tr>
+                        <th translate>MODUL_BEZEICHNUNG</th>
+                        <th translate>MODUL_ZEITRAUM</th>
+                        <th translate>MODUL_VERPFLEGUNG</th>
+                        <th translate>MODUL_VERFUEGBAR</th>
+                        <th translate>MODUL_INTERVALL</th>
+                        <th *ngIf="editMode"></th>
+                    </tr>
+                    </thead>
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
+						<tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier">
+							<td title="{{getBezeichnung(group)}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                <span>{{getBezeichnung(group)}}</span>
+							</td>
+							<td title="{{group.getZeitraumString()}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{group.getZeitraumString()}}
+							</td>
+							<td title="{{group.verpflegungskosten}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{group.verpflegungskosten}}
+							</td>
+							<td title="{{getWochentageAsString(group)}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{getWochentageAsString(group)}}
+							</td>
+							<td title="{{group.intervall | translate}}" (click)="editModulTagesschuleGroup(einstellungGP, group)">
+								{{group.intervall | translate}}
+							</td>
+							<td *ngIf="editMode" [title]="getEditDeleteButtonTooltip(einstellungGP, group)">
+                                <button type="button" class="dv-btn dv-btn-operation" (click)="editModulTagesschuleGroup(einstellungGP, group)"
+                                [disabled]="!canEditModule(einstellungGP, group)">
+                                    <i class="fa fa-lg fa-edit"></i>
+                                </button>
+                                &nbsp;
+								<button type="button" class="dv-btn dv-btn-operation"
+                                        (click)="removeModulTagesschuleGroup(einstellungGP, group)"
+                                        [disabled]="!canEditModule(einstellungGP, group)">
+									<i class="fa fa-lg fa-trash-o"></i>
+								</button>
+							</td>
+						</tr>
+                    </tbody>
+                    <tbody *ngIf="einstellungGP.modulTagesschuleGroups.length === 0">
+						<tr>
+							<td colspan="6" class="empty-table" translate>KEIN_EINTRAG</td>
+						</tr>
+                    </tbody>
+                </table>
 
                         <div>
                             <div class="form-group">

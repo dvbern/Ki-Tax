@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,7 +22,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -33,7 +31,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
@@ -41,18 +38,12 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
-import ch.dvbern.ebegu.services.PersonenSucheService;
-import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -66,9 +57,6 @@ public class GesuchstellerResource {
 
 	@Inject
 	private GesuchstellerService gesuchstellerService;
-
-	@Inject
-	private PersonenSucheService personenSucheService;
 
 	@Inject
 	private GesuchService gesuchService;
@@ -132,60 +120,5 @@ public class GesuchstellerResource {
 		GesuchstellerContainer gesuchstellerToReturn = optional.get();
 
 		return converter.gesuchstellerContainerToJAX(gesuchstellerToReturn);
-	}
-
-	@ApiOperation(value = "Sucht eine Person im EWK nach Name, Vorname, Geburtsdatum und Geschlecht.",
-		response = EWKResultat.class)
-	@Nullable
-	@GET
-	@Path("/ewk/search/attributes")
-	@Produces(MediaType.APPLICATION_JSON)
-	public EWKResultat suchePersonByAttributes(
-		@QueryParam("nachname") String nachname,
-		@QueryParam("vorname") String vorname,
-		@QueryParam("geburtsdatum") String geburtsdatum,
-		@QueryParam("geschlecht") String geschlecht,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguException {
-		Objects.requireNonNull(nachname, "name must be set");
-		Objects.requireNonNull(vorname, "vorname must be set");
-		Objects.requireNonNull(geburtsdatum, "geburtsdatum must be set");
-		Objects.requireNonNull(geschlecht, "geschlecht must be set");
-		LocalDate geburtsdatumDate = DateUtil.parseStringToDateOrReturnNow(geburtsdatum);
-		return personenSucheService.suchePerson(nachname, geburtsdatumDate, Geschlecht.valueOf(geschlecht));
-	}
-
-	@ApiOperation(value = "Sucht eine Person im EWK nach EWK-Id.", response = EWKResultat.class)
-	@Nullable
-	@GET
-	@Path("/ewk/search/id/{personId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public EWKResultat suchePersonByPersonId(
-		@Nonnull @NotNull @PathParam("personId") String personId) throws EbeguException {
-		return personenSucheService.suchePerson(personId);
-	}
-
-	@ApiOperation(value = "Verknuepft einen Gesuchsteller mit einer Person aus dem EWK. Die EWK-Id wird auf dem " +
-		"Gesuchsteller gesetzt.", response = Gesuchsteller.class)
-	@Nullable
-	@PUT
-	@Path("/ewk/{gesuchstellerId}/{ewkPersonId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Gesuchsteller selectPerson(
-		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId,
-		@Nonnull @NotNull @PathParam("ewkPersonId") JaxId ewkPersonJAXPId,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(gesuchstellerJAXPId.getId());
-		Objects.requireNonNull(ewkPersonJAXPId.getId());
-		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
-		String ewkPersonID = converter.toEntityId(ewkPersonJAXPId);
-		Optional<GesuchstellerContainer> optional = gesuchstellerService.findGesuchsteller(gesuchstellerID);
-
-		if (!optional.isPresent()) {
-			return null;
-		}
-		GesuchstellerContainer gesuchstellerToReturn = optional.get();
-		return optional.map(gesuchstellerContainer -> personenSucheService.selectPerson(gesuchstellerToReturn.getGesuchstellerJA(), ewkPersonID)).orElse(null);
 	}
 }

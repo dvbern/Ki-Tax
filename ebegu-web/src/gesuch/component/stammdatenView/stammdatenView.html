@@ -45,7 +45,6 @@
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="!vm.isGesuchReadonly()"
                                                     aria-label="{{ 'GESCHLECHT' |translate}}"
-                                                    ng-change="vm.checkAllEwkRelevantDataPresent()"
                                                     aria-described-by="geschlecht-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.geschlecht"
@@ -69,7 +68,6 @@
                                        dv-max-length
                                        class="form-control input-dv"
                                        required
-                                       ng-blur="vm.checkAllEwkRelevantDataPresent()"
                                        aria-describedby="vorname_ID-error"
                                        autocomplete="given-name">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.vorname"
@@ -91,7 +89,6 @@
                                        dv-max-length
                                        class="form-control"
                                        required
-                                       ng-blur="vm.checkAllEwkRelevantDataPresent()"
                                        autocomplete="family-name">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.nachname"
                                            ja="vm.getModel().gesuchstellerJA.nachname"
@@ -111,7 +108,7 @@
                                 <dv-datepicker no-future
                                                input-id="geburtsdatum_ID" name="geburtsdatum"
                                                ng-model="vm.getModelJA().geburtsdatum" ng-required="true"
-                                               class="input-element" dv-on-blur="vm.checkAllEwkRelevantDataPresent()">
+                                               class="input-element">
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.geburtsdatum"
                                            ja="vm.getModel().gesuchstellerJA.geburtsdatum"
@@ -145,37 +142,6 @@
                                                        class="error"></dv-error-messages>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="row" ng-if="vm.showEwkFields()" dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()">
-                        <!-- Person ID aus EWK -->
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group secondColumn">
-                                <label class="md-no-float" data-translate="EWK_PERSON_ID" for="personId">
-                                </label>
-                                <input aria-describedby="personId-error" id="personId" type="text" name="personId"
-                                       ng-model="vm.getModelJA().ewkPersonId"
-                                       dv-max-length class="form-control input-dv"
-                                       ng-blur="vm.checkAllEwkRelevantDataPresent()">
-                                <dv-error-messages input-id="personId" for="vm.form.ewkPersonId.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                        <!-- Datum letzte EWK-Abfrage -->
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EWK_ABFRAGE_DATUM" for="abfrageDatum">
-                                </label>
-                                <dv-datepicker input-id="abfrageDatum"
-                                               name="abfrageDatum"
-                                               ng-model="vm.getModelJA().ewkAbfrageDatum"
-                                               class="input-element"
-                                               ng-disabled="true"
-                                               placeholder=""></dv-datepicker>
-                                <dv-error-messages input-id="abfrageDatum" for="vm.form.ewkAbfrageDatum.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
                         </div>
                     </div>
 

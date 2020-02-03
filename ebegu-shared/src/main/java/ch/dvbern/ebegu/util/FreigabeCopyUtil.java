@@ -253,8 +253,6 @@ public final class FreigabeCopyUtil {
 		gesuchstellerGS.setMobile(gesuchstellerJA.getMobile());
 		gesuchstellerGS.setTelefon(gesuchstellerJA.getTelefon());
 		gesuchstellerGS.setTelefonAusland(gesuchstellerJA.getTelefonAusland());
-		gesuchstellerGS.setEwkPersonId(gesuchstellerJA.getEwkPersonId());
-		gesuchstellerGS.setEwkAbfrageDatum(gesuchstellerJA.getEwkAbfrageDatum());
 		gesuchstellerGS.setDiplomatenstatus(gesuchstellerJA.isDiplomatenstatus());
 		gesuchstellerGS.setKorrespondenzSprache(gesuchstellerJA.getKorrespondenzSprache());
 	}

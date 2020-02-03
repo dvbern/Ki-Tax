@@ -28,12 +28,10 @@ public class MassenversandDataRow {
 
 	private String gs1Name;
 	private String gs1Vorname;
-	private String gs1PersonId;
 	private String gs1Mail;
 
 	private String gs2Name;
 	private String gs2Vorname;
-	private String gs2PersonId;
 	private String gs2Mail;
 
 	private String adresse;
@@ -84,14 +82,6 @@ public class MassenversandDataRow {
 		this.gs1Vorname = gs1Vorname;
 	}
 
-	public String getGs1PersonId() {
-		return gs1PersonId;
-	}
-
-	public void setGs1PersonId(String gs1PersonId) {
-		this.gs1PersonId = gs1PersonId;
-	}
-
 	public String getGs1Mail() {
 		return gs1Mail;
 	}
@@ -114,14 +104,6 @@ public class MassenversandDataRow {
 
 	public void setGs2Vorname(String gs2Vorname) {
 		this.gs2Vorname = gs2Vorname;
-	}
-
-	public String getGs2PersonId() {
-		return gs2PersonId;
-	}
-
-	public void setGs2PersonId(String gs2PersonId) {
-		this.gs2PersonId = gs2PersonId;
 	}
 
 	public String getGs2Mail() {
