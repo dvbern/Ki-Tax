@@ -14,7 +14,25 @@
  */
 package ch.dvbern.ebegu.reporting.zahlungauftrag;
 
-import ch.dvbern.ebegu.entities.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
@@ -24,15 +42,6 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -111,19 +120,20 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 	}
 
 	List<Zahlungsposition> filterZahlungspositionenMitSummeUngleich0(List<Zahlungsposition> zahlungspositionen) {
-		List<Zahlungsposition>  resultat = new LinkedList<Zahlungsposition>();
+		List<Zahlungsposition>  resultat = new LinkedList<>();
 		for (Zahlungsposition zahlungposition : zahlungspositionen) {
-			Optional<Zahlungsposition> inverted = zahlungspositionen.stream().filter(z ->
-				z.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer().equals(
-					zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer())
-					&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb().isEqual(
-					zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()) &&
-					z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis().isEqual(
-						zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis()) &&
-					z.getVerfuegungZeitabschnitt().getBgPensum().equals(zahlungposition.getVerfuegungZeitabschnitt().getBgPensum()) &&
-					z.getBetrag().multiply(BigDecimal.valueOf(-1)).equals(zahlungposition.getBetrag()) &&
-					z.getStatus() == zahlungposition.getStatus() &&
-					z.getStatus() == ZahlungspositionStatus.KORREKTUR).findFirst();
+			Optional<Zahlungsposition> inverted = zahlungspositionen.stream()
+				.filter(z ->
+						z.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer())
+						&& z.getVerfuegungZeitabschnitt().getGueltigkeit()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit())
+						&& MathUtil.isSame(z.getVerfuegungZeitabschnitt().getBgPensum(),
+							zahlungposition.getVerfuegungZeitabschnitt().getBgPensum())
+						&& MathUtil.isSame(z.getBetrag().multiply(BigDecimal.valueOf(-1)),
+							zahlungposition.getBetrag())
+						&& z.getStatus() == zahlungposition.getStatus()
+						&& z.getStatus() == ZahlungspositionStatus.KORREKTUR).findFirst();
 			if (!inverted.isPresent()) {
 				resultat.add(zahlungposition);
 			}
