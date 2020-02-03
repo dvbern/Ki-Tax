@@ -264,7 +264,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
                     file = new Blob([response],
                         {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
                 }
-                this.downloadRS.openDownload(file, this.translate.instant('VORLAGE_MERKBLATT_TAGESSCHULE_DATEI_NAME'));
+                this.downloadRS.openDownload(file, this.translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME'));
             });
     }
 }

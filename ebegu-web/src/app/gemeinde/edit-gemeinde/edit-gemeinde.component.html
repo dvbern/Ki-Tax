@@ -31,7 +31,7 @@
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
             [allowedRoles]="getMitarbeiterVisibleRoles()"
-            [editMode]="true"> <!-- this is the edit view -->
+            [editMode]="editMode"> <!-- this is the edit view -->
         </dv-stammdaten-header>
 
         <mat-tab-group dynamicHeight [(selectedIndex)]="currentTab">
