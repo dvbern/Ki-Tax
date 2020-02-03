@@ -54,6 +54,7 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.StringUtil;
 import org.infinispan.commons.dataconversion.MediaType;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
@@ -117,13 +118,13 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateCSVReportLastenausgleichKibon(@Nonnull String lastenausgleichId, @Nonnull Locale locale) {
+	public UploadFileInfo generateCSVReportLastenausgleichKibon(@Nonnull String lastenausgleichId) {
 
 		Lastenausgleich lastenausgleich = lastenausgleichService.findLastenausgleich(lastenausgleichId);
 		List<LastenausgleichBerechnungDataRow> reportData = getReportLastenausgleichBerechnung(lastenausgleich.getLastenausgleichDetails());
-		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData, locale);
+		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData);
 
-		byte[] bytes = lastenausgleichCSV.getBytes();
+		byte[] bytes = lastenausgleichCSV.getBytes(StringUtil.UTF8);
 		MimeType mimeType;
 		try {
 			mimeType = new MimeType(MediaType.TEXT_CSV_TYPE);
@@ -132,7 +133,7 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 		}
 
 		return fileSaverService.save(bytes,
-			ServerMessageUtil.getMessage("ReportFileName_LASTENAUSGLEICH_BERECHNUNG", locale) + ".csv",
+			"LastenausgleichBerechnung.csv",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			mimeType);
 	}

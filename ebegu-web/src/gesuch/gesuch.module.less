@@ -39,6 +39,17 @@
     padding: 2rem;
 }
 
+.ewk-title {
+    display: flex;
+    .ewk-icons {
+        display: block;
+        width: 5rem;
+    }
+    .red {
+        color: @danger;
+    }
+}
+
 dv-accordion.ewk > ng-transclude > dv-accordion-tab {
     &.is-chosen {
         & > .dv-accordion-tab-title {
@@ -308,6 +319,7 @@ dv-accordion.ewksubsub {
         left: 0;
         right: 0;
         transform: unset;
+        position: absolute;
         margin: 0;
 
         dv-navigation, .dv-navigation {

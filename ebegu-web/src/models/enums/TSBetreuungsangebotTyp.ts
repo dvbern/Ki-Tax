@@ -14,6 +14,7 @@
  */
 
 import {TSGemeinde} from '../TSGemeinde';
+import {TSGesuchsperiode} from '../TSGesuchsperiode';
 
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
@@ -38,17 +39,20 @@ export function getTSBetreuungsangebotTypValuesForMandant(
 export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
     tagesschuleEnabledForMandant: boolean,
     tagesschuleAnmeldungenConfigured: boolean,
-    gemeinde: TSGemeinde
+    gemeinde: TSGemeinde,
+    gesuchsperiode: TSGesuchsperiode
 ): Array<TSBetreuungsangebotTyp> {
     const angebote: Array<TSBetreuungsangebotTyp> = [];
-    if (gemeinde.angebotBG) {
+    if (gemeinde.angebotBG && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.betreuungsgutscheineStartdatum)) {
         angebote.push(TSBetreuungsangebotTyp.KITA);
         angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
     }
-    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS) {
+    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS
+        && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum)) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-    if (tagesschuleEnabledForMandant && gemeinde.angebotFI) {
+    if (tagesschuleEnabledForMandant && gemeinde.angebotFI
+        && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum)) {
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
     }
     return angebote;

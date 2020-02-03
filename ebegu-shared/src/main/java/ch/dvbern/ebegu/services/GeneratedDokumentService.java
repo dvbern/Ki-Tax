@@ -22,6 +22,7 @@ import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
@@ -95,4 +96,12 @@ public interface GeneratedDokumentService {
 	 * Löscht die Freigabequittung von einem Gesuch
 	 */
 	void removeFreigabequittungFromGesuch(@Nonnull Gesuch gesuch);
+
+	@Nonnull
+	WriteProtectedDokument getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(
+		@Nonnull final Gesuch gesuch,
+		@Nonnull AbstractAnmeldung abstractAnmeldung,
+		@Nonnull Boolean mitTarif,
+		@Nonnull Boolean forceCreation
+	) throws MimeTypeParseException, MergeDocException;
 }

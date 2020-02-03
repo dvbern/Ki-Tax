@@ -15,9 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Output, EventEmitter} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -25,6 +26,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {LogFactory} from '../../core/logging/LogFactory';
+import { CONSTANTS } from '../../core/constants/CONSTANTS';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 
@@ -42,11 +44,14 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
 
+    public readonly CONSTANTS = CONSTANTS;
+
     @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public korrespondenzsprache: string;
     public benutzerListe: Array<TSBenutzer>;
     public showMessageKeinAngebotSelected: boolean = false;
+    public minDateTSFI = moment('20200801', 'YYYYMMDD');
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -96,8 +101,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             && !stammdaten.gemeinde.angebotFI;
     }
 
-    public isSuperadmin(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    public isSuperadminOrMandant(): boolean {
+        return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT]);
     }
 
     public keineBeschwerdeAdresseChanged(newVal: boolean): void {

@@ -36,6 +36,7 @@ import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleM
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -99,7 +100,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public form: IFormController;
     public betreuung: TSBetreuung;
     public showErrorMessageNoModule: boolean;
-    public datumErsterSchultag: moment.Moment;
+    public minEintrittsdatum: moment.Moment;
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
@@ -153,7 +154,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.loadErlaeuterungForTagesschule();
         }
         if (this.betreuung.isEnabled()) {
-            this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
+            this.minEintrittsdatum = this.getMinErsterSchultag();
             this.setErsterSchultag();
         }
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
@@ -171,17 +172,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getTagesschuleAnmeldungNotYetReadyText(): string {
-        if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()) {
-            if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulenAnmeldungKonfiguriert()) {
-                const terminValue = DateUtil.momentToLocalDateFormat(
-                    this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
-                    termin: terminValue,
-                });
-            }
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
+        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
+                termin: terminValue,
+            });
         }
-        return '';
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
     private loadErlaeuterungForTagesschule(): void {
@@ -305,12 +303,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSAbholungTagesschuleValues();
     }
 
-    public isAnmeldungEditable(): boolean {
-        return !this.isFreigabequittungAusstehend() && !this.getBetreuungModel().isSchulamtangebotAusgeloest();
-    }
-
     public isModuleEditable(modul: TSBelegungTagesschuleModul): boolean {
-        return modul.modulTagesschule.angeboten && this.isAnmeldungEditable();
+        return modul.modulTagesschule.angeboten && this.isAnmeldungTSEditable();
     }
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
@@ -334,5 +328,33 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
         modul.intervall = intervall;
+    }
+
+    public saveAnmeldungSchulamtUebernehmen(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtUebernehmen();
+        }
+    }
+
+    public saveAnmeldungSchulamtAblehnen(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtAblehnen();
+        }
+    }
+
+    public saveAnmeldungSchulamtFalscheInstitution(): void {
+        if (this.form.$valid) {
+            this.preSave();
+            this.anmeldungSchulamtFalscheInstitution();
+        }
+    }
+
+    private getMinErsterSchultag(): moment.Moment {
+        return this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+            this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
+            TSMandant.earliestDateOfTSAnmeldung
+        );
     }
 }

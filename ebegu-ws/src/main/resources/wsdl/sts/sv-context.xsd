@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://sv.fin.be.ch/schemas/base/20070131/CallContext" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    <xs:element name="CallContext">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Language" type="xs:language" />
+                <xs:element name="CallTrace">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Caller" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="SystemName" type="xs:string" />
+                                        <xs:element name="Version" type="xs:string" />
+                                        <xs:element name="Instance" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

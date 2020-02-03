@@ -48,17 +48,17 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 		requireNonNull(platz.getBetreuungsangebotTyp());
 		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-			int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getAnspruchspensumRest();
+			int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
 			//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 			if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-				verfuegungZeitabschnitt.addBemerkung(
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 					RuleKey.RESTANSPRUCH,
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
 					anspruchberechtigtesPensum,
 					verfuegbarerRestanspruch
 				);
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(verfuegbarerRestanspruch);
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(verfuegbarerRestanspruch);
 			}
 		}
 	}

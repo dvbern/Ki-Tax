@@ -71,6 +71,10 @@ const states: Ng2StateDeclaration[] = [
                 // this parameter is optional: specify a default value
                 value: false,
             },
+            editMode: {
+                type: 'bool',
+                value: false
+            }
         },
     },
 ];

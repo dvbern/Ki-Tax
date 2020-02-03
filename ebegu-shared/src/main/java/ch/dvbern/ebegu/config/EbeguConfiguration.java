@@ -190,4 +190,85 @@ public interface EbeguConfiguration {
 
 	@Nonnull
 	String getSchemaRegistryURL();
+
+	/**
+	 * @return Filepath zum Keystore in dem der Private Key fuer den Secure-Token-Service Webservice liegt,
+	 * sollte in einer Form sein die den Pfad vom  resource root her aufloest ist zb "/prod/sts-webservice.jks"
+	 * The Idea is to read the keystore from a specific place in the file System
+	 */
+	String getEbeguPersonensucheSTSKeystorePath();
+
+	/**
+	 * Passwort fuer den Keystore in dem der PrivateKey zum abholen der SAMLAssertion beim STS Webservice fuer den Batchuser mit dem wir EWK Abfragen machn liegt
+	 * @return Passwort fuer den Keystore
+	 */
+	String getEbeguPersonensucheSTSKeystorePW();
+
+	/**
+	 *
+	 * @return alias des PrivateKeys der verwendet wird um den STS Service aufzurufen
+	 */
+	String getEbeguPersonensucheSTSPrivateKeyAlias();
+
+	/**
+	 *
+	 * @return Passwort um den PrivateKey zu entsperren
+	 */
+	String getEbeguPersonensucheSTSPrivateKeyPW();
+
+	/**
+	 *
+	 * @return Basisurl des Webserivce Endpunkts fuer den Secure Token Service (STS) der zum erstellen eines
+	 * Asserton Tokens fuer den GERES Service gebraucht wird. Diese Angabe wird verwendet um die
+	 * finale URL des  STSToken und  des RenewalAssertion Services zu erstellen. Ausser wenn fuer diese beiden
+	 * ebenfalls eine Explizite Absolute URL angegeben wird.
+	 * So kann einfach zwischen Test und Produktion gewechselt werden
+	 * Beispiel: "https://a6hu-www-sts-b.be.ch:443/securityService"
+	 */
+	String getEbeguPersonensucheSTSBasePath();
+
+	/**
+	 * OPTIONALE Angabe zum herunterladen des WSDL Files. Wenn nicht angegeben wird die im System
+	 * mit der Applikation deployte Version des WSDL verwendet
+	 * @return null oder wsdl url
+	 */
+	String getEbeguPersonensucheSTSWsdl();
+
+	/**
+	 * OPTIONALE Angabe zur genauen Spezifikation der Endpunktangabe des STS Service. Wenn nicht angegeben
+	 * wird mit dem getEbeguPersonensucheSTSBasePath und dem aktuell bekannten Serivcepfad die URL per
+	 * default zusammengesetzt
+	 * @return Absolute URL fuer den Endpoint des zu verwendenden STS Service.
+	 */
+	String getEbeguPersonensucheSTSEndpoint();
+
+	/**
+	 * OPTIONALE Angabe zum herunterladen des WSDL Files des Renewal Assertion Service. Wenn nicht angegeben wird die im System
+	 * mit der Applikation deployte Version des WSDL verwendet
+	 * @return null oder wsdl url
+	 */
+	String getEbeguPersonensucheSTSRenewalAssertionWsdl();
+
+	/**
+	 * OPTIONALE Angabe zur genauen Spezifikation der Endpunktangabe des STS Renewal Assertion Service. Wenn nicht angegeben
+	 * wird mit dem getEbeguPersonensucheSTSBasePath und dem aktuell bekannten Serivcepfad die URL per
+	 * default zusammengesetzt
+	 * @return Absolute URL fuer den Endpoint des zu verwendenden STS Service.
+	 */
+	String getEbeguPersonensucheSTSRenewalAssertionEndpoint();
+
+	/**
+	 *
+	 * @return GERES Personensuche Webservice Endpoint
+	 * Beispiel: https://testv3-geres.be.ch/ech/services/GeresResidentInfoService_v1801
+	 */
+	String getEbeguPersonensucheGERESEndpoint();
+
+	/**
+	 *
+	 * OPTIONALE Angabe zum herunterladen des WSDL Files des GeresWebService (ResidentInfo). Wenn nicht angegeben wird die im System
+	 * mit der Applikation deployte Version des WSDL verwendet
+	 * @return null oder wsdl url
+	 */
+	String getEbeguPersonensucheGERESWsdl();
 }

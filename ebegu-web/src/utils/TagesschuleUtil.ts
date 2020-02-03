@@ -85,6 +85,7 @@ export class TagesschuleUtil {
                 continue;
             }
             angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
+            angMod.modulTagesschule.angeboten = true;
             group.module.push(angMod);
             foundInAngemeldete = true;
         }
@@ -155,6 +156,19 @@ export class TagesschuleUtil {
                 return vergleicheBis;
             }
             return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
+        });
+    }
+
+    /**
+     * Sortiert Tagesschuleinstellungen absteigend nach Periode
+     */
+    public static sortEinstellungenTagesschuleByPeriod(einstellungen: TSEinstellungenTagesschule[]):
+        TSEinstellungenTagesschule[] {
+        return einstellungen.sort((a, b) => {
+            if (a.gesuchsperiode && b.gesuchsperiode) {
+                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
+            }
+            return -1;
         });
     }
 

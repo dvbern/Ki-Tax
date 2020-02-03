@@ -14,6 +14,7 @@
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -74,9 +75,10 @@ export class UploadRS {
         });
     }
 
-    public uploadErlaeuterungVerfuegung(file: any, sprache: TSSprache, periodeID: string): IPromise<any> {
+    public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string,
+                                        dokumentTyp: TSDokumentTyp): IPromise<any> {
         return this.upload.upload({
-            url: `${this.serviceURL}/erlaeuterung/${sprache}/${periodeID}`,
+            url: `${this.serviceURL}/gesuchsperiodeDokument/${sprache}/${periodeID}/${dokumentTyp}`,
             method: 'POST',
             data: {
                 file
@@ -85,6 +87,23 @@ export class UploadRS {
             return response.data;
         }, (response: any) => {
             console.log('Upload File: NOT SUCCESS');
+            return this.q.reject(response);
+        });
+    }
+
+    public uploadGemeindeGesuchsperiodeDokument(file: any, sprache: TSSprache, gemeindeId: string, periodeID: string,
+                                                dokumentTyp: TSDokumentTyp): IPromise<any> {
+        return this.upload.upload({
+            // tslint:disable-next-line:max-line-length
+            url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(periodeID)}/${sprache}/${dokumentTyp}`,
+            method: 'POST',
+            data: {
+                file
+            },
+        }).then((response: any) => {
+            return response.data;
+        }, (response: any) => {
+            console.log('Upload Gesuchsperiode Gemeinde File: NOT SUCCESS');
             return this.q.reject(response);
         });
     }

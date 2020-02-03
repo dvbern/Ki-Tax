@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -33,9 +32,6 @@ public class TagesschuleRechner {
 	}
 
 	/**
-	 * TODO Spaeter wuerde ich hier ein TagesschuleCalculationResult zurueckgeben mit TarifProStunde und Tarif fuer das ganze Modul (inkl. eventl.
-	 * Verpflegungskosten und beruecksichtigung des intervalls). Daher auch das modul als parameter anstat nur das flag paedagogisch betreut
-	 *
 	 * Berechnet den Tarif pro Stunde für einen gegebenen Zeitabschnit und für ein Modul. Es werden diverse Parameter benoetigt
 	 * diese werden in einem DTO uebergeben.
 	 */
@@ -49,7 +45,7 @@ public class TagesschuleRechner {
 
 		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
 		// TODO: Sobald im GUI die Frage nach den Vollkosten vorhanden ist, muss sichergestellt werden, dass eine Rule das "isBezahltVollkosten"-Flag setzt
-		if (zeitabschnitt.isBezahltVollkosten()) {
+		if (zeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten()) {
 			if (wirdPedagogischBetreut) {
 				return parameterDTO.getMaxTarifMitPaedagogischerBetreuung();
 			}

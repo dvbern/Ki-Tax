@@ -67,7 +67,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	private static final Logger LOG = LoggerFactory.getLogger(LastenausgleichServiceBean.class.getSimpleName());
 
-	private static final BigDecimal SELBSTBEHALT = MathUtil.DEFAULT.fromNullSafe(0.20);
+	private static final BigDecimal SELBSTBEHALT = MathUtil.EXACT.fromNullSafe(0.20);
 	private static final String NEWLINE = "\n";
 
 	@Inject
@@ -266,26 +266,26 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 			BigDecimal anteilKalenderjahr = getAnteilKalenderjahr(abschnitt);
 			BigDecimal gutschein = abschnitt.getVerguenstigung();
 
-			totalBelegungInProzent = MathUtil.DEFAULT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
-			totalGutscheine = MathUtil.DEFAULT.addNullSafe(totalGutscheine, gutschein);
+			totalBelegungInProzent = MathUtil.EXACT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
+			totalGutscheine = MathUtil.EXACT.addNullSafe(totalGutscheine, gutschein);
 		}
 		// Selbstbehalt Gemeinde = Total Belegung * Kosten pro 100% Platz * 20%
-		BigDecimal totalBelegung = MathUtil.DEFAULT.divide(totalBelegungInProzent, MathUtil.DEFAULT.from(100));
-		BigDecimal selbstbehaltGemeinde = MathUtil.DEFAULT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz(), SELBSTBEHALT);
+		BigDecimal totalBelegung = MathUtil.EXACT.divide(totalBelegungInProzent, MathUtil.EXACT.from(100));
+		BigDecimal selbstbehaltGemeinde = MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getSelbstbehaltPro100ProzentPlatz());
 		// Eingabe Lastenausgleich = Total Gutscheine - Selbstbehalt Gemeinde
-		BigDecimal eingabeLastenausgleich = MathUtil.DEFAULT.subtractNullSafe(totalGutscheine, selbstbehaltGemeinde);
+		BigDecimal eingabeLastenausgleich = MathUtil.EXACT.subtractNullSafe(totalGutscheine, selbstbehaltGemeinde);
 
 		// Total anrechenbar = total belegung * Kosten pro 100% Platz
-		BigDecimal totalAnrechenbar = MathUtil.DEFAULT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
+		BigDecimal totalAnrechenbar = MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
 
 		LastenausgleichDetail detail = new LastenausgleichDetail();
 		detail.setJahr(grundlagen.getJahr());
 		detail.setGemeinde(gemeinde);
-		detail.setTotalBelegungen(totalBelegungInProzent);
-		detail.setTotalAnrechenbar(totalAnrechenbar);
-		detail.setTotalBetragGutscheine(totalGutscheine);
-		detail.setSelbstbehaltGemeinde(selbstbehaltGemeinde);
-		detail.setBetragLastenausgleich(eingabeLastenausgleich);
+		detail.setTotalBelegungen(MathUtil.toTwoKommastelle(totalBelegungInProzent));
+		detail.setTotalAnrechenbar(MathUtil.toTwoKommastelle(totalAnrechenbar));
+		detail.setTotalBetragGutscheine(MathUtil.toTwoKommastelle(totalGutscheine));
+		detail.setSelbstbehaltGemeinde(MathUtil.toTwoKommastelle(selbstbehaltGemeinde));
+		detail.setBetragLastenausgleich(MathUtil.toTwoKommastelle(eingabeLastenausgleich));
 		detail.setLastenausgleich(lastenausgleich);
 		detail.setKorrektur(lastenausgleich.getJahr().compareTo(grundlagen.getJahr()) != 0);
 		return detail;
@@ -311,8 +311,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(zeitabschnitt.getGueltigkeit().getGueltigAb(),
 			zeitabschnitt.getGueltigkeit().getGueltigBis());
 		BigDecimal pensum = zeitabschnitt.getBgPensum();
-		BigDecimal pensumAnteilMonat = MathUtil.DEFAULT.multiplyNullSafe(anteilMonat, pensum);
-		return MathUtil.DEFAULT.divide(pensumAnteilMonat, MathUtil.DEFAULT.from(12d));
+		BigDecimal pensumAnteilMonat = MathUtil.EXACT.multiplyNullSafe(anteilMonat, pensum);
+		return MathUtil.EXACT.divide(pensumAnteilMonat, MathUtil.EXACT.from(12d));
 	}
 
 	@Nonnull

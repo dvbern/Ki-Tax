@@ -349,4 +349,25 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		List<BetreuungsangebotTyp> resultList = q.getResultList();
 		return resultList;
 	}
+
+	@Override
+	public Collection<InstitutionStammdaten> getTagesschulenForCurrentBenutzer() {
+		Collection<Institution> institutionenForCurrentBenutzer =
+			institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+		if (institutionenForCurrentBenutzer.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+
+		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution)
+			.in(institutionenForCurrentBenutzer);
+		Predicate predicateTypTagesschule = cb.equal(root.get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
+
+		query.where(institutionPredicate, predicateTypTagesschule);
+		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query);
+		return q.getResultList();
+	}
 }

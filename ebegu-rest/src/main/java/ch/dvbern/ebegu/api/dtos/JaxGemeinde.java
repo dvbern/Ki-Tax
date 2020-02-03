@@ -56,9 +56,24 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate betreuungsgutscheineStartdatum;
 
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate tagesschulanmeldungenStartdatum;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate ferieninselanmeldungenStartdatum;
+
 	private boolean angebotBG = false;
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
+
+	// Dieses Feld wird *nur* für die Komponente gemeinde-multiselect.component verwendet
+	// Wir haben dort das Problem, dass in gewissen Einzelfällen die Id der Gemeinde (noch) nicht bekannt ist,
+	// da diese in kiBon noch nicht registriert ist: Beim Onboarding, Gemeindeauswahl für Tagessschulen, wenn ich
+	// eine Gemeinde explizit auswähle, die einem Verbund angehört und selber nicht in kiBon mitmacht.
+	@Nonnull
+	private String key;
 
 
 	@Nonnull
@@ -129,6 +144,15 @@ public class JaxGemeinde extends JaxAbstractDTO {
 		this.angebotFI = angebotFI;
 	}
 
+	@Nonnull
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(@Nonnull String key) {
+		this.key = key;
+	}
+
 	@Override
 	public int compareTo(@Nonnull JaxAbstractDTO o) {
 		CompareToBuilder builder = new CompareToBuilder();
@@ -142,5 +166,23 @@ public class JaxGemeinde extends JaxAbstractDTO {
 			return builder.toComparison();
 		}
 		return builder.toComparison();
+	}
+
+	@Nullable
+	public LocalDate getTagesschulanmeldungenStartdatum() {
+		return tagesschulanmeldungenStartdatum;
+	}
+
+	public void setTagesschulanmeldungenStartdatum(@Nullable LocalDate tagesschulanmeldungenStartdatum) {
+		this.tagesschulanmeldungenStartdatum = tagesschulanmeldungenStartdatum;
+	}
+
+	@Nullable
+	public LocalDate getFerieninselanmeldungenStartdatum() {
+		return ferieninselanmeldungenStartdatum;
+	}
+
+	public void setFerieninselanmeldungenStartdatum(@Nullable LocalDate ferieninselanmeldungenStartdatum) {
+		this.ferieninselanmeldungenStartdatum = ferieninselanmeldungenStartdatum;
 	}
 }

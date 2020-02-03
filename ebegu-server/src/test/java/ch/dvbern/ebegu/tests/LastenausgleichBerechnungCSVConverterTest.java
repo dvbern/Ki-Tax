@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.tests;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -32,6 +31,8 @@ import org.junit.Test;
 
 public class LastenausgleichBerechnungCSVConverterTest {
 
+	private MathUtil MATH = MathUtil.DEFAULT;
+
 	@Nonnull
 	private final LastenausgleichBerechnungCSVConverter lastenausgleichCSVConverter =
 		new LastenausgleichBerechnungCSVConverter();
@@ -39,8 +40,7 @@ public class LastenausgleichBerechnungCSVConverterTest {
 	@Test
 	public void testAusExcelBeispiel() {
 		MathUtil ROUND = MathUtil.ZWEI_NACHKOMMASTELLE;
-		Locale locale = new Locale("de-ch");
-		BigDecimal kosten100ProzentPlatz = new BigDecimal(15176.4705882353);
+		BigDecimal kosten100ProzentPlatz = MathUtil.EXACT.from(15176.4705882353);
 
 		LastenausgleichBerechnungDataRow dataRow1 = new LastenausgleichBerechnungDataRow();
 		dataRow1.setGemeinde("Bern");
@@ -49,10 +49,10 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		BigDecimal belegung = new BigDecimal(1000);
 		dataRow1.setTotalBelegung(belegung);
 		dataRow1.setTotalAnrechenbar(ROUND.from(kosten100ProzentPlatz.multiply(belegung)));
-		dataRow1.setTotalGutscheine(ROUND.from(new BigDecimal(16376470.59)));
-		dataRow1.setKostenPro100ProzentPlatz(ROUND.from(new BigDecimal(15176)));
-		dataRow1.setSelbstbehaltGemeinde(ROUND.from(new BigDecimal(3035294.12)));
-		dataRow1.setEingabeLastenausgleich(ROUND.from(new BigDecimal(13341176.47)));
+		dataRow1.setTotalGutscheine(ROUND.from(MATH.from(16376470.59)));
+		dataRow1.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15176)));
+		dataRow1.setSelbstbehaltGemeinde(ROUND.from(MATH.from(3035294.12)));
+		dataRow1.setEingabeLastenausgleich(ROUND.from(MATH.from(13341176.47)));
 		dataRow1.setKorrektur(false);
 
 		LastenausgleichBerechnungDataRow dataRow2 = new LastenausgleichBerechnungDataRow();
@@ -62,10 +62,10 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		belegung = new BigDecimal(100);
 		dataRow2.setTotalBelegung(belegung);
 		dataRow2.setTotalAnrechenbar(ROUND.from(kosten100ProzentPlatz.multiply(belegung)));
-		dataRow2.setTotalGutscheine(ROUND.from(new BigDecimal(1417647.06)));
-		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(new BigDecimal(15176)));
-		dataRow2.setSelbstbehaltGemeinde(ROUND.from(new BigDecimal(303529.41)));
-		dataRow2.setEingabeLastenausgleich(ROUND.from(new BigDecimal(1114117.65)));
+		dataRow2.setTotalGutscheine(ROUND.from(MATH.from(1417647.06)));
+		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15176)));
+		dataRow2.setSelbstbehaltGemeinde(ROUND.from(MATH.from(303529.41)));
+		dataRow2.setEingabeLastenausgleich(ROUND.from(MATH.from(1114117.65)));
 		dataRow2.setKorrektur(false);
 
 		LastenausgleichBerechnungDataRow dataRow3 = new LastenausgleichBerechnungDataRow();
@@ -75,10 +75,10 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		belegung = new BigDecimal(-50);
 		dataRow3.setTotalBelegung(belegung);
 		dataRow3.setTotalAnrechenbar(ROUND.from(kosten100ProzentPlatz.multiply(belegung)));
-		dataRow3.setTotalGutscheine(ROUND.from(new BigDecimal(-1017647.06)));
-		dataRow3.setKostenPro100ProzentPlatz(ROUND.from(new BigDecimal(-14105)));
-		dataRow3.setSelbstbehaltGemeinde(ROUND.from(new BigDecimal(141050)));
-		dataRow3.setEingabeLastenausgleich(ROUND.from(new BigDecimal(-1158697.06)));
+		dataRow3.setTotalGutscheine(ROUND.from(MATH.from(-1017647.06)));
+		dataRow3.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(-14105)));
+		dataRow3.setSelbstbehaltGemeinde(ROUND.from(MATH.from(141050)));
+		dataRow3.setEingabeLastenausgleich(ROUND.from(MATH.from(-1158697.06)));
 		dataRow3.setKorrektur(true);
 
 		LastenausgleichBerechnungDataRow dataRow4 = new LastenausgleichBerechnungDataRow();
@@ -88,10 +88,10 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		belegung = new BigDecimal(50);
 		dataRow4.setTotalBelegung(belegung);
 		dataRow4.setTotalAnrechenbar(ROUND.from(kosten100ProzentPlatz.multiply(belegung)));
-		dataRow4.setTotalGutscheine(ROUND.from(new BigDecimal(400000)));
-		dataRow4.setKostenPro100ProzentPlatz(ROUND.from(new BigDecimal(14105)));
-		dataRow4.setSelbstbehaltGemeinde(ROUND.from(new BigDecimal(141050)));
-		dataRow4.setEingabeLastenausgleich(ROUND.from(new BigDecimal(258950)));
+		dataRow4.setTotalGutscheine(ROUND.from(MATH.from(400000)));
+		dataRow4.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(14105)));
+		dataRow4.setSelbstbehaltGemeinde(ROUND.from(MATH.from(141050)));
+		dataRow4.setEingabeLastenausgleich(ROUND.from(MATH.from(258950)));
 		dataRow4.setKorrektur(true);
 
 		List<LastenausgleichBerechnungDataRow> reportData = new ArrayList<>();
@@ -100,13 +100,86 @@ public class LastenausgleichBerechnungCSVConverterTest {
 		reportData.add(dataRow3);
 		reportData.add(dataRow4);
 
-		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData, locale);
-		System.out.print(lastenausgleichCSV);
+		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData);
 
-		String csvVorlage = "BFS-Nr;kibon_belegung;kibon_gutscheine;kibon_anrechenbar;kibon_erhebung;kibon_revision;kibon_selbstbehalt\n"
-			+ "351;100000;16376470.59;15176470.59;13341176.47;0;3035294.12\n"
-			+ "546;10000;1417647.06;1517647.06;1114117.65;-899747.06;303529.41\n";
+		String csvExpected = "bfs;kibon_Belegung;kibon_Gutscheine;kibon_Anrechenbar;kibon_Erhebung;kibon_Revision;kibon_Selbstbehalt\n"
+			+ "351;1000;16376470.59;15176470.59;13341176.47;0;3035294.12\n"
+			+ "546;100;1417647.06;1517647.06;1114117.65;-899747.06;303529.41\n";
 
-		Assert.assertEquals(lastenausgleichCSV, csvVorlage);
+		Assert.assertEquals(csvExpected, lastenausgleichCSV);
+	}
+
+	@Test
+	/*
+	 * Für Gemeinden ohne Erhebungen aber mit Revisionen muss trotzdem einen Eintrag im CSV erstellt werden
+	 */
+	public void testGemeindenOhneErhebungen() {
+
+		MathUtil ROUND = MathUtil.ZWEI_NACHKOMMASTELLE;
+		BigDecimal kosten100ProzentPlatz = MathUtil.EXACT.from(3000);
+
+		LastenausgleichBerechnungDataRow dataRow1 = new LastenausgleichBerechnungDataRow();
+		dataRow1.setGemeinde("Bern");
+		dataRow1.setBfsNummer("351");
+		dataRow1.setVerrechnungsjahr("2020");
+		BigDecimal belegung = new BigDecimal(0.3333);
+		dataRow1.setTotalBelegung(ROUND.from(belegung.multiply(new BigDecimal(100))));
+		dataRow1.setTotalAnrechenbar(ROUND.from(kosten100ProzentPlatz.multiply(belegung)));
+		dataRow1.setTotalGutscheine(ROUND.from(MATH.from(7256.5)));
+		dataRow1.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
+		dataRow1.setSelbstbehaltGemeinde(ROUND.from(MATH.from(1000)));
+		dataRow1.setEingabeLastenausgleich(ROUND.from(MATH.from(6256.5)));
+		dataRow1.setKorrektur(false);
+
+		LastenausgleichBerechnungDataRow dataRow2 = new LastenausgleichBerechnungDataRow();
+		dataRow2.setGemeinde("Münchenbuchsee");
+		dataRow2.setBfsNummer("546");
+		dataRow2.setVerrechnungsjahr("2020");
+		dataRow2.setTotalBelegung(BigDecimal.ZERO);
+		dataRow2.setTotalAnrechenbar(BigDecimal.ZERO);
+		dataRow2.setTotalGutscheine(BigDecimal.ZERO);
+		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
+		dataRow2.setSelbstbehaltGemeinde(BigDecimal.ZERO);
+		dataRow2.setEingabeLastenausgleich(BigDecimal.ZERO);
+		dataRow2.setKorrektur(false);
+
+		LastenausgleichBerechnungDataRow dataRow3 = new LastenausgleichBerechnungDataRow();
+		dataRow3.setGemeinde("Münchenbuchsee");
+		dataRow3.setBfsNummer("546");
+		dataRow3.setVerrechnungsjahr("2019");
+		belegung = new BigDecimal(-0.3333);
+		dataRow3.setTotalBelegung(ROUND.from(belegung.multiply(new BigDecimal(100))));
+		dataRow3.setTotalAnrechenbar(ROUND.from(kosten100ProzentPlatz.multiply(belegung)));
+		dataRow3.setTotalGutscheine(ROUND.from(MATH.from(-7256.5)));
+		dataRow3.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(-15000)));
+		dataRow3.setSelbstbehaltGemeinde(ROUND.from(MATH.from(-1000)));
+		dataRow3.setEingabeLastenausgleich(ROUND.from(MATH.from(-6256.5)));
+		dataRow3.setKorrektur(true);
+
+		LastenausgleichBerechnungDataRow dataRow4 = new LastenausgleichBerechnungDataRow();
+		dataRow4.setGemeinde("Münchenbuchsee");
+		dataRow4.setBfsNummer("546");
+		dataRow4.setVerrechnungsjahr("2019");
+		dataRow4.setTotalBelegung(BigDecimal.ZERO);
+		dataRow4.setTotalAnrechenbar(BigDecimal.ZERO);
+		dataRow4.setTotalGutscheine(BigDecimal.ZERO);
+		dataRow2.setKostenPro100ProzentPlatz(ROUND.from(MATH.from(15000)));
+		dataRow4.setSelbstbehaltGemeinde(BigDecimal.ZERO);
+		dataRow4.setEingabeLastenausgleich(BigDecimal.ZERO);
+		dataRow4.setKorrektur(true);
+
+		List<LastenausgleichBerechnungDataRow> reportData = new ArrayList<>();
+		reportData.add(dataRow1);
+		reportData.add(dataRow2);
+		reportData.add(dataRow3);
+		reportData.add(dataRow4);
+
+		String lastenausgleichCSV = lastenausgleichCSVConverter.createLastenausgleichCSV(reportData);
+
+		String csvExpected = "bfs;kibon_Belegung;kibon_Gutscheine;kibon_Anrechenbar;kibon_Erhebung;kibon_Revision;kibon_Selbstbehalt\n"
+			+ "351;33.33;7256.50;999.90;6256.50;0;1000.00\n"
+			+ "546;0;0;0;0;-6256.50;0\n";
+
+		Assert.assertEquals(csvExpected, lastenausgleichCSV);
 	}
 }

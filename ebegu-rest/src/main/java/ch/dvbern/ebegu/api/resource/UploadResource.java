@@ -45,11 +45,13 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -57,6 +59,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -98,6 +101,9 @@ public class UploadResource {
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
@@ -197,18 +203,46 @@ public class UploadResource {
 
 	@ApiOperation("Stores the Erlaeuterungen zu Verfuegung pdf of the Gesuchsperiode with the given id and Sprache")
 	@POST
-	@Path("/erlaeuterung/{sprache}/{periodeId}")
+	@Path("/gesuchsperiodeDokument/{sprache}/{periodeId}/{dokumentTyp}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response saveErlaeuterungVerfuegung(
+	public Response saveGesuchsperiodeDokument(
 		@Nonnull @NotNull @PathParam("sprache") Sprache sprache,
 		@Nonnull @NotNull @PathParam("periodeId") String periodeId,
+		@Nonnull @NotNull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
 		@Nonnull @NotNull MultipartFormDataInput input) {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 		Validate.notEmpty(fileList, "Need to upload something");
 
-		gesuchsperiodeService.uploadErlaeuterungenVerfuegung(periodeId, sprache, fileList.get(0).getContent());
+		gesuchsperiodeService.uploadGesuchsperiodeDokument(periodeId, sprache, dokumentTyp,
+			fileList.get(0).getContent());
+
+		return Response.ok().build();
+	}
+
+	@ApiOperation("Stores Dokument of Typ dokumentTyp  for a Gemeinde and a Gesuchsperiode")
+	@POST
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadGemeindeGesuchsperiodeDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+
+		Validate.notEmpty(fileList, "Need to upload something");
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+
+		TransferFile file = fileList.get(0);
+
+		gemeindeService.uploadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp, file.getContent());
 
 		return Response.ok().build();
 	}

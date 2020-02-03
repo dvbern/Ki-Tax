@@ -276,6 +276,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			// Es war verrechnet UND derselbe Betrag. Wir muessen den Status trotzdem auf etwas
 			// "nicht-behandeltes"
 			// zuruecksetzen!
+			// Was ist das Problem, wenn wir hier "VERRECHNET" setzen würden?
+			// - Gesuch verfügen und auszahlen
+			// - Gesuch mutieren mit Korrektur der fin. Sit. --> Bei Frage: Korrigieren -> noch nicht ausbezahlen
+			// - Gesuch erneut mutieren mit Korrektur des Namens --> Frage Korrigieren erscheint nicht mehr!!
 			if (zeitabschnitt.getZahlungsstatus().isVerrechnet()) {
 				zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
 			}
@@ -307,10 +311,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
 		if (!verfuegung.isKategorieNichtEintreten()) {
 			for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-				if (zeitabschnitt.isKategorieKeinPensum()) {
+				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum()) {
 					verfuegung.setKategorieKeinPensum(true);
 				}
-				if (zeitabschnitt.isKategorieMaxEinkommen()) {
+				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
 			}
@@ -333,7 +337,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		verfuegung.getZeitabschnitte()
-			.forEach(z -> z.setAnspruchberechtigtesPensum(0));
+			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
 		verfuegung.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(verfuegung.getBetreuung().extractGesuch());
 		Verfuegung persistedVerfuegung = persistVerfuegung(verfuegung, Betreuungsstatus.NICHT_EINGETRETEN);

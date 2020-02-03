@@ -44,9 +44,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -56,9 +56,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -68,9 +68,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		Assert.assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 	}
 
 	private Betreuung prepareData(BetreuungsangebotTyp betreuungsangebotTyp) {

@@ -51,8 +51,8 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 		if (platz.getBetreuungsangebotTyp().isJugendamt()) {
 			if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
 				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-					verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
+					verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
 				}
 			}
 		}

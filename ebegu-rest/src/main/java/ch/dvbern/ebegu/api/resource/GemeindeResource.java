@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -62,14 +62,17 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -77,10 +80,13 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Resource fuer Gemeinde
@@ -299,12 +305,14 @@ public class GemeindeResource {
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration
 	) {
-		Objects.requireNonNull(konfiguration);
-		Objects.requireNonNull(konfiguration.getGesuchsperiode());
-		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+		requireNonNull(konfiguration);
+		requireNonNull(konfiguration.getGesuchsperiode());
+		requireNonNull(konfiguration.getGesuchsperiode().getId());
 
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Gesuchsperiode gesuchsperiode =
+			gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
 			saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
@@ -315,9 +323,9 @@ public class GemeindeResource {
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration
 	) {
-		Objects.requireNonNull(konfiguration);
-		Objects.requireNonNull(konfiguration.getGesuchsperiode());
-		Objects.requireNonNull(konfiguration.getGesuchsperiode().getId());
+		requireNonNull(konfiguration);
+		requireNonNull(konfiguration.getGesuchsperiode());
+		requireNonNull(konfiguration.getGesuchsperiode().getId());
 
 		Collection<Gesuchsperiode> gesuchsperioden =
 			gesuchsperiodeService.findThisAndFutureGesuchsperioden(konfiguration.getGesuchsperiode().getId());
@@ -451,12 +459,13 @@ public class GemeindeResource {
 		@Nullable @PathParam("gemeindenTSId") String gemeindenTSIdList) {
 		List<JaxGemeindeRegistrierung> gemeindeRegistrierungList = new ArrayList<>();
 
-		// BG-Gemeinde: Es kann nur 1 geben. Falls sie gesetzt ist, darf sie für TS nicht ein zweites Mal hinzugefügt werden
+		// BG-Gemeinde: Es kann nur 1 geben. Falls sie gesetzt ist, darf sie für TS nicht ein zweites Mal hinzugefügt
+		// werden
 		String gemeindeBGId = null;
 
-		if (gemeindeBGJAXPId != null ){
+		if (gemeindeBGJAXPId != null) {
 			gemeindeBGId = converter.toEntityId(gemeindeBGJAXPId);
-			if(!gemeindeBGId.equals("null")) {
+			if (!gemeindeBGId.equals("null")) {
 				String finalGemeindeBGId = gemeindeBGId;
 				Gemeinde gemeindeBG =
 					gemeindeService.findGemeinde(gemeindeBGId).orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -470,27 +479,46 @@ public class GemeindeResource {
 			}
 		}
 
-		if (gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")){
+		if (gemeindenTSIdList != null && !gemeindenTSIdList.equals("null")) {
 			String[] gemeindenTSList = gemeindenTSIdList.split(",");
-			for(String gemeindeTSId : gemeindenTSList){
-				Gemeinde gemeindeTS =
-					gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
-						"findGemeinde",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+			for (String gemeindeTSId : gemeindenTSList) {
+				Gemeinde gemeindeTSVerbund;
+				String gemeindeName;
+				//Wir pruefen ob der ID ist einen UUID, sonst es ist einen BFS Nummer und der Gemeinde existiert noch
+				// nicht so es heisst das es einen Kind von einen Schulverbund ist
+				if(gemeindeTSId.matches(Constants.REGEX_UUID)){
+					Gemeinde gemeindeTS =
+						gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
+							"findGemeinde",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+					gemeindeTSVerbund =
+						gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
+					gemeindeName = gemeindeTS.getName();
+				}
+				else{
+					BfsGemeinde bfsGemeinde =
+						gemeindeService.findBfsGemeinde(Long.parseLong(gemeindeTSId)).orElseThrow(()-> new EbeguEntityNotFoundException(
+							"findBfsGemeinde",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
+					gemeindeTSVerbund =
+						gemeindeService.findRegistredGemeindeVerbundIfExist(bfsGemeinde.getBfsNummer()).orElseThrow(()-> new EbeguEntityNotFoundException(
+							"findRegistredGemeindeVerbundIfExist",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, bfsGemeinde.getBfsNummer()));
+					gemeindeName = bfsGemeinde.getName();
+				}
 
-				Gemeinde gemeindeTSVerbund =
-					gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
-
-				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde sowohl für BG wie auch
-				// für TS ausgewählt wurde. Fall diese Gemeinde für TS keinem Verbund angehört, muss sie nicht ein zweites Mal hinzugefügt werden
+				// Innerhalb der TS-Gemeinden kann es keine Duplikate haben. Es kann aber sein, dass eine Gemeinde
+				// sowohl für BG wie auch
+				// für TS ausgewählt wurde. Fall diese Gemeinde für TS keinem Verbund angehört, muss sie nicht ein
+				// zweites Mal hinzugefügt werden
 				if (gemeindeBGId != null && gemeindeBGId.equals(gemeindeTSId) && gemeindeTSVerbund == null) {
 					continue;
 				}
 
 				JaxGemeindeRegistrierung gemeindeRegistrierungTS = new JaxGemeindeRegistrierung();
 				gemeindeRegistrierungTS.setId(gemeindeTSId);
-				gemeindeRegistrierungTS.setName(gemeindeTS.getName());
-				if(gemeindeTSVerbund != null && gemeindeTSVerbund.isAngebotTS()){
+				gemeindeRegistrierungTS.setName(gemeindeName);
+				if (gemeindeTSVerbund != null && gemeindeTSVerbund.isAngebotTS()) {
 					gemeindeRegistrierungTS.setVerbundId(gemeindeTSVerbund.getId());
 					gemeindeRegistrierungTS.setVerbundName(gemeindeTSVerbund.getName());
 				}
@@ -498,5 +526,153 @@ public class GemeindeResource {
 			}
 		}
 		return gemeindeRegistrierungList;
+	}
+
+	@ApiOperation(value = "Returns all Gemeinden with Status AKTIV and all Gemeinde von Schulverbund",
+		responseContainer = "Collection",
+		response = JaxGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/activeAndSchulverbund")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGemeinde> getAktiveUndSchulverbundGemeinden() {
+		List<JaxGemeinde> aktiveGemeinde = gemeindeService.getAktiveGemeinden().stream()
+			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.collect(Collectors.toList());
+		List<JaxGemeinde> aktiveUndSchulverbundGemeinden = new ArrayList<>(aktiveGemeinde);
+		for (JaxGemeinde jaxGemeinde : aktiveGemeinde) {
+			if (BfsGemeinde.isBfsNummerVerbund(jaxGemeinde.getBfsNummer()) && jaxGemeinde.isAngebotTS()) {
+				List<BfsGemeinde> bfsGemeindeList = gemeindeService.findGemeindeVonVerbund(jaxGemeinde.getBfsNummer());
+				bfsGemeindeList.forEach(bfsGemeinde -> {
+					boolean isAlreadyVorhanden =
+						aktiveUndSchulverbundGemeinden.stream().anyMatch(aktiveJaxGemeinde -> aktiveJaxGemeinde.getBfsNummer().equals(bfsGemeinde.getBfsNummer()));
+					if (!isAlreadyVorhanden) {
+						JaxGemeinde vonSchulVerbund = new JaxGemeinde();
+						vonSchulVerbund.setKey(String.valueOf(bfsGemeinde.getBfsNummer()));
+						vonSchulVerbund.setId(bfsGemeinde.getId());
+						vonSchulVerbund.setBfsNummer(bfsGemeinde.getBfsNummer());
+						vonSchulVerbund.setName(bfsGemeinde.getName());
+						vonSchulVerbund.setAngebotBG(false);
+						vonSchulVerbund.setAngebotTS(true);
+						aktiveUndSchulverbundGemeinden.add(vonSchulVerbund);
+					}
+				});
+			}
+		}
+		return aktiveUndSchulverbundGemeinden;
+	}
+
+	@ApiOperation(
+		value = "Updated die Angebot Flags (BG/TS/FI) der Gemeinde",
+		response = Response.class)
+	@Nonnull
+	@PUT
+	@Path("/updateangebote")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateAngebotTS(
+		@Nonnull @NotNull @Valid JaxGemeinde jaxGemeinde
+	) {
+		requireNonNull(jaxGemeinde);
+		requireNonNull(jaxGemeinde.getId());
+		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+
+		Gemeinde gemeinde =
+			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
+				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
+		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+		gemeinde = gemeindeService.saveGemeinde(gemeinde);
+		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
+			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
+		}
+		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS()) {
+			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS());
+		}
+		if (gemeinde.isAngebotFI() != jaxGemeinde.isAngebotFI()) {
+			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());
+		}
+
+
+		return Response.ok().build();
+	}
+
+
+
+	@ApiOperation("Returns a specific document of the Gemeinde with the given type or an errorcode if none is available")
+	@GET
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response downloadGemeindeDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp
+		) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+
+		final byte[] content = gemeindeService.downloadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId,
+		 sprache, dokumentTyp);
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".pdf",
+					"application/octet-stream", content);
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
+			}
+		}
+		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@Nullable
+	@DELETE
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.WILDCARD)
+	public Response removeGesuchsperiodeDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
+		@Context HttpServletResponse response) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+
+		requireNonNull(gemeindeId);
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+		requireNonNull(dokumentTyp);
+		gemeindeService.removeGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache,
+			dokumentTyp);
+		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "retuns true if the Dokument Typ exists for this gemeinde exists for the given language",
+		response = boolean.class)
+	@GET
+	@Path("/existGemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean existDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
+		@Context HttpServletResponse response
+	) {
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+		requireNonNull(gemeindeId);
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+		requireNonNull(dokumentTyp);
+		return gemeindeService.existGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp);
 	}
 }

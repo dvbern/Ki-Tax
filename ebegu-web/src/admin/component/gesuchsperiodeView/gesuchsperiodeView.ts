@@ -26,6 +26,7 @@ import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogControl
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {getTSGesuchsperiodeStatusValues, TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -72,6 +73,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public isErlaeuterungDE: boolean = false;
     public isErlaeuterungFR: boolean = false;
 
+    public isVorlageMerkblattDE: boolean = false;
+    public isVorlageMerkblattFR: boolean = false;
+
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
         private readonly dvDialog: DvDialog,
@@ -99,7 +103,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.setSelectedGesuchsperiode(found);
             this.initialStatus = this.gesuchsperiode.status;
 
-            this.updateExistErlaeuterung(this.gesuchsperiode);
+            this.updateExistDokumenten(this.gesuchsperiode);
         });
     }
 
@@ -166,7 +170,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
             // we need to check for erlaeuterung already here, because the server wont send any information back and we
             // do not want to reloade the page
-            this.updateExistErlaeuterung(newestGesuchsperiode);
+            this.updateExistDokumenten(newestGesuchsperiode);
 
         });
         this.gesuchsperiode = undefined;
@@ -218,38 +222,54 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         return gueltigAb.subtract(1, 'days');
     }
 
-    public uploadErlaeuterung(file: any[], sprache: TSSprache): void {
-
+    public uploadGesuchsperiodeDokument(file: any[], sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
         if (file.length <= 0) {
             return;
         }
-
         const selectedFile = file[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
                 title: this.$translate.instant('FILE_ZU_GROSS'),
             });
+            return;
         }
-        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id)
+
+        this.uploadRS.uploadGesuchsperiodeDokument(selectedFile, sprache, this.gesuchsperiode.id, dokumentTyp)
             .then(() => {
-                this.setErlauterungBoolean(true, sprache);
+                if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
+                    this.setErlauterungBoolean(true, sprache);
+                } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+                    this.setVorlageMerkblattTSBoolean(true, sprache);
+                }
             });
     }
 
-    public removeErlaeuterung(sprache: TSSprache): void {
-        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache)
+    public removeGesuchsperiodeDokument(sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
+        this.gesuchsperiodeRS.removeGesuchsperiodeDokument(this.gesuchsperiode.id, sprache, dokumentTyp)
             .then(() => {
-                this.setErlauterungBoolean(false, sprache);
+                if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
+                    this.setErlauterungBoolean(false, sprache);
+                } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+                    this.setVorlageMerkblattTSBoolean(false, sprache);
+                }
             });
     }
 
-    public downloadErlaeuterung(sprache: TSSprache): void {
-        const win = this.downloadRS.prepareDownloadWindow();
-        this.gesuchsperiodeRS.downloadErlaeuterung(this.gesuchsperiode.id, sprache).then(response => {
-            const file = new Blob([response], {type: 'application/pdf'});
-            const fileURL = URL.createObjectURL(file);
-            this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
-        });
+    public downloadGesuchsperiodeDokument(sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
+        this.gesuchsperiodeRS.downloadGesuchsperiodeDokument(this.gesuchsperiode.id, sprache, dokumentTyp).then(
+            response => {
+                let file;
+                let filename;
+                if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
+                    file = new Blob([response], {type: 'application/pdf'});
+                    filename = this.$translate.instant('ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME');
+                } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
+                    file = new Blob([response],
+                        {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                    filename = this.$translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
+                }
+                this.downloadRS.openDownload(file, filename);
+            });
     }
 
     private setErlauterungBoolean(value: boolean, sprache: TSSprache): void {
@@ -265,12 +285,39 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         }
     }
 
-    private updateExistErlaeuterung(gesuchsperiode: TSGesuchsperiode): void {
-        this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.DEUTSCH).then(result => {
-            this.isErlaeuterungDE = !!result;
-        });
-        this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
-            this.isErlaeuterungFR = !!result;
-        });
+    private updateExistDokumenten(gesuchsperiode: TSGesuchsperiode): void {
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG).then(
+            result => {
+                this.isErlaeuterungDE = !!result;
+            });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG).then(
+            result => {
+                this.isErlaeuterungFR = !!result;
+            });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
+            result => {
+                this.isVorlageMerkblattDE = !!result;
+            });
+        this.gesuchsperiodeRS.existDokument(
+            gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
+            result => {
+                this.isVorlageMerkblattFR = !!result;
+            });
+    }
+
+    private setVorlageMerkblattTSBoolean(value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this.isVorlageMerkblattFR = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this.isVorlageMerkblattDE = value;
+                break;
+            default:
+                return;
+        }
     }
 }

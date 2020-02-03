@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        <xs:schema targetNamespace="http://geres.bedag.ch/schemas/20180101/GeresResidentInfoResponse"
+		   xmlns:eCH-0020="http://www.ech.ch/xmlns/eCH-0020-f/3"
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" version="1.0">
+
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0020-f/3" schemaLocation="http://www.ech.ch/xmlns/eCH-0020-f/3/eCH-0020-3-0f.xsd"/>
+
+	<!-- Modeled after type of same name from eCH-0020 -->
+	<xs:complexType name="baseDeliveryType">
+		<xs:sequence>
+			<xs:element name="numberOfMessages" type="xs:nonNegativeInteger"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="messages" type="eCH-0020:eventBaseDelivery"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

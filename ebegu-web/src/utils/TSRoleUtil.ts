@@ -202,6 +202,18 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getSchulamtInstitutionRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_TS,
+        ];
+    }
+
     public static getAdministratorJugendamtRole(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
@@ -469,6 +481,23 @@ export class TSRoleUtil {
 
     public static getReadOnlyRoles(): ReadonlyArray<TSRole> {
         return [TSRole.REVISOR, TSRole.JURIST, TSRole.STEUERAMT, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT];
+    }
+
+    // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
+    public static getAllRolesForEWKAbfrage(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.JURIST,
+            TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+        ];
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt

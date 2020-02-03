@@ -18,16 +18,17 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,14 +36,13 @@ public class LastenausgleichBerechnungCSVConverter {
 
 	@Nonnull
 	public String createLastenausgleichCSV(
-		@Nonnull List<LastenausgleichBerechnungDataRow> data,
-		@Nonnull Locale locale
+		@Nonnull List<LastenausgleichBerechnungDataRow> data
 	) {
 		checkNotNull(data);
 
 		StringBuilder csvString = new StringBuilder();
 
-		String header = generateCSVHeader(locale);
+		String header = generateCSVHeader();
 		csvString.append(appendNewLine(header));
 
 		List<LastenausgleichBerechnungCSVDataRow> readyForCSV = mergeRevisionenIntoErhebungen(data);
@@ -62,49 +62,61 @@ public class LastenausgleichBerechnungCSVConverter {
 	 */
 	private List<LastenausgleichBerechnungCSVDataRow> mergeRevisionenIntoErhebungen(List<LastenausgleichBerechnungDataRow> data) {
 
-		// Filtern nach Revisionen und anschliessend nach BFS Nummer gruppieren
-		Map<String, List<LastenausgleichBerechnungDataRow>> revisionen = data
+		// Einträge nach BFS Nummer gruppieren
+		Map<String, List<LastenausgleichBerechnungDataRow>> gemeindeGroups = data
 			.stream()
-			.filter(LastenausgleichBerechnungDataRow::isKorrektur)
 			.collect(Collectors.groupingBy(LastenausgleichBerechnungDataRow::getBfsNummer));
 
 		List<LastenausgleichBerechnungCSVDataRow> result = new ArrayList<>();
-		for (LastenausgleichBerechnungDataRow row : data) {
-			// Werte von aktuellem Jahr (Nicht-Revisionen) in Resultate kopieren und Revisionen hinzufügen
-			if (!row.isKorrektur()) {
-				// Revisionen mit gleicher Gemeinde finden
-				List<LastenausgleichBerechnungDataRow> revisionenCurrentGemeinde = revisionen.get(row.getBfsNummer());
-				BigDecimal totalRevisionValue = BigDecimal.ZERO;
-				// Revisionen dieser Gemeinde summieren, falls es welche gibt
-				if (revisionenCurrentGemeinde != null) {
-					for (LastenausgleichBerechnungDataRow revision : revisionenCurrentGemeinde) {
-						totalRevisionValue = totalRevisionValue.add(revision.getEingabeLastenausgleich());
-					}
+		for (Entry<String, List<LastenausgleichBerechnungDataRow>> gemeindeGroup : gemeindeGroups.entrySet()) {
+			// pro Gemeinde sind mehrere Revisionen möglich, aber nur eine Erhebung
+			LastenausgleichBerechnungDataRow currentErhebung = null;
+			BigDecimal totalRevisionValue = BigDecimal.ZERO;
+			for (LastenausgleichBerechnungDataRow entry : gemeindeGroup.getValue()) {
+				if (entry.isKorrektur()) {
+					totalRevisionValue = totalRevisionValue.add(entry.getEingabeLastenausgleich());
+				} else {
+					currentErhebung = entry;
 				}
-				LastenausgleichBerechnungCSVDataRow toAdd = new LastenausgleichBerechnungCSVDataRow(row);
-				toAdd.setTotalRevision(totalRevisionValue);
-				result.add(toAdd);
 			}
+			LastenausgleichBerechnungCSVDataRow toAdd;
+			if (currentErhebung != null) {
+				toAdd = new LastenausgleichBerechnungCSVDataRow(currentErhebung);
+			// falls keine Erhebung existiert, muss ein Eintrag speziell für die Revision gemacht werden
+			} else {
+				toAdd = new LastenausgleichBerechnungCSVDataRow();
+				toAdd.setTotalBelegung(BigDecimal.ZERO);
+				toAdd.setTotalGutscheine(BigDecimal.ZERO);
+				toAdd.setTotalAnrechenbar(BigDecimal.ZERO);
+				toAdd.setEingabeLastenausgleich(BigDecimal.ZERO);
+				toAdd.setSelbstbehaltGemeinde(BigDecimal.ZERO);
+				toAdd.setBfsNummer(gemeindeGroup.getValue().get(0).getBfsNummer());
+			}
+			toAdd.setTotalRevision(totalRevisionValue);
+			result.add(toAdd);
 		}
-		return result;
+		// resultat wird nach BFS Nummer sortiert
+		return result.stream()
+			.sorted(Comparator.comparing(LastenausgleichBerechnungCSVDataRow::getBfsNummer))
+			.collect(Collectors.toList());
 	}
 
-	private String generateCSVHeader(Locale locale) {
+	private String generateCSVHeader() {
 		return convertToCSVLine(new String[] {
-			ServerMessageUtil.getMessage("Reports_lastenausgleichBFSNummer", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonBelegung", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonGutscheine", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonAnrechenbar", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonErhebung", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonRevision", locale),
-			ServerMessageUtil.getMessage("Reports_lastenausgleichKibonSelbstbehalt", locale)
+			"bfs",
+			"kibon_Belegung",
+			"kibon_Gutscheine",
+			"kibon_Anrechenbar",
+			"kibon_Erhebung",
+			"kibon_Revision",
+			"kibon_Selbstbehalt"
 		});
 	}
 
 	private String dataRowToCSV(LastenausgleichBerechnungCSVDataRow row) {
 		return convertToCSVLine(new String[] {
 			row.getBfsNummer(),
-			row.getTotalBelegung().multiply(new BigDecimal(100)).toString(), // csv in Prozent
+			row.getTotalBelegung().toString(),
 			row.getTotalGutscheine().toString(),
 			row.getTotalAnrechenbar().toString(),
 			row.getEingabeLastenausgleich().toString(),
@@ -117,7 +129,7 @@ public class LastenausgleichBerechnungCSVConverter {
 		String escapedData = data.replaceAll("\\R", " ");
 		if (data.contains(Constants.CSV_DELIMITER) || data.contains("\"") || data.contains("'") || data.contains("|")) {
 			data = data.replace("\"", "\"\"");
-			escapedData = "\"" + data + "\"";
+			escapedData = '"' + data + '"';
 		}
 		return escapedData;
 	}

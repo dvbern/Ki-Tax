@@ -118,7 +118,7 @@ public class KindTarifAbschnittRuleTest {
 
 		assertEquals(expectedDateFrom, zeitabschnitt.getGueltigkeit().getGueltigAb());
 		assertEquals(expectedDateTo, zeitabschnitt.getGueltigkeit().getGueltigBis());
-		assertEquals(expectedBabyTarif, zeitabschnitt.isBabyTarif());
-		assertEquals(expectedEingeschult, zeitabschnitt.isEingeschult());
+		assertEquals(expectedBabyTarif, zeitabschnitt.getBgCalculationInputAsiv().isBabyTarif());
+		assertEquals(expectedEingeschult, zeitabschnitt.getBgCalculationInputAsiv().isEingeschult());
 	}
 }

@@ -19,9 +19,6 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.ModulTagesschule;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -87,8 +84,8 @@ public class TagesschuleRechnerTest {
 
 	private void doTestWithFamilienGroesse2(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(BigDecimal.ZERO);
 		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, paedagogischBetreut);
 
 		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
@@ -96,8 +93,8 @@ public class TagesschuleRechnerTest {
 
 	private void doTestWithFamilienGroesse3(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.setAbzugFamGroesse(MathUtil.DEFAULT.fromNullSafe(11400.00));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(MathUtil.DEFAULT.fromNullSafe(11400.00));
 		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, paedagogischBetreut);
 
 		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
