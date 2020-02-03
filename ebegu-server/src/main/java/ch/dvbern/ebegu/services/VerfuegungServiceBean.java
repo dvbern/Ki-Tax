@@ -338,6 +338,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			// Es war verrechnet UND derselbe Betrag. Wir muessen den Status trotzdem auf etwas
 			// "nicht-behandeltes"
 			// zuruecksetzen!
+			// Was ist das Problem, wenn wir hier "VERRECHNET" setzen würden?
+			// - Gesuch verfügen und auszahlen
+			// - Gesuch mutieren mit Korrektur der fin. Sit. --> Bei Frage: Korrigieren -> noch nicht ausbezahlen
+			// - Gesuch erneut mutieren mit Korrektur des Namens --> Frage Korrigieren erscheint nicht mehr!!
 			if (zeitabschnitt.getZahlungsstatus().isVerrechnet()) {
 				zeitabschnitt.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNEND);
 			}
