@@ -70,7 +70,6 @@ import {TSErwerbspensum} from '../models/TSErwerbspensum';
 import {TSErwerbspensumContainer} from '../models/TSErwerbspensumContainer';
 import {TSEWKAdresse} from '../models/TSEWKAdresse';
 import {TSEWKBeziehung} from '../models/TSEWKBeziehung';
-import {TSEWKEinwohnercode} from '../models/TSEWKEinwohnercode';
 import {TSEWKPerson} from '../models/TSEWKPerson';
 import {TSEWKResultat} from '../models/TSEWKResultat';
 import {TSExternalClient} from '../models/TSExternalClient';
@@ -104,8 +103,8 @@ import {TSInstitutionUpdate} from '../models/TSInstitutionUpdate';
 import {TSKind} from '../models/TSKind';
 import {TSKindContainer} from '../models/TSKindContainer';
 import {TSKindDublette} from '../models/TSKindDublette';
-import {TSMahnung} from '../models/TSMahnung';
 import {TSLastenausgleich} from '../models/TSLastenausgleich';
+import {TSMahnung} from '../models/TSMahnung';
 import {TSMandant} from '../models/TSMandant';
 import {TSMitteilung} from '../models/TSMitteilung';
 import {TSModulTagesschule} from '../models/TSModulTagesschule';
@@ -447,8 +446,6 @@ export class EbeguRestUtil {
             restGesuchsteller.telefon = gesuchsteller.telefon || undefined;
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
             restGesuchsteller.diplomatenstatus = gesuchsteller.diplomatenstatus;
-            restGesuchsteller.ewkPersonId = gesuchsteller.ewkPersonId;
-            restGesuchsteller.ewkAbfrageDatum = DateUtil.momentToLocalDate(gesuchsteller.ewkAbfrageDatum);
             restGesuchsteller.korrespondenzSprache = gesuchsteller.korrespondenzSprache;
             return restGesuchsteller;
         }
@@ -463,8 +460,6 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefon = gesuchstellerFromServer.telefon;
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
-            gesuchstellerTS.ewkPersonId = gesuchstellerFromServer.ewkPersonId;
-            gesuchstellerTS.ewkAbfrageDatum = DateUtil.localDateToMoment(gesuchstellerFromServer.ewkAbfrageDatum);
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
             return gesuchstellerTS;
         }
@@ -3050,8 +3045,6 @@ export class EbeguRestUtil {
 
     public parseEWKResultat(ewkResultatTS: TSEWKResultat, ewkResultatFromServer: any): any {
         if (ewkResultatFromServer) {
-            ewkResultatTS.maxResultate = ewkResultatFromServer.maxResultate;
-            ewkResultatTS.anzahlResultate = ewkResultatFromServer.anzahlResultate;
             ewkResultatTS.personen = this.parseEWKPersonList(ewkResultatFromServer.personen);
             return ewkResultatTS;
         }
@@ -3070,75 +3063,35 @@ export class EbeguRestUtil {
     private parseEWKPerson(tsEWKPerson: TSEWKPerson, ewkPersonFromServer: any): TSEWKPerson {
         if (ewkPersonFromServer) {
             tsEWKPerson.personID = ewkPersonFromServer.personID;
-            tsEWKPerson.einwohnercodes = this.parseEWKEinwohnercodeList(ewkPersonFromServer.einwohnercodes);
             tsEWKPerson.nachname = ewkPersonFromServer.nachname;
-            tsEWKPerson.ledigname = ewkPersonFromServer.ledigname;
             tsEWKPerson.vorname = ewkPersonFromServer.vorname;
-            tsEWKPerson.rufname = ewkPersonFromServer.rufname;
             tsEWKPerson.geburtsdatum = DateUtil.localDateToMoment(ewkPersonFromServer.geburtsdatum);
             tsEWKPerson.zuzugsdatum = DateUtil.localDateToMoment(ewkPersonFromServer.zuzugsdatum);
-            tsEWKPerson.nationalitaet = ewkPersonFromServer.nationalitaet;
+            tsEWKPerson.wegzugsdatum = DateUtil.localDateToMoment(ewkPersonFromServer.wegzugsdatum);
             tsEWKPerson.zivilstand = ewkPersonFromServer.zivilstand;
-            tsEWKPerson.zivilstandTxt = ewkPersonFromServer.zivilstandTxt;
             tsEWKPerson.zivilstandsdatum = DateUtil.localDateToMoment(ewkPersonFromServer.zivilstandsdatum);
             tsEWKPerson.geschlecht = ewkPersonFromServer.geschlecht;
-            tsEWKPerson.bewilligungsart = ewkPersonFromServer.bewilligungsart;
-            tsEWKPerson.bewilligungsartTxt = ewkPersonFromServer.bewilligungsartTxt;
-            tsEWKPerson.bewilligungBis = DateUtil.localDateToMoment(ewkPersonFromServer.bewilligungBis);
-            tsEWKPerson.adressen = this.parseEWKAdresseList(ewkPersonFromServer.adressen);
+            tsEWKPerson.adresse = this.parseEWKAdresse(new TSEWKAdresse(), ewkPersonFromServer.adresse);
             tsEWKPerson.beziehungen = this.parseEWKBeziehungList(ewkPersonFromServer.beziehungen);
+            tsEWKPerson.gesuchsteller = ewkPersonFromServer.gesuchsteller;
+            tsEWKPerson.kind = ewkPersonFromServer.kind;
+            tsEWKPerson.haushalt = ewkPersonFromServer.haushalt;
+            tsEWKPerson.nichtGefunden = ewkPersonFromServer.nichtGefunden;
             return tsEWKPerson;
         }
         return undefined;
     }
 
-    private parseEWKEinwohnercodeList(data: any): TSEWKEinwohnercode[] {
-        if (!data) {
-            return [];
-        }
-        return Array.isArray(data)
-            ? data.map(item => this.parseEWKEinwohnercode(new TSEWKEinwohnercode(), item))
-            : [];
-    }
-
-    private parseEWKEinwohnercode(
-        tsEWKEinwohnercode: TSEWKEinwohnercode,
-        ewkEinwohnercodeFromServer: any,
-    ): TSEWKEinwohnercode {
-        if (ewkEinwohnercodeFromServer) {
-            tsEWKEinwohnercode.code = ewkEinwohnercodeFromServer.code;
-            tsEWKEinwohnercode.codeTxt = ewkEinwohnercodeFromServer.codeTxt;
-            tsEWKEinwohnercode.gueltigVon = DateUtil.localDateToMoment(ewkEinwohnercodeFromServer.gueltigVon);
-            tsEWKEinwohnercode.gueltigBis = DateUtil.localDateToMoment(ewkEinwohnercodeFromServer.gueltigBis);
-            return tsEWKEinwohnercode;
-        }
-        return undefined;
-    }
-
-    private parseEWKAdresseList(data: any): TSEWKAdresse[] {
-        if (!data) {
-            return [];
-        }
-        return Array.isArray(data)
-            ? data.map(item => this.parseEWKAdresse(new TSEWKAdresse(), item))
-            : [];
-    }
-
     private parseEWKAdresse(tsEWKAdresse: TSEWKAdresse, ewkAdresseFromServer: any): TSEWKAdresse {
         if (ewkAdresseFromServer) {
-            tsEWKAdresse.adresstyp = ewkAdresseFromServer.adresstyp;
-            tsEWKAdresse.adresstypTxt = ewkAdresseFromServer.adresstypTxt;
-            tsEWKAdresse.gueltigVon = DateUtil.localDateToMoment(ewkAdresseFromServer.gueltigVon);
-            tsEWKAdresse.gueltigBis = DateUtil.localDateToMoment(ewkAdresseFromServer.gueltigBis);
-            tsEWKAdresse.coName = ewkAdresseFromServer.coName;
-            tsEWKAdresse.postfach = ewkAdresseFromServer.postfach;
-            tsEWKAdresse.bfSGemeinde = ewkAdresseFromServer.bfSGemeinde;
-            tsEWKAdresse.strasse = ewkAdresseFromServer.strasse;
+            tsEWKAdresse.adresszusatz1 = ewkAdresseFromServer.adresszusatz1;
+            tsEWKAdresse.adresszusatz2 = ewkAdresseFromServer.adresszusatz2;
             tsEWKAdresse.hausnummer = ewkAdresseFromServer.hausnummer;
+            tsEWKAdresse.wohnungsnummer = ewkAdresseFromServer.wohnungsnummer;
+            tsEWKAdresse.strasse = ewkAdresseFromServer.strasse;
             tsEWKAdresse.postleitzahl = ewkAdresseFromServer.postleitzahl;
             tsEWKAdresse.ort = ewkAdresseFromServer.ort;
-            tsEWKAdresse.kanton = ewkAdresseFromServer.kanton;
-            tsEWKAdresse.land = ewkAdresseFromServer.land;
+            tsEWKAdresse.gebiet = ewkAdresseFromServer.gebiet;
             return tsEWKAdresse;
         }
         return undefined;
@@ -3156,12 +3109,9 @@ export class EbeguRestUtil {
     private parseEWKBeziehung(tsEWKBeziehung: TSEWKBeziehung, ewkBeziehungFromServer: any): TSEWKBeziehung {
         if (ewkBeziehungFromServer) {
             tsEWKBeziehung.beziehungstyp = ewkBeziehungFromServer.beziehungstyp;
-            tsEWKBeziehung.beziehungstypTxt = ewkBeziehungFromServer.beziehungstypTxt;
             tsEWKBeziehung.personID = ewkBeziehungFromServer.personID;
             tsEWKBeziehung.nachname = ewkBeziehungFromServer.nachname;
-            tsEWKBeziehung.ledigname = ewkBeziehungFromServer.ledigname;
             tsEWKBeziehung.vorname = ewkBeziehungFromServer.vorname;
-            tsEWKBeziehung.rufname = ewkBeziehungFromServer.rufname;
             tsEWKBeziehung.geburtsdatum = DateUtil.localDateToMoment(ewkBeziehungFromServer.geburtsdatum);
             tsEWKBeziehung.adresse = this.parseEWKAdresse(new TSEWKAdresse(), ewkBeziehungFromServer.adresse);
             return tsEWKBeziehung;

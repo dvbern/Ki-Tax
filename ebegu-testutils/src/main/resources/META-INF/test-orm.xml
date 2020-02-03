@@ -372,4 +372,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
 	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
 	<entity class="ch.dvbern.ebegu.entities.TSCalculationResult"/>
+	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode"/>
 </entity-mappings>

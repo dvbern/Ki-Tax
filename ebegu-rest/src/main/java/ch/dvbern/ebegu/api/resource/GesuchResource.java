@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -59,16 +60,20 @@ import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
+import ch.dvbern.ebegu.services.PersonenSucheService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resource fuer Gesuch
@@ -77,6 +82,8 @@ import org.apache.commons.lang3.Validate;
 @Stateless
 @Api(description = "Resource für Anträge (Erstgesuch oder Mutation)")
 public class GesuchResource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(GesuchResource.class);
 
 	public static final String GESUCH_ID_INVALID = "GesuchId invalid: ";
 
@@ -103,6 +110,9 @@ public class GesuchResource {
 
 	@Inject
 	private ResourceHelper resourceHelper;
+
+	@Inject
+	private PersonenSucheService personenSucheService;
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
@@ -170,6 +180,27 @@ public class GesuchResource {
 		final JaxGesuch jaxGesuch = converter.gesuchToJAX(gesuchToReturn);
 		return jaxGesuch;
 	}
+
+	@ApiOperation(value = "Sucht eine Person im EWK nach Name, Vorname, Geburtsdatum und Geschlecht.",
+		response = EWKResultat.class)
+	@Nullable
+	@GET
+	@Path("/ewk/searchgesuch/{gesuchId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public EWKResultat suchePersonenByGesuch(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) throws EbeguException {
+		Objects.requireNonNull(gesuchJAXPId.getId());
+		String gesuchID = converter.toEntityId(gesuchJAXPId);
+		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchID);
+
+		if (!gesuchOptional.isPresent()) {
+			LOG.trace("Tried to trigger Search in Personensuche for non-exisiting gesuchId");
+			return null;
+		}
+		Gesuch gesuch = gesuchOptional.get();
+		return personenSucheService.suchePersonen(gesuch);
+	}
+
 
 	/**
 	 * Da beim Einscannen Gesuche eingelesen werden die noch im Status Freigabequittung sind brauchen

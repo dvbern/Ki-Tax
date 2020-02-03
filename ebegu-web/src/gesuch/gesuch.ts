@@ -26,16 +26,13 @@ import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '.
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
-import {TSGesuchEvent} from '../models/enums/TSGesuchEvent';
 import {TSRole} from '../models/enums/TSRole';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
 import {TSDossier} from '../models/TSDossier';
-import {TSEWKPerson} from '../models/TSEWKPerson';
 import {TSEWKResultat} from '../models/TSEWKResultat';
 import {TSFall} from '../models/TSFall';
 import {TSGesuch} from '../models/TSGesuch';
-import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
 import {DateUtil} from '../utils/DateUtil';
 import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
@@ -296,122 +293,24 @@ export class GesuchRouteController implements IController {
         return this.wizardStepManager.getCurrentStepName();
     }
 
-    public getGesuchstellerTitle(gsnumber: number): string {
-        const gs = this.ewkRS.getGesuchsteller(gsnumber).gesuchstellerJA;
-        if (gs) {
-            const title = gs.getFullName();
-            if (gs.ewkPersonId) {
-                return `${title} (${gs.ewkPersonId})`;
-            }
-            return title;
+    public isGesuchstller1New(): boolean {
+        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1) {
+            return this.gesuchModelManager.getGesuch().gesuchsteller1.isNew();
         }
-        return undefined;
+        return true;
     }
 
-    public showAbfrageForGesuchsteller(n: any): boolean {
-        return this.ewkRS.ewkSearchAvailable(n);
+    public getEWKResultat(): TSEWKResultat {
+        return this.gesuchModelManager.ewkResultat;
     }
 
-    public getGesuchsteller(n: number): TSGesuchstellerContainer {
-        switch (n) {
-            case 1:
-                if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1) {
-                    return this.gesuchModelManager.getGesuch().gesuchsteller1;
-                }
-                return undefined;
-            case 2:
-                if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2) {
-                    return this.gesuchModelManager.getGesuch().gesuchsteller2;
-                }
-                return undefined;
-            default:
-                return undefined;
-        }
-    }
-
-    public getEWKResultat(n: number): TSEWKResultat {
-        switch (n) {
-            case 1:
-                return this.gesuchModelManager.ewkResultatGS1;
-            case 2:
-                return this.gesuchModelManager.ewkResultatGS2;
-            default:
-                return undefined;
-        }
-    }
-
-    public getEWKPerson(n: number): TSEWKPerson {
-        switch (n) {
-            case 1:
-                return this.gesuchModelManager.ewkPersonGS1;
-            case 2:
-                return this.gesuchModelManager.ewkPersonGS2;
-            default:
-                return undefined;
-        }
-    }
-
-    public checkEWKPerson(person: TSEWKPerson, n: number): boolean {
-        switch (n) {
-            case 1:
-                return (person.personID === this.ewkRS.gesuchsteller1.gesuchstellerJA.ewkPersonId);
-            case 2:
-                return (person.personID === this.ewkRS.gesuchsteller2.gesuchstellerJA.ewkPersonId);
-            default:
-                return false;
-        }
-    }
-
-    public searchGesuchsteller(n: number): void {
+    public searchGesuchsteller(): void {
         this.errorService.clearAll();
-        this.ewkRS.suchePerson(n).then(response => {
-            switch (n) {
-                case 1:
-                    this.gesuchModelManager.ewkResultatGS1 = response;
-                    if (this.gesuchModelManager.ewkResultatGS1.anzahlResultate === 1) {
-                        this.selectPerson(this.gesuchModelManager.ewkResultatGS1.personen[0], n);
-                    } else {
-                        this.setDateEWKAbfrage(n);
-                    }
-                    break;
-                case 2:
-                    this.gesuchModelManager.ewkResultatGS2 = response;
-                    if (this.gesuchModelManager.ewkResultatGS2.anzahlResultate === 1) {
-                        this.selectPerson(this.gesuchModelManager.ewkResultatGS2.personen[0], n);
-                    } else {
-                        this.setDateEWKAbfrage(n);
-                    }
-                    break;
-                default:
-                    break;
-            }
+        this.ewkRS.sucheInEwk(this.getGesuchId()).then(response => {
+            this.gesuchModelManager.ewkResultat = response;
         }).catch(exception => {
-            const bussinesExceptionMitFehlercode = this.errorService.getErrors()
-                .some(e => e.errorCodeEnum === 'ERROR_PERSONENSUCHE_BUSINESS' && e.argumentList[0]);
-
-            if (bussinesExceptionMitFehlercode) {
-                // es war eine Businessexception und der Sercvice hat mit einem ErrorCode geantwortet
-                // Abfrage hat stattgefunden
-                this.setDateEWKAbfrage(n);
-            }
             LOG.error('there was an error searching the person in EWK ', exception);
         });
-    }
-
-    public selectPerson(person: TSEWKPerson, n: number): void {
-        this.ewkRS.selectPerson(n, person.personID);
-        switch (n) {
-            case 1:
-                this.gesuchModelManager.ewkPersonGS1 = person;
-                this.$rootScope.$broadcast(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED], 1, person.personID);
-                break;
-            case 2:
-                this.gesuchModelManager.ewkPersonGS2 = person;
-                this.$rootScope.$broadcast(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED], 2, person.personID);
-                break;
-            default:
-                break;
-        }
     }
 
     public isGesuchGesperrt(): boolean {
@@ -438,20 +337,6 @@ export class GesuchRouteController implements IController {
             return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');
         }
         return this.$translate.instant('MENU_VERFUEGEN');
-    }
-
-    private setDateEWKAbfrage(n: number): void {
-        this.ewkRS.selectPerson(n, null);
-        switch (n) {
-            case 1:
-                this.$rootScope.$broadcast(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED], 1, null);
-                break;
-            case 2:
-                this.$rootScope.$broadcast(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED], 2, null);
-                break;
-            default:
-                break;
-        }
     }
 
     public gemeindeHasKontingent(): boolean {
