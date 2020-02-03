@@ -202,9 +202,15 @@
                                      ng-model="vm.agbTSAkzeptiert"
                                      name="agbTSAkzeptiert"
                                      id="agbTSAkzeptiert"
-                                     aria-label="{{'BETREUUNG_TAGESSCHULE_AGB' | translate}}"
+                                     aria-label="{{'BETREUUNG_TAGESSCHULE_ANMELDUNG_DEFINITIV' | translate}}"
                                      ng-required="true">
-                            <span data-translate="BETREUUNG_TAGESSCHULE_AGB"></span>
+                            <span ng-if="vm.agbVorhanden">{{'BETREUUNG_TAGESSCHULE_AGB_START' | translate}}
+                                <a role="button"
+                                   ng-click="vm.downloadGemeindeGesuchsperiodeDokument()">{{'BETREUUNG_TAGESSCHULE_AGB_DOK'
+										| translate}}</a>
+                                {{'BETREUUNG_TAGESSCHULE_AGB_END' | translate}}
+                            </span>
+                            <span ng-if="!vm.agbVorhanden">Ich nehme zur Kenntniss, dass die Anmeldung definitiv ist</span>
                         </md-checkbox>
                         <dv-error-messages ng-show="vm.form.agbTSAkzeptiert.$error.required && vm.isAnmeldenClicked"
                                            input-id="agbTSAkzeptiert"
