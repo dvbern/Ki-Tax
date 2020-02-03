@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 /**
@@ -21,113 +20,50 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
  */
 export class TSEWKAdresse extends TSAbstractMutableEntity {
 
-    private _adresstyp: string;
-    private _adresstypTxt: string;
-    private _gueltigVon: moment.Moment;
-    private _gueltigBis: moment.Moment;
-    private _coName: string;
-    private _postfach: string;
-    private _bfSGemeinde: string;
-    private _strasse: string;
+    private _adresszusatz1: string;
+    private _adresszusatz2: string;
     private _hausnummer: string;
+    private _wohnungsnummer: string;
+    private _strasse: string;
     private _postleitzahl: string;
     private _ort: string;
-    private _kanton: string;
-    private _land: string;
+    private _gebiet: string;
 
     public constructor(
-        adresstyp?: string,
-        adresstypTxt?: string,
-        gueltigVon?: moment.Moment,
-        gueltigBis?: moment.Moment,
-        coName?: string,
-        postfach?: string,
-        bfSGemeinde?: string,
-        strasse?: string,
+        adresszusatz1?: string,
+        adresszusatz2?: string,
         hausnummer?: string,
+        wohnungsnummer?: string,
+        strasse?: string,
         postleitzahl?: string,
         ort?: string,
-        kanton?: string,
-        land?: string,
+        gebiet?: string,
     ) {
         super();
-        this._adresstyp = adresstyp;
-        this._adresstypTxt = adresstypTxt;
-        this._gueltigVon = gueltigVon;
-        this._gueltigBis = gueltigBis;
-        this._coName = coName;
-        this._postfach = postfach;
-        this._bfSGemeinde = bfSGemeinde;
-        this._strasse = strasse;
+        this._adresszusatz1 = adresszusatz1;
+        this._adresszusatz2 = adresszusatz2;
         this._hausnummer = hausnummer;
+        this._wohnungsnummer = wohnungsnummer;
+        this._strasse = strasse;
         this._postleitzahl = postleitzahl;
         this._ort = ort;
-        this._kanton = kanton;
-        this._land = land;
+        this._gebiet = gebiet;
     }
 
-    public get adresstyp(): string {
-        return this._adresstyp;
+    public get adresszusatz1(): string {
+        return this._adresszusatz1;
     }
 
-    public set adresstyp(value: string) {
-        this._adresstyp = value;
+    public set adresszusatz1(value: string) {
+        this._adresszusatz1 = value;
     }
 
-    public get adresstypTxt(): string {
-        return this._adresstypTxt;
+    public get adresszusatz2(): string {
+        return this._adresszusatz2;
     }
 
-    public set adresstypTxt(value: string) {
-        this._adresstypTxt = value;
-    }
-
-    public get gueltigVon(): moment.Moment {
-        return this._gueltigVon;
-    }
-
-    public set gueltigVon(value: moment.Moment) {
-        this._gueltigVon = value;
-    }
-
-    public get gueltigBis(): moment.Moment {
-        return this._gueltigBis;
-    }
-
-    public set gueltigBis(value: moment.Moment) {
-        this._gueltigBis = value;
-    }
-
-    public get coName(): string {
-        return this._coName;
-    }
-
-    public set coName(value: string) {
-        this._coName = value;
-    }
-
-    public get postfach(): string {
-        return this._postfach;
-    }
-
-    public set postfach(value: string) {
-        this._postfach = value;
-    }
-
-    public get bfSGemeinde(): string {
-        return this._bfSGemeinde;
-    }
-
-    public set bfSGemeinde(value: string) {
-        this._bfSGemeinde = value;
-    }
-
-    public get strasse(): string {
-        return this._strasse;
-    }
-
-    public set strasse(value: string) {
-        this._strasse = value;
+    public set adresszusatz2(value: string) {
+        this._adresszusatz2 = value;
     }
 
     public get hausnummer(): string {
@@ -136,6 +72,22 @@ export class TSEWKAdresse extends TSAbstractMutableEntity {
 
     public set hausnummer(value: string) {
         this._hausnummer = value;
+    }
+
+    public get wohnungsnummer(): string {
+        return this._wohnungsnummer;
+    }
+
+    public set wohnungsnummer(value: string) {
+        this._wohnungsnummer = value;
+    }
+
+    public get strasse(): string {
+        return this._strasse;
+    }
+
+    public set strasse(value: string) {
+        this._strasse = value;
     }
 
     public get postleitzahl(): string {
@@ -154,20 +106,12 @@ export class TSEWKAdresse extends TSAbstractMutableEntity {
         this._ort = value;
     }
 
-    public get kanton(): string {
-        return this._kanton;
+    public get gebiet(): string {
+        return this._gebiet;
     }
 
-    public set kanton(value: string) {
-        this._kanton = value;
-    }
-
-    public get land(): string {
-        return this._land;
-    }
-
-    public set land(value: string) {
-        this._land = value;
+    public set gebiet(value: string) {
+        this._gebiet = value;
     }
 
     public getShortDescription(): string {

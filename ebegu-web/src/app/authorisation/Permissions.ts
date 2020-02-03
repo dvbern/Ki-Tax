@@ -47,6 +47,19 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.REVISOR,
         TSRole.STEUERAMT,
     ],
+    [Permission.BENUTZER_EINLADEN_AS_GEMEINDE]: [
+        TSRole.ADMIN_GEMEINDE,
+        TSRole.SACHBEARBEITER_GEMEINDE,
+        TSRole.ADMIN_BG,
+        TSRole.SACHBEARBEITER_BG,
+        TSRole.ADMIN_TS,
+        TSRole.SACHBEARBEITER_TS,
+        TSRole.JURIST,
+        TSRole.REVISOR,
+        TSRole.STEUERAMT,
+        TSRole.ADMIN_INSTITUTION,
+        TSRole.SACHBEARBEITER_INSTITUTION,
+    ],
     [Permission.ROLE_BG]: [
         // todo This Permission should be removed in KIBON version 2. The permission Permission.ROLE_GEMEINDE should be
         // used instead

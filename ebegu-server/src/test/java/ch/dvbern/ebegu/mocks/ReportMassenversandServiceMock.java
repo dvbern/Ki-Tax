@@ -66,11 +66,9 @@ public class ReportMassenversandServiceMock extends ReportMassenversandServiceBe
 		fall.setFall("001");
 		fall.setGs1Vorname(gs1Vorname);
 		fall.setGs1Name(gs1Name);
-		fall.setGs1PersonId("123456");
 		fall.setGs1Mail("gesuchsteller1@mailbucket.dvbern.ch");
 		fall.setGs2Name("Partner");
 		fall.setGs2Vorname("Paul");
-		fall.setGs2PersonId("234567");
 		fall.setGs2Mail("gesuchsteller2@mailbucket.dvbern.ch");
 		fall.setAdresse("DV Bern AG\nNussbaumstrasse 21\n3006 Bern");
 		fall.setKinderCols(new ArrayList<>());

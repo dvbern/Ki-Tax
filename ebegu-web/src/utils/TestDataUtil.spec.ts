@@ -214,6 +214,8 @@ export class TestDataUtil {
         gemeinde.bfsNummer = 99999;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
@@ -230,6 +232,8 @@ export class TestDataUtil {
         gemeinde.bfsNummer = 99998;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
@@ -245,6 +249,8 @@ export class TestDataUtil {
         gemeinde.gemeindeNummer = 3;
         gemeinde.status = TSGemeindeStatus.AKTIV;
         gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
+        gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
+        gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;

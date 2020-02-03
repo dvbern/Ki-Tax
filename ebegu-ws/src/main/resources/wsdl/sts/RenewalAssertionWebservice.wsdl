@@ -1,0 +1,100 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<wsdl:definitions name="RenewAssertionService" targetNamespace="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService"
+    xmlns:tns="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService" xmlns:ctx="http://sv.fin.be.ch/schemas/base/20070131/CallContext"
+    xmlns:ex="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <wsdl:documentation>
+        Service zum Erneuern (d.h. zeitlich verlängern) von SAML-Assertions.
+        Der Service kann zur Erneuerung beliebiger SAML-Assertion-Typen verwendet werden.
+        Die erstmalige Ausstellung einer SAML-Assertion muss vorgängig mit einem anderen Service (AD-STS,
+        Stek-STS, TaxMe-Portal-STS oder Zert-STS) erfolgt sein.
+    </wsdl:documentation>
+
+    <!-- ===================== Types Definitions ====================== -->
+    <wsdl:types>
+        <xs:schema xmlns="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService"
+            targetNamespace="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService">
+
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" schemaLocation="sv-context.xsd" />
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="sv-faults.xsd" />
+
+            <xs:include schemaLocation="samlrenew.xsd" />
+        </xs:schema>
+
+    </wsdl:types>
+
+    <!-- ===================== Message Definitions ====================== -->
+
+    <!-- Fehlermeldungen -->
+    <wsdl:message name="InfrastructureFault">
+        <wsdl:part name="error" element="ex:InfrastructureFault" />
+    </wsdl:message>
+    <wsdl:message name="InvalidArgumentsFault">
+        <wsdl:part name="error" element="ex:InvalidArgumentsFault" />
+    </wsdl:message>
+    <wsdl:message name="BusinessFault">
+        <wsdl:part name="error" element="ex:BusinessFault" />
+    </wsdl:message>
+
+    <!-- Request-Response -->
+    <wsdl:message name="RenewAssertion">
+        <wsdl:part name="body" element="tns:RenewAssertion" />
+    </wsdl:message>
+
+    <wsdl:message name="RenewAssertionResponse">
+        <wsdl:part name="body" element="tns:RenewAssertionResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="Header">
+        <wsdl:part name="callContext" element="ctx:CallContext" />
+    </wsdl:message>
+
+    <!-- =================== Port-Type Definitions ===================== -->
+    <wsdl:portType name="RenewAssertionService">
+        <wsdl:operation name="RenewAssertion">
+            <wsdl:documentation>
+                Erneuert eine bestehende SAML-Assertion
+            </wsdl:documentation>
+            <wsdl:input message="tns:RenewAssertion" name="RenewAssertion" />
+            <wsdl:output message="tns:RenewAssertionResponse" name="RenewAssertionResponse" />
+            <wsdl:fault message="tns:InfrastructureFault" name="InfrastructureFault" />
+            <wsdl:fault message="tns:InvalidArgumentsFault" name="InvalidArgumentsFault" />
+            <wsdl:fault message="tns:BusinessFault" name="BusinessFault" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- =================== Binding Definitions ===================== -->
+    <wsdl:binding name="RenewAssertionSOAPBinding" type="tns:RenewAssertionService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+
+        <wsdl:operation name="RenewAssertion">
+            <soap:operation style="document" />
+            <wsdl:input>
+                <!-- <soap:header message="tns:Header" part="callContext" use="literal" /> -->
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="InfrastructureFault">
+                <soap:fault name="InfrastructureFault" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="InvalidArgumentsFault">
+                <soap:fault name="InvalidArgumentsFault" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="BusinessFault">
+                <soap:fault name="BusinessFault" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+
+    </wsdl:binding>
+
+    <!-- =================== Service Definitions ===================== -->
+    <wsdl:service name="RenewAssertionWebservice">
+        <wsdl:port name="RenewAssertion" binding="tns:RenewAssertionSOAPBinding">
+            <soap:address location="https://a6hu-www-sts-b.be.ch:443/securityService/samlrenew/services/RenewAssertionWebService" />
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

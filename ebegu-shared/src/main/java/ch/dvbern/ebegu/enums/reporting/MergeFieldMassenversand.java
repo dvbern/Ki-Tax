@@ -46,7 +46,6 @@ public enum MergeFieldMassenversand implements MergeFieldProvider {
 	gesuchsteller2Title(new SimpleMergeField<>("gesuchsteller2Title", STRING_CONVERTER)),
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
-	ewkTitle(new SimpleMergeField<>("ewkTitle", STRING_CONVERTER)),
 	emailTitle(new SimpleMergeField<>("emailTitle", STRING_CONVERTER)),
 	postanschriftTitle(new SimpleMergeField<>("postanschriftTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
@@ -77,12 +76,10 @@ public enum MergeFieldMassenversand implements MergeFieldProvider {
 
 	gs1Name(new SimpleMergeField<>("gs1Name", STRING_CONVERTER)),
 	gs1Vorname(new SimpleMergeField<>("gs1Vorname", STRING_CONVERTER)),
-	gs1PersonId(new SimpleMergeField<>("gs1PersonId", STRING_CONVERTER)),
 	gs1Mail(new SimpleMergeField<>("gs1Mail", STRING_CONVERTER)),
 
 	gs2Name(new SimpleMergeField<>("gs2Name", STRING_CONVERTER)),
 	gs2Vorname(new SimpleMergeField<>("gs2Vorname", STRING_CONVERTER)),
-	gs2PersonId(new SimpleMergeField<>("gs2PersonId", STRING_CONVERTER)),
 	gs2Mail(new SimpleMergeField<>("gs2Mail", STRING_CONVERTER)),
 
 	adresse(new SimpleMergeField<>("adresse", STRING_CONVERTER)),

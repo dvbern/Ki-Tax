@@ -104,7 +104,8 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
+                            <label *ngIf="isBGInstitution" class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
+                            <label *ngIf="!isBGInstitution" class="required" translate for="admin_mail_ID">KONTAKT_MAIL</label>
                             <input id="admin_mail_ID" type="email" name="admin_mail"
                                    [(ngModel)]="adminMail"
                                    [maxlength]="255" class="form-control" required>

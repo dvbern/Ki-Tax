@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -50,6 +51,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public korrespondenzsprache: string;
     public benutzerListe: Array<TSBenutzer>;
     public showMessageKeinAngebotSelected: boolean = false;
+    public minDateTSFI = moment('20200801', 'YYYYMMDD');
 
     private readonly unsubscribe$ = new Subject<void>();
 

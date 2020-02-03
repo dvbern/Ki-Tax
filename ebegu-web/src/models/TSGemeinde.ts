@@ -25,6 +25,8 @@ export class TSGemeinde extends TSAbstractEntity {
     public bfsNummer: number;
     public status: TSGemeindeStatus;
     public betreuungsgutscheineStartdatum: moment.Moment;
+    public tagesschulanmeldungenStartdatum: moment.Moment;
+    public ferieninselanmeldungenStartdatum: moment.Moment;
     public angebotBG: boolean;
     public angebotTS: boolean;
     public angebotFI: boolean;
