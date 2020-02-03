@@ -172,17 +172,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getTagesschuleAnmeldungNotYetReadyText(): string {
-        if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()) {
-            if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulenAnmeldungKonfiguriert()) {
-                const terminValue = DateUtil.momentToLocalDateFormat(
-                    this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
-                    termin: terminValue,
-                });
-            }
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
+        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
+                termin: terminValue,
+            });
         }
-        return '';
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
     private loadErlaeuterungForTagesschule(): void {

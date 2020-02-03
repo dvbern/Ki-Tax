@@ -56,14 +56,12 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	private static final String GESUCHSTELLER = "PdfGeneration_Gesuchsteller";
 	private static final String BETREUUNGSANGEBOTE = "PdfGeneration_Betreuungsangebote";
 	private static final String BETREUUNG_KIND = "PdfGeneration_Kind";
-	private static final String BETREUUNG_BGNUMMER = "PdfGeneration_BgNummer";
 	private static final String BENOETIGTE_UNTERLAGEN = "PdfGeneration_BenoetigteUnterlagen";
 	private static final String EINWILLIGUNG_STEUERDATEN_TITLE = "PdfGeneration_EinwilligungSteuerdaten_Title";
 	private static final String EINWILLIGUNG_STEUERDATEN_CONTENT = "PdfGeneration_EinwilligungSteuerdaten_Content";
-	private static final String KENNTNISSNAHME_TITLE = "PdfGeneration_Kenntnissnahme_Title";
-	private static final String KENTNISSNAHME_CONTENT = "PdfGeneration_Kenntnissnahme_Content";
-	private static final String INFO_EINREICHUNG = "PdfGeneration_InfoEinreichung";
-	private static final String BESTAETIGUNG_WAHRHEITSGEMAESS = "PdfGeneration_BestaetigungWahrheitsgemaess";
+	private static final String VOLLSTAENDIGKEIT_TITLE = "PdfGeneration_Vollstaendigkeit_Title";
+	private static final String VOLLSTAENDIGKEIT_CONTENT = "PdfGeneration_Vollstaendigkeit_Content";
+	private static final String EINGEREICHT = "PdfGeneration_Eingereicht";
 	private static final String UNTERSCHRIFTEN_ORT_DATUM = "PdfGeneration_UnterschriftenOrtDatum";
 
 	private static final Logger LOG = LoggerFactory.getLogger(FreigabequittungPdfGenerator.class);
@@ -107,11 +105,10 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 				translate(EINWILLIGUNG_STEUERDATEN_CONTENT, gesuch.getDossier().getGemeinde().getName())
 			));
 			seite2Paragraphs.add(new Paragraph());
-			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(KENNTNISSNAHME_TITLE)));
-			seite2Paragraphs.add(PdfUtil.createParagraph(translate(KENTNISSNAHME_CONTENT)));
-			seite2Paragraphs.add(PdfUtil.createParagraph(translate(INFO_EINREICHUNG)));
-			seite2Paragraphs.add(PdfUtil.createParagraph(translate(BESTAETIGUNG_WAHRHEITSGEMAESS), 0));
+			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(VOLLSTAENDIGKEIT_TITLE)));
+			seite2Paragraphs.add(PdfUtil.createParagraph(translate(VOLLSTAENDIGKEIT_CONTENT)));
 			seite2Paragraphs.add(createUnterschriftenTable());
+			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINGEREICHT)));
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
 		};
 	}
@@ -162,7 +159,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		table.setKeepTogether(true);
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_KIND)));
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_INSTITUTION)));
-		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_BGNUMMER)));
+		table.addCell(PdfUtil.createTitleCell(translate(REFERENZNUMMER)));
 
 		getGesuch().extractAllBetreuungen().forEach(betreuung -> {
 			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), getPageConfiguration().getFont()));
@@ -179,7 +176,6 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		PdfPTable table = new PdfPTable(2);
 		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingTop(3 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-
 		GesuchstellerContainer gesuchsteller1 = getGesuch().getGesuchsteller1();
 		GesuchstellerContainer gesuchsteller2 = getGesuch().getGesuchsteller2();
 		if (gesuchsteller1 != null) {
@@ -188,6 +184,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		if (gesuchsteller2 != null) {
 			addGesuchstellerToUnterschriften(table, gesuchsteller2);
 		}
+		table.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return table;
 	}
 

@@ -1,0 +1,123 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+  ~ Copyright (C)  2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<xs:schema targetNamespace="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService"
+    elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1"
+    xmlns:tns="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion"
+    xmlns:ex="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!-- ======================== Imports ============================ -->
+
+    <xs:import namespace="urn:oasis:names:tc:SAML:1.0:assertion" schemaLocation="oasis-sstc-saml-schema-assertion-1.1.xsd" />
+
+    <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="sv-faults.xsd" />
+    <!-- ======================== Elements ============================ -->
+
+    <xs:element name="IssueAssertion" type="tns:IssueAssertionType" />
+    <xs:element name="IssueAssertionResponse" type="tns:STSResponseType" />
+
+    <!-- Faults -->
+    <xs:element name="AuthenticationFault" type="ex:BusinessFault"></xs:element>
+
+    <!-- ========================Complex Types ============================ -->
+
+    <!-- Requests / Responses -->
+    <xs:complexType name="IssueAssertionType">
+        <xs:sequence>
+            <xs:element name="ApplicationName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Name der Applikation, für die die Assertion
+                        ausgestellt werden soll. Es ist nur der
+                        effektive Applikationsname ohne
+                        Batch-Pseudodomain anzugeben. Die Pseudodomain
+                        (@batch-user.sv.fin.be.ch) wird vom Webservice
+                        ergänzt. Länge und Inhalt sind aus Sicht des STS
+                        frei. Sie sind zwischen der Applikation und den
+                        Webservices, welche eine Authorisierung auf den
+                        Applikationsnamen durchführen, abzusprechen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="RequestDate" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>
+                        Zeitpunkt, an dem der Request gestellt wird.
+                        Hier ist die aktuelle Systemzeit einzusetzen.
+                        Wenn sich dieser Zeitpunkt mehr als 5 Minuten
+                        von der Serverzeit des STS-Servers abweicht,
+                        wird keine Assertion ausgestellt, sondern ein
+                        BusinessFault geworfen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Signature" type="xs:base64Binary">
+                <xs:annotation>
+                    <xs:documentation>
+                        Ein mit dem Private Key der Applikation
+                        signierter Prüf-Begriff. Für die Signatur muss
+                        der Algorithmus SHA1 mit RSA verwendet werden.
+                        Der Prüfgebriff wird wie folgt gebildet: Fixer
+                        Text "ZertSTSRequest" Bindestrich
+                        ApplicationName Space Timestamp im Format
+                        JJJJ.MM.TT-HH:mm:ss z.B. ZertSTSRequest-TestApp
+                        2007.10.10-08:08:08 Die Signatur wird als
+                        Base64-codiertes Byte-Array übergeben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Alias" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Alias-Name, unter dem das Zertifikat mit dem
+                        Public-Key der Batch-Applikation im Truststore
+                        des STS zu finden ist.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="STSResponseType">
+        <xs:sequence>
+            <xs:element name="RenewalToken" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Token, das für eine allfällig gewünschte
+                        Erneuerung (d.h. zeitlichen Verlängerung) der
+                        SAML-Assertion verwendet werden kann. Das Token
+                        ist ein Base64-codiertes Byte-Array. Der Inhalt
+                        ist für den Empfänger nicht interpretierbar und
+                        auch nicht relevant. Er muss das Token nur
+                        aufbewahren und bei einem Renewal unverändert
+                        mitgeben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="saml:Assertion">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        SAML-Assertion gemäss WS-Trust-Spezifikation.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

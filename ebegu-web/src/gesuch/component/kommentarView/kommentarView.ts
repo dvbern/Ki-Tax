@@ -275,9 +275,4 @@ export class KommentarViewController {
     public getFreigabeName(): string {
         return this.$translate.instant('ZURUECK_AN_GEMEINDE_TITLE');
     }
-
-    public showEwkFields(): boolean {
-        // todo this should be shown after GERES is implemented
-        return false;
-    }
 }

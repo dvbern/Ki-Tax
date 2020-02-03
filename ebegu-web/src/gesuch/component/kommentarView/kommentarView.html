@@ -30,8 +30,8 @@
             </div>
         </div>
 
-        <div class="kommentarEwk kommentar-padding" dv-show-element ng-if="vm.showEwkFields()"
-             dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
+        <div class="kommentarEwk kommentar-padding" dv-show-element
+             dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForEWKAbfrage()">
             <div>
                 <button type="button" ng-click="vm.toggleEwkSidenav()"
                         class="dv-btn kommentar-button" aria-label="{{'EWK_ABFRAGE_STARTEN' | translate}}">

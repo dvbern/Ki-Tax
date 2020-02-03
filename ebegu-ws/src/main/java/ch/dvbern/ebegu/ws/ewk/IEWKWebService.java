@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.ws.ewk;
 
-import java.nio.charset.Charset;
 import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
@@ -30,23 +29,22 @@ import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
  */
 public interface IEWKWebService {
 
-	Charset UTF8 = Charset.forName("UTF-8");
-
-	/**
-	 * Sucht eine Person im EWK, anhand eindeutiger PersonenID
-	 */
-	@Nonnull
-	EWKResultat suchePerson(@Nonnull String id) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
 
 	/**
 	 * Sucht eine Person im EWK, mit allen Angaben
 	 */
 	@Nonnull
-	EWKResultat suchePerson(@Nonnull String name, @Nonnull String vorname, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
+	EWKResultat suchePersonMitFallbackOhneVorname(@Nonnull String name, @Nonnull String vorname, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht, long bfsNummer) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
 
 	/**
-	 * Sucht eine Person im EWK, anhand Nachname, Geburtsdatum und Geschlecht
+	 * Sucht eine Person im EWK, mit allen Angaben, aber ohne bfsNummer
 	 */
 	@Nonnull
-	EWKResultat suchePerson(@Nonnull String name, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
+	EWKResultat suchePersonMitFallbackOhneVorname(@Nonnull String name, @Nonnull String vorname, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
+
+	/**
+	 * Sucht alle Personen in einem Haushalt
+	 */
+	@Nonnull
+	EWKResultat suchePersonenInHaushalt(long wohnungsId, long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
 }
