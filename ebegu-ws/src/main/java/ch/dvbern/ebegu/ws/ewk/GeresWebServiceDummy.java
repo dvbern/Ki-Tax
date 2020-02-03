@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang.RandomStringUtils;
 
 /**
  * Dummy Implementation des EWK-Services
@@ -55,6 +56,7 @@ public class GeresWebServiceDummy implements IEWKWebService {
 		// todo homa review kibon-955 transform data from xml instead of fixed object
 		EWKResultat ewkResultat = new EWKResultat();
 		EWKPerson person = new EWKPerson();
+		person.setPersonID(RandomStringUtils.random(20));
 		person.setNachname(name == null ? "Muster" : name + ("-Muster"));
 		person.setVorname(vorname == null ? "Max" : vorname);
 		person.setGeburtsdatum(geburtsdatum == null ? LocalDate.now() : geburtsdatum);
