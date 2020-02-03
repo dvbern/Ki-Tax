@@ -286,14 +286,15 @@ export class AuthServiceRS {
 
             case TSRole.ADMIN_BG:
                 return isTagesschuleEnabled
-                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
+                    ? PERMISSIONS[Permission.BENUTZER_EINLADEN_AS_GEMEINDE]
                     : PERMISSIONS[Permission.ROLE_BG];
 
             case TSRole.ADMIN_TS:
                 return isTagesschuleEnabled
-                    ? PERMISSIONS[Permission.ROLE_GEMEINDE]
+                    ? PERMISSIONS[Permission.BENUTZER_EINLADEN_AS_GEMEINDE]
                     : PERMISSIONS[Permission.ROLE_TS];
             case TSRole.ADMIN_GEMEINDE:
+                return PERMISSIONS[Permission.BENUTZER_EINLADEN_AS_GEMEINDE];
             case TSRole.REVISOR:
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
 
