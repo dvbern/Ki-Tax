@@ -58,7 +58,6 @@ import {TSDossier} from '../../models/TSDossier';
 import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
 import {TSErwerbspensumContainer} from '../../models/TSErwerbspensumContainer';
-import {TSEWKPerson} from '../../models/TSEWKPerson';
 import {TSEWKResultat} from '../../models/TSEWKResultat';
 import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSFachstelle} from '../../models/TSFachstelle';
@@ -109,10 +108,7 @@ export class GesuchModelManager {
     public gemeindeStammdaten: TSGemeindeStammdaten;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
 
-    public ewkResultatGS1: TSEWKResultat;
-    public ewkResultatGS2: TSEWKResultat;
-    public ewkPersonGS1: TSEWKPerson;
-    public ewkPersonGS2: TSEWKPerson;
+    public ewkResultat: TSEWKResultat;
 
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
@@ -188,9 +184,6 @@ export class GesuchModelManager {
         if (this.gesuch && !this.getGesuch().isNew()) {
             this.wizardStepManager.findStepsFromGesuch(this.gesuch.id);
             this.wizardStepManager.setHiddenSteps(this.gesuch);
-            // EWK Service mit bereits existierenden Daten initialisieren
-            this.ewkRS.gesuchsteller1 = this.gesuch.gesuchsteller1;
-            this.ewkRS.gesuchsteller2 = this.gesuch.gesuchsteller2;
             // Es soll nur einmalig geprueft werden, ob das aktuelle Gesuch das neueste dieses Falls fuer die
             // gewuenschte Periode ist.
             if (this.gesuch.id) {
@@ -199,11 +192,8 @@ export class GesuchModelManager {
                 });
             }
         }
-        this.ewkPersonGS1 = undefined;
-        this.ewkPersonGS2 = undefined;
-        this.ewkResultatGS1 = undefined;
-        this.ewkResultatGS2 = undefined;
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
+        this.ewkResultat = undefined;
         this.activInstitutionenList = undefined;
         this.activInstitutionenForGemeindeList = undefined;
         this.loadGemeindeStammdaten();
@@ -683,22 +673,8 @@ export class GesuchModelManager {
             this.getDossier())
             .then(gesuch => {
                 this.gesuch = gesuch;
-                this.resetEWKParameters();
-
                 return this.gesuch;
             });
-    }
-
-    /**
-     * these values must be set here because we need to show them to the user and the data haven't been saved in the
-     * server yet
-     */
-    private resetEWKParameters(): void {
-        // ewk zuruecksetzen
-        if (this.ewkRS) {
-            this.ewkRS.gesuchsteller1 = undefined;
-            this.ewkRS.gesuchsteller2 = undefined;
-        }
     }
 
     public initFamiliensituation(): void {

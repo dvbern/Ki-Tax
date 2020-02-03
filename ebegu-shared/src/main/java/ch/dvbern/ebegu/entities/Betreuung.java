@@ -327,7 +327,7 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	/**
-	 * @return die Verfuegung oder Vorgaengerverfuegung dieser Betreuung
+	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
 	 */
 	@Nullable
 	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
@@ -335,6 +335,17 @@ public class Betreuung extends AbstractPlatz {
 			return getVerfuegung();
 		}
 		return getVorgaengerAusbezahlteVerfuegung();
+	}
+
+	/**
+	 * @return die Verfuegung oder Vorgaengerverfuegung dieser Betreuung
+	 */
+	@Nullable
+	public Verfuegung getVerfuegungOrVorgaengerVerfuegung() {
+		if (getVerfuegung() != null) {
+			return getVerfuegung();
+		}
+		return getVorgaengerVerfuegung();
 	}
 
 	@Nullable

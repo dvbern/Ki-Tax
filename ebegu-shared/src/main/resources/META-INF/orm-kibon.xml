@@ -8,7 +8,7 @@
   ~ License, or (at your option) any later version.
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ~ GNU Affero General Public License for more details.
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
@@ -98,7 +98,7 @@ FROM kind_container
                           AND (:stichTagDate <= timestamp_bis OR timestamp_bis IS NULL)
                   ) Beschwerde ON Beschwerde.gesuch_id = gesuch.id
 
-WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
+WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchPeriodeID IS NULL)
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
       AND (:allGemeinden = true OR dossier.gemeinde_id IN (:gemeindeIdList))
       AND (
@@ -260,7 +260,7 @@ FROM kind_container
                     FROM verfuegung
                     WHERE timestamp_erstellt BETWEEN :fromDateTime AND :toDateTime
                   ) Verfuegungen ON Verfuegungen.betreuung_id = betreuung.id
-WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
+WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchPeriodeID IS NULL)
 	  AND gesuch.status IN ('VERFUEGT', 'NUR_SCHULAMT', 'BESCHWERDE_HAENGIG',
 			'PRUEFUNG_STV', 'IN_BEARBEITUNG_STV', 'GEPRUEFT_STV', 'KEIN_ANGEBOT')
  	  AND gesuch.eingangsdatum BETWEEN :fromDate AND :toDate
@@ -370,5 +370,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichGrundlagen"/>
 	<entity class="ch.dvbern.ebegu.entities.Lastenausgleich"/>
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
+	<entity class="ch.dvbern.ebegu.entities.PersonensucheAuditLog"/>
 	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
+	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode"/>
 </entity-mappings>

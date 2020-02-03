@@ -18,7 +18,6 @@ import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSEWKAdresse} from './TSEWKAdresse';
 import {TSEWKBeziehung} from './TSEWKBeziehung';
-import {TSEWKEinwohnercode} from './TSEWKEinwohnercode';
 
 /**
  * DTO für eine Person aus dem EWK
@@ -26,63 +25,54 @@ import {TSEWKEinwohnercode} from './TSEWKEinwohnercode';
 export class TSEWKPerson extends TSAbstractMutableEntity {
 
     private _personID: string;
-    private _einwohnercodes: Array<TSEWKEinwohnercode>;
     private _nachname: string;
-    private _ledigname: string;
     private _vorname: string;
-    private _rufname: string;
     private _geburtsdatum: moment.Moment;
     private _zuzugsdatum: moment.Moment;
-    private _nationalitaet: string;
+    private _wegzugsdatum: moment.Moment;
     private _zivilstand: string;
-    private _zivilstandTxt: string;
     private _zivilstandsdatum: moment.Moment;
     private _geschlecht: TSGeschlecht;
-    private _bewilligungsart: string;
-    private _bewilligungsartTxt: string;
-    private _bewilligungBis: moment.Moment;
-    private _adressen: Array<TSEWKAdresse>;
+    private _adresse: TSEWKAdresse;
+    private _kind: boolean;
+    private _gesuchsteller: boolean;
     private _beziehungen: Array<TSEWKBeziehung>;
+    private _nichtGefunden: boolean;
+    private  _haushalt: boolean;
 
     public constructor(
         personID?: string,
-        einwohnercodes?: Array<TSEWKEinwohnercode>,
         nachname?: string,
-        ledigname?: string,
         vorname?: string,
-        rufname?: string,
         geburtsdatum?: moment.Moment,
         zuzugsdatum?: moment.Moment,
-        nationalitaet?: string,
+        wegzugsdatum?: moment.Moment,
         zivilstand?: string,
-        zivilstandTxt?: string,
         zivilstandsdatum?: moment.Moment,
         geschlecht?: TSGeschlecht,
-        bewilligungsart?: string,
-        bewilligungsartTxt?: string,
-        bewilligungBis?: moment.Moment,
-        adressen?: Array<TSEWKAdresse>,
+        adresse?: TSEWKAdresse,
         beziehungen?: Array<TSEWKBeziehung>,
+        kind: boolean = false,
+        gesuchsteller: boolean = false,
+        nichtGefunden: boolean = false,
+        haushalt: boolean = false,
     ) {
         super();
         this._personID = personID;
-        this._einwohnercodes = einwohnercodes;
         this._nachname = nachname;
-        this._ledigname = ledigname;
         this._vorname = vorname;
-        this._rufname = rufname;
         this._geburtsdatum = geburtsdatum;
         this._zuzugsdatum = zuzugsdatum;
-        this._nationalitaet = nationalitaet;
+        this._wegzugsdatum = wegzugsdatum;
         this._zivilstand = zivilstand;
-        this._zivilstandTxt = zivilstandTxt;
         this._zivilstandsdatum = zivilstandsdatum;
         this._geschlecht = geschlecht;
-        this._bewilligungsart = bewilligungsart;
-        this._bewilligungsartTxt = bewilligungsartTxt;
-        this._bewilligungBis = bewilligungBis;
-        this._adressen = adressen;
+        this._adresse = adresse;
         this._beziehungen = beziehungen;
+        this._kind = kind;
+        this._gesuchsteller = gesuchsteller;
+        this._haushalt = haushalt;
+        this._nichtGefunden = nichtGefunden;
     }
 
     public get personID(): string {
@@ -93,14 +83,6 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         this._personID = value;
     }
 
-    public get einwohnercodes(): Array<TSEWKEinwohnercode> {
-        return this._einwohnercodes;
-    }
-
-    public set einwohnercodes(value: Array<TSEWKEinwohnercode>) {
-        this._einwohnercodes = value;
-    }
-
     public get nachname(): string {
         return this._nachname;
     }
@@ -109,28 +91,12 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         this._nachname = value;
     }
 
-    public get ledigname(): string {
-        return this._ledigname;
-    }
-
-    public set ledigname(value: string) {
-        this._ledigname = value;
-    }
-
     public get vorname(): string {
         return this._vorname;
     }
 
     public set vorname(value: string) {
         this._vorname = value;
-    }
-
-    public get rufname(): string {
-        return this._rufname;
-    }
-
-    public set rufname(value: string) {
-        this._rufname = value;
     }
 
     public get geburtsdatum(): moment.Moment {
@@ -149,12 +115,12 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         this._zuzugsdatum = value;
     }
 
-    public get nationalitaet(): string {
-        return this._nationalitaet;
+    public get wegzugsdatum(): moment.Moment {
+        return this._wegzugsdatum;
     }
 
-    public set nationalitaet(value: string) {
-        this._nationalitaet = value;
+    public set wegzugsdatum(value: moment.Moment) {
+        this._wegzugsdatum = value;
     }
 
     public get zivilstand(): string {
@@ -163,14 +129,6 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
 
     public set zivilstand(value: string) {
         this._zivilstand = value;
-    }
-
-    public get zivilstandTxt(): string {
-        return this._zivilstandTxt;
-    }
-
-    public set zivilstandTxt(value: string) {
-        this._zivilstandTxt = value;
     }
 
     public get zivilstandsdatum(): moment.Moment {
@@ -189,36 +147,12 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         this._geschlecht = value;
     }
 
-    public get bewilligungsart(): string {
-        return this._bewilligungsart;
+    public get adresse(): TSEWKAdresse {
+        return this._adresse;
     }
 
-    public set bewilligungsart(value: string) {
-        this._bewilligungsart = value;
-    }
-
-    public get bewilligungsartTxt(): string {
-        return this._bewilligungsartTxt;
-    }
-
-    public set bewilligungsartTxt(value: string) {
-        this._bewilligungsartTxt = value;
-    }
-
-    public get bewilligungBis(): moment.Moment {
-        return this._bewilligungBis;
-    }
-
-    public set bewilligungBis(value: moment.Moment) {
-        this._bewilligungBis = value;
-    }
-
-    public get adressen(): Array<TSEWKAdresse> {
-        return this._adressen;
-    }
-
-    public set adressen(value: Array<TSEWKAdresse>) {
-        this._adressen = value;
+    public set adresse(value: TSEWKAdresse) {
+        this._adresse = value;
     }
 
     public get beziehungen(): Array<TSEWKBeziehung> {
@@ -229,13 +163,36 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         this._beziehungen = value;
     }
 
-    public getWohnadresse(): TSEWKAdresse {
-        for (const adresse of this.adressen) {
-            if (adresse.adresstyp === '1') {
-                return adresse;
-            }
-        }
-        return undefined;
+    public get kind(): boolean {
+        return this._kind;
+    }
+
+    public set kind(value: boolean) {
+        this._kind = value;
+    }
+
+    public get gesuchsteller(): boolean {
+        return this._gesuchsteller;
+    }
+
+    public set gesuchsteller(value: boolean) {
+        this._gesuchsteller = value;
+    }
+
+    public get haushalt(): boolean {
+        return this._haushalt;
+    }
+
+    public set haushalt(value: boolean) {
+        this._haushalt = value;
+    }
+
+    public get nichtGefunden(): boolean {
+        return this._nichtGefunden;
+    }
+
+    public set nichtGefunden(value: boolean) {
+        this._nichtGefunden = value;
     }
 
     public getShortDescription(): string {
@@ -243,8 +200,8 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         description = this.vorname + ' ';
         description += this.nachname + ', ';
         description += `${this.geburtsdatum.format('DD.MM.YYYY')}, `;
-        if (this.getWohnadresse()) {
-            description += this.getWohnadresse().getShortDescription();
+        if (this.adresse) {
+            description += this.adresse.ort;
         }
         return description;
     }

@@ -324,6 +324,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
 		gemeinde.setMandant(mandant);
 		gemeinde.setBetreuungsgutscheineStartdatum(Constants.START_OF_TIME);
+		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2018,8,1));
+		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2018,8,1));
 		gemeinde.setName("Gemeinde kiBon");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setBfsNummer(5555L); // this BFS-number cannot exist

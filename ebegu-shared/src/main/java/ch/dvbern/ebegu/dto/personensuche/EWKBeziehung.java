@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -37,22 +38,18 @@ public class EWKBeziehung implements Serializable {
 
 	protected String beziehungstyp;
 
-	protected String beziehungstypTxt;
-
 	protected String personID;
 
 	protected String nachname;
 
-	protected String ledigname;
-
 	protected String vorname;
-
-	protected String rufname;
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	protected LocalDate geburtsdatum;
 
 	protected EWKAdresse adresse;
+
+	private Geschlecht geschlecht;
 
 	public EWKBeziehung() {
 	}
@@ -63,14 +60,6 @@ public class EWKBeziehung implements Serializable {
 
 	public void setBeziehungstyp(String beziehungstyp) {
 		this.beziehungstyp = beziehungstyp;
-	}
-
-	public String getBeziehungstypTxt() {
-		return beziehungstypTxt;
-	}
-
-	public void setBeziehungstypTxt(String beziehungstypTxt) {
-		this.beziehungstypTxt = beziehungstypTxt;
 	}
 
 	public String getPersonID() {
@@ -89,28 +78,12 @@ public class EWKBeziehung implements Serializable {
 		this.nachname = nachname;
 	}
 
-	public String getLedigname() {
-		return ledigname;
-	}
-
-	public void setLedigname(String ledigname) {
-		this.ledigname = ledigname;
-	}
-
 	public String getVorname() {
 		return vorname;
 	}
 
 	public void setVorname(String vorname) {
 		this.vorname = vorname;
-	}
-
-	public String getRufname() {
-		return rufname;
-	}
-
-	public void setRufname(String rufname) {
-		this.rufname = rufname;
 	}
 
 	public LocalDate getGeburtsdatum() {
@@ -127,5 +100,13 @@ public class EWKBeziehung implements Serializable {
 
 	public void setAdresse(EWKAdresse adresse) {
 		this.adresse = adresse;
+	}
+
+	public void setGeschlecht(Geschlecht geschlecht) {
+		this.geschlecht = geschlecht;
+	}
+
+	public Geschlecht getGeschlecht() {
+		return geschlecht;
 	}
 }
