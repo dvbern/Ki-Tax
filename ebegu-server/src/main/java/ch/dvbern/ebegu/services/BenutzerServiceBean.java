@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -51,6 +52,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
+import javax.persistence.criteria.Subquery;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -73,6 +75,10 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
@@ -897,13 +903,22 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		@Nonnull BenutzerTableFilterDTO benutzerTableFilterDTO,
 		@Nonnull SearchMode mode) {
 
+		final String methodName = "searchBenutzer";
+
+		// if the caller is in any administrative Gemeinde role, we need to select the Institution users separatly
+		// because there is no obvious link between an Institution and Gemeinde but is extractable by joining
+		// InstitutionStammdatenTagesschule
+		boolean addInstitutionUsers = principalBean.isCallerInAnyOfRole(UserRole.ADMIN_GEMEINDE, UserRole.ADMIN_BG
+			, UserRole.ADMIN_TS);
+
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		@SuppressWarnings("rawtypes") // Je nach Abfrage ist es String oder Long
-			CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, "searchBenutzer");
+		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, methodName);
+		CriteriaQuery queryTS = SearchUtil.getQueryForSearchMode(cb, mode, methodName);
 
 		// Construct from-clause
 		@SuppressWarnings("unchecked") // Je nach Abfrage ist das Query String oder Long
-			Root<Benutzer> root = query.from(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> currentBerechtigungJoin = root.join(Benutzer_.berechtigungen);
 		Join<Berechtigung, Institution> institutionJoin =
 			currentBerechtigungJoin.join(Berechtigung_.institution, JoinType.LEFT);
@@ -914,10 +929,48 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		List<Predicate> predicates = new ArrayList<>();
 
+		// we need to filter TS users separatly because they do not directly belong to a Gemeinde
+		List<Predicate> predicatesTS = new ArrayList<>();
+
 		// General role based predicates
 		Benutzer user =
-			getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged "
+			getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(methodName, "No User is logged "
 				+ "in"));
+
+		// Scheinbar sind die berechtigungen nicht geladen, weswegen ich hier zuerst ein
+		// getCurrentBerechtigung() mache. somit werden sie geladen. das könnte aber ein allgemeines problem sein
+		user.getCurrentBerechtigung();
+		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
+
+		if (addInstitutionUsers) {
+			if (userGemeinden.isEmpty()) {
+				throw new EbeguRuntimeException(methodName, "user does not have any Gemeinde");
+			}
+			Root<Benutzer> rootTS = queryTS.from(Benutzer.class);
+			Join<Benutzer, Berechtigung> currentBerechtigungJoinTS = rootTS.join(Benutzer_.berechtigungen);
+
+			// BEGIN SUBQUERY
+			Subquery<String> subquery = queryTS.subquery(String.class);
+			Root<InstitutionStammdaten> sqFrom = subquery.from(InstitutionStammdaten.class);
+
+			Predicate stammdatenTSPredicate =
+				cb.isNotNull(sqFrom.get(InstitutionStammdaten_.institutionStammdatenTagesschule));
+
+			Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> instStammdatenTSJoin =
+				sqFrom.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.INNER);
+
+			subquery.where(stammdatenTSPredicate,
+				instStammdatenTSJoin.get(InstitutionStammdatenTagesschule_.gemeinde).in(userGemeinden));
+
+			subquery.select(sqFrom.get(InstitutionStammdaten_.institution).get(Institution_.id));
+			// END SUBQUERY
+
+			Join<Berechtigung, Institution> instiutionenJoin =
+				currentBerechtigungJoinTS.join(Berechtigung_.institution, JoinType.INNER);
+
+			Predicate inSubquery = cb.in(instiutionenJoin.get(Institution_.id)).value(subquery);
+			predicatesTS.add(inSubquery);
+		}
 
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// Not SuperAdmin users are allowed to see all users of their mandant
@@ -947,28 +1000,35 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				Expression<String> expression = root.get(Benutzer_.username).as(String.class);
 				String value = SearchUtil.withWildcards(predicateObjectDto.getUsername());
 				predicates.add(cb.like(expression, value));
+				predicatesTS.add(cb.like(expression, value));
 			}
 			// vorname
 			if (predicateObjectDto.getVorname() != null) {
 				Expression<String> expression = root.get(Benutzer_.vorname).as(String.class);
 				String value = SearchUtil.withWildcards(predicateObjectDto.getVorname());
 				predicates.add(cb.like(expression, value));
+				predicatesTS.add(cb.like(expression, value));
 			}
 			// nachname
 			if (predicateObjectDto.getNachname() != null) {
 				Expression<String> expression = root.get(Benutzer_.nachname).as(String.class);
 				String value = SearchUtil.withWildcards(predicateObjectDto.getNachname());
 				predicates.add(cb.like(expression, value));
+				predicatesTS.add(cb.like(expression, value));
 			}
 			// email
 			if (predicateObjectDto.getEmail() != null) {
 				Expression<String> expression = root.get(Benutzer_.email).as(String.class);
 				String value = SearchUtil.withWildcards(predicateObjectDto.getEmail());
 				predicates.add(cb.like(expression, value));
+				predicatesTS.add(cb.like(expression, value));
 			}
 			// role
 			if (predicateObjectDto.getRole() != null) {
 				predicates.add(cb.equal(
+					currentBerechtigungJoin.get(Berechtigung_.role),
+					predicateObjectDto.getRole()));
+				predicatesTS.add(cb.equal(
 					currentBerechtigungJoin.get(Berechtigung_.role),
 					predicateObjectDto.getRole()));
 			}
@@ -991,6 +1051,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// institution
 			if (predicateObjectDto.getInstitution() != null) {
 				predicates.add(cb.equal(institutionJoin.get(Institution_.name), predicateObjectDto.getInstitution()));
+				predicatesTS.add(cb.equal(institutionJoin.get(Institution_.name), predicateObjectDto.getInstitution()));
 			}
 			// traegerschaft
 			if (predicateObjectDto.getTraegerschaft() != null) {
@@ -1001,6 +1062,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// gesperrt
 			if (predicateObjectDto.getStatus() != null) {
 				predicates.add(cb.equal(root.get(Benutzer_.status), predicateObjectDto.getStatus()));
+				predicatesTS.add(cb.equal(root.get(Benutzer_.status), predicateObjectDto.getStatus()));
 			}
 		}
 		// Construct the select- and where-clause
@@ -1011,10 +1073,28 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (!predicates.isEmpty()) {
 				query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			}
+
+			if (addInstitutionUsers) {
+				//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
+				queryTS.select(root.get(AbstractEntity_.id));
+				if (!predicatesTS.isEmpty()) {
+					queryTS.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesTS));
+				}
+			}
+
 			constructOrderByClause(
 				benutzerTableFilterDTO,
 				cb,
 				query,
+				root,
+				currentBerechtigungJoin,
+				institutionJoin,
+				traegerschaftJoin,
+				gemeindeSetJoin);
+			constructOrderByClause(
+				benutzerTableFilterDTO,
+				cb,
+				queryTS,
 				root,
 				currentBerechtigungJoin,
 				institutionJoin,
@@ -1027,6 +1107,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (!predicates.isEmpty()) {
 				query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			}
+			if (addInstitutionUsers) {
+				//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
+				queryTS.select(cb.countDistinct(root.get(AbstractEntity_.id)));
+				if (!predicatesTS.isEmpty()) {
+					queryTS.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesTS));
+				}
+			}
 			break;
 		}
 
@@ -1034,8 +1121,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Pair<Long, List<Benutzer>> result = null;
 		switch (mode) {
 		case SEARCH:
-			//select all ids in order, may contain duplicates
+			//select all ids may contain duplicates
 			List<String> benutzerIds = persistence.getCriteriaResults(query);
+			if (addInstitutionUsers) {
+				benutzerIds.addAll(persistence.getCriteriaResults(queryTS));
+			}
 			List<Benutzer> pagedResult;
 			if (benutzerTableFilterDTO.getPagination() != null) {
 				int firstIndex = benutzerTableFilterDTO.getPagination().getStart();
@@ -1047,9 +1137,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				pagedResult = findBenutzer(benutzerIds);
 			}
 			result = new ImmutablePair<>(null, pagedResult);
+
 			break;
 		case COUNT:
 			Long count = (Long) persistence.getCriteriaSingleResult(query);
+			if (addInstitutionUsers) {
+				count += (Long) persistence.getCriteriaSingleResult(queryTS);
+			}
 			result = new ImmutablePair<>(count, null);
 			break;
 		}
