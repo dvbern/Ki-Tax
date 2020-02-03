@@ -31,6 +31,21 @@ export class TSGemeindeKonfiguration {
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
+    // seite 1
+    public konfigZusaetzlicherGutscheinEnabled: any; // only on client
+    public konfigZusaetzlicherGutscheinBetragKita: any; // only on client
+    public konfigZusaetzlicherGutscheinBetragTfo: any; // only on client
+    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita: any; // only on client
+
+    // seite 2
+    public konfigZusaetzlicherBabybeitragEnabled: any; // only on client
+    public konfigZusaetzlicherBabybeitragBetragKita: any; // only on client
+    public konfigZusaetzlicherBabybeitragBetragTfo: any; // only on client
+
+    // seite 3
+    public konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: any; // only on client
+    public konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent: any; // only on client
+
     public erwerbspensumZuschlag: number;
     // never override this property. we just load it for validation reasons
     public erwerbspensumZuschlagMax: number;

@@ -69,6 +69,8 @@ export class EditGemeindeComponentBG implements OnInit {
                 this.konfigurationsListe = stammdaten.konfigurationsListe;
                 this.gemeindeStatus = stammdaten.gemeinde.status;
                 this.initProperties();
+                // todo: remove
+                console.log(stammdaten);
             },
             err => LOG.error(err));
 
@@ -121,6 +123,30 @@ export class EditGemeindeComponentBG implements OnInit {
             .filter(property => TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG === property.key)
             .forEach(property => {
                 property.value = String(gk.erwerbspensumZuschlag);
+            });
+    }
+
+    public changeKonfigZusaetzlicherGutscheinEnabled(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED === property.key)
+            .forEach(property => {
+                property.value = gk.konfigZusaetzlicherGutscheinEnabled;
+            });
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBetragKita(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherGutscheinBetragKita);
+            });
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBetragTfo(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherGutscheinBetragTfo);
             });
     }
 

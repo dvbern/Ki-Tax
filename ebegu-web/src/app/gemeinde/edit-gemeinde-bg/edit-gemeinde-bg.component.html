@@ -323,6 +323,61 @@
                                                                    [errorObject]="ewp_zuschlag.errors">
                                                 </dv-error-messages>
                                             </div>
+<!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
+                                            <div class="form-group">
+                                                <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
+                                                              name="zusaetzliche_verguenstigung_{{i}}"
+                                                              [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
+                                                              (change)="changeKonfigZusaetzlicherGutscheinEnabled(konfigurationsListe[i])">
+                                                <span translate>
+                                                    ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE
+                                                </span>
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                       class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE</label>
+                                                <input id="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                       name="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                       class="form-control"
+                                                       type="number"
+													   #zusaetzlicher_gutschein_betrag_kita='ngModel'
+                                                       required
+                                                       customMinMax
+                                                       [minValue]="0"
+                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
+                                                       (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
+
+                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                   [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
+                                                </dv-error-messages>
+                                            </div>
+                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                       class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE</label>
+                                                <input id="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                       name="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                       class="form-control"
+                                                       type="number"
+													   #zusaetzlicher_gutschein_betrag_tfo='ngModel'
+                                                       required
+                                                       customMinMax
+                                                       [minValue]="0"
+                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo"
+                                                       (change)="changeKonfigZusaetzlicherGutscheinBetragTfo(konfigurationsListe[i])">
+
+                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                   [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
+                                                </dv-error-messages>
+                                            </div>
+<!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
+                                            <div class="form-group">
+
+                                            </div>
+<!--                                            Zusätzliche Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
+                                            <div class="form-group">
+
+                                            </div>
                                         </div>
                                     </div>
                                 </tab-body>
@@ -375,6 +430,7 @@
                     </div>
                 </div>
             </div>
+<!--            Benachrichtigungen bei Verfügungen automatisch per Email senden-->
             <div class="row">
                 <div class="col-sm-12">
                     <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
@@ -386,6 +442,7 @@
                     <p></p>
                 </div>
             </div>
+<!--            standard Fusszeile bei Verfügungen verwenden-->
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
