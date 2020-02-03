@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungEventConverter;
+import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungVerfuegtEvent;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
@@ -177,8 +178,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Dokument erstellen
 		generateVerfuegungDokument(betreuungMitVerfuegungPreview);
 
-		event.fire(verfuegungEventConverter.of(persistedVerfuegung));
-
+		VerfuegungVerfuegtEvent verfuegungEvent = verfuegungEventConverter.of(persistedVerfuegung);
+		if (verfuegungEvent != null) {
+			this.event.fire(verfuegungEvent);
+		}
 		if (sendEmail) {
 			mailService.sendInfoBetreuungVerfuegt(betreuungMitVerfuegungPreview);
 		}

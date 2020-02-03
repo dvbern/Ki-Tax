@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -28,9 +29,10 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -41,6 +43,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -200,14 +203,16 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		List<Betreuung> betreuungs = gesuchToAdd.extractAllBetreuungen();
 		KindContainer firstKind = betreuungs.iterator().next().getKind();
 		InstitutionStammdaten institutionStammdaten = getInstitutionStammdaten(config);
-		Betreuung betreuung = new Betreuung();
-		betreuung.setKind(firstKind);
-		betreuung.setInstitutionStammdaten(institutionStammdaten);
-		betreuung.setBetreuungsstatus(config.getBetreuungsstatus());
-		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer();
-		erweiterteBetreuungContainer.setBetreuung(betreuung);
-		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
-		betreuungService.saveBetreuung(betreuung, false);
+		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setKind(firstKind);
+		anmeldung.setInstitutionStammdaten(institutionStammdaten);
+		anmeldung.setBetreuungsstatus(config.getBetreuungsstatus());
+		firstKind.getAnmeldungenTagesschule().add(anmeldung);
+		anmeldung.setBelegungTagesschule(new BelegungTagesschule());
+		Objects.requireNonNull(anmeldung.getBelegungTagesschule());
+		anmeldung.getBelegungTagesschule().setEintrittsdatum(LocalDate.now());
+		betreuungService.saveAnmeldungTagesschule(anmeldung, false);
 		return persistence.find(Gesuch.class, gesuchToAdd.getId());
 	}
 

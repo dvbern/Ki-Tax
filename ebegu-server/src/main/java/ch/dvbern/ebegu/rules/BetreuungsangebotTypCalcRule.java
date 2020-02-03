@@ -51,8 +51,10 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 	) {
 		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
-		if (platz.extractGesuch().getFinSitStatus() == null
-			|| platz.extractGesuch().getFinSitStatus() == FinSitStatus.ABGELEHNT) {
+		// Damit der Gesuchsteller im Entwurf die "richtigen" provisorischen Daten sieht, wird bei *noch* nicht akzeptiert
+		// nicht auf Vollkosten gesetzt, erst beim eigentlichen Ablehnen
+		if (platz.extractGesuch().getFinSitStatus() != null
+			&& platz.extractGesuch().getFinSitStatus() == FinSitStatus.ABGELEHNT) {
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(true);
 		}
 	}

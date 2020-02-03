@@ -49,7 +49,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 	public void setUp() {
 		gesuch = TestDataUtil.createTestgesuchDagmar();
 		KindContainer kindContainer = gesuch.getKindContainers().iterator().next();
-		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschule(kindContainer, gesuch.getGesuchsperiode());//initAnmedlungTagesschule();
+		anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch.getGesuchsperiode());//initAnmedlungTagesschule();
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		Assert.assertEquals(1, zeitabschnitte.size());
 
 		VerfuegungZeitabschnitt abschnittFinSitNichtAkzeptiert = zeitabschnitte.get(0);
-		assertZeitabschnitt_MaxTarif(abschnittFinSitNichtAkzeptiert, 100000);
+		assertZeitabschnitt_100000(abschnittFinSitNichtAkzeptiert);
 	}
 
 	@Test
@@ -120,8 +120,8 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculate(100000, FinSitStatus.ABGELEHNT);
 		Assert.assertEquals(1, zeitabschnitte.size());
 
-		VerfuegungZeitabschnitt abschnittFinSitNichtAkzeptiert = zeitabschnitte.get(0);
-		assertZeitabschnitt_MaxTarif(abschnittFinSitNichtAkzeptiert, 100000);
+		VerfuegungZeitabschnitt abschnittFinSitAbgelehnt = zeitabschnitte.get(0);
+		assertZeitabschnitt_MaxTarif(abschnittFinSitAbgelehnt, 100000);
 	}
 
 	private List<VerfuegungZeitabschnitt> calculate(long einkommen, FinSitStatus finSitStatus) {
