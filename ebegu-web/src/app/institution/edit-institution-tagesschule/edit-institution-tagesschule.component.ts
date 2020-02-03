@@ -85,6 +85,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                     config.initProperties();
                 });
             });
+        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
+            TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
+                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+            );
     }
 
     public onPrePersist(): void {

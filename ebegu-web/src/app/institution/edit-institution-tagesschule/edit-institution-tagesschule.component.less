@@ -82,8 +82,9 @@
             display: block;
             width: 100%;
             height: auto;
-            max-height: 60rem;
+            max-height: none;
             background: transparent;
+            margin-bottom: 2rem;
             & > tab-body > * {
                 margin: 2rem 0 3rem;
             }
@@ -117,6 +118,9 @@
             button.add-module-button {
                 margin-left: 2px; // border bei focus wird ansonsten verdeckt
                 margin-bottom: 2rem;
+            }
+            tr.no-border-top > th {
+                border-top: 0 !important;
             }
         }
     }
