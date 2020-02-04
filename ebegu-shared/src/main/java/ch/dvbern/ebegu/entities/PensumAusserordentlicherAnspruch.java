@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entity fuer das Pensum eines ausserordentlichen Anspruchs.
@@ -39,11 +39,10 @@ public class PensumAusserordentlicherAnspruch extends AbstractIntegerPensum {
 
 	private static final long serialVersionUID = -9132257320978374570L;
 
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
 	@Column(nullable = false)
 	@NotNull
 	private String begruendung;
-
 
 	public PensumAusserordentlicherAnspruch() {
 	}
