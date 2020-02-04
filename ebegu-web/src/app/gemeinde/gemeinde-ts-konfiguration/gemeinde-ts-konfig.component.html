@@ -19,13 +19,13 @@
     <div class="col-sm-12">
         <dv-accordion class="konfigurationList" allow-multiple-sections="true">
             <ng-container *ngFor="let konf of konfigurationsListe; let i = index">
-                <dv-accordion-tab [tabid]="i"
+                <dv-accordion-tab [tabid]="i"  (click)="reload()" id="accordion-tab-{{konfigurationsListe[i].gesuchsperiode.id}}"
                                   *ngIf="konfigurationsListe[i].gesuchsperiode.gueltigkeit.gueltigBis.isAfter(tsAnmeldungenStartDatum)">
-                    <tab-title>
-                        <div class="message-header">
-                            <p class="fa fa-angle-right"></p>
-                            <span translate
-                                  [translateParams]="{fromTo: konf.gesuchsperiodeName, status: konf.gesuchsperiodeStatusName}">
+                <tab-title>
+                    <div class="message-header">
+                        <p class="fa fa-angle-right"></p>
+                        <span translate
+                              [translateParams]="{fromTo: konf.gesuchsperiodeName, status: konf.gesuchsperiodeStatusName}">
                                 GEMEINDE_TAB_TS_GP_TITLE
                         </span>
                         </div>
@@ -62,8 +62,8 @@
                                 </div>
                                 <!-- Erster Schultag -->
                                 <div class="form-group">
-                                    <label class="required" translate
-                                           for="tsErsterSchultag">TAGESSCHULE_ERSTER_SCHULTAG</label>
+                                <label class="required" translate
+                                       for="tsErsterSchultag">TAGESSCHULE_ERSTER_SCHULTAG</label>
                                     <input class="dv-mat-datepicker" type="text"
                                            name="tsErsterSchultag" id="tsErsterSchultag"
                                            [(ngModel)]="konfigurationsListe[i].konfigTagesschuleErsterSchultag"
@@ -73,6 +73,116 @@
                                            required>
                                     <mat-datepicker-toggle matSuffix [for]="tsErsterSchultag"></mat-datepicker-toggle>
                                     <mat-datepicker #tsErsterSchultag></mat-datepicker>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1>
+                                    <span translate="AGB_HOCHLADEN"></span>
+                                </h1>
+                                <hr class="header"/>
+                                <table class="table table-striped" width="100%">
+                                    <tr *ngIf="korrespondenzspracheDe">
+                                        <td
+                                            translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_DE"></td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1"
+                                            ng-click="$event.stopPropagation()">
+                                            <input type="file" style="display: none"
+												   #fileInput
+                                                   accept="application/pdf"
+                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
+                                            <button mat-raised-button
+                                                    (click)="fileInput.click()"
+                                                    class="dv-btn fa fa-upload dv-btn-operation"
+                                                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                    [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                                                    tabindex="0">
+                                            </button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!vorlageMerkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-file-word-o dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="korrespondenzspracheFr">
+                                        <td
+                                            translate="MERKBLATT_ANMELDUNG_TAGESSCHULE_FR"></td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1"
+                                            ng-click="$event.stopPropagation()">
+                                            <input type="file" style="display: none"
+												   #fileInput
+                                                   accept="application/pdf"
+                                                   (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
+                                            <button mat-raised-button
+                                                    (click)="fileInput.click()"
+                                                    class="dv-btn fa fa-upload dv-btn-operation"
+                                                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                                                    [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                                                    tabindex="0">
+                                            </button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-eye dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
+                                                [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-trash dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                        <td width="2%"
+                                            class="symbol"
+                                            tabindex="-1">
+                                            <button
+                                                (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
+                                                [disabled]="!vorlageMerkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
+                                                class="dv-btn fa fa-file-word-o dv-btn-operation"
+                                                aria-hidden="true"
+                                                tabindex="0"></button>
+                                        </td>
+                                    </tr>
+                                </table>
                                 </div>
                             </div>
                         </div>

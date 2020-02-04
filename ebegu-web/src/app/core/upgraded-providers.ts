@@ -39,6 +39,7 @@ import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
+import {UploadRS} from './service/uploadRS.rest';
 import {ZahlungRS} from './service/zahlungRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 
@@ -308,6 +309,17 @@ export const mandantRSProvider = {
     deps: ['$injector'],
 };
 
+// UploadRS
+export function uploadRSServiceFactory(i: IInjectorService): UploadRS {
+    return i.get('UploadRS');
+}
+
+export const uploadRSProvider = {
+    provide: UploadRS,
+    useFactory: uploadRSServiceFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -331,5 +343,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     institutionStammdatenRSProvider,
     einstellungRSProvider,
     supportRSProvider,
-    mandantRSProvider
+    mandantRSProvider,
+    uploadRSProvider
 ];

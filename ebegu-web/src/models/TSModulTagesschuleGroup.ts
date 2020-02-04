@@ -159,4 +159,20 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
         this.module = sorted;
         return this.module;
     }
+
+    /**
+     * Liefert eine Kopie der Werte dieses Moduls
+     */
+    public getCopy(): TSModulTagesschuleGroup {
+        const copy = new TSModulTagesschuleGroup(this.modulTagesschuleName, this.zeitVon, this.zeitBis);
+        copy.bezeichnung = new TSTextRessource();
+        copy.bezeichnung.textDeutsch = this.bezeichnung.textDeutsch;
+        copy.bezeichnung.textFranzoesisch = this.bezeichnung.textFranzoesisch;
+        copy.verpflegungskosten = this.verpflegungskosten;
+        copy.intervall = this.intervall;
+        copy.reihenfolge = this.reihenfolge;
+        copy.wirdPaedagogischBetreut = this.wirdPaedagogischBetreut;
+        copy.module = this.module.map(m => TSModulTagesschule.create(m.wochentag));
+        return copy;
+    }
 }

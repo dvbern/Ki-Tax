@@ -179,4 +179,17 @@ public class InstitutionStammdatenResource {
 			new ArrayList<>(institutionStammdatenService.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer());
 		return result;
 	}
+
+	@ApiOperation(value = "Findet alle Tagesschulinstitutionen und Stammdaten für den momentan eingeloggten Benutzer."
+		+ "Gibt alle zurück für Administratoren.", responseContainer = "List", response = JaxInstitutionStammdaten.class)
+	@Nonnull
+	@GET
+	@Path("/tagesschulen/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitutionStammdaten> getTagesschulenForCurrentBenutzer() {
+		return institutionStammdatenService.getTagesschulenForCurrentBenutzer().stream()
+			.map(stammdaten -> converter.institutionStammdatenToJAX(stammdaten))
+			.collect(Collectors.toList());
+	}
 }

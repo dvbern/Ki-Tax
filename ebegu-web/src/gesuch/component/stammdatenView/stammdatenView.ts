@@ -21,7 +21,6 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
-import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -30,7 +29,6 @@ import {TSAdresse} from '../../../models/TSAdresse';
 import {TSAdresseContainer} from '../../../models/TSAdresseContainer';
 import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
-import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -126,17 +124,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.getModel().showUmzug = this.getModel().showUmzug || this.getModel().isThereAnyUmzug();
         this.setLastVerfuegtesGesuch();
-
-        this.$rootScope.$on(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED],
-            (_event: any, gsNummer: number, ewkId: string) => {
-                if (gsNummer !== this.gesuchModelManager.gesuchstellerNumber) {
-                    return;
-                }
-
-                this.model.gesuchstellerJA.ewkPersonId = ewkId;
-                this.model.gesuchstellerJA.ewkAbfrageDatum = DateUtil.today();
-                this.form.$dirty = true;
-            });
     }
 
     public korrespondenzAdrClicked(): void {
@@ -314,30 +301,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             !this.isGesuchReadonly();
     }
 
-    public checkAllEwkRelevantDataPresent(): void {
-        if (!this.getModelJA()) {
-            return;
-        }
-
-        if (this.gesuchModelManager.gesuchstellerNumber === 1) {
-            this.ewkRS.gesuchsteller1 = this.getModel();
-        } else if (this.gesuchModelManager.gesuchstellerNumber === 2) {
-            this.ewkRS.gesuchsteller2 = this.getModel();
-        } else {
-            console.log('Unbekannte Gesuchstellernummer', this.gesuchstellerNumber);
-        }
-    }
-
     /**
      * Gibt alle Sprachen zurueck
      */
     public getSprachen(): Array<TSSprache> {
         return getTSSpracheValues();
-    }
-
-    public showEwkFields(): boolean {
-        // todo this should be shown after GERES is implemented
-        return false;
     }
 
     public showRechnungsadresseCheckbox(): boolean {

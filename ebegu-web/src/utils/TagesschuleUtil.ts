@@ -159,4 +159,17 @@ export class TagesschuleUtil {
         });
     }
 
+    /**
+     * Sortiert Tagesschuleinstellungen absteigend nach Periode
+     */
+    public static sortEinstellungenTagesschuleByPeriod(einstellungen: TSEinstellungenTagesschule[]):
+        TSEinstellungenTagesschule[] {
+        return einstellungen.sort((a, b) => {
+            if (a.gesuchsperiode && b.gesuchsperiode) {
+                return b.gesuchsperiode.gesuchsperiodeString.localeCompare(a.gesuchsperiode.gesuchsperiodeString);
+            }
+            return -1;
+        });
+    }
+
 }
