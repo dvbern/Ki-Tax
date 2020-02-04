@@ -177,12 +177,10 @@
                         <div class="dv-error-messages"
                              ng-if="vm.form['modul_' + mod.modulTagesschule.identifier].$error.nointerval">
                             <div id="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}" class="error">
-<!---TODO: Reword-->
                                 {{"ERROR_NO_INTERVAL" | translate}}
-                                {{vm.getModulBezeichnungInLanguage(group.group)}}
-                                {{mod.modulTagesschule.wochentag | translate}}
-                                {{vm.getModulTimeAsString(group.group)}}
-
+                                "{{vm.getModulBezeichnungInLanguage(group.group)}}"
+                                ({{mod.modulTagesschule.wochentag | translate}}
+                                {{vm.getModulTimeAsString(group.group)}})
                             </div>
                         </div>
                     </div>
