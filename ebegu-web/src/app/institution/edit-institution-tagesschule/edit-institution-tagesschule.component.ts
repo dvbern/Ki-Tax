@@ -54,9 +54,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
+    @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
 
     public gemeindeList: TSGemeinde[] = [];
-    private konfigurationsListe: TSGemeindeKonfiguration[];
     private readonly panelClass = 'dv-mat-dialog-ts';
 
     public constructor(
@@ -77,14 +77,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
             einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
-
-        this.gemeindeRS.getGemeindeStammdaten(this.stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
-            gemeindeStammdaten => {
-                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
-                this.konfigurationsListe.forEach(config => {
-                    config.initProperties();
-                });
-            });
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
             TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
                 this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
@@ -285,7 +277,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                     return;
                 }
                 einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
-                        .concat(modules);
+                    .concat(modules);
                 this.ref.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError('error');
@@ -340,6 +332,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                          group: TSModulTagesschuleGroup): boolean {
         if (group.isNew()) {
             return true;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
+            return false;
         }
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>

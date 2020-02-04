@@ -30,12 +30,14 @@ import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSExternalClient} from '../../../models/TSExternalClient';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
+import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
@@ -73,6 +75,7 @@ export class EditInstitutionComponent implements OnInit {
     public externalClients?: TSExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
+    public konfigurationsListe: TSGemeindeKonfiguration[];
 
     @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
     private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
@@ -94,6 +97,7 @@ export class EditInstitutionComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -159,6 +163,13 @@ export class EditInstitutionComponent implements OnInit {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
         this.initName = stammdaten.institution.name;
+        this.gemeindeRS.getGemeindeStammdaten(stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
+            gemeindeStammdaten => {
+                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
+                this.konfigurationsListe.forEach(config => {
+                    config.initProperties();
+                });
+            });
         // editMode kann bereits true sein, wenn dies in state params ist.
         this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
         this.changeDetectorRef.markForCheck();
