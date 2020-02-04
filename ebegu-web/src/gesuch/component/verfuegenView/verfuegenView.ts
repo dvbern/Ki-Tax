@@ -27,7 +27,6 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSAnmeldungTagesschuleZeitabschnitt} from '../../../models/TSAnmeldungTagesschuleZeitabschnitt';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
