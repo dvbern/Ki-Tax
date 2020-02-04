@@ -36,6 +36,7 @@ public class PlatzComparator implements Comparator<AbstractPlatz>, Serializable 
 
 	private static final long serialVersionUID = -309383917391346314L;
 
+	// todo homa review kibon-1016 umbenannt aber kann nur betreuungen vergleichen
 	@Override
 	public int compare(AbstractPlatz platz1, AbstractPlatz platz2) {
 		if (!(platz1 instanceof Betreuung && platz2 instanceof Betreuung)) {

@@ -170,7 +170,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Assert.assertFalse(abschnitt3.isZuSpaetEingereicht());
 		Assert.assertFalse(abschnitt3.getBgCalculationInputAsiv().isBezahltVollkosten());
 	}
-
+	// todo homa review kibon-1016 test hat ziemlich geandert warum
 	/**
 	 * Kita: Einreichung am 7.10.
 	 * Kita: 20.12. - 15.03.
