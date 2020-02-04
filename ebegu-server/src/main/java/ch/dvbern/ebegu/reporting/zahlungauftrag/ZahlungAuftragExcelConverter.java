@@ -126,8 +126,10 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 				.filter(z ->
 						z.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer()
 							.equals(zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer())
-						&& z.getVerfuegungZeitabschnitt().getGueltigkeit()
-							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit())
+						&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb())
+						&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis())
 						&& MathUtil.isSame(z.getVerfuegungZeitabschnitt().getBgPensum(),
 							zahlungposition.getVerfuegungZeitabschnitt().getBgPensum())
 						&& MathUtil.isSame(z.getBetrag().multiply(BigDecimal.valueOf(-1)),
