@@ -19,6 +19,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -31,6 +32,7 @@ import {
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
@@ -44,6 +46,7 @@ import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
@@ -93,6 +96,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'DownloadRS',
+        'GemeindeRS',
         'I18nServiceRSRest',
     ];
 
@@ -107,6 +112,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public agbTSAkzeptiert: boolean = false;
     public isAnmeldenClicked: boolean = false;
     public erlaeuterung: string = null;
+    public agbVorhanden: boolean;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -128,6 +134,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        private readonly downloadRS: DownloadRS,
+        private readonly gemeindeRS: GemeindeRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
 
@@ -137,6 +145,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
         }, (newValue, oldValue) => {
+            this.existMerkblattAnmeldungTS();
             if (newValue === oldValue) {
                 return;
             }
@@ -356,5 +365,28 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
             TSMandant.earliestDateOfTSAnmeldung
         );
+    }
+
+    public downloadGemeindeGesuchsperiodeDokument(): void {
+        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        this.gemeindeRS.downloadGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+            sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
+            response => {
+                let file;
+                file = new Blob([response], {type: 'application/pdf'});
+                const filename = this.$translate.instant('MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
+                this.downloadRS.openDownload(file, filename);
+            });
+    }
+
+    private existMerkblattAnmeldungTS(): void {
+        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+            sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
+            result => {
+                this.agbVorhanden = result;
+            });
     }
 }
