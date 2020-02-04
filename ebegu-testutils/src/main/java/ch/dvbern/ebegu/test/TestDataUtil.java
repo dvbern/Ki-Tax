@@ -809,13 +809,22 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
+	public static AnmeldungTagesschule createAnmeldungTagesschuleWithModules(KindContainer kind, Gesuchsperiode gesuchsperiode) {
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		anmeldung.setKind(kind);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(true));
+		kind.getAnmeldungenTagesschule().add(anmeldung);
+		return anmeldung;
+	}
+
 	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind, Gesuchsperiode gesuchsperiode) {
 		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
 		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 		anmeldung.setKind(kind);
-		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		kind.getAnmeldungenTagesschule().add(anmeldung);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(false));
 		return anmeldung;
 	}
 
@@ -850,30 +859,32 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
-	public static BelegungTagesschule createDefaultBelegungTagesschule() {
+	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
-		belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
+		if (withModulBelegung) {
+			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
 
-		Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true);
-		modulTagesschuleSet.forEach(
-			modulTagesschule -> {
-				BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
-				belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
-				belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
-				belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
-			}
-		);
+			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true);
+			modulTagesschuleSet.forEach(
+				modulTagesschule -> {
+					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
+				}
+			);
 
-		Set<ModulTagesschule> modulTagesschuleSetOhneBetreuung = createDefaultModuleTagesschuleSet(false);
-		modulTagesschuleSetOhneBetreuung.forEach(
-			modulTagesschule -> {
-				BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
-				belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
-				belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
-				belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
-			}
-		);
+			Set<ModulTagesschule> modulTagesschuleSetOhneBetreuung = createDefaultModuleTagesschuleSet(false);
+			modulTagesschuleSetOhneBetreuung.forEach(
+				modulTagesschule -> {
+					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
+				}
+			);
+		}
 		return belegungTagesschule;
 	}
 

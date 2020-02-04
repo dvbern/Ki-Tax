@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -48,7 +49,13 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
+		// Damit der Gesuchsteller im Entwurf die "richtigen" provisorischen Daten sieht, wird bei *noch* nicht akzeptiert
+		// nicht auf Vollkosten gesetzt, erst beim eigentlichen Ablehnen
+		if (platz.extractGesuch().getFinSitStatus() != null
+			&& platz.extractGesuch().getFinSitStatus() == FinSitStatus.ABGELEHNT) {
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(true);
+		}
 	}
 }

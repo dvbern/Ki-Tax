@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -51,6 +52,13 @@ public interface VerfuegungService {
 		@Nullable String manuelleBemerkungen,
 		boolean ignorieren,
 		boolean sendEmail);
+
+	/**
+	 * Schliesst eine Tagesschule-Anmeldung ab. Dies entspricht einer Verfügung bei den BGs, d.h. die
+	 * Verfügung wird definitiv und unveränderbar gespeichert.
+	 */
+	@Nonnull
+	AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull String gesuchId, @Nonnull String betreuungId);
 
 	/**
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.

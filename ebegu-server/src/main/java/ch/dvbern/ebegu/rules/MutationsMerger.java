@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -70,17 +69,11 @@ public final class MutationsMerger {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
-
-		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() || !(platz instanceof Betreuung)) {
-			return zeitabschnitte;
-		}
 		if (platz.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
 		}
-		Betreuung betreuung = (Betreuung) platz;
-		final Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
-
-		final LocalDate mutationsEingansdatum = betreuung.extractGesuch().getRegelStartDatum();
+		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
 		Objects.requireNonNull(mutationsEingansdatum);
 
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();

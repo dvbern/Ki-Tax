@@ -20,6 +20,7 @@ import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -81,7 +82,8 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 	@Test
 	public void testNotAngebotJugendamtKleinkind() {
 		Betreuung betreuung = createGesuch(true);
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+		AnmeldungTagesschule anmeldung = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(), betreuung.extractGesuchsperiode());
+		anmeldung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
@@ -91,10 +93,10 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(anmeldung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
+		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		assertEquals("Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
 	}
 

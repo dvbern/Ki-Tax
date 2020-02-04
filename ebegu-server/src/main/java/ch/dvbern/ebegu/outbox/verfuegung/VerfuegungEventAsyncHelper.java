@@ -60,10 +60,12 @@ public class VerfuegungEventAsyncHelper {
 			Thread.currentThread(),
 			txReg.getTransactionKey());
 
-		event.fire(verfuegungEventConverter.of(verfuegung));
-
-		verfuegung.setSkipPreUpdate(true);
-		verfuegung.setEventPublished(true);
-		persistence.merge(verfuegung);
+		VerfuegungVerfuegtEvent event = verfuegungEventConverter.of(verfuegung);
+		if (event != null) {
+			this.event.fire(event);
+			verfuegung.setSkipPreUpdate(true);
+			verfuegung.setEventPublished(true);
+			persistence.merge(verfuegung);
+		}
 	}
 }

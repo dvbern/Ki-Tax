@@ -95,18 +95,6 @@ public class Verfuegung extends AbstractMutableEntity {
 	public Verfuegung() {
 	}
 
-	public Verfuegung(@Nonnull Betreuung betreuung) {
-		this.betreuung = betreuung;
-		setId(betreuung.getId());
-		this.betreuung.setVerfuegung(this);
-	}
-
-	public Verfuegung(@Nonnull AnmeldungTagesschule anmeldung) {
-		this.anmeldungTagesschule = anmeldung;
-		setId(anmeldung.getId());
-		this.anmeldungTagesschule.setVerfuegung(this);
-	}
-
 	@Nullable
 	public String getGeneratedBemerkungen() {
 		return generatedBemerkungen;

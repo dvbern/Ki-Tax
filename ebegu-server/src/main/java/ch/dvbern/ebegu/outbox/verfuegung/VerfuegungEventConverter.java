@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -61,17 +64,24 @@ public class VerfuegungEventConverter {
 	@Inject
 	private VerfuegungService verfuegungService;
 
-	@Nonnull
+	@Nullable
 	public VerfuegungVerfuegtEvent of(@Nonnull Verfuegung verfuegung) {
 		VerfuegungEventDTO dto = toVerfuegungEventDTO(verfuegung);
+		if (dto == null) {
+			return null;
+		}
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
+		Objects.requireNonNull(verfuegung.getBetreuung());
 		return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema());
 	}
 
-	@Nonnull
+	@Nullable
 	private VerfuegungEventDTO toVerfuegungEventDTO(@Nonnull Verfuegung verfuegung) {
 		Betreuung betreuung = verfuegung.getBetreuung();
+		if (betreuung == null) {
+			return null;
+		}
 		Gesuch gesuch = betreuung.extractGesuch();
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
@@ -128,6 +138,7 @@ public class VerfuegungEventConverter {
 
 		// Verrechnete Zeitabschnitte
 		Betreuung betreuung = verfuegung.getBetreuung();
+		Objects.requireNonNull(betreuung);
 		List<VerfuegungZeitabschnitt> allVerrechnet = findVorgaengerZeitabschnitte(betreuung, ignoredAbschnitte);
 		allVerrechnet.addAll(verrechnetAbschnitte);
 
