@@ -33,6 +33,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSTextRessource} from '../../../models/TSTextRessource';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -285,7 +286,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                     return;
                 }
                 einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
-                        .concat(modules);
+                    .concat(modules);
                 this.ref.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError('error');
@@ -356,5 +357,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');
         }
         return '';
+    }
+
+    public showGesuchsperiode(gueltigkeit: TSDateRange): boolean {
+        let showGesuchsperiode = gueltigkeit.gueltigBis.isAfter(this.stammdaten.gueltigkeit.gueltigAb);
+        if (EbeguUtil.isNotNullOrUndefined(this.stammdaten.gueltigkeit.gueltigBis)) {
+            showGesuchsperiode = showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
+        }
+        return showGesuchsperiode;
     }
 }
