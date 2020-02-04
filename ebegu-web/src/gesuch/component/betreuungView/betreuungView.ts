@@ -1088,6 +1088,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             this.getBetreuungModel().vertrag = true;
             this.instStamm = undefined;
+            this.searchQuery = null;
             this.getBetreuungModel().institutionStammdaten = undefined;
         }
     }
