@@ -2978,6 +2978,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
+		if (betreuungFromServer.getVerfuegungOrVerfuegungPreview() != null) {
+			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegungOrVerfuegungPreview()));
+		}
 		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;
 	}

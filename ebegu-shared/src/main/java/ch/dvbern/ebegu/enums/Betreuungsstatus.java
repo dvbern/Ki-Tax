@@ -83,6 +83,14 @@ public enum Betreuungsstatus {
 			|| SCHULAMT_MODULE_AKZEPTIERT == this;
 	}
 
+	public boolean isSchulamtStatusWithPotentialVerfuegung() {
+		// Tagesschule-Anmeldungen gelten als "verfügt", wenn sie übernommen sind (Normalfall)
+		// Wenn aber im EG eine Anmeldung im Status AUSGELOEST ist, und eine Mutation erstellt wird,
+		// so wird die Anmeldung des EG ebenfalls gespeichert, damit wir beim Berechnen mit dem
+		// richtigen FinSit rechnen! (siehe MutationMerger)
+		return SCHULAMT_ANMELDUNG_AUSGELOEST == this || SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+	}
+
 	public boolean isSchulamtAnmeldungUebernommen() {
 		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
 	}

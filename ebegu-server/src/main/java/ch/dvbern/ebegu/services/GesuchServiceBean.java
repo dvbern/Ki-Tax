@@ -268,6 +268,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchForMutationOpt.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForMutation = gesuchForMutationOpt.get();
+
+			// Falls im "alten" Gesuch noch Tagesschule-Anmeldungen im status AUSGELOEST sind, müssen
+			// diese nun gespeichert (im gleichen Status, Verfügung erstellen) werden, damit künftig für
+			// die Berechnung die richtige FinSit verwendet wird!
+			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
+
 			return gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
 		}
 		return gesuchToCreate;
@@ -350,7 +356,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			antragStatusHistoryService.saveStatusChange(merged, saveAsUser);
 		}
 
-		if (gesuch.getStatus().equals(AntragStatus.VERFUEGEN) || gesuch.getStatus().equals(AntragStatus.NUR_SCHULAMT)) {
+		if (gesuch.getStatus() == AntragStatus.VERFUEGEN || gesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
 			KindContainer kindArray[] =
 				gesuch.getKindContainers().toArray(new KindContainer[gesuch.getKindContainers().size()]);
 			for (int i = 0; i < gesuch.getKindContainers().size(); i++) {
@@ -359,7 +365,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					kindContainerToWorkWith.getAnmeldungenTagesschule().toArray(new AnmeldungTagesschule[kindContainerToWorkWith.getAnmeldungenTagesschule().size()]);
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
-					if (anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)) {
+					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
+					if (anmeldungTagesschule.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
 						this.verfuegungService.anmeldungSchulamtUebernehmen(gesuch.getId(), anmeldungTagesschule.getId());
 					}
 				}
@@ -542,7 +549,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
+					// der Mutation eine Verfügung gespeichert. Diese muss nun wieder gelöscht werden
+					vorgaenger.setVerfuegung(null);
+				}
 				persistence.merge(vorgaenger);
+			});
+	}
+
+	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isSchulamt())
+			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
+			.forEach(anmeldung -> {
+				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(anmeldung.extractGesuch().getId(), anmeldung.getId());
 			});
 	}
 
