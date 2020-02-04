@@ -583,10 +583,22 @@ public class GemeindeResource {
 		Gemeinde gemeinde =
 			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
 				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
-		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
-		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
-		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
-		gemeinde = gemeindeService.saveGemeinde(gemeinde);
+		boolean datesChanged = false;
+		if(!gemeinde.getBetreuungsgutscheineStartdatum().isEqual(jaxGemeinde.getBetreuungsgutscheineStartdatum())){
+			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+			datesChanged = true;
+		}
+		if(!gemeinde.getTagesschulanmeldungenStartdatum().equals(jaxGemeinde.getTagesschulanmeldungenStartdatum())){
+			gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+			datesChanged = true;
+		}
+		if(!gemeinde.getFerieninselanmeldungenStartdatum().equals(jaxGemeinde.getFerieninselanmeldungenStartdatum())){
+			gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+			datesChanged = true;
+		}
+		if(datesChanged){
+			gemeinde = gemeindeService.saveGemeinde(gemeinde);
+		}
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}
@@ -596,7 +608,6 @@ public class GemeindeResource {
 		if (gemeinde.isAngebotFI() != jaxGemeinde.isAngebotFI()) {
 			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());
 		}
-
 
 		return Response.ok().build();
 	}
