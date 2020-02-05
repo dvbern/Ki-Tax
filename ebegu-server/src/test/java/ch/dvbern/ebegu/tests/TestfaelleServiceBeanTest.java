@@ -222,16 +222,16 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(gesuch);
 
 		gesuch.getKindContainers().forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
-			Assert.assertNotNull(betreuung.getVerfuegung());
+			Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			writeResultsToFile(
-				betreuung.getVerfuegung().getZeitabschnitte(),
+				betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte(),
 				kindContainer.getKindJA().getFullName(),
 				betreuung.getInstitutionStammdaten().getInstitution().getName(),
 				betreuung.getBetreuungNummer(),
 				addText
 			);
 			compareWithDataInFile(
-				betreuung.getVerfuegung().getZeitabschnitte(),
+				betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte(),
 				kindContainer.getKindJA().getFullName(),
 				betreuung.getInstitutionStammdaten().getInstitution().getName(),
 				betreuung.getBetreuungNummer(),

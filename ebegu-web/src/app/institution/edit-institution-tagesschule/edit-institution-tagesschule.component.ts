@@ -55,9 +55,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
+    @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
 
     public gemeindeList: TSGemeinde[] = [];
-    private konfigurationsListe: TSGemeindeKonfiguration[];
     private readonly panelClass = 'dv-mat-dialog-ts';
 
     public constructor(
@@ -78,14 +78,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
             einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
-
-        this.gemeindeRS.getGemeindeStammdaten(this.stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
-            gemeindeStammdaten => {
-                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
-                this.konfigurationsListe.forEach(config => {
-                    config.initProperties();
-                });
-            });
         this.sortByPeriod();
     }
 
@@ -357,6 +349,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public canEditEinstellungen(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
+            return false;
+        }
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);

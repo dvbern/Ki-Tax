@@ -202,6 +202,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private GemeindeService gemeindeService;
 	@Inject
 	private GesuchService self;
+	@Inject
+	private VerfuegungService verfuegungService;
+
 
 	@Nonnull
 	@Override
@@ -357,7 +360,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					if (anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)) {
-						this.betreuungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+						this.verfuegungService.anmeldungSchulamtUebernehmen(gesuch.getId(), anmeldungTagesschule.getId());
 					}
 				}
 			}
@@ -1773,8 +1776,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		// In Fall von NUR_SCHULAMT-Angeboten werden diese nicht verfügt, d.h. ab "Verfügen starten"
 		// sind diese Betreuungen die letzt gültigen
-		final List<Betreuung> betreuungen = gesuch.extractAllBetreuungen();
-		for (Betreuung betreuung : betreuungen) {
+		final List<AbstractAnmeldung> betreuungen = gesuch.extractAllAnmeldungen();
+		for (AbstractAnmeldung betreuung : betreuungen) {
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
 				betreuung.setGueltig(true);
 				if (betreuung.getVorgaengerId() != null) {

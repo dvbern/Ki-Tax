@@ -605,14 +605,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 			}
 		}
 		gesuchService.updateGesuch(mutation, false, null);
-		// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte
-		// richtig gesetzt wird. So wird auch dies getestet
-		testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
-		verfuegungService.calculateVerfuegung(mutation);
-		for (Betreuung betreuung : mutation.extractAllBetreuungen()) {
-			Assert.assertNotNull(betreuung.getVerfuegung());
-			verfuegungService.verfuegen(mutation.getId(), betreuung.getId(), null, false, true);
-		}
+		testfaelleService.gesuchVerfuegenUndSpeichern(true, mutation, true, false);
 		return mutation;
 	}
 

@@ -629,6 +629,16 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	@Nonnull
+	public List<AnmeldungTagesschule> extractAllAnmeldungenTagesschule() {
+		final List<AnmeldungTagesschule> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			list.addAll(kind.getAnmeldungenTagesschule());
+		}
+		return list;
+	}
+
+	@Transient
+	@Nonnull
 	public List<AbstractPlatz> extractAllPlaetze() {
 		final List<AbstractPlatz> list = new ArrayList<>();
 		for (final KindContainer kind : getKindContainers()) {
@@ -1099,8 +1109,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
-	public AbstractAnmeldung getFirstAnmeldung() {
-		return extractAllAnmeldungen().stream()
+	public AnmeldungTagesschule getFirstAnmeldungTagesschule() {
+		return extractAllAnmeldungenTagesschule().stream()
 			.findFirst()
 			.orElse(null);
 	}

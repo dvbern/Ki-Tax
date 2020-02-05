@@ -358,6 +358,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return sb;
 	}
 
+	public String toStringTagesschuleInfos() {
+		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
+			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
+			+ " massgebendesEinkommen: " + bgCalculationResultAsiv.getMassgebendesEinkommen() + '\n'
+			+ " mitBetreuung: " + bgCalculationResultAsiv.getTsCalculationResultMitPaedagogischerBetreuung() + '\n'
+			+ " ohneBetreuung: " + bgCalculationResultAsiv.getTsCalculationResultOhnePaedagogischerBetreuung();
+		return sb;
+	}
+
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
 		"OverlyComplexMethod" })
 	@Override
@@ -443,4 +452,5 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		compareToBuilder.append(this.getId(), other.getId());
 		return compareToBuilder.toComparison();
 	}
+
 }

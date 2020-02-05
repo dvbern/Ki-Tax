@@ -15,6 +15,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -82,6 +83,20 @@ export class VerfuegungRS {
                 return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                     this.log.debug('PARSING Verfuegung REST object ', response.data);
                     return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
+                });
+            });
+    }
+
+    public anmeldungSchulamtUebernehmen(gesuchId: string, betreuungId: string): IPromise<TSBetreuung> {
+        const gesuchIdEnc = encodeURIComponent(gesuchId);
+        const betreuungIdEnc = encodeURIComponent(betreuungId);
+        const url = `${this.serviceURL}/tagesschulanmeldung/uebernehmen/${gesuchIdEnc}/${betreuungIdEnc}`;
+
+        return this.http.get(url)
+            .then((response: any) => {
+                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+                    this.log.debug('PARSING Verfuegung REST object ', response.data);
+                    return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
                 });
             });
     }

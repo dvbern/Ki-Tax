@@ -477,8 +477,8 @@ public class PDFServiceBeanTest {
 		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(testBetreuung.getVerfuegung());
-		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
+		Assert.assertNotNull(testBetreuung.getVerfuegungOrVerfuegungPreview());
+		testBetreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
 		byte[] verfuegungsPDF = pdfService
 			.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF, Constants.DEFAULT_LOCALE);
@@ -494,8 +494,8 @@ public class PDFServiceBeanTest {
 		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(testBetreuung.getVerfuegung());
-		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
+		Assert.assertNotNull(testBetreuung.getVerfuegungOrVerfuegungPreview());
+		testBetreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
 		byte[] verfuegungsPDF = pdfService
 			.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF, Constants.DEFAULT_LOCALE);

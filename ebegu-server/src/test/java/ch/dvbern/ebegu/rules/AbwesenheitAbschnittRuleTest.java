@@ -44,7 +44,7 @@ public class AbwesenheitAbschnittRuleTest {
 	@Test
 	public void testAbschnitteWithoutAbwesenheit() {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
-		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitte(betreuung);
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		assertNotNull(zeitabschnitte);
 		assertEquals(0, zeitabschnitte.size());
@@ -58,7 +58,7 @@ public class AbwesenheitAbschnittRuleTest {
 		abwenseheitContList.add(TestDataUtil.createShortAbwesenheitContainer(betreuung.extractGesuchsperiode()));
 		betreuung.setAbwesenheitContainers(abwenseheitContList);
 
-		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitte(betreuung);
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		assertNotNull(zeitabschnitte);
 		assertEquals(0, zeitabschnitte.size());
@@ -73,7 +73,7 @@ public class AbwesenheitAbschnittRuleTest {
 		abwenseheitContList.add(abwesenheit);
 		betreuung.setAbwesenheitContainers(abwenseheitContList);
 
-		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitte(betreuung);
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 
 		assertNotNull(zeitabschnitte);
@@ -100,7 +100,7 @@ public class AbwesenheitAbschnittRuleTest {
 
 		betreuung.setAbwesenheitContainers(abwenseheitContList);
 
-		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitte(betreuung);
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		assertNotNull(zeitabschnitte);
 		assertEquals("Es werden beide Abwesenheiten beruecksichtigt", 2, zeitabschnitte.size());
@@ -126,7 +126,7 @@ public class AbwesenheitAbschnittRuleTest {
 
 		betreuung.setAbwesenheitContainers(abwenseheitContList);
 
-		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitte(betreuung);
+		final List<VerfuegungZeitabschnitt> zeitabschnitte = abwesenheitRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		assertNotNull(zeitabschnitte);
 		assertEquals("Die erste Abwesenheit wird nicht beruecksichtigt da sie kurz ist. Nur die 2 erstellt die Zeitabschnitte", 1, zeitabschnitte.size());

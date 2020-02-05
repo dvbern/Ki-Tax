@@ -34,6 +34,7 @@ import javax.persistence.UniqueConstraint;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import org.apache.commons.lang.NotImplementedException;
 import org.hibernate.envers.Audited;
 
 /**
@@ -72,6 +73,28 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 
 	public void setBelegungFerieninsel(@Nullable BelegungFerieninsel belegungFerieninsel) {
 		this.belegungFerieninsel = belegungFerieninsel;
+	}
+
+	@Nullable
+	@Override
+	public Verfuegung getVerfuegung() {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht verfügt");
+	}
+
+	@Override
+	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht verfügt");
+	}
+
+	@Nullable
+	@Override
+	public Verfuegung getVerfuegungPreview() {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht berechnet");
+	}
+
+	@Override
+	public void setVerfuegungPreview(@Nullable Verfuegung verfuegung) {
+		throw new NotImplementedException("Ferieninseln werden aktuell nicht berechnet");
 	}
 
 	@Override

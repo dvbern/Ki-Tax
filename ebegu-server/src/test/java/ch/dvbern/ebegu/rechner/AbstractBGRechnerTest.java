@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
@@ -64,6 +66,9 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
@@ -141,6 +146,18 @@ public abstract class AbstractBGRechnerTest {
 		Einstellung erwerbspensumZuschlag = new Einstellung(
 			EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, "20", gesuchsperiode);
 		einstellungen.put(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, erwerbspensumZuschlag);
+
+		Einstellung maxTarifTsMitBetreuung = new Einstellung(
+			MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode);
+		einstellungen.put(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, maxTarifTsMitBetreuung);
+
+		Einstellung maxTarifTsOhneBetreuung = new Einstellung(
+			MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode);
+		einstellungen.put(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, maxTarifTsOhneBetreuung);
+
+		Einstellung minTarifTs = new Einstellung(
+			MIN_TARIF, "0.78", gesuchsperiode);
+		einstellungen.put(MIN_TARIF, minTarifTs);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
@@ -222,6 +239,9 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
 		parameterDTO.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
 		parameterDTO.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
+		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
+		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
+		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		return parameterDTO;
 	}
 
@@ -294,7 +314,7 @@ public abstract class AbstractBGRechnerTest {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
-					Verfuegung verfuegung = betreuung.getVerfuegung();
+					Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(53872, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -308,7 +328,7 @@ public abstract class AbstractBGRechnerTest {
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
 					assertZeitabschnitt(februar, MathUtil.DEFAULT.from(0.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
 				} else {     //KITA Bruennen
-					Verfuegung verfuegung = betreuung.getVerfuegung();
+					Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(53872, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -332,11 +352,16 @@ public abstract class AbstractBGRechnerTest {
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall02FeutzYvonne(Gesuch gesuch) {
-		for (KindContainer kindContainer : gesuch.getKindContainers()) {
+		Set<KindContainer> kinderList = gesuch.getKindContainers();
+		Assert.assertEquals(2, kinderList.size());
+		Assert.assertEquals(2,
+			kinderList.stream().map(KindContainer::getKindJA).map(AbstractPersonEntity::getVorname).filter(s -> s.equals("Leonard") || s.equals(
+			"Tamara")).count());
+		for (KindContainer kindContainer : kinderList) {
 			if ("Leonard".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -352,7 +377,7 @@ public abstract class AbstractBGRechnerTest {
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -377,7 +402,7 @@ public abstract class AbstractBGRechnerTest {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(68678, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -397,21 +422,24 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall04WaltherLaura(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			if ("Jose".equals(kindContainer.getKindJA().getVorname())) {
+			if ("Lorenz".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.DEFAULT.from(162126.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				// Das Einkommen ist zu hoch. Es werden alle Beträge auf 0 gesetzt, die Familie bezahlt die Vollkosten
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
+				assertZeitabschnitt(august, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), 0, 0, 0);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
+				assertZeitabschnitt(juli, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), 0, 0, 0);
+			} else  {
+				Assert.fail("Nur ein Kind names Lorenz sollte vorhanden sein!");
 			}
 		}
 	}
@@ -426,7 +454,7 @@ public abstract class AbstractBGRechnerTest {
 				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(98830, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -462,7 +490,7 @@ public abstract class AbstractBGRechnerTest {
 			assertEquals(1, kindContainer.getBetreuungen().size());
 			Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-			Verfuegung verfuegung = betreuung.getVerfuegung();
+			Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 			Assert.assertNotNull(verfuegung);
 			assertEquals(12, verfuegung.getZeitabschnitte().size());
 			assertEquals(-7600, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
@@ -477,8 +505,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_01(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -504,8 +532,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_02(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -531,8 +559,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_03(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -558,8 +586,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_04(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -585,8 +613,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_05(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -613,8 +641,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_06(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -641,8 +669,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_07(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -669,8 +697,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_08(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -697,8 +725,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_09(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(13, result.size());
@@ -727,8 +755,8 @@ public abstract class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall_ASIV_10(Gesuch gesuch) {
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		Assert.assertNotNull(betreuung.getVerfuegung());
-		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
+		Assert.assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(13, result.size());

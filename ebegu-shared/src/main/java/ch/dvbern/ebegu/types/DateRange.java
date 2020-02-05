@@ -238,6 +238,13 @@ public class DateRange implements Serializable, Comparable<DateRange> {
 	}
 
 	/**
+	 * Gültig ist es, wenn das Datum Ab kleiner oder gleich dem Datum bis ist
+	 */
+	public boolean isValid() {
+		return !getGueltigBis().isBefore(getGueltigAb());
+	}
+
+	/**
 	 * Neue DateRange, mit gueltigAb auf den vorherigen Montag und gueltigBis auf den naechsten Sonntag setzt.
 	 * Use-Case z.B.: einen Stichtag auf die ganze Woche ausdehnen.
 	 */

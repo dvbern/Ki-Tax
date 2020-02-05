@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.dto;
 
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,5 +93,27 @@ public class VerfuegungsBemerkung {
 		} else {
 			return ServerMessageUtil.translateEnumValue(msgKey, sprache);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof VerfuegungsBemerkung)) {
+			return false;
+		}
+		VerfuegungsBemerkung that = (VerfuegungsBemerkung) o;
+		return ruleKey == that.ruleKey &&
+			msgKey == that.msgKey &&
+			Arrays.equals(args, that.args) &&
+			Objects.equals(sprache, that.sprache);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(ruleKey, msgKey, sprache);
+		result = 31 * result + Arrays.hashCode(args);
+		return result;
 	}
 }
