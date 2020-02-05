@@ -62,7 +62,6 @@ export class TSGemeindeKonfiguration {
         return false;
     }
 
-
     public isTagesschulAnmeldungBeforePeriode(): boolean {
         return this.hasTagesschulenAnmeldung()
             && this.konfigTagesschuleAktivierungsdatum.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);

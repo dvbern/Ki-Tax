@@ -291,25 +291,27 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     /**
-     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Tagesschulen (aufgrund des Datums) möglich ist.
+     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Tagesschulen
+     * (aufgrund des Datums) möglich ist.
      */
-    private isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode() {
+    private isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration
             && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
     }
 
     /**
-     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Ferieninseln (aufgrund des Datums) möglich ist.
+     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Ferieninseln (aufgrund des
+     * Datums) möglich ist.
      */
-    private isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode() {
+    private isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration
             && this.gesuchModelManager.gemeindeKonfiguration.hasFerieninseAnmeldung();
     }
 
     /**
-     * Entscheidet aufgrund des Gesuchstatus und der Rolle des Benutzers ob in diesem Zustand grundsätzlich (nachträgliche)
-     * Anmeldungen (für Tagesschulen oder Ferieninseln) möglich sind. Es muss separat geprüft werden, ob die spezifische Anmeldung
-     * überhaupt für den Mandanten oder die Gemeinde eingeschaltet ist.
+     * Entscheidet aufgrund des Gesuchstatus und der Rolle des Benutzers ob in diesem Zustand grundsätzlich
+     * (nachträgliche) Anmeldungen (für Tagesschulen oder Ferieninseln) möglich sind. Es muss separat geprüft werden,
+     * ob die spezifische Anmeldung überhaupt für den Mandanten oder die Gemeinde eingeschaltet ist.
      */
     private isAnmeldungenHinzufuegenMoeglich(): boolean {
         const isStatus = isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)
