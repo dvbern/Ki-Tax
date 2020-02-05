@@ -29,9 +29,12 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
-import static java.util.Objects.requireNonNull;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für Abwesenheiten. Sie beachtet:
@@ -54,6 +57,11 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 		this.abwesenheitDaysLimit = abwesenheitDaysLimit;
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
 	/**
 	 * Die Abwesenheiten der Betreuung werden zuerst nach gueltigkeit sortiert. Danach suchen wir die erste lange Abweseneheit und erstellen
 	 * die 2 entsprechenden Zeitabschnitte. Alle anderen Abwesenheiten werden nicht beruecksichtigt
@@ -64,17 +72,15 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> resultlist = new ArrayList<>();
-		if (requireNonNull(platz.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
-			Betreuung betreuung = (Betreuung) platz;
-			final List<AbwesenheitContainer> sortedAbwesenheiten = betreuung.getAbwesenheitContainers().stream().sorted().collect(Collectors.toList());
-			for (final AbwesenheitContainer abwesenheit : sortedAbwesenheiten) {
-				final Abwesenheit abwesenheitJA = abwesenheit.getAbwesenheitJA();
-				if (abwesenheitJA != null && exceedsAbwesenheitTimeLimit(abwesenheitJA)) {
-					LocalDate volltarifStart = calculateStartVolltarif(abwesenheitJA);
-					LocalDate volltarifEnd = abwesenheitJA.getGueltigkeit().getGueltigBis();
-					VerfuegungZeitabschnitt abschnitt = createAbwesenheitZeitAbschnitte(volltarifStart, volltarifEnd);
-					resultlist.add(abschnitt);
-				}
+		Betreuung betreuung = (Betreuung) platz;
+		final List<AbwesenheitContainer> sortedAbwesenheiten = betreuung.getAbwesenheitContainers().stream().sorted().collect(Collectors.toList());
+		for (final AbwesenheitContainer abwesenheit : sortedAbwesenheiten) {
+			final Abwesenheit abwesenheitJA = abwesenheit.getAbwesenheitJA();
+			if (abwesenheitJA != null && exceedsAbwesenheitTimeLimit(abwesenheitJA)) {
+				LocalDate volltarifStart = calculateStartVolltarif(abwesenheitJA);
+				LocalDate volltarifEnd = abwesenheitJA.getGueltigkeit().getGueltigBis();
+				VerfuegungZeitabschnitt abschnitt = createAbwesenheitZeitAbschnitte(volltarifStart, volltarifEnd);
+				resultlist.add(abschnitt);
 			}
 		}
 		return resultlist;

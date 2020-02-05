@@ -17,11 +17,14 @@ package ch.dvbern.ebegu.rest.test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.resource.VerfuegungResource;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -109,6 +112,17 @@ public class VerfuegungResourceTest extends AbstractEbeguRestLoginTest {
 
 		//noinspection ConstantConditions
 		Response response = verfuegungResource.calculateVerfuegung(new JaxId(gesuch.getId()), null, null);
+
+		// Sicherstellen, dass nach dem Berechnen die Vefügung nciht gespeichert wurde
+		Set<JaxKindContainer> kinderList = (Set<JaxKindContainer>) response.getEntity();
+		for (JaxKindContainer jaxKindContainer : kinderList) {
+			Set<JaxBetreuung> betreuungen = jaxKindContainer.getBetreuungen();
+			for (JaxBetreuung jaxBetreuung : betreuungen) {
+				Betreuung betreuung = persistence.find(Betreuung.class, jaxBetreuung.getId());
+				Assert.assertNotNull(betreuung);
+				Assert.assertNull(betreuung.getVerfuegungOrVerfuegungPreview());
+			}
+		}
 
 		Assert.assertNotNull(response);
 	}

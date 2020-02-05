@@ -63,7 +63,6 @@ import ch.dvbern.ebegu.validators.CheckBetreuungZeitraumInstitutionsStammdatenZe
 import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
-import com.google.common.base.Preconditions;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -106,14 +105,11 @@ public class Betreuung extends AbstractPlatz {
 	private Verfuegung vorgaengerAusbezahlteVerfuegung;
 
 	/**
-	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
+	 * Contains a calculatedVerfuegung that we do not want to store in the database yet
 	 */
 	@Transient
 	@Nullable
-	private Verfuegung vorgaengerVerfuegung;
-
-	@Transient
-	private boolean vorgaengerInitialized = false;
+	private Verfuegung verfuegungPreview;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
@@ -193,11 +189,13 @@ public class Betreuung extends AbstractPlatz {
 		this.grundAblehnung = grundAblehnung;
 	}
 
+	@Override
 	@Nullable
 	public Verfuegung getVerfuegung() {
 		return verfuegung;
 	}
 
+	@Override
 	public void setVerfuegung(@Nullable Verfuegung verfuegung) {
 		this.verfuegung = verfuegung;
 	}
@@ -253,6 +251,17 @@ public class Betreuung extends AbstractPlatz {
 
 	public void setBetreuungspensumAbweichungen(Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
+	}
+
+	@Override
+	@Nullable
+	public Verfuegung getVerfuegungPreview() {
+		return verfuegungPreview;
+	}
+
+	@Override
+	public void setVerfuegungPreview(@Nullable Verfuegung verfuegungPreview) {
+		this.verfuegungPreview = verfuegungPreview;
 	}
 
 	@Override
@@ -329,6 +338,7 @@ public class Betreuung extends AbstractPlatz {
 	/**
 	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
 	 */
+	@Override
 	@Nullable
 	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
 		if (getVerfuegung() != null) {
@@ -354,27 +364,13 @@ public class Betreuung extends AbstractPlatz {
 		return vorgaengerAusbezahlteVerfuegung;
 	}
 
-	@Nullable
-	public Verfuegung getVorgaengerVerfuegung() {
-		checkVorgaengerInitialized();
-		return vorgaengerVerfuegung;
-	}
-
+	@Override
 	public void initVorgaengerVerfuegungen(
 		@Nullable Verfuegung vorgaenger,
 		@Nullable  Verfuegung vorgaengerAusbezahlt
 	) {
-		this.vorgaengerVerfuegung = vorgaenger;
+		super.initVorgaengerVerfuegungen(vorgaenger, vorgaengerAusbezahlt);
 		this.vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlt;
-		this.vorgaengerInitialized = true;
-	}
-
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkVorgaengerInitialized() {
-		Preconditions.checkState(
-			vorgaengerInitialized,
-			"must initialize transient fields of %s via VerfuegungService#initializeVorgaengerVerfuegungen",
-			this);
 	}
 
 	@Nonnull
@@ -431,8 +427,8 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	public boolean hasAnspruch() {
-		if (getVerfuegung() != null) {
-			List<VerfuegungZeitabschnitt> vzList = getVerfuegung().getZeitabschnitte();
+		if (getVerfuegungOrVerfuegungPreview() != null) {
+			List<VerfuegungZeitabschnitt> vzList = getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 			BigDecimal value = vzList.stream()
 				.map(VerfuegungZeitabschnitt::getBgPensum)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);

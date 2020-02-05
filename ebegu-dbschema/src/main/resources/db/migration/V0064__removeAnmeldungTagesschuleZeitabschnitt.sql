@@ -1,0 +1,5 @@
+drop table anmeldung_tagesschule_zeitabschnitt_aud;
+drop table anmeldung_tagesschule_zeitabschnitt;
+
+alter table anmeldung_tagesschule_aud
+	drop foreign key FK_anmeldung_tagesschule_aud_revinfo;

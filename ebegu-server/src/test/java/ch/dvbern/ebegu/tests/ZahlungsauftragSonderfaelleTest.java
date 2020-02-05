@@ -107,7 +107,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 	public void leereMutationDarfNichtsAendern() {
 		// *** Mutation 1: Keine Anpassungen. Flag Ignorieren? kommt nicht. Verrechnungszustand bleibt gleich
 		MutationConfig configEmptyMutation = MutationConfig.createEmptyMutationVerfuegt(
-			eingangsdatum.plusDays(1), lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
+			eingangsdatum.plusDays(2), lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
 		Gesuch mutation = testdataCreationService.createMutation(configEmptyMutation, erstgesuch);
 
 		Assert.assertNotNull(mutation);
@@ -124,7 +124,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 
 	@Test
 	public void mutationSameDataIgnorierenNichtMoeglich() {
-		// *** Mutation 2: Die Anpassungen bleiben gleich. Das Ignorieren-Flag dar keine Auswirkungen haben
+		// *** Mutation 2: Die Anpassungen bleiben gleich. Das Ignorieren-Flag darf keine Auswirkungen haben
 		MutationConfig configMutationSameData = MutationConfig.createMutationVerfuegt(
 			eingangsdatum.plusDays(2), lastZahlungsauftrag.getDatumGeneriert().plusDays(1), 70, true);
 		Gesuch mutation = testdataCreationService.createMutation(configMutationSameData, erstgesuch);
@@ -152,7 +152,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(24, alleZeitabschnitte.size());
-		// (1) Erstgesuch
+		// (1) Erstgesuch ist verrechnet
 		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
 			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
@@ -238,6 +238,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 	private List<VerfuegungZeitabschnitt> getAllZeitabschnitteOrderedByGesuchAndDatum() {
 		ArrayList<VerfuegungZeitabschnitt> all = new ArrayList<>(criteriaQueryHelper.getAll(VerfuegungZeitabschnitt.class));
 		all.sort((o1, o2) -> {
+			Assert.assertNotNull(o1.getVerfuegung().getBetreuung());
+			Assert.assertNotNull(o2.getVerfuegung().getBetreuung());
 			Integer ln1 = o1.getVerfuegung().getBetreuung().getKind().getGesuch().getLaufnummer();
 			Integer ln2 = o2.getVerfuegung().getBetreuung().getKind().getGesuch().getLaufnummer();
 			int i = ln1.compareTo(ln2);

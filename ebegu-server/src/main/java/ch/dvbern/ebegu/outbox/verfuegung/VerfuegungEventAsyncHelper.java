@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.outbox.verfuegung;
 
+import java.util.Optional;
+
 import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -60,10 +62,13 @@ public class VerfuegungEventAsyncHelper {
 			Thread.currentThread(),
 			txReg.getTransactionKey());
 
-		event.fire(verfuegungEventConverter.of(verfuegung));
+		Optional<VerfuegungVerfuegtEvent> eventOpt = verfuegungEventConverter.of(verfuegung);
 
-		verfuegung.setSkipPreUpdate(true);
-		verfuegung.setEventPublished(true);
-		persistence.merge(verfuegung);
+		eventOpt.ifPresent(verfuegungVerfuegtEvent -> {
+			this.event.fire(verfuegungVerfuegtEvent);
+			verfuegung.setSkipPreUpdate(true);
+			verfuegung.setEventPublished(true);
+			persistence.merge(verfuegung);
+		});
 	}
 }

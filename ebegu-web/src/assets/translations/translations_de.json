@@ -1849,5 +1849,6 @@
     "AGB_HOCHLADEN": "AGBs Hochladen",
     "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "Erlaeuterung_zur_Verfuegung.pdf",
     "MODUL_NICHT_BEARBEITBAR_TOOLTIP": "Dieses Modul kann nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist",
+    "WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH": "Module können nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist. Deshalb ist der Wechsel zu Scolaris nicht mehr möglich.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
