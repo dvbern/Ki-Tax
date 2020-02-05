@@ -57,6 +57,12 @@ export class TSGemeindeKonfiguration {
         return EbeguUtil.isNotNullOrUndefined(this.konfigTagesschuleAktivierungsdatum);
     }
 
+    public hasFerieninseAnmeldung(): boolean {
+        // TODO Muss implementiert werden, sobald Ferieninseln umgesetzt sind. Evtl. pro Ferien unterschiedlich?
+        return false;
+    }
+
+
     public isTagesschulAnmeldungBeforePeriode(): boolean {
         return this.hasTagesschulenAnmeldung()
             && this.konfigTagesschuleAktivierungsdatum.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);

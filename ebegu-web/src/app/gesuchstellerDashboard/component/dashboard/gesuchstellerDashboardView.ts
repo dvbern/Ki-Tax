@@ -272,7 +272,9 @@ export class GesuchstellerDashboardViewController implements IController {
     private showAnmeldungCreateFI(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const fiEnabledForMandant = this.authServiceRS.hasMandantAngebotFI();
+        const fiEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasFerieninseAnmeldung();
         return fiEnabledForMandant
+            && fiEnabledForGemeinde
             && !!antrag
             && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
             && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
