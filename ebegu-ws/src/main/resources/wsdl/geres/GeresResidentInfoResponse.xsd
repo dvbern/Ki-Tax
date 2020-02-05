@@ -3,7 +3,7 @@
 		   xmlns:eCH-0020="http://www.ech.ch/xmlns/eCH-0020-f/3"
 		   xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" version="1.0">
 
-	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0020-f/3" schemaLocation="http://www.ech.ch/xmlns/eCH-0020-f/3/eCH-0020-3-0f.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0020-f/3" schemaLocation="ech/eCH-0020-3-0f.xsd"/>
 
 	<!-- Modeled after type of same name from eCH-0020 -->
 	<xs:complexType name="baseDeliveryType">
