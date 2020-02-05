@@ -92,6 +92,9 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@PostConstruct
 	private void resolveService() {
 		if (config.isPersonenSucheDisabled()) {
+			return;
+		}
+		if (config.usePersonenSucheDummyService()) {
 			ewkService = serviceInstance.select(new AnnotationLiteral<Dummy>() {
 			}, new AnnotationLiteral<Geres>() {
 			}).get();
