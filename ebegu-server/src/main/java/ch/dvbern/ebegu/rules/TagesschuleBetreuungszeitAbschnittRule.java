@@ -58,7 +58,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> tagesschuleAbschnitte = new ArrayList<>();
-		tagesschuleAbschnitte.add(toVerfuegungZeitabschnitt((AnmeldungTagesschule) platz));//  todo homa review kibon-1016 immer genau ein abschnitt?
+		tagesschuleAbschnitte.add(toVerfuegungZeitabschnitt((AnmeldungTagesschule) platz));
 		return tagesschuleAbschnitte;
 	}
 
