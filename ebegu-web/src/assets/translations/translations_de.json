@@ -1846,7 +1846,7 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": " Merkblatt Anmeldung Tagesschule Deutsch",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Merkblatt Anmeldung Tagesschule Französich",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": " Merkblatt_Anmeldung_Tagesschule.pdf",
-    "AGB_HOCHLADEN": "AGBs Hochladen",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN": "Merkblatt Anmeldung Tagesschule hochladen",
     "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "Erlaeuterung_zur_Verfuegung.pdf",
     "MODUL_NICHT_BEARBEITBAR_TOOLTIP": "Dieses Modul kann nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist",
     "WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH": "Module können nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist. Deshalb ist der Wechsel zu Scolaris nicht mehr möglich.",

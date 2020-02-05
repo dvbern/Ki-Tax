@@ -3,6 +3,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
@@ -31,6 +32,7 @@ describe('EditInstitutionComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindeStammdaten']);
 
     beforeEach(async(() => {
 
@@ -51,6 +53,7 @@ describe('EditInstitutionComponent', () => {
                 {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeServiceSpy},
             ],
             declarations: [EditInstitutionComponent],
         }).compileComponents();
@@ -58,6 +61,7 @@ describe('EditInstitutionComponent', () => {
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         stammdatenServiceSpy.findInstitutionStammdaten.and.returnValue(Promise.resolve([]));
+        gemeindeServiceSpy.getGemeindeStammdaten.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));
