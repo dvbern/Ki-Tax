@@ -91,10 +91,7 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 	@PostConstruct
 	private void resolveService() {
-		if (config.isPersonenSucheDisabled()) {
-			return;
-		}
-		if (config.usePersonenSucheDummyService()) {
+		if (config.isPersonenSucheDisabled() || config.usePersonenSucheDummyService()) {
 			ewkService = serviceInstance.select(new AnnotationLiteral<Dummy>() {
 			}, new AnnotationLiteral<Geres>() {
 			}).get();
