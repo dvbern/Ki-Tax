@@ -78,14 +78,6 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
             einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
-
-        this.gemeindeRS.getGemeindeStammdaten(this.stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
-            gemeindeStammdaten => {
-                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
-                this.konfigurationsListe.forEach(config => {
-                    config.initProperties();
-                });
-            });
         this.sortByPeriod();
     }
 
@@ -353,13 +345,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         if (group.isNew()) {
             return true;
         }
-        if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
-            return false;
-        }
         return this.canEditEinstellungen(einstellungenTagesschule);
     }
 
     public canEditEinstellungen(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
+            return false;
+        }
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
