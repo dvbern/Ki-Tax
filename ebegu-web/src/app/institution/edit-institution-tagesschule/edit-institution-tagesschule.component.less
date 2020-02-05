@@ -119,8 +119,14 @@
                 margin-left: 2px; // border bei focus wird ansonsten verdeckt
                 margin-bottom: 2rem;
             }
-            tr.no-border-top > th {
-                border-top: 0 !important;
+            a.disabled {
+                text-decoration: none;
+            }
+            a.disabled:hover {
+                color: @contrast-darkest;
+            }
+            .mt-2 {
+                margin-top: 2rem;
             }
         }
     }
