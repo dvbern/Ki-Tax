@@ -247,23 +247,42 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public showButtonAnmeldungTagesschule(): boolean {
+        return this.isAnmeldungTagesschuleErlaubt() && this.showButtonAnmeldungSchulamt();
+    }
+
+    private isAnmeldungTagesschuleErlaubt(): boolean {
+        if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
+            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
+            return false;
+        }
         const gemeinde = this.gesuchModelManager.getGemeinde();
         const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         return gemeinde
             && gemeinde.angebotTS
-            && this.showButtonAnmeldungSchulamt()
             && gesuchsperiode
             && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
     }
 
     public showButtonAnmeldungFerieninsel(): boolean {
+        if (!this.gesuchModelManager.isFerieninselangebotEnabled()) {
+            // Ferieninsel sind grundsätzlich auf dem Mandant nicht eingeschaltet
+            return false;
+        }
+        return this.isAnmeldungFerieninselErlaubt() && this.showButtonAnmeldungSchulamt();
+    }
+
+    private isAnmeldungFerieninselErlaubt(): boolean {
         const gemeinde = this.gesuchModelManager.getGemeinde();
         const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         return gemeinde
             && gemeinde.angebotFI
-            && this.showButtonAnmeldungSchulamt()
             && gesuchsperiode
             && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum);
+    }
+
+    public isAnmeldungTagesschuleFerieninselErlaubt(): boolean {
+
+        return this.isAnmeldungTagesschuleErlaubt() || this.isAnmeldungFerieninselErlaubt();
     }
 
     public showButtonAnmeldungSchulamt(): boolean {
@@ -271,6 +290,10 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         // hinzufuegen" verwendet werden Nachdem readonly: nur fuer Jugendamt, Schulamt und Gesuchsteller verfuegbar
         // sein. Nur fuer GP.hasTagesschulenAnmeldung().
         if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
+            // TODO HEFR REVIEW wegen Ferieninsel ob man hier auch die Mandant pruefen mussen oder nicht
+            // But this method is used also in the html view for displaying a FI Mutation information text
+
+            // for fi
             // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
             return false;
         }

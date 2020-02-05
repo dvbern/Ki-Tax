@@ -150,7 +150,8 @@
                     </div>
 
                     <!-- Neue Betreuungen hinzufuegen disabled-->
-                    <div class="col-md-12" ng-if="vm.isBetreuungenHinzufuegenDisabled()">
+                    <div class="col-md-12"
+                         ng-if="vm.isBetreuungenHinzufuegenDisabled() && vm.isAnmeldungTagesschuleFerieninselErlaubt()">
                         <p><span data-translate="BETREUUNG_HINZUFUEGEN_FORBIDDEN"></span></p>
                     </div>
                 </div>
