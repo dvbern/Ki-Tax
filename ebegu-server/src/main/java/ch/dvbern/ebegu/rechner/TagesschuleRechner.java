@@ -44,7 +44,7 @@ public class TagesschuleRechner extends AbstractRechner {
 			BigDecimal totalKostenProWoche = calculateKostenProWoche(bgResult.getTsCalculationResultMitPaedagogischerBetreuung());
 			bgResult.getTsCalculationResultMitPaedagogischerBetreuung().setTotalKostenProWoche(totalKostenProWoche);
 		}
-		if (bgResult.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
+		if (bgResult.getTsCalculationResultOhnePaedagogischerBetreuung() != null) { // todo homa review kibon-1016 ich kann den unterschied schlecht lesen aber egal
 			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleOhnePaedagogischerBetreuung();
 			BigDecimal tarifProStunde = calculateTarif(verfuegungZeitabschnitt, maxTarif, minTarif, parameterDTO);
 			bgResult.getTsCalculationResultOhnePaedagogischerBetreuung().setGebuehrProStunde(tarifProStunde);
@@ -68,7 +68,7 @@ public class TagesschuleRechner extends AbstractRechner {
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal tarifProStunde = null;
 
-		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
+		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif    // todo homa review kibon-1016 hä?
 		if (zeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten()
 			|| zeitabschnitt.getBgCalculationResultAsiv().isZuSpaetEingereicht()
 			|| zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent() == 0) {

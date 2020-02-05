@@ -91,8 +91,9 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		return null;
 	}
 
-	@Override
-	public boolean isRelevantForFamiliensituation() {
-		return true;
-	}
+//
+//	@Override
+//	public boolean isRelevantForFamiliensituation() {
+//		return true;
+//	}
 }
