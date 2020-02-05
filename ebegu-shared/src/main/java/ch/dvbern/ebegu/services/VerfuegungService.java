@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -53,6 +54,13 @@ public interface VerfuegungService {
 		boolean sendEmail);
 
 	/**
+	 * Schliesst eine Tagesschule-Anmeldung ab. Dies entspricht einer Verfügung bei den BGs, d.h. die
+	 * Verfügung wird definitiv und unveränderbar gespeichert.
+	 */
+	@Nonnull
+	AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull String gesuchId, @Nonnull String betreuungId);
+
+	/**
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
 	 * Die Betreuung erhaelt den Status NICHT_EINGETRETEN
 	 *
@@ -78,7 +86,10 @@ public interface VerfuegungService {
 	/**
 	 * Berechnet die Verfuegung fuer ein Gesuch
 	 *
-	 * @return gibt die Betreuung mit der berechneten angehangten Verfuegung zurueck
+	 * @return gibt die Betreuung mit der berechneten angehangten Verfuegung im property verfuegungPreview zurueck
+	 * Grund fuer das verfuegungPreview Feld ist, dass dies nicht in der DB gespeichert wird. Erst wenn wir
+	 * wir wirklich die definitive Verfuegung speichern wollen setzen wir die Betreuung.previewVerfuegung nach
+	 * Betreuung.verfuegung
 	 */
 	@Nonnull
 	Gesuch calculateVerfuegung(@Nonnull Gesuch gesuch);

@@ -63,7 +63,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -105,7 +105,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -147,7 +147,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				Verfuegung verfuegung = betreuung.getVerfuegung();
+				Verfuegung verfuegung = betreuung.getVerfuegungPreview();
 				Assert.assertNotNull(verfuegung);
 				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());

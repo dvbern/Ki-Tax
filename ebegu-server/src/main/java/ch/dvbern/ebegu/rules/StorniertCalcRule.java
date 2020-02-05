@@ -15,15 +15,21 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für die Kuendigung vor Eintritt in die Institution. Sie beachtet:
@@ -34,6 +40,11 @@ public class StorniertCalcRule extends AbstractCalcRule {
 
 	public StorniertCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	@Override

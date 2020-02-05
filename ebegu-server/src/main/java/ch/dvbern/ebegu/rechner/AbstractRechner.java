@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,16 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
+package ch.dvbern.ebegu.rechner;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 
-public interface TagesschuleZeitabschnittService {
+/**
+ * Superklasse für alle kiBon-Rechner
+ */
+public abstract class AbstractRechner {
 
+	/**
+	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
+	 */
 	@Nonnull
-	AnmeldungTagesschule generateAndPersistZeitabschnitte(@Nonnull String gesuchId,
-		@Nonnull String anmeldungTagesschuleId);
+	public abstract BGCalculationResult calculate(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull BGRechnerParameterDTO parameterDTO);
 }

@@ -19,17 +19,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Regel bezüglich der Einreichungsfrist des Gesuchs:
@@ -48,34 +51,43 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+	}
+
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
-		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			return einreichungsfristAbschnitte;
-		}
-		Betreuung betreuung = (Betreuung) platz;
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
 		if (gesuch.getTyp().isGesuch() && startDatum != null) {
-			Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
 			LocalDate firstOfMonthDesEinreichungsMonats = getStichtagForEreignis(startDatum);
-			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
-				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-				if (betreuungspensum.getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {
-					VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
-					// Der Anspruch beginnt erst am 1. des Monats der Einreichung
-					verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
-					verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(firstOfMonthDesEinreichungsMonats.minusDays(1));
-					verfuegungZeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(true);
-					// Sicherstellen, dass nicht der ganze Zeitraum vor dem Einreichungsdatum liegt
-					if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {
-						einreichungsfristAbschnitte.add(verfuegungZeitabschnitt);
-					}
+			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {
+				VerfuegungZeitabschnitt abschnittVorAnspruch =
+					createZeitabschnittBevorEinreichung(
+						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+						firstOfMonthDesEinreichungsMonats.minusDays(1));
+				if (abschnittVorAnspruch != null) {
+					einreichungsfristAbschnitte.add(abschnittVorAnspruch);
 				}
 			}
 		}
 		return einreichungsfristAbschnitte;
+	}
+
+	@Nullable
+	private VerfuegungZeitabschnitt createZeitabschnittBevorEinreichung(@Nonnull LocalDate startGP, @Nonnull LocalDate tagBevorAnspruch) {
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		// Der Anspruch beginnt erst am 1. des Monats der Einreichung
+		verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(startGP);
+		verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(tagBevorAnspruch);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(true);
+		// Sicherstellen, dass nicht der ganze Zeitraum vor dem Einreichungsdatum liegt
+		if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {
+			return verfuegungZeitabschnitt;
+		}
+		return null;
 	}
 }

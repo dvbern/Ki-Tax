@@ -15,15 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für Wohnsitz in Bern (Zuzug und Wegzug):
@@ -38,22 +43,25 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (Objects.requireNonNull(platz.getBetreuungsangebotTyp()).isJugendamt()) {
-			if (areNotInBern(verfuegungZeitabschnitt)) {
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-					RuleKey.WOHNSITZ,
-					MsgKey.WOHNSITZ_MSG,
-					getLocale(),
-					platz.extractGesuch().getDossier().getGemeinde().getName()
-				);
-			}
+		if (areNotInBern(verfuegungZeitabschnitt)) {
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+				RuleKey.WOHNSITZ,
+				MsgKey.WOHNSITZ_MSG,
+				getLocale(),
+				platz.extractGesuch().getDossier().getGemeinde().getName()
+			);
 		}
 	}
 
@@ -63,5 +71,4 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	private boolean areNotInBern(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		return verfuegungZeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
 	}
-
 }

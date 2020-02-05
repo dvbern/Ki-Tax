@@ -18,6 +18,8 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.util.List;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -67,13 +69,13 @@ public class BetreuungsangebotTypCalcRuleTest {
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
 		Assert.assertEquals(1, result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().size());
 		Assert.assertTrue(result.get(0).getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 	}
 
-	private Betreuung prepareData(BetreuungsangebotTyp betreuungsangebotTyp) {
+	private AbstractPlatz prepareData(BetreuungsangebotTyp betreuungsangebotTyp) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
@@ -85,6 +87,13 @@ public class BetreuungsangebotTypCalcRuleTest {
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(80));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
-		return betreuung;
+		if (betreuungsangebotTyp.isTagesschule()) {
+			AnmeldungTagesschule anmeldung = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(),
+				betreuung.extractGesuchsperiode());
+			betreuung.getKind().getAnmeldungenTagesschule().add(anmeldung);
+			return anmeldung;
+		} else {
+			return betreuung;
+		}
 	}
 }

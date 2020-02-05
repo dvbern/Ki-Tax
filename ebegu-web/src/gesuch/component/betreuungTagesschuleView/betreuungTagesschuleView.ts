@@ -116,6 +116,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
+    public lastModifiedModul?: TSBelegungTagesschuleModul;
+
     public constructor(
         $state: StateService,
         gesuchModelManager: GesuchModelManager,
@@ -152,6 +154,11 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
             if (this.betreuung.institutionStammdaten) {
                 this.loadErlaeuterungForTagesschule();
+            }
+        });
+        this.$scope.$on('$mdMenuClose', () => {
+            if (this.lastModifiedModul.modulTagesschule.angemeldet) {
+                this.form['modul_' + this.lastModifiedModul.modulTagesschule.identifier].$setValidity('nointerval', (this.lastModifiedModul.intervall !== undefined));
             }
         });
     }
@@ -318,14 +325,17 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
                     ev: Event): any {
+        this.lastModifiedModul = modul;
         if (!modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
             modul.intervall = undefined;
+            this.form['modul_' + modul.modulTagesschule.identifier].$setValidity('nointerval', true);
             return;
         }
         if (belegungGroup.group.intervall === TSModulTagesschuleIntervall.WOECHENTLICH) {
             // Es gibt keine Auswahl für dieses Modul, es ist immer Wöchentlich
             modul.intervall = TSBelegungTagesschuleModulIntervall.WOECHENTLICH;
+            this.form['modul_' + modul.modulTagesschule.identifier].$setValidity('nointerval', true);
             return;
         }
         $mdMenu.open(ev);
@@ -335,8 +345,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSBelegungTagesschuleModulIntervallValues();
     }
 
-    public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
+    public setIntervall(modul: TSBelegungTagesschuleModul,
+                        intervall: TSBelegungTagesschuleModulIntervall, $mdMenu: any): void {
         modul.intervall = intervall;
+        $mdMenu.close();
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {

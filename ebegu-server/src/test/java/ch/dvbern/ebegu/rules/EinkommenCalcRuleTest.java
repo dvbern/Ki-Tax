@@ -86,7 +86,8 @@ public class EinkommenCalcRuleTest {
 	 */
 	@Test
 	public void testAcceptedEKV() {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.TAGESSCHULE, 100, new BigDecimal(1000));
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA,
+			100, new BigDecimal(1000));
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
@@ -123,7 +124,7 @@ public class EinkommenCalcRuleTest {
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBgCalculationInputAsiv().getBemerkungenMap();
 		assertNotNull(bemerkungenAbschnitt2);
 		assertEquals(2, bemerkungenAbschnitt2.size());
-		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
 		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_1;
@@ -134,7 +135,7 @@ public class EinkommenCalcRuleTest {
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBgCalculationInputAsiv().getBemerkungenMap();
 		assertNotNull(bemerkungenAbschnitt3);
 		assertEquals(2, bemerkungenAbschnitt3.size());
-		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
 		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_2;
