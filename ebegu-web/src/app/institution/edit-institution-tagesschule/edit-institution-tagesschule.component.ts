@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
@@ -51,7 +51,7 @@ import {DialogImportFromOtherInstitution} from './dialog-import-from-other-insti
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 
-export class EditInstitutionTagesschuleComponent implements OnInit {
+export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
@@ -86,6 +86,17 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                     config.initProperties();
                 });
             });
+        this.sortByPeriod();
+    }
+
+    // beim Hinzufügen eines Moduls werden die Stammdaten neu geladen. Diese müssen erneut sortiert werden.
+    public ngOnChanges(changes: any): void {
+        if (changes.stammdaten && changes.stammdaten.currentValue) {
+            this.sortByPeriod();
+        }
+    }
+
+    private sortByPeriod(): void {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
             TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
                 this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
@@ -342,6 +353,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         if (group.isNew()) {
             return true;
         }
+        return this.canEditEinstellungen(einstellungenTagesschule);
+    }
+
+    public canEditEinstellungen(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
