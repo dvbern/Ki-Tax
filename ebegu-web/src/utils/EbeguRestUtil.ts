@@ -3492,6 +3492,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.sentryEnvName = data.sentryEnvName;
         publicAppConfigTS.backgroundColor = data.backgroundColor;
         publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
+        publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
         return publicAppConfigTS;
 
     }

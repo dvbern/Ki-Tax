@@ -33,7 +33,7 @@
         <div class="kommentarEwk kommentar-padding"
              dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForEWKAbfrage()"
-             dv-show-expression="vmx.isPersonensucheDisabled">
+             dv-show-expression="vm.showGeresAbfrage()">
             <div>
                 <button type="button" ng-click="vm.toggleEwkSidenav()"
                         class="dv-btn kommentar-button" aria-label="{{'EWK_ABFRAGE_STARTEN' | translate}}">

@@ -282,4 +282,8 @@ export class KommentarViewController {
     public getFreigabeName(): string {
         return this.$translate.instant('ZURUECK_AN_GEMEINDE_TITLE');
     }
+
+    public showGeresAbfrage(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.isPersonensucheDisabled) && !this.isPersonensucheDisabled;
+    }
 }
