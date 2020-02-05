@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -54,6 +56,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -66,6 +69,11 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * REST Resource fuer Verfügungen
@@ -73,6 +81,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 @Path("verfuegung")
 @Stateless
 @Api(description = "Resource für Verfügungen, inkl. Berechnung der Vergünstigung")
+@PermitAll
 public class VerfuegungResource {
 
 	@Inject
@@ -199,6 +208,8 @@ public class VerfuegungResource {
 	@Path("/tagesschulanmeldung/uebernehmen/{gesuchId}/{anmeldungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, UserRoleName.ADMIN_TRAEGERSCHAFT, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT, UserRoleName.ADMIN_INSTITUTION,
+		UserRoleName.SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungSchulamtUebernehmen(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Nonnull @NotNull @PathParam("anmeldungId") JaxId anmeldungJaxId) {

@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -83,7 +84,9 @@ public class VerfuegungEventConverterTest {
 	@Test
 	public void testEventConversion() {
 		Verfuegung verfuegung = createVerfuegung();
-		VerfuegungVerfuegtEvent event = converter.of(verfuegung);
+		Optional<VerfuegungVerfuegtEvent> eventOpt = converter.of(verfuegung);
+
+		VerfuegungVerfuegtEvent event = eventOpt.get();
 		Assert.assertNotNull(event);
 
 		Betreuung betreuung = verfuegung.getBetreuung();

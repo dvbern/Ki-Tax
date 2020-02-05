@@ -116,9 +116,7 @@ public class TSCalculationResult extends AbstractEntity {
 		if (!(other instanceof TSCalculationResult)) {
 			return false;
 		}
-		if (!super.equals(other)) {
-			return false;
-		}
+
 		TSCalculationResult that = (TSCalculationResult) other;
 		return Objects.equals(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
 			MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
@@ -126,6 +124,12 @@ public class TSCalculationResult extends AbstractEntity {
 			MathUtil.isSame(totalKostenProWoche, that.totalKostenProWoche);
 	}
 
+	/**
+	 * Im unterschied zu is same wird hier super equals nicht aufgerufen.
+	 * @param thisEntity
+	 * @param otherEntity
+	 * @return
+	 */
 	public static boolean isSameSichtbareDaten(@Nullable TSCalculationResult thisEntity, @Nullable TSCalculationResult otherEntity) {
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && (

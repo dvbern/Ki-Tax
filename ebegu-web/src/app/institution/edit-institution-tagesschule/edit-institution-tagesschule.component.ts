@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
@@ -33,6 +33,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSModulTagesschule} from '../../../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSTextRessource} from '../../../models/TSTextRessource';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -50,7 +51,7 @@ import {DialogImportFromOtherInstitution} from './dialog-import-from-other-insti
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 
-export class EditInstitutionTagesschuleComponent implements OnInit {
+export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
@@ -85,6 +86,17 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                     config.initProperties();
                 });
             });
+        this.sortByPeriod();
+    }
+
+    // beim Hinzufügen eines Moduls werden die Stammdaten neu geladen. Diese müssen erneut sortiert werden.
+    public ngOnChanges(changes: any): void {
+        if (changes.stammdaten && changes.stammdaten.currentValue) {
+            this.sortByPeriod();
+        }
+    }
+
+    private sortByPeriod(): void {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
             TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
                 this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
@@ -285,7 +297,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
                     return;
                 }
                 einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
-                        .concat(modules);
+                    .concat(modules);
                 this.ref.markForCheck();
             }, () => {
                 this.errorService.addMesageAsError('error');
@@ -341,6 +353,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
         if (group.isNew()) {
             return true;
         }
+        return this.canEditEinstellungen(einstellungenTagesschule);
+    }
+
+    public canEditEinstellungen(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
@@ -356,5 +372,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit {
             return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');
         }
         return '';
+    }
+
+    public showGesuchsperiode(gueltigkeit: TSDateRange): boolean {
+        let showGesuchsperiode = gueltigkeit.gueltigBis.isAfter(this.stammdaten.gueltigkeit.gueltigAb);
+        if (EbeguUtil.isNotNullOrUndefined(this.stammdaten.gueltigkeit.gueltigBis)) {
+            showGesuchsperiode = showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
+        }
+        return showGesuchsperiode;
     }
 }

@@ -153,6 +153,19 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				Objects.requireNonNull(verfuegung);
 				createGebuehrenTabelle(verfuegung, document);
 			}
+
+			Paragraph endCommunicationTitle = new Paragraph();
+			endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
+				getPageConfiguration().getFontBold()));
+			endCommunicationTitle.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			endCommunicationTitle.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			document.add(endCommunicationTitle);
+			Paragraph endCommunication = new Paragraph();
+			endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
+				getPageConfiguration().getFont()));
+			endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+			bestaetigungUndGruesseElements.add(endCommunication);
+
 			bestaetigungUndGruesseElements.add(createParagraphGruss());
 			Paragraph bernAmtParagraph = new Paragraph();
 			bernAmtParagraph.add(new Phrase(translate(ABT_BILDUNG_BERN), getPageConfiguration().getFont()));
