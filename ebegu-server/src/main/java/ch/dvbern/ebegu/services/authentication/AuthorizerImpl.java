@@ -519,18 +519,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return false;
 	}
 
-	private boolean tagesschuleBelongsToGemeinde(@Nonnull String institutionId,
-		@Nonnull Collection<Gemeinde> userGemeinden) {
-		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId,
-			false);
-
+	private boolean tagesschuleBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
 		if (stammdaten == null || stammdaten.getInstitutionStammdatenTagesschule() == null) {
 			return false;
 		}
-
 		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
-
-
 	}
 
 	private boolean userBelongsToInstitutionOfPrincipal(@Nonnull Benutzer benutzer) {
