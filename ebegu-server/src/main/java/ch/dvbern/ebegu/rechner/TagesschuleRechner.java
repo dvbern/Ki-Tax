@@ -68,7 +68,7 @@ public class TagesschuleRechner extends AbstractRechner {
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal tarifProStunde = null;
 
-		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
+		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif    // todo homa review kibon-1016 hä?
 		if (zeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten()
 			|| zeitabschnitt.getBgCalculationResultAsiv().isZuSpaetEingereicht()
 			|| zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent() == 0) {

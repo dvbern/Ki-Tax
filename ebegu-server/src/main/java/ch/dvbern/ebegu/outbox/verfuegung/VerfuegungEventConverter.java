@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -32,7 +33,6 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -64,16 +64,16 @@ public class VerfuegungEventConverter {
 	@Inject
 	private VerfuegungService verfuegungService;
 
-	@Nullable
-	public VerfuegungVerfuegtEvent of(@Nonnull Verfuegung verfuegung) {
+	@Nonnull
+	public Optional<VerfuegungVerfuegtEvent> of(@Nonnull Verfuegung verfuegung) {
 		VerfuegungEventDTO dto = toVerfuegungEventDTO(verfuegung);
 		if (dto == null) {
-			return null;
+			return Optional.empty();
 		}
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
 		Objects.requireNonNull(verfuegung.getBetreuung());
-		return new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema());
+		return Optional.of(new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema()));
 	}
 
 	@Nullable
