@@ -111,7 +111,7 @@ export class EditGemeindeComponentBG implements OnInit {
             });
     }
 
-    public changeErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
         // if the flag is unchecked, we need to restore the original value
         if (!gk.erwerbspensumZuschlagOverriden) {
             this.resetErwerbspensumZuschlag(gk);
@@ -147,6 +147,69 @@ export class EditGemeindeComponentBG implements OnInit {
             .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO === property.key)
             .forEach(property => {
                 property.value = String(gk.konfigZusaetzlicherGutscheinBetragTfo);
+            });
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita);
+            });
+    }
+
+    public changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo);
+            });
+    }
+
+    public changeKonfigZusaetzlicherBabybeitragEnabled(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherBabybeitragEnabled);
+            });
+    }
+
+    public changeZusaetzlicherBabybeitragKita(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherBabybeitragBetragKita);
+            });
+    }
+
+    public changeZusaetzlicherBabybeitragTfo(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherBabybeitragBetragTfo);
+            });
+    }
+
+    public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled);
+            });
+    }
+
+    public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(gk: TSGemeindeKonfiguration): void {
+        gk.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT === property.key)
+            .forEach(property => {
+                property.value = String(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent);
             });
     }
 
