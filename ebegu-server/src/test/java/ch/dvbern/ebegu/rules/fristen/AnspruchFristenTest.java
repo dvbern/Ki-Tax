@@ -114,7 +114,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());       // todo homa review kibon-1016 kein change mehr beim erwerbspenusmchange im nov, warum
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 0, 0);
@@ -180,7 +180,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());  // todo homa review kibon-1016 kein change mehr beim erwerbspenusmchange im nov
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 0, 0);

@@ -116,9 +116,7 @@ public class TSCalculationResult extends AbstractEntity {
 		if (!(other instanceof TSCalculationResult)) {
 			return false;
 		}
-		if (!super.equals(other)) {      //  todo homa review kibon-1016 equals im same
-			return false;
-		}
+
 		TSCalculationResult that = (TSCalculationResult) other;
 		return Objects.equals(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
 			MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
