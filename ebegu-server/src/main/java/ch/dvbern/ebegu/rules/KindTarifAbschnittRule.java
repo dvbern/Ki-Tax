@@ -28,7 +28,12 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Bis 12 Monate gilt der BabyTarif (1.5), danach der "Normaltarif" (1.0) bis zum Schuleintritt, nach Schuleintritt 0.75
@@ -38,6 +43,11 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 
 	public KindTarifAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	private VerfuegungZeitabschnitt createZeitabschnitt(DateRange gueltigkeit, boolean baby, boolean eingeschult) {

@@ -102,10 +102,10 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 			return false;
 		}
 		for (Betreuung betreuung : gesuchWithCalcVerfuegung.extractAllBetreuungen()) {
-			if (betreuung.getVerfuegung() != null) {
-				Objects.requireNonNull(betreuung.getVerfuegung());
+			if (betreuung.getVerfuegungOrVerfuegungPreview() != null) {
+				Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 				// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat
-				for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
+				for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte()) {
 					if (!verfuegungZeitabschnitt.isMinimalesEwpUnterschritten()) {
 						return false;
 					}

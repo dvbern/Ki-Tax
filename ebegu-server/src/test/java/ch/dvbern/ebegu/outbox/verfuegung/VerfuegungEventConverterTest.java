@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -45,6 +46,7 @@ import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
 import com.spotify.hamcrest.pojo.IsPojo;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
@@ -82,9 +84,13 @@ public class VerfuegungEventConverterTest {
 	@Test
 	public void testEventConversion() {
 		Verfuegung verfuegung = createVerfuegung();
-		VerfuegungVerfuegtEvent event = converter.of(verfuegung);
+		Optional<VerfuegungVerfuegtEvent> eventOpt = converter.of(verfuegung);
+
+		VerfuegungVerfuegtEvent event = eventOpt.get();
+		Assert.assertNotNull(event);
 
 		Betreuung betreuung = verfuegung.getBetreuung();
+		Assert.assertNotNull(betreuung);
 		Gesuchsperiode gesuchsperiode = verfuegung.getBetreuung().extractGesuchsperiode();
 		String institutionId = betreuung.getInstitutionStammdaten().getInstitution().getId();
 		String bgNummer = betreuung.getBGNummer();
@@ -166,12 +172,14 @@ public class VerfuegungEventConverterTest {
 
 		kind.setKindNummer(1);
 		kind.setGesuch(gesuch);
-		Verfuegung verfuegung = new Verfuegung(betreuung);
+		Verfuegung verfuegung = new Verfuegung();
 
 		VerfuegungZeitabschnitt defaultZeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
 		verfuegung.getZeitabschnitte().add(defaultZeitabschnitt);
 		verfuegung.setTimestampErstellt(TIMESTAMP_ERSTELLT);
+		verfuegung.setBetreuung(betreuung);
 
+		betreuung.setVerfuegung(verfuegung);
 		return verfuegung;
 	}
 }

@@ -673,8 +673,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			Betreuung matchedBetreuung = gesuchWithVerfuegung.extractBetreuungById(betreuung.getId());
 			if (matchedBetreuung != null) {
 				if (!manuelleBemerkungen.isEmpty()) {
-					Validate.notNull(matchedBetreuung.getVerfuegung());
-					matchedBetreuung.getVerfuegung().setManuelleBemerkungen(manuelleBemerkungen);
+					Validate.notNull(matchedBetreuung.getVerfuegungOrVerfuegungPreview());
+					matchedBetreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen(manuelleBemerkungen);
 				}
 
 				Optional<LocalDate> optVorherigeVerfuegungDate =

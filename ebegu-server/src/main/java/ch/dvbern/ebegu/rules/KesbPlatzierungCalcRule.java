@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -24,8 +25,13 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Bemerkung: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB
@@ -38,17 +44,20 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
-		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			Betreuung betreuung = (Betreuung) platz;
-			if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
-				|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {
-				// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
-			}
+		Betreuung betreuung = (Betreuung) platz;
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
+			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {
+			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
 		}
 	}
 }

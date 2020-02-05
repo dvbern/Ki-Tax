@@ -136,6 +136,6 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		int anzahlBetreuungenBefore = erstgesuch.extractAllBetreuungen().size();
 		erstgesuch = testdataCreationService.addAnmeldung(AnmeldungConfig.createAnmeldungTagesschule(), erstgesuch);
-		Assert.assertEquals(anzahlBetreuungenBefore + 1, erstgesuch.extractAllBetreuungen().size());
+		Assert.assertEquals(anzahlBetreuungenBefore + 1, erstgesuch.extractAllPlaetze().size());
 	}
 }
