@@ -44,7 +44,7 @@ public class TagesschuleRechner extends AbstractRechner {
 			BigDecimal totalKostenProWoche = calculateKostenProWoche(bgResult.getTsCalculationResultMitPaedagogischerBetreuung());
 			bgResult.getTsCalculationResultMitPaedagogischerBetreuung().setTotalKostenProWoche(totalKostenProWoche);
 		}
-		if (bgResult.getTsCalculationResultOhnePaedagogischerBetreuung() != null) { // todo homa review kibon-1016 ich kann den unterschied schlecht lesen aber egal
+		if (bgResult.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
 			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleOhnePaedagogischerBetreuung();
 			BigDecimal tarifProStunde = calculateTarif(verfuegungZeitabschnitt, maxTarif, minTarif, parameterDTO);
 			bgResult.getTsCalculationResultOhnePaedagogischerBetreuung().setGebuehrProStunde(tarifProStunde);
