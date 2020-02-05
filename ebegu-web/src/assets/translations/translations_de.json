@@ -32,6 +32,7 @@
     "ERROR_MIN_LENG": "Eingabe zu kurz ",
     "ERROR_MAX_LENG": "Eingabe zu lang ",
     "ERROR_EMAIL": "Keine gültige Email ",
+    "ERROR_NO_INTERVAL": "Bitte noch \"Wöchentlich\" oder \"alle zwei Wochen\" auswählen für Modul ",
     "ERROR_FORMAT": "Falsches Format",
     "ERROR_DATE": "Falsches Datumsformat",
     "ERROR_MIN_DATE": "Datum wurde unterschritten",
@@ -1792,7 +1793,10 @@
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX": "Benötigt Ihr Kind im 2. Semester andere Betreuungszeiten, weil sich der Stundenplan ändert?",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT": "Bitte Änderung der Betreuungszeiten oder allfällige Fragen/Anmerkungen hier angeben",
     "BETREUUNG_TAGESSCHULE_BEMERKUNG": "Bemerkung",
-    "BETREUUNG_TAGESSCHULE_AGB": "Ich habe<a href='dummy.pdf' target='_blank'> das Merkblatt zur Anmeldung in die Tagesschule gelesen</a> und zur Kenntnis genommen",
+    "BETREUUNG_TAGESSCHULE_AGB_START": "Ich habe ",
+    "BETREUUNG_TAGESSCHULE_AGB_DOK": "das Merkblatt zur Anmeldung in die Tagesschule gelesen ",
+    "BETREUUNG_TAGESSCHULE_AGB_END": "und zur Kenntnis genommen",
+    "BETREUUNG_TAGESSCHULE_ANMELDUNG_DEFINITIV": "Ich nehme zur Kenntniss, dass die Anmeldung definitiv ist",
     "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Erläuterungen zu den Modulen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Benachrichtigungen bei Verfügungen automatisch per Email senden",
@@ -1845,5 +1849,6 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN": "Merkblatt Anmeldung Tagesschule hochladen",
     "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "Erlaeuterung_zur_Verfuegung.pdf",
     "MODUL_NICHT_BEARBEITBAR_TOOLTIP": "Dieses Modul kann nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist",
+    "WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH": "Module können nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist. Deshalb ist der Wechsel zu Scolaris nicht mehr möglich.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -78,16 +78,6 @@ export class BetreuungRS {
             .then(response => this.parseBetreuung(response, gesuchId));
     }
 
-    public anmeldungSchulamtUebernehmen(
-        betreuung: TSBetreuung,
-        gesuchId: string,
-    ): IPromise<TSBetreuung> {
-
-        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
-        return this.http.put(`${this.serviceURL}/schulamt/uebernehmen`, restBetreuung)
-            .then(response => this.parseBetreuung(response, gesuchId));
-    }
-
     public anmeldungSchulamtAblehnen(betreuung: TSBetreuung, gesuchId: string): IPromise<TSBetreuung> {
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
         return this.http.put(`${this.serviceURL}/schulamt/ablehnen/`, restBetreuung)

@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test der die vom JA gemeldeten Testfaelle ueberprueft.
+ * Test der die vom JA	 gemeldeten Testfaelle ueberprueft.
  */
 public class TestfaelleTest extends AbstractBGRechnerTest {
 
@@ -100,6 +100,8 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+
+		//TODO (hefr) der hier schlägt fehl: bgPensum  = 0, evtl. zu hoher lohn?
 		checkTestfall04WaltherLaura(gesuch);
 	}
 

@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -808,13 +809,23 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
+	public static AnmeldungTagesschule createAnmeldungTagesschuleWithModules(KindContainer kind, Gesuchsperiode gesuchsperiode) {
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		anmeldung.setKind(kind);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(true));
+		kind.getAnmeldungenTagesschule().add(anmeldung);
+		return anmeldung;
+	}
+
 	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind, Gesuchsperiode gesuchsperiode) {
-		AnmeldungTagesschule betreuung = new AnmeldungTagesschule();
-		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
-		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-		betreuung.setKind(kind);
-		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		return betreuung;
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		anmeldung.setKind(kind);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(false));
+		return anmeldung;
 	}
 
 	public static AnmeldungFerieninsel createAnmeldungFerieninsel(KindContainer kind) {
@@ -848,10 +859,57 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
-	public static BelegungTagesschule createDefaultBelegungTagesschule() {
+	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
+		if (withModulBelegung) {
+			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
+
+			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true);
+			modulTagesschuleSet.forEach(
+				modulTagesschule -> {
+					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
+				}
+			);
+
+			Set<ModulTagesschule> modulTagesschuleSetOhneBetreuung = createDefaultModuleTagesschuleSet(false);
+			modulTagesschuleSetOhneBetreuung.forEach(
+				modulTagesschule -> {
+					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
+				}
+			);
+		}
 		return belegungTagesschule;
+	}
+
+	private static Set<ModulTagesschule> createDefaultModuleTagesschuleSet(boolean wirdPedagogischBetreut){
+		ModulTagesschuleGroup modulTagesschuleGroupPedagogischBetreut = new ModulTagesschuleGroup();
+		modulTagesschuleGroupPedagogischBetreut.setZeitVon(LocalTime.of(8,0));
+		modulTagesschuleGroupPedagogischBetreut.setZeitBis(LocalTime.of(11,45));
+		modulTagesschuleGroupPedagogischBetreut.setVerpflegungskosten(MathUtil.DEFAULT.from(10));
+		modulTagesschuleGroupPedagogischBetreut.setWirdPaedagogischBetreut(wirdPedagogischBetreut);
+
+		ModulTagesschule modulTagesschuleMonday = new ModulTagesschule();
+		modulTagesschuleMonday.setModulTagesschuleGroup(modulTagesschuleGroupPedagogischBetreut);
+		modulTagesschuleMonday.setWochentag(DayOfWeek.MONDAY);
+
+		ModulTagesschule modulTagesschuleFriday= new ModulTagesschule();
+		modulTagesschuleFriday.setModulTagesschuleGroup(modulTagesschuleGroupPedagogischBetreut);
+		modulTagesschuleFriday.setWochentag(DayOfWeek.FRIDAY);
+
+		Set<ModulTagesschule> modulTagesschuleSet = new TreeSet<>();
+		modulTagesschuleSet.add(modulTagesschuleMonday);
+		modulTagesschuleSet.add(modulTagesschuleFriday);
+
+		modulTagesschuleGroupPedagogischBetreut.setModule(modulTagesschuleSet);
+
+		return modulTagesschuleSet;
 	}
 
 	public static BetreuungspensumContainer createBetPensContainer(Betreuung betreuung) {

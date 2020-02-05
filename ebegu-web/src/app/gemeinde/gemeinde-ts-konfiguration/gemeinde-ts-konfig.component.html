@@ -94,6 +94,7 @@
                                                    accept="application/pdf"
                                                    (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
                                             <button mat-raised-button
+                                                    type="button"
                                                     (click)="fileInput.click()"
                                                     class="dv-btn fa fa-upload dv-btn-operation"
                                                     title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
@@ -104,7 +105,7 @@
                                         <td width="2%"
                                             class="symbol"
                                             tabindex="-1">
-                                            <button
+                                            <button type="button"
                                                 (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-eye dv-btn-operation"
@@ -114,7 +115,7 @@
                                         <td width="2%"
                                             class="symbol"
                                             tabindex="-1">
-                                            <button
+                                            <button type="button"
                                                 (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-trash dv-btn-operation"
@@ -124,7 +125,7 @@
                                         <td width="2%"
                                             class="symbol"
                                             tabindex="-1">
-                                            <button
+                                            <button type="button"
                                                 (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.DEUTSCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
                                                 [disabled]="!vorlageMerkblattAnmeldungTSDE[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-file-word-o dv-btn-operation"
@@ -144,6 +145,7 @@
                                                    accept="application/pdf"
                                                    (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
                                             <button mat-raised-button
+                                                    type="button"
                                                     (click)="fileInput.click()"
                                                     class="dv-btn fa fa-upload dv-btn-operation"
                                                     title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
@@ -155,6 +157,7 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
+                                                type="button"
                                                 (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-eye dv-btn-operation"
@@ -165,6 +168,7 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
+                                                type="button"
                                                 (click)="removeGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                 [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-trash dv-btn-operation"
@@ -175,6 +179,7 @@
                                             class="symbol"
                                             tabindex="-1">
                                             <button
+                                                type="button"
                                                 (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
                                                 [disabled]="!vorlageMerkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                 class="dv-btn fa fa-file-word-o dv-btn-operation"

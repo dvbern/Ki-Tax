@@ -16,13 +16,15 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -40,17 +42,21 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
+import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -58,13 +64,16 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * REST Resource fuer Verfügungen
@@ -72,6 +81,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 @Path("verfuegung")
 @Stateless
 @Api(description = "Resource für Verfügungen, inkl. Berechnung der Vergünstigung")
+@PermitAll
 public class VerfuegungResource {
 
 	@Inject
@@ -87,15 +97,14 @@ public class VerfuegungResource {
 	private InstitutionService institutionService;
 
 	@Inject
-	private JaxBConverter converter;
+	private ResourceHelper resourceHelper;
 
-	@Resource
-	private EJBContext context;    //fuer rollback
+	@Inject
+	private JaxBConverter converter;
 
 	@Inject
 	private PrincipalBean principalBean;
 
-	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungResource.class.getSimpleName());
 
 	@ApiOperation(value = "Calculates the Verfuegung of the Gesuch with the given id, does nothing if the Gesuch " +
 		"does not exists. Note: Nothing is stored in the Database",
@@ -112,38 +121,28 @@ public class VerfuegungResource {
 
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchstellerId.getId());
 
-		try {
-			if (!gesuchOptional.isPresent()) {
-				return null;
-			}
-			Gesuch gesuch = gesuchOptional.get();
-			Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
-
-			JaxGesuch gesuchJax = converter.gesuchToJAX(gesuchWithCalcVerfuegung);
-
-			Set<JaxKindContainer> kindContainers = gesuchJax.getKindContainers();
-			// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder
-			// gefiltert, damit nur die relevanten Kinder geschickt werden
-			if (principalBean.isCallerInAnyOfRole(
-				ADMIN_TRAEGERSCHAFT,
-				SACHBEARBEITER_TRAEGERSCHAFT,
-				ADMIN_INSTITUTION,
-				SACHBEARBEITER_INSTITUTION)) {
-				Collection<Institution> instForCurrBenutzer =
-					institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-				RestUtil.purgeKinderAndBetreuungenOfInstitutionen(kindContainers, instForCurrBenutzer);
-			}
-			return Response.ok(kindContainers).build();
-
-		} finally {
-			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum Transaktion rollbacken
-			// Dies muss insbesondere auch im Fehlerfall geschehen!
-			try {
-				context.setRollbackOnly();
-			} catch (IllegalStateException ise) {
-				LOG.error("Could not rollback Transaction!", ise);
-			}
+		if (!gesuchOptional.isPresent()) {
+			return null;
 		}
+		Gesuch gesuch = gesuchOptional.get();
+		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
+
+		// wir muessen nur die kind container mappen nicht das ganze gesuch
+		Set<JaxKindContainer> kindContainers = gesuchWithCalcVerfuegung.getKindContainers().stream()
+				.map(kindContainer -> converter.kindContainerToJAX(kindContainer))
+				.collect(Collectors.toSet());
+		// Es wird gecheckt ob der Benutzer zu einer Institution/Traegerschaft gehoert. Wenn ja, werden die Kinder
+		// gefiltert, damit nur die relevanten Kinder geschickt werden
+		if (principalBean.isCallerInAnyOfRole(
+			ADMIN_TRAEGERSCHAFT,
+			SACHBEARBEITER_TRAEGERSCHAFT,
+			ADMIN_INSTITUTION,
+			SACHBEARBEITER_INSTITUTION)) {
+			Collection<Institution> instForCurrBenutzer =
+				institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(kindContainers, instForCurrBenutzer);
+		}
+		return Response.ok(kindContainers).build();
 	}
 
 	@ApiOperation(value = "Generiert eine Verfuegung und speichert diese in der Datenbank", response = JaxVerfuegung.class)
@@ -201,6 +200,33 @@ public class VerfuegungResource {
 
 		Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(gesuchId, betreuungId);
 		return converter.verfuegungToJax(persistedVerfuegung);
+	}
+
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
+	@Nonnull
+	@GET
+	@Path("/tagesschulanmeldung/uebernehmen/{gesuchId}/{anmeldungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, UserRoleName.ADMIN_TRAEGERSCHAFT, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT, UserRoleName.ADMIN_INSTITUTION,
+		UserRoleName.SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public JaxBetreuung anmeldungSchulamtUebernehmen(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
+		@Nonnull @NotNull @PathParam("anmeldungId") JaxId anmeldungJaxId) {
+
+		Objects.requireNonNull(gesuchJaxId.getId());
+		Objects.requireNonNull(anmeldungJaxId.getId());
+
+		String gesuchId = converter.toEntityId(gesuchJaxId);
+		String anmeldungId = converter.toEntityId(anmeldungJaxId);
+
+		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
+		resourceHelper.assertBetreuungStatusEqual(anmeldungId,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+
+		AnmeldungTagesschule persistedBetreuung = this.verfuegungService.anmeldungSchulamtUebernehmen(gesuchId, anmeldungId);
+
+		return converter.platzToJAX(persistedBetreuung);
 	}
 }
 

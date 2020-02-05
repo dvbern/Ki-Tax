@@ -269,31 +269,6 @@ public class BetreuungResource {
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
 
-	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
-	@Nonnull
-	@PUT
-	@Path("/schulamt/uebernehmen")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxBetreuung anmeldungSchulamtUebernehmen(@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(betreuungJAXP.getId());
-		Objects.requireNonNull(betreuungJAXP.getKindId());
-
-		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
-		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
-
-		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
-		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
-		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
-
-		return converter.platzToJAX(persistedBetreuung);
-	}
-
 	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution abgelehnt", response = JaxBetreuung.class)
 	@Nonnull
 	@PUT

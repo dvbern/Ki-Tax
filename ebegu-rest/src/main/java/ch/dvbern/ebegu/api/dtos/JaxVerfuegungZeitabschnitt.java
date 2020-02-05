@@ -122,6 +122,13 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean sameAusbezahlteVerguenstigung;
 
+	@Nullable
+	private JaxTsCalculationResult tsCalculationResultMitPaedagogischerBetreuung;
+
+	@Nullable
+	private JaxTsCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
+
+
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
 	}
@@ -365,5 +372,23 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setMinimalerElternbeitragGekuerzt(BigDecimal minimalerElternbeitragGekuerzt) {
 		this.minimalerElternbeitragGekuerzt = minimalerElternbeitragGekuerzt;
+	}
+
+	@Nullable
+	public JaxTsCalculationResult getTsCalculationResultMitPaedagogischerBetreuung() {
+		return tsCalculationResultMitPaedagogischerBetreuung;
+	}
+
+	public void setTsCalculationResultMitPaedagogischerBetreuung(@Nullable JaxTsCalculationResult tsCalculationResultMitPaedagogischerBetreuung) {
+		this.tsCalculationResultMitPaedagogischerBetreuung = tsCalculationResultMitPaedagogischerBetreuung;
+	}
+
+	@Nullable
+	public JaxTsCalculationResult getTsCalculationResultOhnePaedagogischerBetreuung() {
+		return tsCalculationResultOhnePaedagogischerBetreuung;
+	}
+
+	public void setTsCalculationResultOhnePaedagogischerBetreuung(@Nullable JaxTsCalculationResult tsCalculationResultOhnePaedagogischerBetreuung) {
+		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
 	}
 }

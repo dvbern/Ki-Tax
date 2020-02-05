@@ -30,7 +30,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.rechner.TagesschuleRechnerParameterDTO;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -72,15 +71,6 @@ public abstract class AbstractBaseService {
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
-		return parameterDTO;
-	}
-
-	@PermitAll
-	@Nonnull
-	public TagesschuleRechnerParameterDTO loadTagesschuleRechnerParameters(@Nonnull Gemeinde gemeinde,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		TagesschuleRechnerParameterDTO parameterDTO = new TagesschuleRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 		return parameterDTO;
 	}
 

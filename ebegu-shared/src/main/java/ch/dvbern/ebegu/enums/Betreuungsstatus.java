@@ -55,6 +55,10 @@ public enum Betreuungsstatus {
 		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this;
 	}
 
+	public boolean isGeschlossenSchulamt() {
+		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
+	}
+
 	/**
 	 * Alle SCH-Status, die ausgeloest sind, gelten als geschlossen, da sie im Verfuegungsprozess nicht beruecksichtigt werden.
 	 */
