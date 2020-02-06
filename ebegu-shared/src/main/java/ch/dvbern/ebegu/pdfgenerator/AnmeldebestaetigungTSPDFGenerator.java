@@ -167,9 +167,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			bestaetigungUndGruesseElements.add(endCommunication);
 
 			bestaetigungUndGruesseElements.add(createParagraphGruss());
-			Paragraph bernAmtParagraph = new Paragraph();
-			bernAmtParagraph.add(new Phrase(translate(ABT_BILDUNG_BERN), getPageConfiguration().getFont()));
-			bestaetigungUndGruesseElements.add(bernAmtParagraph);
 			document.add(PdfUtil.createKeepTogetherTable(bestaetigungUndGruesseElements, 2, 0));
 		};
 	}
