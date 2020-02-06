@@ -145,15 +145,15 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(100000)), zeitabschnitt.getMassgebendesEinkommen());
 
-		Assert.assertEquals("07:30", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("04:00", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(6.36)), resultMitBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultMitBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(67.70)), resultMitBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(45.44)), resultMitBetreuung.getTotalKostenProWoche());
 
-		Assert.assertEquals("07:30", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("02:00", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(3.38)), resultOhneBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultOhneBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(45.35)), resultOhneBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(26.76)), resultOhneBetreuung.getTotalKostenProWoche());
 	}
 
 	private void assertZeitabschnitt_120000(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
@@ -164,15 +164,15 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(120000)), zeitabschnitt.getMassgebendesEinkommen());
 
-		Assert.assertEquals("07:30", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("04:00", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(8.32)), resultMitBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20.00)), resultMitBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(82.40)), resultMitBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(53.28)), resultMitBetreuung.getTotalKostenProWoche());
 
-		Assert.assertEquals("07:30", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("02:00", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(4.29)), resultOhneBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultOhneBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(52.18)), resultOhneBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(28.58)), resultOhneBetreuung.getTotalKostenProWoche());
 	}
 
 	private void assertZeitabschnitt_MaxTarif(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, int massgebendesEinkommen) {
@@ -183,15 +183,15 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(massgebendesEinkommen)), zeitabschnitt.getMassgebendesEinkommen());
 
-		Assert.assertEquals("07:30", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("04:00", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(getParameter().getMaxTarifTagesschuleMitPaedagogischerBetreuung(), resultMitBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultMitBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(111.80)), resultMitBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(68.96)), resultMitBetreuung.getTotalKostenProWoche());
 
-		Assert.assertEquals("07:30", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("02:00", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(getParameter().getMaxTarifTagesschuleOhnePaedagogischerBetreuung(), resultOhneBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultOhneBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(65.83)), resultOhneBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(32.22)), resultOhneBetreuung.getTotalKostenProWoche());
 	}
 
 	private void assertZeitabschnitt_MinTarif(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, int massgebendesEinkommen) {
@@ -202,14 +202,14 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(massgebendesEinkommen)), zeitabschnitt.getMassgebendesEinkommen());
 
-		Assert.assertEquals("07:30", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("04:00", resultMitBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(getParameter().getMinTarifTagesschule(), resultMitBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultMitBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(25.85)), resultMitBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(23.12)), resultMitBetreuung.getTotalKostenProWoche());
 
-		Assert.assertEquals("07:30", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
+		Assert.assertEquals("02:00", resultOhneBetreuung.getBetreuungszeitProWocheFormatted());
 		Assert.assertEquals(getParameter().getMinTarifTagesschule(), resultOhneBetreuung.getGebuehrProStunde());
 		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(20)), resultOhneBetreuung.getVerpflegungskosten());
-		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(25.85)), resultOhneBetreuung.getTotalKostenProWoche());
+		Assert.assertEquals(MathUtil.toTwoKommastelle(MATH.from(21.56)), resultOhneBetreuung.getTotalKostenProWoche());
 	}
 }

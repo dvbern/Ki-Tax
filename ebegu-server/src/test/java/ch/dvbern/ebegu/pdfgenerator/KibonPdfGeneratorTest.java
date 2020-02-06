@@ -251,6 +251,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	public void createAnmeldebestaetigungenTagesschule(@Nonnull Sprache locale, @Nonnull AnmeldebestaetigungTSPDFGenerator.Art art, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
 		AnmeldungTagesschule anmeldungTagesschule = prepareAnmeldungTagesschuleWithModule();
+		Assert.assertNotNull(gesuch_tagesschule.getGesuchsteller1());
 		gesuch_tagesschule.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
 			stammdaten, art, anmeldungTagesschule);
