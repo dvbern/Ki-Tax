@@ -17,7 +17,27 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
@@ -25,19 +45,16 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
-import com.lowagie.text.*;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -242,17 +259,14 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				tagesschuleModuleMap.put(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId(), modulTagesschuleList);
 			});
 
-			tagesschuleModuleMap.values().stream().sorted(new Comparator<List<BelegungTagesschuleModul>>() {
-				@Override
-				public int compare(List<BelegungTagesschuleModul> oneList, List<BelegungTagesschuleModul> otherList) {
-					ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
-					ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
-					CompareToBuilder builder = new CompareToBuilder();
-					builder.append(one.getZeitVon(), other.getZeitVon());
-					builder.append(one.getZeitBis(), other.getZeitBis());
-					builder.append(one.getBezeichnung().getTextDeutsch(), other.getBezeichnung().getTextDeutsch());
-					return builder.toComparison();
-				}
+			tagesschuleModuleMap.values().stream().sorted((oneList, otherList) -> {
+				ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
+				ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
+				CompareToBuilder builder = new CompareToBuilder();
+				builder.append(one.getZeitVon(), other.getZeitVon());
+				builder.append(one.getZeitBis(), other.getZeitBis());
+				builder.append(one.getBezeichnung().getTextDeutsch(), other.getBezeichnung().getTextDeutsch());
+				return builder.toComparison();
 			}).forEach(v -> {
 				boolean monday = false;
 				boolean tuesday = false;
