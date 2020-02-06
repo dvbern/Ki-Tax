@@ -55,10 +55,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean = false;
-    @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
 
     public gemeindeList: TSGemeinde[] = [];
     private readonly panelClass = 'dv-mat-dialog-ts';
+    private konfigurationsListe: TSGemeindeKonfiguration[];
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -78,6 +78,15 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
             einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
         });
+
+        this.gemeindeRS.getGemeindeStammdaten(this.stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
+            gemeindeStammdaten => {
+                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
+                this.konfigurationsListe.forEach(config => {
+                    config.initProperties();
+                });
+                this.ref.markForCheck();
+            });
         this.sortByPeriod();
     }
 
