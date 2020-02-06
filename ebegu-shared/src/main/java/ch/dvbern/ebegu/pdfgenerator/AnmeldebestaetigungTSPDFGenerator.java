@@ -389,7 +389,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			return createCell(Element.ALIGN_CENTER, "", null);
 		}
 		Paragraph dayParagraph =
-			new Paragraph(new Phrase(isSelected ? "X" : "", getPageConfiguration().getFont()));
+			new Paragraph(new Phrase("\uF058 XXX", PdfUtil.FONT_AWESOME));
 		dayParagraph.setSpacingBefore(0);
 		dayParagraph.setAlignment(Element.ALIGN_CENTER);
 		dayParagraph.setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
