@@ -85,6 +85,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 this.konfigurationsListe.forEach(config => {
                     config.initProperties();
                 });
+                this.ref.markForCheck();
             });
         this.sortByPeriod();
     }

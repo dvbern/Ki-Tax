@@ -43,7 +43,7 @@
             trackBy: trackById; let i = index">
             <dv-accordion-tab
                 [tabid]="i"
-                [hidden]="!showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)">
+                *ngIf="showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)">
                 <tab-title>
                     <div class="message-header">
                         <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
