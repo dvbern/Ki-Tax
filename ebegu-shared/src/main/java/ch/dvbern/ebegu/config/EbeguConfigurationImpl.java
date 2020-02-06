@@ -50,6 +50,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_DUMMY_LOGIN_ENABLED = "ebegu.dummy.login.enabled";
 	private static final String EBEGU_ZAHLUNGEN_TEST_MODE = "ebegu.zahlungen.test.mode";
 	private static final String EBEGU_PERSONENSUCHE_DISABLED = "ebegu.personensuche.disabled";
+	private static final String EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE = "ebegu.personensuche.use.dummyservice";
 	private static final String EBEGU_PERSONENSUCHE_ENDPOINT = "ebegu.personensuche.endpoint";
 	private static final String EBEGU_PERSONENSUCHE_WSDL = "ebegu.personensuche.wsdl";
 	private static final String EBEGU_PERSONENSUCHE_USERNAME = "ebegu.personensuche.username";
@@ -150,6 +151,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public boolean isPersonenSucheDisabled() {
 		return getBoolean(EBEGU_PERSONENSUCHE_DISABLED, true);
+	}
+
+	@Override
+	public boolean usePersonenSucheDummyService() {
+		return getBoolean(EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE, true);
 	}
 
 	@Override

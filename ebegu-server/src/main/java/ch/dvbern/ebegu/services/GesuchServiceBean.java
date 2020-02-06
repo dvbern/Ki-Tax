@@ -220,6 +220,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Eingangsart eingangsart = calculateEingangsart();
 		AntragStatus initialStatus = calculateInitialStatus();
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
+		LocalDate regelnGueltigAb = gesuchToCreate.getRegelnGueltigAb();
 		StringBuilder logInfo = new StringBuilder();
 		logInfo.append("CREATE GESUCH fuer Gemeinde: ").append(gemeindeOfGesuchToCreate.getName())
 			.append(" Gesuchsperiode: ").append(gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString())
@@ -243,6 +244,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		gesuchToPersist.setStatus(initialStatus);
 		if (eingangsdatum != null) {
 			gesuchToPersist.setEingangsdatum(eingangsdatum);
+		}
+		if (regelnGueltigAb != null) {
+			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 		authorizer.checkReadAuthorization(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);

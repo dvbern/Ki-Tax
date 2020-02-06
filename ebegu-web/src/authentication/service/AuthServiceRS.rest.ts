@@ -310,4 +310,11 @@ export class AuthServiceRS {
         }
         return false;
     }
+
+    public hasMandantAngebotFI(): boolean {
+        if (this.getPrincipal() && this.getPrincipal().mandant) {
+            return this.getPrincipal().mandant.angebotFI;
+        }
+        return false;
+    }
 }
