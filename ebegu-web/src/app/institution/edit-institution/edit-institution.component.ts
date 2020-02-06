@@ -75,7 +75,6 @@ export class EditInstitutionComponent implements OnInit {
     public externalClients?: TSExternalClientAssignment;
     public isCheckRequired: boolean = false;
     public editMode: boolean;
-    public konfigurationsListe: TSGemeindeKonfiguration[];
 
     @ViewChild(EditInstitutionBetreuungsgutscheineComponent)
     private readonly componentBetreuungsgutscheine: EditInstitutionBetreuungsgutscheineComponent;
@@ -84,7 +83,6 @@ export class EditInstitutionComponent implements OnInit {
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     private isRegisteringInstitution: boolean = false;
-    private initName: string;
     private initiallyAssignedClients: TSExternalClient[];
 
     public constructor(
@@ -162,24 +160,8 @@ export class EditInstitutionComponent implements OnInit {
     private initModel(stammdaten: TSInstitutionStammdaten): void {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
-        this.initName = stammdaten.institution.name;
-        this.gemeindeRS.getGemeindeStammdaten(stammdaten.institutionStammdatenTagesschule.gemeinde.id).then(
-            gemeindeStammdaten => {
-                this.konfigurationsListe = gemeindeStammdaten.konfigurationsListe;
-                this.konfigurationsListe.forEach(config => {
-                    config.initProperties();
-                });
-            });
-        // editMode kann bereits true sein, wenn dies in state params ist.
         this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
         this.changeDetectorRef.markForCheck();
-
-        if (!this.isTagesschule()) {
-            return;
-        }
-        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
-            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
-        });
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
