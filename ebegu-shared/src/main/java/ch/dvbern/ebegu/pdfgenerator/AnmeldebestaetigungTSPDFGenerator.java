@@ -17,26 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
-import ch.dvbern.ebegu.entities.TSCalculationResult;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
@@ -44,17 +25,20 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
+import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -215,11 +199,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	}
 
 	@Nonnull
-	private PdfPTable createKindTSAnmeldungTable() {
+	private PdfPTable createKindTSAnmeldungTable() throws DocumentException {
 		PdfPTable table = new PdfPTable(4);
+		float[] columnWidths = { 55, 100, 50, 100 };
+		table.setWidths(columnWidths);
 		// Init
 		PdfUtil.setTableDefaultStyles(table);
-		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
+		table.setSpacingAfter(2 * DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		//Row: Referenznummer + Institution
 		table.addCell(new Phrase(translate(REFERENZNUMMER), getPageConfiguration().getFont()));
 		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), getPageConfiguration().getFont()));
@@ -254,11 +240,11 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private PdfPTable createBetreuungsangeboteTable() throws DocumentException {
 		PdfPTable table = new PdfPTable(7);
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
-		table.setWidths(new int[] { 30, 30, 20, 20, 20, 20, 20 });
+		table.setWidths(new int[] { 30, 25, 20, 20, 20, 20, 20 });
 		table.setHeaderRows(1);
 		table.setKeepTogether(true);
-		table.addCell(PdfUtil.createTitleCell(translate(TEILANGEBOT)));
-		table.addCell(PdfUtil.createTitleCell(translate(ZEIT)));
+		table.addCell(createCell(Element.ALIGN_LEFT, translate(TEILANGEBOT), Color.LIGHT_GRAY));
+		table.addCell(createCell(Element.ALIGN_RIGHT, translate(ZEIT), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_CENTER, translate(MONTAG), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_CENTER, translate(DIENSTAG), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_CENTER, translate(MITTWOCH), Color.LIGHT_GRAY));
@@ -278,7 +264,18 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				tagesschuleModuleMap.put(belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup().getId(), modulTagesschuleList);
 			});
 
-			tagesschuleModuleMap.forEach((k, v) -> {
+			tagesschuleModuleMap.values().stream().sorted(new Comparator<List<BelegungTagesschuleModul>>() {
+				@Override
+				public int compare(List<BelegungTagesschuleModul> oneList, List<BelegungTagesschuleModul> otherList) {
+					ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
+					ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
+					CompareToBuilder builder = new CompareToBuilder();
+					builder.append(one.getZeitVon(), other.getZeitVon());
+					builder.append(one.getZeitBis(), other.getZeitBis());
+					builder.append(one.getBezeichnung().getTextDeutsch(), other.getBezeichnung().getTextDeutsch());
+					return builder.toComparison();
+				}
+			}).forEach(v -> {
 				boolean monday = false;
 				boolean tuesday = false;
 				boolean wednesday = false;
@@ -330,10 +327,9 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				}
 				assert mtg != null;
 				boolean isFrench = "fr".equalsIgnoreCase(sprache.getLanguage());
-				table.addCell(new Phrase(isFrench ? mtg.getBezeichnung().getTextFranzoesisch() :
-					mtg.getBezeichnung().getTextDeutsch(),
-					getPageConfiguration().getFont()));
-				table.addCell(new Phrase(mtg.getZeitVon().format(Constants.HOURS_FORMAT) + '-' + mtg.getZeitBis().format(Constants.HOURS_FORMAT), getPageConfiguration().getFont()));
+				table.addCell(createCell(Element.ALIGN_LEFT, isFrench ? mtg.getBezeichnung().getTextFranzoesisch() :
+					mtg.getBezeichnung().getTextDeutsch(), null));
+				table.addCell(createCell(Element.ALIGN_RIGHT, mtg.getZeitVon().format(Constants.HOURS_FORMAT) + '-' + mtg.getZeitBis().format(Constants.HOURS_FORMAT), null));
 				table.addCell(getCellForDay(monday, mondayAlleZweiWoche));
 				table.addCell(getCellForDay(tuesday, tuesdayAlleZweiWoche));
 				table.addCell(getCellForDay(wednesday, wednesdayAlleZweiWoche));
@@ -349,7 +345,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private PdfPTable createGebuehrenTableHeader() {
 		PdfPTable table = new PdfPTable(6);
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
-		table.setWidths(new int[] { 30, 30, 30, 30, 30, 30 });
+		table.setWidths(new int[] { 20, 20, 30, 18, 30, 25 });
 		table.setHeaderRows(1);
 		table.setKeepTogether(true);
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(VON), Color.LIGHT_GRAY));
@@ -389,6 +385,9 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	}
 
 	private PdfPCell getCellForDay(boolean isSelected, boolean alleZweiWochen) {
+		if (!isSelected) {
+			return createCell(Element.ALIGN_CENTER, "", null);
+		}
 		Paragraph dayParagraph =
 			new Paragraph(new Phrase(isSelected ? "X" : "", getPageConfiguration().getFont()));
 		dayParagraph.setSpacingBefore(0);
@@ -397,12 +396,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		PdfPCell dayCell = new PdfPCell();
 		dayCell.addElement(dayParagraph);
 		if(isSelected && alleZweiWochen){
-			Font paragraphFont = FontFactory.getFont("Proxima Nova Light", 6.0f);
 			Paragraph alleZweiWocheParagraph =
-				new Paragraph(new Phrase("alle zwei Wochen", paragraphFont));
+				new Paragraph(new Phrase("alle zwei Wochen", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6.0f)));
 			alleZweiWocheParagraph.setAlignment(Element.ALIGN_CENTER);
 			dayCell.addElement(alleZweiWocheParagraph);
 		}
+		dayCell.setPadding(0);
+		dayCell.setPaddingBottom(4);
 		return dayCell;
 	}
 
@@ -417,6 +417,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		if (bgColor != null) {
 			cell.setBackgroundColor(bgColor);
 		}
+		cell.setPaddingBottom(4);
 		return cell;
 	}
 }

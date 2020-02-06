@@ -243,17 +243,18 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void createAnmeldebestaetigungenTagesschule() throws FileNotFoundException, InvoiceGeneratorException {
+		createAnmeldebestaetigungenTagesschule(Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_de.pdf");
+		createAnmeldebestaetigungenTagesschule(Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_fr.pdf");
+		createAnmeldebestaetigungenTagesschule(Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_de.pdf");
+		createAnmeldebestaetigungenTagesschule(Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_fr.pdf");
+	}
+
+	public void createAnmeldebestaetigungenTagesschule(@Nonnull Sprache locale, @Nonnull AnmeldebestaetigungTSPDFGenerator.Art art, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
 		AnmeldungTagesschule anmeldungTagesschule = prepareAnmeldungTagesschuleWithModule();
-
+		gesuch_tagesschule.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF,
-			anmeldungTagesschule);
-		generator.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_ohneTarif.pdf"));
-
-		final AnmeldebestaetigungTSPDFGenerator generator2 = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF,
-			anmeldungTagesschule);
-		generator2.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_mitTarif.pdf"));
+			stammdaten, art, anmeldungTagesschule);
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	private AnmeldungTagesschule prepareAnmeldungTagesschuleWithModule() {
