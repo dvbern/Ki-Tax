@@ -73,7 +73,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private static final String ANMELDUNG_BESTAETIGUNG_INTRO_MODULE =
 		"PdfGeneration_AnmeldungBestaetigung_IntroModule";
 	private static final String BESTAETIGUNG_OHNE_TARIF = "PdfGeneration_AnmeldungBestaetigung_ohneTarif";
-	private static final String ABT_BILDUNG_BERN = "PdfGeneration_AnmeldungBestaetigung_AbteilungBildungBern";
 	private static final String GEBUEHREN_MIT_PEDAGOGISCHER_BETREUUNG =
 		"PdfGeneration_AnmeldungBestaetigung_gebuehrenMit";
 	private static final String GEBUEHREN_OHNE_PEDAGOGISCHER_BETREUUNG =
