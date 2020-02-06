@@ -373,10 +373,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private getMinErsterSchultag(): moment.Moment {
-        return this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
-            this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
-            TSMandant.earliestDateOfTSAnmeldung
-        );
+        if (this.getBetreuungModel() && this.getBetreuungModel().belegungTagesschule) {
+            this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
+                TSMandant.earliestDateOfTSAnmeldung
+            );
+            return this.getBetreuungModel().belegungTagesschule.eintrittsdatum;
+        }
+        return undefined;
     }
 
     public downloadGemeindeGesuchsperiodeDokument(): void {
