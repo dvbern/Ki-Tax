@@ -1617,4 +1617,8 @@ export class GesuchModelManager {
     public isTagesschulangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotTS();
     }
+
+    public isFerieninselangebotEnabled(): boolean {
+        return this.authServiceRS.hasMandantAngebotFI();
+    }
 }
