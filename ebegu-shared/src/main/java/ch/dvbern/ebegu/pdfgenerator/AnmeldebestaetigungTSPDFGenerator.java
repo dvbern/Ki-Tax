@@ -26,7 +26,6 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
 import com.lowagie.text.*;
-import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.collections.CollectionUtils;
@@ -54,10 +53,10 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private static final String KLASSE = "PdfGeneration_AnmeldungBestaetigung_Klasse";
 	private static final String INSTITUTION = "PdfGeneration_AnmeldungBestaetigung_institution";
 	private static final String BEMERKUNG = "PdfGeneration_AnmeldungBestaetigung_bemerkung";
+
 	private static final String ANMELDUNG_BESTAETIGUNG_INTRO_MODULE =
 		"PdfGeneration_AnmeldungBestaetigung_IntroModule";
 	private static final String BESTAETIGUNG_OHNE_TARIF = "PdfGeneration_AnmeldungBestaetigung_ohneTarif";
-	private static final String ABT_BILDUNG_BERN = "PdfGeneration_AnmeldungBestaetigung_AbteilungBildungBern";
 	private static final String GEBUEHREN_MIT_PEDAGOGISCHER_BETREUUNG =
 		"PdfGeneration_AnmeldungBestaetigung_gebuehrenMit";
 	private static final String GEBUEHREN_OHNE_PEDAGOGISCHER_BETREUUNG =
@@ -69,6 +68,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private static final String MITTWOCH = "PdfGeneration_Mittwoch";
 	private static final String DONNERSTAG = "PdfGeneration_Donnerstag";
 	private static final String FREITAG = "PdfGeneration_Freitag";
+	private static final String ALLE_2_WOCHEN = "PdfGeneration_AnmeldungBestaetigung_alle2wochen";
 
 	private static final String VON = "PdfGeneration_AnmeldungBestaetigung_Von";
 	private static final String BIS = "PdfGeneration_AnmeldungBestaetigung_Bis";
@@ -78,8 +78,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		"PdfGeneration_AnmeldungBestaetigung_VerplfegungsProWoche";
 	private static final String TOTAL_PRO_WOCHE = "PdfGeneration_AnmeldungBestaetigung_TotalProWoche";
 	private static final String ERSTE_RECHNUND_AUGUST = "PdfGeneration_AnmeldungBestaetigung_ErsteRechnungAugust";
-	private static final String NICHT_EINVERSTANDEN_INFO =
-		"PdfGeneration_AnmeldungBestaetigung_NichtEinverstandenInfo";
+	private static final String NICHT_EINVERSTANDEN = "PdfGeneration_AnmeldungBestaetigung_NichtEinverstandenInfo";
 	private static final String CHF = "CHF ";
 
 	public enum Art {
@@ -115,46 +114,25 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			//Bemerkung
 			if (anmeldungTagesschule.getBelegungTagesschule() != null &&
 				StringUtils.isNotEmpty(anmeldungTagesschule.getBelegungTagesschule().getBemerkung())) {
-				Paragraph bemerkungTitleParagraph = new Paragraph();
-				bemerkungTitleParagraph.add(new Phrase(translate(BEMERKUNG), getPageConfiguration().getFont()));
-				bemerkungTitleParagraph.setSpacingAfter(0);
+				document.add(PdfUtil.createParagraph(translate(BEMERKUNG), 0));
 				Paragraph bemerkungParagraph = new Paragraph();
-				bemerkungParagraph.add(new Phrase("- " + anmeldungTagesschule.getBelegungTagesschule()
-					.getBemerkung(), getPageConfiguration().getFont()));
-				bemerkungParagraph.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				document.add(bemerkungTitleParagraph);
+				bemerkungParagraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+				bemerkungParagraph.add(PdfUtil.createListInParagraph(Arrays.asList(anmeldungTagesschule.getBelegungTagesschule().getBemerkung().split("\\r?\\n")).stream().filter(string -> string != null && string.trim().length() > 0).collect(Collectors.toList())));
 				document.add(bemerkungParagraph);
 			}
-			List<Element> bestaetigungUndGruesseElements = Lists.newArrayList();
+			List<Element> abschlussElemente = Lists.newArrayList();
 			if (art == Art.OHNE_TARIF) {
-				Paragraph bestaetigungOhneTarifParagraph = new Paragraph();
-				bestaetigungOhneTarifParagraph.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				bestaetigungOhneTarifParagraph.add(new Phrase(translate(BESTAETIGUNG_OHNE_TARIF),
-					getPageConfiguration().getFont()));
-				bestaetigungUndGruesseElements.add(bestaetigungOhneTarifParagraph);
+				abschlussElemente.add(PdfUtil.createParagraph(translate(BESTAETIGUNG_OHNE_TARIF)));
 			} else {
 				Verfuegung verfuegung = anmeldungTagesschule.getVerfuegungOrVerfuegungPreview();
 				Objects.requireNonNull(verfuegung);
 				createGebuehrenTabelle(verfuegung, document);
+				abschlussElemente.add(PdfUtil.createParagraph(translate(ERSTE_RECHNUND_AUGUST)));
 			}
-
-			Paragraph endCommunicationTitle = new Paragraph();
-			endCommunicationTitle.add(new Phrase(translate(ERSTE_RECHNUND_AUGUST),
-				getPageConfiguration().getFontBold()));
-			endCommunicationTitle.setSpacingBefore(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-			endCommunicationTitle.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-			document.add(endCommunicationTitle);
-			Paragraph endCommunication = new Paragraph();
-			endCommunication.add(new Phrase(translate(NICHT_EINVERSTANDEN_INFO),
-				getPageConfiguration().getFont()));
-			endCommunication.setSpacingAfter(2 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-			bestaetigungUndGruesseElements.add(endCommunication);
-
-			bestaetigungUndGruesseElements.add(createParagraphGruss());
-			Paragraph bernAmtParagraph = new Paragraph();
-			bernAmtParagraph.add(new Phrase(translate(ABT_BILDUNG_BERN), getPageConfiguration().getFont()));
-			bestaetigungUndGruesseElements.add(bernAmtParagraph);
-			document.add(PdfUtil.createKeepTogetherTable(bestaetigungUndGruesseElements, 2, 0));
+			abschlussElemente.add(PdfUtil.createParagraph(translate(NICHT_EINVERSTANDEN)));
+			abschlussElemente.add(createParagraphGruss());
+			abschlussElemente.add(createParagraphSignatur());
+			document.add(PdfUtil.createKeepTogetherTable(abschlussElemente, 2, 0));
 		};
 	}
 
@@ -337,7 +315,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				table.addCell(getCellForDay(friday, fridayAlleZweiWoche));
 			});
 		}
-
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;
 	}
@@ -354,6 +331,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(GEBUEHR_PRO_STUNDE), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(VERPFLEGUNGSKOSTEN_PRO_WOCHE), Color.LIGHT_GRAY));
 		table.addCell(createCell(Element.ALIGN_RIGHT, translate(TOTAL_PRO_WOCHE), Color.LIGHT_GRAY));
+		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;
 	}
 
@@ -389,15 +367,15 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			return createCell(Element.ALIGN_CENTER, "", null);
 		}
 		Paragraph dayParagraph =
-			new Paragraph(new Phrase("\uF058 XXX", PdfUtil.FONT_AWESOME));
+			new Paragraph(new Phrase("\uF058", PdfUtil.FONT_AWESOME));
 		dayParagraph.setSpacingBefore(0);
 		dayParagraph.setAlignment(Element.ALIGN_CENTER);
 		dayParagraph.setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		PdfPCell dayCell = new PdfPCell();
 		dayCell.addElement(dayParagraph);
-		if(isSelected && alleZweiWochen){
+		if(alleZweiWochen){
 			Paragraph alleZweiWocheParagraph =
-				new Paragraph(new Phrase("alle zwei Wochen", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6.0f)));
+				new Paragraph(new Phrase(translate(ALLE_2_WOCHEN), PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6.0f)));
 			alleZweiWocheParagraph.setAlignment(Element.ALIGN_CENTER);
 			dayCell.addElement(alleZweiWocheParagraph);
 		}

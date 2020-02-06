@@ -835,6 +835,7 @@ public final class TestDataUtil {
 
 	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
+		belegungTagesschule.setBemerkung("Dies ist eine Bemerkung!");
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
 		if (withModulBelegung) {
 			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
