@@ -85,9 +85,14 @@ public interface EbeguConfiguration {
 	boolean getIsZahlungenTestMode();
 
 	/**
-	 * Gibt zurueck, ob der Dummy-Service für die EWK-Abfragen benutzt werden soll.
+	 * Gibt zurueck, ob die Personensuche über GERES generell angeboten werden soll
 	 */
 	boolean isPersonenSucheDisabled();
+
+	/**
+	 * Gibt zurueck, ob der Dummy-Service für die EWK-Abfragen benutzt werden soll.
+	 */
+	boolean usePersonenSucheDummyService();
 
 	/**
 	 * Gibt den Endpoint des EWK-Services zurueck.
