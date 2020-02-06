@@ -30,6 +30,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -39,11 +40,11 @@ import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssign
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
@@ -80,7 +81,6 @@ export class EditInstitutionComponent implements OnInit {
     private readonly componentTagesschule: EditInstitutionTagesschuleComponent;
 
     private isRegisteringInstitution: boolean = false;
-    private initName: string;
     private initiallyAssignedClients: TSExternalClient[];
 
     public constructor(
@@ -93,6 +93,7 @@ export class EditInstitutionComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -112,6 +113,7 @@ export class EditInstitutionComponent implements OnInit {
             return;
         }
         this.isRegisteringInstitution = this.$transition$.params().isRegistering;
+        this.editMode = this.$transition$.params().editMode;
 
         this.traegerschaftRS.getAllActiveTraegerschaften().then(allTraegerschaften => {
             this.traegerschaftenList = allTraegerschaften;
@@ -156,16 +158,8 @@ export class EditInstitutionComponent implements OnInit {
     private initModel(stammdaten: TSInstitutionStammdaten): void {
         this.stammdaten = stammdaten;
         this.isCheckRequired = stammdaten.institution.stammdatenCheckRequired;
-        this.initName = stammdaten.institution.name;
-        this.editMode = stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
+        this.editMode = (stammdaten.institution.status === TSInstitutionStatus.EINGELADEN || this.editMode);
         this.changeDetectorRef.markForCheck();
-
-        if (!this.isTagesschule()) {
-            return;
-        }
-        this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(einst => {
-            einst.modulTagesschuleGroups = TagesschuleUtil.sortModulTagesschuleGroups(einst.modulTagesschuleGroups);
-        });
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
@@ -177,8 +171,11 @@ export class EditInstitutionComponent implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
-    public isBetreuungsgutscheineAkzeptierenDisabled(): boolean {
-        return !this.isSuperAdmin();
+    public isDateStartEndDisabled(): boolean {
+        if (this.isBetreuungsgutschein()) {
+            return !this.isSuperAdmin();
+        }
+        return false;
     }
 
     public isSuperAdmin(): boolean {
@@ -215,11 +212,11 @@ export class EditInstitutionComponent implements OnInit {
 
     public cancel(): void {
         if (this.editMode) {
-            this.editMode = false;
             this.ngOnInit();
-        } else {
-            this.navigateBack();
+            this.editMode = false;
+            return;
         }
+        this.navigateBack();
     }
 
     private persistStammdaten(): void {
@@ -353,5 +350,12 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftId(traegerschaft: TSTraegerschaft): string {
         return traegerschaft.id;
+    }
+
+    public getMinStartDate(): Date {
+        if (this.isFerieninsel() || this.isTagesschule()) {
+            return TSMandant.earliestDateOfTSAnmeldung.toDate();
+        }
+        return new Date(0);
     }
 }

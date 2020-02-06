@@ -19,9 +19,8 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.ModulTagesschule;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -40,7 +39,7 @@ public class TagesschuleRechnerTest {
 	private final BigDecimal MINIMAL_MASSGEGEBENES_EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(43000.00);
 
 	private TagesschuleRechner tarifRechner = new TagesschuleRechner();
-	private TagesschuleRechnerParameterDTO parameterDTO;
+	private BGRechnerParameterDTO parameterDTO;
 
 
 	@Before
@@ -50,66 +49,82 @@ public class TagesschuleRechnerTest {
 
 	@Test
 	public void minimalTarif() {
-		doTestWithFamilienGroesse2(10000, true, 0.78);
-		doTestWithFamilienGroesse3(10000, true, 0.78);
-		doTestWithFamilienGroesse2(37000, true, 0.78);
-		doTestWithFamilienGroesse3(37000, true, 0.78);
-		doTestWithFamilienGroesse2(10000, false, 0.78);
-		doTestWithFamilienGroesse3(10000, false, 0.78);
-		doTestWithFamilienGroesse2(37000, false, 0.78);
-		doTestWithFamilienGroesse3(37000, false, 0.78);
+		doTest(2, 10000, true, 0.78);
+		doTest(3, 10000, true, 0.78);
+		doTest(2, 37000, true, 0.78);
+		doTest(3, 37000, true, 0.78);
+		doTest(2, 10000, false, 0.78);
+		doTest(3, 10000, false, 0.78);
+		doTest(2, 37000, false, 0.78);
+		doTest(3, 37000, false, 0.78);
 	}
 
 	@Test
 	public void grenzeMittendrinn() {
-		doTestWithFamilienGroesse2(67000, true, 3.13);
-		doTestWithFamilienGroesse3(67000, true, 2.01);
-		doTestWithFamilienGroesse2(67100, true, 3.14);
-		doTestWithFamilienGroesse3(67100, true, 2.02);
-		doTestWithFamilienGroesse2(67000, false, 1.87);
-		doTestWithFamilienGroesse3(67000, false, 1.35);
-		doTestWithFamilienGroesse2(67100, false, 1.88);
-		doTestWithFamilienGroesse3(67100, false, 1.36);
+		doTest(2, 67000, true, 3.13);
+		doTest(3, 67000, true, 2.01);
+		doTest(2, 67100, true, 3.14);
+		doTest(3, 67100, true, 2.02);
+		doTest(2, 67000, false, 1.87);
+		doTest(3, 67000, false, 1.35);
+		doTest(2, 67100, false, 1.88);
+		doTest(3, 67100, false, 1.36);
 	}
 
 	@Test
 	public void maximalTarif() {
-		doTestWithFamilienGroesse2(150000, true, 11.26);
-		doTestWithFamilienGroesse2(160000, true, 12.24);
-		doTestWithFamilienGroesse2(1600000, true, 12.24);
-		doTestWithFamilienGroesse2(150000, false, 5.65);
-		doTestWithFamilienGroesse2(160000, false, 6.11);
-		doTestWithFamilienGroesse2(1600000, false, 6.11);
-		doTestWithFamilienGroesse3(167000, true, 11.81);
-		doTestWithFamilienGroesse3(1600000, true, 12.24);
-		doTestWithFamilienGroesse3(1600000, false, 6.11);
+		doTest(2, 150000, true, 11.26);
+		doTest(2, 160000, true, 12.24);
+		doTest(2, 1600000, true, 12.24);
+		doTest(2, 150000, false, 5.65);
+		doTest(2, 160000, false, 6.11);
+		doTest(2, 1600000, false, 6.11);
+		doTest(3, 167000, true, 11.81);
+		doTest(3, 1600000, true, 12.24);
+		doTest(3, 1600000, false, 6.11);
 	}
 
-	private void doTestWithFamilienGroesse2(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
+	private void doTest(int familiengroesse, double einkommen, boolean paedagogischBetreut, double expectedTarif) {
+		BigDecimal abzugFamiliengroesse = BigDecimal.ZERO;
+		if (familiengroesse == 3) {
+			abzugFamiliengroesse = MathUtil.DEFAULT.fromNullSafe(11400.00);
+		}
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
-		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, paedagogischBetreut);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
+		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
+		if (paedagogischBetreut) {
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultMitPaedagogischerBetreuung(new TSCalculationResult());
+			TSCalculationResult tsResultMitBetreuung =
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung();
+			Assert.assertNotNull(tsResultMitBetreuung);
+			tsResultMitBetreuung.setBetreuungszeitProWoche(10);
+		} else {
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultOhnePaedagogischerBetreuung(new TSCalculationResult());
+			TSCalculationResult tsResultOhneBetreuung =
+				verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung();
+			Assert.assertNotNull(tsResultOhneBetreuung);
+			tsResultOhneBetreuung.setBetreuungszeitProWoche(10);
+		}
 
-		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
+		BGCalculationResult calculationResult = tarifRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+		TSCalculationResult tsResult;
+		if (paedagogischBetreut) {
+			tsResult = calculationResult.getTsCalculationResultMitPaedagogischerBetreuung();
+		} else {
+			tsResult = calculationResult.getTsCalculationResultOhnePaedagogischerBetreuung();
+		}
+		Assert.assertNotNull(tsResult);
+		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), tsResult.getGebuehrProStunde());
 	}
 
-	private void doTestWithFamilienGroesse3(double einkommen, boolean paedagogischBetreut, double expectedTarif) {
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.setAbzugFamGroesse(MathUtil.DEFAULT.fromNullSafe(11400.00));
-		BigDecimal calculatedTarif = tarifRechner.calculateTarif(verfuegungZeitabschnitt, parameterDTO, paedagogischBetreut);
-
-		Assert.assertEquals(MathUtil.DEFAULT.fromNullSafe(expectedTarif), calculatedTarif);
-	}
-
-	private TagesschuleRechnerParameterDTO getTagesschuleTarifRechnerParameterDTO() {
-		TagesschuleRechnerParameterDTO dto = new TagesschuleRechnerParameterDTO();
+	private BGRechnerParameterDTO getTagesschuleTarifRechnerParameterDTO() {
+		BGRechnerParameterDTO dto = new BGRechnerParameterDTO();
 		dto.setMaxMassgebendesEinkommen(MAXIMAL_MASSGEGEBENES_EINKOMMEN);
 		dto.setMinMassgebendesEinkommen(MINIMAL_MASSGEGEBENES_EINKOMMEN);
-		dto.setMaxTarifMitPaedagogischerBetreuung(MATA_MIT_PEDAGOGISCHE_BETREUUNG);
-		dto.setMaxTarifOhnePaedagogischerBetreuung(MATA_OHNE_PEDAGOGISCHE_BETREUUNG);
-		dto.setMinTarif(MITA);
+		dto.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MATA_MIT_PEDAGOGISCHE_BETREUUNG);
+		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MATA_OHNE_PEDAGOGISCHE_BETREUUNG);
+		dto.setMinTarifTagesschule(MITA);
 		return dto;
 	}
 }

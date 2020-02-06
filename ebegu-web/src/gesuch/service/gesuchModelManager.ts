@@ -58,7 +58,6 @@ import {TSDossier} from '../../models/TSDossier';
 import {TSEinkommensverschlechterungContainer} from '../../models/TSEinkommensverschlechterungContainer';
 import {TSEinkommensverschlechterungInfoContainer} from '../../models/TSEinkommensverschlechterungInfoContainer';
 import {TSErwerbspensumContainer} from '../../models/TSErwerbspensumContainer';
-import {TSEWKPerson} from '../../models/TSEWKPerson';
 import {TSEWKResultat} from '../../models/TSEWKResultat';
 import {TSExceptionReport} from '../../models/TSExceptionReport';
 import {TSFachstelle} from '../../models/TSFachstelle';
@@ -109,10 +108,7 @@ export class GesuchModelManager {
     public gemeindeStammdaten: TSGemeindeStammdaten;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
 
-    public ewkResultatGS1: TSEWKResultat;
-    public ewkResultatGS2: TSEWKResultat;
-    public ewkPersonGS1: TSEWKPerson;
-    public ewkPersonGS2: TSEWKPerson;
+    public ewkResultat: TSEWKResultat;
 
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
@@ -168,12 +164,44 @@ export class GesuchModelManager {
             .then(gesuch => this.wizardStepManager.findStepsFromGesuch(gesuchId)
                 .then(() => {
                     if (gesuch) {
-                        this.setGesuch(gesuch);
+                        this.setGesuchDaten(gesuch);
                     }
-
+                }).then(() => this.loadGemeindeStammdaten().then(stammdaten => {
+                    if (gesuch) {
+                        this.gemeindeStammdaten = stammdaten;
+                        this.initGemeindeKonfiguration();
+                    }
                     return gesuch;
-                }),
+                }))
             );
+    }
+
+    /**
+     * In dieser Methode wird das Gesuch ohne die Gemeinde Stammdaten ersetzt.
+     *
+     * @param gesuch das Gesuch. Null und undefined werden erlaubt.
+     */
+    private setGesuchDaten(gesuch: TSGesuch): TSGesuch {
+        this.gesuch = gesuch;
+        this.neustesGesuch = undefined;
+        if (this.gesuch && !this.getGesuch().isNew()) {
+            this.wizardStepManager.findStepsFromGesuch(this.gesuch.id);
+            this.wizardStepManager.setHiddenSteps(this.gesuch);
+            // Es soll nur einmalig geprueft werden, ob das aktuelle Gesuch das neueste dieses Falls fuer die
+            // gewuenschte Periode ist.
+            if (this.gesuch.id) {
+                this.gesuchRS.isNeuestesGesuch(this.gesuch.id).then((resp: boolean) => {
+                    this.neustesGesuch = resp;
+                });
+            }
+        }
+        // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
+        this.ewkResultat = undefined;
+        this.activInstitutionenList = undefined;
+        this.activInstitutionenForGemeindeList = undefined;
+
+        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
+        return gesuch;
     }
 
     /**
@@ -183,32 +211,11 @@ export class GesuchModelManager {
      * @param gesuch das Gesuch. Null und undefined werden erlaubt.
      */
     public setGesuch(gesuch: TSGesuch): TSGesuch {
-        this.gesuch = gesuch;
-        this.neustesGesuch = undefined;
-        if (this.gesuch && !this.getGesuch().isNew()) {
-            this.wizardStepManager.findStepsFromGesuch(this.gesuch.id);
-            this.wizardStepManager.setHiddenSteps(this.gesuch);
-            // EWK Service mit bereits existierenden Daten initialisieren
-            this.ewkRS.gesuchsteller1 = this.gesuch.gesuchsteller1;
-            this.ewkRS.gesuchsteller2 = this.gesuch.gesuchsteller2;
-            // Es soll nur einmalig geprueft werden, ob das aktuelle Gesuch das neueste dieses Falls fuer die
-            // gewuenschte Periode ist.
-            if (this.gesuch.id) {
-                this.gesuchRS.isNeuestesGesuch(this.gesuch.id).then((resp: boolean) => {
-                    this.neustesGesuch = resp;
-                });
-            }
-        }
-        this.ewkPersonGS1 = undefined;
-        this.ewkPersonGS2 = undefined;
-        this.ewkResultatGS1 = undefined;
-        this.ewkResultatGS2 = undefined;
-        // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
-        this.activInstitutionenList = undefined;
-        this.activInstitutionenForGemeindeList = undefined;
-        this.loadGemeindeStammdaten();
-        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
-
+        this.setGesuchDaten(gesuch);
+        this.loadGemeindeStammdaten().then(stammdaten => {
+            this.gemeindeStammdaten = stammdaten;
+            this.initGemeindeKonfiguration();
+        });
         return gesuch;
     }
 
@@ -258,21 +265,20 @@ export class GesuchModelManager {
      * Loads the Stammdaten of the gemiende of the current Dossier so we can access them
      * while filling out the Gesuch, wihtout having to load it from server again and again
      */
-    private loadGemeindeStammdaten(): void {
+    private loadGemeindeStammdaten(): IPromise<TSGemeindeStammdaten> {
         if (!(this.getDossier() && this.getDossier().gemeinde)) {
-            return;
+            return Promise.resolve(undefined);
         }
-        this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id)
-            .then(stammdaten => {
-                this.gemeindeStammdaten = stammdaten;
-                this.loadGemeindeKonfiguration();
-            });
+        return this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id);
     }
 
     /**
      * Loads the GemeindeKonfiguration for the current Gesuch, i.e. the current Gemeinde and Gesuchsperiode
      */
-    private loadGemeindeKonfiguration(): void {
+    private initGemeindeKonfiguration(): void {
+        if (EbeguUtil.isNullOrUndefined(this.gemeindeStammdaten)) {
+            return;
+        }
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
             // tslint:disable-next-line:early-exit
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
@@ -683,22 +689,8 @@ export class GesuchModelManager {
             this.getDossier())
             .then(gesuch => {
                 this.gesuch = gesuch;
-                this.resetEWKParameters();
-
                 return this.gesuch;
             });
-    }
-
-    /**
-     * these values must be set here because we need to show them to the user and the data haven't been saved in the
-     * server yet
-     */
-    private resetEWKParameters(): void {
-        // ewk zuruecksetzen
-        if (this.ewkRS) {
-            this.ewkRS.gesuchsteller1 = undefined;
-            this.ewkRS.gesuchsteller2 = undefined;
-        }
     }
 
     public initFamiliensituation(): void {
@@ -829,7 +821,7 @@ export class GesuchModelManager {
             case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
                 return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.betreuungRS.anmeldungSchulamtUebernehmen(betreuungToSave, this.gesuch.id);
+                return this.verfuegungRS.anmeldungSchulamtUebernehmen(this.gesuch.id, betreuungToSave.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
@@ -1627,5 +1619,9 @@ export class GesuchModelManager {
 
     public isTagesschulangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotTS();
+    }
+
+    public isFerieninselangebotEnabled(): boolean {
+        return this.authServiceRS.hasMandantAngebotFI();
     }
 }

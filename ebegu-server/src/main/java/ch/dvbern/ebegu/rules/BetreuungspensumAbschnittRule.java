@@ -27,9 +27,14 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für die Erstellung der Zeitabschnitte der Betreuungspensen
@@ -41,12 +46,14 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		if (!platz.getBetreuungsangebotTyp().isJugendamt()) {
-			return new ArrayList<>();
-		}
 		Betreuung betreuung = (Betreuung) platz;
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
@@ -68,7 +75,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
-		zeitabschnitt.setBetreuungspensumProzent(betreuungspensum.getPensum());
+		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(betreuungspensum.getPensum());
 		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
@@ -79,7 +86,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
 				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
 
-		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		zeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {

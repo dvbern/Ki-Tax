@@ -27,7 +27,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -35,12 +34,15 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckVerfuegungPlatz;
 import org.hibernate.envers.Audited;
 
 /**
  * Verfuegung fuer eine einzelne Betreuung
  */
+@CheckVerfuegungPlatz
 @Entity
 @Audited
 public class Verfuegung extends AbstractMutableEntity {
@@ -55,10 +57,15 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String manuelleBemerkungen;
 
-	@MapsId
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_betreuung_id"), nullable = false)
-	@OneToOne(optional = false, fetch = FetchType.EAGER)
-	private @NotNull Betreuung betreuung;
+	@Nullable
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_betreuung_id"), nullable = true)
+	@OneToOne(optional = true, fetch = FetchType.EAGER)
+	private Betreuung betreuung;
+
+	@Nullable
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_anmeldungTagesschule_id"), nullable = true)
+	@OneToOne(optional = true, fetch = FetchType.EAGER)
+	private AnmeldungTagesschule anmeldungTagesschule;
 
 	@OrderBy("gueltigkeit ASC")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "verfuegung")
@@ -86,23 +93,6 @@ public class Verfuegung extends AbstractMutableEntity {
 	private @NotNull boolean eventPublished = true;
 
 	public Verfuegung() {
-		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
-	}
-
-	public Verfuegung(Betreuung betreuung) {
-		this.betreuung = betreuung;
-		setId(betreuung.getId());
-		betreuung.setVerfuegung(this);
-	}
-
-	/**
-	 * MapsId fuehrt dazu, dass als PK in der Datenbank der FK der Betreuung verwendet wird. Damit wir im Code trotzdem getId() verwenden
-	 * koennen wird die Methode hier ueberschrieben
-	 */
-	@Nonnull
-	@Override
-	public String getId() {
-		return betreuung.getId();
 	}
 
 	@Nullable
@@ -135,13 +125,43 @@ public class Verfuegung extends AbstractMutableEntity {
 		}
 	}
 
-	@Nonnull
+	@Nullable
 	public Betreuung getBetreuung() {
 		return betreuung;
 	}
 
-	public void setBetreuung(@Nonnull Betreuung betreuung) {
+	public void setBetreuung(@Nullable Betreuung betreuung) {
 		this.betreuung = betreuung;
+	}
+
+	@Nullable
+	public AnmeldungTagesschule getAnmeldungTagesschule() {
+		return anmeldungTagesschule;
+	}
+
+	public void setAnmeldungTagesschule(@Nullable AnmeldungTagesschule anmeldungTagesschule) {
+		this.anmeldungTagesschule = anmeldungTagesschule;
+	}
+
+	@Nonnull
+	public AbstractPlatz getPlatz() {
+		if (betreuung != null) {
+			return betreuung;
+		}
+		if (anmeldungTagesschule != null) {
+			return anmeldungTagesschule;
+		}
+		throw new EbeguRuntimeException("getPlatz", "Verfuegung ohne dazugehoerige Betreuung/AnmeldungTagesschule: " + getId());
+	}
+
+	public void setPlatz(@Nonnull AbstractPlatz platz) {
+		if (platz instanceof Betreuung) {
+			setBetreuung((Betreuung) platz);
+		} else if (platz instanceof AnmeldungTagesschule) {
+			setAnmeldungTagesschule((AnmeldungTagesschule) platz);
+		} else {
+			throw new EbeguRuntimeException("setPlatz", "Verfuegung gibts nur für Betreuung/AnmeldungTagesschule: " + getId());
+		}
 	}
 
 	public boolean isKategorieNormal() {

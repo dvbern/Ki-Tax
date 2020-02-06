@@ -107,6 +107,12 @@ public class BGCalculationInput {
 	@Transient
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
+	@Transient
+	private boolean babyTarif;
+
+	@Transient
+	private boolean eingeschult;
+
 	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
 	// "bemerkungen" geschrieben
@@ -135,6 +141,8 @@ public class BGCalculationInput {
 		this.kategorieMaxEinkommen = toCopy.kategorieMaxEinkommen;
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
+		this.babyTarif = toCopy.babyTarif;
+		this.eingeschult = toCopy.eingeschult;
 		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
 	}
 
@@ -304,6 +312,30 @@ public class BGCalculationInput {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
+	public boolean isBabyTarif() {
+		return babyTarif;
+	}
+
+	public void setBabyTarif(boolean babyTarif) {
+		this.babyTarif = babyTarif;
+	}
+
+	public boolean isEingeschult() {
+		return eingeschult;
+	}
+
+	public void setEingeschult(boolean eingeschult) {
+		this.eingeschult = eingeschult;
+	}
+
+	@Override
+	public String toString() {
+		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
+			+ " EP GS2: " + getErwerbspensumGS2() + '\t'
+			+ " Restanspruch: " + getAnspruchspensumRest();
+		return sb;
+	}
+
 	public void add(@Nonnull BGCalculationInput other) {
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
@@ -351,6 +383,9 @@ public class BGCalculationInput {
 		this.setKategorieMaxEinkommen(this.kategorieMaxEinkommen || other.kategorieMaxEinkommen);
 		this.setAbschnittLiegtNachBEGUStartdatum(this.abschnittLiegtNachBEGUStartdatum
 			&& other.abschnittLiegtNachBEGUStartdatum);
+
+		this.setBabyTarif(this.babyTarif || other.babyTarif);
+		this.setEingeschult(this.eingeschult || other.eingeschult);
 	}
 
 	public boolean isSame(BGCalculationInput other) {
@@ -371,6 +406,8 @@ public class BGCalculationInput {
 			abschnittLiegtNachBEGUStartdatum == other.abschnittLiegtNachBEGUStartdatum &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, other.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(bemerkungenMap, other.bemerkungenMap) &&
+			babyTarif == other.babyTarif &&
+			eingeschult == other.eingeschult &&
 			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten);
 	}
 
@@ -379,7 +416,9 @@ public class BGCalculationInput {
 		if (this == that) {
 			return true;
 		}
-		return Objects.equals(bemerkungenMap, that.bemerkungenMap);
+		return babyTarif == that.babyTarif &&
+			eingeschult == that.eingeschult &&
+			Objects.equals(bemerkungenMap, that.bemerkungenMap);
 	}
 
 	/**

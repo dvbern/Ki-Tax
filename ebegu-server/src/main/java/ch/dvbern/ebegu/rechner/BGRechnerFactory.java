@@ -17,7 +17,7 @@ package ch.dvbern.ebegu.rechner;
 
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -29,13 +29,16 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractBGRechner getRechner(Betreuung betreuung) {
+	public static AbstractRechner getRechner(AbstractPlatz betreuung) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaRechner();
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
 			return new TageselternRechner();
+		}
+		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
+			return new TagesschuleRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;

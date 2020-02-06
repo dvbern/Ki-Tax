@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://geres.bedag.ch/schemas/20180101/GeresEchTypes"
+	targetNamespace="http://geres.bedag.ch/schemas/20180101/GeresEchTypes"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:annotation>
+		<xs:documentation>
+			Reusable types for Geres eCH web services.
+		</xs:documentation>
+	</xs:annotation>
+
+	<!-- Elements -->
+	<xs:element name="TestResponse">
+		<xs:annotation>
+			<xs:documentation>String "OK" if test successful</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TestResponse" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Types -->
+	<xs:simpleType name="baseNumberMax10DigitsType">
+		<xs:annotation>
+			<xs:documentation>
+				Basic number with a maximum length of 10 digits.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1" />
+			<xs:totalDigits value="10" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="idType">
+		<xs:annotation>
+			<xs:documentation>
+				Person Identification (Category and Value pair)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="personIdCategory">
+				<xs:simpleType>
+					<xs:annotation>
+						<xs:documentation>
+							Some valid values are:
+							<ul>
+								<li>CH.VN - new social security number (ahvn13)</li>
+								<li>CH.AHV - old social security number (ahv11)</li>
+								<li>CH.MU - Municipality ID. With CH.MU, Municipality IDs for
+									all municipalities will be searched, even if they are
+									internally stored with a LOC.EW category. To limit the search
+									to a specific municipality, the "municipalityNumber" search
+									parameters should be used in addition to this parameter.
+								</li>
+								<li>CH.[BFS-Number] - Search specifically for persons with
+									Municipality IDs matching the format MU.[BFS-Number]. This will
+									not include LOC.EW IDs, and will be specific to a single
+									municipality. </li>
+								<li>CH.ZAR</li>
+								<li>CH.ZEMIS</li>
+								<li>CH.INFOSTAR</li>
+								<li>CH.VERA</li>
+								<li>ECH.ID - the internal technical key.
+									This is a special case,
+									since the technical key is not an
+									identificator attribute,
+									but
+									the primary key of a person.</li>
+								<li>plus any other category that exists in your database</li>
+							</ul>
+							For cantonal identificators, use the corresponding value, e.g.
+							CT.BE.ZPV in Bern.
+							<p />
+							The web service does not validate this value. It is used as is
+							for the query.
+							If a nonexisting value ist used, the service will
+							return empty
+							results.
+							<p />
+
+						</xs:documentation>
+					</xs:annotation>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="personId">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:simpleType name="baseStringMax100Type">
+		<xs:annotation>
+			<xs:documentation>
+				Basic string with a maximum length of 100
+				characters
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="baseStringMax60Type">
+		<xs:annotation>
+			<xs:documentation>
+				Basic string with a maximum length of 60 characters
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="60" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="baseStringMax40Type">
+		<xs:annotation>
+			<xs:documentation>
+				Basic string with a maximum length of 40 characters
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="baseStringMax20Type">
+		<xs:annotation>
+			<xs:documentation>
+				Basic string with a maximum length of 20 characters
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="baseStringMax12Type">
+		<xs:annotation>
+			<xs:documentation>
+				Basic string with a maximum length of 12 characters
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="12" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="baseNumberMax1aType">
+		<xs:annotation>
+			<xs:documentation>
+				Basic number with value of "1" or "2"
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1" />
+			<xs:maxInclusive value="2" />
+			<xs:totalDigits value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="baseNumberMax1bType">
+		<xs:annotation>
+			<xs:documentation>
+				Basic number between 1 and 7
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1" />
+			<xs:maxInclusive value="7" />
+			<xs:totalDigits value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="swissZipCodeType">
+		<xs:annotation>
+			<xs:documentation>Swiss zip code</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1000" />
+			<xs:maxInclusive value="9999" />
+			<xs:totalDigits value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="personStatusType">
+		<xs:annotation>
+			<xs:documentation>Person Status Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ACTIVE" />
+			<xs:enumeration value="DEAD" />
+			<xs:enumeration value="MOVED_OUT" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="municipalityNumberType">
+		<xs:annotation>
+			<xs:documentation>Municipality number.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1" />
+			<xs:maxInclusive value="99999" />
+			<xs:totalDigits value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="egidType">
+		<xs:annotation>
+			<xs:documentation>EGID number.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="1" />
+			<xs:maxInclusive value="999999999" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ewidType">
+		<xs:annotation>
+			<xs:documentation>EWID number.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="1" />
+			<xs:maxInclusive value="999" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<!-- Exceptions -->
+	<xs:complexType name="FaultBase">
+		<xs:sequence>
+			<xs:element name="ErrorCode" type="xs:string" minOccurs="0" />
+			<xs:element name="UserMessage" type="xs:string" />
+			<xs:element name="TechnicalMessage" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="ErrorTicketId" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="InnerFault" type="tns:FaultBase"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="InfrastructureFault" type="tns:InfrastructureFault" />
+	<xs:complexType name="InfrastructureFault" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence>
+					<xs:element name="ArgumentName" type="xs:string" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="PermissionDeniedFault" type="tns:PermissionDeniedFault" />
+	<xs:complexType name="PermissionDeniedFault" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="InvalidArgumentsFault" type="tns:InvalidArgumentsFault" />
+	<xs:complexType name="InvalidArgumentsFault" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="tns:FaultBase">
+				<xs:sequence />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

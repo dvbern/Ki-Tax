@@ -23,34 +23,25 @@ import {TSEWKAdresse} from './TSEWKAdresse';
 export class TSEWKBeziehung extends TSAbstractMutableEntity {
 
     private _beziehungstyp: string;
-    private _beziehungstypTxt: string;
     private _personID: string;
     private _nachname: string;
-    private _ledigname: string;
     private _vorname: string;
-    private _rufname: string;
     private _geburtsdatum: moment.Moment;
     private _adresse: TSEWKAdresse;
 
     public constructor(
         beziehungstyp?: string,
-        beziehungstypTxt?: string,
         personID?: string,
         nachname?: string,
-        ledigname?: string,
         vorname?: string,
-        rufname?: string,
         geburtsdatum?: moment.Moment,
         adresse?: TSEWKAdresse,
     ) {
         super();
         this._beziehungstyp = beziehungstyp;
-        this._beziehungstypTxt = beziehungstypTxt;
         this._personID = personID;
         this._nachname = nachname;
-        this._ledigname = ledigname;
         this._vorname = vorname;
-        this._rufname = rufname;
         this._geburtsdatum = geburtsdatum;
         this._adresse = adresse;
     }
@@ -61,14 +52,6 @@ export class TSEWKBeziehung extends TSAbstractMutableEntity {
 
     public set beziehungstyp(value: string) {
         this._beziehungstyp = value;
-    }
-
-    public get beziehungstypTxt(): string {
-        return this._beziehungstypTxt;
-    }
-
-    public set beziehungstypTxt(value: string) {
-        this._beziehungstypTxt = value;
     }
 
     public get personID(): string {
@@ -87,28 +70,12 @@ export class TSEWKBeziehung extends TSAbstractMutableEntity {
         this._nachname = value;
     }
 
-    public get ledigname(): string {
-        return this._ledigname;
-    }
-
-    public set ledigname(value: string) {
-        this._ledigname = value;
-    }
-
     public get vorname(): string {
         return this._vorname;
     }
 
     public set vorname(value: string) {
         this._vorname = value;
-    }
-
-    public get rufname(): string {
-        return this._rufname;
-    }
-
-    public set rufname(value: string) {
-        this._rufname = value;
     }
 
     public get geburtsdatum(): moment.Moment {

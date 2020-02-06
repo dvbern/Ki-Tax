@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -22,11 +23,16 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für die Betreuungspensen. Sie beachtet:
@@ -42,27 +48,30 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
-		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			Betreuung betreuung = (Betreuung) platz;
-			int pensumFachstelle = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum();
-			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-			// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
-			int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
-			if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
-				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedPensumFachstelle);
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-					RuleKey.FACHSTELLE,
-					MsgKey.FACHSTELLE_MSG,
-					getLocale(),
-					getIndikation(betreuung),
-					getFachstelle(betreuung));
-			}
+		Betreuung betreuung = (Betreuung) platz;
+		int pensumFachstelle = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum();
+		int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
+		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
+		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
+		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
+			// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
+			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(roundedPensumFachstelle);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+				RuleKey.FACHSTELLE,
+				MsgKey.FACHSTELLE_MSG,
+				getLocale(),
+				getIndikation(betreuung),
+				getFachstelle(betreuung));
 		}
 	}
 

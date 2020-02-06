@@ -16,6 +16,7 @@
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSTsCalculationResult} from './TSTsCalculationResult';
 
 export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public abzugFamGroesse: number;
@@ -36,6 +37,7 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public kategorieMaxEinkommen: boolean;
     public massgebendesEinkommenVorAbzugFamgr: number;
     public minimalerElternbeitrag: number;
+    public minimalerElternbeitragGekuerzt: number;
     public minimalesEwpUnterschritten: boolean;
     public sameAusbezahlteVerguenstigung: boolean;
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean;
@@ -47,12 +49,6 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
     public zeiteinheit: TSPensumUnits;
     public zuSpaetEingereicht: boolean;
-
-    public getMinimalerElternbeitragGekuerzt(): number {
-        const vollkostenMinusVerguenstigung = this.vollkosten - this.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
-        if (vollkostenMinusVerguenstigung > this.minimalerElternbeitrag) {
-            return 0;
-        }
-        return this.minimalerElternbeitrag - vollkostenMinusVerguenstigung;
-    }
+    public tsCalculationResultMitPaedagogischerBetreuung: TSTsCalculationResult;
+    public tsCalculationResultOhnePaedagogischerBetreuung: TSTsCalculationResult;
 }

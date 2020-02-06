@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FerieninselStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -64,6 +65,12 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
@@ -100,6 +107,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private ModulTagesschuleService modulTagesschuleService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
@@ -144,6 +154,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
 				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+
+				//Die Gemeinde Gesuchsperiode Stammdaten sollen auch für die neue Gesuchsperiode übernommen werden
+				gemeindeService.copyGesuchsperiodeGemeindeStammdaten(gesuchsperiode, lastGesuchsperiode);
 
 				//copy erlaeuterung verfuegung from previos Gesuchperiode
 				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.getVerfuegungErlaeuterungenDe());
@@ -245,7 +258,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			"deleteGesuchsperiodeAndGesuche",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			gesuchsPeriodeId));
-		LOGGER.info("Handling Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
+		LOGGER.info("Handling deleton of Gesuchsperiode {}", gesuchsperiode.getGesuchsperiodeString());
 		if (gesuchsperiode.getStatus() == GesuchsperiodeStatus.GESCHLOSSEN) {
 			// Gesuche der Periode loeschen
 			Collection<Gesuch> gesucheOfPeriode =
@@ -273,6 +286,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				modulTagesschuleService.findEinstellungenTagesschuleByGesuchsperiode(gesuchsperiode);
 			for (EinstellungenTagesschule einstellungenTagesschule : einstellungenTagesschuleList) {
 				persistence.remove(einstellungenTagesschule);
+			}
+
+			// GemeindeGesuchsperiodeStammdaten dieser Gesuchsperiode loeschen
+			Collection<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeList =
+				gemeindeService.findGemeindeStammdatenGesuchsperiode(gesuchsperiode);
+			for(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode: gemeindeStammdatenGesuchsperiodeList){
+				persistence.remove(gemeindeStammdatenGesuchsperiode);
 			}
 
 			// Einstellungen dieser Gesuchsperiode loeschen
@@ -525,7 +545,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
+		SACHBEARBEITER_GEMEINDE,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public boolean existDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull DokumentTyp dokumentTyp) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);

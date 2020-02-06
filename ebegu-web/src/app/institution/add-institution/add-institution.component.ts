@@ -28,6 +28,7 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -53,7 +54,7 @@ export class AddInstitutionComponent implements OnInit {
     public betreuungsangebot: TSBetreuungsangebotTyp;
     public traegerschaften: TSTraegerschaft[];
     public institution: TSInstitution = undefined;
-    public beguStart: moment.Moment;
+    public startDate: moment.Moment;
     public adminMail: string;
     public selectedGemeinde: TSGemeinde;
     public gemeinden: Array<TSGemeinde>;
@@ -86,10 +87,7 @@ export class AddInstitutionComponent implements OnInit {
         this.traegerschaftRS.getAllActiveTraegerschaften().then(result => {
             this.traegerschaften = result;
         });
-        const currentDate = moment();
-        const futureMonth = moment(currentDate).add(1, 'M');
-        const futureMonthBegin = moment(futureMonth).startOf('month');
-        this.beguStart = futureMonthBegin;
+        this.startDate = this.getStartDate();
 
         // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
         if (!this.isBGInstitution) {
@@ -112,13 +110,13 @@ export class AddInstitutionComponent implements OnInit {
     private persistInstitutionWithGSCheck(): void {
         this.institutionRS.createInstitution(
             this.institution,
-            this.beguStart,
+            this.startDate,
             this.betreuungsangebot,
             this.adminMail,
             this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
         ).then(neueinstitution => {
             this.institution = neueinstitution;
-            this.navigateBack();
+            this.goToNextView();
         }).catch((exception: TSExceptionReport[]) => {
             if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
@@ -158,13 +156,13 @@ export class AddInstitutionComponent implements OnInit {
     private persistInstitution(): void {
         this.institutionRS.createInstitution(
             this.institution,
-            this.beguStart,
+            this.startDate,
             this.betreuungsangebot,
             this.adminMail,
             this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
         ).then(neueinstitution => {
             this.institution = neueinstitution;
-            this.navigateBack();
+            this.goToNextView();
             });
     }
 
@@ -175,8 +173,24 @@ export class AddInstitutionComponent implements OnInit {
             TSInstitutionStatus.KONFIGURATION;
     }
 
+    private goToNextView(): void {
+        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE ||
+            this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+            this.navigateToEdit();
+        } else {
+            this.navigateBack();
+        }
+    }
+
     private navigateBack(): void {
         this.$state.go('institution.list');
+    }
+
+    private navigateToEdit(): void {
+        this.$state.go('institution.edit', {
+            institutionId: this.institution.id,
+            editMode: true
+        });
     }
 
     public loadGemeindenList(): void {
@@ -202,5 +216,18 @@ export class AddInstitutionComponent implements OnInit {
                     err => LOG.error(err),
                 );
         }
+    }
+
+    /*
+    Für Tagesschulen und Ferieninseln ist ein Minimaldatum für "Anmeldungen akzeptieren ab" definiert
+    da Anmeldungen bei Tagesschulen frühstens ab der Periode 20/21 möglich sein können.
+     */
+    private getStartDate(): moment.Moment {
+        const nextMonthBegin = moment().add(1, 'M').startOf('month');
+
+        if (this.isBGInstitution || nextMonthBegin >= TSMandant.earliestDateOfTSAnmeldung) {
+            return nextMonthBegin;
+        }
+        return TSMandant.earliestDateOfTSAnmeldung;
     }
 }

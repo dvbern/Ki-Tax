@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService, IPromise, IQService} from 'angular';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
@@ -69,11 +70,13 @@ export class KommentarViewController {
         '$state',
         '$mdSidenav',
         '$q',
+        'applicationPropertyRS'
     ];
 
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
+    public isPersonensucheDisabled: boolean = true;
 
     public constructor(
         private readonly $log: ILogService,
@@ -89,11 +92,15 @@ export class KommentarViewController {
         private readonly $state: StateService,
         private readonly $mdSidenav: ISidenavService,
         private readonly $q: IQService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
 
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
         }
+        this.applicationPropertyRS.isPersonensucheDisabled().then((response: any) => {
+            this.isPersonensucheDisabled = response;
+        });
     }
 
     private getPapiergesuchFromServer(): IPromise<TSDokumenteDTO> {
@@ -276,8 +283,7 @@ export class KommentarViewController {
         return this.$translate.instant('ZURUECK_AN_GEMEINDE_TITLE');
     }
 
-    public showEwkFields(): boolean {
-        // todo this should be shown after GERES is implemented
-        return false;
+    public showGeresAbfrage(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.isPersonensucheDisabled) && !this.isPersonensucheDisabled;
     }
 }

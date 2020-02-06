@@ -256,18 +256,19 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public downloadGesuchsperiodeDokument(sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
-        const win = this.downloadRS.prepareDownloadWindow();
         this.gesuchsperiodeRS.downloadGesuchsperiodeDokument(this.gesuchsperiode.id, sprache, dokumentTyp).then(
             response => {
                 let file;
+                let filename;
                 if (dokumentTyp === TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG) {
                     file = new Blob([response], {type: 'application/pdf'});
+                    filename = this.$translate.instant('ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME');
                 } else if (dokumentTyp === TSDokumentTyp.VORLAGE_MERKBLATT_TS) {
                     file = new Blob([response],
                         {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                    filename = this.$translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
                 }
-                const fileURL = URL.createObjectURL(file);
-                this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
+                this.downloadRS.openDownload(file, filename);
             });
     }
 

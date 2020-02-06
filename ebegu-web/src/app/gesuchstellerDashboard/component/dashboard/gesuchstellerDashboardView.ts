@@ -244,24 +244,37 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public showAnmeldungTagesschuleCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
-            return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreate(periode);
-        }
+            return this.gemeindeStammdaten.gemeinde.angebotTS && this.showAnmeldungCreateTS(periode)
+                && periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.tagesschulanmeldungenStartdatum);        }
         return undefined;
     }
 
     public showAnmeldungFerieninselCreate(periode: TSGesuchsperiode): boolean {
         if (this.gemeindeStammdaten) {
-            return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreate(periode);
+            return this.gemeindeStammdaten.gemeinde.angebotFI && this.showAnmeldungCreateFI(periode) &&
+            periode.gueltigkeit.gueltigBis.isAfter(this.gemeindeStammdaten.gemeinde.ferieninselanmeldungenStartdatum);
         }
         return undefined;
     }
 
-    public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
+    private showAnmeldungCreateTS(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
         const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung();
         return tsEnabledForMandant
             && tsEnabledForGemeinde
+            && !!antrag
+            && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
+            && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG
+            && this.isNeuestAntragOfGesuchsperiode(periode, antrag);
+    }
+
+    private showAnmeldungCreateFI(periode: TSGesuchsperiode): boolean {
+        const antrag = this.getAntragForGesuchsperiode(periode);
+        const fiEnabledForMandant = this.authServiceRS.hasMandantAngebotFI();
+        const fiEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasFerieninseAnmeldung();
+        return fiEnabledForMandant
+            && fiEnabledForGemeinde
             && !!antrag
             && antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS
             && antrag.status !== TSAntragStatus.FREIGABEQUITTUNG

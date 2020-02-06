@@ -15,75 +15,26 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSEWKResultat} from '../../../models/TSEWKResultat';
-import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
-import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import IHttpParamSerializer = angular.IHttpParamSerializer;
 
 export class EwkRS {
 
-    public static $inject = ['$http', '$httpParamSerializer', 'REST_API', 'EbeguRestUtil', '$log'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
 
     public serviceURL: string;
-    public gesuchsteller1: TSGesuchstellerContainer;
-    public gesuchsteller2: TSGesuchstellerContainer;
 
     public constructor(
         public readonly http: IHttpService,
-        public readonly httpParamSerializer: IHttpParamSerializer,
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
         public readonly log: ILogService,
     ) {
-        this.serviceURL = `${REST_API}gesuchsteller`;
+        this.serviceURL = `${REST_API}gesuche`;
     }
 
-    public ewkSearchAvailable(gsNr: number): boolean {
-        return this.ewkSearchAvailableGS(this.getGesuchsteller(gsNr));
-    }
+    public sucheInEwk(gesuchId: string): IPromise<TSEWKResultat> {
 
-    private ewkSearchAvailableGS(gesuchstellerContainer: TSGesuchstellerContainer): boolean {
-        if (gesuchstellerContainer && gesuchstellerContainer.gesuchstellerJA
-            && gesuchstellerContainer.gesuchstellerJA.nachname
-            && gesuchstellerContainer.gesuchstellerJA.vorname
-            && gesuchstellerContainer.gesuchstellerJA.geburtsdatum
-            && gesuchstellerContainer.gesuchstellerJA.geschlecht) {
-            return true;
-        }
-        return false;
-    }
-
-    public suchePerson(gsNr: number): IPromise<TSEWKResultat> {
-        return this.suchePersonInEwk(this.getGesuchsteller(gsNr));
-    }
-
-    public getGesuchsteller(gsNr: number): TSGesuchstellerContainer {
-        if (1 === gsNr) {
-            return this.gesuchsteller1;
-        }
-        if (2 === gsNr) {
-            return this.gesuchsteller2;
-        }
-        this.log.error('invalid gesuchstellernummer', gsNr);
-        return null;
-    }
-
-    private suchePersonInEwk(gesuchstellerContainer: TSGesuchstellerContainer): IPromise<TSEWKResultat> {
-        const gs = gesuchstellerContainer.gesuchstellerJA;
-        if (gs.ewkPersonId) {
-            return this.http.get(`${this.serviceURL}/ewk/search/id/${gs.ewkPersonId}`)
-                .then((response: any) => {
-                    return this.handlePersonSucheResult(response);
-                });
-        }
-        const reportParams = this.httpParamSerializer({
-            nachname: gs.nachname,
-            vorname: gs.vorname,
-            geburtsdatum: DateUtil.momentToLocalDate(gs.geburtsdatum),
-            geschlecht: gs.geschlecht.toLocaleString(),
-        });
-
-        return this.http.get(`${this.serviceURL}/ewk/search/attributes?${reportParams}`)
+        return this.http.get(`${this.serviceURL}/ewk/searchgesuch/${gesuchId}`)
             .then((response: any) => {
                 return this.handlePersonSucheResult(response);
             });
@@ -92,12 +43,6 @@ export class EwkRS {
     private handlePersonSucheResult(response: any): TSEWKResultat {
         this.log.debug('PARSING ewkResultat REST object ', response.data);
         return this.ebeguRestUtil.parseEWKResultat(new TSEWKResultat(), response.data);
-    }
-
-    public selectPerson(n: number, ewkPersonID: string): void {
-        const gs = this.getGesuchsteller(n);
-        gs.gesuchstellerJA.ewkPersonId = ewkPersonID;
-        gs.gesuchstellerJA.ewkAbfrageDatum = DateUtil.now();
     }
 
     public getServiceName(): string {

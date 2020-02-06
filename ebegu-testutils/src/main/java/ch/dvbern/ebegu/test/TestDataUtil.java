@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -159,7 +160,19 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHUL
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD;
@@ -169,6 +182,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
@@ -189,9 +203,6 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
 
 /**
  * comments homa
@@ -377,6 +388,8 @@ public final class TestDataUtil {
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
 			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+			gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+			gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
@@ -414,6 +427,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99998L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
 		stammdaten.setId(GEMEINDE_PARIS_ID);
 		return gemeinde;
@@ -429,6 +444,8 @@ public final class TestDataUtil {
 		gemeinde.setBfsNummer(99999L);
 		gemeinde.setMandant(createDefaultMandant());
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
 		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
 		stammdaten.setId(GEMEINDE_LONDON_ID);
 		return gemeinde;
@@ -792,13 +809,23 @@ public final class TestDataUtil {
 		erwerbspensum.setUnbezahlterUrlaub(urlaub);
 	}
 
+	public static AnmeldungTagesschule createAnmeldungTagesschuleWithModules(KindContainer kind, Gesuchsperiode gesuchsperiode) {
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		anmeldung.setKind(kind);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(true));
+		kind.getAnmeldungenTagesschule().add(anmeldung);
+		return anmeldung;
+	}
+
 	public static AnmeldungTagesschule createAnmeldungTagesschule(KindContainer kind, Gesuchsperiode gesuchsperiode) {
-		AnmeldungTagesschule betreuung = new AnmeldungTagesschule();
-		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
-		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
-		betreuung.setKind(kind);
-		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
-		return betreuung;
+		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
+		anmeldung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern(gesuchsperiode));
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		anmeldung.setKind(kind);
+		anmeldung.setBelegungTagesschule(createDefaultBelegungTagesschule(false));
+		return anmeldung;
 	}
 
 	public static AnmeldungFerieninsel createAnmeldungFerieninsel(KindContainer kind) {
@@ -832,10 +859,57 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
-	public static BelegungTagesschule createDefaultBelegungTagesschule() {
+	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
+		if (withModulBelegung) {
+			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
+
+			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true);
+			modulTagesschuleSet.forEach(
+				modulTagesschule -> {
+					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
+				}
+			);
+
+			Set<ModulTagesschule> modulTagesschuleSetOhneBetreuung = createDefaultModuleTagesschuleSet(false);
+			modulTagesschuleSetOhneBetreuung.forEach(
+				modulTagesschule -> {
+					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
+					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
+				}
+			);
+		}
 		return belegungTagesschule;
+	}
+
+	private static Set<ModulTagesschule> createDefaultModuleTagesschuleSet(boolean wirdPedagogischBetreut){
+		ModulTagesschuleGroup modulTagesschuleGroupPedagogischBetreut = new ModulTagesschuleGroup();
+		modulTagesschuleGroupPedagogischBetreut.setZeitVon(LocalTime.of(8,0));
+		modulTagesschuleGroupPedagogischBetreut.setZeitBis(LocalTime.of(11,45));
+		modulTagesschuleGroupPedagogischBetreut.setVerpflegungskosten(MathUtil.DEFAULT.from(10));
+		modulTagesschuleGroupPedagogischBetreut.setWirdPaedagogischBetreut(wirdPedagogischBetreut);
+
+		ModulTagesschule modulTagesschuleMonday = new ModulTagesschule();
+		modulTagesschuleMonday.setModulTagesschuleGroup(modulTagesschuleGroupPedagogischBetreut);
+		modulTagesschuleMonday.setWochentag(DayOfWeek.MONDAY);
+
+		ModulTagesschule modulTagesschuleFriday= new ModulTagesschule();
+		modulTagesschuleFriday.setModulTagesschuleGroup(modulTagesschuleGroupPedagogischBetreut);
+		modulTagesschuleFriday.setWochentag(DayOfWeek.FRIDAY);
+
+		Set<ModulTagesschule> modulTagesschuleSet = new TreeSet<>();
+		modulTagesschuleSet.add(modulTagesschuleMonday);
+		modulTagesschuleSet.add(modulTagesschuleFriday);
+
+		modulTagesschuleGroupPedagogischBetreut.setModule(modulTagesschuleSet);
+
+		return modulTagesschuleSet;
 	}
 
 	public static BetreuungspensumContainer createBetPensContainer(Betreuung betreuung) {
@@ -1452,6 +1526,16 @@ public final class TestDataUtil {
 		saveEinstellung(MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, "12.24", gesuchsperiode, persistence);
 		saveEinstellung(MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, "6.11", gesuchsperiode, persistence);
 		saveEinstellung(MIN_TARIF, "0.78", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, "0.00", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO, "0.00", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA, "0.00", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO, "0.00", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, "0", gesuchsperiode, persistence);
 
 	}
 
@@ -1877,10 +1961,10 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.setBetreuungspensumProzent(BigDecimal.valueOf(10));
-		zeitabschnitt.setAnspruchberechtigtesPensum(50);
-		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
-		zeitabschnitt.setZuSpaetEingereicht(false);
+		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
+		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
+		zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(PERIODE_JAHR_1);
+		zeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(false);
 		return zeitabschnitt;
 	}
 

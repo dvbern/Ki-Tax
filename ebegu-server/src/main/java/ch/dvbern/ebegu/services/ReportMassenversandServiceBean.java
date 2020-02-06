@@ -243,7 +243,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			final Gesuchsteller gesuchstellerJA = gesuch.getGesuchsteller2().getGesuchstellerJA();
 			row.setGs2Name(gesuchstellerJA.getNachname());
 			row.setGs2Vorname(gesuchstellerJA.getVorname());
-			row.setGs2PersonId(gesuchstellerJA.getEwkPersonId());
 			row.setGs2Mail(gesuchstellerJA.getMail());
 		}
 	}
@@ -253,7 +252,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			final Gesuchsteller gesuchstellerJA = gesuch.getGesuchsteller1().getGesuchstellerJA();
 			row.setGs1Name(gesuchstellerJA.getNachname());
 			row.setGs1Vorname(gesuchstellerJA.getVorname());
-			row.setGs1PersonId(gesuchstellerJA.getEwkPersonId());
 			row.setGs1Mail(gesuchstellerJA.getMail());
 			final GesuchstellerAdresse currentKorrespondezAdresse =
 				gesuch.getGesuchsteller1().extractEffektiveKorrespondezAdresse(LocalDate.now());

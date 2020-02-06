@@ -164,7 +164,7 @@ public class InstitutionResource {
 	}
 
 	private void initInstitutionStammdaten(
-		@Nonnull String stringDateBeguStart,
+		@Nonnull String stringDateStartDate,
 		@Nonnull BetreuungsangebotTyp betreuungsangebot,
 		@Nonnull Institution persistedInstitution,
 		@Nonnull String adminMail,
@@ -176,9 +176,6 @@ public class InstitutionResource {
 		case KITA:
 		case TAGESFAMILIEN:
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(new InstitutionStammdatenBetreuungsgutscheine());
-			LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
-			DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
-			institutionStammdaten.setGueltigkeit(gueltigkeit);
 			break;
 		case TAGESSCHULE:
 			gemeinde = getGemeindeOrThrowException(gemeindeId);
@@ -216,6 +213,11 @@ public class InstitutionResource {
 		institutionStammdaten.setBetreuungsangebotTyp(betreuungsangebot);
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
+
+		LocalDate startDate = LocalDate.parse(stringDateStartDate, Constants.SQL_DATE_FORMAT);
+		DateRange gueltigkeit = new DateRange(startDate, Constants.END_OF_TIME);
+		institutionStammdaten.setGueltigkeit(gueltigkeit);
+
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 	}
 

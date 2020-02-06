@@ -88,6 +88,16 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Nonnull
 	private LocalDate betreuungsgutscheineStartdatum;
 
+	@NotNull
+	@Column(nullable = false)
+	@Nonnull
+	private LocalDate tagesschulanmeldungenStartdatum;
+
+	@NotNull
+	@Column(nullable = false)
+	@Nonnull
+	private LocalDate ferieninselanmeldungenStartdatum;
+
 	@Column(nullable = false)
 	private boolean angebotBG = false;
 
@@ -206,5 +216,23 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Transient
 	public String getPaddedGemeindeNummer() {
 		return Strings.padStart(Long.toString(getGemeindeNummer()), Constants.GEMEINDENUMMER_LENGTH, '0');
+	}
+
+	@Nonnull
+	public LocalDate getTagesschulanmeldungenStartdatum() {
+		return tagesschulanmeldungenStartdatum;
+	}
+
+	public void setTagesschulanmeldungenStartdatum(@Nonnull LocalDate tagesschulanmeldungenStartdatum) {
+		this.tagesschulanmeldungenStartdatum = tagesschulanmeldungenStartdatum;
+	}
+
+	@Nonnull
+	public LocalDate getFerieninselanmeldungenStartdatum() {
+		return ferieninselanmeldungenStartdatum;
+	}
+
+	public void setFerieninselanmeldungenStartdatum(@Nonnull LocalDate ferieninselanmeldungenStartdatum) {
+		this.ferieninselanmeldungenStartdatum = ferieninselanmeldungenStartdatum;
 	}
 }

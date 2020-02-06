@@ -52,7 +52,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(MonatsRule.execute(zabetrErtgesuch));
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
 
@@ -85,7 +85,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(MonatsRule.execute(zabetrErtgesuch));
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
 
@@ -119,7 +119,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(MonatsRule.execute(zabetrErtgesuch));
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
 
@@ -159,7 +159,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch = MonatsRule.execute(zabetrErtgesuch);
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
@@ -195,7 +195,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch = MonatsRule.execute(zabetrErtgesuch);
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
@@ -230,7 +230,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch = MonatsRule.execute(zabetrErtgesuch);
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
@@ -267,7 +267,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch = MonatsRule.execute(zabetrErtgesuch);
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
@@ -305,7 +305,7 @@ public class MutationsMergerTest {
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch = MonatsRule.execute(zabetrErtgesuch);
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
@@ -343,7 +343,7 @@ public class MutationsMergerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitSplit2 = new VerfuegungZeitabschnitt(zeitabschnitToSplit);
 		zeitabschnitSplit2.getGueltigkeit().setGueltigAb(aenderungsDatumPensum);
-		zeitabschnitSplit2.setAnspruchberechtigtesPensum(ansprechberechtigtesPensum);
+		zeitabschnitSplit2.getBgCalculationResultAsiv().setAnspruchspensumProzent(ansprechberechtigtesPensum);
 		zeitabschnitteSplitted.add(zeitabschnitSplit2);
 
 		zeitabschnitte.stream().
@@ -379,7 +379,7 @@ public class MutationsMergerTest {
 	) {
 		verfuegungsZeitabschnitteMutiert.stream()
 			.filter(v -> v.getGueltigkeit().startsSameDay(datumAb) || v.getGueltigkeit().startsAfter(datumAb))
-			.forEach(v -> v.setAnspruchberechtigtesPensum(anspruchberechtigtesPensum));
+			.forEach(v -> v.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruchberechtigtesPensum));
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {

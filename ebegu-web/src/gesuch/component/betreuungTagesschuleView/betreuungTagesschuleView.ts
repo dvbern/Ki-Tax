@@ -19,6 +19,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -31,11 +32,13 @@ import {
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSMandant} from '../../../models/TSMandant';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -43,6 +46,7 @@ import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
+import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
@@ -92,6 +96,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'DownloadRS',
+        'GemeindeRS',
         'I18nServiceRSRest',
     ];
 
@@ -99,15 +105,18 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public form: IFormController;
     public betreuung: TSBetreuung;
     public showErrorMessageNoModule: boolean;
-    public datumErsterSchultag: moment.Moment;
+    public minEintrittsdatum: moment.Moment;
     public showNochNichtFreigegeben: boolean = false;
     public showMutiert: boolean = false;
     public aktuellGueltig: boolean = true;
     public agbTSAkzeptiert: boolean = false;
     public isAnmeldenClicked: boolean = false;
     public erlaeuterung: string = null;
+    public agbVorhanden: boolean;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
+
+    public lastModifiedModul?: TSBelegungTagesschuleModul;
 
     public constructor(
         $state: StateService,
@@ -127,6 +136,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        private readonly downloadRS: DownloadRS,
+        private readonly gemeindeRS: GemeindeRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
 
@@ -136,12 +147,18 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
         }, (newValue, oldValue) => {
+            this.existMerkblattAnmeldungTS();
             if (newValue === oldValue) {
                 return;
             }
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
             if (this.betreuung.institutionStammdaten) {
                 this.loadErlaeuterungForTagesschule();
+            }
+        });
+        this.$scope.$on('$mdMenuClose', () => {
+            if (this.lastModifiedModul.modulTagesschule.angemeldet) {
+                this.form['modul_' + this.lastModifiedModul.modulTagesschule.identifier].$setValidity('nointerval', (this.lastModifiedModul.intervall !== undefined));
             }
         });
     }
@@ -153,7 +170,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.loadErlaeuterungForTagesschule();
         }
         if (this.betreuung.isEnabled()) {
-            this.datumErsterSchultag = this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag;
+            this.minEintrittsdatum = this.getMinErsterSchultag();
             this.setErsterSchultag();
         }
         if (!this.getBetreuungModel().anmeldungMutationZustand) {
@@ -171,17 +188,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getTagesschuleAnmeldungNotYetReadyText(): string {
-        if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()) {
-            if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulenAnmeldungKonfiguriert()) {
-                const terminValue = DateUtil.momentToLocalDateFormat(
-                    this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
-                return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
-                    termin: terminValue,
-                });
-            }
-            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
+        if (this.gesuchModelManager.gemeindeKonfiguration.isTagesschulAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_AB_INFO', {
+                termin: terminValue,
+            });
         }
-        return '';
+        return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
     private loadErlaeuterungForTagesschule(): void {
@@ -311,14 +325,17 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public openMenu(modul: TSBelegungTagesschuleModul, belegungGroup: TSBelegungTagesschuleModulGroup, $mdMenu: any,
                     ev: Event): any {
+        this.lastModifiedModul = modul;
         if (!modul.modulTagesschule.angemeldet) {
             // Das Modul wurde abgewählt. Wir entfernen auch das gewählte Intervall
             modul.intervall = undefined;
+            this.form['modul_' + modul.modulTagesschule.identifier].$setValidity('nointerval', true);
             return;
         }
         if (belegungGroup.group.intervall === TSModulTagesschuleIntervall.WOECHENTLICH) {
             // Es gibt keine Auswahl für dieses Modul, es ist immer Wöchentlich
             modul.intervall = TSBelegungTagesschuleModulIntervall.WOECHENTLICH;
+            this.form['modul_' + modul.modulTagesschule.identifier].$setValidity('nointerval', true);
             return;
         }
         $mdMenu.open(ev);
@@ -328,8 +345,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSBelegungTagesschuleModulIntervallValues();
     }
 
-    public setIntervall(modul: TSBelegungTagesschuleModul, intervall: TSBelegungTagesschuleModulIntervall): void {
+    public setIntervall(modul: TSBelegungTagesschuleModul,
+                        intervall: TSBelegungTagesschuleModulIntervall, $mdMenu: any): void {
         modul.intervall = intervall;
+        $mdMenu.close();
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
@@ -351,5 +370,39 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.preSave();
             this.anmeldungSchulamtFalscheInstitution();
         }
+    }
+
+    private getMinErsterSchultag(): moment.Moment {
+        if (this.getBetreuungModel() && this.getBetreuungModel().belegungTagesschule) {
+            this.getBetreuungModel().belegungTagesschule.eintrittsdatum = moment.max(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigTagesschuleErsterSchultag,
+                TSMandant.earliestDateOfTSAnmeldung
+            );
+            return this.getBetreuungModel().belegungTagesschule.eintrittsdatum;
+        }
+        return undefined;
+    }
+
+    public downloadGemeindeGesuchsperiodeDokument(): void {
+        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        this.gemeindeRS.downloadGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+            sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
+            response => {
+                let file;
+                file = new Blob([response], {type: 'application/pdf'});
+                const filename = this.$translate.instant('MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
+                this.downloadRS.openDownload(file, filename);
+            });
+    }
+
+    private existMerkblattAnmeldungTS(): void {
+        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+            sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
+            result => {
+                this.agbVorhanden = result;
+            });
     }
 }

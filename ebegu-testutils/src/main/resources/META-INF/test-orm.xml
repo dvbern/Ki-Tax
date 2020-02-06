@@ -360,7 +360,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.BetreuungspensumAbweichung"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungFerieninsel"/>
 	<entity class="ch.dvbern.ebegu.entities.AnmeldungTagesschule"/>
-	<entity class="ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt"/>
 	<entity class="ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine"/>
 	<entity class="ch.dvbern.ebegu.entities.ExternalClient"/>
 	<entity class="ch.dvbern.ebegu.outbox.OutboxEvent"/>
@@ -370,4 +369,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichGrundlagen"/>
 	<entity class="ch.dvbern.ebegu.entities.Lastenausgleich"/>
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
+	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
+	<entity class="ch.dvbern.ebegu.entities.TSCalculationResult"/>
+	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode"/>
 </entity-mappings>

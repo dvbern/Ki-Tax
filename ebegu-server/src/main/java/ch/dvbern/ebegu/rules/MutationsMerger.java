@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -70,17 +69,11 @@ public final class MutationsMerger {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
-
-		if (!platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() || !(platz instanceof Betreuung)) {
-			return zeitabschnitte;
-		}
 		if (platz.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
 		}
-		Betreuung betreuung = (Betreuung) platz;
-		final Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
-
-		final LocalDate mutationsEingansdatum = betreuung.extractGesuch().getRegelStartDatum();
+		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
 		Objects.requireNonNull(mutationsEingansdatum);
 
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
@@ -115,7 +108,7 @@ public final class MutationsMerger {
 			&& !vorangehenderAbschnitt.isBesondereBeduerfnisseBestaetigt()
 			&& !zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
 		) {
-			zeitabschnitt.setBesondereBeduerfnisseBestaetigt(false);
+			zeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(false);
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
@@ -135,10 +128,10 @@ public final class MutationsMerger {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
 				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
-				zeitabschnitt.setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
-				zeitabschnitt.setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
-				zeitabschnitt.setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
+				zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
+				zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
+				zeitabschnitt.getBgCalculationResultAsiv().setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
+				zeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
 				if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
 					zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
@@ -162,7 +155,7 @@ public final class MutationsMerger {
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-				zeitabschnitt.setAnspruchberechtigtesPensum(anspruchAufVorgaengerVerfuegung);
+				zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {

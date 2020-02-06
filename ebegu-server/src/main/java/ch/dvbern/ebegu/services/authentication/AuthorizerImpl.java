@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -126,6 +127,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private InstitutionStammdatenService stammdatenService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller need to
@@ -495,7 +499,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE)) {
-			return userHasSameGemeindeAsPrincipal(benutzer);
+			return (userHasSameGemeindeAsPrincipal(benutzer))
+				|| (benutzer.getInstitution() != null && tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(),
+				principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return benutzer.getRole().isRoleMandant()
@@ -511,6 +517,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		return false;
+	}
+
+	private boolean tagesschuleBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+		if (stammdaten == null || stammdaten.getInstitutionStammdatenTagesschule() == null) {
+			return false;
+		}
+		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
 	}
 
 	private boolean userBelongsToInstitutionOfPrincipal(@Nonnull Benutzer benutzer) {

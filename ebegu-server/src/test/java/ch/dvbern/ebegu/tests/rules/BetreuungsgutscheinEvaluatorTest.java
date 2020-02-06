@@ -98,7 +98,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
-				LOG.info("{}", betreuung.getVerfuegung());
+				LOG.info("{}", betreuung.getVerfuegungOrVerfuegungPreview());
 			}
 		}
 	}
@@ -113,9 +113,9 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				assertNotNull(betreuung.getVerfuegung());
-				assertNotNull(betreuung.getVerfuegung().getGeneratedBemerkungen());
-				assertFalse(betreuung.getVerfuegung().getGeneratedBemerkungen().isEmpty());
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview().getGeneratedBemerkungen());
+				assertFalse(betreuung.getVerfuegungOrVerfuegungPreview().getGeneratedBemerkungen().isEmpty());
 			}
 		}
 	}

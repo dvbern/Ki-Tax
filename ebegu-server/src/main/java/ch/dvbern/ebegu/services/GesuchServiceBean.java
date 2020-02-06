@@ -202,6 +202,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private GemeindeService gemeindeService;
 	@Inject
 	private GesuchService self;
+	@Inject
+	private VerfuegungService verfuegungService;
+
 
 	@Nonnull
 	@Override
@@ -217,6 +220,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Eingangsart eingangsart = calculateEingangsart();
 		AntragStatus initialStatus = calculateInitialStatus();
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
+		LocalDate regelnGueltigAb = gesuchToCreate.getRegelnGueltigAb();
 		StringBuilder logInfo = new StringBuilder();
 		logInfo.append("CREATE GESUCH fuer Gemeinde: ").append(gemeindeOfGesuchToCreate.getName())
 			.append(" Gesuchsperiode: ").append(gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString())
@@ -240,6 +244,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		gesuchToPersist.setStatus(initialStatus);
 		if (eingangsdatum != null) {
 			gesuchToPersist.setEingangsdatum(eingangsdatum);
+		}
+		if (regelnGueltigAb != null) {
+			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 		authorizer.checkReadAuthorization(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
@@ -357,7 +364,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					if (anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)) {
-						this.betreuungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+						this.verfuegungService.anmeldungSchulamtUebernehmen(gesuch.getId(), anmeldungTagesschule.getId());
 					}
 				}
 			}
@@ -1773,8 +1780,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		// In Fall von NUR_SCHULAMT-Angeboten werden diese nicht verfügt, d.h. ab "Verfügen starten"
 		// sind diese Betreuungen die letzt gültigen
-		final List<Betreuung> betreuungen = gesuch.extractAllBetreuungen();
-		for (Betreuung betreuung : betreuungen) {
+		final List<AbstractAnmeldung> betreuungen = gesuch.extractAllAnmeldungen();
+		for (AbstractAnmeldung betreuung : betreuungen) {
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
 				betreuung.setGueltig(true);
 				if (betreuung.getVorgaengerId() != null) {

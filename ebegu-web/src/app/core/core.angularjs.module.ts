@@ -259,6 +259,7 @@ export const CORE_JS_MODULE = angular
     .service('WizardStepManager', WizardStepManager)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
+    .service('applicationPropertyRS', ApplicationPropertyRS)
     .controller('DVElementController', DVRoleElementController)
     .component('dvLoadingButton', new DVLoadingButton())
     .component('dvAdresse', new AdresseComponentConfig())

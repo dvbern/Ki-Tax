@@ -45,7 +45,6 @@ import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
-import ch.dvbern.ebegu.api.dtos.JaxAnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
@@ -115,6 +114,7 @@ import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
@@ -133,7 +133,6 @@ import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
@@ -198,6 +197,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
@@ -485,8 +485,6 @@ public class JaxBConverter extends AbstractConverter {
 		gesuchsteller.setTelefon(gesuchstellerJAXP.getTelefon());
 		gesuchsteller.setMobile(gesuchstellerJAXP.getMobile());
 		gesuchsteller.setTelefonAusland(gesuchstellerJAXP.getTelefonAusland());
-		gesuchsteller.setEwkPersonId(gesuchstellerJAXP.getEwkPersonId());
-		gesuchsteller.setEwkAbfrageDatum(gesuchstellerJAXP.getEwkAbfrageDatum());
 		gesuchsteller.setDiplomatenstatus(gesuchstellerJAXP.isDiplomatenstatus());
 		gesuchsteller.setKorrespondenzSprache(gesuchstellerJAXP.getKorrespondenzSprache());
 
@@ -652,8 +650,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuchsteller.setTelefon(persistedGesuchsteller.getTelefon());
 		jaxGesuchsteller.setMobile(persistedGesuchsteller.getMobile());
 		jaxGesuchsteller.setTelefonAusland(persistedGesuchsteller.getTelefonAusland());
-		jaxGesuchsteller.setEwkPersonId(persistedGesuchsteller.getEwkPersonId());
-		jaxGesuchsteller.setEwkAbfrageDatum(persistedGesuchsteller.getEwkAbfrageDatum());
 		jaxGesuchsteller.setDiplomatenstatus(persistedGesuchsteller.isDiplomatenstatus());
 		jaxGesuchsteller.setKorrespondenzSprache(persistedGesuchsteller.getKorrespondenzSprache());
 
@@ -2982,10 +2978,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAnmeldungMutationZustand(betreuungFromServer.getAnmeldungMutationZustand());
 		jaxBetreuung.setKeineDetailinformationen(betreuungFromServer.isKeineDetailinformationen());
 		jaxBetreuung.setBelegungTagesschule(belegungTagesschuleToJax(betreuungFromServer.getBelegungTagesschule()));
-		List<JaxAnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnitts = betreuungFromServer.getAnmeldungTagesschuleZeitabschnitts().stream()
-			.map(this::anmeldungTagesschuleZeitabschnittToJax)
-			.collect(Collectors.toList());
-		jaxBetreuung.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnitts);
+		// Für die Anzeige auf dem GUI interessiert es uns nicht, ob es eine echte/gespeicherte Verfügung
+		// oder eine Preview-Verfügung ist
+		if (betreuungFromServer.getVerfuegungOrVerfuegungPreview() != null) {
+			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegungOrVerfuegungPreview()));
+		}
 		setMandatoryFieldsOnJaxBetreuungForAnmeldungen(jaxBetreuung);
 		return jaxBetreuung;
 	}
@@ -3019,9 +3016,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
-		if (betreuungFromServer.getVerfuegung() != null) {
-			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegung()));
+		// Für die Anzeige auf dem GUI interessiert es uns nicht, ob es eine echte/gespeicherte Verfügung
+		// oder eine Preview-Verfügung ist
+		if (betreuungFromServer.getVerfuegungOrVerfuegungPreview() != null) {
+			jaxBetreuung.setVerfuegung(verfuegungToJax(betreuungFromServer.getVerfuegungOrVerfuegungPreview()));
 		}
+
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
 		return jaxBetreuung;
@@ -3186,13 +3186,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
-		jaxZeitabschn.setAnspruchberechtigtesPensum(zeitabschnitt.getAnspruchberechtigtesPensum());
+		jaxZeitabschn.setAnspruchspensumProzent(zeitabschnitt.getAnspruchberechtigtesPensum());
 		jaxZeitabschn.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		jaxZeitabschn.setVollkosten(zeitabschnitt.getVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		jaxZeitabschn.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 		jaxZeitabschn.setMinimalerElternbeitrag(zeitabschnitt.getMinimalerElternbeitrag());
+		jaxZeitabschn.setMinimalerElternbeitragGekuerzt(zeitabschnitt.getMinimalerElternbeitragGekuerzt());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		jaxZeitabschn.setMassgebendesEinkommenVorAbzugFamgr(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
 		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
@@ -3208,8 +3209,27 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getBgCalculationInputAsiv().isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getBgCalculationInputAsiv().isSameAusbezahlteVerguenstigung());
-
+		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
+			tsCalculationResultToJax(
+				zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung()));
+		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
+			tsCalculationResultToJax(
+				zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung()));
 		return jaxZeitabschn;
+	}
+
+	@Nullable
+	private JaxTsCalculationResult tsCalculationResultToJax(@Nullable TSCalculationResult zeitabschnitt) {
+		if (zeitabschnitt == null) {
+			return null;
+		}
+		JaxTsCalculationResult result = new JaxTsCalculationResult();
+		result.setBetreuungszeitProWoche(zeitabschnitt.getBetreuungszeitProWoche());
+		result.setBetreuungszeitProWocheFormatted(zeitabschnitt.getBetreuungszeitProWocheFormatted());
+		result.setVerpflegungskosten(zeitabschnitt.getVerpflegungskosten());
+		result.setGebuehrProStunde(zeitabschnitt.getGebuehrProStunde());
+		result.setTotalKostenProWoche(zeitabschnitt.getTotalKostenProWoche());
+		return result;
 	}
 
 	/**
@@ -4387,14 +4407,16 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(gemeinde);
 		requireNonNull(jaxGemeinde);
 		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		requireNonNull(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());
 		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
 		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
-		if (jaxGemeinde.getBetreuungsgutscheineStartdatum() != null) {
-			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
-		}
+		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
 		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
@@ -4410,6 +4432,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
 		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
+		jaxGemeinde.setTagesschulanmeldungenStartdatum(persistedGemeinde.getTagesschulanmeldungenStartdatum());
+		jaxGemeinde.setFerieninselanmeldungenStartdatum(persistedGemeinde.getFerieninselanmeldungenStartdatum());
 		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
@@ -4757,22 +4781,5 @@ public class JaxBConverter extends AbstractConverter {
 
 	public void lastenausgleichDetailToJAX() {
 		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
-	}
-
-	@Nullable
-	private JaxAnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittToJax(@Nullable AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittFromServer) {
-		if (anmeldungTagesschuleZeitabschnittFromServer == null) {
-			return null;
-		}
-		final JaxAnmeldungTagesschuleZeitabschnitt jaxAnmeldungTagesschuleZeitabschnitt = new JaxAnmeldungTagesschuleZeitabschnitt();
-		convertAbstractDateRangedFieldsToJAX(anmeldungTagesschuleZeitabschnittFromServer, jaxAnmeldungTagesschuleZeitabschnitt);
-		jaxAnmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getBetreuungsminutenProWoche());
-		jaxAnmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getBetreuungsstundenProWoche());
-		jaxAnmeldungTagesschuleZeitabschnitt.setGebuehrProStunde(anmeldungTagesschuleZeitabschnittFromServer.getGebuehrProStunde());
-		jaxAnmeldungTagesschuleZeitabschnitt.setMassgebendesEinkommenInklAbzugFamgr(anmeldungTagesschuleZeitabschnittFromServer.getMassgebendesEinkommenInklAbzugFamgr());
-		jaxAnmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(anmeldungTagesschuleZeitabschnittFromServer.isPedagogischBetreut());
-		jaxAnmeldungTagesschuleZeitabschnitt.setTotalKostenProWoche(anmeldungTagesschuleZeitabschnittFromServer.getTotalKostenProWoche());
-		jaxAnmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(anmeldungTagesschuleZeitabschnittFromServer.getVerpflegungskosten());
-		return jaxAnmeldungTagesschuleZeitabschnitt;
 	}
 }

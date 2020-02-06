@@ -484,6 +484,23 @@ export class TSRoleUtil {
     }
 
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
+    public static getAllRolesForEWKAbfrage(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.JURIST,
+            TSRole.REVISOR,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+        ];
+    }
+
+    // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getAllRolesForKommentarSpalte(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,

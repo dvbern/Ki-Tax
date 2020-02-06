@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,6 +33,7 @@ import javax.validation.Valid;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -101,16 +103,37 @@ public abstract class AbstractEbeguRule implements Rule {
 	}
 
 	/**
+	 * Stellt die Zeitabschnitte der aktuellen Rule zusammen, falls die Rule für den
+	 * aktuellen Betreuungstyp relevant ist
+	 */
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteIfApplicable(@Nonnull AbstractPlatz platz) {
+		if (isAnwendbarForAngebot(platz)) {
+			return createVerfuegungsZeitabschnitte(platz);
+		}
+		return new ArrayList<>();
+	}
+
+	/**
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
-	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+	abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz);
+
+	/**
+	 * Führt die aktuelle Rule aus, falls die Rule für den
+	 * aktuellen Betreuungstyp relevant ist
+	 */
+	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		if (isAnwendbarForAngebot(platz)) {
+			executeRule(platz, verfuegungZeitabschnitt);
+		}
+	}
 
 	/**
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
 	 * Hier kann man davon ausgehen, dass die Zeitabschnitte schon validiert und gemergt sind.
 	 */
-	protected abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
+	abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
 
 	/**
 	 * Hauptmethode der Regelberechnung. Diese wird von Aussen aufgerufen
@@ -123,7 +146,7 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
 
-		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(platz);
+		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitteIfApplicable(platz);
 		Collections.sort(abschnitteCreatedInRule);
 
 		// In dieser Funktion muss sichergestellt werden, dass in der neuen Liste keine Ueberschneidungen mehr bestehen
@@ -140,10 +163,23 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Die eigentliche Rule anwenden
 		for (VerfuegungZeitabschnitt zeitabschnitt : normalizedZeitabschn) {
-			executeRule(platz, zeitabschnitt);
+			executeRuleIfApplicable(platz, zeitabschnitt);
 		}
 		return normalizedZeitabschn;
 	}
+
+	/**
+	 *
+	 * @param platz (Betreuung, Tageschhulplatz etc)
+	 * @return true wenn die Regel anwendbar ist
+	 */
+	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) {
+		Objects.requireNonNull(platz);
+		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
+		return getAnwendbareAngebote().contains(platz.getBetreuungsangebotTyp());
+	}
+
+	protected abstract List<BetreuungsangebotTyp> getAnwendbareAngebote();
 
 	/**
 	 * Prüft, dass die Zeitabschnitte innerhalb der Gesuchperiode liegen (und kürzt sie falls nötig bzw. lässt

@@ -49,7 +49,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 
 	@Test
 	public void testStartdatumVorPeriode() {
-		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		Assert.assertEquals(1, results.size());
 		VerfuegungZeitabschnitt result = results.get(0);
@@ -63,7 +63,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 		LocalDate startdatum = LocalDate.of(2050, 8, 1);
 		betreuung.getKind().getGesuch().getDossier().getGemeinde().setBetreuungsgutscheineStartdatum(startdatum);
 
-		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		Assert.assertEquals(1, results.size());
 		VerfuegungZeitabschnitt result = results.get(0);
@@ -76,7 +76,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 		LocalDate startdatum = Constants.GESUCHSPERIODE_17_18.getGueltigAb();
 		betreuung.getKind().getGesuch().getDossier().getGemeinde().setBetreuungsgutscheineStartdatum(startdatum);
 
-		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		Assert.assertEquals(1, results.size());
 		VerfuegungZeitabschnitt result = results.get(0);
@@ -89,7 +89,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 		LocalDate startdatum = Constants.GESUCHSPERIODE_17_18_BIS;
 		betreuung.getKind().getGesuch().getDossier().getGemeinde().setBetreuungsgutscheineStartdatum(startdatum);
 
-		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> results = rule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 
 		Assert.assertEquals(2, results.size());
 

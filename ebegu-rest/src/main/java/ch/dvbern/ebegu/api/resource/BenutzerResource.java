@@ -362,6 +362,8 @@ public class BenutzerResource {
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				username));
 
+		authorizer.checkWriteAuthorization(benutzer);
+
 		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
 		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
 			converter.jaxBenutzerToBenutzer(benutzerJax, benutzer),

@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -82,6 +83,16 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	@Column(nullable = false)
 	private boolean gueltig = false;
+
+	/**
+	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
+	 */
+	@Transient
+	@Nullable
+	private Verfuegung vorgaengerVerfuegung;
+
+	@Transient
+	private boolean vorgaengerInitialized = false;
 
 
 	protected AbstractPlatz() {
@@ -129,6 +140,64 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 
 	public void setGueltig(boolean gueltig) {
 		this.gueltig = gueltig;
+	}
+
+	@Nullable
+	public abstract Verfuegung getVerfuegung();
+
+	public abstract void setVerfuegung(@Nullable Verfuegung verfuegung);
+
+	@Nullable
+	public abstract Verfuegung getVerfuegungPreview();
+
+	public abstract void setVerfuegungPreview(@Nullable Verfuegung verfuegung);
+
+
+	/**
+	 *
+	 * @return wenn der Status der Betreuung so ist dass eine definitive Verfuegung vorhanden ist
+	 * gibt diese zurueck.
+	 * Ansonsten wird der im verfuegungPreview gespeicherte werd zurueck gegeben
+	 */
+	@Nullable
+	public Verfuegung getVerfuegungOrVerfuegungPreview() {
+		if (getBetreuungsstatus().isAnyStatusOfVerfuegt()) {
+			return getVerfuegung();
+		}
+		return getVerfuegungPreview();
+	}
+
+	public void initVorgaengerVerfuegungen(
+		@Nullable Verfuegung vorgaenger,
+		@Nullable  Verfuegung vorgaengerAusbezahlt
+	) {
+		this.vorgaengerVerfuegung = vorgaenger;
+		this.vorgaengerInitialized = true;
+	}
+
+	/**
+	 * @return die Verfuegung oder ausbezahlte Vorgaengerverfuegung dieser Betreuung
+	 */
+	@Nullable
+	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
+		if (getVerfuegung() != null) {
+			return getVerfuegung();
+		}
+		return null;
+	}
+
+	@Nullable
+	public Verfuegung getVorgaengerVerfuegung() {
+		checkVorgaengerInitialized();
+		return vorgaengerVerfuegung;
+	}
+
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	protected void checkVorgaengerInitialized() {
+		Preconditions.checkState(
+			vorgaengerInitialized,
+			"must initialize transient fields of %s via VerfuegungService#initializeVorgaengerVerfuegungen",
+			this);
 	}
 
 	/**

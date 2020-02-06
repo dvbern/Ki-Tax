@@ -477,7 +477,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
-		Verfuegung verfuegung = betreuung.getVerfuegung();
+		Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegung == null) {
 			return Collections.emptyList();
 		}
@@ -514,7 +514,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private List<String> getBemerkungen() {
-		Verfuegung verfuegung = betreuung.getVerfuegung();
+		Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegung != null && verfuegung.getManuelleBemerkungen() != null) {
 			return splitBemerkungen(verfuegung.getManuelleBemerkungen());
 		}
