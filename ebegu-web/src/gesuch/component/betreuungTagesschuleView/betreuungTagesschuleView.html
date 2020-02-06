@@ -148,6 +148,7 @@
                                             ng-model="mod.modulTagesschule.angemeldet"
                                             aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
+                                            ng-click=""
                                             ng-change="vm.openMenu(mod, group, $mdMenu, $event);"
                                             class="dv-ebegu-calendar--tagesschule"
                                             aria-describedby="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}">
