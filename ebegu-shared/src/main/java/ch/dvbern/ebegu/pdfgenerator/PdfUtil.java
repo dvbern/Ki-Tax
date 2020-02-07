@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -46,21 +47,14 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGState;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
 import static com.lowagie.text.pdf.BaseFont.EMBEDDED;
+import static com.lowagie.text.pdf.BaseFont.IDENTITY_H;
 import static com.lowagie.text.pdf.BaseFont.WINANSI;
 
 public final class PdfUtil {
@@ -69,10 +63,12 @@ public final class PdfUtil {
 	static {
 		FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
 		FontFactory.register("/font/OpenSans-SemiBold.ttf", "OpenSans-Bold");
+		FontFactory.register("/font/fontawesome-webfont.ttf", "fontAwesome ");
 	}
 
 	public static final String FONT_FACE_OPEN_SANS = "OpenSans-Light";
 	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Bold";
+	public static final String FONT_FACE_FONT_AWESOME = "fontAwesome";
 
 	public static final float FONT_SIZE = 10.0f;
 	public static final float FONT_SIZE_H1 = 14.0f;
@@ -88,6 +84,8 @@ public final class PdfUtil {
 		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
 	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
 		FONT_SIZE_H2, Font.NORMAL, Color.BLACK);
+	public static final Font FONT_AWESOME = FontFactory.getFont(FONT_FACE_FONT_AWESOME, IDENTITY_H, EMBEDDED,
+		FONT_SIZE, Font.NORMAL, Color.BLACK);
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 	private static final String WATERMARK = "PdfGeneration_Watermark";

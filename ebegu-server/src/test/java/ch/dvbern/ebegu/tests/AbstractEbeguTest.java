@@ -153,6 +153,7 @@ public abstract class AbstractEbeguTest {
 			.addAsWebInfResource("META-INF/test-jboss-web.xml", "jboss-web.xml")
 			.addAsResource("font/OpenSans-Light.ttf", "font/OpenSans-Light.ttf")
 			.addAsResource("font/OpenSans-SemiBold.ttf", "font/OpenSans-SemiBold.ttf")
+			.addAsResource("font/fontawesome-webfont.ttf", "font/fontawesome-webfont.ttf")
 			// Deploy our test datasource
 			.addAsWebInfResource("test-ds.xml");
 		if (classesToAdd != null) {
