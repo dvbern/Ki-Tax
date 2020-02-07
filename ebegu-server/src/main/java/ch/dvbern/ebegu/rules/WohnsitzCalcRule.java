@@ -55,7 +55,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		if (areNotInBern(verfuegungZeitabschnitt)) {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(0);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
 				RuleKey.WOHNSITZ,
 				MsgKey.WOHNSITZ_MSG,

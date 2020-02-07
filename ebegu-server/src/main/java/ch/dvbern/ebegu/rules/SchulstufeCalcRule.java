@@ -75,7 +75,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 					// Der Anspruch wird (nur fuer diese Betreuung!) auf 0 gesetzt. Dafuer wird der vorher berechnete Anspruch wieder als Restanspruch
 					// gefuehrt
 					int anspruchVorRegel = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-					verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(0);
 					verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchVorRegel);
 					verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
 				}

@@ -60,7 +60,7 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(0);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
 		}
 	}

@@ -343,7 +343,7 @@ public class AbstractEbeguRuleTest {
 
 	private VerfuegungZeitabschnitt createBetreuungspensum(LocalDate von, LocalDate bis, BigDecimal pensum) {
 		VerfuegungZeitabschnitt zeitabschnitt1 = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt1.getBgCalculationResultAsiv().setBetreuungspensumProzent(pensum);
+		zeitabschnitt1.getBgCalculationInputAsiv().setBetreuungspensumProzent(pensum);
 		return zeitabschnitt1;
 	}
 

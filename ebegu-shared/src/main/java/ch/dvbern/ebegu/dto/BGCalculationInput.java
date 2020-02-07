@@ -28,7 +28,7 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -37,87 +37,118 @@ import ch.dvbern.ebegu.util.MathUtil;
 
 public class BGCalculationInput {
 
-	//TODO (hefr) @Transient Annotationen entfernen, falls hier wirklich kein Entity benötigt wird
-
-	@Transient
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
-	@Transient
 	private boolean sameAusbezahlteVerguenstigung;
 
-	@Transient
 	@Nullable
 	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
-	@Transient
 	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
-	@Transient
 	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
-	@Transient
 	private int fachstellenpensum;
 
-	@Transient
 	private int ausserordentlicherAnspruch;
 
-	@Transient
 	//es muss by default null sein um zu wissen, wann es nicht definiert wurde
 	private Boolean wohnsitzNichtInGemeindeGS1 = null;
 
-	@Transient
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
 	private boolean bezahltVollkosten;
 
-	@Transient
 	private boolean longAbwesenheit;
 
-	@Transient
 	private int anspruchspensumRest;
 
-	@Transient
 	// Achtung, dieses Flag wird erst ab 1. des Folgemonats gesetzt, weil die Finanzielle Situation ab dann gilt. Für
 	// Erwerbspensen zählt der GS2 ab sofort!
 	private boolean hasSecondGesuchstellerForFinanzielleSituation;
 
-	@Transient
 	private boolean ekv1Alleine;
 
-	@Transient
 	private boolean ekv1ZuZweit;
 
-	@Transient
 	private boolean ekv2Alleine;
 
-	@Transient
 	private boolean ekv2ZuZweit;
 
-	@Transient
 	private boolean kategorieMaxEinkommen = false;
 
-	@Transient
 	private boolean kategorieKeinPensum = false;
 
-	@Transient
 	private boolean abschnittLiegtNachBEGUStartdatum = true;
 
-	@Transient
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
-	@Transient
 	private boolean babyTarif;
 
-	@Transient
 	private boolean eingeschult;
 
 	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
 	// "bemerkungen" geschrieben
-	@Transient
 	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+
+
+
+	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
+	// Start
+	private int anspruchspensumProzent;
+
+	@NotNull
+	@Nonnull
+	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
+
+	@NotNull
+	@Nonnull
+	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
+
+	private boolean besondereBeduerfnisseBestaetigt;
+
+	@Nullable
+	private BigDecimal abzugFamGroesse = null;
+
+	@NotNull @Nonnull
+	private Integer einkommensjahr;
+
+	private boolean zuSpaetEingereicht;
+
+	private boolean minimalesEwpUnterschritten;
+
+	@Nullable
+	private BigDecimal famGroesse = null;
+
+	@NotNull @Nonnull
+	private Integer tsBetreuungszeitProWocheMitBetreuung = 0;
+
+	@NotNull @Nonnull
+	private BigDecimal tsVerpflegungskostenMitBetreuung = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	private BigDecimal tsGebuehrProStundeMitBetreuung = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	private BigDecimal tsTotalKostenProWocheMitBetreuung = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	private Integer tsBetreuungszeitProWocheOhneBetreuung = 0;
+
+	@NotNull @Nonnull
+	private BigDecimal tsVerpflegungskostenOhneBetreuung = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	private BigDecimal tsGebuehrProStundeOhneBetreuung = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	private BigDecimal tsTotalKostenProWocheOhneBetreuung = BigDecimal.ZERO;
+
+	// Ende
+
 
 	public BGCalculationInput() {
 	}
@@ -144,6 +175,24 @@ public class BGCalculationInput {
 		this.babyTarif = toCopy.babyTarif;
 		this.eingeschult = toCopy.eingeschult;
 		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
+		// Zusätzliche Felder aus Result
+		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
+		this.anspruchspensumProzent = toCopy.anspruchspensumProzent;
+		this.einkommensjahr = toCopy.einkommensjahr;
+		this.abzugFamGroesse = toCopy.abzugFamGroesse;
+		this.famGroesse = toCopy.famGroesse;
+		this.massgebendesEinkommenVorAbzugFamgr = toCopy.massgebendesEinkommenVorAbzugFamgr;
+		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
+		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
+		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
+		this.tsBetreuungszeitProWocheMitBetreuung = toCopy.tsBetreuungszeitProWocheMitBetreuung;
+		this.tsVerpflegungskostenMitBetreuung = toCopy.tsVerpflegungskostenMitBetreuung;
+		this.tsGebuehrProStundeMitBetreuung = toCopy.tsGebuehrProStundeMitBetreuung;
+		this.tsTotalKostenProWocheMitBetreuung = toCopy.tsTotalKostenProWocheMitBetreuung;
+		this.tsBetreuungszeitProWocheOhneBetreuung = toCopy.tsBetreuungszeitProWocheOhneBetreuung;
+		this.tsVerpflegungskostenOhneBetreuung = toCopy.tsVerpflegungskostenOhneBetreuung;
+		this.tsGebuehrProStundeOhneBetreuung = toCopy.tsGebuehrProStundeOhneBetreuung;
+		this.tsTotalKostenProWocheOhneBetreuung = toCopy.tsTotalKostenProWocheOhneBetreuung;
 	}
 
 	@Nullable
@@ -328,6 +377,155 @@ public class BGCalculationInput {
 		this.eingeschult = eingeschult;
 	}
 
+	public int getAnspruchspensumProzent() {
+		return anspruchspensumProzent;
+	}
+
+	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
+		this.anspruchspensumProzent = anspruchspensumProzent;
+	}
+
+	@Nonnull
+	public BigDecimal getBetreuungspensumProzent() {
+		return betreuungspensumProzent;
+	}
+
+	public void setBetreuungspensumProzent(@Nonnull BigDecimal betreuungspensumProzent) {
+		this.betreuungspensumProzent = betreuungspensumProzent;
+	}
+
+	@Nonnull
+	public BigDecimal getMassgebendesEinkommenVorAbzugFamgr() {
+		return massgebendesEinkommenVorAbzugFamgr;
+	}
+
+	public void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
+		this.massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommenVorAbzugFamgr;
+	}
+
+	public boolean isBesondereBeduerfnisseBestaetigt() {
+		return besondereBeduerfnisseBestaetigt;
+	}
+
+	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugFamGroesse() {
+		return abzugFamGroesse;
+	}
+
+	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
+		this.abzugFamGroesse = abzugFamGroesse;
+	}
+
+	@Nonnull
+	public Integer getEinkommensjahr() {
+		return einkommensjahr;
+	}
+
+	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
+		this.einkommensjahr = einkommensjahr;
+	}
+
+	public boolean isZuSpaetEingereicht() {
+		return zuSpaetEingereicht;
+	}
+
+	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
+		this.zuSpaetEingereicht = zuSpaetEingereicht;
+	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return minimalesEwpUnterschritten;
+	}
+
+	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
+		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
+	}
+
+	@Nullable
+	public BigDecimal getFamGroesse() {
+		return famGroesse;
+	}
+
+	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
+		this.famGroesse = famGroesse;
+	}
+
+	@Nonnull
+	public Integer getTsBetreuungszeitProWocheMitBetreuung() {
+		return tsBetreuungszeitProWocheMitBetreuung;
+	}
+
+	public void setTsBetreuungszeitProWocheMitBetreuung(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
+		this.tsBetreuungszeitProWocheMitBetreuung = tsBetreuungszeitProWocheMitBetreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getTsVerpflegungskostenMitBetreuung() {
+		return tsVerpflegungskostenMitBetreuung;
+	}
+
+	public void setTsVerpflegungskostenMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
+		this.tsVerpflegungskostenMitBetreuung = tsVerpflegungskostenMitBetreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getTsGebuehrProStundeMitBetreuung() {
+		return tsGebuehrProStundeMitBetreuung;
+	}
+
+	public void setTsGebuehrProStundeMitBetreuung(@Nonnull BigDecimal tsGebuehrProStundeMitBetreuung) {
+		this.tsGebuehrProStundeMitBetreuung = tsGebuehrProStundeMitBetreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getTsTotalKostenProWocheMitBetreuung() {
+		return tsTotalKostenProWocheMitBetreuung;
+	}
+
+	public void setTsTotalKostenProWocheMitBetreuung(@Nonnull BigDecimal tsTotalKostenProWocheMitBetreuung) {
+		this.tsTotalKostenProWocheMitBetreuung = tsTotalKostenProWocheMitBetreuung;
+	}
+
+	@Nonnull
+	public Integer getTsBetreuungszeitProWocheOhneBetreuung() {
+		return tsBetreuungszeitProWocheOhneBetreuung;
+	}
+
+	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
+		this.tsBetreuungszeitProWocheOhneBetreuung = tsBetreuungszeitProWocheOhneBetreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getTsVerpflegungskostenOhneBetreuung() {
+		return tsVerpflegungskostenOhneBetreuung;
+	}
+
+	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
+		this.tsVerpflegungskostenOhneBetreuung = tsVerpflegungskostenOhneBetreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getTsGebuehrProStundeOhneBetreuung() {
+		return tsGebuehrProStundeOhneBetreuung;
+	}
+
+	public void setTsGebuehrProStundeOhneBetreuung(@Nonnull BigDecimal tsGebuehrProStundeOhneBetreuung) {
+		this.tsGebuehrProStundeOhneBetreuung = tsGebuehrProStundeOhneBetreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getTsTotalKostenProWocheOhneBetreuung() {
+		return tsTotalKostenProWocheOhneBetreuung;
+	}
+
+	public void setTsTotalKostenProWocheOhneBetreuung(@Nonnull BigDecimal tsTotalKostenProWocheOhneBetreuung) {
+		this.tsTotalKostenProWocheOhneBetreuung = tsTotalKostenProWocheOhneBetreuung;
+	}
+
 	@Override
 	public String toString() {
 		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
@@ -386,6 +584,19 @@ public class BGCalculationInput {
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
+
+		// Zusätzliche Felder aus Result
+		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
+		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
+		this.einkommensjahr = other.einkommensjahr;
+		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
+		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
+		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
+		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
+		this.tsBetreuungszeitProWocheMitBetreuung = this.tsBetreuungszeitProWocheMitBetreuung + other.tsBetreuungszeitProWocheMitBetreuung;
+		this.tsVerpflegungskostenMitBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenMitBetreuung, other.tsVerpflegungskostenMitBetreuung);
+		this.tsBetreuungszeitProWocheOhneBetreuung = this.tsBetreuungszeitProWocheOhneBetreuung + other.tsBetreuungszeitProWocheOhneBetreuung;
+		this.tsVerpflegungskostenOhneBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenOhneBetreuung, other.tsVerpflegungskostenOhneBetreuung);
 	}
 
 	public boolean isSame(BGCalculationInput other) {
@@ -408,7 +619,17 @@ public class BGCalculationInput {
 			Objects.equals(bemerkungenMap, other.bemerkungenMap) &&
 			babyTarif == other.babyTarif &&
 			eingeschult == other.eingeschult &&
-			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten);
+			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
+			// Zusätzliche Felder aus Result
+			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
+			this.anspruchspensumProzent == other.anspruchspensumProzent &&
+			MathUtil.isSame(abzugFamGroesse, other.abzugFamGroesse) &&
+			MathUtil.isSame(famGroesse, other.famGroesse) &&
+			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, other.massgebendesEinkommenVorAbzugFamgr) &&
+			zuSpaetEingereicht == other.zuSpaetEingereicht &&
+			minimalesEwpUnterschritten == other.minimalesEwpUnterschritten &&
+			Objects.equals(einkommensjahr, other.einkommensjahr) &&
+			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -418,17 +639,24 @@ public class BGCalculationInput {
 		}
 		return babyTarif == that.babyTarif &&
 			eingeschult == that.eingeschult &&
-			Objects.equals(bemerkungenMap, that.bemerkungenMap);
-	}
-
-	/**
-	 * Aller persistierten Daten ohne Kommentar
-	 */
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
-		"QuestionableName" })
-	public boolean isSamePersistedValues(BGCalculationInput that) {
-		//TODO (hefr) etwas merkwürdig, isSamePersistedValues, aber monatlicheBetreuungskosten sind gar nicht persistiert. vorsichtshalber so gelassen
-		return MathUtil.isSame(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten);
+			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
+			// Zusätzliche Felder aus Result
+			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
+			this.anspruchspensumProzent == that.anspruchspensumProzent &&
+			MathUtil.isSame(this.abzugFamGroesse, that.abzugFamGroesse) &&
+			MathUtil.isSame(this.famGroesse, that.famGroesse) &&
+			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
+			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			(this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt) &&
+			(this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten) &&
+			Objects.equals(this.tsBetreuungszeitProWocheMitBetreuung, that.tsBetreuungszeitProWocheMitBetreuung) &&
+			MathUtil.isSame(this.tsVerpflegungskostenMitBetreuung, that.tsVerpflegungskostenMitBetreuung) &&
+			MathUtil.isSame(this.tsGebuehrProStundeMitBetreuung, that.tsGebuehrProStundeMitBetreuung) &&
+			MathUtil.isSame(this.tsTotalKostenProWocheMitBetreuung, that.tsTotalKostenProWocheMitBetreuung) &&
+			Objects.equals(this.tsBetreuungszeitProWocheOhneBetreuung, that.tsBetreuungszeitProWocheOhneBetreuung) &&
+			MathUtil.isSame(this.tsVerpflegungskostenOhneBetreuung, that.tsVerpflegungskostenOhneBetreuung) &&
+			MathUtil.isSame(this.tsGebuehrProStundeOhneBetreuung, that.tsGebuehrProStundeOhneBetreuung) &&
+			MathUtil.isSame(this.tsTotalKostenProWocheOhneBetreuung, that.tsTotalKostenProWocheOhneBetreuung);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

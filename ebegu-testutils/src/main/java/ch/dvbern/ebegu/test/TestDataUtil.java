@@ -1944,10 +1944,10 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
-		zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(PERIODE_JAHR_1);
-		zeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(false);
+		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
+		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(50);
+		zeitabschnitt.getBgCalculationInputAsiv().setEinkommensjahr(PERIODE_JAHR_1);
+		zeitabschnitt.getBgCalculationInputAsiv().setZuSpaetEingereicht(false);
 		return zeitabschnitt;
 	}
 

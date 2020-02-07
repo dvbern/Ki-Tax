@@ -90,9 +90,9 @@ public class TagesschuleRechnerTest {
 			abzugFamiliengroesse = MathUtil.DEFAULT.fromNullSafe(11400.00);
 		}
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		if (paedagogischBetreut) {
 			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultMitPaedagogischerBetreuung(new TSCalculationResult());
 			TSCalculationResult tsResultMitBetreuung =

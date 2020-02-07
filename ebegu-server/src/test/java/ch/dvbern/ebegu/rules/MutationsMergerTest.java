@@ -343,7 +343,7 @@ public class MutationsMergerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitSplit2 = new VerfuegungZeitabschnitt(zeitabschnitToSplit);
 		zeitabschnitSplit2.getGueltigkeit().setGueltigAb(aenderungsDatumPensum);
-		zeitabschnitSplit2.getBgCalculationResultAsiv().setAnspruchspensumProzent(ansprechberechtigtesPensum);
+		zeitabschnitSplit2.getBgCalculationInputAsiv().setAnspruchspensumProzent(ansprechberechtigtesPensum);
 		zeitabschnitteSplitted.add(zeitabschnitSplit2);
 
 		zeitabschnitte.stream().
@@ -379,7 +379,7 @@ public class MutationsMergerTest {
 	) {
 		verfuegungsZeitabschnitteMutiert.stream()
 			.filter(v -> v.getGueltigkeit().startsSameDay(datumAb) || v.getGueltigkeit().startsAfter(datumAb))
-			.forEach(v -> v.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruchberechtigtesPensum));
+			.forEach(v -> v.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchberechtigtesPensum));
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {

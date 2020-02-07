@@ -108,7 +108,7 @@ public final class MutationsMerger {
 			&& !vorangehenderAbschnitt.isBesondereBeduerfnisseBestaetigt()
 			&& !zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
 		) {
-			zeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(false);
+			zeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(false);
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
@@ -128,10 +128,10 @@ public final class MutationsMerger {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
 				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
-				zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
-				zeitabschnitt.getBgCalculationResultAsiv().setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
-				zeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
+				zeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
+				zeitabschnitt.getBgCalculationInputAsiv().setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
+				zeitabschnitt.getBgCalculationInputAsiv().setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
+				zeitabschnitt.getBgCalculationInputAsiv().setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
 				if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
 					zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
@@ -155,7 +155,7 @@ public final class MutationsMerger {
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-				zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
+				zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {

@@ -414,8 +414,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
 		return
-			this.bgCalculationInputAsiv.isSamePersistedValues(that.bgCalculationInputAsiv) &&
-			this.bgCalculationInputGemeinde.isSamePersistedValues(that.bgCalculationInputGemeinde) &&
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0;
@@ -453,4 +451,38 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return compareToBuilder.toComparison();
 	}
 
+	public void copyValuesToResult() {
+		copyValuesToResult(getBgCalculationInputAsiv(), getBgCalculationResultAsiv());
+		if (getBgCalculationResultGemeinde() != null) {
+			copyValuesToResult(getBgCalculationInputGemeinde(), getBgCalculationResultGemeinde());
+		}
+	}
+
+	private void copyValuesToResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
+		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
+		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
+		result.setMassgebendesEinkommenVorAbzugFamgr(input.getMassgebendesEinkommenVorAbzugFamgr());
+		result.setBesondereBeduerfnisseBestaetigt(input.isBesondereBeduerfnisseBestaetigt());
+		result.setAbzugFamGroesse(input.getAbzugFamGroesse());
+		result.setEinkommensjahr(input.getEinkommensjahr());
+		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
+		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
+		result.setFamGroesse(input.getFamGroesse());
+		if (input.getTsBetreuungszeitProWocheMitBetreuung() > 0) {
+			TSCalculationResult tsResultMitBetreuung = new TSCalculationResult();
+			tsResultMitBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheMitBetreuung());
+			tsResultMitBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenMitBetreuung());
+			tsResultMitBetreuung.setGebuehrProStunde(input.getTsGebuehrProStundeMitBetreuung());
+			tsResultMitBetreuung.setTotalKostenProWoche(input.getTsTotalKostenProWocheMitBetreuung());
+			result.setTsCalculationResultMitPaedagogischerBetreuung(tsResultMitBetreuung);
+		}
+		if (input.getTsBetreuungszeitProWocheOhneBetreuung() > 0) {
+			TSCalculationResult tsResultOhneBetreuung = new TSCalculationResult();
+			tsResultOhneBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheOhneBetreuung());
+			tsResultOhneBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenOhneBetreuung());
+			tsResultOhneBetreuung.setGebuehrProStunde(input.getTsGebuehrProStundeOhneBetreuung());
+			tsResultOhneBetreuung.setTotalKostenProWoche(input.getTsTotalKostenProWocheOhneBetreuung());
+			result.setTsCalculationResultOhnePaedagogischerBetreuung(tsResultOhneBetreuung);
+		}
+	}
 }

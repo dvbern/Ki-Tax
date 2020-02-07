@@ -67,13 +67,13 @@ public final class AnspruchFristRule {
 						zeitabschnitt.getGueltigkeit().setGueltigBis(datumBisAlterMonat);
 
 						// Ab dem naechsten Monat gilt der neue Anspruch
-						zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
+						zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
 						zeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(vorangehenderAbschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
 						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
-						zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
+						zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
 						zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().clear();
 						zeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(vorangehenderAbschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 						vorangehenderAbschnitt = zeitabschnitt;

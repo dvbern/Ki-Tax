@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
-import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
@@ -97,16 +96,12 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 		}
 
 		if (dauerProWocheInMinutenMitBetreuung > 0) {
-			TSCalculationResult resultMitBetreuung = new TSCalculationResult();
-			resultMitBetreuung.setBetreuungszeitProWoche(Long.valueOf(dauerProWocheInMinutenMitBetreuung).intValue());
-			resultMitBetreuung.setVerpflegungskosten(verpflegKostenProWocheMitBetreuung);
-			zeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultMitPaedagogischerBetreuung(resultMitBetreuung);
+			zeitabschnitt.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheMitBetreuung(Long.valueOf(dauerProWocheInMinutenMitBetreuung).intValue());
+			zeitabschnitt.getBgCalculationInputAsiv().setTsVerpflegungskostenMitBetreuung(verpflegKostenProWocheMitBetreuung);
 		}
 		if (dauerProWocheInMinutenOhneBetreuung > 0) {
-			TSCalculationResult resultOhneBetreuung = new TSCalculationResult();
-			resultOhneBetreuung.setBetreuungszeitProWoche(Long.valueOf(dauerProWocheInMinutenOhneBetreuung).intValue());
-			resultOhneBetreuung.setVerpflegungskosten(verpflegKostenProWocheOhneBetreuung);
-			zeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultOhnePaedagogischerBetreuung(resultOhneBetreuung);
+			zeitabschnitt.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(Long.valueOf(dauerProWocheInMinutenOhneBetreuung).intValue());
+			zeitabschnitt.getBgCalculationInputAsiv().setTsVerpflegungskostenOhneBetreuung(verpflegKostenProWocheOhneBetreuung);
 		}
 		return zeitabschnitt;
 	}
