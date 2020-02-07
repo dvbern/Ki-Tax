@@ -57,8 +57,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     @Input() public editMode: boolean = false;
 
     public gemeindeList: TSGemeinde[] = [];
-    private konfigurationsListe: TSGemeindeKonfiguration[];
     private readonly panelClass = 'dv-mat-dialog-ts';
+    private konfigurationsListe: TSGemeindeKonfiguration[];
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
@@ -85,6 +85,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 this.konfigurationsListe.forEach(config => {
                     config.initProperties();
                 });
+                this.ref.markForCheck();
             });
         this.sortByPeriod();
     }
@@ -357,6 +358,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public canEditEinstellungen(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
+            return false;
+        }
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);

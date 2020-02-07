@@ -148,20 +148,39 @@
                                             ng-model="mod.modulTagesschule.angemeldet"
                                             aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
-                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event)"
-                                            class="dv-ebegu-calendar--tagesschule">
+                                            ng-change="vm.openMenu(mod, group, $mdMenu, $event);"
+                                            class="dv-ebegu-calendar--tagesschule"
+                                            aria-describedby="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}">
+                                            <span class="error"
+                                                  ng-if="vm.form['modul_' + mod.modulTagesschule.identifier].$error.nointerval">X</span>
                                             <span
                                                 ng-if="mod.modulTagesschule.angemeldet">{{mod.intervall | translate}}</span>
                                         </md-checkbox>
                                         <md-menu-content width="4">
                                             <md-menu-item ng-repeat="interval in vm.getIntervalle()">
-                                                <md-button ng-click="vm.setIntervall(mod, interval)">
+                                                <md-button md-prevent-menu-close="true" ng-click="vm.setIntervall(mod,
+                                                           interval,$mdMenu)">
                                                     {{interval | translate}}
                                                 </md-button>
                                             </md-menu-item>
                                         </md-menu-content>
                                     </md-menu>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    ng-repeat="group in vm.modulGroups track by group.group.identifier">
+                    <div
+                        ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
+                        <div class="dv-error-messages"
+                             ng-if="vm.form['modul_' + mod.modulTagesschule.identifier].$error.nointerval">
+                            <div id="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}" class="error">
+                                {{"ERROR_NO_INTERVAL" | translate}}
+                                "{{vm.getModulBezeichnungInLanguage(group.group)}}"
+                                ({{mod.modulTagesschule.wochentag | translate}}
+                                {{vm.getModulTimeAsString(group.group)}})
                             </div>
                         </div>
                     </div>
@@ -196,7 +215,7 @@
                         </dv-input-container>
                     </div>
                 </div>
-                <div class="row marginTop30" ng-show="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
+                <div class="row marginTop30" ng-if="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox"
                                      ng-model="vm.agbTSAkzeptiert"
@@ -207,7 +226,7 @@
                             <span ng-if="vm.agbVorhanden">{{'BETREUUNG_TAGESSCHULE_AGB_START' | translate}}
                                 <a role="button"
                                    ng-click="vm.downloadGemeindeGesuchsperiodeDokument();$event.stopPropagation()">{{'BETREUUNG_TAGESSCHULE_AGB_DOK'
-										| translate}}</a>
+                                    | translate}}</a>
                                 {{'BETREUUNG_TAGESSCHULE_AGB_END' | translate}}
                             </span>
                             <span

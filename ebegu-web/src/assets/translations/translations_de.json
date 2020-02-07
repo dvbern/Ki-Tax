@@ -32,6 +32,7 @@
     "ERROR_MIN_LENG": "Eingabe zu kurz ",
     "ERROR_MAX_LENG": "Eingabe zu lang ",
     "ERROR_EMAIL": "Keine gültige Email ",
+    "ERROR_NO_INTERVAL": "Bitte noch \"Wöchentlich\" oder \"alle zwei Wochen\" auswählen für Modul ",
     "ERROR_FORMAT": "Falsches Format",
     "ERROR_DATE": "Falsches Datumsformat",
     "ERROR_MIN_DATE": "Datum wurde unterschritten",
@@ -1845,9 +1846,11 @@
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": " Merkblatt Anmeldung Tagesschule Deutsch",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Merkblatt Anmeldung Tagesschule Französich",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": " Merkblatt_Anmeldung_Tagesschule.pdf",
-    "AGB_HOCHLADEN": "AGBs Hochladen",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN": "Merkblatt Anmeldung Tagesschule hochladen",
     "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "Erlaeuterung_zur_Verfuegung.pdf",
     "MODUL_NICHT_BEARBEITBAR_TOOLTIP": "Dieses Modul kann nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist",
+    "TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL": "Provisorische Berechnung",
+    "TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT": "Dieser Tarif gilt bei fristgerechter Einreichung der Dokumente. Solange die Dokumente nicht eingereicht sind, wird von der Tagesschule der maximale Tarif in Rechnung gestellt",
     "WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH": "Module können nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist. Deshalb ist der Wechsel zu Scolaris nicht mehr möglich.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

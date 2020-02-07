@@ -182,6 +182,17 @@
                             </dv-input-container>
                         </div>
                     </div>
+
+                    <!-- Info bei noch provisorischem Tarif -->
+                    <div class="row"
+                         ng-if="vm.getBetreuung().betreuungsstatus !== 'SCHULAMT_ANMELDUNG_UEBERNOMMEN'">
+                        <div class="col-md-12">
+							<h3 class="md-no-float"
+								data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL"></h3>
+							<p class="inlineHint" data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT"></p>
+                        </div>
+                    </div>
+
                     <!-- Preview oder definitive Verfuegung -->
                     <div class="row" ng-if="vm.tagesschuleZeitabschnitteMitBetreuung.length > 0">
                         <br/>
