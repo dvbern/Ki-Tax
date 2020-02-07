@@ -85,7 +85,7 @@ public interface GesuchsperiodeService {
 	 * Gibt alle Gesuchsperioden zurueck, deren Status nicht Geschlossen ist.
 	 * @return
 	 */
-	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden();
+	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden();
 
 	/**
 	 * Gibt alle Gesuchsperioden zurueck, deren Status Aktiv oder Inaktiv ist.
