@@ -197,22 +197,31 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		@Nonnull String betreuungId
 	) {
 		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(gesuchId, betreuungId);
+		// Wir muessen uns merken, ob dies die gueltige Anmeldung ist, da beim persistieren der Verfügung das Flag automatisch gesetzt wird.
+		boolean isGueltigeAnmeldung = betreuungMitVerfuegungPreview.isGueltig();
 		Objects.requireNonNull(betreuungMitVerfuegungPreview);
 		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegungPreview);
 
+		// Hier wird die Verfügung automatisch auf gueltig gsetzt. Im Fall der Tagesschulen werden aber auch die Vorgänger-Verfügungen
+		// übernommen, diese dürfen aber nicht auf gueltig gesetzt werden!
 		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 
 		AnmeldungTagesschule persistedAnmeldung = persistedVerfuegung.getAnmeldungTagesschule();
 		Objects.requireNonNull(persistedAnmeldung);
+		// Das Flag wieder auf den korrekten, vorher gemerkten Wert zurücksetzen
+		persistedAnmeldung.setGueltig(isGueltigeAnmeldung);
 
-		try {
-			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
-			mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
-		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
-				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
-				betreuungId);
+		// Uebernommen werden jeweils auch die Vorgänger. Das Mail soll aber nur für die aktuell gültige Anmeldung geschickt werden!
+		if (isGueltigeAnmeldung) {
+			try {
+				// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
+				mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
+			} catch (MailException e) {
+				logExceptionAccordingToEnvironment(e,
+					"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
+					betreuungId);
+			}
 		}
 
 		// Dokument erstellen
@@ -452,14 +461,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		AbstractPlatz platz = verfuegung.getPlatz();
 		Objects.requireNonNull(platz);
 		platz.setBetreuungsstatus(betreuungsstatus);
+
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
-		platz.setGueltig(true);
-		Optional<Verfuegung> vorgaengerVerfuegungOptional = findVorgaengerVerfuegung(platz);
-		if (vorgaengerVerfuegungOptional.isPresent()) {
-			Verfuegung vorgaengerVerfuegung = vorgaengerVerfuegungOptional.get();
-			Objects.requireNonNull(vorgaengerVerfuegung.getPlatz());
-			vorgaengerVerfuegung.getPlatz().setGueltig(false);
-		}
+		updateGueltigFlagOnPlatzAndVorgaenger(platz);
+
 		verfuegung.getZeitabschnitte().forEach(verfZeitabsch -> verfZeitabsch.setVerfuegung(verfuegung));
 		authorizer.checkWriteAuthorization(verfuegung);
 
@@ -467,6 +472,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		persistence.merge(platz);
 		return persist;
 	}
+
+
 
 	@Nonnull
 	@Override
@@ -562,29 +569,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			.orElse(null);
 
 		platz.initVorgaengerVerfuegungen(vorgaengerVerfuegung, vorgaengerAusbezahlteVerfuegung);
-	}
-
-	/**
-	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
-	 */
-	@Nonnull
-	private Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz betreuung) {
-		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-		if (betreuung.getVorgaengerId() == null) {
-			return Optional.empty();
-		}
-
-		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
-		// Leseberechtigt bin, fuer die Mutation aber schon!
-		AbstractPlatz vorgaengerbetreuung = persistence.find(betreuung.getClass(), betreuung.getVorgaengerId());
-		if (vorgaengerbetreuung != null) {
-			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
-				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
-				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
-			}
-			return findVorgaengerVerfuegung(vorgaengerbetreuung);
-		}
-		return Optional.empty();
 	}
 
 	/**

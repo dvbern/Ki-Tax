@@ -1094,7 +1094,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			if (gesuch.getVorgaengerId() != null) {
 				final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
-				vorgaengerOpt.ifPresent(this::setGesuchUngueltig);
+				vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
 			}
 
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
@@ -1804,12 +1804,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final List<AbstractAnmeldung> betreuungen = gesuch.extractAllAnmeldungen();
 		for (AbstractAnmeldung betreuung : betreuungen) {
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
-				betreuung.setGueltig(true);
-				if (betreuung.getVorgaengerId() != null) {
-					Optional<Betreuung> vorgaengerBetreuungOptional =
-						betreuungService.findBetreuung(betreuung.getVorgaengerId(), false);
-					vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-				}
+				updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
 			}
 		}
 
@@ -1843,7 +1838,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			if (neustesVerfuegtesGesuchFuerGesuch.isPresent() && !neustesVerfuegtesGesuchFuerGesuch.get()
 				.getId()
 				.equals(gesuch.getId())) {
-				setGesuchUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
+				setGesuchAndVorgaengerUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
 			}
 
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
@@ -1854,13 +1849,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	/**
 	 * Setzt das Gesuch auf ungueltig, falls es gueltig ist
 	 */
-	private void setGesuchUngueltig(@Nonnull Gesuch gesuch) {
-		if (gesuch.isGueltig()) {
-			gesuch.setGueltig(null);
-			updateGesuch(gesuch, false, null, false);
-			// Sicherstellen, dass das Gesuch welches nicht mehr gültig ist zuerst gespeichert wird da sonst unique
-			// key Probleme macht!
-			persistence.getEntityManager().flush();
+	private void setGesuchAndVorgaengerUngueltig(@Nonnull Gesuch gesuch) {
+		gesuch.setGueltig(false);
+		updateGesuch(gesuch, false, null, false);
+		// Sicherstellen, dass das Gesuch welches nicht mehr gültig ist zuerst gespeichert wird da sonst unique
+		// key Probleme macht!
+		persistence.getEntityManager().flush();
+		// Rekursiv alle Vorgänger ungültig setzen
+		if (gesuch.getVorgaengerId() != null) {
+			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
+			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
 		}
 	}
 
