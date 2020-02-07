@@ -276,6 +276,9 @@ export class GesuchModelManager {
      * Loads the GemeindeKonfiguration for the current Gesuch, i.e. the current Gemeinde and Gesuchsperiode
      */
     private initGemeindeKonfiguration(): void {
+        if (EbeguUtil.isNullOrUndefined(this.gemeindeStammdaten)) {
+            return;
+        }
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
             // tslint:disable-next-line:early-exit
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {

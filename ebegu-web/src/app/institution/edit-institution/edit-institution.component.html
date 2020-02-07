@@ -265,8 +265,7 @@
             <div *ngIf="isTagesschule() && stammdaten && stammdaten.institutionStammdatenTagesschule">
                 <dv-edit-institution-tagesschule
                     [stammdaten]="stammdaten"
-                    [editMode]="editMode"
-                    [konfigurationsListe]="konfigurationsListe">
+                    [editMode]="editMode">
                 </dv-edit-institution-tagesschule>
             </div>
 
@@ -337,6 +336,7 @@
             </ng-template>
 
         </div>
+
 
         <!-- Buttons -->
         <div class="dv-footer">
