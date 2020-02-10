@@ -118,7 +118,7 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     public updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneGesuchsperioden().then(response => {
+        this.gesuchsperiodeRS.getAllAktivUndInaktivGesuchsperioden().then(response => {
             this.extractGesuchsperiodeStringList(response);
         });
     }

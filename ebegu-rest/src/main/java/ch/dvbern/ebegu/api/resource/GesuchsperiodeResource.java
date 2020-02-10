@@ -183,8 +183,8 @@ public class GesuchsperiodeResource {
 	@Path("/unclosed")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden() {
-		return gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream()
+	public List<JaxGesuchsperiode> getAllAktivUndInaktivGesuchsperioden() {
+		return gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -200,10 +200,10 @@ public class GesuchsperiodeResource {
 	@Path("/unclosed/{dossierId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
+	public List<JaxGesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(
 		@Nonnull @PathParam("dossierId") String dossierId) {
 
-		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId).stream()
+		return gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId).stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
@@ -224,8 +224,8 @@ public class GesuchsperiodeResource {
 		@Nullable @QueryParam("dossierId") String dossierId) {
 
 		Collection<Gesuchsperiode> perioden = dossierId == null
-			? gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()
-			: gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId);
+			? gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden()
+			: gesuchsperiodeService.getAllAktivInaktivNichtVerwendeteGesuchsperioden(dossierId);
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
