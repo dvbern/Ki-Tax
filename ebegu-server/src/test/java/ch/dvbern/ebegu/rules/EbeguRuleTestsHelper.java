@@ -167,6 +167,8 @@ public final class EbeguRuleTestsHelper {
 		result = MutationsMerger.execute(betreuung, result, Constants.DEFAULT_LOCALE);
 		result = AbschlussNormalizer.execute(result, true);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
+
+		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
 		return result;
 	}
 
