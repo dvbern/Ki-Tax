@@ -83,8 +83,8 @@ public interface GesuchsperiodeService {
 
 	/**
 	 * Gibt alle Gesuchsperioden zurueck, deren Status nicht Geschlossen ist.
-	 * @return
 	 */
+	@Nonnull
 	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden();
 
 	/**
