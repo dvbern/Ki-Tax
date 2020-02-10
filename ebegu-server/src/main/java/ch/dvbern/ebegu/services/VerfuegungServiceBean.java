@@ -147,6 +147,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private MailService mailService;
 
 	@Inject
+	private BetreuungService betreuungService;
+
+	@Inject
 	private Event<ExportedEvent> event;
 
 	@Inject
@@ -226,7 +229,21 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		// Dokument erstellen
 		generateAnmeldebestaetigungDokument(persistedAnmeldung);
+
+		// Rekursiv alle Vorgänger ebenfalls auf UEBERNOMMEN setzen
+		setVorgaengerAnmeldungTagesschuleAufUebernommen(persistedAnmeldung);
+
 		return persistedAnmeldung;
+	}
+
+	private AnmeldungTagesschule setVorgaengerAnmeldungTagesschuleAufUebernommen(@Nonnull AnmeldungTagesschule anmeldung) {
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		// Rekursiv alle Vorgänger ungültig setzen
+		if (anmeldung.getVorgaengerId() != null) {
+			final Optional<AnmeldungTagesschule> vorgaengerOpt = betreuungService.findAnmeldungTagesschule(anmeldung.getVorgaengerId());
+			vorgaengerOpt.ifPresent(this::setVorgaengerAnmeldungTagesschuleAufUebernommen);
+		}
+		return anmeldung;
 	}
 
 	@Override
