@@ -309,8 +309,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			verfuegungService.initializeVorgaengerVerfuegungen(gesuch);
 
 			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch, sprache.getLocale());
-			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(),
-				true);
+			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 			boolean writeProtectPDF = forceCreation;
 			byte[] data = pdfService.generateFinanzielleSituation(gesuch,
 				famGroessenVerfuegung,

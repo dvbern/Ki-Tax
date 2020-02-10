@@ -289,7 +289,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	}
 
 	private Verfuegung getFamiliensituationsVerfuegung(@Nonnull Gesuch gesuch) {
-		return evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE, true);
+		return evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 	}
 }
 

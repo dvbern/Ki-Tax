@@ -24,7 +24,13 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Sonderregel die nach der eigentlichen Berechnung angewendet wird.
@@ -32,13 +38,24 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
  * Ereignisdatum bzw. Einreichedatum innerhalb eines Monats sinken würde, so gilt der alte Anspruch noch bis Ende
  * Monat!
  */
-public final class AnspruchFristRule {
+public final class AnspruchFristRule extends AbstractAbschlussRule {
 
-	private AnspruchFristRule() {
+	public AnspruchFristRule() {
 	}
 
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
+	protected boolean isRelevantForFamiliensituation() {
+		return false;
+	}
+
+	@Override
 	@Nonnull
-	public static List<VerfuegungZeitabschnitt> execute(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> result = new LinkedList<>();
 		VerfuegungZeitabschnitt vorangehenderAbschnitt = null;
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {

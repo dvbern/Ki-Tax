@@ -71,7 +71,7 @@ public class BetreuungsgutscheinEvaluator {
 	 * existieren
 	 */
 	@Nonnull
-	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale, boolean executeMonatsRule) {
+	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -103,16 +103,12 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 
-			if(executeMonatsRule){
-				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+			List<AbstractAbschlussRule> abschlussRules = findAbschlussRulesToRun(false, locale);
+			for (AbstractAbschlussRule abschlussRule : abschlussRules) {
+				if (abschlussRule.isRelevantForFamiliensituation()) {
+					abschlussRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+				}
 			}
-
-			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte, locale);
-
-			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten,
-			// diese auch noch mergen
-			zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
@@ -199,26 +195,11 @@ public class BetreuungsgutscheinEvaluator {
 					}
 				}
 
-				if (!isTagesschule) {
-					// Innerhalb eines Monats darf der Anspruch nie sinken
-					zeitabschnitte = AnspruchFristRule.execute(zeitabschnitte);
-
-					// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
-					restanspruchZeitabschnitte = RestanspruchInitializer.execute(platz, zeitabschnitte);
+				// Die Abschluss-Rules ebenfalls ausführen
+				List<AbstractAbschlussRule> abschlussRules = findAbschlussRulesToRun(isTagesschule, locale);
+				for (AbstractAbschlussRule abschlussRule : abschlussRules) {
+					abschlussRule.executeIfApplicable(platz, zeitabschnitte);
 				}
-
-				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
-
-				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
-
-				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-				zeitabschnitte = MutationsMerger.execute(platz, zeitabschnitte, locale);
-
-				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
-				// Daten, diese auch noch mergen, ausser es ist Tagesschule
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, !isTagesschule);
 
 				// Die Verfügung erstellen
 				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird
@@ -250,6 +231,17 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 		}
+	}
+
+	private List<AbstractAbschlussRule> findAbschlussRulesToRun(boolean isTagesschule, @Nonnull Locale locale) {
+		List<AbstractAbschlussRule> rulesToRun = new LinkedList<>();
+		rulesToRun.add(new AnspruchFristRule());
+		rulesToRun.add(new RestanspruchInitializer());
+		rulesToRun.add(new AbschlussNormalizer(false));
+		rulesToRun.add(new MonatsRule());
+		rulesToRun.add(new MutationsMerger(locale));
+		rulesToRun.add(new AbschlussNormalizer(!isTagesschule));
+		return rulesToRun;
 	}
 
 	/**
@@ -315,7 +307,8 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
-		restanspruchZeitabschnitte = RestanspruchInitializer.execute(
+		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+		restanspruchZeitabschnitte = restanspruchInitializer.execute(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 
 		return restanspruchZeitabschnitte;

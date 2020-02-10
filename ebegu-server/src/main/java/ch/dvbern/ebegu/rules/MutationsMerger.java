@@ -28,10 +28,16 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Sonderregel das Ergenis der aktuellen Berechnung mit der Vorhergehenden merged.
@@ -52,23 +58,29 @@ import org.slf4j.LoggerFactory;
  * Reduktionen des Anspruchs sind auch rückwirkend erlaubt
  */
 @SuppressWarnings("PMD.CollapsibleIfStatements") // wegen besserer Lesbarkeit
-public final class MutationsMerger {
+public final class MutationsMerger extends AbstractAbschlussRule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MutationsMerger.class.getSimpleName());
 
-	private MutationsMerger() {
+	private Locale locale;
+
+	public MutationsMerger(@Nonnull Locale locale) {
+		this.locale = locale;
 	}
 
-	/**
-	 * Um code lesbar zu halten wird die Regel PMD.CollapsibleIfStatements ausgeschaltet
-	 */
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+	}
+
+	@Override
+	protected boolean isRelevantForFamiliensituation() {
+		return true;
+	}
+
 	@Nonnull
-	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	public static List<VerfuegungZeitabschnitt> execute(
-		@Nonnull AbstractPlatz platz,
-		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
-		@Nonnull Locale locale
-	) {
+	@Override
+	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		if (platz.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
 		}
@@ -96,7 +108,7 @@ public final class MutationsMerger {
 		return monatsSchritte;
 	}
 
-	private static void handleAnpassungErweiterteBeduerfnisse(
+	private void handleAnpassungErweiterteBeduerfnisse(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum,
@@ -113,7 +125,7 @@ public final class MutationsMerger {
 		}
 	}
 
-	private static void handleVerminderungEinkommen(
+	private void handleVerminderungEinkommen(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum,
@@ -139,7 +151,7 @@ public final class MutationsMerger {
 		}
 	}
 
-	private static void handleAnpassungAnspruch(
+	private void handleAnpassungAnspruch(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nullable VerfuegungZeitabschnitt vorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum,
@@ -168,7 +180,7 @@ public final class MutationsMerger {
 		}
 	}
 
-	private static boolean isMeldungRechzeitig(
+	private boolean isMeldungRechzeitig(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull LocalDate mutationsEingansdatum
 	) {
@@ -179,7 +191,7 @@ public final class MutationsMerger {
 	 * Hilfsmethode welche in der Vorgaengerferfuegung den gueltigen Zeitabschnitt fuer einen bestimmten Stichtag sucht
 	 */
 	@Nullable
-	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(
+	private VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(
 		@Nonnull LocalDate stichtag,
 		@Nullable Verfuegung vorgaengerVerf
 	) {
@@ -197,7 +209,7 @@ public final class MutationsMerger {
 		return null;
 	}
 
-	private static VerfuegungZeitabschnitt copy(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	private VerfuegungZeitabschnitt copy(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(verfuegungZeitabschnitt);
 		return zeitabschnitt;
 	}

@@ -24,6 +24,12 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Hilfsklasse die nach der eigentlich Evaluation einer Betreuung angewendet wird um den Restanspruch zu uebernehmen fuer die
@@ -43,13 +49,24 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
  * </ul>
  * Die 2. Betreuung wird genau wie die erste durchgeführt. Nun wird allerdings die allerletzte Reduktionsregel den Anspruch reduzieren auf den gesetzten Restanspruch.
  */
-public final class RestanspruchInitializer {
+public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
-	private RestanspruchInitializer() {
+	public RestanspruchInitializer() {
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
+	protected boolean isRelevantForFamiliensituation() {
+		return false;
 	}
 
 	@Nonnull
-	public static List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	@Override
+	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> restanspruchsZeitabschnitte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			VerfuegungZeitabschnitt restanspruchsAbschnitt = new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
@@ -59,7 +76,7 @@ public final class RestanspruchInitializer {
 		return restanspruchsZeitabschnitte;
 	}
 
-	private static void restanspruchUebernehmen(@Nonnull AbstractPlatz betreuung, @Nonnull VerfuegungZeitabschnitt sourceZeitabschnitt, VerfuegungZeitabschnitt targetZeitabschnitt) {
+	private void restanspruchUebernehmen(@Nonnull AbstractPlatz betreuung, @Nonnull VerfuegungZeitabschnitt sourceZeitabschnitt, VerfuegungZeitabschnitt targetZeitabschnitt) {
 		//Die  vom der letzen Berechnung uebernommenen Zeitabschnitte betrachten und den restanspruch berechnen.
 		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
