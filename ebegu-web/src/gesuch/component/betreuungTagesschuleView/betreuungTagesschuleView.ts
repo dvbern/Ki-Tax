@@ -34,6 +34,7 @@ import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
+import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
@@ -113,6 +114,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public isAnmeldenClicked: boolean = false;
     public erlaeuterung: string = null;
     public agbVorhanden: boolean;
+    public isScolaris: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
 
@@ -153,7 +155,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             }
             this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
             if (this.betreuung.institutionStammdaten) {
-                this.loadErlaeuterungForTagesschule();
+                this.loadEinstellungPropertiesForTagesschule();
             }
         });
         this.$scope.$on('$mdMenuClose', () => {
@@ -167,7 +169,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
 
         if (this.betreuung.institutionStammdaten) {
-            this.loadErlaeuterungForTagesschule();
+            this.loadEinstellungPropertiesForTagesschule();
         }
         if (this.betreuung.isEnabled()) {
             this.minEintrittsdatum = this.getMinErsterSchultag();
@@ -198,7 +200,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return this.$translate.instant('FREISCHALTUNG_TAGESSCHULE_INFO');
     }
 
-    private loadErlaeuterungForTagesschule(): void {
+    private loadEinstellungPropertiesForTagesschule(): void {
         const tsEinstellungenTagesschule =
             this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
                 .filter((einstellung: TSEinstellungenTagesschule) =>
@@ -208,6 +210,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             return;
         }
         this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
+        this.isScolaris = (tsEinstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS);
     }
 
     public getWeekDays(): TSDayOfWeek[] {
