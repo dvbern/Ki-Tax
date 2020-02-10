@@ -61,6 +61,13 @@ public interface VerfuegungService {
 	AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull String gesuchId, @Nonnull String betreuungId);
 
 	/**
+	 * Eine Schulamt-Anmeldung im Status AUSGELOEST muss beim Erstellen einer Mutation trotzdem "verfügt" werden
+	 * damit wir künftig mit der richtigen FinSit arbeiten!
+	 */
+	@Nonnull
+	AnmeldungTagesschule anmeldungSchulamtAusgeloestAbschliessen(@Nonnull String gesuchId, @Nonnull String betreuungId);
+
+	/**
 	 * Speichert die Verfuegung neu in der DB falls der Key noch nicht existiert.
 	 * Die Betreuung erhaelt den Status NICHT_EINGETRETEN
 	 *
