@@ -182,7 +182,7 @@ public class InstitutionResource {
 			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
 			stammdatenTS.setGemeinde(gemeinde);
 			Set<EinstellungenTagesschule> einstellungenTagesschuleSet =
-				gesuchsperiodeService.getAllActiveGesuchsperioden().stream().map(
+				gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream().map(
 					gesuchsperiode -> {
 						EinstellungenTagesschule einstellungenTagesschule = new EinstellungenTagesschule();
 						einstellungenTagesschule.setInstitutionStammdatenTagesschule(stammdatenTS);

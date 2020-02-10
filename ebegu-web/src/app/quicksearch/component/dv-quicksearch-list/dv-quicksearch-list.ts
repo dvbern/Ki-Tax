@@ -129,7 +129,7 @@ export class DVQuicksearchListController implements IController {
     }
 
     public updateGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneGesuchsperioden().then((response: any) => {
+        this.gesuchsperiodeRS.getAllAktivUndInaktivGesuchsperioden().then((response: any) => {
             this.gesuchsperiodenList = [];
             response.forEach((gesuchsperiode: TSGesuchsperiode) => {
                 this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);

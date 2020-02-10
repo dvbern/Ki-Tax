@@ -114,7 +114,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		List<VerrechnungKibonDataRow> allGemeindenUndPerioden = new ArrayList<>();
 
 		// Es müssen alle aktiven Gesuchsperioden und alle aktiven Gemeinden berücksichtigt werden
-		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden();
+		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden();
 		Collection<Gemeinde> gemeinden = gemeindeService.getAktiveGemeinden();
 
 		// Die Daten der letzten Verrechnung lesen
