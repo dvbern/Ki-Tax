@@ -108,33 +108,7 @@ import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.FachstelleName;
-import ch.dvbern.ebegu.enums.Ferienname;
-import ch.dvbern.ebegu.enums.GemeindeStatus;
-import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
-import ch.dvbern.ebegu.enums.Geschlecht;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.IntegrationTyp;
-import ch.dvbern.ebegu.enums.Kinderabzug;
-import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
-import ch.dvbern.ebegu.enums.MahnungTyp;
-import ch.dvbern.ebegu.enums.MitteilungStatus;
-import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
-import ch.dvbern.ebegu.enums.ModulTagesschuleName;
-import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
-import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.enums.WizardStepStatus;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
@@ -861,25 +835,30 @@ public final class TestDataUtil {
 
 	public static BelegungTagesschule createDefaultBelegungTagesschule(boolean withModulBelegung) {
 		final BelegungTagesschule belegungTagesschule = new BelegungTagesschule();
+		belegungTagesschule.setBemerkung("Dies ist eine Bemerkung!");
 		belegungTagesschule.setEintrittsdatum(LocalDate.now());
 		if (withModulBelegung) {
 			belegungTagesschule.setBelegungTagesschuleModule(new TreeSet<>());
 
-			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true);
+			Set<ModulTagesschule> modulTagesschuleSet = createDefaultModuleTagesschuleSet(true,
+				LocalTime.of(12,0), LocalTime.of(14,0), "Mittag", "Midi");
 			modulTagesschuleSet.forEach(
 				modulTagesschule -> {
 					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
 					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
 					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
+					belegungTagesschuleModul.setIntervall(BelegungTagesschuleModulIntervall.WOECHENTLICH);
 					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
 				}
 			);
 
-			Set<ModulTagesschule> modulTagesschuleSetOhneBetreuung = createDefaultModuleTagesschuleSet(false);
+			Set<ModulTagesschule> modulTagesschuleSetOhneBetreuung = createDefaultModuleTagesschuleSet(false,
+				LocalTime.of(7,0), LocalTime.of(8,0), "Frühmorgens", "Matin");
 			modulTagesschuleSetOhneBetreuung.forEach(
 				modulTagesschule -> {
 					BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
 					belegungTagesschuleModul.setModulTagesschule(modulTagesschule);
+					belegungTagesschuleModul.setIntervall(BelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN);
 					belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
 					belegungTagesschule.getBelegungTagesschuleModule().add(belegungTagesschuleModul);
 				}
@@ -888,12 +867,16 @@ public final class TestDataUtil {
 		return belegungTagesschule;
 	}
 
-	private static Set<ModulTagesschule> createDefaultModuleTagesschuleSet(boolean wirdPedagogischBetreut){
+	private static Set<ModulTagesschule> createDefaultModuleTagesschuleSet(boolean wirdPedagogischBetreut, LocalTime von, LocalTime bis, String bezeichnungDeutsch, String bezeichnungFranzösisch){
 		ModulTagesschuleGroup modulTagesschuleGroupPedagogischBetreut = new ModulTagesschuleGroup();
-		modulTagesschuleGroupPedagogischBetreut.setZeitVon(LocalTime.of(8,0));
-		modulTagesschuleGroupPedagogischBetreut.setZeitBis(LocalTime.of(11,45));
+		modulTagesschuleGroupPedagogischBetreut.setZeitVon(von);
+		modulTagesschuleGroupPedagogischBetreut.setZeitBis(bis);
 		modulTagesschuleGroupPedagogischBetreut.setVerpflegungskosten(MathUtil.DEFAULT.from(10));
 		modulTagesschuleGroupPedagogischBetreut.setWirdPaedagogischBetreut(wirdPedagogischBetreut);
+		TextRessource vormittagText = new TextRessource();
+		vormittagText.setTextDeutsch(bezeichnungDeutsch);
+		vormittagText.setTextFranzoesisch(bezeichnungFranzösisch);
+		modulTagesschuleGroupPedagogischBetreut.setBezeichnung(vormittagText);
 
 		ModulTagesschule modulTagesschuleMonday = new ModulTagesschule();
 		modulTagesschuleMonday.setModulTagesschuleGroup(modulTagesschuleGroupPedagogischBetreut);
