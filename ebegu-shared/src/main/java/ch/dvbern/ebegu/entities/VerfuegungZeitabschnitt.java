@@ -66,14 +66,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput();
+	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput(this);
 
 	/**
 	 * Input-Werte für die Rules. Berechnung nach Spezialwünschen der Gemeinde, optional
 	 */
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput();
+	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput(this);
 
 	/**
 	 * Berechnungsresultate. Berechnung nach ASIV (Standard)

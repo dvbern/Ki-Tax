@@ -20,9 +20,9 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -55,18 +55,17 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
+		@Nonnull BGCalculationInput inputData) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		Betreuung betreuung = (Betreuung) platz;
-		int pensumFachstelle = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum();
-		int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
+		int pensumFachstelle = inputData.getFachstellenpensum();
+		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
 		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 			// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(roundedPensumFachstelle);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+			inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
+			inputData.addBemerkung(
 				RuleKey.FACHSTELLE,
 				MsgKey.FACHSTELLE_MSG,
 				getLocale(),

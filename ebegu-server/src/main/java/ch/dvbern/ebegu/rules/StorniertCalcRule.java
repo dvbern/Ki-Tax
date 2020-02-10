@@ -20,8 +20,8 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -48,10 +48,10 @@ public class StorniertCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
-	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		// Bei Betreuungen mit status STORNIERT wird Bemerkung hinzugefügt
 		if (Betreuungsstatus.STORNIERT == platz.getBetreuungsstatus()) {
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG, getLocale());
+			inputData.addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG, getLocale());
 		}
 	}
 }

@@ -22,8 +22,8 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -51,14 +51,13 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
-		int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch();
-		int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
+		@Nonnull BGCalculationInput inputData) {
+		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
+		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 		// Es wird der grössere der beiden Werte genommen!
 		if (ausserordentlicherAnspruch > pensumAnspruch) {
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(ausserordentlicherAnspruch);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+			inputData.setAnspruchspensumProzent(ausserordentlicherAnspruch);
+			inputData.addBemerkung(
 				RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
 				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
 				getLocale());

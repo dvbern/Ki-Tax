@@ -20,8 +20,8 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -57,11 +57,10 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
-		if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(0);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
+		@Nonnull BGCalculationInput inputData) {
+		if (inputData.isZuSpaetEingereicht()) {
+			inputData.setAnspruchspensumProzent(0);
+			inputData.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
 		}
 	}
 }

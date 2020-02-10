@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -43,6 +44,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * is of a given type
  */
 public abstract class AbstractEbeguRule implements Rule {
+
+	private final RuleValidity ruleValidity = RuleValidity.ASIV; // Normalfall
 
 	/**
 	 * This is the name of the Rule, Can be used to create messages etc.
@@ -125,7 +128,9 @@ public abstract class AbstractEbeguRule implements Rule {
 	 */
 	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		if (isAnwendbarForAngebot(platz)) {
-			executeRule(platz, verfuegungZeitabschnitt);
+			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
+				executeRule(platz, inputDatum);
+			}
 		}
 	}
 
@@ -133,7 +138,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
 	 * Hier kann man davon ausgehen, dass die Zeitabschnitte schon validiert und gemergt sind.
 	 */
-	abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt);
+	abstract void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData);
 
 	/**
 	 * Hauptmethode der Regelberechnung. Diese wird von Aussen aufgerufen
@@ -337,5 +342,15 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
 		return RuleUtil.getStichtagForEreignis(ereignisdatum);
+	}
+
+	@Nonnull
+	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		List<BGCalculationInput> inputList = new ArrayList<>();
+		inputList.add(zeitabschnitt.getBgCalculationInputAsiv());
+		if (this.ruleValidity == RuleValidity.GEMEINDE) {
+			inputList.add(zeitabschnitt.getBgCalculationInputGemeinde());
+		}
+		return inputList;
 	}
 }

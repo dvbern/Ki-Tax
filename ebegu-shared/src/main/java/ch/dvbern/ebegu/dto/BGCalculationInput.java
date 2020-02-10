@@ -28,14 +28,19 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class BGCalculationInput {
+
+	@Transient
+	private VerfuegungZeitabschnitt parent;
 
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
@@ -149,11 +154,12 @@ public class BGCalculationInput {
 
 	// Ende
 
-
-	public BGCalculationInput() {
+	public BGCalculationInput(VerfuegungZeitabschnitt parent) {
+		this.parent = parent;
 	}
 
 	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
+		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
 		this.taetigkeiten = toCopy.taetigkeiten;
@@ -193,6 +199,14 @@ public class BGCalculationInput {
 		this.tsVerpflegungskostenOhneBetreuung = toCopy.tsVerpflegungskostenOhneBetreuung;
 		this.tsGebuehrProStundeOhneBetreuung = toCopy.tsGebuehrProStundeOhneBetreuung;
 		this.tsTotalKostenProWocheOhneBetreuung = toCopy.tsTotalKostenProWocheOhneBetreuung;
+	}
+
+	public VerfuegungZeitabschnitt getParent() {
+		return parent;
+	}
+
+	public void setParent(VerfuegungZeitabschnitt parent) {
+		this.parent = parent;
 	}
 
 	@Nullable
@@ -693,5 +707,14 @@ public class BGCalculationInput {
 		@Nonnull Locale locale,
 		@Nonnull Object... args) {
 		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
+	}
+
+	/**
+	 * @return berechneter Wert. Zieht vom massgebenenEinkommenVorAbzug den Familiengroessen Abzug ab
+	 */
+	@Nonnull
+	public BigDecimal getMassgebendesEinkommen() {
+		BigDecimal abzugFamSize = this.abzugFamGroesse;
+		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
 	}
 }
