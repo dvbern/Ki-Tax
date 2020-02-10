@@ -143,6 +143,7 @@
                                 <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
                                      ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
                                     <md-menu>
+<!--                                    leeres ng-click verhindert Fehler "cannot read property setAttribute of undefined"-->
                                         <md-checkbox
                                             name="modul_{{mod.modulTagesschule.identifier}}"
                                             ng-model="mod.modulTagesschule.angemeldet"
