@@ -420,7 +420,7 @@ public class BGCalculationResult extends AbstractEntity {
 	 */
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommen() {
-		BigDecimal abzugFamSize = this.abzugFamGroesse;
+		BigDecimal abzugFamSize = this.abzugFamGroesse != null ? this.abzugFamGroesse : BigDecimal.ZERO;
 		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
 	}
 
