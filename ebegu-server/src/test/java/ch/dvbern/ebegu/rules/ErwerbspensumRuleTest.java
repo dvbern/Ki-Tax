@@ -74,9 +74,9 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
-		assertEquals(1, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungenMap());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenMap().size());
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -114,9 +114,9 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
-		assertEquals(1, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungenMap());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenMap().size());
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test

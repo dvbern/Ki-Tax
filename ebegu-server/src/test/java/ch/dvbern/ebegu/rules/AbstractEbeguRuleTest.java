@@ -367,13 +367,13 @@ public class AbstractEbeguRuleTest {
 
 		final String bemerkungen = zeitabschnitt.getBemerkungen();
 		if (expectedBemerkungIfAny != null) {
-			Assert.assertFalse(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-			Assert.assertTrue(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(expectedBemerkungIfAny));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenMap().isEmpty());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenMap().containsKey(expectedBemerkungIfAny));
 		} else {
 			assertNotNull(bemerkungen);
-			Assert.assertFalse(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().isEmpty());
-			Assert.assertEquals(1, zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().size());
-			Assert.assertTrue(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenMap().isEmpty());
+			Assert.assertEquals(1, zeitabschnitt.getBemerkungenMap().size());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		}
 	}
 }
