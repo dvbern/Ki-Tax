@@ -122,7 +122,7 @@ export class AddGemeindeComponent implements OnInit {
 
         this.errorService.clearAll();
         if (this.isAtLeastOneAngebotSelected()) {
-            this.persistGemeinde();
+            this.persistGemeindeWithGSCheck();
         }
     }
 

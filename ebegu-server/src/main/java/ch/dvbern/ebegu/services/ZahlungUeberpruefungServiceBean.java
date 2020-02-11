@@ -120,7 +120,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		LOGGER.info("Pruefe Zahlungen fuer Gemeinde {}", gemeinde.getName());
 		zahlungenIstMap = pruefeZahlungenIst(gemeinde);
 		// Alle Gesuchsperioden im Status AKTIV und INAKTIV muessen geprueft werden, da auch rueckwirkend Korrekturen gemacht werden koennen.
-		Collection<Gesuchsperiode> aktiveGesuchsperioden = gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden();
+		Collection<Gesuchsperiode> aktiveGesuchsperioden = gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden();
 		for (Gesuchsperiode gesuchsperiode : aktiveGesuchsperioden) {
 			pruefungZahlungenSollFuerGesuchsperiode(gesuchsperiode, gemeinde, datumLetzteZahlung);
 		}

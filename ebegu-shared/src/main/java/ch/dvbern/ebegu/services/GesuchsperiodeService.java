@@ -82,17 +82,24 @@ public interface GesuchsperiodeService {
 	Collection<Gesuchsperiode> getAllActiveGesuchsperioden();
 
 	/**
-	 * Gibt alle Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist.
+	 * Gibt alle Gesuchsperioden zurueck, deren Status nicht Geschlossen ist.
 	 */
 	@Nonnull
 	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden();
 
 	/**
-	 * Gibt alle Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist, und für die das angegebene
+	 * Gibt alle Gesuchsperioden zurueck, deren Status Aktiv oder Inaktiv ist.
+	 */
+	@Nonnull
+	Collection<Gesuchsperiode> getAllAktivUndInaktivGesuchsperioden();
+
+	/**
+	 * Gibt alle Gesuchsperioden zurueck, die Aktiv oder Inaktiv und nicht Entwurf sind, und für die
+	 * das angegebene
 	 * Dossier noch kein Gesuch freigegeben hat.
 	 */
 	@Nonnull
-	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nonnull String dossierId);
+	Collection<Gesuchsperiode> getAllAktivInaktivNichtVerwendeteGesuchsperioden(@Nonnull String dossierId);
 
 	/**
 	 * Gibt alle aktiven Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist, und für die das angegebene

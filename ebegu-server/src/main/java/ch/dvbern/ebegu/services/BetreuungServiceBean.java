@@ -190,11 +190,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		betreuung.setGueltig(true);
-		if (betreuung.getVorgaengerId() != null) {
-			Optional<AnmeldungTagesschule> vorgaengerBetreuungOptional = findAnmeldungTagesschule(betreuung.getVorgaengerId());
-			vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-		}
+		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
 		final AnmeldungTagesschule mergedBetreuung = persistence.merge(betreuung);
 
 
@@ -230,11 +226,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		betreuung.setGueltig(true);
-		if (betreuung.getVorgaengerId() != null) {
-			Optional<AnmeldungFerieninsel> vorgaengerBetreuungOptional = findAnmeldungFerieninsel(betreuung.getVorgaengerId());
-			vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-		}
+		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
 		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(betreuung);
 
 
