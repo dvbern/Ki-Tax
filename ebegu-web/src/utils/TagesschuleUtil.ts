@@ -80,7 +80,7 @@ export class TagesschuleUtil {
             for (const modulOfGroup of moduleOfGroup) {
                 const foundInAngemeldete = copyFromOtherInstitution
                     ? TagesschuleUtil.copyAlreadyAngemeldetModule(group, moduleAngemeldet,
-                        groupTagesschule.modulTagesschuleName, modulOfGroup.wochentag)
+                        groupTagesschule.modulTagesschuleName, modulOfGroup)
                     : TagesschuleUtil.setAlreadyAngemeldetModule(group, moduleAngemeldet, modulOfGroup.id);
                 if (foundInAngemeldete) {
                     groupFoundInAngemeldete = true;
@@ -120,16 +120,17 @@ export class TagesschuleUtil {
         group: TSBelegungTagesschuleModulGroup,
         moduleAngemeldet: TSBelegungTagesschuleModul[],
         moduleNameOfGroup: string,
-        wochentag: TSDayOfWeek,
+        moduleOfGroup: TSModulTagesschule,
     ): boolean {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
             if (angMod.modulTagesschule.moduleGroupName !== moduleNameOfGroup
-                || angMod.modulTagesschule.wochentag !== wochentag) {
+                || angMod.modulTagesschule.wochentag !== moduleOfGroup.wochentag) {
                 continue;
             }
             angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
             angMod.modulTagesschule.angeboten = true;
+            angMod.modulTagesschule.id = moduleOfGroup.id; // wir muessen der id von der neue Modul setzen
             group.module.push(angMod);
             foundInAngemeldete = true;
         }

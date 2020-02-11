@@ -390,7 +390,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public downloadGemeindeGesuchsperiodeDokument(): void {
-        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        const sprache = this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache;
         this.gemeindeRS.downloadGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
             sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
@@ -403,7 +403,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private existMerkblattAnmeldungTS(): void {
-        const sprache = this.gesuchModelManager.getStammdatenToWorkWith().gesuchstellerJA.korrespondenzSprache;
+        const sprache = this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache;
         this.gemeindeRS.existGemeindeGesuchsperiodeDokument(this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
             sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
