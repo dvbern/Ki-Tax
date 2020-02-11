@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -111,7 +112,18 @@ public abstract class AbstractEbeguRule implements Rule {
 	 */
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteIfApplicable(@Nonnull AbstractPlatz platz) {
 		if (isAnwendbarForAngebot(platz)) {
-			return createVerfuegungsZeitabschnitte(platz);
+			// Nach jeder AbschnittRule erhalten wir die *neuen* Zeitabschnitte zurueck. Diese müssen bei ASIV-Regeln
+			// immer eine identische ASIV und GEMEINDE-Berechnung haben!
+			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
+			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zwischenresultate) {
+				if (RuleValidity.ASIV == ruleValidity) {
+					boolean same = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isSame(verfuegungZeitabschnitt.getBgCalculationInputGemeinde());
+					if (!same) {
+						throw new EbeguRuntimeException("createVerfuegungsZeitabschnitteIfApplicable", "ASIV Rule setzt nicht beide Input-Objekte!");
+					}
+				}
+			}
+			return zwischenresultate;
 		}
 		return new ArrayList<>();
 	}

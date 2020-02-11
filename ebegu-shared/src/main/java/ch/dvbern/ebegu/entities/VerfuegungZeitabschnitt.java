@@ -200,109 +200,108 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	public BigDecimal getVollkosten() {
-		return getBgCalculationResultAsiv().getVollkosten();
+		return getRelevantBgCalculationResult().getVollkosten();
 	}
 
 	@Nonnull
 	public BigDecimal getElternbeitrag() {
-		return getBgCalculationResultAsiv().getElternbeitrag();
+		return getRelevantBgCalculationResult().getElternbeitrag();
 	}
 
 	@Nonnull
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
-		return getBgCalculationResultAsiv().getVerguenstigungOhneBeruecksichtigungVollkosten();
+		return getRelevantBgCalculationResult().getVerguenstigungOhneBeruecksichtigungVollkosten();
 	}
 
 	@Nonnull
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungMinimalbeitrag() {
-		return getBgCalculationResultAsiv().getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
+		return getRelevantBgCalculationResult().getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
 	}
 
 	@Nonnull
 	public BigDecimal getVerguenstigung() {
-		return getBgCalculationResultAsiv().getVerguenstigung();
+		return getRelevantBgCalculationResult().getVerguenstigung();
 	}
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitrag() {
-		return getBgCalculationResultAsiv().getMinimalerElternbeitrag();
+		return getRelevantBgCalculationResult().getMinimalerElternbeitrag();
 	}
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
-		return getBgCalculationResultAsiv().getMinimalerElternbeitragGekuerztNullSafe();
+		return getRelevantBgCalculationResult().getMinimalerElternbeitragGekuerztNullSafe();
 	}
 
 	@Nonnull
 	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
-		return getBgCalculationResultAsiv().getBgPensumZeiteinheit();
+		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
 	}
 
 	@Nonnull
 	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
-		return getBgCalculationResultAsiv().getAnspruchspensumZeiteinheit();
+		return getRelevantBgCalculationResult().getAnspruchspensumZeiteinheit();
 	}
 
-	@Nonnull
 	public int getAnspruchberechtigtesPensum() {
-		return getBgCalculationResultAsiv().getAnspruchspensumProzent();
+		return getRelevantBgCalculationResult().getAnspruchspensumProzent();
 	}
 
 	@Nonnull
 	public PensumUnits getZeiteinheit() {
-		return getBgCalculationResultAsiv().getZeiteinheit();
+		return getRelevantBgCalculationResult().getZeiteinheit();
 	}
 
 	@Nonnull
 	public BigDecimal getBetreuungspensumProzent() {
-		return getBgCalculationResultAsiv().getBetreuungspensumProzent();
+		return getRelevantBgCalculationResult().getBetreuungspensumProzent();
 	}
 
 	@Nonnull
 	public BigDecimal getBgPensum() {
-		return getBgCalculationResultAsiv().getBgPensumProzent();
+		return getRelevantBgCalculationResult().getBgPensumProzent();
 	}
 
 	@Nonnull
 	public BigDecimal getBetreuungspensumZeiteinheit() {
-		return getBgCalculationResultAsiv().getBetreuungspensumZeiteinheit();
+		return getRelevantBgCalculationResult().getBetreuungspensumZeiteinheit();
 	}
 
 	@Nullable
 	public BigDecimal getAbzugFamGroesse() {
-		return getBgCalculationResultAsiv().getAbzugFamGroesse();
+		return getRelevantBgCalculationResult().getAbzugFamGroesse();
 	}
 
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommen() {
-		return getBgCalculationResultAsiv().getMassgebendesEinkommen();
+		return getRelevantBgCalculationResult().getMassgebendesEinkommen();
 	}
 
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommenVorAbzFamgr() {
-		return getBgCalculationResultAsiv().getMassgebendesEinkommenVorAbzugFamgr();
+		return getRelevantBgCalculationResult().getMassgebendesEinkommenVorAbzugFamgr();
 	}
 
 	public boolean isZuSpaetEingereicht() {
-		return getBgCalculationResultAsiv().isZuSpaetEingereicht();
+		return getRelevantBgCalculationResult().isZuSpaetEingereicht();
 	}
 
 	public boolean isMinimalesEwpUnterschritten() {
-		return getBgCalculationResultAsiv().isMinimalesEwpUnterschritten();
+		return getRelevantBgCalculationResult().isMinimalesEwpUnterschritten();
 	}
 
 	@Nullable
 	public BigDecimal getFamGroesse() {
-		return getBgCalculationResultAsiv().getFamGroesse();
+		return getRelevantBgCalculationResult().getFamGroesse();
 	}
 
 	@Nonnull
 	public Integer getEinkommensjahr() {
-		return getBgCalculationResultAsiv().getEinkommensjahr();
+		return getRelevantBgCalculationResult().getEinkommensjahr();
 	}
 
 	public boolean isBesondereBeduerfnisseBestaetigt() {
-		return getBgCalculationResultAsiv().isBesondereBeduerfnisseBestaetigt();
+		return getRelevantBgCalculationResult().isBesondereBeduerfnisseBestaetigt();
 	}
 
 	/* Ende Delegator-Methoden */
@@ -656,6 +655,28 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// wenn ids nicht gleich sind wollen wir auch compare to nicht gleich
 		compareToBuilder.append(this.getId(), other.getId());
 		return compareToBuilder.toComparison();
+	}
+
+	public boolean hasGemeindeSpezfischeBerechnung() {
+		return this.bgCalculationResultGemeinde != null;
+	}
+
+	@Nonnull
+	public BGCalculationResult getRelevantBgCalculationResult() {
+		if (hasGemeindeSpezfischeBerechnung()) {
+			Objects.requireNonNull(this.getBgCalculationResultGemeinde());
+			return this.getBgCalculationResultGemeinde();
+		}
+		return this.getBgCalculationResultAsiv();
+	}
+
+	@Nonnull
+	public BGCalculationInput getRelevantBgCalculationInput() {
+		if (hasGemeindeSpezfischeBerechnung()) {
+			Objects.requireNonNull(this.getBgCalculationInputGemeinde());
+			return this.getBgCalculationInputGemeinde();
+		}
+		return this.getBgCalculationInputAsiv();
 	}
 
 	public void copyValuesToResult() {
