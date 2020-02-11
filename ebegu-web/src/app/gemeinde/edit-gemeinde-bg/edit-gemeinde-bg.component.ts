@@ -69,8 +69,6 @@ export class EditGemeindeComponentBG implements OnInit {
                 this.konfigurationsListe = stammdaten.konfigurationsListe;
                 this.gemeindeStatus = stammdaten.gemeinde.status;
                 this.initProperties();
-                // todo: remove
-                console.log(stammdaten);
             },
             err => LOG.error(err));
 
@@ -91,11 +89,7 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeKonfigKontingentierung(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key)
-            .forEach(property => {
-                property.value = gk.konfigKontingentierung ? 'true' : 'false';
-            });
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED, gk.konfigKontingentierung, gk);
     }
 
     public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
@@ -104,11 +98,7 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeKonfigBeguBisUndMitSchulstufe(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key)
-            .forEach(property => {
-                property.value = gk.konfigBeguBisUndMitSchulstufe;
-            });
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gk.konfigBeguBisUndMitSchulstufe, gk);
     }
 
     public changeKonfigErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
@@ -119,97 +109,91 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeErwerbspensumZuschlag(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG === property.key)
-            .forEach(property => {
-                property.value = String(gk.erwerbspensumZuschlag);
-            });
+        this.changeKonfig(TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG, gk.erwerbspensumZuschlag, gk);
     }
 
     public changeKonfigZusaetzlicherGutscheinEnabled(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED === property.key)
-            .forEach(property => {
-                property.value = gk.konfigZusaetzlicherGutscheinEnabled;
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gk.konfigZusaetzlicherGutscheinEnabled, gk);
     }
 
     public changeKonfigZusaetzlicherGutscheinBetragKita(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherGutscheinBetragKita);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
+            gk.konfigZusaetzlicherGutscheinBetragKita,
+            gk
+        );
     }
 
     public changeKonfigZusaetzlicherGutscheinBetragTfo(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property => TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherGutscheinBetragTfo);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO,
+            gk.konfigZusaetzlicherGutscheinBetragTfo,
+            gk
+        );
     }
 
     public changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita,
+            gk
+        );
     }
 
     public changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo,
+            gk
+        );
     }
 
     public changeKonfigZusaetzlicherBabybeitragEnabled(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherBabybeitragEnabled);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED,
+            gk.konfigZusaetzlicherBabybeitragEnabled,
+            gk
+        );
     }
 
     public changeZusaetzlicherBabybeitragKita(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherBabybeitragBetragKita);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA,
+            gk.konfigZusaetzlicherBabybeitragBetragKita,
+            gk
+        );
     }
 
     public changeZusaetzlicherBabybeitragTfo(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherBabybeitragBetragTfo);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO,
+            gk.konfigZusaetzlicherBabybeitragBetragTfo,
+            gk
+        );
     }
 
     public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED === property.key)
-            .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled);
-            });
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED,
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled,
+            gk
+        );
     }
 
     public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent,
+            gk
+        );
+    }
+
+    private changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
         gk.konfigurationen
-            .filter(property =>
-                TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT === property.key)
+            .filter(property => einstellungKey === property.key)
             .forEach(property => {
-                property.value = String(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent);
+                property.value = String(konfig);
             });
     }
 
