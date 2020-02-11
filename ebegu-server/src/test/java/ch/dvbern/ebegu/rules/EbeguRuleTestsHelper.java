@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -83,6 +84,13 @@ public final class EbeguRuleTestsHelper {
 			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS),
 			Constants.DEFAULT_LOCALE);
 	private static final StorniertCalcRule storniertCalcRule = new StorniertCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+
+	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
+	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true);
+	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false);
+	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN);
+	private static final MonatsRule monatsRule = new MonatsRule();
+	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
 
 	private EbeguRuleTestsHelper() {
 	}
@@ -159,13 +167,13 @@ public final class EbeguRuleTestsHelper {
 
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
-		result = AnspruchFristRule.execute(result);
-		result = AbschlussNormalizer.execute(result, false);
+		result = anspruchFristRule.execute(betreuung, result);
+		result = abschlussNormalizerDismissMonate.execute(betreuung, result);
 		if (doMonatsstueckelungen) {
-			result = MonatsRule.execute(result);
+			result = monatsRule.execute(betreuung, result);
 		}
-		result = MutationsMerger.execute(betreuung, result, Constants.DEFAULT_LOCALE);
-		result = AbschlussNormalizer.execute(result, true);
+		result = mutationsMerger.execute(betreuung, result);
+		result = abschlussNormalizerKeepMonate.execute(betreuung, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 
 		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
@@ -173,7 +181,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		return RestanspruchInitializer.execute(currentBetreuung, zeitabschnitte);
+		return restanspruchInitializer.execute(currentBetreuung, zeitabschnitte);
 	}
 
 	public static Betreuung createBetreuungWithPensum(
