@@ -31,16 +31,16 @@ export class TSGemeindeKonfiguration {
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
-    public konfigZusaetzlicherGutscheinEnabled: any; // only on client
-    public konfigZusaetzlicherGutscheinBetragKita: any; // only on client
-    public konfigZusaetzlicherGutscheinBetragTfo: any; // only on client
-    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita: any; // only on client
-    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo: any; // only on client
-    public konfigZusaetzlicherBabybeitragEnabled: any; // only on client
-    public konfigZusaetzlicherBabybeitragBetragKita: any; // only on client
-    public konfigZusaetzlicherBabybeitragBetragTfo: any; // only on client
-    public konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: any; // only on client
-    public konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent: any; // only on client
+    public konfigZusaetzlicherGutscheinEnabled: boolean; // only on client
+    public konfigZusaetzlicherGutscheinBetragKita: number; // only on client
+    public konfigZusaetzlicherGutscheinBetragTfo: number; // only on client
+    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita: TSEinschulungTyp; // only on client
+    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo: TSEinschulungTyp; // only on client
+    public konfigZusaetzlicherBabybeitragEnabled: boolean; // only on client
+    public konfigZusaetzlicherBabybeitragBetragKita: number; // only on client
+    public konfigZusaetzlicherBabybeitragBetragTfo: number; // only on client
+    public konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean; // only on client
+    public konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent: number; // only on client
     public erwerbspensumZuschlag: number;
     // never override this property. we just load it for validation reasons
     public erwerbspensumZuschlagMax: number;
@@ -108,11 +108,11 @@ export class TSGemeindeKonfiguration {
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA: {
-                    this.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = property.value;
+                    this.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = (TSEinschulungTyp as any)[property.value];
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO: {
-                    this.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = property.value;
+                    this.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = (TSEinschulungTyp as any)[property.value];
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED: {
