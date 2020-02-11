@@ -21,6 +21,7 @@ import {TSBelegungTagesschuleModulGroup} from '../models/TSBelegungTagesschuleMo
 import {TSBetreuung} from '../models/TSBetreuung';
 import {TSEinstellungenTagesschule} from '../models/TSEinstellungenTagesschule';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
+import {TSInstitutionStammdatenSummary} from '../models/TSInstitutionStammdatenSummary';
 import {TSModulTagesschule} from '../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
 
@@ -39,13 +40,34 @@ export class TagesschuleUtil {
         const moduleAngemeldet = betreuung.belegungTagesschule.belegungTagesschuleModule;
         const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(betreuung, gesuchsPeriode);
 
-        return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView);
+        return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView, false);
+    }
+
+    public static initModuleTagesschuleAfterInstitutionChange(
+        betreuung: TSBetreuung,
+        oldInstitutionStammdaten: TSInstitutionStammdatenSummary,
+        gesuchsPeriode: TSGesuchsperiode,
+        verfuegungView: boolean,
+    ): TSBelegungTagesschuleModulGroup[] {
+        if (!(betreuung.institutionStammdaten
+            && betreuung.institutionStammdaten.institutionStammdatenTagesschule)
+        ) {
+            return [];
+        }
+        const moduleAngemeldet = betreuung.belegungTagesschule.belegungTagesschuleModule;
+        // hier wir setzen die ModuleGroupName um wieder finden zu koennen welche mussen auf der neue Institution
+        // pre-selektiert werden
+        this.setModuleGroupNameForAngemeldeteModule(moduleAngemeldet, oldInstitutionStammdaten, gesuchsPeriode);
+        const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(betreuung, gesuchsPeriode);
+
+        return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView, true);
     }
 
     private static initModulGroups(
         moduleAngemeldet: TSBelegungTagesschuleModul[],
         moduleAngeboten: TSModulTagesschuleGroup[],
         verfuegungView: boolean,
+        copyFromOtherInstitution: boolean,
     ): TSBelegungTagesschuleModulGroup[] {
         const modulGroups: TSBelegungTagesschuleModulGroup[] = [];
         const moduleAngebotenSorted = this.sortModulTagesschuleGroups(moduleAngeboten);
@@ -56,8 +78,10 @@ export class TagesschuleUtil {
             group.group = groupTagesschule;
             let groupFoundInAngemeldete = false;
             for (const modulOfGroup of moduleOfGroup) {
-                const foundInAngemeldete =
-                    TagesschuleUtil.setAlreadyAngemeldetModule(group, moduleAngemeldet, modulOfGroup.id);
+                const foundInAngemeldete = copyFromOtherInstitution
+                    ? TagesschuleUtil.copyAlreadyAngemeldetModule(group, moduleAngemeldet,
+                        groupTagesschule.modulTagesschuleName, modulOfGroup.wochentag)
+                    : TagesschuleUtil.setAlreadyAngemeldetModule(group, moduleAngemeldet, modulOfGroup.id);
                 if (foundInAngemeldete) {
                     groupFoundInAngemeldete = true;
                     continue;
@@ -92,6 +116,26 @@ export class TagesschuleUtil {
         return foundInAngemeldete;
     }
 
+    private static copyAlreadyAngemeldetModule(
+        group: TSBelegungTagesschuleModulGroup,
+        moduleAngemeldet: TSBelegungTagesschuleModul[],
+        moduleNameOfGroup: string,
+        wochentag: TSDayOfWeek,
+    ): boolean {
+        let foundInAngemeldete = false;
+        for (const angMod of moduleAngemeldet) {
+            if (angMod.modulTagesschule.moduleGroupName !== moduleNameOfGroup
+                || angMod.modulTagesschule.wochentag !== wochentag) {
+                continue;
+            }
+            angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
+            angMod.modulTagesschule.angeboten = true;
+            group.module.push(angMod);
+            foundInAngemeldete = true;
+        }
+        return foundInAngemeldete;
+    }
+
     private static loadAngeboteneModuleForTagesschule(
         betreuung: TSBetreuung,
         gesuchsPeriode: TSGesuchsperiode,
@@ -105,6 +149,34 @@ export class TagesschuleUtil {
             return [];
         }
         return tsEinstellungenTagesschule.modulTagesschuleGroups;
+    }
+
+    private static setModuleGroupNameForAngemeldeteModule(
+        moduleAngemeldet: TSBelegungTagesschuleModul[],
+        oldInstitutionStammdaten: TSInstitutionStammdatenSummary,
+        gesuchsPeriode: TSGesuchsperiode,
+    ): void {
+        const tsEinstellungenTagesschule =
+            oldInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+                .filter((einstellung: TSEinstellungenTagesschule) =>
+                    einstellung.gesuchsperiode.id === gesuchsPeriode.id)
+                .pop();
+        if (!tsEinstellungenTagesschule) {
+            return;
+        }
+        for (const angMod of moduleAngemeldet) {
+            tsEinstellungenTagesschule.modulTagesschuleGroups.forEach(
+                moduleTagesschuleGroup => {
+                    moduleTagesschuleGroup.module.forEach(
+                        module => {
+                            if (module.id === angMod.modulTagesschule.id) {
+                                angMod.modulTagesschule.moduleGroupName = moduleTagesschuleGroup.modulTagesschuleName;
+                            }
+                        }
+                    );
+                }
+            );
+        }
     }
 
     public static initializeGroup(group: TSModulTagesschuleGroup): void {
@@ -141,7 +213,7 @@ export class TagesschuleUtil {
 
     public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
         TSModulTagesschuleGroup[] {
-        return modulTagesschuleGroups.sort( (a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
+        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
             const referenzeDatum = '01/01/2011 ';
             const vonA = Date.parse(referenzeDatum + a.zeitVon);
             const vonB = Date.parse(referenzeDatum + b.zeitVon);
