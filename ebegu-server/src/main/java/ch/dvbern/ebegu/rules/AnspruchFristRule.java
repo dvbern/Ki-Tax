@@ -85,14 +85,14 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 
 						// Ab dem naechsten Monat gilt der neue Anspruch
 						zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
-						zeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(vorangehenderAbschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
+						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
 						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
 						zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
-						zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().clear();
-						zeitabschnitt.getBgCalculationInputAsiv().addAllBemerkungen(vorangehenderAbschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
+						zeitabschnitt.getBemerkungenMap().clear();
+						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
 						vorangehenderAbschnitt = zeitabschnitt;
 					}
 				} else {
