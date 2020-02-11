@@ -80,7 +80,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
 				inputData.setAbzugFamGroesse(BigDecimal.ZERO);
 				inputData.setEinkommensjahr(basisjahr);
-				inputData.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
+				inputData.getParent().addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
 				return;
 			}
 			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
@@ -92,7 +92,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 					inputData.setAbzugFamGroesse(BigDecimal.ZERO);
 					inputData.setEinkommensjahr(basisjahr);
-					inputData.addBemerkung(
+					inputData.getParent().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMEN_MSG,
 						getLocale(),
@@ -132,7 +132,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					Betreuung betreuung = (Betreuung) platz;
 					reduceAnspruchInNormalCase(betreuung, inputData);
-					inputData.addBemerkung(
+					inputData.getParent().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMEN_MSG,
 						getLocale(),
@@ -169,7 +169,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
 				inputData.setEinkommensjahr(basisjahrPlus1);
-				inputData.addBemerkung(
+				inputData.getParent().addBemerkung(
 					RuleKey.EINKOMMEN,
 					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 					locale,
@@ -181,13 +181,13 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				inputData.setEinkommensjahr(basisjahr);
 				// Je nachdem, ob es (manuell) annulliert war oder die 20% nicht erreicht hat, kommt eine andere Meldung
 				if (finanzDatenDTO.isEkv1Annulliert()) {
-					inputData.addBemerkung(
+					inputData.getParent().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus1));
 				} else {
-					inputData.addBemerkung(
+					inputData.getParent().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
@@ -200,7 +200,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			if (finanzDatenDTO.isEkv2AcceptedAndNotAnnuliert()) {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
 				inputData.setEinkommensjahr(basisjahrPlus2);
-				inputData.addBemerkung(
+				inputData.getParent().addBemerkung(
 					RuleKey.EINKOMMEN,
 					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 					locale,
@@ -210,13 +210,13 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 				inputData.setEinkommensjahr(basisjahr);
 				if (finanzDatenDTO.isEkv2Annulliert()) {
-					inputData.addBemerkung(
+					inputData.getParent().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus2));
 				} else {
-					inputData.addBemerkung(
+					inputData.getParent().addBemerkung(
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,

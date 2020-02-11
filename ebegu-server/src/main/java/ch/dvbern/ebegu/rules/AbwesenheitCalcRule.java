@@ -57,7 +57,7 @@ public class AbwesenheitCalcRule extends AbstractCalcRule {
 		requireNonNull(platz.getBetreuungsangebotTyp());
 		if (inputData.isLongAbwesenheit()) {
 			inputData.setBezahltVollkosten(true);
-			inputData.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, getLocale());
+			inputData.getParent().addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, getLocale());
 		}
 	}
 }

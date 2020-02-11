@@ -49,7 +49,7 @@ public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		if (!inputData.isAbschnittLiegtNachBEGUStartdatum()) {
 			inputData.setAnspruchspensumProzent(0);
-			inputData.addBemerkung(
+			inputData.getParent().addBemerkung(
 				RuleKey.BEGU_STARTDATUM,
 				MsgKey.BETREUUNG_VOR_BEGU_START,
 				getLocale(),

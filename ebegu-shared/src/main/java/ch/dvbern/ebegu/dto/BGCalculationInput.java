@@ -19,12 +19,8 @@ package ch.dvbern.ebegu.dto;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,9 +28,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class BGCalculationInput {
@@ -93,12 +87,6 @@ public class BGCalculationInput {
 	private boolean babyTarif;
 
 	private boolean eingeschult;
-
-	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
-	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
-	// "bemerkungen" geschrieben
-	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
-
 
 
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
@@ -180,8 +168,6 @@ public class BGCalculationInput {
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
 		this.babyTarif = toCopy.babyTarif;
 		this.eingeschult = toCopy.eingeschult;
-		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
-		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
 		this.anspruchspensumProzent = toCopy.anspruchspensumProzent;
 		this.einkommensjahr = toCopy.einkommensjahr;
@@ -265,10 +251,6 @@ public class BGCalculationInput {
 
 	public void setHasSecondGesuchstellerForFinanzielleSituation(boolean hasSecondGesuchstellerForFinanzielleSituation) {
 		this.hasSecondGesuchstellerForFinanzielleSituation = hasSecondGesuchstellerForFinanzielleSituation;
-	}
-
-	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
-		return bemerkungenMap;
 	}
 
 	public boolean isBezahltVollkosten() {
@@ -577,7 +559,6 @@ public class BGCalculationInput {
 		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
-		this.addAllBemerkungen(other.getBemerkungenMap());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
 
 		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
@@ -630,7 +611,6 @@ public class BGCalculationInput {
 			ekv2ZuZweit == other.ekv2ZuZweit &&
 			abschnittLiegtNachBEGUStartdatum == other.abschnittLiegtNachBEGUStartdatum &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, other.wohnsitzNichtInGemeindeGS1) &&
-			Objects.equals(bemerkungenMap, other.bemerkungenMap) &&
 			babyTarif == other.babyTarif &&
 			eingeschult == other.eingeschult &&
 			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
@@ -653,7 +633,6 @@ public class BGCalculationInput {
 		}
 		return babyTarif == that.babyTarif &&
 			eingeschult == that.eingeschult &&
-			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == that.anspruchspensumProzent &&
@@ -677,36 +656,6 @@ public class BGCalculationInput {
 		return thisErwerbspensumGS == null && thatErwerbspensumGS == null
 			|| !(thisErwerbspensumGS == null || thatErwerbspensumGS == null)
 			&& thisErwerbspensumGS.equals(thatErwerbspensumGS);
-	}
-
-	/**
-	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
-	 */
-	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
-			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
-				this.bemerkungenMap.put(
-					msgKeyVerfuegungsBemerkungEntry.getKey(),
-					msgKeyVerfuegungsBemerkungEntry.getValue());
-			}
-		}
-	}
-
-	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		this.bemerkungenMap.putAll(otherBemerkungenMap);
-	}
-
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
-	}
-
-	@SuppressWarnings("OverloadedVarargsMethod")
-	public void addBemerkung(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull MsgKey msgKey,
-		@Nonnull Locale locale,
-		@Nonnull Object... args) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
 	}
 
 	/**

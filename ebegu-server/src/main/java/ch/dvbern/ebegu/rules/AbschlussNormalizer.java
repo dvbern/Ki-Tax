@@ -79,8 +79,8 @@ public final class AbschlussNormalizer extends AbstractAbschlussRule {
 				if (!keepMonate || isSameMonth(zeitabschnitt, lastZeitabschnitt)) {
 					lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 					// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-					if (zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap() != null && !zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().isEmpty()) {
-						lastZeitabschnitt.getBgCalculationInputAsiv().mergeBemerkungenMap(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
+					if (zeitabschnitt.getBemerkungenMap() != null && !zeitabschnitt.getBemerkungenMap().isEmpty()) {
+						lastZeitabschnitt.mergeBemerkungenMap(zeitabschnitt.getBemerkungenMap());
 					}
 					validZeitabschnitte.remove(indexOfLast);
 					validZeitabschnitte.add(lastZeitabschnitt);

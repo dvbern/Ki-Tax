@@ -90,7 +90,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {
-			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
+			zeitabschnitt.addBemerkung(
 				RuleKey.ERWEITERTE_BEDUERFNISSE,
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());

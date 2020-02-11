@@ -50,7 +50,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		// bei tagesschule hat man grundsaetzlich 100 anspruch
 		inputData.setAnspruchspensumProzent(100);
-		inputData.addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
+		inputData.getParent().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
 		// Damit der Gesuchsteller im Entwurf die "richtigen" provisorischen Daten sieht, wird bei *noch* nicht akzeptiert
 		// nicht auf Vollkosten gesetzt, erst beim eigentlichen Ablehnen
 		if (platz.extractGesuch().getFinSitStatus() != null

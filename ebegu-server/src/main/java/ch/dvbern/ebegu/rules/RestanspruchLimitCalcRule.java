@@ -57,7 +57,7 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
 		//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 		if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-			inputData.addBemerkung(
+			inputData.getParent().addBemerkung(
 				RuleKey.RESTANSPRUCH,
 				MsgKey.RESTANSPRUCH_MSG,
 				getLocale(),

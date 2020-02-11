@@ -18,7 +18,11 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,8 +44,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -107,6 +114,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Enumerated(EnumType.STRING)
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
+	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
+	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
+	// "bemerkungen" geschrieben
+	@Transient
+	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
@@ -129,6 +142,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
+		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
 		this.bemerkungen = toCopy.bemerkungen;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
 	}
@@ -328,6 +342,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
+	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
+		return bemerkungenMap;
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -342,6 +360,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			}
 			this.bgCalculationResultGemeinde.add(other.getBgCalculationResultGemeinde());
 		}
+		this.addAllBemerkungen(other.getBemerkungenMap());
 	}
 
 	@Override
@@ -388,6 +407,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			EbeguUtil.isSameObject(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSameObject(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
+			Objects.equals(bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}
 
@@ -401,6 +421,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
+			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
 			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
@@ -439,6 +460,36 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationResultAsiv.copyCalculationResult(that.bgCalculationResultAsiv);
 		if (this.bgCalculationResultGemeinde != null) {
 			this.bgCalculationResultGemeinde.copyCalculationResult(that.bgCalculationResultGemeinde);
+		}
+	}
+
+	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		this.bemerkungenMap.putAll(otherBemerkungenMap);
+	}
+
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
+	}
+
+	@SuppressWarnings("OverloadedVarargsMethod")
+	public void addBemerkung(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull MsgKey msgKey,
+		@Nonnull Locale locale,
+		@Nonnull Object... args) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
+	}
+
+	/**
+	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
+	 */
+	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
+			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
+				this.bemerkungenMap.put(
+					msgKeyVerfuegungsBemerkungEntry.getKey(),
+					msgKeyVerfuegungsBemerkungEntry.getValue());
+			}
 		}
 	}
 

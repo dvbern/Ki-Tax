@@ -121,7 +121,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			&& !zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
 		) {
 			zeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(false);
-			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+			zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
 
@@ -145,7 +145,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				zeitabschnitt.getBgCalculationInputAsiv().setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
 				zeitabschnitt.getBgCalculationInputAsiv().setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
 				if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
-					zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+					zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
 			}
 		}
@@ -168,14 +168,14 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
 				zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
-				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-				zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 			}
 		}
 	}

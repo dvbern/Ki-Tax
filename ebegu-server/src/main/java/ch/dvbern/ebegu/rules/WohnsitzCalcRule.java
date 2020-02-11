@@ -55,7 +55,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		if (areNotInBern(inputData)) {
 			inputData.setAnspruchspensumProzent(0);
-			inputData.addBemerkung(
+			inputData.getParent().addBemerkung(
 				RuleKey.WOHNSITZ,
 				MsgKey.WOHNSITZ_MSG,
 				getLocale(),

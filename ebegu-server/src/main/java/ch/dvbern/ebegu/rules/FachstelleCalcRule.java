@@ -65,7 +65,7 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 			// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 			inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
-			inputData.addBemerkung(
+			inputData.getParent().addBemerkung(
 				RuleKey.FACHSTELLE,
 				MsgKey.FACHSTELLE_MSG,
 				getLocale(),
