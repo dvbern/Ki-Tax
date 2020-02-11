@@ -331,7 +331,7 @@ public class BetreuungsgutscheinEvaluator {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
 		VerfuegungZeitabschnitt initialerRestanspruch = new VerfuegungZeitabschnitt(gesuchsperiode.getGueltigkeit());
 		// Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
-		initialerRestanspruch.getBgCalculationInputAsiv().setAnspruchspensumRest(-1);
+		initialerRestanspruch.setAnspruchspensumRest(-1);
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
 	}

@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -305,6 +306,161 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	/* Ende Delegator-Methoden */
+
+	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
+
+	public void setLongAbwesenheit(boolean longAbwesenheit) {
+		this.getBgCalculationInputAsiv().setLongAbwesenheit(longAbwesenheit);
+		this.getBgCalculationInputGemeinde().setLongAbwesenheit(longAbwesenheit);
+	}
+
+	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
+		this.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchspensumProzent);
+		this.getBgCalculationInputGemeinde().setAnspruchspensumProzent(anspruchspensumProzent);
+	}
+
+	public void setAusserordentlicherAnspruch(int ausserordentlicherAnspruch) {
+		this.getBgCalculationInputAsiv().setAusserordentlicherAnspruch(ausserordentlicherAnspruch);
+		this.getBgCalculationInputGemeinde().setAusserordentlicherAnspruch(ausserordentlicherAnspruch);
+	}
+
+	public void setBetreuungspensumProzent(@Nonnull BigDecimal betreuungspensumProzent) {
+		this.getBgCalculationInputAsiv().setBetreuungspensumProzent(betreuungspensumProzent);
+		this.getBgCalculationInputGemeinde().setBetreuungspensumProzent(betreuungspensumProzent);
+	}
+
+	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
+		this.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
+		this.getBgCalculationInputGemeinde().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
+	}
+
+	public void setAnspruchspensumRest(int anspruchspensumRest) {
+		this.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchspensumRest);
+		this.getBgCalculationInputGemeinde().setAnspruchspensumRest(anspruchspensumRest);
+	}
+
+	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+	}
+
+	public void setEkv1Alleine(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv1Alleine(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv1Alleine(ekv1Alleine);
+	}
+
+	public void setEkv1ZuZweit(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv1ZuZweit(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv1ZuZweit(ekv1Alleine);
+	}
+
+	public void setEkv2Alleine(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv2Alleine(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv2Alleine(ekv1Alleine);
+	}
+
+	public void setEkv2ZuZweit(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv2ZuZweit(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv2ZuZweit(ekv1Alleine);
+	}
+
+	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
+		this.getBgCalculationInputAsiv().setZuSpaetEingereicht(zuSpaetEingereicht);
+		this.getBgCalculationInputGemeinde().setZuSpaetEingereicht(zuSpaetEingereicht);
+	}
+
+	public void setErwerbspensumGS1(@Nullable Integer erwerbspensumGS1) {
+		this.getBgCalculationInputAsiv().setErwerbspensumGS1(erwerbspensumGS1);
+		this.getBgCalculationInputGemeinde().setErwerbspensumGS1(erwerbspensumGS1);
+	}
+
+	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS1) {
+		this.getBgCalculationInputAsiv().setErwerbspensumGS2(erwerbspensumGS1);
+		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
+	}
+
+	public void addTaetigkeit(@Nullable Taetigkeit taetigkeit) {
+		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
+		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
+	}
+
+	public void setFachstellenpensum(int fachstellenpensum) {
+		this.getBgCalculationInputAsiv().setFachstellenpensum(fachstellenpensum);
+		this.getBgCalculationInputGemeinde().setFachstellenpensum(fachstellenpensum);
+	}
+
+	public void setAbschnittLiegtNachBEGUStartdatum(boolean abschnittLiegtNachBEGUStartdatum) {
+		this.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+		this.getBgCalculationInputGemeinde().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+	}
+
+	public void setBabyTarif(boolean babyTarif) {
+		this.getBgCalculationInputAsiv().setBabyTarif(babyTarif);
+		this.getBgCalculationInputGemeinde().setBabyTarif(babyTarif);
+	}
+
+	public void setEingeschult(boolean eingeschult) {
+		this.getBgCalculationInputAsiv().setEingeschult(eingeschult);
+		this.getBgCalculationInputGemeinde().setEingeschult(eingeschult);
+	}
+
+	public void setHasSecondGesuchstellerForFinanzielleSituation(boolean hasSecondGesuchstellerForFinanzielleSituation) {
+		this.getBgCalculationInputAsiv().setHasSecondGesuchstellerForFinanzielleSituation(hasSecondGesuchstellerForFinanzielleSituation);
+		this.getBgCalculationInputGemeinde().setHasSecondGesuchstellerForFinanzielleSituation(hasSecondGesuchstellerForFinanzielleSituation);
+	}
+
+	public void setWohnsitzNichtInGemeindeGS1(Boolean wohnsitzNichtInGemeindeGS1) {
+		this.getBgCalculationInputAsiv().setWohnsitzNichtInGemeindeGS1(wohnsitzNichtInGemeindeGS1);
+		this.getBgCalculationInputGemeinde().setWohnsitzNichtInGemeindeGS1(wohnsitzNichtInGemeindeGS1);
+	}
+
+	public void setTsBetreuungszeitProWocheMitBetreuung(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
+		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheMitBetreuung(tsBetreuungszeitProWocheMitBetreuung);
+		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheMitBetreuung(tsBetreuungszeitProWocheMitBetreuung);
+	}
+
+	public void setTsVerpflegungskostenMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
+		this.getBgCalculationInputAsiv().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
+		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
+	}
+
+	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
+		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
+		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
+	}
+
+	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
+		this.getBgCalculationInputAsiv().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
+		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
+		this.getBgCalculationInputAsiv().setEinkommensjahr(einkommensjahr);
+		this.getBgCalculationInputGemeinde().setEinkommensjahr(einkommensjahr);
+	}
+
+	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
+		this.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamGroesse);
+		this.getBgCalculationInputGemeinde().setAbzugFamGroesse(abzugFamGroesse);
+	}
+
+	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
+		this.getBgCalculationInputAsiv().setFamGroesse(famGroesse);
+		this.getBgCalculationInputGemeinde().setFamGroesse(famGroesse);
+	}
+
+	public void setSameVerfuegteVerfuegungsrelevanteDaten(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
+		this.getBgCalculationInputAsiv().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
+		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
+	}
+
+	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
+		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
+		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
+	}
+
+	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
+
 
 	@Nullable
 	public String getBemerkungen() {
