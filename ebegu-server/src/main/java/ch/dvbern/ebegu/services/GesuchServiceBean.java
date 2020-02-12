@@ -272,6 +272,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchForMutationOpt.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForMutation = gesuchForMutationOpt.get();
+
+			// Falls im "alten" Gesuch noch Tagesschule-Anmeldungen im status AUSGELOEST sind, müssen
+			// diese nun gespeichert (im gleichen Status, Verfügung erstellen) werden, damit künftig für
+			// die Berechnung die richtige FinSit verwendet wird!
+			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
+
 			return gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
 		}
 		return gesuchToCreate;
@@ -354,7 +360,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			antragStatusHistoryService.saveStatusChange(merged, saveAsUser);
 		}
 
-		if (gesuch.getStatus().equals(AntragStatus.VERFUEGEN) || gesuch.getStatus().equals(AntragStatus.NUR_SCHULAMT)) {
+		if (gesuch.getStatus() == AntragStatus.VERFUEGEN || gesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
 			KindContainer kindArray[] =
 				gesuch.getKindContainers().toArray(new KindContainer[gesuch.getKindContainers().size()]);
 			for (int i = 0; i < gesuch.getKindContainers().size(); i++) {
@@ -363,7 +369,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					kindContainerToWorkWith.getAnmeldungenTagesschule().toArray(new AnmeldungTagesschule[kindContainerToWorkWith.getAnmeldungenTagesschule().size()]);
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
-					if (anmeldungTagesschule.getBetreuungsstatus().equals(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT)) {
+					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
+					if (anmeldungTagesschule.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
 						this.verfuegungService.anmeldungSchulamtUebernehmen(gesuch.getId(), anmeldungTagesschule.getId());
 					}
 				}
@@ -546,7 +553,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
+					// der Mutation eine Verfügung gespeichert. Diese muss nun wieder gelöscht werden
+					vorgaenger.setVerfuegung(null);
+				}
 				persistence.merge(vorgaenger);
+			});
+	}
+
+	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isSchulamt())
+			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
+			.forEach(anmeldung -> {
+				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(anmeldung.extractGesuch().getId(), anmeldung.getId());
 			});
 	}
 
@@ -1073,7 +1094,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 			if (gesuch.getVorgaengerId() != null) {
 				final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
-				vorgaengerOpt.ifPresent(this::setGesuchUngueltig);
+				vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
 			}
 
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
@@ -1783,12 +1804,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final List<AbstractAnmeldung> betreuungen = gesuch.extractAllAnmeldungen();
 		for (AbstractAnmeldung betreuung : betreuungen) {
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
-				betreuung.setGueltig(true);
-				if (betreuung.getVorgaengerId() != null) {
-					Optional<Betreuung> vorgaengerBetreuungOptional =
-						betreuungService.findBetreuung(betreuung.getVorgaengerId(), false);
-					vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-				}
+				updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
 			}
 		}
 
@@ -1822,7 +1838,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			if (neustesVerfuegtesGesuchFuerGesuch.isPresent() && !neustesVerfuegtesGesuchFuerGesuch.get()
 				.getId()
 				.equals(gesuch.getId())) {
-				setGesuchUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
+				setGesuchAndVorgaengerUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
 			}
 
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
@@ -1833,13 +1849,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	/**
 	 * Setzt das Gesuch auf ungueltig, falls es gueltig ist
 	 */
-	private void setGesuchUngueltig(@Nonnull Gesuch gesuch) {
-		if (gesuch.isGueltig()) {
-			gesuch.setGueltig(null);
-			updateGesuch(gesuch, false, null, false);
-			// Sicherstellen, dass das Gesuch welches nicht mehr gültig ist zuerst gespeichert wird da sonst unique
-			// key Probleme macht!
-			persistence.getEntityManager().flush();
+	private void setGesuchAndVorgaengerUngueltig(@Nonnull Gesuch gesuch) {
+		gesuch.setGueltig(false);
+		updateGesuch(gesuch, false, null, false);
+		// Sicherstellen, dass das Gesuch welches nicht mehr gültig ist zuerst gespeichert wird da sonst unique
+		// key Probleme macht!
+		persistence.getEntityManager().flush();
+		// Rekursiv alle Vorgänger ungültig setzen
+		if (gesuch.getVorgaengerId() != null) {
+			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
+			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
 		}
 	}
 

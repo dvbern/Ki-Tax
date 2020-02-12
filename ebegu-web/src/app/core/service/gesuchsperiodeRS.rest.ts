@@ -126,7 +126,7 @@ export class GesuchsperiodeRS {
         });
     }
 
-    public getAllNichtAbgeschlosseneGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
+    public getAllAktivUndInaktivGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
         if (!this.nichtAbgeschlosseneGesuchsperiodenList || this.nichtAbgeschlosseneGesuchsperiodenList.length <= 0) { // if the list is empty, reload it
             return this.updateNichtAbgeschlosseneGesuchsperiodenList().then(() => {
                 return this.nichtAbgeschlosseneGesuchsperiodenList;
