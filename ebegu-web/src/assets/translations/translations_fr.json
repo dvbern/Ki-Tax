@@ -785,7 +785,7 @@
     "NOVEMBER": "Novembre",
     "DECEMBER": "Décembre",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Détérioration du revenu",
-    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "En {{basisjahr}}, le revenu déterminant de votre famille sera-t-il inférieur de plus de 20% à celui de {{jahr1periode}} ou de {{jahr2periode}} ?",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "En {{jahr1periode}} ou {{jahr2periode}}, le revenu déterminant de votre famille sera-t-il inférieur de plus de 20% à celui de {{basisjahr}} ?",
     "EKVI_FUER_JAHR": "Pour {{basisjahr}}",
     "EKVI_MONAT_DES_EREIGNISSES": "Pendant quel mois le revenu s'est-il détérioré ?",
     "EKVI_GRUND_DES_EREIGNISSES": "Motif",
