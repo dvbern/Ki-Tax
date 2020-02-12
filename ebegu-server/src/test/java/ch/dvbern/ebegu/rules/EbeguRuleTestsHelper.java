@@ -95,6 +95,17 @@ public final class EbeguRuleTestsHelper {
 	private EbeguRuleTestsHelper() {
 	}
 
+	@Nonnull
+	public static List<VerfuegungZeitabschnitt> runSingleAbschlussRule(
+		@Nonnull AbstractAbschlussRule abschlussRule, @Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
+	) {
+		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
+			verfuegungZeitabschnitt.copyValuesToResult();
+		}
+		return result;
+	}
+
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		// Abschnitte
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
@@ -181,7 +192,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		return restanspruchInitializer.execute(currentBetreuung, zeitabschnitte);
+		return restanspruchInitializer.executeIfApplicable(currentBetreuung, zeitabschnitte);
 	}
 
 	public static Betreuung createBetreuungWithPensum(

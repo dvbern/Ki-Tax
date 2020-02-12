@@ -52,6 +52,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
+
 	public RestanspruchInitializer() {
 	}
 
@@ -60,22 +61,17 @@ public final class RestanspruchInitializer extends AbstractAbschlussRule {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
-	@Override
-	protected boolean isRelevantForFamiliensituation() {
-		return false;
-	}
-
 	@Nonnull
 	@Override
-	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		List<VerfuegungZeitabschnitt> restanspruchsZeitabschnitte = new ArrayList<>();
+	protected List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			VerfuegungZeitabschnitt restanspruchsAbschnitt = new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
 			restanspruchUebernehmen(platz, zeitabschnitt.getBgCalculationInputAsiv(), restanspruchsAbschnitt.getBgCalculationInputAsiv());
 			restanspruchUebernehmen(platz, zeitabschnitt.getBgCalculationInputGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
-			restanspruchsZeitabschnitte.add(restanspruchsAbschnitt);
+			restanspruchZeitabschnitte.add(restanspruchsAbschnitt);
 		}
-		return restanspruchsZeitabschnitte;
+		return restanspruchZeitabschnitte;
 	}
 
 	private void restanspruchUebernehmen(@Nonnull AbstractPlatz betreuung, @Nonnull BGCalculationInput sourceZeitabschnitt, BGCalculationInput targetZeitabschnitt) {

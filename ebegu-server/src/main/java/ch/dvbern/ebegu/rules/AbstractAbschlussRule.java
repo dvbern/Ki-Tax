@@ -37,7 +37,7 @@ public abstract class AbstractAbschlussRule {
 	}
 
 	@Nonnull
-	public abstract List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte);
+	protected abstract List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte);
 
 	/**
 	 * @param platz (Betreuung, Tageschhulplatz etc)
@@ -51,9 +51,4 @@ public abstract class AbstractAbschlussRule {
 
 	protected abstract List<BetreuungsangebotTyp> getAnwendbareAngebote();
 
-	/**
-	 * Gibt zurueck, ob die Regel fuer die Berechnung der Familiensituation (Fam-Groesse, Einkommen, Abzug fuer Fam-Groesse)
-	 * relevant ist
-	 */
-	protected abstract boolean isRelevantForFamiliensituation();
 }

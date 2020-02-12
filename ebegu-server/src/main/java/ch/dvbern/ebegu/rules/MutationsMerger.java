@@ -74,14 +74,9 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
-	@Override
-	protected boolean isRelevantForFamiliensituation() {
-		return true;
-	}
-
 	@Nonnull
 	@Override
-	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		if (platz.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
 		}

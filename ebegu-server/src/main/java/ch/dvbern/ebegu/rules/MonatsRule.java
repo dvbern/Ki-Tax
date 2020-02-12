@@ -45,14 +45,9 @@ public final class MonatsRule extends AbstractAbschlussRule {
 		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
-	@Override
-	protected boolean isRelevantForFamiliensituation() {
-		return true;
-	}
-
 	@Nonnull
 	@Override
-	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			LocalDate gueltigAb = zeitabschnitt.getGueltigkeit().getGueltigAb();

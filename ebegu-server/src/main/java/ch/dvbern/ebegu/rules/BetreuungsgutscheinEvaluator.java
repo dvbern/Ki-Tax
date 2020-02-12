@@ -103,12 +103,13 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 
-			List<AbstractAbschlussRule> abschlussRules = findAbschlussRulesToRun(false, locale);
-			for (AbstractAbschlussRule abschlussRule : abschlussRules) {
-				if (abschlussRule.isRelevantForFamiliensituation()) {
-					abschlussRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
-				}
-			}
+			MonatsRule monatsRule = new MonatsRule();
+			MutationsMerger mutationsMerger = new MutationsMerger(locale);
+			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true);
+
+			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
@@ -196,10 +197,20 @@ public class BetreuungsgutscheinEvaluator {
 				}
 
 				// Die Abschluss-Rules ebenfalls ausführen
-				List<AbstractAbschlussRule> abschlussRules = findAbschlussRulesToRun(isTagesschule, locale);
-				for (AbstractAbschlussRule abschlussRule : abschlussRules) {
-					abschlussRule.executeIfApplicable(platz, zeitabschnitte);
-				}
+
+				AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
+				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false);
+				MonatsRule monatsRule = new MonatsRule();
+				MutationsMerger mutationsMerger = new MutationsMerger(locale);
+				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule());
+
+				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
+				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
+				zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
+				zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
+				zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);
+				zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(platz, zeitabschnitte);
 
 				// Die Verfügung erstellen
 				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird
@@ -231,17 +242,6 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 		}
-	}
-
-	private List<AbstractAbschlussRule> findAbschlussRulesToRun(boolean isTagesschule, @Nonnull Locale locale) {
-		List<AbstractAbschlussRule> rulesToRun = new LinkedList<>();
-		rulesToRun.add(new AnspruchFristRule());
-		rulesToRun.add(new RestanspruchInitializer());
-		rulesToRun.add(new AbschlussNormalizer(false));
-		rulesToRun.add(new MonatsRule());
-		rulesToRun.add(new MutationsMerger(locale));
-		rulesToRun.add(new AbschlussNormalizer(!isTagesschule));
-		return rulesToRun;
 	}
 
 	/**
@@ -308,7 +308,7 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
 		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
-		restanspruchZeitabschnitte = restanspruchInitializer.execute(
+		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 
 		return restanspruchZeitabschnitte;

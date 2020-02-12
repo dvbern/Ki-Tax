@@ -49,11 +49,6 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 	}
 
 	@Override
-	protected boolean isRelevantForFamiliensituation() {
-		return false;
-	}
-
-	@Override
 	@Nonnull
 	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> result = new LinkedList<>();
