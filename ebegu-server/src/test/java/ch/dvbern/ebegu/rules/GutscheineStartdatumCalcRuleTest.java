@@ -60,7 +60,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		rule.executeRuleIfApplicable(betreuung, zeitabschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
-		assertEquals(100, zeitabschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(100, zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent());
 		assertNotNull(zeitabschnitt.getBemerkungen());
 		assertTrue(zeitabschnitt.getBemerkungen().isEmpty());
 	}
