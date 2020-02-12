@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
 
@@ -123,22 +124,10 @@ public class BGCalculationInput {
 	private BigDecimal tsVerpflegungskostenMitBetreuung = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
-	private BigDecimal tsGebuehrProStundeMitBetreuung = BigDecimal.ZERO;
-
-	@NotNull @Nonnull
-	private BigDecimal tsTotalKostenProWocheMitBetreuung = BigDecimal.ZERO;
-
-	@NotNull @Nonnull
 	private Integer tsBetreuungszeitProWocheOhneBetreuung = 0;
 
 	@NotNull @Nonnull
 	private BigDecimal tsVerpflegungskostenOhneBetreuung = BigDecimal.ZERO;
-
-	@NotNull @Nonnull
-	private BigDecimal tsGebuehrProStundeOhneBetreuung = BigDecimal.ZERO;
-
-	@NotNull @Nonnull
-	private BigDecimal tsTotalKostenProWocheOhneBetreuung = BigDecimal.ZERO;
 
 	// Ende
 
@@ -179,12 +168,8 @@ public class BGCalculationInput {
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.tsBetreuungszeitProWocheMitBetreuung = toCopy.tsBetreuungszeitProWocheMitBetreuung;
 		this.tsVerpflegungskostenMitBetreuung = toCopy.tsVerpflegungskostenMitBetreuung;
-		this.tsGebuehrProStundeMitBetreuung = toCopy.tsGebuehrProStundeMitBetreuung;
-		this.tsTotalKostenProWocheMitBetreuung = toCopy.tsTotalKostenProWocheMitBetreuung;
 		this.tsBetreuungszeitProWocheOhneBetreuung = toCopy.tsBetreuungszeitProWocheOhneBetreuung;
 		this.tsVerpflegungskostenOhneBetreuung = toCopy.tsVerpflegungskostenOhneBetreuung;
-		this.tsGebuehrProStundeOhneBetreuung = toCopy.tsGebuehrProStundeOhneBetreuung;
-		this.tsTotalKostenProWocheOhneBetreuung = toCopy.tsTotalKostenProWocheOhneBetreuung;
 	}
 
 	public VerfuegungZeitabschnitt getParent() {
@@ -412,6 +397,11 @@ public class BGCalculationInput {
 		return abzugFamGroesse;
 	}
 
+	@Nonnull
+	public BigDecimal getAbzugFamGroesseNonNull() {
+		return abzugFamGroesse != null ? abzugFamGroesse : MathUtil.DEFAULT.from(0);
+	}
+
 	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
 		this.abzugFamGroesse = abzugFamGroesse;
 	}
@@ -446,6 +436,11 @@ public class BGCalculationInput {
 		return famGroesse;
 	}
 
+	@Nonnull
+	public BigDecimal getFamGroesseNonNull() {
+		return famGroesse != null ? famGroesse : MathUtil.DEFAULT.from(0);
+	}
+
 	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
 		this.famGroesse = famGroesse;
 	}
@@ -469,24 +464,6 @@ public class BGCalculationInput {
 	}
 
 	@Nonnull
-	public BigDecimal getTsGebuehrProStundeMitBetreuung() {
-		return tsGebuehrProStundeMitBetreuung;
-	}
-
-	public void setTsGebuehrProStundeMitBetreuung(@Nonnull BigDecimal tsGebuehrProStundeMitBetreuung) {
-		this.tsGebuehrProStundeMitBetreuung = tsGebuehrProStundeMitBetreuung;
-	}
-
-	@Nonnull
-	public BigDecimal getTsTotalKostenProWocheMitBetreuung() {
-		return tsTotalKostenProWocheMitBetreuung;
-	}
-
-	public void setTsTotalKostenProWocheMitBetreuung(@Nonnull BigDecimal tsTotalKostenProWocheMitBetreuung) {
-		this.tsTotalKostenProWocheMitBetreuung = tsTotalKostenProWocheMitBetreuung;
-	}
-
-	@Nonnull
 	public Integer getTsBetreuungszeitProWocheOhneBetreuung() {
 		return tsBetreuungszeitProWocheOhneBetreuung;
 	}
@@ -502,24 +479,6 @@ public class BGCalculationInput {
 
 	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
 		this.tsVerpflegungskostenOhneBetreuung = tsVerpflegungskostenOhneBetreuung;
-	}
-
-	@Nonnull
-	public BigDecimal getTsGebuehrProStundeOhneBetreuung() {
-		return tsGebuehrProStundeOhneBetreuung;
-	}
-
-	public void setTsGebuehrProStundeOhneBetreuung(@Nonnull BigDecimal tsGebuehrProStundeOhneBetreuung) {
-		this.tsGebuehrProStundeOhneBetreuung = tsGebuehrProStundeOhneBetreuung;
-	}
-
-	@Nonnull
-	public BigDecimal getTsTotalKostenProWocheOhneBetreuung() {
-		return tsTotalKostenProWocheOhneBetreuung;
-	}
-
-	public void setTsTotalKostenProWocheOhneBetreuung(@Nonnull BigDecimal tsTotalKostenProWocheOhneBetreuung) {
-		this.tsTotalKostenProWocheOhneBetreuung = tsTotalKostenProWocheOhneBetreuung;
 	}
 
 	@Override
@@ -592,6 +551,17 @@ public class BGCalculationInput {
 		this.tsVerpflegungskostenMitBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenMitBetreuung, other.tsVerpflegungskostenMitBetreuung);
 		this.tsBetreuungszeitProWocheOhneBetreuung = this.tsBetreuungszeitProWocheOhneBetreuung + other.tsBetreuungszeitProWocheOhneBetreuung;
 		this.tsVerpflegungskostenOhneBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenOhneBetreuung, other.tsVerpflegungskostenOhneBetreuung);
+
+		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
+		if (other.getAbzugFamGroesse() != null) {
+			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
+			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
+		}
+		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
+		if (other.getFamGroesse() != null) {
+			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
+			this.setFamGroesse(other.getFamGroesse());
+		}
 	}
 
 	public boolean isSame(BGCalculationInput other) {
@@ -644,12 +614,8 @@ public class BGCalculationInput {
 			(this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten) &&
 			Objects.equals(this.tsBetreuungszeitProWocheMitBetreuung, that.tsBetreuungszeitProWocheMitBetreuung) &&
 			MathUtil.isSame(this.tsVerpflegungskostenMitBetreuung, that.tsVerpflegungskostenMitBetreuung) &&
-			MathUtil.isSame(this.tsGebuehrProStundeMitBetreuung, that.tsGebuehrProStundeMitBetreuung) &&
-			MathUtil.isSame(this.tsTotalKostenProWocheMitBetreuung, that.tsTotalKostenProWocheMitBetreuung) &&
 			Objects.equals(this.tsBetreuungszeitProWocheOhneBetreuung, that.tsBetreuungszeitProWocheOhneBetreuung) &&
-			MathUtil.isSame(this.tsVerpflegungskostenOhneBetreuung, that.tsVerpflegungskostenOhneBetreuung) &&
-			MathUtil.isSame(this.tsGebuehrProStundeOhneBetreuung, that.tsGebuehrProStundeOhneBetreuung) &&
-			MathUtil.isSame(this.tsTotalKostenProWocheOhneBetreuung, that.tsTotalKostenProWocheOhneBetreuung);
+			MathUtil.isSame(this.tsVerpflegungskostenOhneBetreuung, that.tsVerpflegungskostenOhneBetreuung);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

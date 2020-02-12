@@ -176,15 +176,14 @@ public final class EbeguRuleTestsHelper {
 		result = schulstufeCalcRule.calculate(betreuung, result);
 		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
 
-		result = restanspruchLimitCalcRule.calculate(betreuung, result);
-		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
-		result = anspruchFristRule.execute(betreuung, result);
-		result = abschlussNormalizerDismissMonate.execute(betreuung, result);
+		result = anspruchFristRule.executeIfApplicable(betreuung, result);
+		restanspruchInitializer.executeIfApplicable(betreuung, result);
+		result = abschlussNormalizerDismissMonate.executeIfApplicable(betreuung, result);
 		if (doMonatsstueckelungen) {
-			result = monatsRule.execute(betreuung, result);
+			result = monatsRule.executeIfApplicable(betreuung, result);
 		}
-		result = mutationsMerger.execute(betreuung, result);
-		result = abschlussNormalizerKeepMonate.execute(betreuung, result);
+		result = mutationsMerger.executeIfApplicable(betreuung, result);
+		result = abschlussNormalizerKeepMonate.executeIfApplicable(betreuung, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 
 		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);

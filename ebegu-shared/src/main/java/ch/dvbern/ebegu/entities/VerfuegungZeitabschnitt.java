@@ -508,13 +508,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void add(VerfuegungZeitabschnitt other) {
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
-		this.bgCalculationResultAsiv.add(other.bgCalculationResultAsiv);
-		if (other.getBgCalculationResultGemeinde() != null) {
-			if (this.bgCalculationResultGemeinde == null) {
-				this.bgCalculationResultGemeinde = new BGCalculationResult();
-			}
-			this.bgCalculationResultGemeinde.add(other.getBgCalculationResultGemeinde());
-		}
 		this.addAllBemerkungen(other.getBemerkungenMap());
 	}
 
@@ -691,25 +684,21 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
 		result.setMassgebendesEinkommenVorAbzugFamgr(input.getMassgebendesEinkommenVorAbzugFamgr());
 		result.setBesondereBeduerfnisseBestaetigt(input.isBesondereBeduerfnisseBestaetigt());
-		result.setAbzugFamGroesse(input.getAbzugFamGroesse());
+		result.setAbzugFamGroesse(input.getAbzugFamGroesseNonNull());
 		result.setEinkommensjahr(input.getEinkommensjahr());
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
-		result.setFamGroesse(input.getFamGroesse());
+		result.setFamGroesse(input.getFamGroesseNonNull());
 		if (input.getTsBetreuungszeitProWocheMitBetreuung() > 0) {
 			TSCalculationResult tsResultMitBetreuung = new TSCalculationResult();
 			tsResultMitBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheMitBetreuung());
 			tsResultMitBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenMitBetreuung());
-			tsResultMitBetreuung.setGebuehrProStunde(input.getTsGebuehrProStundeMitBetreuung());
-			tsResultMitBetreuung.setTotalKostenProWoche(input.getTsTotalKostenProWocheMitBetreuung());
 			result.setTsCalculationResultMitPaedagogischerBetreuung(tsResultMitBetreuung);
 		}
 		if (input.getTsBetreuungszeitProWocheOhneBetreuung() > 0) {
 			TSCalculationResult tsResultOhneBetreuung = new TSCalculationResult();
 			tsResultOhneBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheOhneBetreuung());
 			tsResultOhneBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenOhneBetreuung());
-			tsResultOhneBetreuung.setGebuehrProStunde(input.getTsGebuehrProStundeOhneBetreuung());
-			tsResultOhneBetreuung.setTotalKostenProWoche(input.getTsTotalKostenProWocheOhneBetreuung());
 			result.setTsCalculationResultOhnePaedagogischerBetreuung(tsResultOhneBetreuung);
 		}
 	}
