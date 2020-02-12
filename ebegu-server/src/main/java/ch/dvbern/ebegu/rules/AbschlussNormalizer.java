@@ -21,6 +21,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import org.apache.commons.collections.MapUtils;
 
 /**
  * Abschlussmerger, welcher nach allen Regeln die vorhandenen Abschnitte überprüft und solche mit gleichen *sichtbaren*
@@ -59,7 +60,7 @@ public final class AbschlussNormalizer {
 				if (!keepMonate || isSameMonth(zeitabschnitt, lastZeitabschnitt)) {
 					lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 					// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-					if (zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap() != null && !zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().isEmpty()) {
+					if (!MapUtils.isEmpty(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap())) {
 						lastZeitabschnitt.getBgCalculationInputAsiv().mergeBemerkungenMap(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 					}
 					validZeitabschnitte.remove(indexOfLast);

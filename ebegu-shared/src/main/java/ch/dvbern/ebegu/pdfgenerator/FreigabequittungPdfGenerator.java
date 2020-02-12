@@ -161,11 +161,11 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_INSTITUTION)));
 		table.addCell(PdfUtil.createTitleCell(translate(REFERENZNUMMER)));
 
-		getGesuch().extractAllBetreuungen().forEach(betreuung -> {
-			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), getPageConfiguration().getFont()));
-			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache),
+		getGesuch().extractAllPlaetze().forEach(platz -> {
+			table.addCell(new Phrase(platz.getKind().getKindJA().getFullName(), getPageConfiguration().getFont()));
+			table.addCell(new Phrase(platz.getInstitutionAndBetreuungsangebottyp(sprache),
 				getPageConfiguration().getFont()));
-			table.addCell(new Phrase(betreuung.getBGNummer(), getPageConfiguration().getFont()));
+			table.addCell(new Phrase(platz.getBGNummer(), getPageConfiguration().getFont()));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;
