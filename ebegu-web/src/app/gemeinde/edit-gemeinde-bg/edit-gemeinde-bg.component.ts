@@ -28,6 +28,7 @@ import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStat
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
@@ -115,6 +116,34 @@ export class EditGemeindeComponentBG implements OnInit {
     public changeKonfigZusaetzlicherGutscheinEnabled(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gk.konfigZusaetzlicherGutscheinEnabled, gk);
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherGutscheinEnabled)) {
+            this.resetKonfigZusaetzlicherGutschein(gk);
+        }
+    }
+
+    private resetKonfigZusaetzlicherGutschein(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherGutscheinBetragKita = 0;
+        gk.konfigZusaetzlicherGutscheinBetragTfo = 0;
+        gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = TSEinschulungTyp.VORSCHULALTER;
+        gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = TSEinschulungTyp.VORSCHULALTER;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA,
+            gk.konfigZusaetzlicherGutscheinBetragKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO,
+            gk.konfigZusaetzlicherGutscheinBetragTfo, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO,
+            gk.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo, gk
+        );
     }
 
     public changeKonfigZusaetzlicherGutscheinBetragKita(gk: TSGemeindeKonfiguration): void {
@@ -152,8 +181,25 @@ export class EditGemeindeComponentBG implements OnInit {
     public changeKonfigZusaetzlicherBabybeitragEnabled(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED,
-            gk.konfigZusaetzlicherBabybeitragEnabled,
-            gk
+            gk.konfigZusaetzlicherBabybeitragEnabled, gk
+        );
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherBabybeitragEnabled)) {
+            this.resetKonfigZusaetzlicherBabybeitrag(gk);
+        }
+    }
+
+    private resetKonfigZusaetzlicherBabybeitrag(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherBabybeitragBetragKita = 0;
+        gk.konfigZusaetzlicherBabybeitragBetragTfo = 0;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA,
+            gk.konfigZusaetzlicherBabybeitragBetragKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO,
+            gk.konfigZusaetzlicherBabybeitragBetragTfo, gk
         );
     }
 
@@ -176,8 +222,19 @@ export class EditGemeindeComponentBG implements OnInit {
     public changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED,
-            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled,
-            gk
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled, gk
+        );
+		// Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled)) {
+            this.resetKonfigZusaetzlicherAnspruchFreiwilligenarbeit(gk);
+        }
+    }
+
+    private resetKonfigZusaetzlicherAnspruchFreiwilligenarbeit(gk: TSGemeindeKonfiguration): void {
+        gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent = 0;
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
+            gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent, gk
         );
     }
 
