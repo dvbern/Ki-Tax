@@ -224,7 +224,7 @@ export class EditGemeindeComponentBG implements OnInit {
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED,
             gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled, gk
         );
-		// Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
         if (EbeguUtil.isNullOrFalse(gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled)) {
             this.resetKonfigZusaetzlicherAnspruchFreiwilligenarbeit(gk);
         }
