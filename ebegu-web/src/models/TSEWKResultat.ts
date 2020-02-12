@@ -21,31 +21,11 @@ import {TSEWKPerson} from './TSEWKPerson';
  */
 export class TSEWKResultat extends TSAbstractMutableEntity {
 
-    private _maxResultate: number;
-    private _anzahlResultate: number;
     private _personen: Array<TSEWKPerson>;
 
-    public constructor(maxResultate?: number, anzahlResultate?: number, personen?: Array<TSEWKPerson>) {
+    public constructor(personen?: Array<TSEWKPerson>) {
         super();
-        this._maxResultate = maxResultate;
-        this._anzahlResultate = anzahlResultate;
         this._personen = personen;
-    }
-
-    public get maxResultate(): number {
-        return this._maxResultate;
-    }
-
-    public set maxResultate(value: number) {
-        this._maxResultate = value;
-    }
-
-    public get anzahlResultate(): number {
-        return this._anzahlResultate;
-    }
-
-    public set anzahlResultate(value: number) {
-        this._anzahlResultate = value;
     }
 
     public get personen(): Array<TSEWKPerson> {
@@ -56,7 +36,4 @@ export class TSEWKResultat extends TSAbstractMutableEntity {
         this._personen = value;
     }
 
-    public isTooManyResults(): boolean {
-        return this.anzahlResultate > this.maxResultate;
-    }
 }

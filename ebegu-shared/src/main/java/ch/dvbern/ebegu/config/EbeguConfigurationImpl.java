@@ -50,10 +50,23 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_DUMMY_LOGIN_ENABLED = "ebegu.dummy.login.enabled";
 	private static final String EBEGU_ZAHLUNGEN_TEST_MODE = "ebegu.zahlungen.test.mode";
 	private static final String EBEGU_PERSONENSUCHE_DISABLED = "ebegu.personensuche.disabled";
+	private static final String EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE = "ebegu.personensuche.use.dummyservice";
 	private static final String EBEGU_PERSONENSUCHE_ENDPOINT = "ebegu.personensuche.endpoint";
 	private static final String EBEGU_PERSONENSUCHE_WSDL = "ebegu.personensuche.wsdl";
 	private static final String EBEGU_PERSONENSUCHE_USERNAME = "ebegu.personensuche.username";
 	private static final String EBEGU_PERSONENSUCHE_PASSWORD = "ebegu.personensuche.password";
+	public static final String EBEGU_PERSONENSUCHE_STS_KEYSTORE_PATH = "ebegu.personensuche.sts.keystore.path";
+	public static final String EBEGU_PERSONENSUCHE_STS_KEYSTORE_PW = "ebegu.personensuche.sts.keystore.pw";
+	public static final String EBEGU_PERSONENSUCHE_STS_PRIVATE_KEY_ALIAS = "ebegu.personensuche.sts.private.key.alias";
+
+	public static final String EBEGU_PERSONENSUCHE_STS_BASE_PATH = "ebegu.personensuche.sts.base.path";
+	public static final String EBEGU_PERSONENSUCHE_STS_WSDL = "ebegu.personensuche.sts.wsdl";
+	public static final String EBEGU_PERSONENSUCHE_STS_ENDPOINT = "ebegu.personensuche.sts.endpoint";
+	public static final String EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_WSDL = "ebegu.personensuche.sts.renewal.assertion.wsdl";
+	public static final String EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_ENDPOINT = "ebegu.personensuche.sts.renewal.assertion.endpoint";
+	public static final String EBEGU_PERSONENSUCHE_GERES_ENDPOINT = "ebegu.personensuche.geres.endpoint";
+	public static final String EBEGU_PERSONENSUCHE_GERES_WSDL = "ebegu.personensuche.geres.wsdl";
+
 	public static final String EBEGU_LOGIN_PROVIDER_API_URL = "ebegu.login.provider.api.url";
 	private static final String EBEGU_LOGIN_API_ALLOW_REMOTE = "ebegu.login.api.allow.remote";
 	private static final String EBEGU_LOGIN_API_INTERNAL_USER = "ebegu.login.api.internal.user";
@@ -138,6 +151,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public boolean isPersonenSucheDisabled() {
 		return getBoolean(EBEGU_PERSONENSUCHE_DISABLED, true);
+	}
+
+	@Override
+	public boolean usePersonenSucheDummyService() {
+		return getBoolean(EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE, true);
 	}
 
 	@Override
@@ -251,5 +269,70 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getSchemaRegistryURL() {
 		return getString(KIBON_SCHEMA_REGISTRY_URL, "");
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSKeystorePath() {
+
+		String jbossHome =  System.getProperty("jboss.home.dir");
+		String defaultPathToJKS =  jbossHome + "/rkb1-svbern-sts-ks-u.jks";
+
+		return getString(EBEGU_PERSONENSUCHE_STS_KEYSTORE_PATH, defaultPathToJKS);
+
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSKeystorePW() {
+		return getString(EBEGU_PERSONENSUCHE_STS_KEYSTORE_PW);
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSPrivateKeyAlias() {
+		return getString(EBEGU_PERSONENSUCHE_STS_PRIVATE_KEY_ALIAS, "rkb1");
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSPrivateKeyPW() {
+		return getEbeguPersonensucheSTSKeystorePW();
+	}
+
+
+	@Override
+	public String getEbeguPersonensucheSTSBasePath(){
+		return getString(EBEGU_PERSONENSUCHE_STS_BASE_PATH, "https://a6hu-www-sts-b.be.ch/securityService"); //test
+//		return getString(EBEGU_PERSONENSUCHE_STS_BASE_PATH, "https://a6ha-www-sts-b.be.ch/securityService"); //prod
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSWsdl() {
+		return getString(EBEGU_PERSONENSUCHE_STS_WSDL);
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSEndpoint() {
+		return getString(EBEGU_PERSONENSUCHE_STS_ENDPOINT, getEbeguPersonensucheSTSBasePath() +  "/zertsts/services/ZertSTSWebservice");
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSRenewalAssertionWsdl() {
+		return getString(EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_WSDL);
+	}
+
+	@Override
+	public String getEbeguPersonensucheSTSRenewalAssertionEndpoint() {
+		return getString(EBEGU_PERSONENSUCHE_STS_RENEWAL_ASSERTION_ENDPOINT, getEbeguPersonensucheSTSBasePath() +  "/samlrenew/services/RenewAssertionWebService");
+	}
+
+	@Override
+	public String getEbeguPersonensucheGERESEndpoint() {
+		return getString(EBEGU_PERSONENSUCHE_GERES_ENDPOINT, "https://testv3-geres.be.ch/ech/services/GeresResidentInfoService_v1801");
+//		return getString(EBEGU_PERSONENSUCHE_GERES_ENDPOINT, "https://geres.be.ch/ech/services/GeresResidentInfoService_v1801");     // produktion
+
+
+	}
+
+	@Override
+	public String getEbeguPersonensucheGERESWsdl() {
+		return getString(EBEGU_PERSONENSUCHE_GERES_WSDL);
 	}
 }

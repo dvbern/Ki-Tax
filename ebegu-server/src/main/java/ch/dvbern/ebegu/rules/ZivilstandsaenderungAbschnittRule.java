@@ -27,10 +27,16 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.RuleUtil;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Umsetzung der ASIV Revision: Finanzielle Situation bei Mutation der Familiensituation anpassen
@@ -46,6 +52,11 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Override

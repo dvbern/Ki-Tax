@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C)  2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<!-- ======================== Header ============================ Typ-Definitionen zu den Security-Token-Webservices. Autor:
+    E. Lambelet, 2007 -->
+<xs:schema targetNamespace="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService"
+    elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1"
+    xmlns:tns="http://sv.fin.be.ch/schemas/a7s/securityService/20071010/RenewAssertionService" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <!-- ======================== Imports ============================ -->
+
+
+    <xs:import namespace="urn:oasis:names:tc:SAML:1.0:assertion" schemaLocation="oasis-sstc-saml-schema-assertion-1.1.xsd" />
+
+    <!-- ======================== Elements ============================ -->
+
+    <xs:element name="RenewAssertion" type="tns:RenewAssertion">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">Request zum Erneuern einer SAML-Assertion</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="RenewAssertionResponse" type="tns:STSResponseType">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">Response auf eine Erneuerungsanfrage</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <!-- ========================Complex Types ============================ -->
+
+
+    <!-- Requests / Responses -->
+    <xs:complexType name="RenewAssertion">
+        <xs:sequence>
+            <xs:element name="RenewalToken" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        RenewalToken, das bei der Ausstellung der
+                        SAML-Assertion mitgegeben wurde.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="saml:Assertion">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ursprüngliche SAML-Assertion gemäss WS-Trust-Spezifikation.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="STSResponseType">
+        <xs:sequence>
+            <xs:element name="RenewalToken" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Token, das für eine allfällig gewünschte
+                        Erneuerung (d.h. zeitlichen Verlängerung) der
+                        SAML-Assertion verwendet werden kann. Das Token
+                        ist ein Base64-codiertes Byte-Array. Der Inhalt
+                        ist für den Empfänger nicht interpretierbar und
+                        auch nicht relevant. Er muss das Token nur
+                        aufbewahren und bei einem Renewal unverändert
+                        mitgeben.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="saml:Assertion">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        SAML-Assertion gemäss WS-Trust-Spezifikation.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

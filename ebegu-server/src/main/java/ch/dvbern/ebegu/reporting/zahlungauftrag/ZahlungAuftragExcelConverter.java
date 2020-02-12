@@ -19,8 +19,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,6 +32,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
@@ -89,7 +92,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 			})
 			.sorted()
 			.forEach(zahlung ->
-				zahlung.getZahlungspositionen().stream()
+				filterZahlungspositionenMitSummeUngleich0(zahlung.getZahlungspositionen()).stream()
 					.filter(zahlungsposition -> MathUtil.isPositive(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum()))
 					.sorted()
 					.forEach(zahlungsposition -> {
@@ -113,8 +116,31 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.isKorrektur, ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.isIgnoriert, zahlungsposition.isIgnoriert());
 					}));
-
 		return excelMerger;
+	}
+
+	List<Zahlungsposition> filterZahlungspositionenMitSummeUngleich0(List<Zahlungsposition> zahlungspositionen) {
+		List<Zahlungsposition>  resultat = new LinkedList<>();
+		for (Zahlungsposition zahlungposition : zahlungspositionen) {
+			Optional<Zahlungsposition> inverted = zahlungspositionen.stream()
+				.filter(z ->
+						z.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer())
+						&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb())
+						&& z.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis()
+							.equals(zahlungposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis())
+						&& MathUtil.isSame(z.getVerfuegungZeitabschnitt().getBgPensum(),
+							zahlungposition.getVerfuegungZeitabschnitt().getBgPensum())
+						&& MathUtil.isSame(z.getBetrag().multiply(BigDecimal.valueOf(-1)),
+							zahlungposition.getBetrag())
+						&& z.getStatus() == zahlungposition.getStatus()
+						&& z.getStatus() == ZahlungspositionStatus.KORREKTUR).findFirst();
+			if (!inverted.isPresent()) {
+				resultat.add(zahlungposition);
+			}
+		}
+		return resultat;
 	}
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {

@@ -89,4 +89,10 @@ public interface InstitutionStammdatenService {
 	 * sein, wird dann direkt TAGESSCHULE und FERIENINSEL zurueckgegeben.
 	 */
 	Collection<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer();
+
+	/**
+	 * Gibt alle Tagesschulen für den momentan eingeloggten Benutzer zurück. Für Administratoren werden alle
+	 * Tagesschulen zurückgegeben.
+	 */
+	Collection<InstitutionStammdaten> getTagesschulenForCurrentBenutzer();
 }

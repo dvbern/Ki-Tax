@@ -31,13 +31,14 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Superklasse für BG-Rechner
  */
-public abstract class AbstractBGRechner {
+public abstract class AbstractBGRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
+	@Override
 	@Nonnull
 	public BGCalculationResult calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,

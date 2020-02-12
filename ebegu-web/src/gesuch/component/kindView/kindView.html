@@ -484,6 +484,8 @@
                                     <label class="md-no-float" for="begruendung"
                                            data-translate="AUSSERORDENTLICHER_ANSPRUCH_BEGRUENDUNG"></label>
                                     <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
+                                              ng-maxlength="3000"
+                                              ng-minlength="5"
                                               id="begruendung" name="begruendung"
                                               ng-model="vm.getPensumAusserordentlicherAnspruch().begruendung"
                                               ng-required="vm.isAusserordentlicherAnspruchRequired()"

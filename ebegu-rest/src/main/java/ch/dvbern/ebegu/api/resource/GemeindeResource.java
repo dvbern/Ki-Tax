@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -67,9 +68,11 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -580,10 +583,22 @@ public class GemeindeResource {
 		Gemeinde gemeinde =
 			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
 				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
-		gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
-		gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
-		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
-		gemeinde = gemeindeService.saveGemeinde(gemeinde);
+		boolean datesChanged = false;
+		if(!gemeinde.getBetreuungsgutscheineStartdatum().isEqual(jaxGemeinde.getBetreuungsgutscheineStartdatum())){
+			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+			datesChanged = true;
+		}
+		if(!gemeinde.getTagesschulanmeldungenStartdatum().equals(jaxGemeinde.getTagesschulanmeldungenStartdatum())){
+			gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
+			datesChanged = true;
+		}
+		if(!gemeinde.getFerieninselanmeldungenStartdatum().equals(jaxGemeinde.getFerieninselanmeldungenStartdatum())){
+			gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
+			datesChanged = true;
+		}
+		if(datesChanged){
+			gemeinde = gemeindeService.saveGemeinde(gemeinde);
+		}
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}
@@ -594,7 +609,81 @@ public class GemeindeResource {
 			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());
 		}
 
-
 		return Response.ok().build();
+	}
+
+
+
+	@ApiOperation("Returns a specific document of the Gemeinde with the given type or an errorcode if none is available")
+	@GET
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response downloadGemeindeDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp
+		) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+
+		final byte[] content = gemeindeService.downloadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId,
+		 sprache, dokumentTyp);
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".pdf",
+					"application/octet-stream", content);
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
+			}
+		}
+		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@Nullable
+	@DELETE
+	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.WILDCARD)
+	public Response removeGesuchsperiodeDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
+		@Context HttpServletResponse response) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+
+		requireNonNull(gemeindeId);
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+		requireNonNull(dokumentTyp);
+		gemeindeService.removeGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache,
+			dokumentTyp);
+		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "retuns true if the Dokument Typ exists for this gemeinde exists for the given language",
+		response = boolean.class)
+	@GET
+	@Path("/existGemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean existDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp,
+		@Context HttpServletResponse response
+	) {
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
+		requireNonNull(gemeindeId);
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+		requireNonNull(dokumentTyp);
+		return gemeindeService.existGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp);
 	}
 }

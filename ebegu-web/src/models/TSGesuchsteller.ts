@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSSprache} from './enums/TSSprache';
 import {TSAbstractPersonEntity} from './TSAbstractPersonEntity';
 
@@ -24,8 +23,6 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
     private _telefon: string;
     private _telefonAusland: string;
     private _diplomatenstatus: boolean;
-    private _ewkPersonId: string;
-    private _ewkAbfrageDatum: moment.Moment;
     private _korrespondenzSprache: TSSprache;
 
     public constructor() {
@@ -70,22 +67,6 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
 
     public set diplomatenstatus(value: boolean) {
         this._diplomatenstatus = value;
-    }
-
-    public get ewkPersonId(): string {
-        return this._ewkPersonId;
-    }
-
-    public set ewkPersonId(value: string) {
-        this._ewkPersonId = value;
-    }
-
-    public get ewkAbfrageDatum(): moment.Moment {
-        return this._ewkAbfrageDatum;
-    }
-
-    public set ewkAbfrageDatum(value: moment.Moment) {
-        this._ewkAbfrageDatum = value;
     }
 
     public get korrespondenzSprache(): TSSprache {

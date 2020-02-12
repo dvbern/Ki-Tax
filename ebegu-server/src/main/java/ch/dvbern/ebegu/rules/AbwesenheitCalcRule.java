@@ -15,15 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import com.google.common.collect.ImmutableList;
 
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -41,12 +46,17 @@ public class AbwesenheitCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
+	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
+	}
+
+	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		requireNonNull(platz.getBetreuungsangebotTyp());
-		if (platz.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() && verfuegungZeitabschnitt.getBgCalculationInputAsiv().isLongAbwesenheit()) {
+		if (verfuegungZeitabschnitt.getBgCalculationInputAsiv().isLongAbwesenheit()) {
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(true);
 			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, getLocale());
 		}

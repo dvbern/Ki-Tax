@@ -103,7 +103,7 @@ public class GesuchsperiodeResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(listActive);
 		Assert.assertEquals(2, listActive.size()); //also the one from mandant-dataset
 
-		List<JaxGesuchsperiode> listActiveAndInaktiv = gesuchsperiodeResource.getAllNichtAbgeschlosseneGesuchsperioden();
+		List<JaxGesuchsperiode> listActiveAndInaktiv = gesuchsperiodeResource.getAllAktivUndInaktivGesuchsperioden();
 		Assert.assertNotNull(listActiveAndInaktiv);
 		Assert.assertEquals(3, listActiveAndInaktiv.size()); //also the one from mandant-dataset
 	}

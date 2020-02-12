@@ -23,4 +23,5 @@ export class TSPublicAppConfig {
     public sentryEnvName: string;
     public backgroundColor: string = '#FFFFFF';
     public zahlungentestmode: boolean;
+    public personenSucheDisabled: boolean;
 }

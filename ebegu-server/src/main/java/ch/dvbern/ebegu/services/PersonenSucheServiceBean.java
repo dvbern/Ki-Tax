@@ -16,9 +16,13 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -30,23 +34,34 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.cdi.Dummy;
+import ch.dvbern.ebegu.cdi.Geres;
+import ch.dvbern.ebegu.cdi.Prod;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.ws.ewk.IEWKWebService;
-import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
+import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -55,8 +70,11 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(PersonenSucheService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
+
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class PersonenSucheServiceBean extends AbstractBaseService implements PersonenSucheService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PersonenSucheServiceBean.class);
 
 	@Inject
 	@Any
@@ -68,15 +86,18 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 	@Inject
 	private EbeguConfiguration config;
 
-	@Inject
-	private Persistence persistence;
 
 	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "IfStatementWithIdenticalBranches" })
 	@SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
 	@PostConstruct
 	private void resolveService() {
-		if (config.isPersonenSucheDisabled()) {
+		if (config.isPersonenSucheDisabled() || config.usePersonenSucheDummyService()) {
 			ewkService = serviceInstance.select(new AnnotationLiteral<Dummy>() {
+			}, new AnnotationLiteral<Geres>() {
+			}).get();
+		} else if (config.getEbeguPersonensucheSTSKeystorePW() != null) {
+			ewkService = serviceInstance.select(new AnnotationLiteral<Prod>() {
+			}, new AnnotationLiteral<Geres>() {
 			}).get();
 		} else {
 			ewkService = serviceInstance.select(new AnnotationLiteral<Default>() {
@@ -86,50 +107,128 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 
 	@Override
 	@Nonnull
-	public EWKResultat suchePerson(@Nonnull Gesuchsteller gesuchsteller) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
-		Objects.requireNonNull(gesuchsteller, "Gesuchsteller muss gesetzt sein");
-		Validate.isTrue(!gesuchsteller.isNew(), "Gesuchsteller muss zuerst gespeichert werden!");
-		EWKResultat resultat;
-		if (StringUtils.isNotEmpty(gesuchsteller.getEwkPersonId())) {
-			resultat = suchePerson(gesuchsteller.getEwkPersonId());
-		} else {
-			resultat = suchePerson(gesuchsteller.getNachname(), gesuchsteller.getGeburtsdatum(), gesuchsteller.getGeschlecht());
+	public EWKResultat suchePersonen(@Nonnull Gesuch gesuch) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		EWKResultat resultat = new EWKResultat();
+		EWKPerson  personMitWohnsitzInGemeindeUndPeriode = suchePersonMitWohnsitzInGemeindeUndPeriode(gesuch.getGesuchsteller1(), gesuch);
+		if (personMitWohnsitzInGemeindeUndPeriode != null) {
+			resultat.getPersonen().addAll(ewkService.suchePersonenInHaushalt(personMitWohnsitzInGemeindeUndPeriode.getAdresse().getWohnungsId(), personMitWohnsitzInGemeindeUndPeriode.getAdresse().getGebaeudeId()).getPersonen());
+			resultat.getPersonen().forEach(person -> person.setHaushalt(true));
 		}
-		// Wenn es genau 1 Resultat gibt, wird dieses direkt gesetzt
-		if (resultat.getAnzahlResultate() == 1) {
-			gesuchsteller.setEwkPersonId(resultat.getPersonen().get(0).getPersonID());
-			gesuchsteller.setEwkAbfrageDatum(LocalDate.now());
-			persistence.merge(gesuchsteller);
+		sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuch.getGesuchsteller1());
+		sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuch.getGesuchsteller2());
+		if (gesuch.getKindContainers() != null) {
+			for (KindContainer kindContainer : gesuch.getKindContainers()) {
+				sucheKindInHaushaltOderSonstOhneBfsEinschraenkung(resultat, kindContainer.getKindJA());
+			}
 		}
+		resultat.setPersonen(entferneNichtAktuelleDaten(resultat.getPersonen(), gesuch.getGesuchsperiode()));
+		Collections.sort(resultat.getPersonen());
 		return resultat;
 	}
 
-	@Override
-	@Nonnull
-	public Gesuchsteller selectPerson(@Nonnull Gesuchsteller gesuchsteller, @Nonnull String ewkPersonID) {
-		Objects.requireNonNull(gesuchsteller, "Gesuchsteller muss gesetzt sein");
-		Objects.requireNonNull(ewkPersonID, "ewkPersonID muss gesetzt sein");
-		Validate.isTrue(!gesuchsteller.isNew(), "Gesuchsteller muss zuerst gespeichert werden!");
-		gesuchsteller.setEwkPersonId(ewkPersonID);
-		gesuchsteller.setEwkAbfrageDatum(LocalDate.now());
-		return persistence.merge(gesuchsteller);
+	/**
+	 *
+	 * @param personen Liste von Personeneintraegen zum filtern
+	 * @param gesuchsperiode
+	 * @return neue Liste ohne die Personeneintragen deren Aufenthaltsperiode sich nicht mit der Gesuchsperiode schneidet
+	 */
+	private List<EWKPerson> entferneNichtAktuelleDaten(List<EWKPerson> personen, Gesuchsperiode gesuchsperiode) {
+		return personen
+			.stream()
+			.filter(person ->
+				person.isWohnsitzInPeriode(gesuchsperiode))
+			.collect(Collectors.toList());
 	}
 
-	@Override
-	@Nonnull
-	public EWKResultat suchePerson(@Nonnull String id) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
-		return ewkService.suchePerson(id);
+	/**
+	 * Suche in den bisher gefundenen Haushaltspersonen nach den uebergebenen Personendaten.
+	 * Wenn wir sie finden setzen wir die ensprechenden Flags. Wen nicht suchen wir die Person ueber EWK
+	 *
+	 * @param resultat bereits bekantne personen
+	 * @param name der gesuchten Person
+	 * @param vorname vorname der gesuchten Person
+	 * @param geburtsdatum geburtsdatum der gesuchten Person
+	 * @param geschlecht geschlecht der gesuchten person
+	 * @param isGesuchsteller true wenn die gesuchte person Gesuchsteller ist
+	 * @param isKind true wenn die gescuhte Person ein Kind ist
+	 * @throws PersonenSucheServiceException
+	 * @throws PersonenSucheServiceBusinessException
+	 */
+	private void suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(
+		@Nonnull EWKResultat resultat,
+		@Nonnull String name,
+		@Nonnull String vorname,
+		@Nonnull LocalDate geburtsdatum,
+		@Nonnull Geschlecht geschlecht,
+		boolean isGesuchsteller,
+		boolean isKind) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		// versuche die gesuchte person zu matchen. wenn gefunde
+			List<EWKPerson> personenInHaushalt = resultat.getPersonen().stream()
+				.filter(person -> person.getGeburtsdatum().isEqual(geburtsdatum) && person.getNachname().equals(name))
+				.peek(person->{
+					person.setGesuchsteller(isGesuchsteller);
+					person.setKind(isKind);
+				})
+				.collect(Collectors.toList());
+			// wenn Person noch nicht gefunden wurde suchen wir sie in ewk
+			if (personenInHaushalt.isEmpty()) {
+				EWKResultat personenOhneBfs = ewkService.suchePersonMitFallbackOhneVorname (name, vorname, geburtsdatum, geschlecht);
+				 // add "not-found" resultat
+				if (personenOhneBfs.getPersonen().isEmpty()) {
+					EWKPerson person = new EWKPerson();
+					person.setNachname(name);
+					person.setVorname(vorname);
+					person.setGeburtsdatum(geburtsdatum);
+					person.setGeschlecht(geschlecht);
+					person.setNichtGefunden(true);
+					personenOhneBfs.getPersonen().add(person);
+				}
+				personenOhneBfs.getPersonen()
+					.forEach(person->{
+						person.setGesuchsteller(isGesuchsteller);
+						person.setKind(isKind);
+					});
+				resultat.getPersonen().addAll(personenOhneBfs.getPersonen());
+			}
 	}
 
-	@Override
-	@Nonnull
-	public EWKResultat suchePerson(@Nonnull String name, @Nonnull String vorname, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
-		return ewkService.suchePerson(name, vorname, geburtsdatum, geschlecht);
+
+	private void sucheGesuchstellerInHaushaltOderSonstOhneBfsEinschraenkung(@Nonnull EWKResultat resultat, GesuchstellerContainer gesuchstellerContainer) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		if (gesuchstellerContainer != null && gesuchstellerContainer.getGesuchstellerJA() != null) {
+			Gesuchsteller gesuchsteller = gesuchstellerContainer.getGesuchstellerJA();
+			suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(resultat, gesuchsteller.getNachname(), gesuchsteller.getVorname(), gesuchsteller.getGeburtsdatum(), gesuchsteller.getGeschlecht(), true, false);
+		}
 	}
 
-	@Override
-	@Nonnull
-	public EWKResultat suchePerson(@Nonnull String name, @Nonnull LocalDate geburtsdatum, @Nonnull Geschlecht geschlecht) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
-		return ewkService.suchePerson(name, geburtsdatum, geschlecht);
+	private void sucheKindInHaushaltOderSonstOhneBfsEinschraenkung(@Nonnull EWKResultat resultat, Kind kind) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		if (kind != null) {
+			suchePersonInHaushaltOderSonstOhneBfsEinschraenkung(resultat, kind.getNachname(), kind.getVorname(), kind.getGeburtsdatum(), kind.getGeschlecht(), false, true);
+		}
+	}
+
+	@Nullable
+	private EWKPerson suchePersonMitWohnsitzInGemeindeUndPeriode(GesuchstellerContainer gesuchstellerContainer, @Nonnull Gesuch gesuch) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+		if (gesuchstellerContainer == null || gesuchstellerContainer.getGesuchstellerJA() == null) {
+			return null;
+		}
+		Gesuchsteller gesuchsteller = gesuchstellerContainer.getGesuchstellerJA();
+		final Long bfsNummer = gesuch.getDossier().getGemeinde().getBfsNummer();
+		Objects.requireNonNull(bfsNummer);
+		final String nachname = gesuchsteller.getNachname();
+		final String vorname = gesuchsteller.getVorname();
+		final LocalDate geburtsdatum = gesuchsteller.getGeburtsdatum();
+		EWKResultat ewkResultat =  ewkService.suchePersonMitFallbackOhneVorname(nachname, vorname, geburtsdatum, gesuchsteller.getGeschlecht(), bfsNummer);
+		if (!ewkResultat.getPersonen().isEmpty()) {
+			EWKPerson person = ewkResultat.getPersonen().get(0);
+			if (ewkResultat.getPersonen().size() > 1) {
+				LOG.warn("Mehr als eine Person in Gemeinde mit matchenden suchresultaten gefunden fuer nachname {}, vorname {} , gebdatum {}, bfsnummer {}", nachname, vorname, geburtsdatum, bfsNummer);
+				// leer zuruckgeben
+				return null;
+			}
+			if (person.isWohnsitzInPeriode(gesuch.getGesuchsperiode())) {
+				return person;
+			}
+		}
+		return null;
 	}
 }

@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 
 /**
@@ -49,17 +49,17 @@ public final class RestanspruchInitializer {
 	}
 
 	@Nonnull
-	public static List<VerfuegungZeitabschnitt> execute(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> restanspruchsZeitabschnitte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			VerfuegungZeitabschnitt restanspruchsAbschnitt = new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
-			restanspruchUebernehmen(betreuung, zeitabschnitt, restanspruchsAbschnitt);
+			restanspruchUebernehmen(platz, zeitabschnitt, restanspruchsAbschnitt);
 			restanspruchsZeitabschnitte.add(restanspruchsAbschnitt);
 		}
 		return restanspruchsZeitabschnitte;
 	}
 
-	private static void restanspruchUebernehmen(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt sourceZeitabschnitt, VerfuegungZeitabschnitt targetZeitabschnitt) {
+	private static void restanspruchUebernehmen(@Nonnull AbstractPlatz betreuung, @Nonnull VerfuegungZeitabschnitt sourceZeitabschnitt, VerfuegungZeitabschnitt targetZeitabschnitt) {
 		//Die  vom der letzen Berechnung uebernommenen Zeitabschnitte betrachten und den restanspruch berechnen.
 		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {

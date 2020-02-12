@@ -154,8 +154,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Inject
 	private PrincipalBean principalBean;
 	@Inject
-	private TagesschuleZeitabschnittService tagesschuleZeitabschnittService;
-	@Inject
 	private GeneratedDokumentService generatedDokumentService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
@@ -192,11 +190,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		betreuung.setGueltig(true);
-		if (betreuung.getVorgaengerId() != null) {
-			Optional<AnmeldungTagesschule> vorgaengerBetreuungOptional = findAnmeldungTagesschule(betreuung.getVorgaengerId());
-			vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-		}
+		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
 		final AnmeldungTagesschule mergedBetreuung = persistence.merge(betreuung);
 
 
@@ -232,11 +226,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
 
 		// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
-		betreuung.setGueltig(true);
-		if (betreuung.getVorgaengerId() != null) {
-			Optional<AnmeldungFerieninsel> vorgaengerBetreuungOptional = findAnmeldungFerieninsel(betreuung.getVorgaengerId());
-			vorgaengerBetreuungOptional.ifPresent(vorgaenger -> vorgaenger.setGueltig(false));
-		}
+		updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
 		final AnmeldungFerieninsel mergedBetreuung = persistence.merge(betreuung);
 
 
@@ -376,33 +366,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
-		return persistedBetreuung;
-	}
-
-	@Override
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public AbstractAnmeldung anmeldungSchulamtUebernehmen(@Valid @Nonnull AbstractAnmeldung betreuung) {
-		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
-		Objects.requireNonNull(betreuung.getOwningGesuchId());
-		AbstractAnmeldung persistedAnmeldung =
-			tagesschuleZeitabschnittService.generateAndPersistZeitabschnitte(betreuung.getOwningGesuchId(),
-			betreuung.getId());
-		persistedAnmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
-		AbstractAnmeldung persistedBetreuung = savePlatz(persistedAnmeldung);
-
-		try {
-			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
-			mailService.sendInfoSchulamtAnmeldungUebernommen(persistedBetreuung);
-		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
-				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
-				betreuung.getId());
-		}
-
-		generateAnmeldebestaetigungDokument(persistedBetreuung, true);
-
 		return persistedBetreuung;
 	}
 
@@ -593,16 +556,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final CriteriaQuery<T> query = cb.createQuery(clazz);
 
 		Root<T> root = query.from(clazz);
-		final Join<T, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
+		final Join<T, KindContainer> kindjoin = root.join(AbstractAnmeldung_.kind, JoinType.LEFT);
 		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
 			KindContainer_.gesuch,
 			JoinType.LEFT);
 		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
 		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
 
-		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
+		Predicate predBetreuungNummer = cb.equal(root.get(AbstractAnmeldung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
-			root.get(AbstractPlatz_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
+			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);

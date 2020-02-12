@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ZertSTSWebService" targetNamespace="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService"
+    xmlns:tns="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService" xmlns:ctx="http://sv.fin.be.ch/schemas/base/20070131/CallContext"
+    xmlns:ex="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+    <wsdl:documentation>
+        Security-Token-Server fuer Batch-Applikationen. Stellt
+        SAML-Assertions aus.
+    </wsdl:documentation>
+
+    <!-- ===================== Types Definitions ====================== -->
+    <wsdl:types>
+        <xs:schema xmlns="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService"
+            targetNamespace="http://sv.fin.be.ch/schemas/A7S/securityService/20071010/ZertSTSService">
+
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/CallContext" schemaLocation="sv-context.xsd" />
+
+            <xs:import namespace="http://sv.fin.be.ch/schemas/base/20070131/ExceptionInfo" schemaLocation="sv-faults.xsd" />
+
+            <xs:include schemaLocation="zertsts.xsd" />
+
+        </xs:schema>
+
+    </wsdl:types>
+
+    <!-- ===================== Message Definitions ====================== -->
+    <!-- Fehlermeldungen -->
+    <wsdl:message name="AuthenticationFault">
+        <wsdl:part name="body" element="tns:AuthenticationFault" />
+    </wsdl:message>
+
+    <wsdl:message name="BusinessFault">
+        <wsdl:part name="body" element="ex:BusinessFault" />
+    </wsdl:message>
+
+    <!-- Request-Response -->
+    <wsdl:message name="IssueAssertion">
+        <wsdl:part name="body" element="tns:IssueAssertion" />
+    </wsdl:message>
+
+    <wsdl:message name="IssueAssertionResponse">
+        <wsdl:part name="body" element="tns:IssueAssertionResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="Header">
+        <wsdl:part name="callContext" element="ctx:CallContext" />
+    </wsdl:message>
+
+    <!-- =================== Port-Type Definitions ===================== -->
+    <wsdl:portType name="ZertSTSService">
+        <wsdl:operation name="IssueAssertion">
+            <wsdl:documentation>
+                Stellt eine SAML-Assertion fuer Batch-Applikationen aus.
+                Die Authentifizierung basiert auf auf der Prüfung einer
+                digitalen Signatur, welche die Batch-Anwendung an den
+                STS sendet.
+            </wsdl:documentation>
+            <wsdl:input message="tns:IssueAssertion" name="IssueAssertion" />
+            <wsdl:output message="tns:IssueAssertionResponse" name="IssueAssertionResponse" />
+            <wsdl:fault message="tns:AuthenticationFault" name="AuthenticationFault" />
+            <wsdl:fault message="tns:BusinessFault" name="BusinessFault" />
+        </wsdl:operation>
+    </wsdl:portType>
+    <!-- =================== Binding Definitions ===================== -->
+    <wsdl:binding name="ZertSTSSOAPBinding" type="tns:ZertSTSService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+
+        <wsdl:operation name="IssueAssertion">
+            <soap:operation style="document" />
+            <wsdl:input>
+                <!-- <soap:header message="tns:Header" part="callContext" use="literal" /> -->
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="AuthenticationFault">
+                <soap:fault name="AuthenticationFault" use="literal" />
+            </wsdl:fault>
+            <wsdl:fault name="BusinessFault">
+                <soap:fault name="BusinessFault" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- =================== Service Definitions ===================== -->
+    <wsdl:service name="ZertSTSWebService">
+        <wsdl:port name="ZertSTS" binding="tns:ZertSTSSOAPBinding">
+            <soap:address location="https://a6hu-www-sts-b.be.ch:443/securityService/zertsts/services/ZertSTSWebservice" />
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

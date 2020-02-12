@@ -21,18 +21,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschuleZeitabschnitt;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -41,6 +37,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
@@ -48,6 +45,8 @@ import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
+import ch.dvbern.ebegu.rechner.TagesschuleRechner;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
@@ -76,6 +75,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Verheiratet;
 
 	private String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
+
+	private TagesschuleRechner rechner = new TagesschuleRechner();
 
 
 	@Before
@@ -152,8 +153,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-			Objects.requireNonNull(betreuung.getVerfuegung());
-			betreuung.getVerfuegung().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
+			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
+			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
 		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, VerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
@@ -242,47 +243,32 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void createAnmeldebestaetigungenTagesschule() throws FileNotFoundException, InvoiceGeneratorException {
-		KindContainer kindContainer = gesuch_tagesschule.getKindContainers().iterator().next();
-		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF,
-			kindContainer.getAnmeldungenTagesschule().iterator().next());
-		generator.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_ohneTarif.pdf"));
-
-		AnmeldungTagesschule anmeldungTagesschule = kindContainer.getAnmeldungenTagesschule().iterator().next();
-		fillAnmeldungTagesschuleZeitabschnitten(anmeldungTagesschule);
-
-		final AnmeldebestaetigungTSPDFGenerator generator2 = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
-			stammdaten, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF,
-			kindContainer.getAnmeldungenTagesschule().iterator().next());
-		generator2.generate(new FileOutputStream(pfad + "Anmeldebestaetigung_test_mitTarif.pdf"));
+		createAnmeldebestaetigungenTagesschule(Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_de.pdf");
+		createAnmeldebestaetigungenTagesschule(Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_fr.pdf");
+		createAnmeldebestaetigungenTagesschule(Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_de.pdf");
+		createAnmeldebestaetigungenTagesschule(Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_fr.pdf");
 	}
 
-	private void fillAnmeldungTagesschuleZeitabschnitten(AnmeldungTagesschule anmeldungTagesschule){
-		Set<AnmeldungTagesschuleZeitabschnitt> anmeldungTagesschuleZeitabschnittSet = new TreeSet<>();
-		AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnitt = new AnmeldungTagesschuleZeitabschnitt();
-		anmeldungTagesschuleZeitabschnitt.setGueltigkeit(gesuch_tagesschule.getGesuchsperiode().getGueltigkeit());
-		anmeldungTagesschuleZeitabschnitt.setBetreuungsminutenProWoche(BigDecimal.ZERO);
-		anmeldungTagesschuleZeitabschnitt.setBetreuungsstundenProWoche(new BigDecimal(12));
-		anmeldungTagesschuleZeitabschnitt.setPedagogischBetreut(true);
-		anmeldungTagesschuleZeitabschnitt.setGebuehrProStunde(new BigDecimal(10.00));
-		anmeldungTagesschuleZeitabschnitt.setVerpflegungskosten(new BigDecimal(22.00));
-		anmeldungTagesschuleZeitabschnitt.setTotalKostenProWoche(new BigDecimal(142.00));
-		anmeldungTagesschuleZeitabschnitt.setAnmeldungTagesschule(anmeldungTagesschule);
-		anmeldungTagesschuleZeitabschnittSet.add(anmeldungTagesschuleZeitabschnitt);
+	public void createAnmeldebestaetigungenTagesschule(@Nonnull Sprache locale, @Nonnull AnmeldebestaetigungTSPDFGenerator.Art art, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
+		AnmeldungTagesschule anmeldungTagesschule = prepareAnmeldungTagesschuleWithModule();
+		Assert.assertNotNull(gesuch_tagesschule.getGesuchsteller1());
+		gesuch_tagesschule.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
+		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
+			stammdaten, art, anmeldungTagesschule);
+		generator.generate(new FileOutputStream(pfad + dokumentname));
+	}
 
-		AnmeldungTagesschuleZeitabschnitt anmeldungTagesschuleZeitabschnittOhne=
-			new AnmeldungTagesschuleZeitabschnitt();
-		anmeldungTagesschuleZeitabschnittOhne.setGueltigkeit(gesuch_tagesschule.getGesuchsperiode().getGueltigkeit());
-		anmeldungTagesschuleZeitabschnittOhne.setBetreuungsminutenProWoche(BigDecimal.ZERO);
-		anmeldungTagesschuleZeitabschnittOhne.setBetreuungsstundenProWoche(new BigDecimal(9));
-		anmeldungTagesschuleZeitabschnittOhne.setPedagogischBetreut(false);
-		anmeldungTagesschuleZeitabschnittOhne.setGebuehrProStunde(new BigDecimal(5.00));
-		anmeldungTagesschuleZeitabschnittOhne.setVerpflegungskosten(new BigDecimal(22.00));
-		anmeldungTagesschuleZeitabschnittOhne.setTotalKostenProWoche(new BigDecimal(67.00));
-		anmeldungTagesschuleZeitabschnittOhne.setAnmeldungTagesschule(anmeldungTagesschule);
-		anmeldungTagesschuleZeitabschnittSet.add(anmeldungTagesschuleZeitabschnittOhne);
-
-		anmeldungTagesschule.setAnmeldungTagesschuleZeitabschnitts(anmeldungTagesschuleZeitabschnittSet);
+	private AnmeldungTagesschule prepareAnmeldungTagesschuleWithModule() {
+		KindContainer kindContainer = gesuch_tagesschule.getKindContainers().iterator().next();
+		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch_tagesschule.getGesuchsperiode());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+			rechner.calculate(verfuegungZeitabschnitt, getParameter());
+		}
+		Verfuegung verfuegungPreview = new Verfuegung();
+		verfuegungPreview.setZeitabschnitte(zeitabschnitte);
+		anmeldungTagesschule.setVerfuegungPreview(verfuegungPreview);
+		return anmeldungTagesschule;
 	}
 
 	@Test

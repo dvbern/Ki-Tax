@@ -174,7 +174,7 @@ public class EinkommenAbschnittRuleTest {
 			TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), ekv2, false);
 		}
 		TestDataUtil.calculateFinanzDaten(gesuch);
-		List<VerfuegungZeitabschnitt> zeitabschnitte = einkommenAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = einkommenAbschnittRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		zeitabschnitte = einkommenCalcRule.calculate(betreuung, zeitabschnitte);
 		Assert.assertNotNull(zeitabschnitte);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitte);

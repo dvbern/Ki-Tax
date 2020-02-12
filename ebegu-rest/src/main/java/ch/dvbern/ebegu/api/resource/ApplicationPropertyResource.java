@@ -241,6 +241,7 @@ public class ApplicationPropertyResource {
 		String sentryEnvName = getSentryEnvName().getValue();
 		String background = getBackgroundColor().getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
+		boolean personenSucheDisabled = ebeguConfiguration.isPersonenSucheDisabled();
 
 		String nodeName = "";
 		try {
@@ -255,7 +256,8 @@ public class ApplicationPropertyResource {
 			dummyMode,
 			sentryEnvName,
 			background,
-			zahlungentestmode
+			zahlungentestmode,
+			personenSucheDisabled
 		);
 		return Response.ok(pubAppConf).build();
 	}

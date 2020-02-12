@@ -103,4 +103,11 @@ export class InstitutionStammdatenRS {
     public getServiceName(): string {
         return 'InstitutionStammdatenRS';
     }
+
+    public getAllTagesschulenForCurrentBenutzer(): IPromise<TSInstitutionStammdaten[]> {
+        return this.$http.get(`${this.serviceURL}/tagesschulen/currentuser`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
+            });
+    }
 }
