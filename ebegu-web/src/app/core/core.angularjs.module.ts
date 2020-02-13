@@ -149,6 +149,8 @@ import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {ZahlungRS} from './service/zahlungRS.rest';
+import {DvMitteilungDelegationComponent} from "./component/dv-mitteilung-delegation/dv-mitteilung-delegation";
+import {DvBenutzerEntry} from "./component/dv-benutzer-entry/dv-benutzer-entry";
 
 const dependencies = [
     /* Angular modules */
@@ -288,6 +290,8 @@ export const CORE_JS_MODULE = angular
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
+    .directive('dvMitteilungDelegation', downgradeComponent({component: DvMitteilungDelegationComponent}))
+    .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .service('MahnungRS', MahnungRS)

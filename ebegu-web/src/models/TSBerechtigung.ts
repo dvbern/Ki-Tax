@@ -14,7 +14,6 @@
  */
 
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-import {TSAmt} from './enums/TSAmt';
 import {TSRole} from './enums/TSRole';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSGemeinde} from './TSGemeinde';
@@ -71,30 +70,6 @@ export class TSBerechtigung extends TSAbstractDateRangedEntity {
 
     public set gemeindeList(value: Array<TSGemeinde>) {
         this._gemeindeList = value;
-    }
-
-    /**
-     * Diese Methode wird im Client gebraucht, weil das Amt in der Cookie nicht gespeichert wird. Das Amt in der Cookie
-     * zu speichern waere auch keine gute Loesung, da es da nicht hingehoert. Normalerweise wird das Amt aber im Server
-     * gesetzt und zum Client geschickt. Diese Methode wird nur verwendet, wenn der User aus der Cookie geholt wird.
-     *
-     * ACHTUNG Diese Logik existiert auch im Server UserRole. Aenderungen muessen in beiden Orten gemacht werden.
-     */
-    public analyseAmt(): TSAmt {
-        switch (this.role) {
-            case TSRole.SACHBEARBEITER_BG:
-            case TSRole.ADMIN_BG:
-            case TSRole.SUPER_ADMIN:
-                return TSAmt.JUGENDAMT;
-            case TSRole.SACHBEARBEITER_TS:
-            case TSRole.ADMIN_TS:
-                return TSAmt.SCHULAMT;
-            case TSRole.ADMIN_GEMEINDE:
-            case TSRole.SACHBEARBEITER_GEMEINDE:
-                return TSAmt.GEMEINDE;
-            default:
-                return TSAmt.NONE;
-        }
     }
 
     public hasGemeindeRole(): boolean {

@@ -15,49 +15,11 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
-import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
-import ch.dvbern.ebegu.api.dtos.JaxMitteilungSearchresultDTO;
-import ch.dvbern.ebegu.api.dtos.JaxMitteilungen;
+import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -67,6 +29,21 @@ import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Resource fuer Mitteilung
@@ -143,22 +120,6 @@ public class MitteilungResource {
 		}
 		final Gesuch mutiertesGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
 		return converter.toJaxId(mutiertesGesuch);
-	}
-
-	@ApiOperation(value = "Speichert eine Mitteilung als Entwurf", response = JaxMitteilung.class)
-	@Nullable
-	@PUT
-	@Path("/entwurf")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung saveEntwurf(
-		@Nonnull @NotNull @Valid JaxMitteilung mitteilungJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Mitteilung mitteilung = readAndConvertMitteilung(mitteilungJAXP);
-		Mitteilung persistedMitteilung = this.mitteilungService.saveEntwurf(mitteilung);
-		return converter.mitteilungToJAX(persistedMitteilung, new JaxMitteilung());
 	}
 
 	@ApiOperation(value = "Markiert eine Mitteilung als gelesen", response = JaxMitteilung.class)
@@ -302,56 +263,6 @@ public class MitteilungResource {
 		return mitteilungService.getAmountNewMitteilungenForCurrentBenutzer().intValue();
 	}
 
-	@ApiOperation(value = "Gibt fuer das uebergebene Dossier den vom eingeloggten Benutzer erstellten Entwurf zurueck, " +
-		"falls einer vorhanden ist, sonst null", response = JaxMitteilung.class)
-	@Nullable
-	@GET
-	@Path("/entwurf/dossier/{dossierId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung getEntwurfOfDossierForCurrentRolle(
-		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(jaxDossierId.getId());
-		String dossierId = converter.toEntityId(jaxDossierId);
-		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
-		if (dossier.isPresent()) {
-			final Mitteilung mitteilung = mitteilungService.getEntwurfForCurrentRolle(dossier.get());
-			if (mitteilung == null) {
-				return null;
-			}
-			return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
-		}
-		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, FALL_ID_INVALID + jaxDossierId.getId());
-	}
-
-	@ApiOperation(value = "Gibt fuer die uebergebene Betreuung den vom eingeloggten Benutzer erstellten Entwurf zurueck, " +
-		"falls einer vorhanden ist, sonst null", response = JaxMitteilung.class)
-	@Nullable
-	@GET
-	@Path("/entwurf/betreuung/{betreuungId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung getEntwurfForCurrentRolleForBetreuung(
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(betreuungId.getId());
-		String id = converter.toEntityId(betreuungId);
-		Optional<Betreuung> betreuung = betreuungService.findBetreuung(id);
-		if (betreuung.isPresent()) {
-			final Mitteilung mitteilung = mitteilungService.getEntwurfForCurrentRolle(betreuung.get());
-			if (mitteilung == null) {
-				return null;
-			}
-			return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
-		}
-		throw new EbeguEntityNotFoundException("getEntwurfForCurrentRolleForBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungId invalid: " + betreuungId.getId());
-	}
-
 	@ApiOperation(value = "Loescht die Mitteilung mit der uebergebenen Id aus der Datenbank", response = Void.class)
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
@@ -430,33 +341,20 @@ public class MitteilungResource {
 		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, DOSSIER_ID_INVALID + jaxDossierId.getId());
 	}
 
-	@ApiOperation(value = "Uebergibt die Mitteilung vom Schulamt ans Jugendamt", response = JaxMitteilung.class)
+
+
+
+	@ApiOperation(value = "Weiterleiten der Mitteilung", response = JaxMitteilung.class)
 	@Nonnull
 	@GET
-	@Path("/delegation/jugendamt/{mitteilungId}")
+	@Path("/weiterleiten/{mitteilungId}/{userName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung mitteilungUebergebenAnJugendamt(
-		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
-
+	public JaxMitteilung mitteilungWeiterleiten(
+		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Nonnull @NotNull @PathParam("userName") String String, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
 		Objects.requireNonNull(mitteilungJaxId.getId());
 		String mitteilungId = converter.toEntityId(mitteilungJaxId);
-		Mitteilung mitteilung = mitteilungService.mitteilungUebergebenAnJugendamt(mitteilungId);
-		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
-	}
-
-	@ApiOperation(value = "Uebergibt die Mitteilung vom Jugendamt ans Schulamt", response = JaxMitteilung.class)
-	@Nonnull
-	@GET
-	@Path("/delegation/schulamt/{mitteilungId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung mitteilungUebergebenAnSchulamt(
-		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
-
-		Objects.requireNonNull(mitteilungJaxId.getId());
-		String mitteilungId = converter.toEntityId(mitteilungJaxId);
-		Mitteilung mitteilung = mitteilungService.mitteilungUebergebenAnSchulamt(mitteilungId);
+		Mitteilung mitteilung = mitteilungService.mitteilungWeiterleiten(mitteilungId, String);
 		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
 	}
 

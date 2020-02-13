@@ -15,43 +15,13 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.ejb.EJBAccessException;
-import javax.inject.Inject;
-import javax.security.auth.login.LoginException;
-
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.services.MitteilungService;
-import ch.dvbern.ebegu.services.TestfaelleService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -65,6 +35,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.ejb.EJBAccessException;
+import javax.inject.Inject;
+import javax.security.auth.login.LoginException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Tests fuer die Klasse MitteilungService
@@ -273,10 +251,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		dossier.getFall().setBesitzer(sender);
 		persistence.merge(dossier.getFall());
 
-		Mitteilung entwurf = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		final Mitteilung persistedEntwurf = mitteilungService.saveEntwurf(entwurf);
-
 		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1.setMitteilungStatus(MitteilungStatus.NEU);
@@ -287,7 +261,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		mitteilung2.setMitteilungStatus(MitteilungStatus.NEU);
 		final Mitteilung mitFromJAToGS = persistence.persist(mitteilung2);
 
-		Assert.assertEquals(MitteilungStatus.ENTWURF, persistedEntwurf.getMitteilungStatus());
 		Assert.assertEquals(MitteilungStatus.NEU, mitFromGSToJA.getMitteilungStatus());
 		Assert.assertEquals(MitteilungStatus.NEU, mitFromJAToGS.getMitteilungStatus());
 
@@ -295,9 +268,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsSachbearbeiterJA();
 		mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier);
 
-		final Optional<Mitteilung> entwurfUpdated1 = mitteilungService.findMitteilung(persistedEntwurf.getId());
-		Assert.assertTrue(entwurfUpdated1.isPresent());
-		Assert.assertEquals(MitteilungStatus.ENTWURF, entwurfUpdated1.get().getMitteilungStatus());
 		final Optional<Mitteilung> mitFromGSToJAUpdated1 = mitteilungService.findMitteilung(mitFromGSToJA.getId());
 		Assert.assertTrue(mitFromGSToJAUpdated1.isPresent());
 		Assert.assertEquals(MitteilungStatus.GELESEN, mitFromGSToJAUpdated1.get().getMitteilungStatus());
@@ -309,9 +279,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsGesuchsteller("gesuchst");
 		mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier);
 
-		final Optional<Mitteilung> entwurfUpdated2 = mitteilungService.findMitteilung(persistedEntwurf.getId());
-		Assert.assertTrue(entwurfUpdated2.isPresent());
-		Assert.assertEquals(MitteilungStatus.ENTWURF, entwurfUpdated2.get().getMitteilungStatus());
 		final Optional<Mitteilung> mitFromGSToJAUpdated2 = mitteilungService.findMitteilung(mitFromGSToJA.getId());
 		Assert.assertTrue(mitFromGSToJAUpdated2.isPresent());
 		Assert.assertEquals(MitteilungStatus.GELESEN, mitFromGSToJAUpdated2.get().getMitteilungStatus());
@@ -417,77 +384,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(MitteilungTeilnehmerTyp.JUGENDAMT, optMitteilung.get().getEmpfaengerTyp());
 		Assert.assertEquals(newestSentDatum, optMitteilung.get().getSentDatum());
 		Assert.assertNotEquals(oldSentDatum, optMitteilung.get().getSentDatum());
-	}
-
-	@Test
-	public void testMitteilungUebergebenAnSchulamt() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-		Benutzer empfaengerUrspruenglich = mitteilung1.getEmpfaenger();
-
-		// Als JA einloggen: Die Meldung ist jetzt im Posteingang des JA
-		loginAsSachbearbeiterJA();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		Assert.assertEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-		// Diese Meldung an SCH uebergeben: Es wird ein neuer Empfaenger gesetzt
-		mitteilung = mitteilungService.mitteilungUebergebenAnSchulamt(mitteilung.getId());
-		Assert.assertNotEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-	}
-
-	@Test (expected = EJBAccessException.class)
-	public void testMitteilungUebergebenAnSchulamtFalscheRolle() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-
-		// Als SCH einloggen: Da ich schon SCH bin, kann ich nicht an SCH uebergeben
-		loginAsSchulamt();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		mitteilungService.mitteilungUebergebenAnSchulamt(mitteilung.getId());
-	}
-
-	@Test
-	public void testMitteilungUebergebenAnJugendamt() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		// Den Fall auf NUR-SCHULAMT setzen, damit die Meldung ans Schulamt geht
-		dossier.setVerantwortlicherBG(null);
-		persistence.merge(dossier);
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-		Benutzer empfaengerUrspruenglich = mitteilung1.getEmpfaenger();
-
-		// Als SCH einloggen: Die Meldung ist jetzt im Posteingang des SCH
-		loginAsSchulamt();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		Assert.assertEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-		// Diese Meldung an JA uebergeben: Es wird ein neuer Empfaenger gesetzt
-		mitteilung = mitteilungService.mitteilungUebergebenAnJugendamt(mitteilung.getId());
-		Assert.assertNotEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-	}
-
-	@Test (expected = EJBAccessException.class)
-	public void testMitteilungUebergebenAnJugendamtFalscheRolle() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-
-		// Als JA einloggen: Da ich schon JA bin, kann ich nicht an JA uebergeben
-		loginAsSachbearbeiterJA();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		mitteilungService.mitteilungUebergebenAnJugendamt(mitteilung.getId());
 	}
 
 	@Test
