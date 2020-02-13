@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -50,6 +51,7 @@ import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
 import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.einladung.Einladung;
@@ -82,6 +84,7 @@ import ch.dvbern.ebegu.util.Constants;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.map.HashedMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -335,6 +338,24 @@ public class InstitutionResource {
 	public List<JaxInstitution> getInstitutionenEditableForCurrentBenutzer() {
 		return institutionService.getInstitutionenEditableForCurrentBenutzer(true).stream()
 			.map(inst -> converter.institutionToJAX(inst))
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "
+		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
+	@Nonnull
+	@GET
+	@Path("/editable/currentuser/listdto")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxInstitutionListDTO> getInstitutionenListDTOEditableForCurrentBenutzer() {
+		Map<Institution,InstitutionStammdaten> institutionInstitutionStammdatenMap = new HashedMap<>();
+		institutionService.getInstitutionenEditableForCurrentBenutzer(true)
+			.forEach(institution -> {
+				institutionInstitutionStammdatenMap.put(institution,institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId(),false));
+			});
+
+		return institutionInstitutionStammdatenMap.entrySet().stream().map(map -> converter.institutionListDTOToJAX(map))
 			.collect(Collectors.toList());
 	}
 
