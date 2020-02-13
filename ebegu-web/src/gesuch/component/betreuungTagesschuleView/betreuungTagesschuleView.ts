@@ -295,10 +295,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getModulBezeichnungInLanguage(group: TSModulTagesschuleGroup): string {
-        if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
-            return group.bezeichnung.textFranzoesisch;
+        if (group.bezeichnung.textDeutsch && group.bezeichnung.textFranzoesisch) {
+            if (TSBrowserLanguage.FR === this.i18nServiceRS.currentLanguage()) {
+                return group.bezeichnung.textFranzoesisch;
+            }
+            return group.bezeichnung.textDeutsch;
         }
-        return group.bezeichnung.textDeutsch;
+        return this.$translate.instant(group.modulTagesschuleName);
     }
 
     public getModulTimeAsString(modul: TSModulTagesschuleGroup): string {

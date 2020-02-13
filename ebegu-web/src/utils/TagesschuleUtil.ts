@@ -228,7 +228,11 @@ export class TagesschuleUtil {
             if (vergleicheBis !== 0) {
                 return vergleicheBis;
             }
-            return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
+            // bei Scolaris Modulen hat es keine bezeichnung
+            if (a.bezeichnung.textDeutsch && b.bezeichnung.textDeutsch) {
+                return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
+            }
+            return a.modulTagesschuleName.localeCompare(b.modulTagesschuleName);
         });
     }
 
