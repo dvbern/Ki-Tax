@@ -482,7 +482,68 @@
                                                                    [errorObject]="zusaetzlicher_anspruch_freiwilligenarbeit_max.errors">
                                                 </dv-error-messages>
                                             </div>
-                                            <div></div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+
+
+<!--                                        Mahlzeitenverguenstigung -->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="mahlzeitenverguenstigung_enabled_{{i}}"
+                                                                  name="mahlzeitenverguenstigung_enabled_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled"
+                                                                  (change)="changeKonfigMahlzeitenverguenstigungEnabled(konfigurationsListe[i])">
+                                                <span translate>
+                                                    MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE
+                                                </span>
+                                                    </mat-checkbox>
+                                                </div>
+
+<!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
+                                                <div class="table-responsive" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                    <table class="mahlzeitenverguenstigung-table">
+                                                        <thead>
+                                                        <tr>
+                                                            <th translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN</th>
+                                                            <th class="align-right" translate>VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT</th>
+                                                            <th class="align-right" translate>VERGUENSTIGUNG_PRO_NEBENMAHLZEIT</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen}}</td>
+                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit}}</td>
+                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1}} -
+                                                                {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
+                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit}}</td>
+                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
+                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit}}</td>
+                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit}}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+<!--                                            Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                    <mat-checkbox id="mahlzeitenverguenstigung_sozialhilfeempfaenger_enabled_{{i}}"
+                                                                  name="mahlzeitenverguenstigung_sozialhilfeempfaenger_enabled_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled"
+                                                                  (change)="changeKonfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled(konfigurationsListe[i])">
+                                                <span translate>
+                                                    MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
+                                                </span>
+                                                    </mat-checkbox>
+                                                </div>
+
+                                                <div></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </tab-body>
@@ -699,6 +760,45 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                        </div>
+<!--                                        Mahlzeitenverguenstigung -->
+                                        <div class="col-sm-12 mt-2" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                            <p><strong translate>MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE</strong></p>
+
+<!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
+                                            <div class="table-responsive" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                <table class="mahlzeitenverguenstigung-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <td translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN</td>
+                                                        <td class="align-right" translate>VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT</td>
+                                                        <td class="align-right" translate>VERGUENSTIGUNG_PRO_NEBENMAHLZEIT</td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen}}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit}}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1}} -
+                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit}}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit}}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit}}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+<!--                                            Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
+                                            <p class="mt-2" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled" translate>
+                                                MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
+                                            </p>
                                         </div>
                                     </div>
                                 </tab-body>

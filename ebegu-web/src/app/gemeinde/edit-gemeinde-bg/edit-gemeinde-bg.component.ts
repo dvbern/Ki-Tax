@@ -246,6 +246,86 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
+    public changeKonfigMahlzeitenverguenstigungEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+            gk.konfigMahlzeitenverguenstigungEnabled,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED,
+            gk.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled,
+            gk
+        );
+    }
+
     private changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
         gk.konfigurationen
             .filter(property => einstellungKey === property.key)
