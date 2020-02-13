@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import org.apache.commons.collections.MapUtils;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import com.google.common.collect.ImmutableList;
 
@@ -74,8 +75,8 @@ public final class AbschlussNormalizer extends AbstractAbschlussRule {
 				if (!keepMonate || isSameMonth(zeitabschnitt, lastZeitabschnitt)) {
 					lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 					// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-					if (zeitabschnitt.getBemerkungenMap() != null && !zeitabschnitt.getBemerkungenMap().isEmpty()) {
-						lastZeitabschnitt.mergeBemerkungenMap(zeitabschnitt.getBemerkungenMap());
+					if (!MapUtils.isEmpty(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap())) {
+						lastZeitabschnitt.getBgCalculationInputAsiv().mergeBemerkungenMap(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
 					}
 					validZeitabschnitte.remove(indexOfLast);
 					validZeitabschnitte.add(lastZeitabschnitt);
