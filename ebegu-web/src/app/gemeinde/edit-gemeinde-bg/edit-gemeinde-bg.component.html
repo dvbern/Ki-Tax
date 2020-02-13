@@ -504,27 +504,193 @@
                                                     <table class="mahlzeitenverguenstigung-table">
                                                         <thead>
                                                         <tr>
-                                                            <th translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN</th>
+                                                            <th translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MIN</th>
+                                                            <th translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MAX</th>
                                                             <th class="align-right" translate>VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT</th>
                                                             <th class="align-right" translate>VERGUENSTIGUNG_PRO_NEBENMAHLZEIT</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
                                                         <tr>
-                                                            <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen}}</td>
-                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit}}</td>
-                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit}}</td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe1_min_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe1_min_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           [value]="'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate"
+                                                                           disabled>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe1_max_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe1_max_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe1_max='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="1"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe1_max.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe1_hauptmahlzeit_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe1_hauptmahlzeit_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe1_hauptmahlzeit='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="0"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe1_hauptmahlzeit.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe1_nebenmahlzeit_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe1_nebenmahlzeit_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe1_nebenmahlzeit='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="0"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe1_nebenmahlzeit.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1}} -
-                                                                {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
-                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit}}</td>
-                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit}}</td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe2_min_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe2_min_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           disabled
+                                                                           [value]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe2_max_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe2_max_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+																		   #mahlzeitenverguenstigung_stufe2_max='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 2"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe2_max.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe2_hauptmahlzeit_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe2_hauptmahlzeit_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe2_hauptmahlzeit='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="0"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe2_hauptmahlzeit.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe2_nebenmahlzeit_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe2_nebenmahlzeit_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe2_nebenmahlzeit='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="0"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe2_nebenmahlzeit.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
-                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit}}</td>
-                                                            <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit}}</td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe3_min_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe3_min_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           [value]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen + 1"
+                                                                           disabled>
+                                                                </div>
+                                                            </td>
+                                                            <td></td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe3_hauptmahlzeit_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe3_hauptmahlzeit_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe3_hauptmahlzeit='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="0"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe3_hauptmahlzeit.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input id="mahlzeitenverguenstigung_stufe3_nebenmahlzeit_id_{{i}}"
+                                                                           name="mahlzeitenverguenstigung_stufe3_nebenmahlzeit_id_{{i}}"
+                                                                           class="form-control"
+                                                                           type="number"
+                                                                           #mahlzeitenverguenstigung_stufe3_nebenmahlzeit='ngModel'
+                                                                           required
+                                                                           customMinMax
+                                                                           [minValue]="0"
+                                                                           [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit"
+                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
+
+                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                                       [errorObject]="mahlzeitenverguenstigung_stufe3_nebenmahlzeit.errors">
+                                                                    </dv-error-messages>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                         </tbody>
                                                     </table>

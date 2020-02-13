@@ -1784,6 +1784,8 @@
     "ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX": "Maximal zugelassener Anspruch in % durch Freiwilligenarbeit",
     "ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX_READONLY": "Maximal zugelassener Anspruch durch Freiwilligenarbeit: {{value}}%",
     "MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen (CHF)",
+    "MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MIN": "Massgebendes Einkommen in CHF (Min)",
+    "MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MAX": "Massgebendes Einkommen in CHF (Max)",
     "VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT": "Vergünstigung pro Hauptmahlzeit (CHF)",
     "VERGUENSTIGUNG_PRO_NEBENMAHLZEIT": "Vergünstigung pro Nebenmahlzeit (CHF)",
     "MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE": "Zusätzliche Mahlzeitenvergünstigung anbieten",
