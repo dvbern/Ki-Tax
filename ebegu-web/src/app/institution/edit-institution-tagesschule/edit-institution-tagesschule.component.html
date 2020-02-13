@@ -141,7 +141,8 @@
                                     </a>
                                 </div>
                                 <div *ngIf="einstellungGP && !canEditEinstellungen(einstellungGP)">
-                                    <a class="disabled" [title]="'WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH' | translate">
+                                    <a class="disabled strikethrough" [title]="'WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH' |
+                                    translate">
                                         <span>{{'SCOLARIS' | translate}}</span>
                                     </a>
                                 </div>
