@@ -441,8 +441,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			// die Verfügung speichern dürfen!
 			if (!principalBean.isCallerInAnyOfRole(
 							SUPER_ADMIN,
-							ADMIN_BG,
-							SACHBEARBEITER_BG,
 							ADMIN_GEMEINDE,
 							SACHBEARBEITER_GEMEINDE,
 							ADMIN_TS,
