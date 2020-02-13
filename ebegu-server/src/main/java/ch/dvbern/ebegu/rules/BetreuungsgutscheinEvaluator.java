@@ -111,6 +111,8 @@ public class BetreuungsgutscheinEvaluator {
 			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 
+			zeitabschnitte.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
+
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
 			LOG.info("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");

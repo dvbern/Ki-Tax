@@ -90,6 +90,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
+		zeitabschnitt.copyValuesToResult();
 
 		return zeitabschnitt;
 	}

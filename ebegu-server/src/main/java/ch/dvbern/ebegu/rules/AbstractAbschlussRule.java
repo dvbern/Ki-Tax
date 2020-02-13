@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +32,7 @@ public abstract class AbstractAbschlussRule {
 		if (isAnwendbarForAngebot(platz)) {
 			return execute(platz, zeitabschnitte);
 		}
-		return new ArrayList<>();
+		return zeitabschnitte;
 	}
 
 	@Nonnull

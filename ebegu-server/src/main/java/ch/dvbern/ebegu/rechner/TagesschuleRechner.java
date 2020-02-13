@@ -35,6 +35,7 @@ public class TagesschuleRechner extends AbstractRechner {
 	@Nonnull
 	@Override
 	public BGCalculationResult calculate(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO) {
+		verfuegungZeitabschnitt.copyValuesToResult();
 		BigDecimal minTarif = parameterDTO.getMinTarifTagesschule();
 		BGCalculationResult bgResult = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
 		if (bgResult.getTsCalculationResultMitPaedagogischerBetreuung() != null) {

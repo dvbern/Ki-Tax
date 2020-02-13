@@ -157,7 +157,6 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		zeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
 		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(100));
-
 		return zeitabschnitt;
 	}
 
