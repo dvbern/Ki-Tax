@@ -431,14 +431,36 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkWriteAuthorization(@Nullable Verfuegung verfuegung) {
-		//nur sachbearbeiter ja und admins duefen verfuegen
-		if (verfuegung != null && !principalBean.isCallerInAnyOfRole(
-			SUPER_ADMIN,
-			ADMIN_BG,
-			SACHBEARBEITER_BG,
-			ADMIN_GEMEINDE,
-			SACHBEARBEITER_GEMEINDE)) {
-			throwViolation(verfuegung);
+		if (verfuegung == null) {
+			return;
+		}
+		boolean isTagesschule = verfuegung.getPlatz().getBetreuungsangebotTyp().isTagesschule();
+		if (isTagesschule) {
+			// Tagesschulen werden neu "verfuegt", wenn die Module akzeptiert werden und das Gesuch schon
+			// verfügt/abgeschlossen war. Damit müssen alle Rollen, die Module akzeptieren dürfen, auch
+			// die Verfügung speichern dürfen!
+			if (!principalBean.isCallerInAnyOfRole(
+							SUPER_ADMIN,
+							ADMIN_GEMEINDE,
+							SACHBEARBEITER_GEMEINDE,
+							ADMIN_TS,
+							SACHBEARBEITER_TS,
+							ADMIN_INSTITUTION,
+							SACHBEARBEITER_INSTITUTION,
+							ADMIN_TRAEGERSCHAFT,
+							SACHBEARBEITER_INSTITUTION)) {
+				throwViolation(verfuegung);
+			}
+		} else {
+			// Bei BGs bleiben weiterhin die Admins/Sachbearbeiter BG/Gemeinde berechtigt
+			if (!principalBean.isCallerInAnyOfRole(
+							SUPER_ADMIN,
+							ADMIN_BG,
+							SACHBEARBEITER_BG,
+							ADMIN_GEMEINDE,
+							SACHBEARBEITER_GEMEINDE)) {
+				throwViolation(verfuegung);
+			}
 		}
 	}
 
