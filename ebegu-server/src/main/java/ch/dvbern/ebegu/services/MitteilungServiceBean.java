@@ -1107,7 +1107,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				+ Arrays.toString(statusRequired));
 		}
 		// Der EmpfaengerTyp (bei Institution und GS) muss uebereinstimmen
-		UserRole currentUserRole = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 		boolean sameEmpfaengerTyp = mitteilung.getEmpfaengerTyp() == getMitteilungTeilnehmerTypForCurrentUser();
 		if (sameEmpfaengerTyp) {
 			mitteilung.setMitteilungStatus(statusRequested);
