@@ -149,8 +149,8 @@ import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {ZahlungRS} from './service/zahlungRS.rest';
-import {DvMitteilungDelegationComponent} from "./component/dv-mitteilung-delegation/dv-mitteilung-delegation";
-import {DvBenutzerEntry} from "./component/dv-benutzer-entry/dv-benutzer-entry";
+import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
 
 const dependencies = [
     /* Angular modules */

@@ -15,7 +15,10 @@
 
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
-import {DvNgMitteilungDelegationDialogComponent} from "../dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component";
+import {DvNgMitteilungDelegationDialogComponent} from '../dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {LogFactory} from '../../logging/LogFactory';
+
+const LOG = LogFactory.createLog('DvMitteilungDelegationComponent');
 
 @Component({
     selector: 'dv-mitteilung-delegation',
@@ -25,21 +28,21 @@ export class DvMitteilungDelegationComponent {
 
     @Input() public mitteilungId: string;
     @Input() public gemeindeId: string;
-    @Output() valueChange  = new EventEmitter();
+    @Output() public readonly valueChange  = new EventEmitter<undefined>();
 
     public constructor(private readonly dialog: MatDialog) {
     }
 
     public showDialog(): void {
-        let dialogConfig: MatDialogConfig = new MatDialogConfig();
+        const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             mitteilungId: this.mitteilungId,
             gemeindeId: this.gemeindeId
         };
-        this.dialog.open(DvNgMitteilungDelegationDialogComponent, dialogConfig).afterClosed().subscribe(result=>{
+        this.dialog.open(DvNgMitteilungDelegationDialogComponent, dialogConfig).afterClosed().subscribe(result => {
             if (result) {
                 this.valueChange.emit();
             }
-        });
+        }, err => LOG.error(err), );
     }
 }

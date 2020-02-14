@@ -95,8 +95,8 @@ export class PosteingangViewController implements IController {
             );
     }
 
-    public getVerantwortungList(): Array<String> {
-        return ["VERANTWORTUNG_BG", "VERANTWORTUNG_TS"];
+    public getVerantwortungList(): Array<string> {
+        return ['VERANTWORTUNG_BG', 'VERANTWORTUNG_TS'];
     }
 
     public getMitteilungsStatus(): Array<TSMitteilungStatus> {

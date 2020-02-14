@@ -16,8 +16,8 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {TSBenutzer} from "../../../../models/TSBenutzer";
-import {TSRole} from "../../../../models/enums/TSRole";
+import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSRole} from '../../../../models/enums/TSRole';
 
 @Component({
     selector: 'dv-benutzer-entry',
@@ -37,22 +37,22 @@ export class DvBenutzerEntry {
         switch (this.benutzer.getCurrentRole()) {
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_BG:
-                return [["fa fa-gift", "VERANTWORTUNG_BG"]];
+                return [['fa fa-gift', 'VERANTWORTUNG_BG']];
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS:
-                return [["fa fa-graduation-cap", "VERANTWORTUNG_TS"]];
+                return [['fa fa-graduation-cap', 'VERANTWORTUNG_TS']];
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return [["fa fa-gift", "VERANTWORTUNG_BG"],["fa fa-graduation-cap", "VERANTWORTUNG_TS"]];
+                return [['fa fa-gift', 'VERANTWORTUNG_BG'], ['fa fa-graduation-cap', 'VERANTWORTUNG_TS']];
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
             case TSRole.ADMIN_INSTITUTION:
             case TSRole.SACHBEARBEITER_INSTITUTION:
-                return [["fa fa-home", "VERANTWORTUNG_INSTITUTION"]];
+                return [['fa fa-home', 'VERANTWORTUNG_INSTITUTION']];
             case TSRole.GESUCHSTELLER:
-                return [["fa fa-user", "VERANTWORTUNG_GESUCHSTELLER"]];
+                return [['fa fa-user', 'VERANTWORTUNG_GESUCHSTELLER']];
             case TSRole.SUPER_ADMIN:
-                return [["fa fa-rocket", "VERANTWORTUNG_SUPERADMIN"]];
+                return [['fa fa-rocket', 'VERANTWORTUNG_SUPERADMIN']];
             default:
                 return [];
         }

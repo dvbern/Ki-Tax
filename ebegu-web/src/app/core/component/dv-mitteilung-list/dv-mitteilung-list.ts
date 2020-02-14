@@ -377,12 +377,12 @@ export class DVMitteilungListController implements IOnInit {
         });
     }
 
-    public mitteilungWeitergeleitet(benutzerId: string): void {
+    public mitteilungWeitergeleitet(): void {
         this.loadAllMitteilungen();
     }
 
     public canUebergeben(mitteilung: TSMitteilung): boolean {
-        return mitteilung.empfaengerTyp != TSMitteilungTeilnehmerTyp.GESUCHSTELLER &&
+        return mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.GESUCHSTELLER &&
             this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
             !mitteilung.isErledigt();
     }

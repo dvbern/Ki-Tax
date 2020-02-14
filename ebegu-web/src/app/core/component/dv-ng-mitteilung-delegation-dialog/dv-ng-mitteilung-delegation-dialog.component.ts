@@ -18,11 +18,11 @@
 import {Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
-import {MitteilungRS} from "../../service/mitteilungRS.rest";
-import {BenutzerRS} from "../../service/benutzerRS.rest";
-import {TSBenutzer} from "../../../../models/TSBenutzer";
+import {MitteilungRS} from '../../service/mitteilungRS.rest';
+import {BenutzerRS} from '../../service/benutzerRS.rest';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {map, startWith} from 'rxjs/operators';
-import {Observable} from "rxjs";
+import {Observable} from 'rxjs';
 
 /**
  * Component fuer den GemeindeDialog. In einem Select muss der Benutzer die Gemeinde auswaehlen.
@@ -37,11 +37,10 @@ import {Observable} from "rxjs";
 export class DvNgMitteilungDelegationDialogComponent {
 
     public benutzerList: TSBenutzer[];
-    public filteredBenutzerLiist: Observable<TSBenutzer[]>;
+    public filteredBenutzerLiist$: Observable<TSBenutzer[]>;
     public selectedBenutzer: TSBenutzer;
     public mitteilungId: string;
     public myControl = new FormControl();
-
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgMitteilungDelegationDialogComponent>,
@@ -54,7 +53,7 @@ export class DvNgMitteilungDelegationDialogComponent {
         this.selectedBenutzer = null;
         this.benutzerRS.getBenutzerTsBgOrGemeindeForGemeinde(data.gemeindeId).then((response: any) => {
             this.benutzerList = response;
-            this.filteredBenutzerLiist = this.myControl.valueChanges
+            this.filteredBenutzerLiist$ = this.myControl.valueChanges
                 .pipe(
                     startWith(''),
                     map(value => this.filterBenutzer(value))
@@ -64,28 +63,23 @@ export class DvNgMitteilungDelegationDialogComponent {
 
     private filterBenutzer(value: any): TSBenutzer[] {
         if (this.benutzerList) {
-            let filterValue = "";
-            if (value instanceof TSBenutzer) {
-                filterValue = value.getFullName().toLowerCase();
-            } else {
-                filterValue = value.toLowerCase();
-            }
-            this.unselectBenutzerIfNoLongerSelected(filterValue);;
+            let filterValue = '';
+            filterValue = value instanceof TSBenutzer ?
+                value.getFullName().toLowerCase() : filterValue = value.toLowerCase();
+            this.unselectBenutzerIfNoLongerSelected(filterValue);
             return this.benutzerList.filter(benutzer => benutzer.getFullName().toLowerCase().includes(filterValue));
         }
         return [];
     }
 
-    public unselectBenutzerIfNoLongerSelected(filterValue: String): void {
-        if (this.selectedBenutzer) {
-            if (this.selectedBenutzer.getFullName() !== filterValue) {
+    public unselectBenutzerIfNoLongerSelected(filterValue: string): void {
+        if (this.selectedBenutzer && this.selectedBenutzer.getFullName() !== filterValue) {
                 this.selectedBenutzer = null;
-            }
         }
     }
 
     public save(): void {
-        this.mitteilungRS.mitteilungWeiterleiten(this.mitteilungId, this.selectedBenutzer.username).then(result =>{
+        this.mitteilungRS.mitteilungWeiterleiten(this.mitteilungId, this.selectedBenutzer.username).then(function (): void {
             this.dialogRef.close(this.selectedBenutzer.username);
         });
     }
@@ -94,13 +88,13 @@ export class DvNgMitteilungDelegationDialogComponent {
         this.dialogRef.close();
     }
 
-    public updateMySelection(benutzer: TSBenutzer) {
+    public updateMySelection(benutzer: TSBenutzer): void {
         this.selectedBenutzer = benutzer;
     }
 
-    public getBenutzerFullName(benutzer: TSBenutzer) {
+    public getBenutzerFullName(benutzer: TSBenutzer): string {
         if (!benutzer) {
-            return "";
+            return '';
         }
         return benutzer.getFullName();
     }

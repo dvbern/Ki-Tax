@@ -52,9 +52,9 @@ import {FullHeightContainerComponent} from './full-height-container/full-height-
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {UiViewComponent} from './ui-view/ui-view.component';
-import {DvBenutzerEntry} from "../core/component/dv-benutzer-entry/dv-benutzer-entry";
-import {DvMitteilungDelegationComponent} from "../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation";
-import {DvNgMitteilungDelegationDialogComponent} from "../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component";
+import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
