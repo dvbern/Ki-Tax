@@ -584,11 +584,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkReadAuthorizationForAnyBetreuungen(@Nullable Collection<Betreuung> betreuungen) {
-		if (betreuungen != null && !betreuungen.isEmpty()
-			&& betreuungen.stream().noneMatch(this::isReadAuthorized)) {
+	public <T extends AbstractPlatz> void checkReadAuthorizationForAnyPlaetze(@Nullable Collection<T> plaetze) {
+		if (plaetze != null && !plaetze.isEmpty()
+			&& plaetze.stream().noneMatch(this::isReadAuthorized)) {
 			throw new EJBAccessException(
-				"Access Violation user is not allowed for any of these betreuungen");
+				"Access Violation user is not allowed for any of these plaetze");
 		}
 	}
 
