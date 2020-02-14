@@ -125,23 +125,17 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(resultBetr2);
 		Assert.assertEquals(1, resultBetr2.size());
 		Assert.assertEquals(Integer.valueOf(80), resultBetr2.get(0).getBgCalculationInputAsiv().getErwerbspensumGS1());
-		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBetreuungspensumProzent());
-		Assert.assertEquals(
-			20,
-			resultBetr2.get(0)
-				.getAnspruchberechtigtesPensum()); // Nach der Berechnung des Anspruchs kann der Anspruch nicht hoeher
+		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBgCalculationInputAsiv().getBetreuungspensumProzent());
+		Assert.assertEquals(20, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+		Assert.assertEquals(20, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumProzent()); // Nach der Berechnung des Anspruchs kann der Anspruch nicht hoeher
 		// sein
 		// als der Restanspruch (20)
 		Assert.assertEquals(MathUtil.DEFAULT.from(20), resultBetr2.get(0).getBgPensum());
-		Assert.assertEquals(
-			20,
-			resultBetr2.get(0)
-				.getBgCalculationInputAsiv().getAnspruchspensumRest()); //Restanspruch wurde noch nicht neu berechnet fuer naechste betreuung
+		Assert.assertEquals(20, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest()); //Restanspruch wurde noch nicht neu
+		// berechnet fuer naechste betreuung
 		resultBetr2 = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung2, resultBetr2);
-		Assert.assertEquals(
-			0,
-			resultBetr2.get(0)
-				.getBgCalculationInputAsiv().getAnspruchspensumRest()); // Nach dem initialisieren fuer das nachste Betreuungspensum ist der noch
+		Assert.assertEquals(0, resultBetr2.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest()); // Nach dem initialisieren fuer das
+		// nachste Betreuungspensum ist der noch
 		// verbleibende restanspruch 0
 	}
 

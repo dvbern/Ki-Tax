@@ -175,6 +175,7 @@ public final class EbeguRuleTestsHelper {
 		result = abwesenheitCalcRule.calculate(betreuung, result);
 		result = schulstufeCalcRule.calculate(betreuung, result);
 		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
+		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 
 		result = anspruchFristRule.executeIfApplicable(betreuung, result);
 		restanspruchInitializer.executeIfApplicable(betreuung, result);

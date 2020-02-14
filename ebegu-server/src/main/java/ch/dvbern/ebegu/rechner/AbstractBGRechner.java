@@ -42,7 +42,9 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 	@Nonnull
 	public BGCalculationResult calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO) {
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		verfuegungZeitabschnitt.copyValuesToResult();
 
 		// Benoetigte Daten
 		boolean unter12Monate = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
