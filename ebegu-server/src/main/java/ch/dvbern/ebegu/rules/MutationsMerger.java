@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -27,6 +26,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -84,47 +84,42 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
 		Objects.requireNonNull(mutationsEingansdatum);
 
-		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
-
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 
 			final LocalDate zeitabschnittStart = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
-			VerfuegungZeitabschnitt zeitabschnitt = copy(verfuegungZeitabschnitt);
 			VerfuegungZeitabschnitt vorangehenderAbschnitt =
 				findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
 
 			if (vorangehenderAbschnitt != null) {
+				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
-				BGCalculationInput inputAsiv = zeitabschnitt.getBgCalculationInputAsiv();
-				BGCalculationInput inputAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationInputAsiv();
-				BGCalculationInput inputGemeinde = zeitabschnitt.getBgCalculationInputGemeinde();
-				BGCalculationInput inputGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationInputGemeinde();
+				handleVerminderungEinkommen(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
+				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 
-				handleVerminderungEinkommen(inputAsiv, inputAsivVorangehenderAbschnitt, mutationsEingansdatum, locale);
-				handleVerminderungEinkommen(inputGemeinde, inputGemeindeVorangehenderAbschnitt, mutationsEingansdatum, locale);
+				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
+				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
-				handleAnpassungErweiterteBeduerfnisse(inputAsiv, inputAsivVorangehenderAbschnitt, mutationsEingansdatum, locale);
-				handleAnpassungErweiterteBeduerfnisse(inputGemeinde, inputGemeindeVorangehenderAbschnitt, mutationsEingansdatum, locale);
-
-				handleAnpassungAnspruch(inputAsiv, inputAsivVorangehenderAbschnitt, mutationsEingansdatum);
-				handleAnpassungAnspruch(inputGemeinde, inputGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+				if (resultGemeindeVorangehenderAbschnitt != null) {
+					handleVerminderungEinkommen(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+					handleAnpassungErweiterteBeduerfnisse(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+					handleAnpassungAnspruch(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+				}
 			}
-			monatsSchritte.add(zeitabschnitt);
 		}
-
-		return monatsSchritte;
+		return zeitabschnitte;
 	}
 
 	private void handleAnpassungErweiterteBeduerfnisse(
 		@Nonnull BGCalculationInput inputData,
-		@Nonnull BGCalculationInput inputDataVorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum,
-		@Nonnull Locale locale
+		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum
 	) {
 		// Es muss nur etwas gemacht werden, wenn im alten Abschnitt kein Zuschlag war, neu aber schon, UND
 		// zu spät eingereicht
 		if (inputData.isBesondereBeduerfnisseBestaetigt()
-			&& !inputDataVorangehenderAbschnitt.isBesondereBeduerfnisseBestaetigt()
+			&& !resultVorangehenderAbschnitt.isBesondereBeduerfnisseBestaetigt()
 			&& !inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
 		) {
 			inputData.setBesondereBeduerfnisseBestaetigt(false);
@@ -134,24 +129,23 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	private void handleVerminderungEinkommen(
 		@Nonnull BGCalculationInput inputData,
-		@Nonnull BGCalculationInput inputDataVorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum,
-		@Nonnull Locale locale
+		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum
 	) {
 		// Massgebendes Einkommen
 		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
-
-		if (massgebendesEinkommen.compareTo(inputDataVorangehenderAbschnitt.getMassgebendesEinkommen()) <= 0) {
+		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
+		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) <= 0) {
 			// Massgebendes Einkommen wird kleiner, der Anspruch also höher: Darf nicht rückwirkend sein!
 			if (!inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
 				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				inputData.setMassgebendesEinkommenVorAbzugFamgr(inputDataVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
-				inputData.setEinkommensjahr(inputDataVorangehenderAbschnitt.getEinkommensjahr());
-				inputData.setFamGroesse(inputDataVorangehenderAbschnitt.getFamGroesse());
-				inputData.setAbzugFamGroesse(inputDataVorangehenderAbschnitt.getAbzugFamGroesse());
-				if (massgebendesEinkommen.compareTo(inputDataVorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
+				inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
+				inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
+				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
+				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
+				if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
 					inputData.getParent().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 				}
 			}
@@ -160,13 +154,13 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 	private void handleAnpassungAnspruch(
 		@Nonnull BGCalculationInput inputData,
-		@Nullable BGCalculationInput inputDataVorangehenderAbschnitt,
+		@Nullable BGCalculationResult resultVorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum
 	) {
 		final int anspruchberechtigtesPensum = inputData.getAnspruchspensumProzent();
-		final int anspruchAufVorgaengerVerfuegung = inputDataVorangehenderAbschnitt == null
+		final int anspruchAufVorgaengerVerfuegung = resultVorangehenderAbschnitt == null
 			? 0
-			: inputDataVorangehenderAbschnitt.getAnspruchspensumProzent();
+			: resultVorangehenderAbschnitt.getAnspruchspensumProzent();
 
 		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
 			//Anspruch wird erhöht
