@@ -361,17 +361,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		if (gesuch.getStatus() == AntragStatus.VERFUEGEN || gesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
-			KindContainer kindArray[] =
+			KindContainer[] kindArray =
 				gesuch.getKindContainers().toArray(new KindContainer[gesuch.getKindContainers().size()]);
 			for (int i = 0; i < gesuch.getKindContainers().size(); i++) {
 				KindContainer kindContainerToWorkWith = kindArray[i];
-				AnmeldungTagesschule anmeldungTagesschuleArray[] =
+				AnmeldungTagesschule[] anmeldungTagesschuleArray =
 					kindContainerToWorkWith.getAnmeldungenTagesschule().toArray(new AnmeldungTagesschule[kindContainerToWorkWith.getAnmeldungenTagesschule().size()]);
 				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenTagesschule().size(); j++) {
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
 					if (anmeldungTagesschule.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
-						this.verfuegungService.anmeldungSchulamtUebernehmen(gesuch.getId(), anmeldungTagesschule.getId());
+						this.verfuegungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
 					}
 				}
 			}
