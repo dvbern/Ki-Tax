@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,6 +37,17 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	@NotNull
 	private Boolean keineKesbPlatzierung;
+
+	@Nullable
+	private Boolean betreuungInGemeinde;
+
+	public Boolean getBetreuungInGemeinde() {
+		return betreuungInGemeinde;
+	}
+
+	public void setBetreuungInGemeinde(Boolean betreuungInGemeinde) {
+		this.betreuungInGemeinde = betreuungInGemeinde;
+	}
 
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
