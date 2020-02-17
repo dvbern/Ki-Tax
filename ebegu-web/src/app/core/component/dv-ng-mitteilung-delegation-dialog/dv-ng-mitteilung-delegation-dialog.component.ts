@@ -63,7 +63,7 @@ export class DvNgMitteilungDelegationDialogComponent {
 
     private filterBenutzer(value: any): TSBenutzer[] {
         if (this.benutzerList) {
-            let filterValue = value instanceof TSBenutzer ?
+            const filterValue = value instanceof TSBenutzer ?
                 value.getFullName().toLowerCase() : value.toLowerCase();
             this.unselectBenutzerIfNoLongerSelected(filterValue);
             return this.benutzerList.filter(benutzer => benutzer.getFullName().toLowerCase().includes(filterValue));
