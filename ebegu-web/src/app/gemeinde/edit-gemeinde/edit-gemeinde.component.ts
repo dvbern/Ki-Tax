@@ -333,4 +333,8 @@ export class EditGemeindeComponent implements OnInit {
     public isGemeindeEditable(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
     }
+
+    public getBGForm(): NgForm {
+        return this.forms.toArray()[2];
+    }
 }

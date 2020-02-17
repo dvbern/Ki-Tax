@@ -349,7 +349,7 @@
                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
                                                        (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                <dv-error-messages inputId="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
                                                 </dv-error-messages>
                                             </div>
@@ -368,7 +368,7 @@
                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo"
                                                        (change)="changeKonfigZusaetzlicherGutscheinBetragTfo(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                <dv-error-messages inputId="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
                                                 </dv-error-messages>
                                             </div>
@@ -427,7 +427,7 @@
                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita"
                                                        (change)="changeZusaetzlicherBabybeitragKita(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                <dv-error-messages inputId="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
                                                 </dv-error-messages>
                                             </div>
@@ -446,7 +446,7 @@
                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo"
                                                        (change)="changeZusaetzlicherBabybeitragTfo(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                <dv-error-messages inputId="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_babybeitrag_betrag_tfo.errors">
                                                 </dv-error-messages>
                                             </div>
@@ -478,7 +478,7 @@
                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent"
                                                        (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                <dv-error-messages inputId="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_anspruch_freiwilligenarbeit_max.errors">
                                                 </dv-error-messages>
                                             </div>
@@ -533,9 +533,9 @@
                                                                            customMinMax
                                                                            [minValue]="1"
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen"
-                                                                           (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(konfigurationsListe[i])">
+                                                                           (keyup)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(konfigurationsListe[i], i)">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe1_max_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe1_max.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -553,7 +553,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe1_hauptmahlzeit_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe1_hauptmahlzeit.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -571,7 +571,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe1_nebenmahlzeit_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe1_nebenmahlzeit.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -601,7 +601,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe2_max_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe2_max.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -619,7 +619,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe2_hauptmahlzeit_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe2_hauptmahlzeit.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -637,7 +637,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe2_nebenmahlzeit_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe2_nebenmahlzeit.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -668,7 +668,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe3_hauptmahlzeit_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe3_hauptmahlzeit.errors">
                                                                     </dv-error-messages>
                                                                 </div>
@@ -686,7 +686,7 @@
                                                                            [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit"
                                                                            (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
 
-                                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                    <dv-error-messages inputId="mahlzeitenverguenstigung_stufe3_nebenmahlzeit_id_{{i}}"
                                                                                        [errorObject]="mahlzeitenverguenstigung_stufe3_nebenmahlzeit.errors">
                                                                     </dv-error-messages>
                                                                 </div>

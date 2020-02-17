@@ -47,6 +47,7 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
+    @Input() private form: any;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
@@ -270,12 +271,17 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
-    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(gk: TSGemeindeKonfiguration): void {
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(gk: TSGemeindeKonfiguration, i: number): void {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN,
             gk.konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen,
             gk
         );
+        const stufe2MaxInput = this.form.form.controls['dv-edit-gemeinde-bg'].controls['mahlzeitenverguenstigung_stufe2_max_id_' + i];
+        if (stufe2MaxInput.untouched) {
+            stufe2MaxInput.markAsTouched();
+        }
+        stufe2MaxInput.updateValueAndValidity();
     }
 
     public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
