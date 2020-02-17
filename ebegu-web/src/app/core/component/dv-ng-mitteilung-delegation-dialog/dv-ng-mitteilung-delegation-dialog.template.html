@@ -29,7 +29,7 @@
                    [formControl]="myControl"
                    [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="getBenutzerFullName" (optionSelected)="updateMySelection($event.option.value)">
-                <mat-option *ngFor="let benutzer of this.filteredBenutzerList  | async" [value]="benutzer">
+                <mat-option *ngFor="let benutzer of this.filteredBenutzerList$  | async" [value]="benutzer">
                     <dv-benutzer-entry [benutzer]="benutzer"></dv-benutzer-entry>
                 </mat-option>
             </mat-autocomplete>
