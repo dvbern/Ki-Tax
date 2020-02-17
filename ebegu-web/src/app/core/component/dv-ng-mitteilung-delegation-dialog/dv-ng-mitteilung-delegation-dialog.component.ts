@@ -63,9 +63,8 @@ export class DvNgMitteilungDelegationDialogComponent {
 
     private filterBenutzer(value: any): TSBenutzer[] {
         if (this.benutzerList) {
-            let filterValue = '';
-            filterValue = value instanceof TSBenutzer ?
-                value.getFullName().toLowerCase() : filterValue = value.toLowerCase();
+            let filterValue = value instanceof TSBenutzer ?
+                value.getFullName().toLowerCase() : value.toLowerCase();
             this.unselectBenutzerIfNoLongerSelected(filterValue);
             return this.benutzerList.filter(benutzer => benutzer.getFullName().toLowerCase().includes(filterValue));
         }
@@ -79,7 +78,7 @@ export class DvNgMitteilungDelegationDialogComponent {
     }
 
     public save(): void {
-        this.mitteilungRS.mitteilungWeiterleiten(this.mitteilungId, this.selectedBenutzer.username).then(function (): void {
+        this.mitteilungRS.mitteilungWeiterleiten(this.mitteilungId, this.selectedBenutzer.username).then(() => {
             this.dialogRef.close(this.selectedBenutzer.username);
         });
     }
