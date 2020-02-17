@@ -20,6 +20,7 @@ import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
@@ -96,7 +97,7 @@ export class PosteingangViewController implements IController {
     }
 
     public getVerantwortungList(): Array<string> {
-        return ['VERANTWORTUNG_BG', 'VERANTWORTUNG_TS'];
+        return [TSVerantwortung.VERANTWORTUNG_BG, TSVerantwortung.VERANTWORTUNG_TS];
     }
 
     public getMitteilungsStatus(): Array<TSMitteilungStatus> {

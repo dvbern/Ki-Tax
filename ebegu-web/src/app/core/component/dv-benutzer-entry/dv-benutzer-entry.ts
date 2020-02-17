@@ -16,6 +16,7 @@
  */
 
 import {Component, Input} from '@angular/core';
+import {TSVerantwortung} from '../../../../models/enums/TSVerantwortung';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRole} from '../../../../models/enums/TSRole';
 
@@ -37,13 +38,14 @@ export class DvBenutzerEntry {
         switch (this.benutzer.getCurrentRole()) {
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_BG:
-                return [['fa fa-gift', 'VERANTWORTUNG_BG']];
+                return [['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG]];
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_TS:
-                return [['fa fa-graduation-cap', 'VERANTWORTUNG_TS']];
+                return [['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]];
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return [['fa fa-gift', 'VERANTWORTUNG_BG'], ['fa fa-graduation-cap', 'VERANTWORTUNG_TS']];
+                return [['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG],
+                    ['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]];
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
             case TSRole.ADMIN_INSTITUTION:

@@ -94,6 +94,7 @@ import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.Verantwortung;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -890,22 +891,23 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					));
 			}
 			if (predicateObjectDto.getEmpfaengerVerantwortung() != null) {
-				switch (predicateObjectDto.getEmpfaengerVerantwortung()) {
-					case "VERANTWORTUNG_BG":
-						setActiveAndRolePredicates(
-							cb,
-							joinEmpfaengerBerechtigungen,
-							predicates,
-							UserRole.getJugendamtSuperadminRoles());
-						break;
-					case "VERANTWORTUNG_TS":
+				Verantwortung verantwortung = Verantwortung.valueOf(predicateObjectDto.getEmpfaengerVerantwortung());
+				switch (verantwortung) {
+				case VERANTWORTUNG_BG:
+					setActiveAndRolePredicates(
+						cb,
+						joinEmpfaengerBerechtigungen,
+						predicates,
+						UserRole.getJugendamtSuperadminRoles());
+					break;
+				case VERANTWORTUNG_TS:
 					setActiveAndRolePredicates(
 						cb,
 						joinEmpfaengerBerechtigungen,
 						predicates,
 						UserRole.getTsAndGemeindeRoles());
 					break;
-					case "VERANTWORTUNG_BG_TS":
+				case VERANTWORTUNG_BG_TS:
 					setActiveAndRolePredicates(
 						cb,
 						joinEmpfaengerBerechtigungen,
@@ -1043,9 +1045,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Expression<Boolean> isActiveBg = cb.and(predicateActive, predicateBg);
 				Expression<Boolean> isActiveTs = cb.and(predicateActive, predicateTs);
 				Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
-				String bg = ServerMessageUtil.getMessage("VERANTWORTUNG_BG", browserSprache);
-				String ts = ServerMessageUtil.getMessage("VERANTWORTUNG_TS", browserSprache);
-				String bg_ts = ServerMessageUtil.getMessage("VERANTWORTUNG_BG_TS", browserSprache);
+				String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(), browserSprache);
+				String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(), browserSprache);
+				String bg_ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(), browserSprache);
 				expression = cb.selectCase().when(isActiveBg, bg).when(isActiveTs, ts).otherwise(bg_ts);
 				break;
 			default:
