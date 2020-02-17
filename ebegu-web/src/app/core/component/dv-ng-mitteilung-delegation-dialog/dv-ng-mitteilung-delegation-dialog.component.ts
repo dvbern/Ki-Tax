@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import {Observable} from 'rxjs';
 export class DvNgMitteilungDelegationDialogComponent {
 
     public benutzerList: TSBenutzer[];
-    public filteredBenutzerLiist$: Observable<TSBenutzer[]>;
+    public filteredBenutzerList$: Observable<TSBenutzer[]>;
     public selectedBenutzer: TSBenutzer;
     public mitteilungId: string;
     public myControl = new FormControl();
@@ -53,7 +53,7 @@ export class DvNgMitteilungDelegationDialogComponent {
         this.selectedBenutzer = null;
         this.benutzerRS.getBenutzerTsBgOrGemeindeForGemeinde(data.gemeindeId).then((response: any) => {
             this.benutzerList = response;
-            this.filteredBenutzerLiist$ = this.myControl.valueChanges
+            this.filteredBenutzerList$ = this.myControl.valueChanges
                 .pipe(
                     startWith(''),
                     map(value => this.filterBenutzer(value))

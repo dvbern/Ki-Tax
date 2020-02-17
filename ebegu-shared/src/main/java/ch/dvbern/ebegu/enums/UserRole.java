@@ -15,10 +15,11 @@
 
 package ch.dvbern.ebegu.enums;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
 
 public enum UserRole {
 
@@ -120,7 +121,6 @@ public enum UserRole {
 	public static List<UserRole> getTsBgAndGemeindeRoles() {
 		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
 	}
-
 
 	/**
 	 * Returns the roles of TS and Gemeinde

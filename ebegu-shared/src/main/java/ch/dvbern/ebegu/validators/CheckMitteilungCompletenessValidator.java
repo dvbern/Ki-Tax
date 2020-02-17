@@ -32,8 +32,7 @@ public class CheckMitteilungCompletenessValidator implements ConstraintValidator
 
 	@Override
 	public boolean isValid(Mitteilung instance, ConstraintValidatorContext context) {
-		return instance.isEntwurf()
-			|| (instance.getMessage() != null && !instance.getMessage().isEmpty()
-			&& instance.getSubject() != null && !instance.getSubject().isEmpty());
+		return instance.getMessage() != null && !instance.getMessage().isEmpty()
+			&& instance.getSubject() != null && !instance.getSubject().isEmpty();
 	}
 }

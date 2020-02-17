@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@
                    [formControl]="myControl"
                    [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="getBenutzerFullName" (optionSelected)="updateMySelection($event.option.value)">
-                <mat-option *ngFor="let benutzer of this.filteredBenutzerLiist  | async" [value]="benutzer">
+                <mat-option *ngFor="let benutzer of this.filteredBenutzerList  | async" [value]="benutzer">
                     <dv-benutzer-entry [benutzer]="benutzer"></dv-benutzer-entry>
                 </mat-option>
             </mat-autocomplete>
