@@ -155,7 +155,7 @@ export class MitteilungRS {
         mutationsmeldung.message = fromAbweichung
             ? this.createNachrichtForMutationsmeldungFromAbweichung(betreuung)
             : this.createNachrichtForMutationsmeldung(betreuung);
-        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
+        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.NEU;
         mutationsmeldung.betreuungspensen = this.extractPensenFromBetreuung(betreuung);
         return mutationsmeldung;
     }

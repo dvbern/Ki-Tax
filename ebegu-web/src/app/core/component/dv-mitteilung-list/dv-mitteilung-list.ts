@@ -161,7 +161,7 @@ export class DVMitteilungListController implements IOnInit {
         if (this.betreuung) {
             this.currentMitteilung.betreuung = this.betreuung;
         }
-        this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
+        this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
         this.currentMitteilung.sender = currentUser;
     }
 

@@ -181,7 +181,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		checkMitteilungDataConsistency(mitteilung);
 
-		if (MitteilungStatus.ENTWURF != mitteilung.getMitteilungStatus()) {
+		if (MitteilungStatus.NEU != mitteilung.getMitteilungStatus()) {
 			throw new IllegalArgumentException("Mitteilung ist nicht im Status ENTWURF und kann nicht gesendet "
 				+ "werden");
 		}
@@ -228,8 +228,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						"MitteilungId invalid: " + mitteilung.getId()));
 
-			// Die gespeicherte wie auch die uebergebene Mitteilung muss im Status ENTWURF sein
-			if (MitteilungStatus.ENTWURF != persistedMitteilung.getMitteilungStatus()) {
+			// Die gespeicherte wie auch die uebergebene Mitteilung muss im Status NEU sein
+			if (MitteilungStatus.NEU != persistedMitteilung.getMitteilungStatus()) {
 				throw new IllegalArgumentException(
 					"Mitteilung aus DB ist nicht im Status ENTWURF und kann nicht gesendet werden");
 			}
@@ -388,7 +388,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		TypedQuery<Betreuungsmitteilung> tq = persistence.getEntityManager().createQuery(query);
 
 		tq.setParameter("betreuunParam", betreuung);
-		tq.setParameter("statusParam", MitteilungStatus.ENTWURF);
+		tq.setParameter("statusParam", MitteilungStatus.NEU);
 
 		return tq.getResultList();
 	}
@@ -459,9 +459,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Predicate predicateLinkedObject = cb.equal(root.get(attribute), linkedEntity);
 		predicates.add(predicateLinkedObject);
-
-		Predicate predicateEntwurf = cb.notEqual(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ENTWURF);
-		predicates.add(predicateEntwurf);
 
 		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
 		Predicate predicateSender = cb.equal(root.get(Mitteilung_.senderTyp), mitteilungTeilnehmerTyp);
@@ -822,10 +819,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		//prepare predicates
 		List<Predicate> predicates = new ArrayList<>();
-
-		// Keine Entwuerfe fuer Posteingang
-		Predicate predicateEntwurf = cb.notEqual(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ENTWURF);
-		predicates.add(predicateEntwurf);
 
 		// Richtiger Empfangs-Typ. Persoenlicher Empfaenger wird nicht beachtet sondern auf Client mit Filter geloest
 		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();

@@ -84,7 +84,7 @@ describe('mitteilungenView', () => {
     }));
 
     const assertMitteilungContent = () => {
-        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
+        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.NEU);
         expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
         // diese Parameter muessen im Server gesetzt werden
         expect(controller.getCurrentMitteilung().empfaenger).toBeUndefined();
@@ -146,7 +146,7 @@ describe('mitteilungenView', () => {
             controller.form.$dirty = true;
             controller.sendMitteilung();
 
-            expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
+            expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.NEU);
             expect(controller.getCurrentMitteilung().sentDatum).toBeUndefined();
             expect(controller.getCurrentMitteilung().id).toBeUndefined();
         });
@@ -162,18 +162,6 @@ describe('mitteilungenView', () => {
             const mitteilung = new TSMitteilung();
             mitteilung.id = '123';
             spyOn(mitteilungRS, 'setMitteilungErledigt').and.returnValue($q.when(mitteilung));
-
-            mitteilung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
-            controller.setErledigt(mitteilung);
-            expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF); // Status ENTWURF wird nicht geaendert
-            // tslint:disable-next-line:no-unbound-method
-            expect(mitteilungRS.setMitteilungErledigt).not.toHaveBeenCalled();
-
-            mitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
-            controller.setErledigt(mitteilung);
-            expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.NEU); // Status NEU wird nicht geaendert
-            // tslint:disable-next-line:no-unbound-method
-            expect(mitteilungRS.setMitteilungErledigt).not.toHaveBeenCalled();
 
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
             controller.setErledigt(mitteilung);
@@ -191,7 +179,7 @@ describe('mitteilungenView', () => {
     function compareCommonAttributes(currentUser: TSBenutzer): void {
         expect(controller.getCurrentMitteilung()).toBeDefined();
         expect(controller.getCurrentMitteilung().dossier).toBe(dossier);
-        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.ENTWURF);
+        expect(controller.getCurrentMitteilung().mitteilungStatus).toBe(TSMitteilungStatus.NEU);
         expect(controller.getCurrentMitteilung().sender).toBe(currentUser);
         expect(controller.getCurrentMitteilung().subject).toBeUndefined();
         expect(controller.getCurrentMitteilung().message).toBeUndefined();
