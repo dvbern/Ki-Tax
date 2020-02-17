@@ -208,9 +208,4 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		LOG.error("Vorgaengerzeitabschnitt fuer Mutation konnte nicht gefunden werden {}", stichtag);
 		return null;
 	}
-
-	private VerfuegungZeitabschnitt copy(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(verfuegungZeitabschnitt);
-		return zeitabschnitt;
-	}
 }
