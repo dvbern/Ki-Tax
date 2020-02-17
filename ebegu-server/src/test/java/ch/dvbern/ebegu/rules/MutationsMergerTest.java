@@ -375,7 +375,10 @@ public class MutationsMergerTest {
 	) {
 		verfuegungsZeitabschnitteMutiert.stream()
 			.filter(v -> v.getGueltigkeit().startsSameDay(datumAb) || v.getGueltigkeit().startsAfter(datumAb))
-			.forEach(v -> v.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchberechtigtesPensum));
+			.forEach(v -> {
+				v.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchberechtigtesPensum);
+				v.getBgCalculationResultAsiv().setAnspruchspensumProzent(anspruchberechtigtesPensum);
+			});
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {
