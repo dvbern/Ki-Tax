@@ -31,6 +31,16 @@ export class TSGemeindeKonfiguration {
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
+    public konfigZusaetzlicherGutscheinEnabled: boolean; // only on client
+    public konfigZusaetzlicherGutscheinBetragKita: number; // only on client
+    public konfigZusaetzlicherGutscheinBetragTfo: number; // only on client
+    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita: TSEinschulungTyp; // only on client
+    public konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo: TSEinschulungTyp; // only on client
+    public konfigZusaetzlicherBabybeitragEnabled: boolean; // only on client
+    public konfigZusaetzlicherBabybeitragBetragKita: number; // only on client
+    public konfigZusaetzlicherBabybeitragBetragTfo: number; // only on client
+    public konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean; // only on client
+    public konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent: number; // only on client
     public erwerbspensumZuschlag: number;
     // never override this property. we just load it for validation reasons
     public erwerbspensumZuschlagMax: number;
@@ -74,20 +84,70 @@ export class TSGemeindeKonfiguration {
         this.konfigTagesschuleErsterSchultag = this.gesuchsperiode.gueltigkeit.gueltigAb;
 
         this.konfigurationen.forEach(property => {
-            if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                this.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
-            }
-            if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                this.konfigKontingentierung = (property.value === 'true');
-            }
-            if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB === property.key) {
-                this.konfigTagesschuleAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
-            }
-            if (TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG === property.key) {
-                this.konfigTagesschuleErsterSchultag = moment(property.value, CONSTANTS.DATE_FORMAT);
-            }
-            if (TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG === property.key) {
-                this.erwerbspensumZuschlag = Number(property.value);
+            switch (property.key) {
+                case TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE: {
+                    this.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED: {
+                    this.konfigKontingentierung = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB: {
+                    this.konfigTagesschuleAktivierungsdatum = moment(property.value, CONSTANTS.DATE_FORMAT);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG: {
+                    this.konfigTagesschuleErsterSchultag = moment(property.value, CONSTANTS.DATE_FORMAT);
+                    break;
+                }
+                case TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG: {
+                    this.erwerbspensumZuschlag = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED: {
+                    this.konfigZusaetzlicherGutscheinEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA: {
+                    this.konfigZusaetzlicherGutscheinBetragKita = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO: {
+                    this.konfigZusaetzlicherGutscheinBetragTfo = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA: {
+                    this.konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita = (TSEinschulungTyp as any)[property.value];
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO: {
+                    this.konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo = (TSEinschulungTyp as any)[property.value];
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED: {
+                    this.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED: {
+                    this.konfigZusaetzlicherBabybeitragEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA: {
+                    this.konfigZusaetzlicherBabybeitragBetragKita = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO: {
+                    this.konfigZusaetzlicherBabybeitragBetragTfo = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT: {
+                    this.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent = Number(property.value);
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         });
 
