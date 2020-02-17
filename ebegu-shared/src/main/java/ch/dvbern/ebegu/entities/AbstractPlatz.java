@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -57,6 +58,7 @@ import org.hibernate.envers.Audited;
 	uniqueConstraints =
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_platz_kind_betreuung_nummer")
 )
+@CheckPlatzAndAngebottyp
 public abstract class AbstractPlatz extends AbstractMutableEntity implements Comparable<AbstractPlatz>, Searchable {
 
 	private static final long serialVersionUID = -9037857320548372570L;

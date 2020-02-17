@@ -58,7 +58,7 @@ public interface VerfuegungService {
 	 * Verfügung wird definitiv und unveränderbar gespeichert.
 	 */
 	@Nonnull
-	AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull String gesuchId, @Nonnull String betreuungId);
+	AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
 
 	/**
 	 * Eine Schulamt-Anmeldung im Status AUSGELOEST muss beim Erstellen einer Mutation trotzdem "verfügt" werden
