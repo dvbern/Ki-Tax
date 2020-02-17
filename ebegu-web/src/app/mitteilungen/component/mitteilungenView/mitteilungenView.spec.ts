@@ -154,6 +154,7 @@ describe('mitteilungenView', () => {
     describe('setErledigt', () => {
         it('should change the status from GELESEN to ERLEDIGT and save the mitteilung', () => {
             const gesuchsteller = new TSBenutzer();
+            gesuchsteller.username = 'emma';
             gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
             spyOn(authServiceRS, 'isRole').and.returnValue(true);
 
@@ -161,6 +162,7 @@ describe('mitteilungenView', () => {
 
             const mitteilung = new TSMitteilung();
             mitteilung.id = '123';
+            mitteilung.empfaenger = gesuchsteller;
             spyOn(mitteilungRS, 'setMitteilungErledigt').and.returnValue($q.when(mitteilung));
 
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
