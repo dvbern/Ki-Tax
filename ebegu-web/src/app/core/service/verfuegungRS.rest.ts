@@ -87,17 +87,11 @@ export class VerfuegungRS {
             });
     }
 
-    public anmeldungSchulamtUebernehmen(gesuchId: string, betreuungId: string): IPromise<TSBetreuung> {
-        const gesuchIdEnc = encodeURIComponent(gesuchId);
-        const betreuungIdEnc = encodeURIComponent(betreuungId);
-        const url = `${this.serviceURL}/tagesschulanmeldung/uebernehmen/${gesuchIdEnc}/${betreuungIdEnc}`;
-
-        return this.http.get(url)
-            .then((response: any) => {
-                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                    this.log.debug('PARSING Verfuegung REST object ', response.data);
-                    return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-                });
-            });
+    public anmeldungSchulamtUebernehmen(
+        betreuung: TSBetreuung
+    ): IPromise<TSBetreuung> {
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        return this.http.put(`${this.serviceURL}/tagesschulanmeldung/uebernehmen`, restBetreuung)
+            .then(response => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
     }
 }

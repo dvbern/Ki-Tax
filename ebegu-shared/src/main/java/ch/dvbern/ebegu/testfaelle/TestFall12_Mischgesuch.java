@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
@@ -62,15 +63,11 @@ public class TestFall12_Mischgesuch extends AbstractTestfall {
 		kind2.setGesuch(gesuch);
 		gesuch.getKindContainers().add(kind2);
 
-		// Betreuungen
+		// Plaetze
 		// Kind 1: Tagesschule Bern
-		Betreuung betreuungTagesschuleBern = createBetreuung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE,
-			betreuungenBestaetigt);
+		AnmeldungTagesschule betreuungTagesschuleBern = createTagesschuleAnmeldung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		betreuungTagesschuleBern.setKind(kind1);
-		kind1.getBetreuungen().add(betreuungTagesschuleBern);
-		BetreuungspensumContainer betreuungspensumTagiAaregg = createBetreuungspensum(100, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
-		betreuungspensumTagiAaregg.setBetreuung(betreuungTagesschuleBern);
-		betreuungTagesschuleBern.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
+		kind1.getAnmeldungenTagesschule().add(betreuungTagesschuleBern);
 		// Kind 2: Ferieninsel Guarda
 		Betreuung betreuungKitaWeissenstein = createBetreuung(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA,
 			betreuungenBestaetigt);
