@@ -29,7 +29,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
-import {GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
+import {GUIDED_TOUR_SUPPORTED_ROLES, GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -56,7 +56,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
-
     ) {
     }
 
@@ -120,24 +119,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         }
         const roleLoggedIn = this.authServiceRS.getPrincipalRole();
 
-        switch (roleLoggedIn) {
-            case TSRole.ADMIN_TRAEGERSCHAFT:
-            case TSRole.ADMIN_INSTITUTION:
-            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-            case TSRole.SACHBEARBEITER_INSTITUTION:
-            case TSRole.SUPER_ADMIN:
-            case TSRole.ADMIN_MANDANT:
-            case TSRole.SACHBEARBEITER_MANDANT:
-            case TSRole.ADMIN_GEMEINDE:
-            case TSRole.SACHBEARBEITER_GEMEINDE:
-            case TSRole.ADMIN_BG:
-            case TSRole.SACHBEARBEITER_BG:
-            case TSRole.JURIST:
-            case TSRole.REVISOR:
-            case TSRole.STEUERAMT:
-                this.guidedTourService.startTour(new GuidedTourByRole(this.$state, this.translate, roleLoggedIn));
-                break;
-            default:
+        if (GUIDED_TOUR_SUPPORTED_ROLES.has(roleLoggedIn)) {
+            this.guidedTourService.startTour(new GuidedTourByRole(this.$state, this.translate, roleLoggedIn));
         }
     }
 
