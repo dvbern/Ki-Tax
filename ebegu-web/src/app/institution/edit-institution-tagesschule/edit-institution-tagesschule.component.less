@@ -121,9 +121,13 @@
             }
             a.disabled {
                 text-decoration: none;
+                &:hover {
+                    color: @contrast-darkest;
+                    cursor: not-allowed;
+                }
             }
-            a.disabled:hover {
-                color: @contrast-darkest;
+            a.strikethrough {
+                text-decoration: line-through;
             }
             .mt-2 {
                 margin-top: 2rem;

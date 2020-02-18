@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -69,11 +68,6 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * REST Resource fuer Verfügungen
@@ -204,27 +198,26 @@ public class VerfuegungResource {
 
 	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
 	@Nonnull
-	@GET
-	@Path("/tagesschulanmeldung/uebernehmen/{gesuchId}/{anmeldungId}")
+	@PUT
+	@Path("/tagesschulanmeldung/uebernehmen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, UserRoleName.ADMIN_TRAEGERSCHAFT, UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT, UserRoleName.ADMIN_INSTITUTION,
-		UserRoleName.SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public JaxBetreuung anmeldungSchulamtUebernehmen(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
-		@Nonnull @NotNull @PathParam("anmeldungId") JaxId anmeldungJaxId) {
-
-		Objects.requireNonNull(gesuchJaxId.getId());
-		Objects.requireNonNull(anmeldungJaxId.getId());
-
-		String gesuchId = converter.toEntityId(gesuchJaxId);
-		String anmeldungId = converter.toEntityId(anmeldungJaxId);
+		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getKindId());
 
 		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
-		resourceHelper.assertBetreuungStatusEqual(anmeldungId,
+		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 
-		AnmeldungTagesschule persistedBetreuung = this.verfuegungService.anmeldungSchulamtUebernehmen(gesuchId, anmeldungId);
+		AnmeldungTagesschule convertedBetreuung = converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
+		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
+		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
+		AnmeldungTagesschule persistedBetreuung = this.verfuegungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
 
 		return converter.platzToJAX(persistedBetreuung);
 	}

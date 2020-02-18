@@ -139,14 +139,14 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nonnull Benutzer benutzer);
 
 	/**
-	 * prueft ob der aktuell eingeloggte benutzer ALLE betreuung in der Liste lesen darf
+	 * prueft ob der aktuell eingeloggte benutzer ALLE Plaetze in der Liste lesen darf
 	 */
 	<T extends AbstractPlatz> void checkReadAuthorizationForAllPlaetze(@Nullable Collection<T> betreuungen);
 
 	/**
-	 * prueft ob der  eingeloggte benutzer EINE der  betreuung in der Liste lesen darf
+	 * prueft ob der  eingeloggte benutzer EINEN der Plaetze in der Liste lesen darf
 	 */
-	void checkReadAuthorizationForAnyBetreuungen(@Nullable Collection<Betreuung> betreuungen);
+	<T extends AbstractPlatz> void checkReadAuthorizationForAnyPlaetze(@Nullable Collection<T> plaetze);
 
 	/**
 	 * prueft ob der aktuell eingeloggte Benutzer die Verfuegung lesen darf
