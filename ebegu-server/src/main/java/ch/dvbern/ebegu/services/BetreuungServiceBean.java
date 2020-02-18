@@ -329,7 +329,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
 		try {
 			// Bei Ablehnung einer Betreuung muss eine E-Mail geschickt werden
-			mailService.sendInfoBetreuungAbgelehnt(persistedBetreuung);
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
+			if(gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+				mailService.sendInfoBetreuungAbgelehnt(persistedBetreuung);
+			}
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e,
 				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
