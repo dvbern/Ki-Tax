@@ -500,7 +500,7 @@
                                                 </div>
 
 <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
-                                                <div class="table-responsive" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                <div class="table-responsive mt-2" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
                                                     <table class="mahlzeitenverguenstigung-table">
                                                         <thead>
                                                         <tr>
@@ -931,7 +931,7 @@
                                             </div>
                                         </div>
 <!--                                        Mahlzeitenverguenstigung -->
-                                        <div class="col-sm-12 mt-2" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                        <div class="col-sm-12" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
                                             <p><strong translate>MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE</strong></p>
 
 <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
@@ -946,20 +946,20 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr>
-                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen | number }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit | number:'1.2-2' }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit | number:'1.2-2' }}</td>
+                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1 | number }} -
-                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen | number }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit | number:'1.2-2' }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit | number:'1.2-2' }}</td>
+                                                        <td>{{(konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1).toLocaleString('de-CH') }} -
+                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen | number }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit | number:'1.2-2' }}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit | number:'1.2-2' }}</td>
+                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
