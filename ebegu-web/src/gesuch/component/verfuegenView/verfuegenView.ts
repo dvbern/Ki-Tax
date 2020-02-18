@@ -377,9 +377,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(false);
+            return this.gesuchModelManager.saveVerfuegung(false, this.bemerkungen);
         });
     }
 
@@ -388,9 +387,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             institutionName: this.getInstitutionName(),
             institutionPhone: this.getInstitutionPhone(),
         }).then(response => {
-            this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             this.isVerfuegenClicked = false;
-            return this.gesuchModelManager.saveVerfuegung(response === 2);
+            return this.gesuchModelManager.saveVerfuegung(response === 2, this.bemerkungen);
         });
     }
 
