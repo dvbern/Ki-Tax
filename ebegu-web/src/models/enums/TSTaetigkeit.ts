@@ -35,7 +35,7 @@ export function getTSTaetigkeit(): Array<TSTaetigkeit> {
 }
 
 export function getTSTaetigkeitWithFreiwilligenarbeit(): Array<TSTaetigkeit> {
-    const taetigkeiten: Array<TSTaetigkeit> = getTSTaetigkeit();
+    const taetigkeiten = getTSTaetigkeit();
     taetigkeiten.push(TSTaetigkeit.FREIWILLIGENARBEIT);
     return taetigkeiten;
 }
