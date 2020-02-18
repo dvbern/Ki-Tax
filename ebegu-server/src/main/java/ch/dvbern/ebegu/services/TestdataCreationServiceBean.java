@@ -495,7 +495,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	}
 
 	@Override
-	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+	@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.NcssMethodCount"})
 	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
