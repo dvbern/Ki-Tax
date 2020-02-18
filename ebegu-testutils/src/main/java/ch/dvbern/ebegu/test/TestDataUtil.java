@@ -1461,7 +1461,7 @@ public final class TestDataUtil {
 		return jaxWizardStep;
 	}
 
-	@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+	@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.NcssMethodCount"})
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
