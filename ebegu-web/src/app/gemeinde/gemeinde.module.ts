@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {registerLocaleData} from '@angular/common';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {IbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
@@ -29,6 +30,9 @@ import {GemeindeFiKonfigComponent} from './gemeinde-fi-konfiguration/gemeinde-fi
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
 import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts-konfig.component';
+import * as localeDeCh from '@angular/common/locales/de-ch';
+
+registerLocaleData(localeDeCh);
 
 @NgModule({
     imports: [

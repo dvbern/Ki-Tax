@@ -1790,7 +1790,7 @@
     "VERGUENSTIGUNG_PRO_NEBENMAHLZEIT": "Vergünstigung pro Nebenmahlzeit (CHF)",
     "MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE": "Zusätzliche Mahlzeitenvergünstigung anbieten",
     "MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER": "Mahlzeitenvergünstigung wird auch an Sozialhilfebezüger ausbezahlt",
-    "MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN": "0.00",
+    "MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN": "0",
     "BLOG_FOOTER_LINK": "Blog",
     "BLOG_NEUIGKEITEN_LINK": "https://blog.kibon.ch/category/neuigkeiten/",
     "BLOG_MANDANT_LINK": "https://blog.kibon.ch/category/knowhow-kanton/",

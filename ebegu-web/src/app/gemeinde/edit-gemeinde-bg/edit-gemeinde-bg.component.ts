@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
@@ -47,9 +47,10 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
-    @Input() private form: any;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
+
+    @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
@@ -277,7 +278,7 @@ export class EditGemeindeComponentBG implements OnInit {
             gk.konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen,
             gk
         );
-        const stufe2MaxInput = this.form.form.controls['dv-edit-gemeinde-bg'].controls['mahlzeitenverguenstigung_stufe2_max_id_' + i];
+        const stufe2MaxInput = this.group.control.controls[`mahlzeitenverguenstigung_stufe2_max_id_${i}`];
         if (stufe2MaxInput.untouched) {
             stufe2MaxInput.markAsTouched();
         }

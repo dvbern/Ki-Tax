@@ -520,6 +520,7 @@
                                                                            type="number"
                                                                            [value]="'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate"
                                                                            disabled>
+                                                                    <dv-error-messages></dv-error-messages>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -586,6 +587,7 @@
                                                                            type="number"
                                                                            disabled
                                                                            [value]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1">
+                                                                    <dv-error-messages></dv-error-messages>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -652,6 +654,7 @@
                                                                            type="number"
                                                                            [value]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen + 1"
                                                                            disabled>
+                                                                    <dv-error-messages></dv-error-messages>
                                                                 </div>
                                                             </td>
                                                             <td></td>
@@ -943,20 +946,20 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr>
-                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen}}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit}}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit}}</td>
+                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen | number }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit | number:'1.2-2' }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit | number:'1.2-2' }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1}} -
-                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit}}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit}}</td>
+                                                        <td>{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1 | number }} -
+                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen | number }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit | number:'1.2-2' }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit | number:'1.2-2' }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen}}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit}}</td>
-                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit}}</td>
+                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen | number }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit | number:'1.2-2' }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit | number:'1.2-2' }}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
