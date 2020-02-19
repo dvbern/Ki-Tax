@@ -21,10 +21,12 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
@@ -60,6 +62,7 @@ export class EditGemeindeComponentBG implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
+        private readonly authServiceRs: AuthServiceRS,
     ) {
 
     }
@@ -358,5 +361,9 @@ export class EditGemeindeComponentBG implements OnInit {
         this.konfigurationsListe.forEach(config => {
             config.initProperties();
         });
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
     }
 }

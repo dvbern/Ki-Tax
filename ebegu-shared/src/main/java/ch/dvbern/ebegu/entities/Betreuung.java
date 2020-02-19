@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.validators.CheckBetreuungZeitraumInstitutionsStammdatenZe
 import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -75,6 +76,7 @@ import org.hibernate.search.annotations.Indexed;
  */
 @Audited
 @Entity
+@CheckPlatzAndAngebottyp
 @CheckGrundAblehnung
 @CheckBetreuungspensum
 @CheckBetreuungspensumDatesOverlapping

@@ -323,31 +323,33 @@
                                                                    [errorObject]="ewp_zuschlag.errors">
                                                 </dv-error-messages>
                                             </div>
+<!--                                            Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                            <div *ngIf="isSuperAdmin()">
 <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
-                                            <div class="form-group">
-                                                <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
-                                                              name="zusaetzliche_verguenstigung_{{i}}"
-                                                              [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
-                                                              (change)="changeKonfigZusaetzlicherGutscheinEnabled(konfigurationsListe[i])">
-                                                <span translate>
-                                                    ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE
-                                                </span>
-                                                </mat-checkbox>
-                                            </div>
-<!--                                            Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
-                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
-                                                <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
-                                                       class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE</label>
-                                                <input id="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
-                                                       name="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
-                                                       class="form-control"
-                                                       type="number"
-													   #zusaetzlicher_gutschein_betrag_kita='ngModel'
-                                                       required
-                                                       customMinMax
-                                                       [minValue]="0"
-                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
-                                                       (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
+                                                <div class="form-group">
+                                                    <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
+                                                                  name="zusaetzliche_verguenstigung_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
+                                                                  (change)="changeKonfigZusaetzlicherGutscheinEnabled(konfigurationsListe[i])">
+                                                    <span translate>
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE
+                                                    </span>
+                                                    </mat-checkbox>
+                                                </div>
+    <!--                                            Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE</label>
+                                                    <input id="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           name="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_gutschein_betrag_kita='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
+                                                           (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
 
                                                 <dv-error-messages inputId="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
@@ -401,82 +403,82 @@
                                                 </mat-select>
                                             </div>
 
-<!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
-                                            <div class="form-group">
-                                                <mat-checkbox id="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
-                                                              name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
-                                                              [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
-                                                              (change)="changeKonfigZusaetzlicherBabybeitragEnabled(konfigurationsListe[i])">
-                                                <span translate>
-                                                    ZUSAETZLICHER_BABYBEITRAG_GEMEINDE
-                                                </span>
-                                                </mat-checkbox>
-                                            </div>
-<!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas-->
-                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
-                                                <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
-                                                       class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA</label>
-                                                <input id="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
-                                                       name="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
-                                                       class="form-control"
-                                                       type="number"
-													   #zusaetzlicher_babybeitrag_betrag_kita='ngModel'
-                                                       required
-                                                       customMinMax
-                                                       [minValue]="0"
-                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita"
-                                                       (change)="changeZusaetzlicherBabybeitragKita(konfigurationsListe[i])">
+    <!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
+                                                                  name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
+                                                                  (change)="changeKonfigZusaetzlicherBabybeitragEnabled(konfigurationsListe[i])">
+                                                    <span translate>
+                                                        ZUSAETZLICHER_BABYBEITRAG_GEMEINDE
+                                                    </span>
+                                                    </mat-checkbox>
+                                                </div>
+    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA</label>
+                                                    <input id="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
+                                                           name="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_babybeitrag_betrag_kita='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita"
+                                                           (change)="changeZusaetzlicherBabybeitragKita(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
-                                                                   [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
-                                                </dv-error-messages>
-                                            </div>
-<!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei TFOs-->
-                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
-                                                <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
-                                                       class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO</label>
-                                                <input id="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
-                                                       name="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
-                                                       class="form-control"
-                                                       type="number"
-													   #zusaetzlicher_babybeitrag_betrag_tfo='ngModel'
-                                                       required
-                                                       customMinMax
-                                                       [minValue]="0"
-                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo"
-                                                       (change)="changeZusaetzlicherBabybeitragTfo(konfigurationsListe[i])">
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
+                                                    </dv-error-messages>
+                                                </div>
+    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Stunde bei TFOs-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO</label>
+                                                    <input id="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                           name="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_babybeitrag_betrag_tfo='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo"
+                                                           (change)="changeZusaetzlicherBabybeitragTfo(konfigurationsListe[i])">
 
                                                 <dv-error-messages inputId="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_babybeitrag_betrag_tfo.errors">
                                                 </dv-error-messages>
                                             </div>
 
-<!--                                            Zusätzlicher Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
-                                            <div class="form-group">
-                                                <mat-checkbox id="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
-                                                              name="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
-                                                              [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled"
-                                                              (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(konfigurationsListe[i])">
-                                                <span translate>
-                                                    ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT
-                                                </span>
-                                                </mat-checkbox>
-                                            </div>
-<!--                                            Maximal zugelassener Anspruch % Freiwilligenarbeit -->
-                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled">
-                                                <label for="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
-                                                       class="required" translate>ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX</label>
-                                                <input id="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
-                                                       name="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
-                                                       class="form-control"
-                                                       type="number"
-													   #zusaetzlicher_anspruch_freiwilligenarbeit_max='ngModel'
-                                                       required
-                                                       customMinMax
-                                                       [minValue]="0"
-                                                       [maxValue]="100"
-                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent"
-                                                       (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(konfigurationsListe[i])">
+    <!--                                            Zusätzlicher Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
+                                                                  name="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled"
+                                                                  (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(konfigurationsListe[i])">
+                                                    <span translate>
+                                                        ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT
+                                                    </span>
+                                                    </mat-checkbox>
+                                                </div>
+    <!--                                            Maximal zugelassener Anspruch % Freiwilligenarbeit -->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled">
+                                                    <label for="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX</label>
+                                                    <input id="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                           name="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_anspruch_freiwilligenarbeit_max='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [maxValue]="100"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent"
+                                                           (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(konfigurationsListe[i])">
 
                                                 <dv-error-messages inputId="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
                                                                    [errorObject]="zusaetzlicher_anspruch_freiwilligenarbeit_max.errors">
