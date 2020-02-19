@@ -4124,9 +4124,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());
-		if (persistedMitteilung.getSender() != null) {
-			jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
-		}
+		jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());
 		jaxMitteilung.setSentDatum(persistedMitteilung.getSentDatum());
