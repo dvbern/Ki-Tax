@@ -1268,6 +1268,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Betreuungspensum betPensumJA = new Betreuungspensum(betPensumMitteilung);
 				//gs container muss nicht mikopiert werden
 				betPenCont.setBetreuungspensumJA(betPensumJA);
+
 				existingBetreuung.getBetreuungspensumContainers().add(betPenCont);
 
 				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {

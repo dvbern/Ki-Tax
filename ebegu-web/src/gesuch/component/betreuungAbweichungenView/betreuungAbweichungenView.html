@@ -59,6 +59,8 @@
                         <th data-translate="MONTH"></th>
                         <th>{{vm.getInputFormatTitle()}}</th>
                         <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
+                        <th data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
+                        <th data-translate="MONATLICHE_NEBENMAHLZEITEN"></th>
                         <th>
                             <span data-translate="STATUS"></span>
                             <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
@@ -77,7 +79,7 @@
                                    ng-model="vm.getAbweichung($index).pensum"
                                    class="form-control  dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="vm.getAbweichung($index).monatlicheBetreuungskosten !== null && vm.getAbweichung($index).monatlicheBetreuungskosten >= 0"
+                                   ng-required="vm.isRowRequired($index)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    step="0.25"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglichesPensum}}">
@@ -90,9 +92,33 @@
                                    ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
                                    dv-max-length class="form-control dv-input-container-medium"
                                    ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="vm.getAbweichung($index).pensum !== null && vm.getAbweichung($index).pensum >= 0"
+                                   ng-required="vm.isRowRequired($index)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheKosten}}">
+                        </td>
+                        <td>
+                            <input aria-describedby="hauptmahlzeiten-{{$index}}-error"
+                                   id="hauptmahlzeiten-{{$index}}" type="number"
+                                   name="hauptmahlzeiten-{{$index}}"
+                                   ng-change="vm.updateStatus({{$index}})"
+                                   ng-model="vm.getAbweichung($index).monatlicheHauptmahlzeiten"
+                                   dv-max-length class="form-control dv-input-container-medium"
+                                   ng-disabled="{{vm.isDisabled($index)}}"
+                                   step="1"
+                                   ng-required="vm.isRowRequired($index)"
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheHauptmahlzeiten}}">
+                        </td>
+                        <td>
+                            <input aria-describedby="nebenmahlzeiten-{{$index}}-error"
+                                   id="nebenmahlzeiten-{{$index}}" type="number"
+                                   name="nebenmahlzeiten-{{$index}}"
+                                   ng-change="vm.updateStatus({{$index}})"
+                                   ng-model="vm.getAbweichung($index).monatlicheNebenmahlzeiten"
+                                   dv-max-length class="form-control dv-input-container-medium"
+                                   ng-disabled="{{vm.isDisabled($index)}}"
+                                   step="1"
+                                   ng-required="vm.isRowRequired($index)"
+                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheNebenmahlzeiten}}">
                         </td>
                         <td>
                             <span class="fa {{vm.getIcon($index)}}" aria-hidden="true" title="{{vm.getIconTooltip($index)}}"></span>

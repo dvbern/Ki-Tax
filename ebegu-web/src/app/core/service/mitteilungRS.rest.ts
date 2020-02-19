@@ -26,6 +26,7 @@ import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../constants/CONSTANTS';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -225,13 +226,37 @@ export class MitteilungRS {
                     datumBis :
                     DateUtil.momentToLocalDateFormat(maxDate, defaultDateFormat);
 
-                message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                    num: i,
-                    von: datumAb,
-                    bis: datumBis,
-                    pensum: pensumJA.pensum,
-                    kosten: pensumJA.monatlicheBetreuungskosten
-                });
+
+
+                // TODO check if mahlzeitenverguenstigung is active
+                if (true) {
+                    const hauptmahlzeiten: number = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.monatlicheHauptmahlzeiten)
+                        ? betpenContainer.betreuungspensumJA.monatlicheHauptmahlzeiten
+                        : 0;
+
+                    const nebenmahlzeiten: number = EbeguUtil.isNotNullOrUndefined(betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten)
+                        ? betpenContainer.betreuungspensumJA.monatlicheNebenmahlzeiten
+                        : 0;
+
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum: pensumJA.pensum,
+                        kosten: pensumJA.monatlicheBetreuungskosten,
+                        hauptmahlzeiten: hauptmahlzeiten,
+                        nebenmahlzeiten: nebenmahlzeiten
+                    });
+                } else {
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum: pensumJA.pensum,
+                        kosten: pensumJA.monatlicheBetreuungskosten
+                    });
+                }
+
             }
             i++;
         });
@@ -281,13 +306,33 @@ export class MitteilungRS {
                     ? betreuungspensum.monatlicheBetreuungskosten
                     : betreuungspensum.vertraglicheKosten;
 
-                message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
-                    num: i,
-                    von: datumAb,
-                    bis: datumBis,
-                    pensum,
-                    kosten
-                });
+                // TODO check if mahlzeitenverguenstigung is active
+                if (true) {
+                    const hauptmahlzeiten =  EbeguUtil.isNotNullAndPositive(betreuungspensum.monatlicheHauptmahlzeiten)
+                        ? betreuungspensum.monatlicheHauptmahlzeiten
+                        : betreuungspensum.vertraglicheHauptmahlzeiten;
+                    const nebenmahlzeiten = EbeguUtil.isNotNullAndPositive(betreuungspensum.monatlicheNebenmahlzeiten)
+                        ? betreuungspensum.monatlicheNebenmahlzeiten
+                        : betreuungspensum.vertraglicheNebenmahlzeiten;
+
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum: pensum,
+                        kosten: kosten,
+                        hauptmahlzeiten: hauptmahlzeiten,
+                        nebenmahlzeiten: nebenmahlzeiten
+                    });
+                } else {
+                    message += this.$translate.instant('MUTATIONSMELDUNG_MESSAGE', {
+                        num: i,
+                        von: datumAb,
+                        bis: datumBis,
+                        pensum,
+                        kosten
+                    });
+                }
             }
             i++;
         });

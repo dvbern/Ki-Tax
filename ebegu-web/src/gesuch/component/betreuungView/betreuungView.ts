@@ -1220,4 +1220,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                     && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())));
     }
+
+    // TODO
+    public isMahlzeitenverguenstigungActive(): boolean {
+        return true;
+    }
 }

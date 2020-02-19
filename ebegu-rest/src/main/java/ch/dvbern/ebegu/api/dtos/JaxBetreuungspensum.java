@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * DTO fuer Daten des Betreuungspensum
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxBetreuungspensum extends JaxAbstractDecimalPensumDTO {
+public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
 
 	private Boolean nichtEingetreten = false;
 
@@ -35,5 +35,5 @@ public class JaxBetreuungspensum extends JaxAbstractDecimalPensumDTO {
 	public void setNichtEingetreten(Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
 	}
-
 }
+

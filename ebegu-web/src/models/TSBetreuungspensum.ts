@@ -13,11 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 
-export class TSBetreuungspensum extends TSAbstractDecimalPensumEntity {
+import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
+
+export class TSBetreuungspensum extends TSAbstractMahlzeitenPensum {
 
     private _nichtEingetreten: boolean;
+
 
     public constructor() {
         super();

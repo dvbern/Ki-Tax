@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -36,7 +37,7 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
-public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements Comparable<BetreuungsmitteilungPensum> {
+public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum implements Comparable<BetreuungsmitteilungPensum> {
 
 	private static final long serialVersionUID = -9032858720574672370L;
 
@@ -67,6 +68,7 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 	public void setBetreuungspensumAbweichung(BetreuungspensumAbweichung betreuungspensumAbweichung) {
 		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
 	}
+
 
 	@Override
 	public int compareTo(@Nonnull BetreuungsmitteilungPensum o) {

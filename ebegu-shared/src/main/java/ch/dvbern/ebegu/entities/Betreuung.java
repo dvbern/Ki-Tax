@@ -489,6 +489,12 @@ public class Betreuung extends AbstractPlatz {
 				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 				abweichung.addPensum(pensum.getPensum().multiply(anteil));
 				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
+				if (pensum.getMonatlicheHauptmahlzeiten() != null) {
+					abweichung.addHauptmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheHauptmahlzeiten()).multiply(anteil).intValue());
+				}
+				if (pensum.getMonatlicheNebenmahlzeiten() != null) {
+					abweichung.addNebenmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheNebenmahlzeiten()).multiply(anteil).intValue());
+				}
 			}
 		}
 		return abweichung;
