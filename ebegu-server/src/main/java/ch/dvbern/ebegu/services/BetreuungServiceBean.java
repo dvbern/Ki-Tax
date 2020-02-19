@@ -382,8 +382,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
 		try {
-			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
-			mailService.sendInfoSchulamtAnmeldungAkzeptiert(persistedBetreuung);
+			// Bei Akzeptieren einer Anmeldung muss eine E-Mail geschickt werden
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
+			if(gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+				mailService.sendInfoSchulamtAnmeldungAkzeptiert(persistedBetreuung);
+			}
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e,
 				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
@@ -424,7 +428,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		AbstractAnmeldung persistedBetreuung = savePlatz(betreuung);
 		try {
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
-			mailService.sendInfoSchulamtAnmeldungAbgelehnt(persistedBetreuung);
+			GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
+			if(gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+				mailService.sendInfoSchulamtAnmeldungAbgelehnt(persistedBetreuung);
+			}
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e,
 				"Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
