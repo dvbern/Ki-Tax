@@ -43,6 +43,17 @@
                     </mat-cell>
                 </ng-container>
 
+                <!-- Column Type -->
+                <ng-container matColumnDef="type">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'TYP' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let institution"
+                              (click)="openInstitution(institution)">
+                        {{institution.betreuungsangebotTyp.toString() | translate}}
+                    </mat-cell>
+                </ng-container>
+
                 <!-- Column Status -->
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>

@@ -17,6 +17,113 @@
 
 package ch.dvbern.ebegu.api.converter;
 
+import java.math.BigDecimal;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
+import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAdresse;
+import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
+import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschuleModul;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
+import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxDokument;
+import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
+import ch.dvbern.ebegu.api.dtos.JaxDokumente;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
+import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
+import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellungenTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxEnversRevision;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuungContainer;
+import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
+import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
+import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxFall;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
+import ch.dvbern.ebegu.api.dtos.JaxFerieninselStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
+import ch.dvbern.ebegu.api.dtos.JaxFile;
+import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
+import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
+import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
+import ch.dvbern.ebegu.api.dtos.JaxKind;
+import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.api.dtos.JaxMahnung;
+import ch.dvbern.ebegu.api.dtos.JaxMandant;
+import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
+import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
+import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
+import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
+import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.api.dtos.JaxVorlage;
+import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
+import ch.dvbern.ebegu.api.dtos.JaxZahlung;
+import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -1091,6 +1198,24 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
 		return jaxInstitution;
+	}
+
+	public JaxInstitutionListDTO institutionListDTOToJAX(final Entry<Institution,InstitutionStammdaten> entry) {
+		final JaxInstitutionListDTO jaxInstitutionListDTO = new JaxInstitutionListDTO();
+		convertAbstractVorgaengerFieldsToJAX(entry.getKey(), jaxInstitutionListDTO);
+		jaxInstitutionListDTO.setName(entry.getKey().getName());
+		assert entry.getKey().getMandant() != null;
+		jaxInstitutionListDTO.setMandant(mandantToJAX(entry.getKey().getMandant()));
+		jaxInstitutionListDTO.setStatus(entry.getKey().getStatus());
+		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());
+
+		if (entry.getKey().getTraegerschaft() != null) {
+			jaxInstitutionListDTO.setTraegerschaft(traegerschaftToJAX(entry.getKey().getTraegerschaft()));
+		}
+
+		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
+
+		return jaxInstitutionListDTO;
 	}
 
 	public boolean institutionToEntity(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
@@ -3891,9 +4016,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());
-		if (persistedMitteilung.getSender() != null) {
-			jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
-		}
+		jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());
 		jaxMitteilung.setSentDatum(persistedMitteilung.getSentDatum());
