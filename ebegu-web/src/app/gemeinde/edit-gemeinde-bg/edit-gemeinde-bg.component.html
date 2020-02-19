@@ -298,7 +298,7 @@
                                                 <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
                                                               name="ewp_zuschlag_override_id_{{i}}"
                                                               [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
-                                                              (change)="changeErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
+                                                              (change)="changeKonfigErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
                                                 <span translate
                                                       [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
                                                     EWP_ZUSCHLAG_OVERRIDE
@@ -322,6 +322,169 @@
                                                 <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
                                                                    [errorObject]="ewp_zuschlag.errors">
                                                 </dv-error-messages>
+                                            </div>
+<!--                                            Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                            <div *ngIf="isSuperAdmin()">
+<!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
+                                                                  name="zusaetzliche_verguenstigung_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
+                                                                  (change)="changeKonfigZusaetzlicherGutscheinEnabled(konfigurationsListe[i])">
+                                                    <span translate>
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE
+                                                    </span>
+                                                    </mat-checkbox>
+                                                </div>
+    <!--                                            Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE</label>
+                                                    <input id="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           name="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_gutschein_betrag_kita='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
+                                                           (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
+                                                    </dv-error-messages>
+                                                </div>
+    <!--                                            Zusätzlicher Gutschein in CHF pro Stunde bei TFOs-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE</label>
+                                                    <input id="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                           name="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_gutschein_betrag_tfo='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo"
+                                                           (change)="changeKonfigZusaetzlicherGutscheinBetragTfo(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
+                                                    </dv-error-messages>
+                                                </div>
+    <!--                                            Zusaetzlicher Gutschein bei Kitas anbieten bis und mit-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                    <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT</label>
+                                                    <mat-select
+                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita"
+                                                        (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(konfigurationsListe[i])"
+                                                        id="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
+                                                        name="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
+                                                        class="form-control">
+                                                        <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                    [value]="etv">{{etv | translate}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </div>
+    <!--                                            Zusaetzlicher Gutschein bei TFOs anbieten bis und mit-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                    <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT</label>
+                                                    <mat-select
+                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo"
+                                                        (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(konfigurationsListe[i])"
+                                                        id="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
+                                                        name="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
+                                                        class="form-control">
+                                                        <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                    [value]="etv">{{etv | translate}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </div>
+
+    <!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
+                                                                  name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
+                                                                  (change)="changeKonfigZusaetzlicherBabybeitragEnabled(konfigurationsListe[i])">
+                                                    <span translate>
+                                                        ZUSAETZLICHER_BABYBEITRAG_GEMEINDE
+                                                    </span>
+                                                    </mat-checkbox>
+                                                </div>
+    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA</label>
+                                                    <input id="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
+                                                           name="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_babybeitrag_betrag_kita='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita"
+                                                           (change)="changeZusaetzlicherBabybeitragKita(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
+                                                    </dv-error-messages>
+                                                </div>
+    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Stunde bei TFOs-->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
+                                                    <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO</label>
+                                                    <input id="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                           name="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_babybeitrag_betrag_tfo='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo"
+                                                           (change)="changeZusaetzlicherBabybeitragTfo(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="zusaetzlicher_babybeitrag_betrag_tfo.errors">
+                                                    </dv-error-messages>
+                                                </div>
+
+    <!--                                            Zusätzlicher Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
+                                                                  name="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled"
+                                                                  (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(konfigurationsListe[i])">
+                                                    <span translate>
+                                                        ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT
+                                                    </span>
+                                                    </mat-checkbox>
+                                                </div>
+    <!--                                            Maximal zugelassener Anspruch % Freiwilligenarbeit -->
+                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled">
+                                                    <label for="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                           class="required" translate>ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX</label>
+                                                    <input id="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                           name="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #zusaetzlicher_anspruch_freiwilligenarbeit_max='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [maxValue]="100"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent"
+                                                           (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="zusaetzlicher_anspruch_freiwilligenarbeit_max.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                                <div></div>
                                             </div>
                                         </div>
                                     </div>
@@ -375,6 +538,7 @@
                     </div>
                 </div>
             </div>
+<!--            Benachrichtigungen bei Verfügungen automatisch per Email senden-->
             <div class="row">
                 <div class="col-sm-12">
                     <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
@@ -386,6 +550,7 @@
                     <p></p>
                 </div>
             </div>
+<!--            standard Fusszeile bei Verfügungen verwenden-->
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -499,6 +664,43 @@
                                                     EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
                                                 </span>
                                                 </p>
+                                                <div *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled" class="mt-2">
+                                                    <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}:</strong>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita}">
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE_READONLY
+                                                    </p>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo}">
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE_READONLY
+                                                    </p>
+                                                    <p>
+                                                        {{'ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT' | translate}}
+                                                        {{konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita | translate}}
+                                                    </p>
+                                                    <p>
+                                                        {{'ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT' | translate}}
+                                                        {{konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo | translate}}
+                                                    </p>
+                                                </div>
+                                                <div *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled" class="mt-2">
+                                                    <strong>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate}}:</strong>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita}">
+                                                        ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA_READONLY
+                                                    </p>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo}">
+                                                        ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO_READONLY
+                                                    </p>
+                                                </div>
+                                                <div *ngIf="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled" class="mt-2">
+                                                    <strong>{{'ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT' | translate}}:</strong>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent}">
+                                                        ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX_READONLY
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
