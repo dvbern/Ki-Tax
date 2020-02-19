@@ -65,7 +65,7 @@ export class VerantwortlicherselectController implements IController {
 
     public getTitel(): string {
         if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
-            return this.$translate.instant('VERANTWORTLICHER_OHNE_SCHULAMT');
+            return this.$translate.instant('VERANTWORTLICHER');
         }
         return this.$translate.instant(this.isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT');
     }

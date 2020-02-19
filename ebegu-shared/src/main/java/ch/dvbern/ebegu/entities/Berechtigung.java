@@ -15,29 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BerechtigungChangedEntityListener;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeinde;
@@ -47,6 +24,16 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(BerechtigungChangedEntityListener.class)
@@ -136,14 +123,6 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 
 	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
 		this.traegerschaft = traegerschaft;
-	}
-
-	@Nonnull
-	public Amt getAmt() {
-		if (role != null) {
-			return role.getAmt();
-		}
-		return Amt.NONE;
 	}
 
 	@Override

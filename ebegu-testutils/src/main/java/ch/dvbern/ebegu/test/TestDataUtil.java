@@ -1823,7 +1823,7 @@ public final class TestDataUtil {
 		mitteilung.setDossier(dossier);
 		mitteilung.setEmpfaenger(empfaenger);
 		mitteilung.setSender(sender);
-		mitteilung.setMitteilungStatus(MitteilungStatus.ENTWURF);
+		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung.setSubject("Subject");
 		mitteilung.setEmpfaengerTyp(empfaengerTyp);
 		mitteilung.setSenderTyp(senderTyp);
