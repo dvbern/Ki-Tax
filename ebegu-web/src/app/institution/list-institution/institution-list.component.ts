@@ -227,9 +227,4 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             : '';
         return `${translatedStatus} ${translatedCheck}`;
     }
-
-    public translateTyp(institution: TSInstitutionListDTO): string {
-        const translatedStatus = this.translate.instant('TSBetreuungsangebotTyp_' + institution.betreuungsangebotTyp);
-        return `${translatedStatus}`;
-    }
 }

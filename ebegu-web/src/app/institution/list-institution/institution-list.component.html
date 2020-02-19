@@ -50,7 +50,7 @@
                     </mat-header-cell>
                     <mat-cell class="mat-cell-clickable" *matCellDef="let institution"
                               (click)="openInstitution(institution)">
-                        {{translateTyp(institution)}}
+                        {{institution.betreuungsangebotTyp.toString() | translate}}
                     </mat-cell>
                 </ng-container>
 

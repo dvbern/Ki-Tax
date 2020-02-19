@@ -1875,9 +1875,5 @@
     "TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL": "Provisorische Berechnung",
     "TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT": "Dieser Tarif gilt bei fristgerechter Einreichung der Dokumente. Solange die Dokumente nicht eingereicht sind, wird von der Tagesschule der maximale Tarif in Rechnung gestellt",
     "WECHSEL_ZU_SCOLARIS_NICHT_MOEGLICH": "Module können nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist. Deshalb ist der Wechsel zu Scolaris nicht mehr möglich.",
-    "TSBetreuungsangebotTyp_KITA": "Kita",
-    "TSBetreuungsangebotTyp_TAGESFAMILIEN": "Tagesfamilie",
-    "TSBetreuungsangebotTyp_TAGESSCHULE": "Tagesschule",
-    "TSBetreuungsangebotTyp_FERIENINSEL": "Ferieninsel",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
