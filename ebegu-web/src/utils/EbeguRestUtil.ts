@@ -2388,7 +2388,6 @@ export class EbeguRestUtil {
             userTS.vorname = userFromServer.vorname;
             userTS.email = userFromServer.email;
             userTS.mandant = this.parseMandant(new TSMandant(), userFromServer.mandant);
-            userTS.amt = userFromServer.amt;
             userTS.status = userFromServer.status;
             userTS.currentBerechtigung =
                 this.parseBerechtigung(new TSBerechtigung(), userFromServer.currentBerechtigung);

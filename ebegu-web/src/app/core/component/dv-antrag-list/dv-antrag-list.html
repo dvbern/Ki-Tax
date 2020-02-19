@@ -33,8 +33,7 @@
         </div>
         <div class="col-md-12 table-responsive">
             <!--Tabelle-->
-            <table class="table fixedtable table-hover" id="{{vm.tableId}}"
-                   title="{{vm.tableTitle}}">
+            <table class="table fixedtable table-hover" id="{{vm.tableId}}">
                 <thead>
                 <!--Sortierspalten-->
                 <tr id="antraegeHeadRow">
@@ -76,15 +75,23 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
                     <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase"
-                        data-translate="VERANTWORTLICHER_SCHULAMT"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        ng-if="vm.isTagesschulangebotEnabled()">
+                        ng-if="vm.isTagesschulangebotEnabled()"
+                        title="{{'VERANTWORTLICHER_SCHULAMT'|translate}}">
+                        {{"VERANTWORTLICH"|translate}} <i class="fa fa-graduation-cap"></i>
                     </th>
-                    <th st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
-                        data-translate="{{vm.isTagesschulangebotEnabled() ? 'VERANTWORTLICHER_JUGENDAMT' : 'VERANTWORTLICHER_OHNE_SCHULAMT'}}"
+                    <th ng-if="!vm.isTagesschulangebotEnabled()" st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
+                        data-translate="VERANTWORTLICH"
                         dv-display-element
-                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        title="{{'VERANTWORTLICH'|translate}}">
+                    </th>
+                    <th ng-if="vm.isTagesschulangebotEnabled()" st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
+                        dv-display-element
+                        dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
+                        title="{{'VERANTWORTLICHER_JUGENDAMT'|translate}}">>
+                        {{"VERANTWORTLICH"|translate}} <i class="fa fa-gift"></i>
                     </th>
                     <th class="row-action" ng-if="vm.isActionsVisible()"></th>
                 </tr>

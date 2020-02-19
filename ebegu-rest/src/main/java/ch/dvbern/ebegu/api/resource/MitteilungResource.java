@@ -145,22 +145,6 @@ public class MitteilungResource {
 		return converter.toJaxId(mutiertesGesuch);
 	}
 
-	@ApiOperation(value = "Speichert eine Mitteilung als Entwurf", response = JaxMitteilung.class)
-	@Nullable
-	@PUT
-	@Path("/entwurf")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung saveEntwurf(
-		@Nonnull @NotNull @Valid JaxMitteilung mitteilungJAXP,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Mitteilung mitteilung = readAndConvertMitteilung(mitteilungJAXP);
-		Mitteilung persistedMitteilung = this.mitteilungService.saveEntwurf(mitteilung);
-		return converter.mitteilungToJAX(persistedMitteilung, new JaxMitteilung());
-	}
-
 	@ApiOperation(value = "Markiert eine Mitteilung als gelesen", response = JaxMitteilung.class)
 	@Nullable
 	@PUT
@@ -302,56 +286,6 @@ public class MitteilungResource {
 		return mitteilungService.getAmountNewMitteilungenForCurrentBenutzer().intValue();
 	}
 
-	@ApiOperation(value = "Gibt fuer das uebergebene Dossier den vom eingeloggten Benutzer erstellten Entwurf zurueck, " +
-		"falls einer vorhanden ist, sonst null", response = JaxMitteilung.class)
-	@Nullable
-	@GET
-	@Path("/entwurf/dossier/{dossierId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung getEntwurfOfDossierForCurrentRolle(
-		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(jaxDossierId.getId());
-		String dossierId = converter.toEntityId(jaxDossierId);
-		Optional<Dossier> dossier = dossierService.findDossier(dossierId);
-		if (dossier.isPresent()) {
-			final Mitteilung mitteilung = mitteilungService.getEntwurfForCurrentRolle(dossier.get());
-			if (mitteilung == null) {
-				return null;
-			}
-			return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
-		}
-		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, FALL_ID_INVALID + jaxDossierId.getId());
-	}
-
-	@ApiOperation(value = "Gibt fuer die uebergebene Betreuung den vom eingeloggten Benutzer erstellten Entwurf zurueck, " +
-		"falls einer vorhanden ist, sonst null", response = JaxMitteilung.class)
-	@Nullable
-	@GET
-	@Path("/entwurf/betreuung/{betreuungId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung getEntwurfForCurrentRolleForBetreuung(
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(betreuungId.getId());
-		String id = converter.toEntityId(betreuungId);
-		Optional<Betreuung> betreuung = betreuungService.findBetreuung(id);
-		if (betreuung.isPresent()) {
-			final Mitteilung mitteilung = mitteilungService.getEntwurfForCurrentRolle(betreuung.get());
-			if (mitteilung == null) {
-				return null;
-			}
-			return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
-		}
-		throw new EbeguEntityNotFoundException("getEntwurfForCurrentRolleForBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungId invalid: " + betreuungId.getId());
-	}
-
 	@ApiOperation(value = "Loescht die Mitteilung mit der uebergebenen Id aus der Datenbank", response = Void.class)
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
@@ -430,33 +364,21 @@ public class MitteilungResource {
 		throw new EbeguEntityNotFoundException("getMitteilungenForCurrentRolle", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, DOSSIER_ID_INVALID + jaxDossierId.getId());
 	}
 
-	@ApiOperation(value = "Uebergibt die Mitteilung vom Schulamt ans Jugendamt", response = JaxMitteilung.class)
+	@ApiOperation(value = "Weiterleiten der Mitteilung", response = JaxMitteilung.class)
 	@Nonnull
 	@GET
-	@Path("/delegation/jugendamt/{mitteilungId}")
+	@Path("/weiterleiten/{mitteilungId}/{userName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung mitteilungUebergebenAnJugendamt(
-		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
-
+	public JaxMitteilung mitteilungWeiterleiten(
+		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId,
+		@Nonnull @NotNull @PathParam("userName") String username,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
 		Objects.requireNonNull(mitteilungJaxId.getId());
 		String mitteilungId = converter.toEntityId(mitteilungJaxId);
-		Mitteilung mitteilung = mitteilungService.mitteilungUebergebenAnJugendamt(mitteilungId);
-		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
-	}
-
-	@ApiOperation(value = "Uebergibt die Mitteilung vom Jugendamt ans Schulamt", response = JaxMitteilung.class)
-	@Nonnull
-	@GET
-	@Path("/delegation/schulamt/{mitteilungId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxMitteilung mitteilungUebergebenAnSchulamt(
-		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungJaxId, @Context UriInfo uriInfo, @Context HttpServletResponse response) {
-
-		Objects.requireNonNull(mitteilungJaxId.getId());
-		String mitteilungId = converter.toEntityId(mitteilungJaxId);
-		Mitteilung mitteilung = mitteilungService.mitteilungUebergebenAnSchulamt(mitteilungId);
+		Mitteilung mitteilung = mitteilungService.mitteilungWeiterleiten(mitteilungId, username);
 		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
 	}
 

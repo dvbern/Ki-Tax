@@ -39,6 +39,7 @@ export class DVUserselect implements IDirective {
         onUserChanged: '&',
         selectedUser: '=?',
         schulamt: '<',
+        sachbearbeiterGemeinde: '=',
         // initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
     };
     public template = require('./dv-userselect.html');
@@ -68,6 +69,7 @@ export class UserselectController implements IController {
     public valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
     public onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     public schulamt: string;
+    public sachbearbeiterGemeinde: boolean;
 
     public constructor(
         private readonly benutzerRS: BenutzerRS,
@@ -103,7 +105,11 @@ export class UserselectController implements IController {
     }
 
     private updateUserList(): void {
-        if (this.schulamt) {
+        if (this.sachbearbeiterGemeinde) {
+            this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+                this.userList = response;
+            });
+        } else if (this.schulamt) {
             this.benutzerRS.getAllBenutzerTsOrGemeinde().then(response => {
                 this.userList = response;
             });
