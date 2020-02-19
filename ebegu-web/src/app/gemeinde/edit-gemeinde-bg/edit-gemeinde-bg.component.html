@@ -20,166 +20,45 @@
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
+<!--                bankverbindung für auszahlungen-->
                 <div class="col-sm-6">
-                    <div class="form-group mt-2">
-                        <div class="form-group">
-                            <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
-                                          [(ngModel)]="altBGAdresse"
-                                          (ngModelChange)="altBGAdresseHasChange($event)">
-                                {{'ALTERNATIVE_ADRESSE'|translate}}
-                            </mat-checkbox>
-                        </div>
-                        <div *ngIf="altBGAdresse">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div>
-                                        <div class="form-group">
-                                            <label class="required"
-                                                   translate for="anschrift_bg_id">ADRESSE_ANSCHRIFT</label>
-                                            <input id="anschrift_bg_id"
-                                                   type="text"
-                                                   name="anschrift_bg_id"
-												   #nameAnschriftBG="ngModel"
-                                                   [(ngModel)]="stammdaten.bgAdresse.organisation"
-                                                   [maxlength]="255"
-                                                   class="form-control"
-                                                   required
-                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
-                                            <dv-error-messages [errorObject]="nameAnschriftBG.errors"
-                                                               inputId="anschrift_bg_id"></dv-error-messages>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- Strasse -->
-                                <div class="col-sm-10">
-                                    <div class="form-group">
-                                        <label class="required"
-                                               translate
-                                               for="strasse_bg_id">ADRESSE_STRASSE</label>
-                                        <input id="strasse_bg_id" type="text" name="strasse_bg_id"
-											   #nameStrasseBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.strasse"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="nameStrasseBG.errors"
-                                                           inputId="strasse_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                                <!-- Hausnummer -->
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label translate for="hausnummer_bg_id">ADRESSE_NUMMER</label>
-                                        <input id="hausnummer_bg_id"
-                                               type="text"
-                                               name="hausnummer_bg_id"
-											   #nameHausnummerBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.hausnummer"
-                                               [maxlength]="255"
-                                               class="form-control">
-                                        <dv-error-messages [errorObject]="nameHausnummerBG.errors"
-                                                           inputId="hausnummer_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- PLZ -->
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label class="required" translate for="plz_bg_id">ADRESSE_PLZ</label>
-                                        <input id="plz_bg_id" type="text" name="plz_bg_id" #namePLZBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.plz"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="namePLZBG.errors"
-                                                           inputId="plz_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                                <!-- Ort -->
-                                <div class="col-sm-10">
-                                    <div class="form-group">
-                                        <label class="required" translate for="ort_bg_id">ADRESSE_ORT</label>
-                                        <input id="ort_bg_id" type="text" name="ort_bg_id" #nameOrtBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.ort"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="nameOrtBG.errors"
-                                                           inputId="ort_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
+                    <!-- Kontoinhaber -->
+                    <div class="form-group">
+                        <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
+                        <input id="kontoinhaber_id" type="text"
+                               name="kontoinhaber_id" #nameKontoinhaber="ngModel"
+                               required
+                               [(ngModel)]="stammdaten.kontoinhaber"
+                               [maxlength]="255" class="form-control">
+                        <dv-error-messages [errorObject]="nameKontoinhaber.errors"
+                                           inputId="kontoinhaber_id"></dv-error-messages>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
-                            <!-- Kontoinhaber -->
-                            <div class="form-group">
-                                <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
-                                <input id="kontoinhaber_id" type="text"
-                                       name="kontoinhaber_id" #nameKontoinhaber="ngModel"
-                                       required
-                                       [(ngModel)]="stammdaten.kontoinhaber"
-                                       [maxlength]="255" class="form-control">
-                                <dv-error-messages [errorObject]="nameKontoinhaber.errors"
-                                                   inputId="kontoinhaber_id"></dv-error-messages>
-                            </div>
-                            <!-- BIC/SWIFT-Nummer -->
-                            <div class="form-group">
-                                <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
-                                <input id="bic_id" type="text"
-                                       name="bic_id" #nameBIC="ngModel"
-                                       required
-                                       [(ngModel)]="stammdaten.bic"
-                                       [maxlength]="255" class="form-control">
-                                <dv-error-messages [errorObject]="nameBIC.errors"
-                                                   inputId="bic_id"></dv-error-messages>
-                            </div>
-                            <!-- IBAN-Nummer -->
-                            <div class="form-group">
-                                <label class="required" translate for="iban_id">IBAN_NUMMER</label>
-                                <input id="iban_id" type="text"
-                                       name="iban_id" #nameIBAN="ngModel"
-                                       required ngxIban
-                                       [(ngModel)]="stammdaten.iban"
-                                       [maxlength]="255" class="form-control">
-                                <dv-error-messages [errorObject]="nameIBAN.errors"
-                                                   inputId="iban_id"></dv-error-messages>
-                            </div>
-                        </div>
+                    <!-- BIC/SWIFT-Nummer -->
+                    <div class="form-group">
+                        <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
+                        <input id="bic_id" type="text"
+                               name="bic_id" #nameBIC="ngModel"
+                               required
+                               [(ngModel)]="stammdaten.bic"
+                               [maxlength]="255" class="form-control">
+                        <dv-error-messages [errorObject]="nameBIC.errors"
+                                           inputId="bic_id"></dv-error-messages>
                     </div>
-                </div>
+                    <!-- IBAN-Nummer -->
+                    <div class="form-group">
+                        <label class="required" translate for="iban_id">IBAN_NUMMER</label>
+                        <input id="iban_id" type="text"
+                               name="iban_id" #nameIBAN="ngModel"
+                               required ngxIban
+                               [(ngModel)]="stammdaten.iban"
+                               [maxlength]="255" class="form-control">
+                        <dv-error-messages [errorObject]="nameIBAN.errors"
+                                           inputId="iban_id"></dv-error-messages>
+                    </div>
 
-                <!-- Standardverantwortliche BG -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate
-                            for="verantwortliche_bg_id">ALT_STANDARD_VERANTWORTLICHE</h3>
-                        <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
-                                    id="verantwortliche_bg_id"
-                                    name="verantwortliche_bg_id"
-                                    class="form-control"
-									#nameVerantwortlicheBG='ngModel'
-                                    [compareWith]="compareBenutzer">
-                            <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                                {{vbg.vorname}} {{vbg.nachname}}
-                            </mat-option>
-                        </mat-select>
-                        <dv-error-messages [errorObject]="nameVerantwortlicheBG.errors"
-                                           inputId="verantwortliche_bg_id"></dv-error-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!-- Betreuungsgutscheine anbieten ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>BEGU_START</h3>
-                        <p>{{beguStartStr}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group checkbox-with-tooltip">
+<!--                    benachrichtigungen bei verfügungen per email senden-->
+                    <div class="form-group checkbox-with-tooltip mt-5">
                         <mat-checkbox id="benachrichtigungBgEmailAuto_id" name="benachrichtigungBgEmailAuto_id"
                                       [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto">
                             {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
@@ -187,10 +66,8 @@
                         <dv-tooltip id="benachrichtigungBgEmailAuto-tooltip"
                                     [text]="'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate"></dv-tooltip>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
+
+<!--                    standard fusszeile bei verfügungen-->
                     <div class="form-group">
                         <div class="form-group checkbox-with-tooltip">
                             <mat-checkbox id="standardDokSignature_id" name="standardDokSignature_id"
@@ -281,6 +158,119 @@
                                                class="form-control">
                                         <dv-error-messages [errorObject]="standardDokUnterschriftName2.errors"
                                                            inputId="standardDokUnterschriftName2_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="form-group mt-5">
+                        <h3 translate>BEGU_START</h3>
+                        <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <!-- Standardverantwortliche BG -->
+                    <div class="form-group">
+                        <h3 translate
+                            for="verantwortliche_bg_id">ALT_STANDARD_VERANTWORTLICHE</h3>
+                        <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
+                                    id="verantwortliche_bg_id"
+                                    name="verantwortliche_bg_id"
+                                    class="form-control"
+									#nameVerantwortlicheBG='ngModel'
+                                    [compareWith]="compareBenutzer">
+                            <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                {{vbg.vorname}} {{vbg.nachname}}
+                            </mat-option>
+                        </mat-select>
+                        <dv-error-messages [errorObject]="nameVerantwortlicheBG.errors"
+                                           inputId="verantwortliche_bg_id"></dv-error-messages>
+                    </div>
+                    <!--                alternative kontaktadresse-->
+                    <div class="form-group mt-5">
+                        <div class="form-group">
+                            <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
+                                          [(ngModel)]="altBGAdresse"
+                                          (ngModelChange)="altBGAdresseHasChange($event)">
+                                {{'ALTERNATIVE_ADRESSE'|translate}}
+                            </mat-checkbox>
+                        </div>
+                        <div *ngIf="altBGAdresse">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="required"
+                                                   translate for="anschrift_bg_id">ADRESSE_ANSCHRIFT</label>
+                                            <input id="anschrift_bg_id"
+                                                   type="text"
+                                                   name="anschrift_bg_id"
+												   #nameAnschriftBG="ngModel"
+                                                   [(ngModel)]="stammdaten.bgAdresse.organisation"
+                                                   [maxlength]="255"
+                                                   class="form-control"
+                                                   required
+                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                            <dv-error-messages [errorObject]="nameAnschriftBG.errors"
+                                                               inputId="anschrift_bg_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Strasse -->
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <label class="required"
+                                               translate
+                                               for="strasse_bg_id">ADRESSE_STRASSE</label>
+                                        <input id="strasse_bg_id" type="text" name="strasse_bg_id"
+											   #nameStrasseBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.strasse"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="nameStrasseBG.errors"
+                                                           inputId="strasse_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Hausnummer -->
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label translate for="hausnummer_bg_id">ADRESSE_NUMMER</label>
+                                        <input id="hausnummer_bg_id"
+                                               type="text"
+                                               name="hausnummer_bg_id"
+											   #nameHausnummerBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.hausnummer"
+                                               [maxlength]="255"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameHausnummerBG.errors"
+                                                           inputId="hausnummer_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- PLZ -->
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label class="required" translate for="plz_bg_id">ADRESSE_PLZ</label>
+                                        <input id="plz_bg_id" type="text" name="plz_bg_id" #namePLZBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.plz"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="namePLZBG.errors"
+                                                           inputId="plz_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Ort -->
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <label class="required" translate for="ort_bg_id">ADRESSE_ORT</label>
+                                        <input id="ort_bg_id" type="text" name="ort_bg_id" #nameOrtBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.ort"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="nameOrtBG.errors"
+                                                           inputId="ort_bg_id"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -546,135 +536,134 @@
                         <p>{{stammdaten.bic}}</p>
                         <p>{{stammdaten.iban}}</p>
                     </div>
-                </div>
 
-                <!-- Beschwerdeadresse -->
-                <div>
-                    <div *ngIf="!altBGAdresse; else displayBGAdresse" class="col-sm-6">
+                    <!--            Benachrichtigungen bei Verfügungen automatisch per Email senden-->
+                    <div class="mt-5">
+                        <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
+                        </h3>
+                        <h3 *ngIf="!stammdaten.benachrichtigungBgEmailAuto">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
+                        </h3>
+                        <p></p>
+                    </div>
+                    <!--            standard Fusszeile bei Verfügungen verwenden-->
+                    <div>
                         <div class="form-group">
-                            <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
-                        </div>
-                    </div>
-                    <ng-template #displayBGAdresse>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <h3 translate>ALTERNATIVE_ADRESSE</h3>
-                                <p>{{stammdaten.bgAdresse.organisation}}</p>
-                                <p>{{stammdaten.bgAdresse.strasse}}
-                                    {{stammdaten.bgAdresse.hausnummer}}</p>
-                                <p>{{stammdaten.bgAdresse.plz}} {{stammdaten.bgAdresse.ort}}</p>
+                            <div *ngIf="stammdaten.standardDokSignature">
+                                <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
                             </div>
-                        </div>
-                    </ng-template>
-                </div>
-
-                <!-- Standardverantwortliche -->
-                <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
-                        <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!-- Betreuungsgutscheine anbieten ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>BEGU_START</h3>
-                        <p>{{beguStartStr}}</p>
-                    </div>
-                </div>
-            </div>
-<!--            Benachrichtigungen bei Verfügungen automatisch per Email senden-->
-            <div class="row">
-                <div class="col-sm-12">
-                    <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
-                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
-                    </h3>
-                    <h3 *ngIf="!stammdaten.benachrichtigungBgEmailAuto">
-                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
-                    </h3>
-                    <p></p>
-                </div>
-            </div>
-<!--            standard Fusszeile bei Verfügungen verwenden-->
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <div *ngIf="stammdaten.standardDokSignature">
-                            <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
-                        </div>
-                        <div *ngIf="!stammdaten.standardDokSignature">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
-                                    <div>
+                            <div *ngIf="!stammdaten.standardDokSignature">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
+                                        <div>
+                                            <div class="form-group">
+                                                <label translate for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
+                                                <input id="standardDokTitleDisplay_id"
+                                                       type="text"
+                                                       name="standardDokTitleDisplay_id"
+                                                       [(ngModel)]="stammdaten.standardDokTitle"
+                                                       class="form-control"
+                                                       disabled="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- Unterschrift 1 Titel-->
+                                    <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label translate for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
-                                            <input id="standardDokTitleDisplay_id"
+                                            <label translate
+                                                   for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
+                                            <input id="standardDokUnterschriftTitelDisplay_id" type="text"
+                                                   name="standardDokUnterschriftTitelDisplay_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
+                                                   class="form-control" disabled="true">
+                                        </div>
+                                    </div>
+                                    <!-- Unterschrift 1 Name -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label translate for="standardDokUnterschriftNameDisplay_id">
+                                                STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
+                                            <input id="standardDokUnterschriftNameDisplay_id"
                                                    type="text"
-                                                   name="standardDokTitleDisplay_id"
-                                                   [(ngModel)]="stammdaten.standardDokTitle"
-                                                   class="form-control"
-                                                   disabled="true">
+                                                   name="standardDokUnterschriftNameDisplay_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName"
+                                                   class="form-control" disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- Unterschrift 2 Titel-->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label translate
+                                                   for="standardDokUnterschriftTitel2Display_id">
+                                                STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
+                                            <input id="standardDokUnterschriftTitel2Display_id" type="text"
+                                                   name="standardDokUnterschriftTitel2Display_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
+                                                   class="form-control" disabled="true">
+                                        </div>
+                                    </div>
+                                    <!-- Unterschrift 2 Name -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label translate for="standardDokUnterschriftName2Display_id">
+                                                STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
+                                            <input id="standardDokUnterschriftName2Display_id"
+                                                   type="text"
+                                                   name="standardDokUnterschriftName2Display_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName2"
+                                                   class="form-control" disabled="true">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <!-- Unterschrift 1 Titel-->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate
-                                               for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
-                                        <input id="standardDokUnterschriftTitelDisplay_id" type="text"
-                                               name="standardDokUnterschriftTitelDisplay_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                                <!-- Unterschrift 1 Name -->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate for="standardDokUnterschriftNameDisplay_id">
-                                            STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
-                                        <input id="standardDokUnterschriftNameDisplay_id"
-                                               type="text"
-                                               name="standardDokUnterschriftNameDisplay_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftName"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- Unterschrift 2 Titel-->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate
-                                               for="standardDokUnterschriftTitel2Display_id">
-                                            STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
-                                        <input id="standardDokUnterschriftTitel2Display_id" type="text"
-                                               name="standardDokUnterschriftTitel2Display_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                                <!-- Unterschrift 2 Name -->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate for="standardDokUnterschriftName2Display_id">
-                                            STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
-                                        <input id="standardDokUnterschriftName2Display_id"
-                                               type="text"
-                                               name="standardDokUnterschriftName2Display_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftName2"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="mt-5">
+                        <div class="form-group">
+                            <h3 translate>BEGU_START</h3>
+                            <p>{{beguStartStr}}</p>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-sm-6">
+                    <!-- Standardverantwortliche -->
+                    <div *ngIf="stammdaten.defaultBenutzerBG">
+                        <div class="form-group">
+                            <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
+                            <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
+                        </div>
+                    </div>
+
+                    <!-- Beschwerdeadresse -->
+                    <div>
+                        <div *ngIf="!altBGAdresse; else displayBGAdresse">
+                            <div class="form-group">
+                                <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
+                            </div>
+                        </div>
+                        <ng-template #displayBGAdresse>
+                            <div>
+                                <div class="form-group">
+                                    <h3 translate>ALTERNATIVE_ADRESSE</h3>
+                                    <p>{{stammdaten.bgAdresse.organisation}}</p>
+                                    <p>{{stammdaten.bgAdresse.strasse}}
+                                        {{stammdaten.bgAdresse.hausnummer}}</p>
+                                    <p>{{stammdaten.bgAdresse.plz}} {{stammdaten.bgAdresse.ort}}</p>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+
             </div>
 
             <div class="row">
