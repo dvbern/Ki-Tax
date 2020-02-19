@@ -189,8 +189,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung.setSentDatum(LocalDateTime.now());
 
-		setSenderAndEmpfaenger(mitteilung);
-		authorizer.checkWriteAuthorizationMitteilung(mitteilung);
+		setSenderAndEmpfaengerAndCheckAuthorization(mitteilung);
 
 		// Falls die Mitteilung an einen Gesuchsteller geht, muss dieser benachrichtigt werden. Es muss zuerst
 		// geprueft werden, dass
@@ -240,11 +239,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
-	private void setSenderAndEmpfaenger(@Nonnull Mitteilung mitteilung) {
-		Benutzer sender = benutzerService.getCurrentBenutzer()
+	private void setSenderAndEmpfaengerAndCheckAuthorization(@Nonnull Mitteilung mitteilung) {
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new IllegalStateException("Benutzer ist nicht eingeloggt!"));
-		mitteilung.setSender(sender);
-		switch (sender.getRole()) {
+
+		switch (currentBenutzer.getRole()) {
 		case GESUCHSTELLER: {
 			mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
 			mitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
@@ -284,6 +283,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 		}
 		}
+		authorizer.checkWriteAuthorizationMitteilung(mitteilung);
+		// Der Sender darf erst nach dem CHECK gesetzt werden! Sonst kann eine Mitteilung gekaptert werden
+		mitteilung.setSender(currentBenutzer);
 	}
 
 	private Benutzer getEmpfaengerBeiMitteilungAnGemeinde(@Nonnull Mitteilung mitteilung) {
@@ -304,7 +306,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 		if (empfaenger == null) {
 			throw new EbeguRuntimeException(
-				"setSenderAndEmpfaenger",
+				"getEmpfaengerBeiMitteilungAnGemeinde",
 				ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
 				mitteilung.getId());
 		}
@@ -375,13 +377,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		List<Predicate> predicates = new ArrayList<>();
 
 		ParameterExpression<Betreuung> betreuungParam = cb.parameter(Betreuung.class, "betreuunParam");
-		ParameterExpression<MitteilungStatus> statusParam = cb.parameter(MitteilungStatus.class, "statusParam");
 
 		Predicate predicateLinkedObject = cb.equal(root.get(Betreuungsmitteilung_.betreuung), betreuungParam);
 		predicates.add(predicateLinkedObject);
-
-		Predicate predicateEntwurf = cb.notEqual(root.get(Mitteilung_.mitteilungStatus), statusParam);
-		predicates.add(predicateEntwurf);
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -389,8 +387,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		TypedQuery<Betreuungsmitteilung> tq = persistence.getEntityManager().createQuery(query);
 
 		tq.setParameter("betreuunParam", betreuung);
-		tq.setParameter("statusParam", MitteilungStatus.NEU);
-
 		return tq.getResultList();
 	}
 
@@ -619,8 +615,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU); // vorsichtshalber
 		betreuungsmitteilung.setSentDatum(LocalDateTime.now());
-		authorizer.checkWriteAuthorizationMitteilung(betreuungsmitteilung);
-		setSenderAndEmpfaenger(betreuungsmitteilung);
+		setSenderAndEmpfaengerAndCheckAuthorization(betreuungsmitteilung);
 
 		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
 		return persistence.persist(betreuungsmitteilung);
