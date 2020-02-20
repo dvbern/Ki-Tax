@@ -38,7 +38,7 @@ const ROUTE_FAELLE_LIST = 'faelle.list';
 const ROUTE_ZAHLUNG = 'zahlungsauftrag.view';
 const ROUTE_STATISTIK = 'statistik.view';
 const ROUTE_POST = 'posteingang.view';
-export const GUIDED_TOUR_SUPPORTED_ROLES: Set<TSRole> = new Set<TSRole>(
+export const GUIDED_TOUR_SUPPORTED_ROLES = new Set<TSRole>(
     [
         TSRole.ADMIN_TRAEGERSCHAFT,
         TSRole.ADMIN_INSTITUTION,

@@ -50,25 +50,10 @@ export class MitteilungRS {
         return 'MitteilungRS';
     }
 
-    public findMitteilung(mitteilungID: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(mitteilungID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-            });
-    }
-
     public sendMitteilung(mitteilung: TSMitteilung): IPromise<TSMitteilung> {
         let restMitteilung = {};
         restMitteilung = this.ebeguRestUtil.mitteilungToRestObject(restMitteilung, mitteilung);
         return this.$http.put(`${this.serviceURL}/send`, restMitteilung).then((response: any) => {
-            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-        });
-    }
-
-    public saveEntwurf(mitteilung: TSMitteilung): IPromise<TSMitteilung> {
-        let restMitteilung = {};
-        restMitteilung = this.ebeguRestUtil.mitteilungToRestObject(restMitteilung, mitteilung);
-        return this.$http.put(`${this.serviceURL}/entwurf`, restMitteilung).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
         });
     }
@@ -91,12 +76,6 @@ export class MitteilungRS {
         });
     }
 
-    public getEntwurfForCurrentRolleForBetreuung(betreuungId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/entwurf/betreuung/${betreuungId}`).then((response: any) => {
-            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-        });
-    }
-
     public getMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<Array<TSMitteilung>> {
         return this.$http.get(`${this.serviceURL}/forrole/dossier/${dossierId}`).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungen); // The response is a wrapper
@@ -113,13 +92,6 @@ export class MitteilungRS {
         return this.$http.get(`${this.serviceURL}/amountnewforuser/notokenrefresh`).then((response: any) => {
             return response.data;
         });
-    }
-
-    public removeEntwurf(mitteilung: TSMitteilung): IPromise<any> {
-        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(mitteilung.id)}`)
-            .then(response => {
-                return response;
-            });
     }
 
     public setAllNewMitteilungenOfDossierGelesen(dossierId: string): IPromise<Array<TSMitteilung>> {
@@ -158,14 +130,8 @@ export class MitteilungRS {
         });
     }
 
-    public mitteilungUebergebenAnJugendamt(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/delegation/jugendamt/${mitteilungId}`).then((response: any) => {
-            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
-        });
-    }
-
-    public mitteilungUebergebenAnSchulamt(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/delegation/schulamt/${mitteilungId}`).then((response: any) => {
+    public mitteilungWeiterleiten(mitteilungId: string, userName: string): IPromise<TSMitteilung> {
+        return this.$http.get(`${this.serviceURL}/weiterleiten/${mitteilungId}/${userName}`).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
         });
     }
@@ -190,7 +156,7 @@ export class MitteilungRS {
         mutationsmeldung.message = fromAbweichung
             ? this.createNachrichtForMutationsmeldungFromAbweichung(betreuung)
             : this.createNachrichtForMutationsmeldung(betreuung);
-        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
+        mutationsmeldung.mitteilungStatus = TSMitteilungStatus.NEU;
         mutationsmeldung.betreuungspensen = this.extractPensenFromBetreuung(betreuung);
         return mutationsmeldung;
     }

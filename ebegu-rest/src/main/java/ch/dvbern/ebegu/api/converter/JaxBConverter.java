@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -96,6 +97,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
@@ -1306,6 +1308,24 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
 		return jaxInstitution;
+	}
+
+	public JaxInstitutionListDTO institutionListDTOToJAX(final Entry<Institution,InstitutionStammdaten> entry) {
+		final JaxInstitutionListDTO jaxInstitutionListDTO = new JaxInstitutionListDTO();
+		convertAbstractVorgaengerFieldsToJAX(entry.getKey(), jaxInstitutionListDTO);
+		jaxInstitutionListDTO.setName(entry.getKey().getName());
+		assert entry.getKey().getMandant() != null;
+		jaxInstitutionListDTO.setMandant(mandantToJAX(entry.getKey().getMandant()));
+		jaxInstitutionListDTO.setStatus(entry.getKey().getStatus());
+		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());
+
+		if (entry.getKey().getTraegerschaft() != null) {
+			jaxInstitutionListDTO.setTraegerschaft(traegerschaftToJAX(entry.getKey().getTraegerschaft()));
+		}
+
+		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
+
+		return jaxInstitutionListDTO;
 	}
 
 	public boolean institutionToEntity(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
@@ -2601,6 +2621,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
+		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -3402,6 +3423,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
+		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
@@ -4119,9 +4141,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());
-		if (persistedMitteilung.getSender() != null) {
-			jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
-		}
+		jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());
 		jaxMitteilung.setSentDatum(persistedMitteilung.getSentDatum());

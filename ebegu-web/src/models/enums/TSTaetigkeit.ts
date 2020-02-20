@@ -20,6 +20,7 @@ export enum TSTaetigkeit {
     RAV = 'RAV',
     GESUNDHEITLICHE_EINSCHRAENKUNGEN = 'GESUNDHEITLICHE_EINSCHRAENKUNGEN',
     INTEGRATION_BESCHAEFTIGUNSPROGRAMM = 'INTEGRATION_BESCHAEFTIGUNSPROGRAMM',
+    FREIWILLIGENARBEIT = 'FREIWILLIGENARBEIT',
 }
 
 export function getTSTaetigkeit(): Array<TSTaetigkeit> {
@@ -31,4 +32,10 @@ export function getTSTaetigkeit(): Array<TSTaetigkeit> {
         TSTaetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN,
         TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
     ];
+}
+
+export function getTSTaetigkeitWithFreiwilligenarbeit(): Array<TSTaetigkeit> {
+    const taetigkeiten = getTSTaetigkeit();
+    taetigkeiten.push(TSTaetigkeit.FREIWILLIGENARBEIT);
+    return taetigkeiten;
 }

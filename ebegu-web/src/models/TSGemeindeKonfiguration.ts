@@ -41,6 +41,16 @@ export class TSGemeindeKonfiguration {
     public konfigZusaetzlicherBabybeitragBetragTfo: number; // only on client
     public konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled: boolean; // only on client
     public konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent: number; // only on client
+    public konfigMahlzeitenverguenstigungEnabled: boolean; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit: number; // only on client
+    public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
     public erwerbspensumZuschlag: number;
     // never override this property. we just load it for validation reasons
     public erwerbspensumZuschlagMax: number;
@@ -143,6 +153,52 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT: {
                     this.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED: {
+                    this.konfigMahlzeitenverguenstigungEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.
+                    GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT: {
+                    this.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED: {
+                    this.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled = (property.value === 'true');
                     break;
                 }
                 default: {
