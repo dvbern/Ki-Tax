@@ -18,7 +18,7 @@
 import {CommonModule} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
@@ -52,6 +52,9 @@ import {FullHeightContainerComponent} from './full-height-container/full-height-
 import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {UiViewComponent} from './ui-view/ui-view.component';
+import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', `.json?t=${Date.now()}`);
@@ -62,6 +65,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         CommonModule,
         HttpClientModule,
         FormsModule,
+        ReactiveFormsModule,
         UIRouterModule,
 
         MaterialModule,
@@ -81,6 +85,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
+        DvMitteilungDelegationComponent,
+        DvNgMitteilungDelegationDialogComponent,
+        DvBenutzerEntry,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
@@ -104,6 +111,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     ],
     entryComponents: [
         DvHelpmenuComponent,
+        DvMitteilungDelegationComponent,
+        DvNgMitteilungDelegationDialogComponent,
+        DvBenutzerEntry,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgSupportDialogComponent,
@@ -112,6 +122,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgRemoveDialogComponent,
         DvPosteingangComponent,
         GemeindeMultiselectComponent,
+        DvBenutzerEntry,
         NavbarComponent,
         StammdatenHeaderComponent,
         DvNgGesuchstellerDialogComponent,
@@ -130,8 +141,11 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
+        DvMitteilungDelegationComponent,
+        DvNgMitteilungDelegationDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
+        DvBenutzerEntry,
         DvNgHelpDialogComponent,
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
