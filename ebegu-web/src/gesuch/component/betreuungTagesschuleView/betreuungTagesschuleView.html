@@ -143,7 +143,7 @@
                                 <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--1"
                                      ng-repeat="mod in group.module track by mod.modulTagesschule.identifier">
                                     <md-menu>
-<!--                                    leeres ng-click verhindert Fehler "cannot read property setAttribute of undefined"-->
+                                        <!-- leeres ng-click verhindert Fehler "cannot read property setAttribute of undefined"-->
                                         <md-checkbox
                                             name="modul_{{mod.modulTagesschule.identifier}}"
                                             ng-model="mod.modulTagesschule.angemeldet"
@@ -228,7 +228,7 @@
                             <span ng-if="vm.agbVorhanden">{{'BETREUUNG_TAGESSCHULE_AGB_START' | translate}}
                                 <a role="button"
                                    ng-click="vm.downloadGemeindeGesuchsperiodeDokument();$event.stopPropagation()">{{'BETREUUNG_TAGESSCHULE_AGB_DOK'
-                                    | translate}}</a>
+										| translate}}</a>
                                 {{'BETREUUNG_TAGESSCHULE_AGB_END' | translate}}
                             </span>
                             <span
@@ -328,7 +328,8 @@
                                button-class="save">
                 <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
-            <dv-loading-button class="dv-navigation-item"
+            <dv-loading-button ng-if="vm.isScolaris"
+                               class="dv-navigation-item"
                                button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
                                type="button"
                                button-class="save">

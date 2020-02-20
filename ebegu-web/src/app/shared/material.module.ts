@@ -1,8 +1,10 @@
 import {NgModule} from '@angular/core';
+
 import {
     MatCheckboxModule,
     MatDatepickerModule,
     MatDialogModule,
+    MatInputModule,
     MatPaginatorModule,
     MatRadioModule,
     MatSelectModule,
@@ -10,11 +12,12 @@ import {
     MatTableModule,
     MatTabsModule,
     MatTooltipModule,
+    MatAutocompleteModule,
 } from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 const MATERIAL_MODULES = [
-    // MatAutocompleteModule,
+    MatAutocompleteModule,
     // MatButtonModule,
     // MatButtonToggleModule,
     // MatCardModule,
@@ -26,7 +29,7 @@ const MATERIAL_MODULES = [
     // MatExpansionModule,
     // MatGridListModule,
     // MatIconModule,
-    // MatInputModule,
+    MatInputModule,
     // MatListModule,
     // MatMenuModule,
     MatPaginatorModule,

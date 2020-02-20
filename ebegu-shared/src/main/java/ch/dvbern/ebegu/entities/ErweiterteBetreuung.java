@@ -1,13 +1,18 @@
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import org.hibernate.envers.Audited;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
+
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import org.hibernate.envers.Audited;
 
 @SuppressWarnings("InstanceVariableMayNotBeInitialized")
 @Audited
@@ -35,19 +40,21 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private Boolean keineKesbPlatzierung = false;
 
+	@Nullable
 	public Boolean getBetreuungInGemeinde() {
 		return betreuungInGemeinde;
 	}
 
-	public void setBetreuungInGemeinde(Boolean betreuungInGemeinde) {
+	public void setBetreuungInGemeinde(@Nullable Boolean betreuungInGemeinde) {
 		this.betreuungInGemeinde = betreuungInGemeinde;
 	}
 
+	@Nonnull
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
 
-	public void setErweiterteBeduerfnisse(Boolean erweiterteBeduerfnisse) {
+	public void setErweiterteBeduerfnisse(@Nonnull Boolean erweiterteBeduerfnisse) {
 		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 
@@ -68,11 +75,12 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 
+	@Nonnull
 	public Boolean getKeineKesbPlatzierung() {
 		return keineKesbPlatzierung;
 	}
 
-	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+	public void setKeineKesbPlatzierung(@Nonnull Boolean keineKesbPlatzierung) {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 

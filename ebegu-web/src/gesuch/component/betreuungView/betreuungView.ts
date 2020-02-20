@@ -31,6 +31,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
@@ -478,7 +479,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }).then(() => {
             let betreuungsstatus: TSBetreuungsstatus;
             (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-               isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
+                isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
                 betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
                 : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
 
@@ -555,8 +556,30 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return [];
         }
 
-        return this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
+        let institutionenSDList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
+
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
+            && this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
+            institutionenSDList = this.filterInstiForScolaris(institutionenSDList);
+        }
+        return institutionenSDList;
+    }
+
+    private filterInstiForScolaris(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
+         return institutionenList.filter(instStamm => {
+                let isScolaris = false;
+                instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
+                    einstellungTagesschule => {
+                        if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
+                            isScolaris =
+                                einstellungTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS;
+                        }
+                    }
+                );
+                return isScolaris;
+            }
+        );
     }
 
     public getInstitutionSD(): TSInstitutionStammdatenSummary {
