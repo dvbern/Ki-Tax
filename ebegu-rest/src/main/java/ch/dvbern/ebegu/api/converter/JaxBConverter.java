@@ -2619,6 +2619,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
+		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -3407,6 +3408,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
+		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));

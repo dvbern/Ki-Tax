@@ -717,6 +717,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         // tslint:disable-next-line:early-exit
+        if (this.isBetreuungInGemeindeRequired() && !this.getErweiterteBetreuungJA().betreuungInGemeinde) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
+                deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                cancelText: 'LABEL_ABBRECHEN',
+                confirmText: 'LABEL_SPEICHERN',
+            })
+                .then(() => {
+                    this.checkErweiterteBetreuungAndSaveBestaetigung();
+                });
+        } else {
+            this.checkErweiterteBetreuungAndSaveBestaetigung();
+        }
+    }
+
+    public checkErweiterteBetreuungAndSaveBestaetigung(): void {
+        // tslint:disable-next-line:early-exit
         if (this.getErweiterteBetreuungJA()
             && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
             && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
@@ -732,7 +749,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             this.savePlatzBestaetigung();
         }
-
     }
 
     private savePlatzBestaetigung(): void {
@@ -1122,6 +1138,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
     }
 
+    public isBetreuungInGemeindeRequired(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
+            && !this.isTagesschule()
+            && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled;
+    }
+
     public setSelectedFachsstelle(): void {
         const fachstellenList = this.getFachstellenList();
         const found = fachstellenList.find(f => f.id === this.fachstelleId);
@@ -1189,6 +1211,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
+    }
+
+    public getBetreuungInGemeindeLabel(): string {
+        return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
+            {gemeinde: this.gesuchModelManager.getGemeinde().name});
     }
 
     public getErweiterteBeduerfnisseBestaetigtLabel(): string {

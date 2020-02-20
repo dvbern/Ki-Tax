@@ -476,6 +476,8 @@
     "KEINE_KESB_PLATZIERUNG": "Ich bestätige, dass die Betreuung NICHT auf Grund einer KESB-Platzierung erfolgt.",
     "KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.",
     "BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Möchten Sie die Betreuung trotzdem speichern?",
+    "BETREUUNG_IN_GEMEINDE": "Die Betreuung des Kindes erfolgt in der Gemeinde {{gemeinde}}",
+    "BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT": "Ohne Bestätigung, dass die Betreuung in der gutscheinausstellenden Gemeinde erfolgt, entfällt der zusätzliche Gutschein durch die Gemeinde.",
     "KORREKTE_KOSTEN_BESTAETIGUNG_1": "Hiermit bestätige ich,",
     "KORREKTE_KOSTEN_BESTAETIGUNG_2": "dass ich die Betreuungszeit und die Kosten für die Betreuung korrekt erfasst habe. Insbesondere wurde die Zeit im Kindergarten nicht als Betreuungszeit gerechnet und die angegebenen Betreuungskosten enthalten keine Kosten neben den Betreuungskosten (wie z.B. Kosten für Mahlzeiten, privaten Kindergarten).",
     "KORREKTE_KOSTEN_BESTAETIGUNG_3": "dass das betreute Kind keinen für Firmen reservierten Platz nutzt",
