@@ -209,7 +209,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         if (!this.isGesuchValid()) {
             return;
         }
-        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier())
+        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier(),
+            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled)
             .then(result => {
                 this.model.betreuungspensumAbweichungen = result;
             });
@@ -273,6 +274,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         return EbeguUtil.isNotNullAndPositive(abweichung.monatlicheHauptmahlzeiten)
             || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheNebenmahlzeiten)
             || EbeguUtil.isNotNullAndPositive(abweichung.pensum)
-            || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten)
+            || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
     }
 }

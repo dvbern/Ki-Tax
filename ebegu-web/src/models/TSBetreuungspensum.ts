@@ -13,13 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 
 export class TSBetreuungspensum extends TSAbstractMahlzeitenPensum {
 
     private _nichtEingetreten: boolean;
-
 
     public constructor() {
         super();
