@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,11 +39,24 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	@NotNull
 	private Boolean keineKesbPlatzierung;
 
+	@Nullable
+	private Boolean betreuungInGemeinde;
+
+	@Nullable
+	public Boolean getBetreuungInGemeinde() {
+		return betreuungInGemeinde;
+	}
+
+	public void setBetreuungInGemeinde(@Nullable Boolean betreuungInGemeinde) {
+		this.betreuungInGemeinde = betreuungInGemeinde;
+	}
+
+	@Nonnull
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
 
-	public void setErweiterteBeduerfnisse(Boolean erweiterteBeduerfnisse) {
+	public void setErweiterteBeduerfnisse(@Nonnull Boolean erweiterteBeduerfnisse) {
 		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 
@@ -61,11 +76,12 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 
+	@Nonnull
 	public Boolean getKeineKesbPlatzierung() {
 		return keineKesbPlatzierung;
 	}
 
-	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+	public void setKeineKesbPlatzierung(@Nonnull Boolean keineKesbPlatzierung) {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 }

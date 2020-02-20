@@ -88,7 +88,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		return criteriaQueryHelper.getAll(Lastenausgleich.class);
 	}
 
-	@RolesAllowed(SUPER_ADMIN)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	@Nonnull
 	public Lastenausgleich createLastenausgleich(int jahr, @Nonnull BigDecimal selbstbehaltPro100ProzentPlatz) {

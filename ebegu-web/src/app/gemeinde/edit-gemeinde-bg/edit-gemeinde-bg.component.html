@@ -44,7 +44,7 @@
                                                    [maxlength]="255"
                                                    class="form-control"
                                                    required
-                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                                   placeholder="{{'GEMEINDE_ANSCHRIFT_PLACEHOLDER'|translate}}">
                                             <dv-error-messages [errorObject]="nameAnschriftBG.errors"
                                                                inputId="anschrift_bg_id"></dv-error-messages>
                                         </div>
@@ -433,7 +433,7 @@
                                                                        [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
                                                     </dv-error-messages>
                                                 </div>
-    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei TFOs-->
+    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Stunde bei TFOs-->
                                                 <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
                                                     <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
                                                            class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO</label>

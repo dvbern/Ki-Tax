@@ -265,7 +265,12 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				CompareToBuilder builder = new CompareToBuilder();
 				builder.append(one.getZeitVon(), other.getZeitVon());
 				builder.append(one.getZeitBis(), other.getZeitBis());
-				builder.append(one.getBezeichnung().getTextDeutsch(), other.getBezeichnung().getTextDeutsch());
+				// bei Scolaris Modulen muss ModultagesschuleName verwendet werden
+				if (one.getBezeichnung().getTextDeutsch() == null || other.getBezeichnung().getTextDeutsch() == null ) {
+					builder.append(one.getModulTagesschuleName(), other.getModulTagesschuleName());
+				} else {
+					builder.append(one.getBezeichnung().getTextDeutsch(), other.getBezeichnung().getTextDeutsch());
+				}
 				return builder.toComparison();
 			}).forEach(v -> {
 				boolean monday = false;
@@ -319,8 +324,14 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				}
 				assert mtg != null;
 				boolean isFrench = "fr".equalsIgnoreCase(sprache.getLanguage());
-				table.addCell(createCell(Element.ALIGN_LEFT, isFrench ? mtg.getBezeichnung().getTextFranzoesisch() :
-					mtg.getBezeichnung().getTextDeutsch(), null));
+				String bezeichnungStr;
+				if (mtg.getBezeichnung().getTextDeutsch() != null && mtg.getBezeichnung().getTextFranzoesisch() != null) {
+					bezeichnungStr = isFrench ? mtg.getBezeichnung().getTextFranzoesisch() :
+						mtg.getBezeichnung().getTextDeutsch();
+				} else {
+					bezeichnungStr = mtg.getModulTagesschuleName().toString();
+				}
+				table.addCell(createCell(Element.ALIGN_LEFT, bezeichnungStr, null));
 				table.addCell(createCell(Element.ALIGN_RIGHT, mtg.getZeitVon().format(Constants.HOURS_FORMAT) + '-' + mtg.getZeitBis().format(Constants.HOURS_FORMAT), null));
 				table.addCell(getCellForDay(monday, mondayAlleZweiWoche));
 				table.addCell(getCellForDay(tuesday, tuesdayAlleZweiWoche));
