@@ -413,26 +413,26 @@ public class BetreuungResource {
 
 		Optional<KindContainer> kind = kindService.findKind(jaxAnmeldungDTO.getKindContainerId());
 		if (kind.isPresent()) {
-			if (BetreuungUtil.hasDuplicateAnmeldungTagesschule(jaxAnmeldungDTO.getBetreuung(),
-				kind.get().getAnmeldungenTagesschule())) {
-				throw new EbeguRuntimeException("createAnmeldung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
-			}
-			if (BetreuungUtil.hasDuplicateAnmeldungFerieninsel(jaxAnmeldungDTO.getBetreuung(),
-				kind.get().getAnmeldungenFerieninsel())) {
-				throw new EbeguRuntimeException("createAnmeldung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
-			}
-
-			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kind.get().getKindJA().getFamilienErgaenzendeBetreuung()) {
-				kind.get().getKindJA().setFamilienErgaenzendeBetreuung(true);
-				kind.get().getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
-				kind.get().getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
-				kindService.saveKind(kind.get());
+			KindContainer kindContainer = kind.get();
+			JaxBetreuung jaxBetreuung = jaxAnmeldungDTO.getBetreuung();
+			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kindContainer.getKindJA().getFamilienErgaenzendeBetreuung()) {
+				kindContainer.getKindJA().setFamilienErgaenzendeBetreuung(true);
+				kindContainer.getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
+				kindContainer.getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
+				kindService.saveKind(kindContainer);
 			}
 
-			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(jaxAnmeldungDTO.getBetreuung());
-			resourceHelper.assertGesuchStatusForBenutzerRole(kind.get().getGesuch(), convertedBetreuung);
-			convertedBetreuung.setKind(kind.get());
-			this.betreuungService.saveBetreuung(convertedBetreuung, false);
+			BetreuungsangebotTyp betreuungsangebotTyp = jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
+			switch (betreuungsangebotTyp) {
+			case TAGESSCHULE:
+				savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer, false);
+				break;
+			case FERIENINSEL:
+				savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer, false);
+				break;
+			default:
+				throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und Ferieninseln möglich");
+			}
 
 			return Response.ok().build();
 		}

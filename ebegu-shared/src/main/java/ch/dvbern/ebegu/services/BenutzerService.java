@@ -15,23 +15,17 @@
 
 package ch.dvbern.ebegu.services;
 
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.UserRole;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Berechtigung;
-import ch.dvbern.ebegu.entities.BerechtigungHistory;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.enums.UserRole;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Service fuer die Verwaltung von Benutzern
@@ -170,6 +164,15 @@ public interface BenutzerService {
 	Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde);
 
 	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG, Admin_BG, Sachbearbeiter_TS, Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 *
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getBenutzerTsBgOrGemeinde(Gemeinde gemeinde);
+
+	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
 	 *
@@ -185,6 +188,14 @@ public interface BenutzerService {
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	Collection<Benutzer> getAllBenutzerBgOrGemeinde();
+
+	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG, Sachbearbeiter_TS, Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
+	 *
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getAllBenutzerBgTsOrGemeinde();
 
 	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder

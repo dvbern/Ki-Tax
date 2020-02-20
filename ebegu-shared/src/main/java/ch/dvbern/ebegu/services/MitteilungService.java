@@ -46,12 +46,6 @@ public interface MitteilungService {
 	Mitteilung sendMitteilung(@Nonnull Mitteilung mitteilung);
 
 	/**
-	 * Speichert die uebergebene Mitteilung als Entwurf. Der Empfaenger wird automatisch gesetzt
-	 */
-	@Nonnull
-	Mitteilung saveEntwurf(@Nonnull Mitteilung mitteilung);
-
-	/**
 	 * Setzt die Mitteilung mit der uebergebenen ID als gelesen
 	 */
 	@Nonnull
@@ -100,22 +94,6 @@ public interface MitteilungService {
 	 */
 	@Nonnull
 	Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Betreuung betreuung);
-
-	/**
-	 * Gibt den Entwurf einer Mitteilung zurueck, welche zum uebergebenen Dossier erfasst wurde. Es gibt einen Entwurf
-	 * pro Amt, d.h. alle Mitarbeiter
-	 * des Jugendamtes "teilen" sich einen Entwurf, dasselbe gilt fuer die Mitarbeiter des Schulamtes.
-	 */
-	@Nullable
-	Mitteilung getEntwurfForCurrentRolle(@Nonnull Dossier dossier);
-
-	/**
-	 * Gibt den Entwurf einer Mitteilung zurueck, welche zur uebergebenen Betreuung erfasst wurde. Es gibt einen
-	 * Entwurf pro Amt, d.h. alle Mitarbeiter
-	 * des Jugendamtes "teilen" sich einen Entwurf, dasselbe gilt fuer die Mitarbeiter des Schulamtes.
-	 */
-	@Nullable
-	Mitteilung getEntwurfForCurrentRolle(@Nonnull Betreuung betreuung);
 
 	/**
 	 * Loescht die uebergebene Mitteilung
@@ -177,22 +155,10 @@ public interface MitteilungService {
 	Optional<Betreuungsmitteilung> findNewestBetreuungsmitteilung(@Nonnull String betreuungId);
 
 	/**
-	 * Die uebergebene Mitteilung wird ans Jugendamt delegiert. Dabei wird als Empfaenger der VerantwortlicheJA des
-	 * Falls gesetzt, falls ein
-	 * solcher vorhanden ist, sonst der Default-Verantwortliche des Jugendamtes.
-	 * Die Meldung wird fuer den neuen Empfaenger wieder auf NEU gesetzt.
+	 * Leitet die Mitteilung an einen weiteren Benutzer weiter.
 	 */
 	@Nonnull
-	Mitteilung mitteilungUebergebenAnJugendamt(@Nonnull String mitteilungId);
-
-	/**
-	 * Die uebergebene Mitteilung wird ans Schulamt delegiert. Dabei wird als Empfaenger der VerantwortlicheSCH des
-	 * Falls gesetzt, falls ein
-	 * solcher vorhanden ist, sonst der Default-Verantwortliche des Schulamtes
-	 * Die Meldung wird fuer den neuen Empfaenger wieder auf NEU gesetzt.
-	 */
-	@Nonnull
-	Mitteilung mitteilungUebergebenAnSchulamt(@Nonnull String mitteilungId) throws EbeguRuntimeException;
+	Mitteilung mitteilungWeiterleiten(@Nonnull String mitteilungId, @Nonnull String userName);
 
 	/**
 	 * Methode welche jeweils eine bestimmte Menge an Suchresultate fuer die Paginatete Suchtabelle zuruckgibt. Wenn
