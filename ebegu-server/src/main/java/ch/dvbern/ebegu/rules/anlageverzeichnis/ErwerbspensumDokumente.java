@@ -34,7 +34,13 @@ import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 
-import static ch.dvbern.ebegu.enums.DokumentTyp.*;
+import static ch.dvbern.ebegu.enums.DokumentTyp.BESTAETIGUNG_ARZT;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_AUSBILDUNG;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_ERWERBSPENSUM;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_FREIWILLIGENARBEIT;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_RAV;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
 
 /**
  * Dokumente für Erwerbspensum:
