@@ -54,6 +54,14 @@ export class BenutzerRS implements IEntityRS {
      * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
      * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
      */
+    public getBenutzerTsBgOrGemeindeForGemeinde(gemeindeId: string): IPromise<TSBenutzer[]> {
+        return this.getBenutzer(`${this.serviceURL}/TsBgOrGemeinde/${encodeURIComponent(gemeindeId)}`);
+    }
+
+    /**
+     * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
+     * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
+     */
     public getAllBenutzerBgOrGemeinde(): IPromise<TSBenutzer[]> {
         return this.getBenutzer(`${this.serviceURL}/BgOrGemeinde/all`);
     }
@@ -64,6 +72,14 @@ export class BenutzerRS implements IEntityRS {
      */
     public getAllBenutzerTsOrGemeinde(): IPromise<TSBenutzer[]> {
         return this.getBenutzer(`${this.serviceURL}/TsOrGemeinde/all`);
+    }
+
+    /**
+     * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG, Admin_BG, Sachbearbeiter_TS, Admin_TS
+     * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
+     */
+    public getAllBenutzerBgTsOrGemeinde(): IPromise<TSBenutzer[]> {
+        return this.getBenutzer(`${this.serviceURL}/BgTsOrGemeinde/all`);
     }
 
     public getAllGesuchsteller(): IPromise<TSBenutzer[]> {

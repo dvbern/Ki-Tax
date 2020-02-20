@@ -34,12 +34,12 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 
 	private String sender;            // mitteilung.sender.fullName
 	private String fallNummer;        // mitteilung.fall.fallNummer
-	private String familienName;    // mitteilung.fall.besitzer.fullName
-	private String subject;        // mitteilung.subject
-	private String sentDatum;        // mitteilung.sentDatum
+	private String familienName;      // mitteilung.fall.besitzer.fullName
+	private String subject;           // mitteilung.subject
+	private String sentDatum;         // mitteilung.sentDatum
 	private String empfaenger;        // mitteilung.empfaenger.fullName
-	private String empfaengerAmt;    // mitteilung.empfaengerAmt;
-	private String mitteilungStatus;// mitteilung.status
+	private String empfaengerVerantwortung;     // mitteilung.empfaengerVerantwortung;
+	private String mitteilungStatus;  // mitteilung.status
 	private String gemeinde;
 
 	public String getSender() {
@@ -90,12 +90,12 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 		this.empfaenger = empfaenger;
 	}
 
-	public String getEmpfaengerAmt() {
-		return empfaengerAmt;
+	public String getEmpfaengerVerantwortung() {
+		return empfaengerVerantwortung;
 	}
 
-	public void setEmpfaengerAmt(String empfaengerAmt) {
-		this.empfaengerAmt = empfaengerAmt;
+	public void setEmpfaengerVerantwortung(String empfaengerVerantwortung) {
+		this.empfaengerVerantwortung = empfaengerVerantwortung;
 	}
 
 	public String getMitteilungStatus() {
@@ -123,7 +123,7 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 			.append("subject", subject)
 			.append("sentDatum", sentDatum)
 			.append("empfaenger", empfaenger)
-			.append("emfaengerAmt", empfaengerAmt)
+			.append("empfaengerVerantwortung", empfaengerVerantwortung)
 			.append("mitteilungStatus", mitteilungStatus)
 			.append("gemeinde", gemeinde)
 			.toString();

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateDeclaration, Transition} from '@uirouter/core';
 import {Moment} from 'moment';
@@ -51,6 +51,8 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public beguStartDatum: Moment;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
+
+    @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
@@ -245,6 +247,91 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT,
             gk.konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+            gk.konfigMahlzeitenverguenstigungEnabled,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(gk: TSGemeindeKonfiguration, i: number): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen,
+            gk
+        );
+        const stufe2MaxInput = this.group.control.controls[`mahlzeitenverguenstigung_stufe2_max_id_${i}`];
+        if (stufe2MaxInput.untouched) {
+            stufe2MaxInput.markAsTouched();
+        }
+        stufe2MaxInput.updateValueAndValidity();
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_HAUPTMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_NEBENMAHLZEIT,
+            gk.konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit,
+            gk
+        );
+    }
+
+    public changeKonfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED,
+            gk.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled,
             gk
         );
     }

@@ -35,13 +35,6 @@ public class CheckMitteilungCompletenessValidatorTest {
 	}
 
 	@Test
-	public void testEntwurf() {
-		Mitteilung mitteilung = new Mitteilung();
-		mitteilung.setMitteilungStatus(MitteilungStatus.ENTWURF);
-		Assert.assertTrue(validator.isValid(mitteilung, null));
-	}
-
-	@Test
 	public void testNeuNoMessageNoSubject() {
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
