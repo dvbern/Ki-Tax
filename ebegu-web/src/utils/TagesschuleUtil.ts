@@ -88,6 +88,7 @@ export class TagesschuleUtil {
                 }
                 // Das Modul war bisher nicht ausgewählt, muss aber trotzdem angeboten werden
                 const tsBelegungTagesschuleModul = new TSBelegungTagesschuleModul();
+                modulOfGroup.angemeldet = false;
                 tsBelegungTagesschuleModul.modulTagesschule = modulOfGroup;
                 group.module.push(tsBelegungTagesschuleModul);
             }
