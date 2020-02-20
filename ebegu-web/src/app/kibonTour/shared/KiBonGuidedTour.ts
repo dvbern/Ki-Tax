@@ -38,6 +38,25 @@ const ROUTE_FAELLE_LIST = 'faelle.list';
 const ROUTE_ZAHLUNG = 'zahlungsauftrag.view';
 const ROUTE_STATISTIK = 'statistik.view';
 const ROUTE_POST = 'posteingang.view';
+export const GUIDED_TOUR_SUPPORTED_ROLES = new Set<TSRole>(
+    [
+        TSRole.ADMIN_TRAEGERSCHAFT,
+        TSRole.ADMIN_INSTITUTION,
+        TSRole.ADMIN_TS,
+        TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+        TSRole.SACHBEARBEITER_INSTITUTION,
+        TSRole.SUPER_ADMIN,
+        TSRole.ADMIN_MANDANT,
+        TSRole.SACHBEARBEITER_MANDANT,
+        TSRole.ADMIN_GEMEINDE,
+        TSRole.SACHBEARBEITER_GEMEINDE,
+        TSRole.ADMIN_BG,
+        TSRole.SACHBEARBEITER_BG,
+        TSRole.JURIST,
+        TSRole.REVISOR,
+        TSRole.STEUERAMT,
+    ]
+);
 
 export class GuidedTourByRole implements GuidedTour {
 
@@ -85,6 +104,12 @@ export class GuidedTourByRole implements GuidedTour {
                     this.translate.instant('TOUR_STEP_ADMIN_BG_CONTENT'),
                     SELECTOR_USERMENU, Orientation.BottomRight, this.state, undefined));
                 break;
+            case TSRole.ADMIN_TS:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ADMIN_TS_TITLE'),
+                    this.translate.instant('TOUR_STEP_ADMIN_TS_CONTENT'),
+                    SELECTOR_USERMENU, Orientation.BottomRight, this.state, undefined));
+                break;
             default:
         }
         // Step 3: Pendenzen
@@ -94,6 +119,12 @@ export class GuidedTourByRole implements GuidedTour {
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_PENDENZEN_BG_TITLE'),
                     this.translate.instant('TOUR_STEP_PENDENZEN_BG_CONTENT'),
+                    SELECTOR_PENDENZEN_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_LIST));
+                break;
+            case TSRole.ADMIN_TS:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_PENDENZEN_TS_TITLE'),
+                    this.translate.instant('TOUR_STEP_PENDENZEN_TS_CONTENT'),
                     SELECTOR_PENDENZEN_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_LIST));
                 break;
             case TSRole.STEUERAMT:
@@ -114,6 +145,18 @@ export class GuidedTourByRole implements GuidedTour {
                 break;
             default:
         }
+        // Step 3.5 Anmeldungen
+        // tslint:disable-next-line:no-small-switch
+        switch (role) {
+            case TSRole.ADMIN_TS:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ANMELDUNGEN_TS_TITLE'),
+                    this.translate.instant('TOUR_STEP_ANMELDUNGEN_TS_CONTENT'),
+                    SELECTOR_PENDENZEN_BETREUUNGEN_LIST,
+                    Orientation.Bottom, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST));
+                break;
+            default:
+        }
         // Step 4: Alle Fälle
         switch (role) {
             case TSRole.ADMIN_BG:
@@ -123,6 +166,12 @@ export class GuidedTourByRole implements GuidedTour {
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_ALLE_FAELLE_GEMEINDEN_TITLE'),
                     this.translate.instant('TOUR_STEP_ALLE_FAELLE_GEMEINDEN_CONTENT'),
+                    SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST));
+                break;
+            case TSRole.ADMIN_TS:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_TS_TITLE'),
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_TS_CONTENT'),
                     SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST));
                 break;
             case TSRole.ADMIN_TRAEGERSCHAFT:
@@ -190,6 +239,7 @@ export class GuidedTourByRole implements GuidedTour {
             case TSRole.SACHBEARBEITER_MANDANT:
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_BG:
+            case TSRole.ADMIN_TS:
             case TSRole.REVISOR:
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.ADMIN_INSTITUTION:
@@ -207,6 +257,7 @@ export class GuidedTourByRole implements GuidedTour {
         switch (role) {
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_BG:
+            case TSRole.ADMIN_TS:
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_POSTEINGANG_TITLE'),
                     this.translate.instant('TOUR_STEP_POSTEINGANG_CONTENT'),

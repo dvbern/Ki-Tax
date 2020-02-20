@@ -418,6 +418,7 @@ public class BGCalculationInput {
 		}
 		return babyTarif == that.babyTarif &&
 			eingeschult == that.eingeschult &&
+			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
 			Objects.equals(bemerkungenMap, that.bemerkungenMap);
 	}
 

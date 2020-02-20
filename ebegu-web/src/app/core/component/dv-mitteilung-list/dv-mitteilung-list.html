@@ -48,7 +48,7 @@
                                        dv-max-length
                                        class="form-control input-dv"
                                        autocomplete="off"
-                                       ng-blur="vm.saveEntwurf()" required>
+                                       required>
                                 <dv-error-messages input-id="subject_ID" for="vm.form.subject.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -65,7 +65,7 @@
                                           maxlength="4000"
                                           autocomplete="off"
                                           ng-model="vm.getCurrentMitteilung().message"
-                                          ng-blur="vm.saveEntwurf()" required name="message">
+                                          required name="message">
                             </textarea>
                                 <dv-error-messages input-id="message" for="vm.form.message.$error"></dv-error-messages>
                             </div>
@@ -105,9 +105,8 @@
                             ng-repeat="mitteilung in vm.allMitteilungen"
                             ng-class="{'mitteilungItem': true,
                             'isSender': vm.isCurrentUserTypTheSenderTyp(mitteilung),
-                            'sadf': !vm.isCurrentUserTypTheSenderTyp(mitteilung),
                             'institution': vm.isSenderTypInstitution(mitteilung),
-                            'jugendamt': vm.isSenderTypJugendamt(mitteilung),
+                            'gemeinde': vm.isSenderTypJugendamt(mitteilung),
                             'schulamt': vm.isSenderTypSchulamt(mitteilung),
                             'gesuchsteller': vm.isSenderTypGesuchsteller(mitteilung)}"
                             ng-value="mitteilung.username"
@@ -123,20 +122,14 @@
                                             ng-bind="mitteilung.sentDatum | amDateFormat : 'DD.MM.YYYY / HH:mm'"></span>
                                     </div>
                                     <div>
-                                        <span data-translate="VON_COLON"></span><span ng-bind="mitteilung.senderAsString"></span>
+                                        <span data-translate="VON_COLON"></span><dv-benutzer-entry [benutzer]="mitteilung.sender"></dv-benutzer-entry>
+                                    </div>
+                                    <div>
+                                        <span data-translate="AN_COLON"></span><dv-benutzer-entry [benutzer]="mitteilung.empfaenger"></dv-benutzer-entry>
                                     </div>
                                 </div>
                                 <div class="message-delegation">
-                                    <button class="dv-btn"
-                                            ng-click="$event.stopPropagation();vm.mitteilungUebergebenAnJugendamt(mitteilung)"
-                                            ng-if="vm.canUebergebenAnJugendamt(mitteilung)">
-                                        <span data-translate="MITTEILUNG_DELEGATION_AN_JA"></span>
-                                    </button>
-                                    <button class="dv-btn"
-                                            ng-click="$event.stopPropagation();vm.mitteilungUebergebenAnSchulamt(mitteilung)"
-                                            ng-if="vm.canUebergebenAnSchulamt(mitteilung)">
-                                        <span data-translate="MITTEILUNG_DELEGATION_AN_SCH"></span>
-                                    </button>
+                                    <dv-mitteilung-delegation ng-if="vm.canUebergeben(mitteilung)" (value-change)='vm.mitteilungWeitergeleitet()' mitteilung-id="{{mitteilung.id}}" gemeinde-id="{{mitteilung.dossier.gemeinde.id}}"></dv-mitteilung-delegation>
                                 </div>
                                 <div
                                     dv-show-element
@@ -145,8 +138,7 @@
                                     class="message-checkbox erledigt">
                                     <md-checkbox name="erledigt-{{$index}}" aria-label="erledigt"
                                                  ng-checked="mitteilung.mitteilungStatus === 'ERLEDIGT'"
-                                                 ng-click="vm.setErledigt(mitteilung); $event.stopPropagation()"
-                                                 ng-disabled="!vm.isMessageEditableForMyRole(mitteilung)">
+                                                 ng-click="vm.setErledigt(mitteilung); $event.stopPropagation()">
                                         <span data-translate="MITTEILUNGEN_ERLEDIGT"></span>
                                     </md-checkbox>
                                 </div>

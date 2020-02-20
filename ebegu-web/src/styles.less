@@ -250,15 +250,29 @@ form {
     &.ng-submitted {
         input, textarea, .form-control, .input-element, md-radio-group {
             &.ng-invalid {
-                .ErrorInput()
+                .ErrorInput();
             }
         }
+    }
+    &.ng-submitted {
+        dv-valueinput.input-element.ng-invalid {
+                form-control {
+                    .ErrorInput();
+                }
+            }
     }
     // style der den Hintergrund der inputs on-blur Rot markiert wenn nicht valid
     .form-control.ng-invalid, .input-element.ng-invalid, md-radio-group.ng-invalid /*, :not(md-checkbox.input-element.ng-invalid)*/ {
         &.ng-touched {
-            .ErrorInput()
+            .ErrorInput();
         }
+    }
+    dv-valueinput.input-element{
+    &.ng-invalid.ng-touched {
+        .form-control {
+            .ErrorInput();
+        }
+    }
     }
 }
 
@@ -579,7 +593,7 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
         max-width: 25rem;
     }
 }
-@media (min-width: 992px) {
+@media all and (-ms-high-contrast:none) {
     .dv-dialog-actions {
 
         .dv-btn {
