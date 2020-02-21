@@ -1177,7 +1177,7 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+	private static Gesuch createAndPersistWaeltiDagmarGesuch(
 		InstitutionService instService, Persistence persistence,
 		@Nullable LocalDate eingangsdatum, @Nullable AntragStatus status) {
 
