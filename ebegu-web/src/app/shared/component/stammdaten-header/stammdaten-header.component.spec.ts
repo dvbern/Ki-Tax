@@ -20,7 +20,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {StammdatenHeaderComponent} from './stammdaten-header.component';
-import {GemeindeRS} from "../../../../gesuch/service/gemeindeRS.rest";
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 
 describe('StammdatenHeaderComponent', () => {
 
