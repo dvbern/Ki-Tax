@@ -696,6 +696,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		predicatesToUse.add(cb.isTrue(joinBetreuung.get(Betreuung_.gueltig)));
 
+		predicatesToUse.add(cb.equal(joinBetreuung.get(Betreuung_.betreuungsstatus), Betreuungsstatus.VERFUEGT));
+
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
 
 		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
@@ -728,6 +730,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			),
 			parameterYear
 		));
+
+		predicatesToUse.add(cb.equal(joinBetreuung.get(Betreuung_.betreuungsstatus), Betreuungsstatus.VERFUEGT));
 
 		predicatesToUse.add(cb.isTrue(joinBetreuung.get(Betreuung_.gueltig)));
 		Join<Gesuch, Dossier> joinDossier = joinBetreuung
