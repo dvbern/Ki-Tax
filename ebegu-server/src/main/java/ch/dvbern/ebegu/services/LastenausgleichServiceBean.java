@@ -264,7 +264,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		BigDecimal totalGutscheine = BigDecimal.ZERO;
 		for (VerfuegungZeitabschnitt abschnitt : abschnitteProGemeindeUndJahr) {
 			BigDecimal anteilKalenderjahr = getAnteilKalenderjahr(abschnitt);
-			BigDecimal gutschein = abschnitt.getVerguenstigung();
+			BigDecimal gutschein = abschnitt.getBgCalculationResultAsiv().getVerguenstigung();
 
 			totalBelegungInProzent = MathUtil.EXACT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
 			totalGutscheine = MathUtil.EXACT.addNullSafe(totalGutscheine, gutschein);
@@ -310,7 +310,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Pensum * AnteilDesMonats / 12. Beispiel 80% ganzer Monat = 6.67% AnteilKalenderjahr
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(zeitabschnitt.getGueltigkeit().getGueltigAb(),
 			zeitabschnitt.getGueltigkeit().getGueltigBis());
-		BigDecimal pensum = zeitabschnitt.getBgPensum();
+		BigDecimal pensum = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
 		BigDecimal pensumAnteilMonat = MathUtil.EXACT.multiplyNullSafe(anteilMonat, pensum);
 		return MathUtil.EXACT.divide(pensumAnteilMonat, MathUtil.EXACT.from(12d));
 	}

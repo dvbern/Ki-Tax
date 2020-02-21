@@ -418,10 +418,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
 		if (!verfuegung.isKategorieNichtEintreten()) {
 			for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieKeinPensum()) {
 					verfuegung.setKategorieKeinPensum(true);
 				}
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
 			}
