@@ -181,6 +181,7 @@ export class CreateAngebotListViewController implements IController {
     }
 
     public anmeldenSchulamt(): void {
+        this.anmeldungDTO.betreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         if (this.ts) {
             this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST;
 
@@ -201,7 +202,6 @@ export class CreateAngebotListViewController implements IController {
             }).catch(() => {
                 this.anmeldungDTO.betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
             });
-
         }
     }
 
