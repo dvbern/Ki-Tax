@@ -74,7 +74,7 @@ export class StammdatenHeaderComponent implements OnInit {
                 // emit logo change to upload image by parent view
                 this.emitLogoChange();
             };
-        }).catch(err => {
+        }).catch(() => {
             this.fileToUpload = null;
             this.logoImageUrl$ = null;
             this.logoImageUrl = null;
