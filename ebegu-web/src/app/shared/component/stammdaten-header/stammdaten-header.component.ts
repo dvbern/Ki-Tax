@@ -65,7 +65,7 @@ export class StammdatenHeaderComponent implements OnInit {
 
     public srcChange(files: FileList): void {
         this.fileToUpload = files[0];
-        this.gemeindeRS.isSupportedImage(this.fileToUpload).then( (response: any) => {
+        this.gemeindeRS.isSupportedImage(this.fileToUpload).then( () => {
             const tmpFileReader = new FileReader();
             tmpFileReader.readAsDataURL(this.fileToUpload);
             tmpFileReader.onload = (event: any): void => {
