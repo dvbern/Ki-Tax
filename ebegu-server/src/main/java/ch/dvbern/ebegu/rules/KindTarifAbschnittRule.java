@@ -53,8 +53,8 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 	private VerfuegungZeitabschnitt createZeitabschnitt(DateRange gueltigkeit, boolean baby, boolean eingeschult) {
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
-		verfuegungZeitabschnitt.setBabyTarif(baby);
-		verfuegungZeitabschnitt.setEingeschult(eingeschult);
+		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(baby);
+		verfuegungZeitabschnitt.setEingeschultForAsivAndGemeinde(eingeschult);
 		return verfuegungZeitabschnitt;
 	}
 

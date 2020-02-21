@@ -61,7 +61,7 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumFachstelle pensumFachstelle) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(pensumFachstelle.getGueltigkeit());
-		zeitabschnitt.setFachstellenpensum(pensumFachstelle.getPensum());
+		zeitabschnitt.setFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getPensum());
 		return zeitabschnitt;
 	}
 }

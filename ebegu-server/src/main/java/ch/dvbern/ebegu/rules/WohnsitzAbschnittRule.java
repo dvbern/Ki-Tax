@@ -136,7 +136,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 				requireNonNull(gsAdresseGueltigkeit);
 				if (gs1) {
 					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gsAdresseGueltigkeit);
-					zeitabschnitt.setWohnsitzNichtInGemeindeGS1(gesuchstellerAdresse.extractIsNichtInGemeinde());
+					zeitabschnitt.setWohnsitzNichtInGemeindeGS1ForAsivAndGemeinde(gesuchstellerAdresse.extractIsNichtInGemeinde());
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
 					final DateRange gueltigkeit = new DateRange(gsAdresseGueltigkeit);

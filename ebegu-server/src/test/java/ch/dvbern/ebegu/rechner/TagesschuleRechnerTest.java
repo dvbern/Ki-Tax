@@ -94,9 +94,9 @@ public class TagesschuleRechnerTest {
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		if (paedagogischBetreut) {
-			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheMitBetreuung(10);
+			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(10);
 		} else {
-			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheOhneBetreuung(10);
+			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(10);
 		}
 
 		verfuegungZeitabschnitt.copyValuesToResult();

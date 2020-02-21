@@ -308,152 +308,152 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
-	public void setLongAbwesenheit(boolean longAbwesenheit) {
+	public void setLongAbwesenheitForAsivAndGemeinde(boolean longAbwesenheit) {
 		this.getBgCalculationInputAsiv().setLongAbwesenheit(longAbwesenheit);
 		this.getBgCalculationInputGemeinde().setLongAbwesenheit(longAbwesenheit);
 	}
 
-	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
+	public void setAnspruchspensumProzentForAsivAndGemeinde(int anspruchspensumProzent) {
 		this.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchspensumProzent);
 		this.getBgCalculationInputGemeinde().setAnspruchspensumProzent(anspruchspensumProzent);
 	}
 
-	public void setAusserordentlicherAnspruch(int ausserordentlicherAnspruch) {
+	public void setAusserordentlicherAnspruchForAsivAndGemeinde(int ausserordentlicherAnspruch) {
 		this.getBgCalculationInputAsiv().setAusserordentlicherAnspruch(ausserordentlicherAnspruch);
 		this.getBgCalculationInputGemeinde().setAusserordentlicherAnspruch(ausserordentlicherAnspruch);
 	}
 
-	public void setBetreuungspensumProzent(@Nonnull BigDecimal betreuungspensumProzent) {
+	public void setBetreuungspensumProzentForAsivAndGemeinde(@Nonnull BigDecimal betreuungspensumProzent) {
 		this.getBgCalculationInputAsiv().setBetreuungspensumProzent(betreuungspensumProzent);
 		this.getBgCalculationInputGemeinde().setBetreuungspensumProzent(betreuungspensumProzent);
 	}
 
-	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
+	public void setMonatlicheBetreuungskostenForAsivAndGemeinde(BigDecimal monatlicheBetreuungskosten) {
 		this.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		this.getBgCalculationInputGemeinde().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 	}
 
-	public void setAnspruchspensumRest(int anspruchspensumRest) {
+	public void setAnspruchspensumRestForAsivAndGemeinde(int anspruchspensumRest) {
 		this.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchspensumRest);
 		this.getBgCalculationInputGemeinde().setAnspruchspensumRest(anspruchspensumRest);
 	}
 
-	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+	public void setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(boolean besondereBeduerfnisseBestaetigt) {
 		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 	}
 
-	public void setEkv1Alleine(boolean ekv1Alleine) {
+	public void setEkv1AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
 		this.getBgCalculationInputAsiv().setEkv1Alleine(ekv1Alleine);
 		this.getBgCalculationInputGemeinde().setEkv1Alleine(ekv1Alleine);
 	}
 
-	public void setEkv1ZuZweit(boolean ekv1Alleine) {
+	public void setEkv1ZuZweitForAsivAndGemeinde(boolean ekv1Alleine) {
 		this.getBgCalculationInputAsiv().setEkv1ZuZweit(ekv1Alleine);
 		this.getBgCalculationInputGemeinde().setEkv1ZuZweit(ekv1Alleine);
 	}
 
-	public void setEkv2Alleine(boolean ekv1Alleine) {
+	public void setEkv2AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
 		this.getBgCalculationInputAsiv().setEkv2Alleine(ekv1Alleine);
 		this.getBgCalculationInputGemeinde().setEkv2Alleine(ekv1Alleine);
 	}
 
-	public void setEkv2ZuZweit(boolean ekv1Alleine) {
+	public void setEkv2ZuZweitForAsivAndGemeinde(boolean ekv1Alleine) {
 		this.getBgCalculationInputAsiv().setEkv2ZuZweit(ekv1Alleine);
 		this.getBgCalculationInputGemeinde().setEkv2ZuZweit(ekv1Alleine);
 	}
 
-	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
+	public void setZuSpaetEingereichtForAsivAndGemeinde(boolean zuSpaetEingereicht) {
 		this.getBgCalculationInputAsiv().setZuSpaetEingereicht(zuSpaetEingereicht);
 		this.getBgCalculationInputGemeinde().setZuSpaetEingereicht(zuSpaetEingereicht);
 	}
 
-	public void setErwerbspensumGS1(@Nullable Integer erwerbspensumGS1) {
+	public void setErwerbspensumGS1ForAsivAndGemeinde(@Nullable Integer erwerbspensumGS1) {
 		this.getBgCalculationInputAsiv().setErwerbspensumGS1(erwerbspensumGS1);
 		this.getBgCalculationInputGemeinde().setErwerbspensumGS1(erwerbspensumGS1);
 	}
 
-	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS1) {
+	public void setErwerbspensumGS2ForAsivAndGemeinde(@Nullable Integer erwerbspensumGS1) {
 		this.getBgCalculationInputAsiv().setErwerbspensumGS2(erwerbspensumGS1);
 		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
 	}
 
-	public void addTaetigkeit(@Nullable Taetigkeit taetigkeit) {
+	public void addTaetigkeitForAsivAndGemeinde(@Nullable Taetigkeit taetigkeit) {
 		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
 		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
 	}
 
-	public void setFachstellenpensum(int fachstellenpensum) {
+	public void setFachstellenpensumForAsivAndGemeinde(int fachstellenpensum) {
 		this.getBgCalculationInputAsiv().setFachstellenpensum(fachstellenpensum);
 		this.getBgCalculationInputGemeinde().setFachstellenpensum(fachstellenpensum);
 	}
 
-	public void setAbschnittLiegtNachBEGUStartdatum(boolean abschnittLiegtNachBEGUStartdatum) {
+	public void setAbschnittLiegtNachBEGUStartdatumForAsivAndGemeinde(boolean abschnittLiegtNachBEGUStartdatum) {
 		this.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
 		this.getBgCalculationInputGemeinde().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
 	}
 
-	public void setBabyTarif(boolean babyTarif) {
+	public void setBabyTarifForAsivAndGemeinde(boolean babyTarif) {
 		this.getBgCalculationInputAsiv().setBabyTarif(babyTarif);
 		this.getBgCalculationInputGemeinde().setBabyTarif(babyTarif);
 	}
 
-	public void setEingeschult(boolean eingeschult) {
+	public void setEingeschultForAsivAndGemeinde(boolean eingeschult) {
 		this.getBgCalculationInputAsiv().setEingeschult(eingeschult);
 		this.getBgCalculationInputGemeinde().setEingeschult(eingeschult);
 	}
 
-	public void setHasSecondGesuchstellerForFinanzielleSituation(boolean hasSecondGesuchstellerForFinanzielleSituation) {
+	public void setHasSecondGesuchstellerForFinanzielleSituationForAsivAndGemeinde(boolean hasSecondGesuchstellerForFinanzielleSituation) {
 		this.getBgCalculationInputAsiv().setHasSecondGesuchstellerForFinanzielleSituation(hasSecondGesuchstellerForFinanzielleSituation);
 		this.getBgCalculationInputGemeinde().setHasSecondGesuchstellerForFinanzielleSituation(hasSecondGesuchstellerForFinanzielleSituation);
 	}
 
-	public void setWohnsitzNichtInGemeindeGS1(Boolean wohnsitzNichtInGemeindeGS1) {
+	public void setWohnsitzNichtInGemeindeGS1ForAsivAndGemeinde(Boolean wohnsitzNichtInGemeindeGS1) {
 		this.getBgCalculationInputAsiv().setWohnsitzNichtInGemeindeGS1(wohnsitzNichtInGemeindeGS1);
 		this.getBgCalculationInputGemeinde().setWohnsitzNichtInGemeindeGS1(wohnsitzNichtInGemeindeGS1);
 	}
 
-	public void setTsBetreuungszeitProWocheMitBetreuung(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
+	public void setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
 		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheMitBetreuung(tsBetreuungszeitProWocheMitBetreuung);
 		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheMitBetreuung(tsBetreuungszeitProWocheMitBetreuung);
 	}
 
-	public void setTsVerpflegungskostenMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
+	public void setTsVerpflegungskostenMitBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
 		this.getBgCalculationInputAsiv().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
 	}
 
-	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
+	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
 		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
 		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
 	}
 
-	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
+	public void setTsVerpflegungskostenOhneBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
 		this.getBgCalculationInputAsiv().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
 		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
 	}
 
-	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
+	public void setEinkommensjahrForAsivAndGemeinde(@Nonnull Integer einkommensjahr) {
 		this.getBgCalculationInputAsiv().setEinkommensjahr(einkommensjahr);
 		this.getBgCalculationInputGemeinde().setEinkommensjahr(einkommensjahr);
 	}
 
-	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
+	public void setAbzugFamGroesseForAsivAndGemeinde(@Nullable BigDecimal abzugFamGroesse) {
 		this.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamGroesse);
 		this.getBgCalculationInputGemeinde().setAbzugFamGroesse(abzugFamGroesse);
 	}
 
-	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
+	public void setFamGroesseForAsivAndGemeinde(@Nullable BigDecimal famGroesse) {
 		this.getBgCalculationInputAsiv().setFamGroesse(famGroesse);
 		this.getBgCalculationInputGemeinde().setFamGroesse(famGroesse);
 	}
 
-	public void setSameVerfuegteVerfuegungsrelevanteDaten(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
+	public void setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
 		this.getBgCalculationInputAsiv().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
 		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
 	}
 
-	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
+	public void setSameAusbezahlteVerguenstigungForAsivAndGemeinde(boolean sameAusbezahlteVerguenstigung) {
 		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
 		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
 	}

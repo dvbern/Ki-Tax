@@ -86,10 +86,10 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 
 						// Ab dem naechsten Monat gilt der neue Anspruch
 						if (anspruchVerminderungAsiv) {
-							zeitabschnitt.setAnspruchspensumProzent(anspruchVorherAsiv);
+							zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(anspruchVorherAsiv);
 						}
 						if (anspruchVerminderungGemeinde) {
-							zeitabschnitt.setAnspruchspensumProzent(anspruchVorherGemeinde);
+							zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(anspruchVorherGemeinde);
 						}
 						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
 

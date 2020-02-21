@@ -75,8 +75,8 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
-		zeitabschnitt.setBetreuungspensumProzent(betreuungspensum.getPensum());
-		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
+		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(betreuungspensum.getPensum());
+		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 
@@ -86,7 +86,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
 				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
 
-		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		zeitabschnitt.setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(besondereBeduerfnisseBestaetigt);
 
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {

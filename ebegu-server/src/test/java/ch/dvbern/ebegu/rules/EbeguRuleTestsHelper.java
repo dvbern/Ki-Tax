@@ -129,7 +129,7 @@ public final class EbeguRuleTestsHelper {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
-			verfuegungZeitabschnitt.setAnspruchspensumRest(existingRestanspruch);
+			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
 	}
