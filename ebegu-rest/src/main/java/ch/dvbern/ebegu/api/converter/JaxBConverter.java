@@ -4604,15 +4604,12 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
 		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
-		// Konfiguration
-
-			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
+		// Konfiguration: Wir laden immer alle Gesuchsperioden
 		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
 			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
 				stammdaten.getGemeinde(),
 				gesuchsperiode));
 		}
-
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
 		if (stammdaten.getIban() != null) {
