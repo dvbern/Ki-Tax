@@ -350,7 +350,7 @@ public class GemeindeResource {
 		try {
 			Image.getInstance(file.getContent());
 		} catch (IOException exception) {
-			throw new EbeguRuntimeException("isSupportedImage", ErrorCodeEnum.ERROR_NOT_SUPPORTED_IMAGE);
+			throw new EbeguRuntimeException("isSupportedImage", ErrorCodeEnum.ERROR_NOT_SUPPORTED_IMAGE, exception);
 		}
 		return Response.ok().build();
 	}
