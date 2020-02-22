@@ -17,23 +17,17 @@
 
 package ch.dvbern.ebegu.dto;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Transient;
-
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.Transient;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class BGCalculationInput {
 
@@ -60,6 +54,9 @@ public class BGCalculationInput {
 
 	@Transient
 	private int fachstellenpensum;
+
+	@Transient
+	private boolean betreuungspensumMustBeAtLeastFachstellenpensum = false;
 
 	@Transient
 	private int ausserordentlicherAnspruch;
@@ -132,6 +129,7 @@ public class BGCalculationInput {
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
+		this.betreuungspensumMustBeAtLeastFachstellenpensum = toCopy.betreuungspensumMustBeAtLeastFachstellenpensum;
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
@@ -178,6 +176,14 @@ public class BGCalculationInput {
 
 	public void setFachstellenpensum(int fachstellenpensum) {
 		this.fachstellenpensum = fachstellenpensum;
+	}
+
+	public boolean isBetreuungspensumMustBeAtLeastFachstellenpensum() {
+		return this.betreuungspensumMustBeAtLeastFachstellenpensum;
+	}
+
+	public void setBetreuungspensumMustBeAtLeastFachstellenpensum(boolean betreuungspensumMustBeAtLeastFachstellenpensum) {
+		this.betreuungspensumMustBeAtLeastFachstellenpensum = betreuungspensumMustBeAtLeastFachstellenpensum;
 	}
 
 	public int getAusserordentlicherAnspruch() {
@@ -337,6 +343,7 @@ public class BGCalculationInput {
 	}
 
 	public void add(@Nonnull BGCalculationInput other) {
+		this.setBetreuungspensumMustBeAtLeastFachstellenpensum(this.isBetreuungspensumMustBeAtLeastFachstellenpensum() || other.isBetreuungspensumMustBeAtLeastFachstellenpensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
 			+ other.getAusserordentlicherAnspruch());
