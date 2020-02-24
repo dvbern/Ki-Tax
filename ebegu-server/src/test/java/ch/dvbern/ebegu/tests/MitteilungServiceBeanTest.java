@@ -273,10 +273,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		dossier.getFall().setBesitzer(sender);
 		persistence.merge(dossier.getFall());
 
-		Mitteilung entwurf = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		final Mitteilung persistedEntwurf = mitteilungService.saveEntwurf(entwurf);
-
 		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
 		mitteilung1.setMitteilungStatus(MitteilungStatus.NEU);
@@ -287,7 +283,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		mitteilung2.setMitteilungStatus(MitteilungStatus.NEU);
 		final Mitteilung mitFromJAToGS = persistence.persist(mitteilung2);
 
-		Assert.assertEquals(MitteilungStatus.ENTWURF, persistedEntwurf.getMitteilungStatus());
 		Assert.assertEquals(MitteilungStatus.NEU, mitFromGSToJA.getMitteilungStatus());
 		Assert.assertEquals(MitteilungStatus.NEU, mitFromJAToGS.getMitteilungStatus());
 
@@ -295,9 +290,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsSachbearbeiterJA();
 		mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier);
 
-		final Optional<Mitteilung> entwurfUpdated1 = mitteilungService.findMitteilung(persistedEntwurf.getId());
-		Assert.assertTrue(entwurfUpdated1.isPresent());
-		Assert.assertEquals(MitteilungStatus.ENTWURF, entwurfUpdated1.get().getMitteilungStatus());
 		final Optional<Mitteilung> mitFromGSToJAUpdated1 = mitteilungService.findMitteilung(mitFromGSToJA.getId());
 		Assert.assertTrue(mitFromGSToJAUpdated1.isPresent());
 		Assert.assertEquals(MitteilungStatus.GELESEN, mitFromGSToJAUpdated1.get().getMitteilungStatus());
@@ -309,9 +301,6 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsGesuchsteller("gesuchst");
 		mitteilungService.setAllNewMitteilungenOfDossierGelesen(dossier);
 
-		final Optional<Mitteilung> entwurfUpdated2 = mitteilungService.findMitteilung(persistedEntwurf.getId());
-		Assert.assertTrue(entwurfUpdated2.isPresent());
-		Assert.assertEquals(MitteilungStatus.ENTWURF, entwurfUpdated2.get().getMitteilungStatus());
 		final Optional<Mitteilung> mitFromGSToJAUpdated2 = mitteilungService.findMitteilung(mitFromGSToJA.getId());
 		Assert.assertTrue(mitFromGSToJAUpdated2.isPresent());
 		Assert.assertEquals(MitteilungStatus.GELESEN, mitFromGSToJAUpdated2.get().getMitteilungStatus());
@@ -420,7 +409,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void testMitteilungUebergebenAnSchulamt() {
+	public void testMitteilungWeiterleiten() {
 		// Als GS einloggen und eine Meldung schreiben
 		prepareDependentObjects("gesuchst");
 		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
@@ -434,60 +423,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
 		Assert.assertEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
 		// Diese Meldung an SCH uebergeben: Es wird ein neuer Empfaenger gesetzt
-		mitteilung = mitteilungService.mitteilungUebergebenAnSchulamt(mitteilung.getId());
+		mitteilung = mitteilungService.mitteilungWeiterleiten(mitteilung.getId(), empfaengerSCH.getUsername());
 		Assert.assertNotEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-	}
-
-	@Test (expected = EJBAccessException.class)
-	public void testMitteilungUebergebenAnSchulamtFalscheRolle() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-
-		// Als SCH einloggen: Da ich schon SCH bin, kann ich nicht an SCH uebergeben
-		loginAsSchulamt();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		mitteilungService.mitteilungUebergebenAnSchulamt(mitteilung.getId());
-	}
-
-	@Test
-	public void testMitteilungUebergebenAnJugendamt() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		// Den Fall auf NUR-SCHULAMT setzen, damit die Meldung ans Schulamt geht
-		dossier.setVerantwortlicherBG(null);
-		persistence.merge(dossier);
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-		Benutzer empfaengerUrspruenglich = mitteilung1.getEmpfaenger();
-
-		// Als SCH einloggen: Die Meldung ist jetzt im Posteingang des SCH
-		loginAsSchulamt();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		Assert.assertEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-		// Diese Meldung an JA uebergeben: Es wird ein neuer Empfaenger gesetzt
-		mitteilung = mitteilungService.mitteilungUebergebenAnJugendamt(mitteilung.getId());
-		Assert.assertNotEquals(empfaengerUrspruenglich, mitteilung.getEmpfaenger());
-	}
-
-	@Test (expected = EJBAccessException.class)
-	public void testMitteilungUebergebenAnJugendamtFalscheRolle() {
-		// Als GS einloggen und eine Meldung schreiben
-		prepareDependentObjects("gesuchst");
-		loginAsGesuchsteller("gesuchst"); // send as GS to preserve the defined senderTyp empfaengerTyp
-		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
-			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilung1 = mitteilungService.sendMitteilung(mitteilung1);
-
-		// Als JA einloggen: Da ich schon JA bin, kann ich nicht an JA uebergeben
-		loginAsSachbearbeiterJA();
-		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
-		mitteilungService.mitteilungUebergebenAnJugendamt(mitteilung.getId());
 	}
 
 	@Test

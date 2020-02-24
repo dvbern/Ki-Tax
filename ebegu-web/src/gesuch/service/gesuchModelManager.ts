@@ -1201,9 +1201,8 @@ export class GesuchModelManager {
 
     }
 
-    public saveVerfuegung(ignorieren: boolean): IPromise<TSVerfuegung> {
-        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(this.getVerfuegenToWorkWith())
-            ? '' : this.getVerfuegenToWorkWith().manuelleBemerkungen;
+    public saveVerfuegung(ignorieren: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
+        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
             manuelleBemerkungen,
             this.gesuch.id,

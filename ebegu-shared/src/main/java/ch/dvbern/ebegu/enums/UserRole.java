@@ -116,6 +116,13 @@ public enum UserRole {
 	}
 
 	/**
+	 * Returns the roles of BG, TS and Gemeinde
+	 */
+	public static List<UserRole> getTsBgAndGemeindeRoles() {
+		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
+	}
+
+	/**
 	 * Returns the roles of TS and Gemeinde
 	 */
 	public static List<UserRole> getTsAndGemeindeRoles() {
@@ -174,30 +181,6 @@ public enum UserRole {
 		return Arrays.stream(UserRole.values())
 			.filter(userRole -> abhaengigkeitList.contains(userRole.getRollenAbhaengigkeit()))
 			.collect(Collectors.toList());
-	}
-
-	/**
-	 * ACHTUNG Diese Logik existiert auch im Client TSUser. Aenderungen muessen in beiden Orten gemacht werden.
-	 */
-	@Nonnull
-	public Amt getAmt() {
-		switch (this) {
-		case ADMIN_BG:
-		case SUPER_ADMIN:
-		case SACHBEARBEITER_BG: {
-			return Amt.JUGENDAMT;
-		}
-		case ADMIN_TS:
-		case SACHBEARBEITER_TS: {
-			return Amt.SCHULAMT;
-		}
-		case ADMIN_GEMEINDE:
-		case SACHBEARBEITER_GEMEINDE: {
-			return Amt.GEMEINDE;
-		}
-		default:
-			return Amt.NONE;
-		}
 	}
 
 	public boolean isRoleGemeindeabhaengig(){
