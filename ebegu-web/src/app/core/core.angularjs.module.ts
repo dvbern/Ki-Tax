@@ -149,6 +149,7 @@ import {UploadRS} from './service/uploadRS.rest';
 import {VerfuegungRS} from './service/verfuegungRS.rest';
 import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {ZahlungRS} from './service/zahlungRS.rest';
+import {SocialhilfeZeitraumRS} from './service/socialhilfeZeitraumRS.rest';
 
 const dependencies = [
     /* Angular modules */
@@ -230,6 +231,7 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('EinstellungRS', EinstellungRS)
+    .service('SocialhilfeZeitraumRS', SocialhilfeZeitraumRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)

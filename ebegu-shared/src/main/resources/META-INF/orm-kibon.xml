@@ -373,4 +373,6 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
 	<entity class="ch.dvbern.ebegu.entities.TSCalculationResult"/>
 	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode"/>
+	<entity class="ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer"/>
+	<entity class="ch.dvbern.ebegu.entities.SocialhilfeZeitraum"/>
 </entity-mappings>

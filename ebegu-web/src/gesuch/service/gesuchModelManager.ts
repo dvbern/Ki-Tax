@@ -1624,4 +1624,8 @@ export class GesuchModelManager {
     public isFerieninselangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotFI();
     }
+
+    public isSocialHilfeBezueger(): boolean {
+            return this.getFamiliensituation().sozialhilfeBezueger;
+    }
 }

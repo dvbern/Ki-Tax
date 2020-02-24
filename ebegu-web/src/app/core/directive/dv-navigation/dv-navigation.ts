@@ -262,6 +262,9 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
+                if(this.gesuchModelManager.isSocialHilfeBezueger()){
+                    return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+                }
                 // finanzielleSituationStart
                 if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
                     || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
@@ -317,6 +320,9 @@ export class NavigatorController implements IController {
             }
 
             return undefined;
+        }
+        if(TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2){
+            return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
         }
 
         // by default navigieren wir zum naechsten erlaubten Step
@@ -396,6 +402,14 @@ export class NavigatorController implements IController {
             return this.navigateToStep(TSWizardStepName.VERFUEGEN);
         }
 
+        if(TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2){
+            return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+        }
+
+        if(TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()){
+            return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
+        }
+
         return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
     }
 
@@ -435,6 +449,8 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.freigabe', gesuchIdParam);
             case TSWizardStepName.VERFUEGEN:
                 return this.state.go('gesuch.verfuegen', gesuchIdParam);
+            case TSWizardStepName.SOCIALHILFEZEITRAEUME:
+                return this.state.go('gesuch.SocialhilfeZeitraeume', gesuchIdParam);
             default:
                 throw new Error(`not implemented for step ${stepName}`);
         }

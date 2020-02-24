@@ -17,6 +17,7 @@ import {IPromise, IQService} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
+import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
@@ -26,7 +27,6 @@ import {TSGesuch} from '../../models/TSGesuch';
 import {TSWizardStep} from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {WizardStepRS} from './WizardStepRS.rest';
-import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 
 const LOG = LogFactory.createLog('WizardStepManager');
 
@@ -145,6 +145,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.BETREUUNG);
         this.allowedSteps.push(TSWizardStepName.ABWESENHEIT);
         this.allowedSteps.push(TSWizardStepName.VERFUEGEN);
+        this.allowedSteps.push(TSWizardStepName.SOCIALHILFEZEITRAEUME);
     }
 
     private setAllowedStepsForSteueramt(): void {
@@ -156,6 +157,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
+        this.allowedSteps.push(TSWizardStepName.SOCIALHILFEZEITRAEUME);
     }
 
     private setAllAllowedSteps(): void {
@@ -224,8 +226,8 @@ export class WizardStepManager {
     }
 
     /**
-     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given stepName.
-     * Use this method to avoid changing the status of a different Step than the one you have to change.
+     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given
+     * stepName. Use this method to avoid changing the status of a different Step than the one you have to change.
      */
     public updateCurrentWizardStepStatusSafe(
         stepName: TSWizardStepName,

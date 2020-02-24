@@ -89,6 +89,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Inject
 	private GesuchService gesuchService;
 
+	@Inject
+	private SocialhilfeZeitraumService socialhilfeZeitraumService;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
@@ -133,6 +136,13 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
+		if(familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()){
+			familiensituationContainer.getSocialhilfeZeitraumContainers().forEach(
+				socialhilfeZeitraumContainer -> {
+					this.socialhilfeZeitraumService.removeSocialhilfeZeitraum(socialhilfeZeitraumContainer.getId());
+				}
+			);
+		}
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
 		return gesuch;
