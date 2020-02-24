@@ -130,3 +130,42 @@
 /deep/ .mt-5 {
     margin-top: 5rem;
 }
+
+
+table.mahlzeitenverguenstigung-table {
+    margin: 0 0 2rem 0;
+
+    th, td {
+        padding-top: 1rem;
+        padding-right: 2rem;
+        border-bottom: 1px solid @dgrey;
+    }
+
+    th.align-right, td.align-right {
+        text-align: right;
+    }
+
+    tbody > tr:hover .result {
+        background-color: transparent;
+    }
+
+    .infotext-row {
+        td {
+            border-bottom: none;
+            vertical-align: bottom;
+        }
+    }
+
+    .title-row {
+        th {
+            width: 10%;
+            vertical-align: top;
+            border-top: none;
+            text-align: right;
+        }
+    }
+
+    .form-group, dv-error-messages {
+        margin-bottom: 0;
+    }
+}

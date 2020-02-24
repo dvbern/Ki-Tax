@@ -27,7 +27,7 @@
                         <input id="anschrift_id" type="text" name="anschrift_id" #nameAnschrift="ngModel"
                                [(ngModel)]="stammdaten.adresse.organisation"
                                [maxlength]="255" class="form-control" required ng-required="true"
-                               placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                               placeholder="{{'GEMEINDE_ANSCHRIFT_PLACEHOLDER'|translate}}">
                         <dv-error-messages [errorObject]="nameAnschrift.errors"
                                            inputId="anschrift_id"></dv-error-messages>
                     </div>

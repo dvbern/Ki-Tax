@@ -379,7 +379,7 @@
                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
                                                            (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
 
-                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                    <dv-error-messages inputId="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
                                                                        [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
                                                     </dv-error-messages>
                                                 </div>
@@ -398,38 +398,38 @@
                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo"
                                                            (change)="changeKonfigZusaetzlicherGutscheinBetragTfo(konfigurationsListe[i])">
 
-                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
-                                                                       [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
-                                                    </dv-error-messages>
-                                                </div>
-    <!--                                            Zusaetzlicher Gutschein bei Kitas anbieten bis und mit-->
-                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
-                                                    <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT</label>
-                                                    <mat-select
-                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita"
-                                                        (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(konfigurationsListe[i])"
-                                                        id="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
-                                                        name="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
-                                                        class="form-control">
-                                                        <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
-                                                                    [value]="etv">{{etv | translate}}
-                                                        </mat-option>
-                                                    </mat-select>
-                                                </div>
-    <!--                                            Zusaetzlicher Gutschein bei TFOs anbieten bis und mit-->
-                                                <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
-                                                    <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT</label>
-                                                    <mat-select
-                                                        [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo"
-                                                        (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(konfigurationsListe[i])"
-                                                        id="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
-                                                        name="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
-                                                        class="form-control">
-                                                        <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
-                                                                    [value]="etv">{{etv | translate}}
-                                                        </mat-option>
-                                                    </mat-select>
-                                                </div>
+                                                <dv-error-messages inputId="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                                   [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
+                                                </dv-error-messages>
+                                            </div>
+<!--                                            Zusaetzlicher Gutschein bei Kitas anbieten bis und mit-->
+                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT</label>
+                                                <mat-select
+                                                    [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita"
+                                                    (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(konfigurationsListe[i])"
+                                                    id="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
+                                                    name="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
+                                                    class="form-control">
+                                                    <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                [value]="etv">{{etv | translate}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
+<!--                                            Zusaetzlicher Gutschein bei TFOs anbieten bis und mit-->
+                                            <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT</label>
+                                                <mat-select
+                                                    [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo"
+                                                    (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(konfigurationsListe[i])"
+                                                    id="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
+                                                    name="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
+                                                    class="form-control">
+                                                    <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                [value]="etv">{{etv | translate}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </div>
 
     <!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
                                                 <div class="form-group">
@@ -463,7 +463,7 @@
                                                 </div>
     <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei TFOs-->
                                                 <div class="form-group" *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
-                                                    <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                    <label for="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
                                                            class="required" translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO</label>
                                                     <input id="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
                                                            name="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
@@ -476,10 +476,10 @@
                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo"
                                                            (change)="changeZusaetzlicherBabybeitragTfo(konfigurationsListe[i])">
 
-                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
-                                                                       [errorObject]="zusaetzlicher_babybeitrag_betrag_tfo.errors">
-                                                    </dv-error-messages>
-                                                </div>
+                                                <dv-error-messages inputId="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                                   [errorObject]="zusaetzlicher_babybeitrag_betrag_tfo.errors">
+                                                </dv-error-messages>
+                                            </div>
 
     <!--                                            Zusätzlicher Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
                                                 <div class="form-group">
@@ -508,7 +508,7 @@
                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent"
                                                            (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(konfigurationsListe[i])">
 
-                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                    <dv-error-messages inputId="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
                                                                        [errorObject]="zusaetzlicher_anspruch_freiwilligenarbeit_max.errors">
                                                     </dv-error-messages>
                                                 </div>
@@ -738,6 +738,45 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                        </div>
+<!--                                        Mahlzeitenverguenstigung -->
+                                        <div class="col-sm-12" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                            <p><strong translate>MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE</strong></p>
+
+<!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
+                                            <div class="table-responsive" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                <table class="mahlzeitenverguenstigung-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <td translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN</td>
+                                                        <td class="align-right" translate>VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT</td>
+                                                        <td class="align-right" translate>VERGUENSTIGUNG_PRO_NEBENMAHLZEIT</td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}} - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{(konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1).toLocaleString('de-CH') }} -
+                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+<!--                                            Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
+                                            <p class="mt-2" *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled" translate>
+                                                MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
+                                            </p>
                                         </div>
                                     </div>
                                 </tab-body>

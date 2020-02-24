@@ -19,7 +19,6 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
-import {TSAmt} from '../../../../models/enums/TSAmt';
 import {TSMitteilungEvent} from '../../../../models/enums/TSMitteilungEvent';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../../models/enums/TSMitteilungTeilnehmerTyp';
@@ -119,11 +118,11 @@ export class DVMitteilungListController implements IOnInit {
                 if (this.$stateParams.betreuungId) {
                     this.betreuungRS.findBetreuung(this.$stateParams.betreuungId).then(r => {
                         this.betreuung = r;
-                        this.loadEntwurf();
+                        this.initMitteilungForCurrentBenutzer();
                         this.loadAllMitteilungen();
                     });
                 } else {
-                    this.loadEntwurf();
+                    this.initMitteilungForCurrentBenutzer();
                     // Wenn JA oder Institution -> Neue Mitteilungen als gelesen markieren
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
                         this.setAllMitteilungenGelesen().then(() => {
@@ -147,13 +146,7 @@ export class DVMitteilungListController implements IOnInit {
         this.$window.history.back();
     }
 
-    /**
-     * Diese Methode laedt einen Entwurf wenn es einen existiert. Sonst gibt sie eine leeren
-     * Mitteilung zurueck.
-     */
-    private loadEntwurf(): void {
-        // Wenn der Fall keinen Besitzer hat, darf auch keine Nachricht geschrieben werden
-        // Ausser wir sind Institutionsbenutzer
+    private initMitteilungForCurrentBenutzer(): void {
         const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         const isJugendamtOrSchulamtAndFallHasBesitzer = this.dossier.fall.besitzer && this.authServiceRS.isOneOfRoles(
             TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
@@ -161,24 +154,6 @@ export class DVMitteilungListController implements IOnInit {
         if (!(isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser)) {
             return;
         }
-
-        const entwurfHandler = (entwurf: TSMitteilung) => {
-            this.isLoaded = true;
-            if (entwurf) {
-                this.currentMitteilung = entwurf;
-            } else {
-                this.initMitteilungForCurrentBenutzer();
-            }
-        };
-
-        if (this.betreuung) {
-            this.mitteilungRS.getEntwurfForCurrentRolleForBetreuung(this.betreuung.id).then(entwurfHandler);
-        } else {
-            this.mitteilungRS.getEntwurfOfDossierForCurrentRolle(this.dossier.id).then(entwurfHandler);
-        }
-    }
-
-    private initMitteilungForCurrentBenutzer(): void {
         const currentUser = this.authServiceRS.getPrincipal();
         // common attributes
         this.currentMitteilung = new TSMitteilung();
@@ -186,7 +161,7 @@ export class DVMitteilungListController implements IOnInit {
         if (this.betreuung) {
             this.currentMitteilung.betreuung = this.betreuung;
         }
-        this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.ENTWURF;
+        this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
         this.currentMitteilung.sender = currentUser;
     }
 
@@ -208,41 +183,17 @@ export class DVMitteilungListController implements IOnInit {
         }
 
         return this.mitteilungRS.sendMitteilung(this.getCurrentMitteilung())
-            .then(() => this.reloadEntwurfAndMitteilungen())
+            .then(() => this.reloadMitteilungen())
             .finally(() => {
                 this.form.$setPristine();
                 this.form.$setUntouched();
-            });
-    }
-
-    private reloadEntwurfAndMitteilungen(): TSMitteilung {
-        this.loadEntwurf();
-        this.loadAllMitteilungen();
-
-        return this.currentMitteilung;
-    }
-
-    /**
-     * Speichert die aktuelle Mitteilung nur wenn das formular dirty ist.
-     * Wenn das Formular leer ist, wird der Entwurf geloescht (falls er bereits existiert)
-     */
-    public saveEntwurf(): IPromise<TSMitteilung> {
-        if (this.form.$dirty && !this.isMitteilungEmpty() && this.isLoaded) {
-            this.isLoaded = false;
-            return this.mitteilungRS.saveEntwurf(this.getCurrentMitteilung())
-                .then(() => this.reloadEntwurfAndMitteilungen())
-                .finally(() => {
-                    this.form.$setPristine();
-                    this.form.$setUntouched();
-                });
-        }
-        if (this.isMitteilungEmpty() && !this.currentMitteilung.isNew() && this.currentMitteilung.id) {
-            return this.mitteilungRS.removeEntwurf(this.getCurrentMitteilung()).then(() => {
                 this.initMitteilungForCurrentBenutzer();
-                return this.currentMitteilung;
             });
-        }
-        return this.$q.when(this.currentMitteilung);
+    }
+
+    private reloadMitteilungen(): TSMitteilung {
+        this.loadAllMitteilungen();
+        return this.currentMitteilung;
     }
 
     private isMitteilungEmpty(): boolean {
@@ -275,14 +226,8 @@ export class DVMitteilungListController implements IOnInit {
         return mitteilung && mitteilung.sender && mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.INSTITUTION;
     }
 
-    public isSenderTypSchulamt(mitteilung: TSMitteilung): boolean {
-        return mitteilung && mitteilung.sender && mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT
-            && mitteilung.getSenderAmt() === TSAmt.SCHULAMT;
-    }
-
-    public isSenderTypJugendamt(mitteilung: TSMitteilung): boolean {
-        return mitteilung && mitteilung.sender && mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT
-            && mitteilung.getSenderAmt() === TSAmt.JUGENDAMT;
+    public isSenderTypGemeinde(mitteilung: TSMitteilung): boolean {
+        return mitteilung && mitteilung.sender && mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT;
     }
 
     public isSenderTypGesuchsteller(mitteilung: TSMitteilung): boolean {
@@ -324,21 +269,26 @@ export class DVMitteilungListController implements IOnInit {
      * auf GELESEN wenn es ERLEDIGT war
      */
     public setErledigt(mitteilung: TSMitteilung): void {
-        if (mitteilung && mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN) {
-            mitteilung.mitteilungStatus = TSMitteilungStatus.ERLEDIGT;
-            this.mitteilungRS.setMitteilungErledigt(mitteilung.id);
-
-        } else if (mitteilung && mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT) {
+        if (mitteilung && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT) {
+            const currentUser = this.authServiceRS.getPrincipal();
+            if (currentUser.username !== mitteilung.empfaenger.username) {
+                this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                    title: 'ERLDEDIGT_NICHT_ALS_EMPFAENGER_TITLE',
+                    deleteText: 'ERLDEDIGT_NICHT_ALS_EMPFAENGER_TEXT',
+                    parentController: undefined,
+                    elementID: undefined,
+                }).then(() => {
+                    mitteilung.mitteilungStatus = TSMitteilungStatus.ERLEDIGT;
+                    this.mitteilungRS.setMitteilungErledigt(mitteilung.id);
+                });
+            } else {
+                mitteilung.mitteilungStatus = TSMitteilungStatus.ERLEDIGT;
+                this.mitteilungRS.setMitteilungErledigt(mitteilung.id);
+            }
+        } else {
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
             this.mitteilungRS.setMitteilungGelesen(mitteilung.id);
         }
-    }
-
-    public isStatusErledigtGelesen(mitteilung: TSMitteilung): boolean {
-        return mitteilung && (
-            mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT
-            || mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN
-        );
     }
 
     public getBgNummer(): string {
@@ -427,45 +377,14 @@ export class DVMitteilungListController implements IOnInit {
         });
     }
 
-    public mitteilungUebergebenAnJugendamt(mitteilung: TSMitteilung): void {
-        this.mitteilungRS.mitteilungUebergebenAnJugendamt(mitteilung.id).then(msg => {
-            EbeguUtil.replaceElementInList(msg, this.allMitteilungen);
-        });
+    public mitteilungWeitergeleitet(): void {
+        this.loadAllMitteilungen();
     }
 
-    public mitteilungUebergebenAnSchulamt(mitteilung: TSMitteilung): void {
-        this.mitteilungRS.mitteilungUebergebenAnSchulamt(mitteilung.id).then(msg => {
-            EbeguUtil.replaceElementInList(msg, this.allMitteilungen);
-        });
-    }
-
-    public isMessageEditableForMyRole(mitteilung: TSMitteilung): boolean {
-        // Ich darf die Mitteilung auf Gelesen setzen oder Delegieren, wenn ich der gleichen Empfängergruppe wie die
-        // Meldung selber angehöre
-        return this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.JUGENDAMT) ||
-            this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.SCHULAMT);
-    }
-
-    public canUebergebenAnSchulamt(mitteilung: TSMitteilung): boolean {
-        if (this.gesuchModelManager.isTagesschulangebotEnabled()) {
-            return !this.isBetreuungsmitteilung(mitteilung) &&
-                this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.JUGENDAMT) && !mitteilung.isErledigt();
-        }
-        return false;
-    }
-
-    public canUebergebenAnJugendamt(mitteilung: TSMitteilung): boolean {
-        if (this.gesuchModelManager.isTagesschulangebotEnabled()) {
-            return !this.isBetreuungsmitteilung(mitteilung) &&
-                this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.SCHULAMT) && !mitteilung.isErledigt();
-        }
-        return false;
-    }
-
-    private isUserAndEmpfaengerSameAmt(mitteilung: TSMitteilung, amt: TSAmt): boolean {
-        const userInAmt = this.authServiceRS.getPrincipal().amt === amt;
-        const empfaengerInAmt = mitteilung.getEmpfaengerAmt() === amt;
-        return userInAmt && empfaengerInAmt;
+    public canUebergeben(mitteilung: TSMitteilung): boolean {
+        return mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.GESUCHSTELLER &&
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
+            !mitteilung.isErledigt();
     }
 
     private isBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
