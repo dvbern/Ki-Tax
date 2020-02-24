@@ -15,6 +15,12 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -25,11 +31,6 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
-
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Locale;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -67,9 +68,8 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
 		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch
-			&& (betreuungspensumMustBeAtLeastFachstellenpensum
-			&& pensumBetreuung.compareTo(BigDecimal.valueOf(roundedPensumFachstelle)) >= 0
-			|| !betreuungspensumMustBeAtLeastFachstellenpensum)) {
+			&& (!betreuungspensumMustBeAtLeastFachstellenpensum
+			|| pensumBetreuung.compareTo(BigDecimal.valueOf(roundedPensumFachstelle)) >= 0)) {
 
 			// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(roundedPensumFachstelle);
