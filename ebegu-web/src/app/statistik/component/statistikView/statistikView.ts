@@ -20,6 +20,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../../models/enums/TSStatistikParameterType';
 import {TSBatchJobInformation} from '../../../../models/TSBatchJobInformation';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {TSInstitutionStammdaten} from '../../../../models/TSInstitutionStammdaten';
 import {TSStatistikParameter} from '../../../../models/TSStatistikParameter';
 import {TSWorkJob} from '../../../../models/TSWorkJob';
 import {DateUtil} from '../../../../utils/DateUtil';
@@ -30,6 +31,7 @@ import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {BatchJobRS} from '../../../core/service/batchRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdatenRS.rest';
 import {ReportAsyncRS} from '../../../core/service/reportAsyncRS.rest';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
@@ -56,6 +58,7 @@ export class StatistikViewController implements IController {
 
     public static $inject: string[] = [
         'GesuchsperiodeRS',
+        'InstitutionStammdatenRS',
         '$log',
         'ReportAsyncRS',
         'DownloadRS',
@@ -80,9 +83,11 @@ export class StatistikViewController implements IController {
     public userjobs: Array<TSWorkJob>;
     public allJobs: Array<TSBatchJobInformation>;
     public years: string[];
+    public institutionStammdatenList: TSInstitutionStammdaten[];
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly institutionStammdatenRS: InstitutionStammdatenRS,
         private readonly $log: ILogService,
         private readonly reportAsyncRS: ReportAsyncRS,
         private readonly downloadRS: DownloadRS,
@@ -104,6 +109,13 @@ export class StatistikViewController implements IController {
             }
             this.calculateYears();
         });
+
+        this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
+            .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
+                this.institutionStammdatenList = institutionStammdatenList.sort((a, b) => {
+                    return a.institution.name.localeCompare(b.institution.name);
+                });
+            });
 
         this.refreshUserJobs();
         this.initBatchJobPolling();
@@ -255,6 +267,14 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
+            case TSStatistikParameterType.TAGESSCHULE_OHNE_FINSIT:
+                this.reportAsyncRS.getTagesschuleOhneFinSitReportExcel(
+                    this._statistikParameter.tagesschuleOhneFinSit.id,
+                    this._statistikParameter.gesuchsperiode)
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
@@ -330,5 +350,11 @@ export class StatistikViewController implements IController {
             });
 
         this.years.sort();
+    }
+
+    public getGesuchsperiodenForTagesschule(stammdaten: TSInstitutionStammdaten): TSGesuchsperiode[] {
+        return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.map(d => {
+            return d.gesuchsperiode;
+        });
     }
 }

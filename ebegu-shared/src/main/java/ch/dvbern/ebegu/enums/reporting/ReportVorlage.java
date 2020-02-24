@@ -131,6 +131,12 @@ public enum ReportVorlage {
 		ReportFileName.LASTENAUSGLEICH_BERECHNUNG,
 		Constants.DATA,
 		MergeFieldLastenausgleichBerechnung.class
+	),
+	VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT(
+		"/reporting/TagesschuleOhneFinSit.xlsx",
+		ReportFileName.TAGESSCHULE_OHNE_FINSIT,
+		Constants.DATA,
+		MergeFieldLastenausgleichBerechnung.class
 	);
 
 	@Nonnull

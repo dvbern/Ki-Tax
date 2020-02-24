@@ -290,6 +290,12 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			locale);
 	}
 
+	@Nonnull
+	@Override
+	public Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlageReportTagesschuleOhneFinsit, @Nonnull String stammdatenId, @Nonnull String gesuchsperiodeId, @Nonnull Locale locale) {
+		return null;
+	}
+
 	private void setPropertyIfPresent(@Nonnull Properties jobParameters, @Nonnull String paramName, @Nullable String paramValue) {
 		if (paramValue != null) {
 			jobParameters.setProperty(paramName, paramValue);
