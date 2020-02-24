@@ -194,8 +194,7 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("LastenausgleichDetail{");
-		sb.append("lastenausgleich=").append(lastenausgleich.getJahr());
-		sb.append(", jahr=").append(jahr);
+		sb.append("jahr=").append(jahr);
 		sb.append(", gemeinde=").append(gemeinde.getName());
 		sb.append(", totalBelegungen=").append(totalBelegungen);
 		sb.append(", totalBetragGutscheine=").append(totalBetragGutscheine);
