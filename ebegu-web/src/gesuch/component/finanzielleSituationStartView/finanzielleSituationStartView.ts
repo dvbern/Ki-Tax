@@ -240,4 +240,8 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     public is2GSRequired(): boolean {
         return this.gesuchModelManager.isGesuchsteller2Required();
     }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
+    }
 }

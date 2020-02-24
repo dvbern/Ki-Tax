@@ -21,17 +21,27 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von Familiensituation in der Datenbank.
@@ -67,6 +77,28 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nullable
 	@Column(nullable = true)
 	private LocalDate startKonkubinat;
+
+	@Column(nullable = false)
+	private boolean keineMahlzeitenverguenstigungBeantragt;
+
+	@Nullable
+	@Column(nullable = true)
+	@Embedded
+	@Valid
+	private IBAN iban;
+
+	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = true)
+	private String kontoinhaber;
+
+	@Column(nullable = false)
+	private boolean abweichendeZahlungsadresse;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_zahlungs_adresse"), nullable = true)
+	private Adresse zahlungsadresse;
 
 	public Familiensituation() {
 	}
@@ -136,6 +168,49 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
 	}
 
+	public boolean isKeineMahlzeitenverguenstigungBeantragt() {
+		return keineMahlzeitenverguenstigungBeantragt;
+	}
+
+	public void setKeineMahlzeitenverguenstigungBeantragt(boolean keineMahlzeitenverguenstigungBeantragt) {
+		this.keineMahlzeitenverguenstigungBeantragt = keineMahlzeitenverguenstigungBeantragt;
+	}
+
+	@Nullable
+	public IBAN getIban() {
+		return iban;
+	}
+
+	public void setIban(@Nullable IBAN iban) {
+		this.iban = iban;
+	}
+
+	@Nullable
+	public String getKontoinhaber() {
+		return kontoinhaber;
+	}
+
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
+	}
+
+	public boolean isAbweichendeZahlungsadresse() {
+		return abweichendeZahlungsadresse;
+	}
+
+	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	}
+
+	@Nullable
+	public Adresse getZahlungsadresse() {
+		return zahlungsadresse;
+	}
+
+	public void setZahlungsadresse(@Nullable Adresse zahlungsadresse) {
+		this.zahlungsadresse = zahlungsadresse;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
@@ -158,6 +233,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		return false;
 	}
 
+	// TODO KIBON-1042
 	@Nonnull
 	public Familiensituation copyFamiliensituation(@Nonnull Familiensituation target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);

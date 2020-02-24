@@ -1623,4 +1623,8 @@ export class GesuchModelManager {
     public isFerieninselangebotEnabled(): boolean {
         return this.authServiceRS.hasMandantAngebotFI();
     }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
 }

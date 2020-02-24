@@ -124,6 +124,30 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row" ng-if="vm.showIbanDaten()">
+                    <div class="col-xs-12 dv-input-container-question">
+                        <div class=" checkbox">
+                            <md-checkbox ng-model="vm.model." name="ibanCheckbox" id="ibanCheckbox"
+                                         aria-label="{{'IBAN_REQUIRED_QUESTION'|translate}}"
+                                         dv-enable-element
+                                         dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                                         dv-enable-expression="vm.areEmailTelefonEditable()">
+                                <span data-translate="IBAN_REQUIRED_QUESTION"></span>
+                            </md-checkbox>
+                            <dv-bisher gs="vm.showIBANGS" class="dv-bisher-break"
+                                       ja="vm.showIBAN"
+                                       specific-bisher-text="vm.getTextIbanKorrekturJA()"></dv-bisher>
+                            <dv-error-messages for="vm.form.showIBAN.$error"
+                                               class="error" style=""></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="vm.isIbanRequired()">
+
+                </div>
+
                 <!--Buttons-->
                 <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.confirmAndSave()" dv-sub-step="1">
                 </dv-navigation>

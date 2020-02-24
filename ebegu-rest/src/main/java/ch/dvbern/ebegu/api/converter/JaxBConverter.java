@@ -665,6 +665,31 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(familiensituation);
 		requireNonNull(familiensituationJAXP);
 
+		// wenn der Gesuchsteller keine Mahlzeitenvergünstigung wuenscht,
+		// muessen wir sicher stellen, dass alle relevanten Felder wieder auf null gesetzt werden.
+		// Falls er eine wuenscht, muss er mindestens die IBAN Nummer sowie den Kontoinhaber ausfuellen.
+		if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
+			requireNonNull(familiensituationJAXP.getIban());
+			requireNonNull(familiensituationJAXP.getKontoinhaber());
+
+			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
+			if (familiensituationJAXP.getIban() != null) {
+				familiensituation.setIban(new IBAN(familiensituationJAXP.getIban()));
+			}
+			familiensituation.setKontoinhaber(familiensituationJAXP.getKontoinhaber());
+			familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresse());
+
+			if (familiensituationJAXP.getZahlungsadresse() != null) {
+				familiensituation.setZahlungsadresse(adresseToEntity(familiensituationJAXP.getZahlungsadresse(),
+					familiensituation.getZahlungsadresse() == null ? new Adresse() :
+						familiensituation.getZahlungsadresse()));
+			}
+		} else {
+			familiensituation.setIban(null);
+			familiensituation.setKontoinhaber(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
+			familiensituation.setZahlungsadresse(null);
+		}
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
 		familiensituation.setFamilienstatus(familiensituationJAXP.getFamilienstatus());
 		familiensituation.setGemeinsameSteuererklaerung(familiensituationJAXP.getGemeinsameSteuererklaerung());
@@ -685,6 +710,15 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
+		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
+		if (persistedFamiliensituation.getIban() != null) {
+			jaxFamiliensituation.setIban(persistedFamiliensituation.getIban().getIban());
+		}
+		jaxFamiliensituation.setKontoinhaber(persistedFamiliensituation.getKontoinhaber());
+		jaxFamiliensituation.setAbweichendeZahlungsadresse(persistedFamiliensituation.isAbweichendeZahlungsadresse());
+		if (persistedFamiliensituation.getZahlungsadresse() != null) {
+			jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedFamiliensituation.getZahlungsadresse()));
+		}
 
 		return jaxFamiliensituation;
 	}

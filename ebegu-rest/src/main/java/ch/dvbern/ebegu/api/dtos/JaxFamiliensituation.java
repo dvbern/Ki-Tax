@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
@@ -59,6 +60,19 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate startKonkubinat = null;
+
+	private boolean keineMahlzeitenverguenstigungBeantragt;
+
+	@Nullable
+	private String iban;
+
+	@Nullable
+	private String kontoinhaber;
+
+	private boolean abweichendeZahlungsadresse;
+
+	@Nullable
+	private JaxAdresse zahlungsadresse;
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -125,5 +139,48 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setVerguenstigungGewuenscht(@Nullable Boolean verguenstigungGewuenscht) {
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
+	}
+
+	public boolean isKeineMahlzeitenverguenstigungBeantragt() {
+		return keineMahlzeitenverguenstigungBeantragt;
+	}
+
+	public void setKeineMahlzeitenverguenstigungBeantragt(boolean keineMahlzeitenverguenstigungBeantragt) {
+		this.keineMahlzeitenverguenstigungBeantragt = keineMahlzeitenverguenstigungBeantragt;
+	}
+
+	@Nullable
+	public String getIban() {
+		return iban;
+	}
+
+	public void setIban(@Nullable String iban) {
+		this.iban = iban;
+	}
+
+	@Nullable
+	public String getKontoinhaber() {
+		return kontoinhaber;
+	}
+
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
+	}
+
+	public boolean isAbweichendeZahlungsadresse() {
+		return abweichendeZahlungsadresse;
+	}
+
+	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	}
+
+	@Nullable
+	public JaxAdresse getZahlungsadresse() {
+		return zahlungsadresse;
+	}
+
+	public void setZahlungsadresse(@Nullable JaxAdresse zahlungsadresse) {
+		this.zahlungsadresse = zahlungsadresse;
 	}
 }

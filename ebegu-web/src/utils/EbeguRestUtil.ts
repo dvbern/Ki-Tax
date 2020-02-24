@@ -552,6 +552,13 @@ export class EbeguRestUtil {
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
             restFamiliensituation.verguenstigungGewuenscht =
                 familiensituation.verguenstigungGewuenscht;
+            restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
+                familiensituation.keineMahlzeitenverguenstigungBeantragt;
+            restFamiliensituation.iban = familiensituation.iban;
+            restFamiliensituation.kontoinhaber = familiensituation.kontoinhaber;
+            restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
+            restFamiliensituation.zahlungsadresse =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresse);
             return restFamiliensituation;
         }
         return undefined;
@@ -613,6 +620,13 @@ export class EbeguRestUtil {
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
             familiensituation.verguenstigungGewuenscht =
                 familiensituationFromServer.verguenstigungGewuenscht;
+            familiensituation.keineMahlzeitenverguenstigungBeantragt =
+                familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
+            familiensituation.iban = familiensituationFromServer.iban;
+            familiensituation.kontoinhaber = familiensituationFromServer.kontoinhaber;
+            familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
+            familiensituation.zahlungsadresse =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
             return familiensituation;
         }
         return undefined;
