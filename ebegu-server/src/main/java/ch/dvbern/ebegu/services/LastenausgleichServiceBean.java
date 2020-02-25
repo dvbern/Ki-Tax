@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,24 +163,25 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		if (detailAktuellesTotalKorrekturjahr != null) {
 			// Dieses Detail ist jetzt aber das aktuelle Total für das Jahr. Uns interessiert aber die eventuelle
 			// Differenz zu bereits ausgeglichenen Beträgen
-			Collection<LastenausgleichDetail> detailsBereitsVerrechnetKorrekturjahr =
-				findLastenausgleichDetailForKorrekturen(korrekturJahr, gemeinde);
-			LastenausgleichDetail detailBisherigeWerte = new LastenausgleichDetail();
-			for (LastenausgleichDetail detailBereitsVerrechnet : detailsBereitsVerrechnetKorrekturjahr) {
-				detailBisherigeWerte.add(detailBereitsVerrechnet);
-			}
-			logBuilder.append("Davon bereits verrechnet: ").append(NEWLINE).append(detailBisherigeWerte).append(NEWLINE);
-			// Gibt es eine Differenz?
-			if (detailBisherigeWerte.hasChanged(detailAktuellesTotalKorrekturjahr)) {
-				// Es gibt eine Differenz (wobei wir nur den Betrag des Lastenausgleiches anschauen)
-				// Wir rechnen das bisher verrechnete minus
-				LastenausgleichDetail detailKorrektur = createLastenausgleichDetailKorrektur(detailBisherigeWerte);
-				detailKorrektur.setLastenausgleich(lastenausgleich);
-				lastenausgleich.addLastenausgleichDetail(detailKorrektur);
-				logBuilder.append("Korrektur PLUS: ").append(NEWLINE).append(detailKorrektur).append(NEWLINE);
-				// Und erstellen einen neuen Korrektur-Eintrag mit dem aktuell berechneten Wert
-				lastenausgleich.addLastenausgleichDetail(detailAktuellesTotalKorrekturjahr);
-				logBuilder.append("Korrektur MINUS: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+			Collection<LastenausgleichDetail> detailsBereitsVerrechnetKorrekturjahr = findLastenausgleichDetailForKorrekturen(korrekturJahr, gemeinde);
+			if (CollectionUtils.isNotEmpty(detailsBereitsVerrechnetKorrekturjahr)) {
+				LastenausgleichDetail detailBisherigeWerte = new LastenausgleichDetail();
+				for (LastenausgleichDetail detailBereitsVerrechnet : detailsBereitsVerrechnetKorrekturjahr) {
+					detailBisherigeWerte.add(detailBereitsVerrechnet);
+				}
+				logBuilder.append("Davon bereits verrechnet: ").append(NEWLINE).append(detailBisherigeWerte).append(NEWLINE);
+				// Gibt es eine Differenz?
+				if (detailBisherigeWerte.hasChanged(detailAktuellesTotalKorrekturjahr)) {
+					// Es gibt eine Differenz (wobei wir nur den Betrag des Lastenausgleiches anschauen)
+					// Wir rechnen das bisher verrechnete minus
+					LastenausgleichDetail detailKorrektur = createLastenausgleichDetailKorrektur(detailBisherigeWerte);
+					detailKorrektur.setLastenausgleich(lastenausgleich);
+					lastenausgleich.addLastenausgleichDetail(detailKorrektur);
+					logBuilder.append("Korrektur PLUS: ").append(NEWLINE).append(detailKorrektur).append(NEWLINE);
+					// Und erstellen einen neuen Korrektur-Eintrag mit dem aktuell berechneten Wert
+					lastenausgleich.addLastenausgleichDetail(detailAktuellesTotalKorrekturjahr);
+					logBuilder.append("Korrektur MINUS: ").append(NEWLINE).append(detailAktuellesTotalKorrekturjahr).append(NEWLINE);
+				}
 			}
 		}
 	}

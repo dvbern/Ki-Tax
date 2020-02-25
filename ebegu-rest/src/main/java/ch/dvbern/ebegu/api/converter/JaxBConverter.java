@@ -4604,21 +4604,11 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
 		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
-		// Konfiguration
-		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
-			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
-			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
-					stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
-		} else {
-			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
-			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
-					stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
+		// Konfiguration: Wir laden immer alle Gesuchsperioden
+		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+				stammdaten.getGemeinde(),
+				gesuchsperiode));
 		}
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
@@ -4727,20 +4717,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
 
 		return jaxTextRessource;
-	}
-
-	/**
-	 * Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
-	 * Die Gesuchsperiode wo das BEGU Startdatum drin liegt, falls diese bereits existert,
-	 * falls diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
-	 */
-	@Nullable
-	private Gesuchsperiode findRelevantGesuchsperiode(@Nonnull GemeindeStammdaten stammdaten) {
-		Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
-			.getBetreuungsgutscheineStartdatum());
-		Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
-
-		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
 	}
 
 	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(

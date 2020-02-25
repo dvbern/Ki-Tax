@@ -168,6 +168,10 @@ export class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
+    public getSupportedImageUrl(): string {
+        return `${this.serviceURL}/supported/image?timestamp=${new Date().getTime()}`;
+    }
+
     public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
@@ -189,6 +193,16 @@ export class GemeindeRS implements IEntityRS {
             this.$log.error(`Upload Gemeinde (${gemeindeId}) Logo failed`);
         }
         return result;
+    }
+
+    public isSupportedImage(fileToUpload: File): IPromise<any> {
+        const formData = new FormData();
+        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        formData.append('kat', fileToUpload, encodeURIComponent('logo'));
+        return this.$http.post(this.getSupportedImageUrl(), formData, {
+            transformRequest: (request: IHttpRequestTransformer) => request,
+            headers: {'Content-Type': undefined}
+        });
     }
 
     public getUnregisteredBfsGemeinden(): IPromise<TSBfsGemeinde[]> {

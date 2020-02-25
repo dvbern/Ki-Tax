@@ -356,6 +356,10 @@ public abstract class AbstractEbeguRule implements Rule {
 		return RuleUtil.getStichtagForEreignis(ereignisdatum);
 	}
 
+	/**
+	 * Gibt eine Liste von Input-Objekten zurück, welche in CalcRules berechnet werden sollen: Wenn Typ ASIV
+	 * muss ASIV *und* Gemeinde berechnet werden, sonst nur Gemeinde.
+	 */
 	@Nonnull
 	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		List<BGCalculationInput> inputList = new ArrayList<>();
