@@ -68,7 +68,6 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		Kind kind = platz.getKind().getKindJA();
 		final LocalDate geburtsdatum = kind.getGeburtsdatum();
 		LocalDate stichtagBabyTarifEnde = geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth());
-//		boolean eingeschult = kind.getEinschulungTyp() != null && kind.getEinschulungTyp().isEingeschult();
 		DateRange gesuchsperiode = platz.extractGesuchsperiode().getGueltigkeit();
 
 		if (gesuchsperiode.contains(stichtagBabyTarifEnde)) {
