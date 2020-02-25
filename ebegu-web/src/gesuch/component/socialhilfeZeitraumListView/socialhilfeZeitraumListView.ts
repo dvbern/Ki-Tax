@@ -81,14 +81,15 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     }
 
     public initSocialhilfeZeitraumList(): void {
-        if (this.socialhilfeZeitraeume === undefined) {
-            if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.getGesuch().familiensituationContainer ||
-                !this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers) {
-                this.socialhilfeZeitraeume = [];
-            } else {
-                const familiensituationContainer = this.gesuchModelManager.getGesuch().familiensituationContainer;
-                this.socialhilfeZeitraeume = familiensituationContainer.socialhilfeZeitraumContainers;
-            }
+        if (this.socialhilfeZeitraeume !== undefined) {
+            return;
+        }
+        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().familiensituationContainer &&
+            this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers) {
+            const familiensituationContainer = this.gesuchModelManager.getGesuch().familiensituationContainer;
+            this.socialhilfeZeitraeume = familiensituationContainer.socialhilfeZeitraumContainers;
+        } else {
+            this.socialhilfeZeitraeume = [];
         }
     }
 

@@ -1900,5 +1900,6 @@
     "NO_SOCIALHILFEZEITRAUM_DATA": "Keine SocialhilfeZeitraum Daten vorhanden",
     "SOCIALHILFEZEITRAUM_LOESCHEN": "Wollen Sie der SocialhilfeZeitraum wirklich löschen?",
     "SOCIALHILFEZEITRAUM_TITLE": "SocialhilfeZeitraum erfassen",
+    "ZEITRAUM_HINZUFUEGEN": "Zeitraum hinzufügen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

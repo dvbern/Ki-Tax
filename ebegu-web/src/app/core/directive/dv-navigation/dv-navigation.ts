@@ -262,7 +262,8 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
-                if (this.gesuchModelManager.isSocialHilfeBezueger()) {
+                if (this.gesuchModelManager.isSocialHilfeBezueger() && (this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
+                || this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled)) {
                     return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
                 }
                 // finanzielleSituationStart
