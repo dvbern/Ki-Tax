@@ -141,7 +141,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     /**
-     * Id the Step is still in status IN_BEARBEITUNG and there are only Ferieninsel, the Gesuch must be updated.
+     * If the Step is still in status IN_BEARBEITUNG and there are only Ferieninsel, the Gesuch must be updated.
      */
     private updateStepDueToOnlyFerieninsel(): boolean {
         return this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION,
@@ -243,5 +243,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
+    }
+
+    public isIbanRequired(): boolean {
+        return this.isMahlzeitenverguenstigungEnabled(); // TODO also check for the flag
     }
 }
