@@ -46,7 +46,7 @@ export class TSSocialhilfeZeitraumContainer extends TSAbstractMutableEntity {
         this._socialhilfeZeitraumJA = value;
     }
 
-    public isGSContainerEmpty() {
+    public isGSContainerEmpty(): boolean {
         return EbeguUtil.isNullOrUndefined(this.socialhilfeZeitraumGS);
     }
 }

@@ -16,17 +16,15 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions, IQService, IScope, ITimeoutService} from 'angular';
+import {IComponentOptions, IScope, ITimeoutService} from 'angular';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {SocialhilfeZeitraumRS} from '../../../app/core/service/socialhilfeZeitraumRS.rest';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSSocialhilfeZeitraumContainer} from '../../../models/TSSocialhilfeZeitraumContainer';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
@@ -41,10 +39,7 @@ export class SocialhilfeZeitraumListViewComponentConfig implements IComponentOpt
     public controllerAs = 'vm';
 }
 
-export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewController<TSSocialhilfeZeitraumContainer> implements IDVFocusableController{
-
-    public gesuchModelManager: GesuchModelManager;
-    public socialhilfeZeitraeume: TSSocialhilfeZeitraumContainer[];
+export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewController<TSSocialhilfeZeitraumContainer> implements IDVFocusableController {
 
     public static $inject: string[] = [
         '$state',
@@ -57,6 +52,9 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
         '$timeout',
         'SocialhilfeZeitraumRS',
     ];
+
+    public gesuchModelManager: GesuchModelManager;
+    public socialhilfeZeitraeume: TSSocialhilfeZeitraumContainer[];
 
     public constructor(
         private readonly $state: StateService,
@@ -84,12 +82,12 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
 
     public initSocialhilfeZeitraumList(): void {
         if (this.socialhilfeZeitraeume === undefined) {
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().familiensituationContainer &&
-                this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers) {
+            if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.getGesuch().familiensituationContainer ||
+                !this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers) {
+                this.socialhilfeZeitraeume = [];
+            } else {
                 const familiensituationContainer = this.gesuchModelManager.getGesuch().familiensituationContainer;
                 this.socialhilfeZeitraeume = familiensituationContainer.socialhilfeZeitraumContainers;
-            } else {
-                this.socialhilfeZeitraeume = [];
             }
         }
     }
@@ -123,7 +121,7 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     }
 
     private findIndexOfSocialhilfeZeitraum(socialhilfeZeitraum: any): number {
-       return this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers.indexOf(socialhilfeZeitraum);
+        return this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers.indexOf(socialhilfeZeitraum);
     }
 
     private openSocialhilfeZeitraumView(socialhilfeZeitraumNum: number): void {

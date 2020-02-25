@@ -16,7 +16,6 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSSocialhilfeZeitraumContainer} from '../../../models/TSSocialhilfeZeitraumContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
@@ -44,7 +43,7 @@ export class SocialhilfeZeitraumRS {
         let restSocialhilfeZaitraum = {};
         restSocialhilfeZaitraum =
             this.ebeguRestUtil.socialhilfeZeitraumContainerToRestObject(restSocialhilfeZaitraum, socialhilfeZeitraumContainer);
-        const url = `${this.serviceURL}/${encodeURIComponent(famSitID)}`; ///${gesuchId}
+        const url = `${this.serviceURL}/${encodeURIComponent(famSitID)}`;
         return this.http.put(url, restSocialhilfeZaitraum).then((response: any) => {
             this.log.debug('PARSING SocialhilfeZeitraumContainer REST object ', response.data);
             return this.ebeguRestUtil.parseSocialhilfeZeitraumContainer(new TSSocialhilfeZeitraumContainer(), response.data);

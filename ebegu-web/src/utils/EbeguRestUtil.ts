@@ -663,7 +663,7 @@ export class EbeguRestUtil {
             restFamiliensituationContainer.socialhilfeZeitraumContainers = [];
             if (Array.isArray(familiensituationContainer.socialhilfeZeitraumContainers)) {
                 restFamiliensituationContainer.socialhilfeZeitraumContainers =
-                    familiensituationContainer.socialhilfeZeitraumContainers.map(szc => this.socialhilfeZeitraumContainerToRestObject({}, szc))
+                    familiensituationContainer.socialhilfeZeitraumContainers.map(szc => this.socialhilfeZeitraumContainerToRestObject({}, szc));
             }
 
             return restFamiliensituationContainer;
@@ -705,16 +705,16 @@ export class EbeguRestUtil {
 
     public parseSocialhilfeZeitraumContainer(
         socialhilfeZeitraumContainer: TSSocialhilfeZeitraumContainer,
-        SocialhilfeZeitraumContFromServer: any,
+        socialhilfeZeitraumContFromServer: any,
     ): TSSocialhilfeZeitraumContainer {
-        if (SocialhilfeZeitraumContFromServer) {
-            this.parseAbstractMutableEntity(socialhilfeZeitraumContainer, SocialhilfeZeitraumContFromServer);
+        if (socialhilfeZeitraumContFromServer) {
+            this.parseAbstractMutableEntity(socialhilfeZeitraumContainer, socialhilfeZeitraumContFromServer);
             socialhilfeZeitraumContainer.socialhilfeZeitraumGS =
                 this.parseSocialhilfeZeitraum(socialhilfeZeitraumContainer.socialhilfeZeitraumGS || new TSSocialhilfeZeitraum(),
-                    SocialhilfeZeitraumContFromServer.socialhilfeZeitraumGS);
+                    socialhilfeZeitraumContFromServer.socialhilfeZeitraumGS);
             socialhilfeZeitraumContainer.socialhilfeZeitraumJA =
                 this.parseSocialhilfeZeitraum(socialhilfeZeitraumContainer.socialhilfeZeitraumJA || new TSSocialhilfeZeitraum(),
-                    SocialhilfeZeitraumContFromServer.socialhilfeZeitraumJA);
+                    socialhilfeZeitraumContFromServer.socialhilfeZeitraumJA);
             return socialhilfeZeitraumContainer;
         }
         return undefined;

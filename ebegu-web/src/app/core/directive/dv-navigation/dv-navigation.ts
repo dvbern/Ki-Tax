@@ -262,7 +262,7 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
-                if(this.gesuchModelManager.isSocialHilfeBezueger()){
+                if (this.gesuchModelManager.isSocialHilfeBezueger()) {
                     return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
                 }
                 // finanzielleSituationStart
@@ -321,7 +321,8 @@ export class NavigatorController implements IController {
 
             return undefined;
         }
-        if(TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2){
+        if (TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
+            && this.dvSubStep === 2) {
             return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
         }
 
@@ -402,11 +403,12 @@ export class NavigatorController implements IController {
             return this.navigateToStep(TSWizardStepName.VERFUEGEN);
         }
 
-        if(TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2){
+        if (TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
+            && this.dvSubStep === 2) {
             return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
         }
 
-        if(TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()){
+        if (TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()) {
             return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
         }
 

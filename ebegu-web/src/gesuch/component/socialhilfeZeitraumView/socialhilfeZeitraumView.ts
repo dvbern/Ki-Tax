@@ -16,24 +16,16 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
-import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {ErwerbspensumRS} from '../../../app/core/service/erwerbspensumRS.rest';
 import {SocialhilfeZeitraumRS} from '../../../app/core/service/socialhilfeZeitraumRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSErwerbspensum} from '../../../models/TSErwerbspensum';
-import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
-import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {TSSocialhilfeZeitraum} from '../../../models/TSSocialhilfeZeitraum';
 import {TSSocialhilfeZeitraumContainer} from '../../../models/TSSocialhilfeZeitraumContainer';
-import {TSUnbezahlterUrlaub} from '../../../models/TSUnbezahlterUrlaub';
-import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {IErwerbspensumStateParams, ISocialhilfeZeitraumStateParams} from '../../gesuch.route';
+import {ISocialhilfeZeitraumStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
@@ -50,8 +42,6 @@ export class SocialhilfeZeitraumViewComponentConfig implements IComponentOptions
 
 export class SocialhilfeZeitraumViewController extends AbstractGesuchViewController<TSSocialhilfeZeitraumContainer> {
 
-    public familiensituation: TSFamiliensituationContainer;
-
     public static $inject: string[] = [
         '$stateParams',
         'GesuchModelManager',
@@ -65,6 +55,8 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
         '$timeout',
         'SocialhilfeZeitraumRS',
     ];
+
+    public familiensituation: TSFamiliensituationContainer;
 
     public constructor(
         $stateParams: ISocialhilfeZeitraumStateParams,
