@@ -252,7 +252,7 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull LocalDate geburtsdatumKind,
 		@Nonnull LocalDate von,
 		@Nonnull LocalDate bis,
-		boolean eingeschult,
+		@Nonnull EinschulungTyp einschulungTyp,
 		boolean besondereBeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
@@ -265,7 +265,7 @@ public abstract class AbstractBGRechnerTest {
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
 		Kind kind = new Kind();
 		kind.setGeburtsdatum(geburtsdatumKind);
-		kind.setEinschulungTyp(eingeschult ? EinschulungTyp.KLASSE1 : EinschulungTyp.VORSCHULALTER);
+		kind.setEinschulungTyp(einschulungTyp);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
 		Gesuch gesuch = new Gesuch();

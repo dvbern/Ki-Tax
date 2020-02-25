@@ -28,6 +28,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.Validate;
@@ -87,7 +89,9 @@ public class BGCalculationInput {
 
 	private boolean babyTarif;
 
-	private boolean eingeschult;
+	private EinschulungTyp einschulungTyp;
+
+	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
@@ -156,7 +160,8 @@ public class BGCalculationInput {
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
 		this.babyTarif = toCopy.babyTarif;
-		this.eingeschult = toCopy.eingeschult;
+		this.einschulungTyp = toCopy.einschulungTyp;
+		this.betreuungsangebotTyp = toCopy.betreuungsangebotTyp;
 		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
 		this.anspruchspensumProzent = toCopy.anspruchspensumProzent;
 		this.einkommensjahr = toCopy.einkommensjahr;
@@ -350,12 +355,20 @@ public class BGCalculationInput {
 		this.babyTarif = babyTarif;
 	}
 
-	public boolean isEingeschult() {
-		return eingeschult;
+	public EinschulungTyp getEinschulungTyp() {
+		return einschulungTyp;
 	}
 
-	public void setEingeschult(boolean eingeschult) {
-		this.eingeschult = eingeschult;
+	public void setEinschulungTyp(EinschulungTyp einschulungTyp) {
+		this.einschulungTyp = einschulungTyp;
+	}
+
+	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
+		return betreuungsangebotTyp;
+	}
+
+	public void setBetreuungsangebotTyp(BetreuungsangebotTyp betreuungsangebotTyp) {
+		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
 	public int getAnspruchspensumProzent() {
@@ -537,7 +550,8 @@ public class BGCalculationInput {
 			&& other.abschnittLiegtNachBEGUStartdatum);
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
-		this.setEingeschult(this.eingeschult || other.eingeschult);
+		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
+		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
@@ -582,7 +596,8 @@ public class BGCalculationInput {
 			abschnittLiegtNachBEGUStartdatum == other.abschnittLiegtNachBEGUStartdatum &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, other.wohnsitzNichtInGemeindeGS1) &&
 			babyTarif == other.babyTarif &&
-			eingeschult == other.eingeschult &&
+			einschulungTyp == other.einschulungTyp &&
+			betreuungsangebotTyp == other.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
@@ -602,7 +617,8 @@ public class BGCalculationInput {
 			return true;
 		}
 		return babyTarif == that.babyTarif &&
-			eingeschult == that.eingeschult &&
+			einschulungTyp == that.einschulungTyp &&
+			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&

@@ -45,6 +45,8 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -398,9 +400,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBabyTarif(babyTarif);
 	}
 
-	public void setEingeschultForAsivAndGemeinde(boolean eingeschult) {
-		this.getBgCalculationInputAsiv().setEingeschult(eingeschult);
-		this.getBgCalculationInputGemeinde().setEingeschult(eingeschult);
+	public void setEinschulungTypForAsivAndGemeinde(@Nonnull EinschulungTyp einschulungTyp) {
+		this.getBgCalculationInputAsiv().setEinschulungTyp(einschulungTyp);
+		this.getBgCalculationInputGemeinde().setEinschulungTyp(einschulungTyp);
+	}
+
+	public void setBetreuungsangebotTypForAsivAndGemeinde(@Nonnull BetreuungsangebotTyp typ) {
+		this.getBgCalculationInputAsiv().setBetreuungsangebotTyp(typ);
+		this.getBgCalculationInputGemeinde().setBetreuungsangebotTyp(typ);
 	}
 
 	public void setHasSecondGesuchstellerForFinanzielleSituationForAsivAndGemeinde(boolean hasSecondGesuchstellerForFinanzielleSituation) {

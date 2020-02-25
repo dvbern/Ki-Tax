@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -59,19 +60,19 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
 	public void test() {
-		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 20, 100000, 120.879);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 20, 100000, 60.440);
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 20, 50000, 147.741);
+		testWithParams(geburtstagBaby, EinschulungTyp.VORSCHULALTER, false, false, intervall, 20, 20, 100000, 120.879);
+		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, false, false, intervall, 20, 20, 100000, 60.440);
+		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, intervall, 20, 20, 50000, 147.741);
 
-		testWithParams(geburtstagKind, false, false, false, intervallTag, 20, 20, 100000, 7.3261);
-		testWithParams(geburtstagKind, true, false, false, intervallTag, 20, 20, 100000, 5.495);
-		testWithParams(geburtstagKind, false, true, true, intervallTag, 20, 20, 100000, 14.469);
-		testWithParams(geburtstagKind, true, true, true, intervallTag, 20, 20, 100000, 12.637);
+		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, intervallTag, 20, 20, 100000, 7.3261);
+		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, false, false, intervallTag, 20, 20, 100000, 5.495);
+		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, true, true, intervallTag, 20, 20, 100000, 14.469);
+		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, true, true, intervallTag, 20, 20, 100000, 12.637);
 
-		testWithParams(geburtstagKind, false, false, false, intervall, 20, 20, 150000, 13.431);
-		testWithParams(geburtstagKind, true, false, false, intervall, 20, 20, 150000, 10.073);
-		testWithParams(geburtstagKind, false, true, true, intervall, 20, 20, 150000, 92.002);
-		testWithParams(geburtstagKind, true, true, true, intervall, 20, 20, 150000, 88.645);
+		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, intervall, 20, 20, 150000, 13.431);
+		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, false, false, intervall, 20, 20, 150000, 10.073);
+		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, true, true, intervall, 20, 20, 150000, 92.002);
+		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, true, true, intervall, 20, 20, 150000, 88.645);
 	}
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
@@ -87,21 +88,21 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
 
 		// Normalfall Kind
-		testWithParams(kind, false, false, false, halberAugust, 50, 50, 68712, 352.366);
-		testWithParams(kind, false, false, false, ganzerSeptember, 50, 50, 68712, 780.239);
-		testWithParams(baby, false, false, false, halberAugust, 50, 50, 68712, 528.549);
-		testWithParams(baby, false, false, false, ganzerSeptember, 50, 50, 68712, 1170.359);
+		testWithParams(kind, EinschulungTyp.VORSCHULALTER, false, false, halberAugust, 50, 50, 68712, 352.366);
+		testWithParams(kind, EinschulungTyp.VORSCHULALTER, false, false, ganzerSeptember, 50, 50, 68712, 780.239);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, false, false, halberAugust, 50, 50, 68712, 528.549);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, false, false, ganzerSeptember, 50, 50, 68712, 1170.359);
 		// Normalfall Baby
-		testWithParams(baby, false, false, false, halberAugust, 50, 50, 185447, 0.00);
-		testWithParams(baby, false, false, false, ganzerSeptember, 50, 50, 185447, 0.00);
-		testWithParams(baby, false, true, true, halberAugust, 50, 50, 185447, 225.806);
-		testWithParams(baby, false, true, true, ganzerSeptember, 50, 50, 185447, 500.00);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, false, false, halberAugust, 50, 50, 185447, 0.00);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, false, false, ganzerSeptember, 50, 50, 185447, 0.00);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, true, true, halberAugust, 50, 50, 185447, 225.806);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, true, true, ganzerSeptember, 50, 50, 185447, 500.00);
 		// Besondere Beduerfnisse
-		testWithParams(baby, false, true, true, halberAugust, 50, 50, 35447, 871.613);
-		testWithParams(baby, false, true, true, ganzerSeptember, 50, 50, 35447, 1930.00);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, true, true, halberAugust, 50, 50, 35447, 871.613);
+		testWithParams(baby, EinschulungTyp.VORSCHULALTER, true, true, ganzerSeptember, 50, 50, 35447, 1930.00);
 		// Eingeschult
-		testWithParams(kind, true, false, false, halberAugust, 50, 50, 68712, 264.275);
-		testWithParams(kind, true, false, false, ganzerSeptember, 50, 50, 68712, 585.179);
+		testWithParams(kind, EinschulungTyp.KINDERGARTEN1, false, false, halberAugust, 50, 50, 68712, 264.275);
+		testWithParams(kind, EinschulungTyp.KINDERGARTEN1, false, false, ganzerSeptember, 50, 50, 68712, 585.179);
 	}
 
 	@Test
@@ -113,12 +114,12 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		IsPojo<BGCalculationResult> matcher = pojo(BGCalculationResult.class)
 			.where(BGCalculationResult::getVollkosten, comparesEqualTo(BigDecimal.valueOf(1000)));
 
-		testWithParams(geburtstagKind, false, false, false, ganzerSeptember, 100, 50, 180607, matcher);
+		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, ganzerSeptember, 100, 50, 180607, matcher);
 	}
 
 	private void testWithParams(
 		@Nonnull LocalDate geburtstag,
-		boolean eingeschult,
+		@Nonnull EinschulungTyp einschulungTyp,
 		boolean besondereBeduerfnisse,
 		boolean besondereBeduerfnisseBestaetigt,
 		@Nonnull DateRange intervall,
@@ -130,7 +131,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 
 		testWithParams(
 			geburtstag,
-			eingeschult,
+			einschulungTyp,
 			besondereBeduerfnisse,
 			besondereBeduerfnisseBestaetigt,
 			intervall,
@@ -142,7 +143,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 
 	private void testWithParams(
 		@Nonnull LocalDate geburtstag,
-		boolean eingeschult,
+		@Nonnull EinschulungTyp einschulungTyp,
 		boolean besondereBeduerfnisse,
 		boolean besondereBeduerfnisseBestaetigt,
 		@Nonnull DateRange intervall,
@@ -156,7 +157,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			geburtstag,
 			intervall.getGueltigAb(),
 			intervall.getGueltigBis(),
-			eingeschult,
+			einschulungTyp,
 			besondereBeduerfnisse,
 			MathUtil.DEFAULT.fromNullSafe(einkommen),
 			MathUtil.DEFAULT.fromNullSafe(2000));
@@ -166,7 +167,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(betreuungspensum));
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEingeschult(eingeschult);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(einschulungTyp);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
 		BGCalculationResult result = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
