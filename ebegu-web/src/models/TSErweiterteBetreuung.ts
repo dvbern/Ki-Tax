@@ -22,9 +22,18 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
     private _fachstelle: TSFachstelle;
     private _erweiterteBeduerfnisseBestaetigt: boolean = false;
     private _keineKesbPlatzierung: boolean;
+    private _betreuungInGemeinde: boolean = false;
 
     public constructor() {
         super();
+    }
+
+    public get betreuungInGemeinde(): boolean {
+        return this._betreuungInGemeinde;
+    }
+
+    public set betreuungInGemeinde(value: boolean) {
+        this._betreuungInGemeinde = value;
     }
 
     public get erweiterteBeduerfnisse(): boolean {

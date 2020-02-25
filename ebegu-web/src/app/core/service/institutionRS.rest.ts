@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -88,6 +89,12 @@ export class InstitutionRS {
     public getInstitutionenEditableForCurrentBenutzer(): IPromise<TSInstitution[]> {
         return this.$http.get(`${this.serviceURL}/editable/currentuser`).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionen(response.data);
+        });
+    }
+
+    public getInstitutionenListDTOEditableForCurrentBenutzer(): IPromise<TSInstitutionListDTO[]> {
+        return this.$http.get(`${this.serviceURL}/editable/currentuser/listdto`).then((response: any) => {
+            return this.ebeguRestUtil.parseInstitutionenListDTO(response.data);
         });
     }
 

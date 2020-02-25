@@ -81,7 +81,7 @@ describe('DVQuicksearchList', () => {
                     TSBetreuungsangebotTyp.TAGESFAMILIEN,
                 ];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
-                    .toEqual('Kita – Tagesstätte für Kleinkinder, Tagesfamilien');
+                    .toEqual('Kita, Tagesfamilien');
             });
             it('returns an empty string for invalid values or empty lists', () => {
                 quicksearchListViewController = new DVQuicksearchListController($filter,

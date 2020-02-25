@@ -36,6 +36,7 @@ import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import org.hibernate.envers.Audited;
 
 /**
@@ -43,6 +44,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
+@CheckPlatzAndAngebottyp
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
 @AssociationOverrides({
 	@AssociationOverride(name = "kind", joinColumns = @JoinColumn(name = "kind_id"), foreignKey = @ForeignKey(name = "FK_anmeldung_tagesschule_kind_id")),

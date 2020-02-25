@@ -41,23 +41,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Dossier_;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
-import ch.dvbern.ebegu.entities.Verfuegung_;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -191,15 +175,17 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return persistedVerfuegung;
 	}
 
-	@Override
 	@Nonnull
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public AnmeldungTagesschule anmeldungSchulamtUebernehmen(
-		@Nonnull String gesuchId,
-		@Nonnull String betreuungId
-	) {
-		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(gesuchId, betreuungId);
+	public AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+		// Da die Module auch beim Uebernehmen noch verändert worden sein können, muss die Anmeldung zuerst nochmals gespeichert werden
+		betreuungService.saveAnmeldungTagesschule(anmeldungTagesschule, false);
+
+		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(
+			anmeldungTagesschule.extractGesuch().getId(),
+			anmeldungTagesschule.getId());
 		// Wir muessen uns merken, ob dies die gueltige Anmeldung ist, da beim persistieren der Verfügung das Flag automatisch gesetzt wird.
 		boolean isGueltigeAnmeldung = betreuungMitVerfuegungPreview.isGueltig();
 		Objects.requireNonNull(betreuungMitVerfuegungPreview);
@@ -219,11 +205,15 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		if (isGueltigeAnmeldung) {
 			try {
 				// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
-				mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
+				GemeindeStammdaten gemeindeStammdaten =
+					gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGesuch().getDossier().getGemeinde().getId()).get();
+				if(gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+					mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
+				}
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,
 					"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
-					betreuungId);
+					anmeldungTagesschule.getId());
 			}
 		}
 
@@ -236,14 +226,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return persistedAnmeldung;
 	}
 
-	private AnmeldungTagesschule setVorgaengerAnmeldungTagesschuleAufUebernommen(@Nonnull AnmeldungTagesschule anmeldung) {
+	private void setVorgaengerAnmeldungTagesschuleAufUebernommen(@Nonnull AnmeldungTagesschule anmeldung) {
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 		// Rekursiv alle Vorgänger ungültig setzen
 		if (anmeldung.getVorgaengerId() != null) {
 			final Optional<AnmeldungTagesschule> vorgaengerOpt = betreuungService.findAnmeldungTagesschule(anmeldung.getVorgaengerId());
 			vorgaengerOpt.ifPresent(this::setVorgaengerAnmeldungTagesschuleAufUebernommen);
 		}
-		return anmeldung;
 	}
 
 	@Override
@@ -275,7 +264,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void generateVerfuegungDokument(@Nonnull Betreuung betreuung) {
 		try {
 			Gesuch gesuch = betreuung.extractGesuch();
-			//noinspection ResultOfMethodCallIgnored
 			generatedDokumentService.getVerfuegungDokumentAccessTokenGeneratedDokument(gesuch, betreuung, "", true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException(
@@ -295,7 +283,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		try {
 			Gesuch gesuch = anmeldung.extractGesuch();
 
-			//noinspection ResultOfMethodCallIgnored
 			generatedDokumentService.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, true,	true);
 		} catch (MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException(
@@ -452,11 +439,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		verfuegungPreview.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(betreuungMitVerfuegungPreview.extractGesuch());
 		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.NICHT_EINGETRETEN);
-		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen
 		try {
-			//noinspection ResultOfMethodCallIgnored
 			generatedDokumentService.getNichteintretenDokumentAccessTokenGeneratedDokument(betreuungMitVerfuegungPreview, true);
 		} catch (IOException | MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException("nichtEintreten", "Nichteintretensverfuegung-Dokument konnte nicht "
@@ -539,7 +524,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		initializeVorgaengerVerfuegungen(gesuch);
 
 		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
-		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen
+		authorizer.checkReadAuthorizationForAnyPlaetze(gesuch.extractAllPlaetze()); // plaetze pruefen
 		// reicht hier glaub
 		return gesuch;
 	}
@@ -694,6 +679,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		predicatesToUse.add(cb.isTrue(joinBetreuung.get(Betreuung_.gueltig)));
 
+		predicatesToUse.add(cb.equal(joinBetreuung.get(Betreuung_.betreuungsstatus), Betreuungsstatus.VERFUEGT));
+
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
 
 		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
@@ -726,6 +713,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			),
 			parameterYear
 		));
+
+		predicatesToUse.add(cb.equal(joinBetreuung.get(Betreuung_.betreuungsstatus), Betreuungsstatus.VERFUEGT));
 
 		predicatesToUse.add(cb.isTrue(joinBetreuung.get(Betreuung_.gueltig)));
 		Join<Gesuch, Dossier> joinDossier = joinBetreuung

@@ -13,12 +13,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.validators;
 
-public enum Amt {
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	JUGENDAMT,
-	SCHULAMT,
-	GEMEINDE,
-	NONE
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Target({ TYPE, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Constraint(validatedBy = CheckPlatzAndAngebottypValidator.class)
+@Documented
+public @interface CheckPlatzAndAngebottyp {
+
+	String message() default "{invalid_angebottyp_for_platz}";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 }

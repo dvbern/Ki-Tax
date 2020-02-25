@@ -94,6 +94,7 @@ import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
 import {TSInstitution} from '../models/TSInstitution';
+import {TSInstitutionListDTO} from '../models/TSInstitutionListDTO';
 import {TSInstitutionStammdaten} from '../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenBetreuungsgutscheine} from '../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import {TSInstitutionStammdatenFerieninsel} from '../models/TSInstitutionStammdatenFerieninsel';
@@ -1194,7 +1195,8 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitution(institutionTS: TSInstitution, institutionFromServer: any): TSInstitution {
+    public parseInstitution<T extends TSInstitution>
+    (institutionTS: T, institutionFromServer: any): T {
         if (institutionFromServer) {
             this.parseAbstractMutableEntity(institutionTS, institutionFromServer);
             institutionTS.name = institutionFromServer.name;
@@ -1203,6 +1205,11 @@ export class EbeguRestUtil {
                 this.parseTraegerschaft(new TSTraegerschaft(), institutionFromServer.traegerschaft);
             institutionTS.status = institutionFromServer.status;
             institutionTS.stammdatenCheckRequired = institutionFromServer.stammdatenCheckRequired;
+
+            if (institutionTS instanceof TSInstitutionListDTO) {
+                institutionTS.betreuungsangebotTyp = institutionFromServer.betreuungsangebotTyp;
+            }
+
             return institutionTS;
         }
         return undefined;
@@ -1215,6 +1222,15 @@ export class EbeguRestUtil {
         return Array.isArray(data)
             ? data.map(item => this.parseInstitution(new TSInstitution(), item))
             : [this.parseInstitution(new TSInstitution(), data)];
+    }
+
+    public parseInstitutionenListDTO(data: Array<any>): TSInstitutionListDTO[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseInstitution(new TSInstitutionListDTO(), item))
+            : [this.parseInstitution(new TSInstitutionListDTO(), data)];
     }
 
     public parseExternalClientAssignment(data: any): TSExternalClientAssignment {
@@ -2183,6 +2199,7 @@ export class EbeguRestUtil {
         restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
         restErweiterteBetreuung.erweiterteBeduerfnisseBestaetigt =
             erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+        restErweiterteBetreuung.betreuungInGemeinde = erweiterteBetreuung.betreuungInGemeinde;
         restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
@@ -2200,6 +2217,7 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.erweiterteBeduerfnisseBestaetigt =
                 erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
             erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
+            erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
@@ -2439,7 +2457,6 @@ export class EbeguRestUtil {
             userTS.vorname = userFromServer.vorname;
             userTS.email = userFromServer.email;
             userTS.mandant = this.parseMandant(new TSMandant(), userFromServer.mandant);
-            userTS.amt = userFromServer.amt;
             userTS.status = userFromServer.status;
             userTS.currentBerechtigung =
                 this.parseBerechtigung(new TSBerechtigung(), userFromServer.currentBerechtigung);

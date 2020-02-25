@@ -30,7 +30,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -51,26 +50,27 @@ public class Mitteilung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 489324250198016526L;
 
-	@NotNull
+	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_dossier_id"))
 	private Dossier dossier;
 
+	@Nullable
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_betreuung_id"))
 	private Betreuung betreuung;
 
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private MitteilungTeilnehmerTyp senderTyp;
 
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private MitteilungTeilnehmerTyp empfaengerTyp;
 
-	@NotNull
+	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_Mitteilung_sender"))
 	private Benutzer sender;
@@ -90,7 +90,7 @@ public class Mitteilung extends AbstractMutableEntity {
 	@Nullable
 	private String message;
 
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private MitteilungStatus mitteilungStatus;
@@ -104,14 +104,16 @@ public class Mitteilung extends AbstractMutableEntity {
 		return dossier.getFall();
 	}
 
+	@Nonnull
 	public Dossier getDossier() {
 		return dossier;
 	}
 
-	public void setDossier(Dossier dossier) {
+	public void setDossier(@Nonnull Dossier dossier) {
 		this.dossier = dossier;
 	}
 
+	@Nullable
 	public Betreuung getBetreuung() {
 		return betreuung;
 	}
@@ -120,27 +122,30 @@ public class Mitteilung extends AbstractMutableEntity {
 		this.betreuung = betreuung;
 	}
 
+	@Nonnull
 	public MitteilungTeilnehmerTyp getSenderTyp() {
 		return senderTyp;
 	}
 
-	public void setSenderTyp(MitteilungTeilnehmerTyp senderTyp) {
+	public void setSenderTyp(@Nonnull MitteilungTeilnehmerTyp senderTyp) {
 		this.senderTyp = senderTyp;
 	}
 
+	@Nonnull
 	public MitteilungTeilnehmerTyp getEmpfaengerTyp() {
 		return empfaengerTyp;
 	}
 
-	public void setEmpfaengerTyp(MitteilungTeilnehmerTyp empfaengerTyp) {
+	public void setEmpfaengerTyp(@Nonnull MitteilungTeilnehmerTyp empfaengerTyp) {
 		this.empfaengerTyp = empfaengerTyp;
 	}
 
+	@Nonnull
 	public Benutzer getSender() {
 		return sender;
 	}
 
-	public void setSender(Benutzer sender) {
+	public void setSender(@Nonnull Benutzer sender) {
 		this.sender = sender;
 	}
 
@@ -171,11 +176,12 @@ public class Mitteilung extends AbstractMutableEntity {
 		this.message = message;
 	}
 
+	@Nonnull
 	public MitteilungStatus getMitteilungStatus() {
 		return mitteilungStatus;
 	}
 
-	public void setMitteilungStatus(MitteilungStatus mitteilungStatus) {
+	public void setMitteilungStatus(@Nonnull MitteilungStatus mitteilungStatus) {
 		this.mitteilungStatus = mitteilungStatus;
 	}
 
@@ -186,10 +192,6 @@ public class Mitteilung extends AbstractMutableEntity {
 
 	public void setSentDatum(@Nullable LocalDateTime sentDatum) {
 		this.sentDatum = sentDatum;
-	}
-
-	public boolean isEntwurf() {
-		return MitteilungStatus.ENTWURF.equals(this.mitteilungStatus);
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })
@@ -208,10 +210,10 @@ public class Mitteilung extends AbstractMutableEntity {
 		final Mitteilung otherMitteilung = (Mitteilung) other;
 		return EbeguUtil.isSameObject(getBetreuung(), otherMitteilung.getBetreuung()) &&
 			Objects.equals(getSender().getId(), otherMitteilung.getSender().getId()) &&
-			Objects.equals(getSenderTyp(), otherMitteilung.getSenderTyp()) &&
+			getSenderTyp() == otherMitteilung.getSenderTyp() &&
 			Objects.equals(getSentDatum(), otherMitteilung.getSentDatum()) &&
 			EbeguUtil.isSameObject(getEmpfaenger(), otherMitteilung.getEmpfaenger()) &&
-			Objects.equals(getEmpfaengerTyp(), otherMitteilung.getEmpfaengerTyp()) &&
+			getEmpfaengerTyp() == otherMitteilung.getEmpfaengerTyp() &&
 			Objects.equals(getSubject(), otherMitteilung.getSubject()) &&
 			Objects.equals(getMessage(), otherMitteilung.getMessage()) &&
 			getMitteilungStatus() == otherMitteilung.getMitteilungStatus();
@@ -226,13 +228,5 @@ public class Mitteilung extends AbstractMutableEntity {
 			.append("empfaenger", empfaenger)
 			.append("mitteilungStatus", mitteilungStatus)
 			.toString();
-	}
-
-	@Nonnull
-	public Amt getEmpfaengerAmt() {
-		if (getEmpfaenger() != null) {
-			return getEmpfaenger().getRole().getAmt();
-		}
-		return Amt.NONE;
 	}
 }

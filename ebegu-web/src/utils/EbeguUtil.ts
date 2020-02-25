@@ -218,6 +218,10 @@ export class EbeguUtil {
         return this.isNotNullOrUndefined(data) && !data;
     }
 
+    public static isNullOrFalse(data: boolean): boolean {
+        return this.isNullOrUndefined(data) || !data;
+    }
+
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
     }

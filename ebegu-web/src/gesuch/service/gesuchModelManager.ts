@@ -821,7 +821,7 @@ export class GesuchModelManager {
             case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
                 return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.verfuegungRS.anmeldungSchulamtUebernehmen(this.gesuch.id, betreuungToSave.id);
+                return this.verfuegungRS.anmeldungSchulamtUebernehmen(betreuungToSave);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
@@ -1201,9 +1201,8 @@ export class GesuchModelManager {
 
     }
 
-    public saveVerfuegung(ignorieren: boolean): IPromise<TSVerfuegung> {
-        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(this.getVerfuegenToWorkWith())
-            ? '' : this.getVerfuegenToWorkWith().manuelleBemerkungen;
+    public saveVerfuegung(ignorieren: boolean, bemerkungen: string): IPromise<TSVerfuegung> {
+        const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
             manuelleBemerkungen,
             this.gesuch.id,

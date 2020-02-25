@@ -20,6 +20,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {StammdatenHeaderComponent} from './stammdaten-header.component';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 
 describe('StammdatenHeaderComponent', () => {
 
@@ -29,6 +30,7 @@ describe('StammdatenHeaderComponent', () => {
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['isSupportedImage']);
 
     beforeEach(async(() => {
 
@@ -39,6 +41,7 @@ describe('StammdatenHeaderComponent', () => {
             providers: [
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: GemeindeRS, userValue: gemeindeServiceSpy},
             ],
             declarations: [
                 StammdatenHeaderComponent,
