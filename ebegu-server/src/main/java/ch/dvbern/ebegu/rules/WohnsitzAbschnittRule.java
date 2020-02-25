@@ -112,8 +112,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					}
 				} else {
 					// Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!
-					LOG.warn("Zweiter Adressen-Abschnitt mit gleichen Daten: Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt "
-						+ "wurden!");
+					LOG.warn("Zweiter Adressen-Abschnitt mit gleichen Daten: Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!");
 					result.add(zeitabschnitt);
 				}
 			}

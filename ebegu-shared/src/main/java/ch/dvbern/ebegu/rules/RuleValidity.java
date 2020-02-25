@@ -18,11 +18,12 @@
 package ch.dvbern.ebegu.rules;
 
 /**
- * Die Regeln lassen sich in verschiedene Typen einteilen,
+ * Gültigkeit einer Regel:
+ * - ASIV: Gilt für Kanton (ASIV) und Gemeinde
+ * - GEMEINDE: Gilt nur für Gemeinde
  */
 public enum RuleValidity {
 
 	ASIV,
 	GEMEINDE
-
 }

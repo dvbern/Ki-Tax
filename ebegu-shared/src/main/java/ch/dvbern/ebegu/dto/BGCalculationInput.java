@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -34,7 +33,6 @@ import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
 
-	@Transient
 	private VerfuegungZeitabschnitt parent;
 
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
@@ -89,17 +87,13 @@ public class BGCalculationInput {
 
 	private boolean eingeschult;
 
-
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
-	// Start
 	private int anspruchspensumProzent;
 
-	@NotNull
-	@Nonnull
+	@NotNull @Nonnull
 	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
 
-	@NotNull
-	@Nonnull
+	@NotNull @Nonnull
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
 
 	private boolean besondereBeduerfnisseBestaetigt;
@@ -129,7 +123,6 @@ public class BGCalculationInput {
 	@NotNull @Nonnull
 	private BigDecimal tsVerpflegungskostenOhneBetreuung = BigDecimal.ZERO;
 
-	// Ende
 
 	public BGCalculationInput(VerfuegungZeitabschnitt parent) {
 		this.parent = parent;

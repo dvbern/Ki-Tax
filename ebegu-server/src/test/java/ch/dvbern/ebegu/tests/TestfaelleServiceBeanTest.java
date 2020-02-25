@@ -210,9 +210,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		LocalDate eingangsdatum = LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15);
 		LocalDate aenderungPer = LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15);
 		final Gesuch mutation = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), eingangsdatum,
-			aenderungPer,
-			true);
+			gesuch.getGesuchsperiode().getId(), eingangsdatum, aenderungPer, true);
 		ueberpruefeVerfuegungszeitabschnitte(mutation, "MutationScheidung");
 	}
 
