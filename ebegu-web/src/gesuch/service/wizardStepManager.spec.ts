@@ -98,6 +98,7 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.DOKUMENTE);
             expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.FREIGABE);
+            // tslint:disable-next-line:no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
