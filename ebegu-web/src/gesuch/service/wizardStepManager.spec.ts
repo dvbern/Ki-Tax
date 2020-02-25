@@ -70,19 +70,20 @@ describe('wizardStepManager', () => {
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_INSTITUTION);
             expect(wizardStepManager.getAllowedSteps()).toBeDefined();
-            expect(wizardStepManager.getAllowedSteps().length).toBe(6);
+            expect(wizardStepManager.getAllowedSteps().length).toBe(7);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.FAMILIENSITUATION);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.GESUCHSTELLER);
             expect(wizardStepManager.getAllowedSteps()[2]).toBe(TSWizardStepName.UMZUG);
             expect(wizardStepManager.getAllowedSteps()[3]).toBe(TSWizardStepName.BETREUUNG);
             expect(wizardStepManager.getAllowedSteps()[4]).toBe(TSWizardStepName.ABWESENHEIT);
             expect(wizardStepManager.getAllowedSteps()[5]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[6]).toBe(TSWizardStepName.SOCIALHILFEZEITRAEUME);
         });
         it('constructs the steps for JA', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
-            const expectedSteps = 13;
+            const expectedSteps = 14;
             expect(wizardStepManager.getAllowedSteps().length).toBe(expectedSteps);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
@@ -93,10 +94,11 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[6]).toBe(TSWizardStepName.ABWESENHEIT);
             expect(wizardStepManager.getAllowedSteps()[7]).toBe(TSWizardStepName.ERWERBSPENSUM);
             expect(wizardStepManager.getAllowedSteps()[8]).toBe(TSWizardStepName.FINANZIELLE_SITUATION);
-            expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-            expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.DOKUMENTE);
-            expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.FREIGABE);
-            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+            expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.DOKUMENTE);
+            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.FREIGABE);
+            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
     describe('findStepsFromGesuch', () => {
