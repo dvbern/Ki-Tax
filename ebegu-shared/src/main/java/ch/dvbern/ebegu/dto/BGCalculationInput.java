@@ -633,4 +633,9 @@ public class BGCalculationInput {
 		BigDecimal abzugFamSize = this.abzugFamGroesse;
 		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
 	}
+
+	@Nonnull
+	public BigDecimal getBgPensumProzent() {
+		return getBetreuungspensumProzent().min(MathUtil.DEFAULT.from(getAnspruchspensumProzent()));
+	}
 }
