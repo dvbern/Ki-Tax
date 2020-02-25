@@ -384,44 +384,6 @@
                 </div>
 
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
-                    <!-- Kontoinhaber -->
-                    <div class="form-group">
-                        <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
-                        <input id="kontoinhaber_id" type="text"
-                               name="kontoinhaber_id" #nameKontoinhaber="ngModel"
-                               required
-                               [(ngModel)]="stammdaten.kontoinhaber"
-                               [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="nameKontoinhaber.errors"
-                                           inputId="kontoinhaber_id"></dv-error-messages>
-                    </div>
-                    <!-- BIC/SWIFT-Nummer -->
-                    <div class="form-group">
-                        <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
-                        <input id="bic_id" type="text"
-                               name="bic_id" #nameBIC="ngModel"
-                               required
-                               [(ngModel)]="stammdaten.bic"
-                               [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="nameBIC.errors"
-                                           inputId="bic_id"></dv-error-messages>
-                    </div>
-                    <!-- IBAN-Nummer -->
-                    <div class="form-group">
-                        <label class="required" translate for="iban_id">IBAN_NUMMER</label>
-                        <input id="iban_id" type="text"
-                               name="iban_id" #nameIBAN="ngModel"
-                               required ngxIban
-                               [(ngModel)]="stammdaten.iban"
-                               [maxlength]="255" class="form-control">
-                        <dv-error-messages [errorObject]="nameIBAN.errors"
-                                           inputId="iban_id"></dv-error-messages>
-                    </div>
-                </div>
-            </div>
         </fieldset>
     </div>
 
@@ -469,15 +431,6 @@
                     <div class="form-group">
                         <h3 translate>KORRESPONDENZSPRACHE</h3>
                         <p>{{korrespondenzsprache}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <!-- BANKVERBINDUNG -->
-                    <div class="form-group">
-                        <h3 translate>BANKVERBINDUNG</h3>
-                        <p>{{stammdaten.kontoinhaber}}</p>
-                        <p>{{stammdaten.bic}}</p>
-                        <p>{{stammdaten.iban}}</p>
                     </div>
                 </div>
                 <!-- Beschwerdeadresse -->

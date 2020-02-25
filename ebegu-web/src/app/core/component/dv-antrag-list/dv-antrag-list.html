@@ -79,7 +79,7 @@
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
                         ng-if="vm.isTagesschulangebotEnabled()"
                         title="{{'VERANTWORTLICHER_SCHULAMT'|translate}}">
-                        {{"VERANTWORTLICH"|translate}} <i class="fa fa-graduation-cap"></i>
+                        <i class="fa fa-graduation-cap"></i> {{"VERANTWORTLICH"|translate}}
                     </th>
                     <th ng-if="!vm.isTagesschulangebotEnabled()" st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
                         data-translate="VERANTWORTLICH"
@@ -90,8 +90,8 @@
                     <th ng-if="vm.isTagesschulangebotEnabled()" st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
-                        title="{{'VERANTWORTLICHER_JUGENDAMT'|translate}}">>
-                        {{"VERANTWORTLICH"|translate}} <i class="fa fa-gift"></i>
+                        title="{{'VERANTWORTLICHER_JUGENDAMT'|translate}}">
+                        <i class="fa fa-gift"></i> {{"VERANTWORTLICH"|translate}}
                     </th>
                     <th class="row-action" ng-if="vm.isActionsVisible()"></th>
                 </tr>

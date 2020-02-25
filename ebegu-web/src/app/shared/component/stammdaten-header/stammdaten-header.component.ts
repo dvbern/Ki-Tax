@@ -21,6 +21,7 @@ import {StateService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 
 @Component({
     selector: 'dv-stammdaten-header',
@@ -46,6 +47,7 @@ export class StammdatenHeaderComponent implements OnInit {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -63,18 +65,21 @@ export class StammdatenHeaderComponent implements OnInit {
 
     public srcChange(files: FileList): void {
         this.fileToUpload = files[0];
-        const tmpFileReader = new FileReader();
-        tmpFileReader.readAsDataURL(this.fileToUpload);
-        tmpFileReader.onload = (event: any): void => {
-            if (!(this.fileToUpload && this.fileToUpload.type.includes('image/'))) {
-                return; // upload only images
-            }
-            const result: string = event.target.result;
-            this.logoImageUrl$ = of(result);
-
-            // emit logo change to upload image by parent view
+        this.gemeindeRS.isSupportedImage(this.fileToUpload).then( () => {
+            const tmpFileReader = new FileReader();
+            tmpFileReader.readAsDataURL(this.fileToUpload);
+            tmpFileReader.onload = (event: any): void => {
+                const result: string = event.target.result;
+                this.logoImageUrl$ = of(result);
+                // emit logo change to upload image by parent view
+                this.emitLogoChange();
+            };
+        }).catch(() => {
+            this.fileToUpload = null;
+            this.logoImageUrl$ = null;
+            this.logoImageUrl = null;
             this.emitLogoChange();
-        };
+        });
     }
 
     public $postLink(): void {

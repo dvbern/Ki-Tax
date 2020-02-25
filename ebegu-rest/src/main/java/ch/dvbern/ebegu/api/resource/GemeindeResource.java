@@ -75,12 +75,14 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.Constants;
+import com.lowagie.text.Image;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
@@ -369,6 +371,23 @@ public class GemeindeResource {
 		TransferFile file = fileList.get(0);
 		gemeindeService.uploadLogo(gemeindeId, file.getContent(), file.getFilename(), file.getFiletype());
 
+		return Response.ok().build();
+	}
+
+	@ApiOperation("Checks if it isa supported image")
+	@POST
+	@Path("/supported/image")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response isSupportedImage(@Nonnull @NotNull MultipartFormDataInput input) {
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+		Validate.notEmpty(fileList, "Need to upload something");
+		TransferFile file = fileList.get(0);
+		try {
+			Image.getInstance(file.getContent());
+		} catch (IOException exception) {
+			throw new EbeguRuntimeException("isSupportedImage", ErrorCodeEnum.ERROR_NOT_SUPPORTED_IMAGE, exception);
+		}
 		return Response.ok().build();
 	}
 
