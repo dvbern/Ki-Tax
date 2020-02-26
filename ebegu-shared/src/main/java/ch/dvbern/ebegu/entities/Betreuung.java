@@ -527,6 +527,11 @@ public class Betreuung extends AbstractPlatz {
 	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien) {
 		BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
 		abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
+		// initially those fields need to be null, we want to force the user to enter data
+		abweichung.setPensum(null);
+		abweichung.setMonatlicheHauptmahlzeiten(null);
+		abweichung.setMonatlicheNebenmahlzeiten(null);
+		abweichung.setMonatlicheBetreuungskosten(null);
 		YearMonth month = YearMonth.from(from);
 		abweichung.setGueltigkeit(new DateRange(month.atDay(1), month.atEndOfMonth()));
 

@@ -59,8 +59,10 @@
                         <th data-translate="MONTH"></th>
                         <th>{{vm.getInputFormatTitle()}}</th>
                         <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
-                        <th data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
-                        <th data-translate="MONATLICHE_NEBENMAHLZEITEN"></th>
+                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                            data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
+                        <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
+                            data-translate="MONATLICHE_NEBENMAHLZEITEN"></th>
                         <th>
                             <span data-translate="STATUS"></span>
                             <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
@@ -96,7 +98,7 @@
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheKosten}}">
                         </td>
-                        <td>
+                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
                             <input aria-describedby="hauptmahlzeiten-{{$index}}-error"
                                    id="hauptmahlzeiten-{{$index}}" type="number"
                                    name="hauptmahlzeiten-{{$index}}"
@@ -108,7 +110,7 @@
                                    ng-required="vm.isRowRequired($index)"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheHauptmahlzeiten}}">
                         </td>
-                        <td>
+                        <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
                             <input aria-describedby="nebenmahlzeiten-{{$index}}-error"
                                    id="nebenmahlzeiten-{{$index}}" type="number"
                                    name="nebenmahlzeiten-{{$index}}"

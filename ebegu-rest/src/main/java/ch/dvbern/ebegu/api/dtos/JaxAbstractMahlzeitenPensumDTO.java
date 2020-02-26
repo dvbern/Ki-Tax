@@ -17,7 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -32,27 +32,27 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 
 	private static final long serialVersionUID = -3035958327660443564L;
 
-	@Nullable
+	@Nonnull
 	private Integer monatlicheHauptmahlzeiten;
 
-	@Nullable
+	@Nonnull
 	private Integer monatlicheNebenmahlzeiten;
 
-	@Nullable
+	@Nonnull
 	public Integer getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
 	}
 
-	public void setMonatlicheHauptmahlzeiten(@Nullable Integer monatlicheHauptmahlzeiten) {
+	public void setMonatlicheHauptmahlzeiten(@Nonnull Integer monatlicheHauptmahlzeiten) {
 		this.monatlicheHauptmahlzeiten = monatlicheHauptmahlzeiten;
 	}
 
-	@Nullable
+	@Nonnull
 	public Integer getMonatlicheNebenmahlzeiten() {
 		return monatlicheNebenmahlzeiten;
 	}
 
-	public void setMonatlicheNebenmahlzeiten(@Nullable Integer monatlicheNebenmahlzeiten) {
+	public void setMonatlicheNebenmahlzeiten(@Nonnull Integer monatlicheNebenmahlzeiten) {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 }

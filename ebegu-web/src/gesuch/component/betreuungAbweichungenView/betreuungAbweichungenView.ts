@@ -268,12 +268,20 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
     }
 
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
     public isRowRequired(index: number): boolean {
         const abweichung = this.getAbweichung(index);
 
-        return EbeguUtil.isNotNullAndPositive(abweichung.monatlicheHauptmahlzeiten)
-            || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheNebenmahlzeiten)
-            || EbeguUtil.isNotNullAndPositive(abweichung.pensum)
+        if (this.isMahlzeitenverguenstigungEnabled()) {
+            return EbeguUtil.isNotNullAndPositive(abweichung.monatlicheHauptmahlzeiten)
+                || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheNebenmahlzeiten)
+                || EbeguUtil.isNotNullAndPositive(abweichung.pensum)
+                || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
+        }
+        return EbeguUtil.isNotNullAndPositive(abweichung.pensum)
             || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
     }
 }

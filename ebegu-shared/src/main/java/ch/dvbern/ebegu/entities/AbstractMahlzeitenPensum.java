@@ -18,9 +18,9 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
@@ -31,29 +31,29 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 
 	private static final long serialVersionUID = 7183887010325524679L;
 
-	@Nullable
-	@Column(nullable = true)
-	private Integer monatlicheHauptmahlzeiten;
+	@NotNull
+	@Column(nullable = false)
+	private Integer monatlicheHauptmahlzeiten = 0;
 
-	@Nullable
-	@Column(nullable = true)
-	private Integer monatlicheNebenmahlzeiten;
+	@NotNull
+	@Column(nullable = false)
+	private Integer monatlicheNebenmahlzeiten = 0;
 
-	@Nullable
+	@Nonnull
 	public Integer getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
 	}
 
-	public void setMonatlicheHauptmahlzeiten(@Nullable Integer monatlicheHauptmahlzeiten) {
+	public void setMonatlicheHauptmahlzeiten(@Nonnull Integer monatlicheHauptmahlzeiten) {
 		this.monatlicheHauptmahlzeiten = monatlicheHauptmahlzeiten;
 	}
 
-	@Nullable
+	@Nonnull
 	public Integer getMonatlicheNebenmahlzeiten() {
 		return monatlicheNebenmahlzeiten;
 	}
 
-	public void setMonatlicheNebenmahlzeiten(@Nullable Integer monatlicheNebenmahlzeiten) {
+	public void setMonatlicheNebenmahlzeiten(@Nonnull Integer monatlicheNebenmahlzeiten) {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
