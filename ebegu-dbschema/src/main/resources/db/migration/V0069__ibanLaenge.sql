@@ -1,0 +1,1 @@
+ALTER TABLE gemeinde_stammdaten MODIFY iban VARCHAR(34) NULL;
