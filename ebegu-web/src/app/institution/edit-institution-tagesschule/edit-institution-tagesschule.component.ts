@@ -260,10 +260,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     ): TSModulTagesschuleGroup {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = modulname;
-        group.bezeichnung = this.translate.instant(modulname);
         group.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
         group.wirdPaedagogischBetreut = true;
         group.module = [];
+        group.bezeichnung = new TSTextRessource();
         this.createModuleScolaris(group);
         return group;
     }
