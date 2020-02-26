@@ -335,10 +335,14 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public getBezeichnung(group: TSModulTagesschuleGroup): string {
-        if (group.modulTagesschuleName === TSModulTagesschuleName.DYNAMISCH) {
-            return `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
+        let name = '';
+        if (group.bezeichnung.textDeutsch) {
+            name =  `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
-        return this.translate.instant(group.modulTagesschuleName);
+        if (group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH) {
+            return name + ' (' + this.translate.instant(group.modulTagesschuleName) + ')'
+        }
+        return name;
     }
 
     public trackById(einstellungGP: TSEinstellungenTagesschule): string {
