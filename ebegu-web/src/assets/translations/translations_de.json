@@ -1773,6 +1773,7 @@
     "MODUL_HINZUFUEGEN": "Neues Modul hinzufügen",
     "MODUL_HINZUFUEGEN_SCOLARIS": "Module gemäss Scolaris erstellen",
     "MODULE_FUER_SCOLARIS_ERSTELLT": "Module wurden für SCOLARIS erstellt. Diese können nicht verändert werden.",
+    "ADD_FEHLENDE_SCOLARIS_MODULE": "Fehlende Scolaris Module erstellen",
     "ZURUECKWECHSELN_ZU_DYNAMISCH": "Zur dynamischen Erstellung zurückwechseln",
     "MODUL_CREATION_TYP": "Erstellungsart der Module (z.B. für Scolaris)",
     "SCOLARIS": "Module für Scolaris erstellen (fix)",

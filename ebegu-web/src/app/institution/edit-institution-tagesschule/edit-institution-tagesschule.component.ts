@@ -385,4 +385,22 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         }
         return showGesuchsperiode;
     }
+
+    public isScolarisVollstaendig(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        if (einstellungenTagesschule.modulTagesschuleGroups.length === getTSModulTagesschuleNameValues().length) {
+            return true;
+        }
+        return false;
+    }
+
+    public addFehlendeScolarisModule(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
+            const mtg = einstellungenTagesschule.modulTagesschuleGroups.filter(
+                modulTagesschuleGroup => modulTagesschuleGroup.modulTagesschuleName === modulname);
+            if (mtg.length === 0) {
+                const group = this.createModulGroupScolaris(modulname);
+                einstellungenTagesschule.modulTagesschuleGroups.push(group);
+            }
+        });
+    }
 }
