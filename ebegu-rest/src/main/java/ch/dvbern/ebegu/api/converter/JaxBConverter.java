@@ -4871,7 +4871,7 @@ public class JaxBConverter extends AbstractConverter {
 		final List<JaxSocialhilfeZeitraumContainer> jaxShZContainers,
 		final Collection<SocialhilfeZeitraumContainer> existingSocialhilfeZeitraeume) {
 
-		final Set<SocialhilfeZeitraumContainer> transformedShZContainers = new TreeSet<>();
+		final Set<SocialhilfeZeitraumContainer> transformedShZContainers = new HashSet<>();
 		for (final JaxSocialhilfeZeitraumContainer jaxShZContainer : jaxShZContainers) {
 			final SocialhilfeZeitraumContainer containerToMergeWith = existingSocialhilfeZeitraeume
 				.stream()

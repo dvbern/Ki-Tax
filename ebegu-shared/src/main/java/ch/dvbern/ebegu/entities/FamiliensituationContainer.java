@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckFamiliensituationContainerComplete;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.envers.Audited;
 
 /**

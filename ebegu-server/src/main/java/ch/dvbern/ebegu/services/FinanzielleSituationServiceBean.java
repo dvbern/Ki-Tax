@@ -137,11 +137,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		if(familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()){
-			familiensituationContainer.getSocialhilfeZeitraumContainers().forEach(
-				socialhilfeZeitraumContainer -> {
-					this.socialhilfeZeitraumService.removeSocialhilfeZeitraum(socialhilfeZeitraumContainer.getId());
-				}
-			);
+			familiensituationContainer.getSocialhilfeZeitraumContainers().clear();
 		}
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
