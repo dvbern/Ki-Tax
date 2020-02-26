@@ -89,9 +89,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Inject
 	private GesuchService gesuchService;
 
-	@Inject
-	private SocialhilfeZeitraumService socialhilfeZeitraumService;
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
