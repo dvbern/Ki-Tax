@@ -23,20 +23,26 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
-public abstract class AbstractRechnerRule {
+public interface RechnerRule {
 
 	/**
 	 * Entscheidet, ob die Rule für die betroffene Gemeinde eingeschaltet ist.
 	 */
-	public abstract boolean isConfigueredForGemeinde(@Nonnull BGRechnerParameterDTO parameterDTO);
+	boolean isConfigueredForGemeinde(
+		@Nonnull BGRechnerParameterDTO parameterDTO);
 
 	/**
 	 * Entscheidet, ob die Rule für diesen spezifischen Platz angewendet werden soll.
 	 */
-	public abstract boolean isRelevantForVerfuegung(@Nonnull BGCalculationInput inputGemeinde, @Nonnull BGRechnerParameterDTO parameterDTO);
+	boolean isRelevantForVerfuegung(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO);
 
 	/**
 	 * Berechnet aufgrund der (vorgängig erfolgten) Berechnung ASIV und den Input-Daten der Gemeinde das Resultat Gemeinde
 	 */
-	public abstract BGCalculationResult executeRule(@Nonnull BGCalculationInput inputGemeinde, @Nonnull BGCalculationResult resultAsiv, @Nonnull BGRechnerParameterDTO parameterDTO);
+	BGCalculationResult executeRule(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGCalculationResult resultGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO);
 }

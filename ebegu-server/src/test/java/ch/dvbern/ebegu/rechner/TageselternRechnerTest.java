@@ -136,7 +136,7 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(einschulungTyp);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		BGCalculationResult result = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
 
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty(

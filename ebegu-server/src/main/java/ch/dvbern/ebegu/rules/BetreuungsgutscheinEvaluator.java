@@ -25,7 +25,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -38,6 +37,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
@@ -56,13 +56,15 @@ public class BetreuungsgutscheinEvaluator {
 	private boolean isDebug = true;
 
 	private final List<Rule> rules;
+	private final List<RechnerRule> rechnerRules;
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules) {
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, List<RechnerRule> rechnerRules) {
 		this.rules = rules;
+		this.rechnerRules = rechnerRules;
 	}
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput) {
-		this.rules = rules;
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, List<RechnerRule> rechnerRules, boolean enableDebugOutput) {
+		this(rules, rechnerRules);
 		this.isDebug = enableDebugOutput;
 	}
 
@@ -225,9 +227,7 @@ public class BetreuungsgutscheinEvaluator {
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						verfuegungZeitabschnitt.copyValuesToResult();
-						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
-						result.roundAllValues();
-						verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
+						rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRules);
 					});
 
 					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();

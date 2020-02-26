@@ -133,7 +133,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 			verfuegungZeitabschnitt.copyValuesToResult();
-			rechner.calculate(verfuegungZeitabschnitt, getParameter());
+			rechner.calculateAsiv(verfuegungZeitabschnitt, getParameter());
 		}
 		return zeitabschnitte;
 	}

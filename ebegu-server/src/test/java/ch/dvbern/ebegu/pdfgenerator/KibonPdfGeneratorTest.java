@@ -263,7 +263,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch_tagesschule.getGesuchsperiode());
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			rechner.calculate(verfuegungZeitabschnitt, getParameter());
+			rechner.calculateAsiv(verfuegungZeitabschnitt, getParameter());
 		}
 		Verfuegung verfuegungPreview = new Verfuegung();
 		verfuegungPreview.setZeitabschnitte(zeitabschnitte);

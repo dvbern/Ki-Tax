@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
 
-public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRule {
+public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
@@ -49,13 +49,13 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRu
 	@Override
 	public BGCalculationResult executeRule(
 		@Nonnull BGCalculationInput inputGemeinde,
-		@Nonnull BGCalculationResult resultAsiv,
+		@Nonnull BGCalculationResult resultGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
 		// Werte, die aus ASIV uebernommen werden:
-		BigDecimal vollkosten = resultAsiv.getVollkosten();
-		BigDecimal verguenstigungVorVollkostenUndMinimalbetragASIV = resultAsiv.getVerguenstigungOhneBeruecksichtigungVollkosten();
-		BigDecimal minBetrag = resultAsiv.getMinimalerElternbeitrag();
+		BigDecimal vollkosten = resultGemeinde.getVollkosten();
+		BigDecimal verguenstigungVorVollkostenUndMinimalbetragASIV = resultGemeinde.getVerguenstigungOhneBeruecksichtigungVollkosten();
+		BigDecimal minBetrag = resultGemeinde.getMinimalerElternbeitrag();
 
 		// Eigentliche Regel: Vergünstigung vor Vollkosten und Minimalbeitrag um den konfigurierten Wert erhöhen
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetragGemeinde = MathUtil.EXACT.add(verguenstigungVorVollkostenUndMinimalbetragASIV,
@@ -75,7 +75,6 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRu
 		}
 
 		// Das Resultat mit den neu berechneten Werten überschreiben
-		BGCalculationResult resultGemeinde = new BGCalculationResult(resultAsiv);
 		resultGemeinde.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetragGemeinde);
 		resultGemeinde.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetragGemeinde);
 		resultGemeinde.setVerguenstigung(verguenstigungGemeinde);

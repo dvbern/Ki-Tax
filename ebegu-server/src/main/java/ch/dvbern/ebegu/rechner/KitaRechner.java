@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot KITA.
  */
-public class KitaRechner extends AbstractBGRechner {
+public class KitaRechner extends AbstractGemeindeRechner {
 
 	@Nonnull
 	@Override

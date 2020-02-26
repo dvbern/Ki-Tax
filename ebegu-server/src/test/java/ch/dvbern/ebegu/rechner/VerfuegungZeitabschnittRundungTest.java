@@ -68,7 +68,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	public void exactBGCalculationResult() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculateAsiv(createZeitabschnitt(gueltigkeit), parameterDTO);
 
 		assertThat(result, pojo(BGCalculationResult.class)
 			// Minimalbetrag

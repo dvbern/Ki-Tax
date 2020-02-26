@@ -17,10 +17,13 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 
 /**
  * Superklasse für alle kiBon-Rechner
@@ -28,10 +31,19 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 public abstract class AbstractRechner {
 
 	/**
+	 * Führt die Gesamtberechnung durch: Also Berechnung gemäss ASIV und - falls konfiguriert - Berechnung der Gemeinde
+	 */
+	public abstract void calculate(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull List<RechnerRule> rechnerRules);
+
+	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
+	 * Es wird das Regelwerk von ASIV verwendet.
 	 */
 	@Nonnull
-	public abstract BGCalculationResult calculate(
+	public abstract BGCalculationResult calculateAsiv(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO);
 }

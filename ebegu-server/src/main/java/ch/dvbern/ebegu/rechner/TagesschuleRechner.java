@@ -18,12 +18,14 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class TagesschuleRechner extends AbstractRechner {
@@ -32,9 +34,14 @@ public class TagesschuleRechner extends AbstractRechner {
 	public TagesschuleRechner() {
 	}
 
+	@Override
+	public void calculate(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO, @Nonnull List<RechnerRule> rechnerRules) {
+		calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
+	}
+
 	@Nonnull
 	@Override
-	public BGCalculationResult calculate(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO) {
+	public BGCalculationResult calculateAsiv(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO) {
 		verfuegungZeitabschnitt.copyValuesToResult();
 		BigDecimal minTarif = parameterDTO.getMinTarifTagesschule();
 		BGCalculationResult bgResult = verfuegungZeitabschnitt.getBgCalculationResultAsiv();

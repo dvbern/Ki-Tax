@@ -170,7 +170,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(einschulungTyp);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		BGCalculationResult result = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult result = kitaRechner.calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
 
 		assertThat(result, matcher);
 	}

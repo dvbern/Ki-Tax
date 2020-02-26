@@ -22,6 +22,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
@@ -31,7 +32,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Superklasse für BG-Rechner
  */
-public abstract class AbstractBGRechner extends AbstractRechner {
+public abstract class AbstractAsivRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
@@ -40,25 +41,35 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 	 */
 	@Override
 	@Nonnull
-	public BGCalculationResult calculate(
+	public BGCalculationResult calculateAsiv(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
 		verfuegungZeitabschnitt.copyValuesToResult();
+		return calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
+	}
 
+	/**
+	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
+	 */
+	@Nonnull
+	protected BGCalculationResult calculateAsiv(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
 		// Benoetigte Daten
-		boolean unter12Monate = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
-		boolean eingeschult = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEingeschult();
+		boolean unter12Monate = input.isBabyTarif();
+		boolean eingeschult = input.getEinschulungTyp().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
-		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
-		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
-		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
-		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMonatlicheBetreuungskosten();
-		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
+		boolean besonderebeduerfnisse = input.isBesondereBeduerfnisseBestaetigt();
+		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
+		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
+		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
+		BigDecimal vollkostenProMonat = input.getMonatlicheBetreuungskosten();
+		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
-		BigDecimal bgPensum = verfuegungZeitabschnitt.getBgPensum();
+		BigDecimal bgPensum = input.getBgPensumProzent();
 		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
 
 		// Zwischenresultate
@@ -68,14 +79,14 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 			eingeschult,
 			besonderebeduerfnisse,
 			massgebendesEinkommen,
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+			input.isBezahltVollkosten());
 
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 
 		BigDecimal verfuegteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
 
-		BigDecimal anspruchPensum = EXACT.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+		BigDecimal anspruchPensum = EXACT.from(input.getAnspruchspensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);
 
@@ -107,7 +118,7 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 		}
 
 		// Resultat
-		BGCalculationResult result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		BGCalculationResult result = new BGCalculationResult();
 
 		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
 		result.setMinimalerElternbeitrag(minBetrag);

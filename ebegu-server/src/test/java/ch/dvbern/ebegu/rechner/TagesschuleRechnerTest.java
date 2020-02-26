@@ -101,7 +101,7 @@ public class TagesschuleRechnerTest {
 
 		verfuegungZeitabschnitt.copyValuesToResult();
 
-		BGCalculationResult calculationResult = tarifRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult calculationResult = tarifRechner.calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
 		TSCalculationResult tsResult;
 		if (paedagogischBetreut) {
 			tsResult = calculationResult.getTsCalculationResultMitPaedagogischerBetreuung();

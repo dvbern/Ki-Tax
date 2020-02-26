@@ -23,13 +23,11 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static ch.dvbern.ebegu.util.MathUtil.roundToNearestQuarter;
-
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot Tageseltern.
  */
-public class TageselternRechner extends AbstractBGRechner {
+public class TageselternRechner extends AbstractGemeindeRechner {
 
 	@Nonnull
 	@Override
