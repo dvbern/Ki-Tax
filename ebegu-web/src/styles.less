@@ -580,7 +580,7 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: stretch;
+    justify-content: center;
     width: 100%;
 
     .dv-btn {
@@ -589,16 +589,15 @@ mat-dialog-content.dv-dialog-content.mat-dialog-content {
         flex-shrink:0;
         flex-basis:auto;
         // flex:1; is not the same in IE11 as in other browsers:
-        margin: 0 0.2rem;
+        margin: 0 0.75em;
         max-width: 25rem;
     }
 }
-@media (min-width: 992px) {
+@media all and (-ms-high-contrast:none) {
     .dv-dialog-actions {
 
         .dv-btn {
             flex-basis:200px;
-            margin: 0 auto;
         }
     }
 }

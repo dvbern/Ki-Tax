@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {TSAmt} from './enums/TSAmt';
 import {TSMitteilungStatus} from './enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from './enums/TSMitteilungTeilnehmerTyp';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
@@ -162,13 +161,5 @@ export class TSMitteilung extends TSAbstractMutableEntity {
 
     public isErledigt(): boolean {
         return this.mitteilungStatus === TSMitteilungStatus.ERLEDIGT;
-    }
-
-    public getEmpfaengerAmt(): TSAmt {
-        return this.empfaenger.amt;
-    }
-
-    public getSenderAmt(): TSAmt {
-        return this.sender.amt;
     }
 }

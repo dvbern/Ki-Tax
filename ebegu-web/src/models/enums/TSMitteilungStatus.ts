@@ -14,7 +14,6 @@
  */
 
 export enum TSMitteilungStatus {
-    ENTWURF = 'ENTWURF',
     NEU = 'NEU',
     GELESEN = 'GELESEN',
     ERLEDIGT = 'ERLEDIGT'

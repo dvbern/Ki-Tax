@@ -207,7 +207,6 @@ export class AuthServiceRS {
             id: this.principal.username,
             email: this.principal.email,
             role: this.principal.getCurrentRole(),
-            amt: this.principal.amt,
             status: this.principal.status,
             mandant: this.principal.mandant ? this.principal.mandant.name : null,
             traegerschaft: this.principal.currentBerechtigung.traegerschaft

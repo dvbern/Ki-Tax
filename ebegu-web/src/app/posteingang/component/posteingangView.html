@@ -56,11 +56,11 @@
                             data-translate="POSTEINGANG_DATUM"></th>
                         <!-- Verantwortliche Person -->
                         <th st-sort="empfaenger" class="sortable row-empfaenger uppercase"
-                            data-translate="POSTEINGANG_VERANTWORTLICH"></th>
+                            data-translate="POSTEINGANG_AN"></th>
                         <!-- Amt -->
-                        <th st-sort="empfaengerAmt" ng-if="vm.showBgOrTS()"
-                            class="sortable row-amt uppercase"
-                            data-translate="POSTEINGANG_AMT"></th>
+                        <th st-sort="empfaengerVerantwortung"
+                            class="sortable uppercase"
+                            data-translate="POSTEINGANG_VERANTWORTUNG"></th>
                         <!-- Status -->
                         <th st-sort="mitteilungStatus" class="sortable row-status uppercase"
                             data-translate="POSTEINGANG_STATUS"></th>
@@ -87,19 +87,18 @@
                         <th><input st-search="subject" class="form-control" type="text"/></th>
                         <!-- Datum -->
                         <th><input st-search="sentDatum" class="form-control" type="text"/></th>
-                        <!-- Verantwortliche Person -->
+                        <!-- An -->
                         <th>
                             <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger" initial-all="false"
-                                           show-selection-all="true"
-                                           schulamt="vm.isCurrentUserSchulamt()"></dv-userselect>
+                                           show-selection-all="true" sachbearbeiter-gemeinde="true"></dv-userselect>
                         </th>
-                        <!-- Amt -->
-                        <th ng-if="vm.showBgOrTS()">
+                        <!-- Verantwortung -->
+                        <th>
                             <div class="dv-select-style">
-                                <select st-input-event="change" name="empfaengerAmt" id="empfaengerAmt"
-                                        st-search="empfaengerAmt" class="form-control"
-                                        ng-options="'AMT_' + a | translate for a in vm.getAemter() track by a"
-                                        ng-model="vm.selectedAmt">
+                                <select st-input-event="change" name="empfaengerVerantwortung" id="empfaengerVerantwortung"
+                                        st-search="empfaengerVerantwortung" class="form-control"
+                                        ng-options="a | translate for a in vm.getVerantwortungList() track by a"
+                                        ng-model="vm.selectedVerantwortung">
                                     <option value="">{{"ALLE" | translate}}</option>
                                 </select>
                             </div>
@@ -122,8 +121,9 @@
                         ng-click="vm.gotoMitteilung(row)"
                         ng-class="{'mitteilung_neu': ('NEU' === row.mitteilungStatus.toString()),'mitteilung_alt': ('NEU' !== row.mitteilungStatus.toString())}">
                         <!-- Von -->
-                        <td title="{{row.sender.getFullName()}}"
-                            ng-bind="row.sender.getFullName()"></td>
+                        <td title="{{row.sender.getFullName()}}">
+                            <dv-benutzer-entry [benutzer]="row.sender"></dv-benutzer-entry>
+                        </td>
                         <!-- Gemeinde -->
                         <td title="{{row.dossier.gemeinde.name}}"
                             ng-bind="row.dossier.gemeinde.name"></td>
@@ -139,12 +139,14 @@
                         <!-- Datum -->
                         <td class="ellipsis" title="{{row.sentDatum | amDateFormat : 'DD.MM.YYYY'}}"
                             ng-bind="row.sentDatum | amDateFormat : 'DD.MM.YYYY'"></td>
-                        <!-- Verantwortliche Person -->
-                        <td class="ellipsis" title="{{row.empfaenger.getFullName()}}"
-                            ng-bind="row.empfaenger.getFullName()"></td>
-                        <!-- Amt -->
-                        <td ng-if="vm.showBgOrTS()" class="ellipsis" title="{{'AMT_' + row.empfaenger.amt | translate}}"
-                            ng-bind="'AMT_' + row.empfaenger.amt | translate"></td>
+                        <!-- An -->
+                        <td class="ellipsis">
+                            <dv-benutzer-entry [benutzer]="row.empfaenger"
+                                               no-icons="true"></dv-benutzer-entry>
+                        <!-- Verantwortung -->
+                        <td class="ellipsis">
+                            <dv-benutzer-entry [benutzer]="row.empfaenger" no-name="true"></dv-benutzer-entry>
+                        </td>
                         <!-- Status -->
                         <td class="ellipsis" title="{{row.mitteilungStatus | translate}}"
                             ng-bind="row.mitteilungStatus | translate"></td>

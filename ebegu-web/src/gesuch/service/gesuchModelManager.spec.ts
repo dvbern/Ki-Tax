@@ -256,7 +256,7 @@ describe('gesuchModelManager', () => {
                     const verfuegung = new TSVerfuegung();
                     spyOn(verfuegungRS, 'saveVerfuegung').and.returnValue($q.when(verfuegung));
 
-                    gesuchModelManager.saveVerfuegung(false);
+                    gesuchModelManager.saveVerfuegung(false, 'bemerkungen');
                     scope.$apply();
 
                     expect(gesuchModelManager.getVerfuegenToWorkWith()).toBe(verfuegung);

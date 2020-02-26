@@ -20,128 +20,45 @@
     <div *ngIf="editMode; else viewModeTemplate">
         <fieldset ngModelGroup="dv-edit-gemeinde-bg">
             <div class="row">
+                <!--                bankverbindung für auszahlungen-->
                 <div class="col-sm-6">
-                    <div class="form-group mt-2">
-                        <div class="form-group">
-                            <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
-                                          [(ngModel)]="altBGAdresse"
-                                          (ngModelChange)="altBGAdresseHasChange($event)">
-                                {{'ALTERNATIVE_ADRESSE'|translate}}
-                            </mat-checkbox>
-                        </div>
-                        <div *ngIf="altBGAdresse">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div>
-                                        <div class="form-group">
-                                            <label class="required"
-                                                   translate for="anschrift_bg_id">ADRESSE_ANSCHRIFT</label>
-                                            <input id="anschrift_bg_id"
-                                                   type="text"
-                                                   name="anschrift_bg_id"
-												   #nameAnschriftBG="ngModel"
-                                                   [(ngModel)]="stammdaten.bgAdresse.organisation"
-                                                   [maxlength]="255"
-                                                   class="form-control"
-                                                   required
-                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
-                                            <dv-error-messages [errorObject]="nameAnschriftBG.errors"
-                                                               inputId="anschrift_bg_id"></dv-error-messages>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- Strasse -->
-                                <div class="col-sm-10">
-                                    <div class="form-group">
-                                        <label class="required"
-                                               translate
-                                               for="strasse_bg_id">ADRESSE_STRASSE</label>
-                                        <input id="strasse_bg_id" type="text" name="strasse_bg_id"
-											   #nameStrasseBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.strasse"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="nameStrasseBG.errors"
-                                                           inputId="strasse_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                                <!-- Hausnummer -->
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label translate for="hausnummer_bg_id">ADRESSE_NUMMER</label>
-                                        <input id="hausnummer_bg_id"
-                                               type="text"
-                                               name="hausnummer_bg_id"
-											   #nameHausnummerBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.hausnummer"
-                                               [maxlength]="255"
-                                               class="form-control">
-                                        <dv-error-messages [errorObject]="nameHausnummerBG.errors"
-                                                           inputId="hausnummer_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- PLZ -->
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label class="required" translate for="plz_bg_id">ADRESSE_PLZ</label>
-                                        <input id="plz_bg_id" type="text" name="plz_bg_id" #namePLZBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.plz"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="namePLZBG.errors"
-                                                           inputId="plz_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                                <!-- Ort -->
-                                <div class="col-sm-10">
-                                    <div class="form-group">
-                                        <label class="required" translate for="ort_bg_id">ADRESSE_ORT</label>
-                                        <input id="ort_bg_id" type="text" name="ort_bg_id" #nameOrtBG="ngModel"
-                                               [(ngModel)]="stammdaten.bgAdresse.ort"
-                                               [maxlength]="255" class="form-control" required>
-                                        <dv-error-messages [errorObject]="nameOrtBG.errors"
-                                                           inputId="ort_bg_id"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
+                    <!-- Kontoinhaber -->
+                    <div class="form-group">
+                        <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
+                        <input id="kontoinhaber_id" type="text"
+                               name="kontoinhaber_id" #nameKontoinhaber="ngModel"
+                               required
+                               [(ngModel)]="stammdaten.kontoinhaber"
+                               [maxlength]="255" class="form-control">
+                        <dv-error-messages [errorObject]="nameKontoinhaber.errors"
+                                           inputId="kontoinhaber_id"></dv-error-messages>
                     </div>
-                </div>
+                    <!-- BIC/SWIFT-Nummer -->
+                    <div class="form-group">
+                        <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
+                        <input id="bic_id" type="text"
+                               name="bic_id" #nameBIC="ngModel"
+                               required
+                               [(ngModel)]="stammdaten.bic"
+                               [maxlength]="255" class="form-control">
+                        <dv-error-messages [errorObject]="nameBIC.errors"
+                                           inputId="bic_id"></dv-error-messages>
+                    </div>
+                    <!-- IBAN-Nummer -->
+                    <div class="form-group">
+                        <label class="required" translate for="iban_id">IBAN_NUMMER</label>
+                        <input id="iban_id" type="text"
+                               name="iban_id" #nameIBAN="ngModel"
+                               required ngxIban
+                               [(ngModel)]="stammdaten.iban"
+                               [maxlength]="255" class="form-control">
+                        <dv-error-messages [errorObject]="nameIBAN.errors"
+                                           inputId="iban_id"></dv-error-messages>
+                    </div>
 
-                <!-- Standardverantwortliche BG -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate
-                            for="verantwortliche_bg_id">ALT_STANDARD_VERANTWORTLICHE</h3>
-                        <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
-                                    id="verantwortliche_bg_id"
-                                    name="verantwortliche_bg_id"
-                                    class="form-control"
-									#nameVerantwortlicheBG='ngModel'
-                                    [compareWith]="compareBenutzer">
-                            <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                                {{vbg.vorname}} {{vbg.nachname}}
-                            </mat-option>
-                        </mat-select>
-                        <dv-error-messages [errorObject]="nameVerantwortlicheBG.errors"
-                                           inputId="verantwortliche_bg_id"></dv-error-messages>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!-- Betreuungsgutscheine anbieten ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>BEGU_START</h3>
-                        <p>{{beguStartStr}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group checkbox-with-tooltip">
+                    <!--                    benachrichtigungen bei verfügungen per email senden-->
+                    <div class="form-group checkbox-with-tooltip mt-5">
                         <mat-checkbox id="benachrichtigungBgEmailAuto_id" name="benachrichtigungBgEmailAuto_id"
                                       [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto">
                             {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
@@ -149,10 +66,8 @@
                         <dv-tooltip id="benachrichtigungBgEmailAuto-tooltip"
                                     [text]="'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate"></dv-tooltip>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
+
+                    <!--                    standard fusszeile bei verfügungen-->
                     <div class="form-group">
                         <div class="form-group checkbox-with-tooltip">
                             <mat-checkbox id="standardDokSignature_id" name="standardDokSignature_id"
@@ -248,6 +163,119 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="form-group mt-5">
+                        <h3 translate>BEGU_START</h3>
+                        <p>{{beguStartStr}}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <!-- Standardverantwortliche BG -->
+                    <div class="form-group">
+                        <h3 translate
+                            for="verantwortliche_bg_id">ALT_STANDARD_VERANTWORTLICHE</h3>
+                        <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
+                                    id="verantwortliche_bg_id"
+                                    name="verantwortliche_bg_id"
+                                    class="form-control"
+									#nameVerantwortlicheBG='ngModel'
+                                    [compareWith]="compareBenutzer">
+                            <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                {{vbg.vorname}} {{vbg.nachname}}
+                            </mat-option>
+                        </mat-select>
+                        <dv-error-messages [errorObject]="nameVerantwortlicheBG.errors"
+                                           inputId="verantwortliche_bg_id"></dv-error-messages>
+                    </div>
+                    <!--                alternative kontaktadresse-->
+                    <div class="form-group mt-5">
+                        <div class="form-group">
+                            <mat-checkbox id="altBGAdresse_id" name="altBGAdresse_id"
+                                          [(ngModel)]="altBGAdresse"
+                                          (ngModelChange)="altBGAdresseHasChange($event)">
+                                {{'ALTERNATIVE_ADRESSE'|translate}}
+                            </mat-checkbox>
+                        </div>
+                        <div *ngIf="altBGAdresse">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div>
+                                        <div class="form-group">
+                                            <label class="required"
+                                                   translate for="anschrift_bg_id">ADRESSE_ANSCHRIFT</label>
+                                            <input id="anschrift_bg_id"
+                                                   type="text"
+                                                   name="anschrift_bg_id"
+												   #nameAnschriftBG="ngModel"
+                                                   [(ngModel)]="stammdaten.bgAdresse.organisation"
+                                                   [maxlength]="255"
+                                                   class="form-control"
+                                                   required
+                                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                            <dv-error-messages [errorObject]="nameAnschriftBG.errors"
+                                                               inputId="anschrift_bg_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- Strasse -->
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <label class="required"
+                                               translate
+                                               for="strasse_bg_id">ADRESSE_STRASSE</label>
+                                        <input id="strasse_bg_id" type="text" name="strasse_bg_id"
+											   #nameStrasseBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.strasse"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="nameStrasseBG.errors"
+                                                           inputId="strasse_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Hausnummer -->
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label translate for="hausnummer_bg_id">ADRESSE_NUMMER</label>
+                                        <input id="hausnummer_bg_id"
+                                               type="text"
+                                               name="hausnummer_bg_id"
+											   #nameHausnummerBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.hausnummer"
+                                               [maxlength]="255"
+                                               class="form-control">
+                                        <dv-error-messages [errorObject]="nameHausnummerBG.errors"
+                                                           inputId="hausnummer_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- PLZ -->
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label class="required" translate for="plz_bg_id">ADRESSE_PLZ</label>
+                                        <input id="plz_bg_id" type="text" name="plz_bg_id" #namePLZBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.plz"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="namePLZBG.errors"
+                                                           inputId="plz_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                                <!-- Ort -->
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <label class="required" translate for="ort_bg_id">ADRESSE_ORT</label>
+                                        <input id="ort_bg_id" type="text" name="ort_bg_id" #nameOrtBG="ngModel"
+                                               [(ngModel)]="stammdaten.bgAdresse.ort"
+                                               [maxlength]="255" class="form-control" required>
+                                        <dv-error-messages [errorObject]="nameOrtBG.errors"
+                                                           inputId="ort_bg_id"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -269,59 +297,504 @@
                                 <tab-body>
                                     <div class="row">
                                         <!-- editable -->
-                                        <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                                            <!-- BG bis Schulstufe -->
-                                            <div class="form-group">
-                                                <label class="required" translate>BEGU_KITAS_BIS_UND_MIT</label>
-                                                <mat-select
-                                                    [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
-                                                    (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(konfigurationsListe[i])"
-                                                    id="begu_kitas_bis_und_mit_id_{{i}}"
-                                                    name="begu_kitas_bis_und_mit_id_{{i}}"
-                                                    class="form-control">
-                                                    <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
-                                                                [value]="etv">{{etv | translate}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </div>
-                                            <!-- Kontingentierung -->
-                                            <div class="form-group">
-                                                <mat-checkbox id="kontingentierung_id_{{i}}"
-                                                              name="kontingentierung_id_{{i}}"
-                                                              [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
-                                                              (change)="changeKonfigKontingentierung(konfigurationsListe[i])">
-                                                    {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
-                                            </div>
+                                        <div class="row">
+                                            <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])"
+                                                 class="col-sm-6">
+                                                <!-- BG bis Schulstufe -->
+                                                <div class="form-group">
+                                                    <label class="required" translate>BEGU_KITAS_BIS_UND_MIT</label>
+                                                    <mat-select
+                                                        [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
+                                                        (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(konfigurationsListe[i])"
+                                                        id="begu_kitas_bis_und_mit_id_{{i}}"
+                                                        name="begu_kitas_bis_und_mit_id_{{i}}"
+                                                        class="form-control">
+                                                        <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                    [value]="etv">{{etv | translate}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </div>
+                                                <!-- Kontingentierung -->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="kontingentierung_id_{{i}}"
+                                                                  name="kontingentierung_id_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
+                                                                  (change)="changeKonfigKontingentierung(konfigurationsListe[i])">
+                                                        {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
+                                                </div>
 
-                                            <!-- Custom Erwerbspensum Zuschlag -->
-                                            <div class="form-group">
-                                                <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
-                                                              name="ewp_zuschlag_override_id_{{i}}"
-                                                              [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
-                                                              (change)="changeErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
+                                                <!-- Custom Erwerbspensum Zuschlag -->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
+                                                                  name="ewp_zuschlag_override_id_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
+                                                                  (change)="changeKonfigErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
                                                 <span translate
                                                       [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
                                                     EWP_ZUSCHLAG_OVERRIDE
                                                 </span>
-                                                </mat-checkbox>
-                                            </div>
-                                            <div class="form-group"
-                                                 *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
-                                                <input id="ewp_zuschlag_id_{{i}}"
-                                                       name="ewp_zuschlag_id_{{i}}"
-                                                       class="form-control"
-                                                       type="number"
-													   #ewp_zuschlag='ngModel'
-                                                       required
-                                                       customMinMax
-                                                       [minValue]="0"
-                                                       [maxValue]="konfigurationsListe[i].erwerbspensumZuschlagMax"
-                                                       [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlag"
-                                                       (change)="changeErwerbspensumZuschlag(konfigurationsListe[i])">
+                                                    </mat-checkbox>
+                                                </div>
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
+                                                    <input id="ewp_zuschlag_id_{{i}}"
+                                                           name="ewp_zuschlag_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+														   #ewp_zuschlag='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [maxValue]="konfigurationsListe[i].erwerbspensumZuschlagMax"
+                                                           [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlag"
+                                                           (change)="changeErwerbspensumZuschlag(konfigurationsListe[i])">
 
-                                                <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
-                                                                   [errorObject]="ewp_zuschlag.errors">
-                                                </dv-error-messages>
+                                                    <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                       [errorObject]="ewp_zuschlag.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                            </div>
+                                        </div>
+<!--                                            Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                        <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
+                                                    <div class="form-group">
+                                                        <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
+                                                                      name="zusaetzliche_verguenstigung_{{i}}"
+                                                                      [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
+                                                                      (change)="changeKonfigZusaetzlicherGutscheinEnabled(konfigurationsListe[i])">
+                                                            <span translate>
+                                                                ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE
+                                                            </span>
+                                                        </mat-checkbox>
+                                                    </div>
+                                                    <!--                                            Zusätzlicher Gutschein in CHF pro Tag bei Kitas-->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                        <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE</label>
+                                                        <input id="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_betrag_kita='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita"
+                                                               (change)="changeKonfigZusaetzlicherGutscheinBetragKita(konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_betrag_kita.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!--                                            Zusätzlicher Gutschein in CHF pro Stunde bei TFOs-->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                        <label for="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE</label>
+                                                        <input id="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                               name="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_gutschein_betrag_tfo='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo"
+                                                               (change)="changeKonfigZusaetzlicherGutscheinBetragTfo(konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_gutschein_betrag_tfo_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_gutschein_betrag_tfo.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!--                                            Zusaetzlicher Gutschein bei Kitas anbieten bis und mit-->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                        <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT</label>
+                                                        <mat-select
+                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita"
+                                                            (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeKita(konfigurationsListe[i])"
+                                                            id="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
+                                                            name="zusaetzlicher_gutschein_kita_bis_und_mit_id_{{i}}"
+                                                            class="form-control">
+                                                            <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                        [value]="etv">{{etv | translate}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </div>
+                                                    <!--                                            Zusaetzlicher Gutschein bei TFOs anbieten bis und mit-->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled">
+                                                        <label class="required" translate>ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT</label>
+                                                        <mat-select
+                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo"
+                                                            (selectionChange)="changeKonfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo(konfigurationsListe[i])"
+                                                            id="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
+                                                            name="zusaetzlicher_gutschein_tfo_bis_und_mit_id_{{i}}"
+                                                            class="form-control">
+                                                            <mat-option *ngFor="let etv of einschulungTypGemeindeValues"
+                                                                        [value]="etv">{{etv | translate}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </div>
+
+                                                    <!--                                            Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
+                                                    <div class="form-group">
+                                                        <mat-checkbox id="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
+                                                                      name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
+                                                                      [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
+                                                                      (change)="changeKonfigZusaetzlicherBabybeitragEnabled(konfigurationsListe[i])">
+                                                            <span translate>
+                                                                ZUSAETZLICHER_BABYBEITRAG_GEMEINDE
+                                                            </span>
+                                                        </mat-checkbox>
+                                                    </div>
+                                                    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas-->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
+                                                        <label for="zusaetzlicher_gutschein_betrag_kita_id_{{i}}"
+                                                               class="required"
+                                                               translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA</label>
+                                                        <input id="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
+                                                               name="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_babybeitrag_betrag_kita='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita"
+                                                               (change)="changeZusaetzlicherBabybeitragKita(konfigurationsListe[i])">
+
+                                                        <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                                           [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <!--                                            Zusätzlicher maximaler Gutschein in CHF pro Tag bei TFOs-->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled">
+                                                        <label for="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                               class="required"
+                                                               translate>ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO</label>
+                                                        <input id="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                               name="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_babybeitrag_betrag_tfo='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo"
+                                                               (change)="changeZusaetzlicherBabybeitragTfo(konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_babybeitrag_betrag_tfo_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_babybeitrag_betrag_tfo.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+
+                                                    <!--                                            Zusätzlicher Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
+                                                    <div class="form-group">
+                                                        <mat-checkbox
+                                                            id="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
+                                                            name="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
+                                                            [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled"
+                                                            (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled(konfigurationsListe[i])">
+                                                            <span translate>
+                                                                ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT
+                                                            </span>
+                                                        </mat-checkbox>
+                                                    </div>
+                                                    <!--                                            Maximal zugelassener Anspruch % Freiwilligenarbeit -->
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled">
+                                                        <label for="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                               class="required" translate>ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX</label>
+                                                        <input id="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                               name="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #zusaetzlicher_anspruch_freiwilligenarbeit_max='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [maxValue]="100"
+                                                               [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent"
+                                                               (change)="changeKonfigZusaetzlicherAnspruchFreiwilligenarbeitMax(konfigurationsListe[i])">
+
+                                                        <dv-error-messages
+                                                            inputId="zusaetzlicher_anspruch_freiwilligenarbeit_max_id_{{i}}"
+                                                            [errorObject]="zusaetzlicher_anspruch_freiwilligenarbeit_max.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+
+
+                                                        <!--                                            Mahlzeitenverguenstigung -->
+                                                        <div class="form-group">
+                                                            <mat-checkbox id="mahlzeitenverguenstigung_enabled_{{i}}"
+                                                                          name="mahlzeitenverguenstigung_enabled_{{i}}"
+                                                                          [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled"
+                                                                          (change)="changeKonfigMahlzeitenverguenstigungEnabled(konfigurationsListe[i])">
+                                                            <span translate>
+                                                                MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE
+                                                            </span>
+                                                            </mat-checkbox>
+                                                        </div>
+
+                                                        <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
+                                                        <div class="table-responsive mt-2"
+                                                             *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                            <table class="mahlzeitenverguenstigung-table">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th translate>
+                                                                        MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MIN
+                                                                    </th>
+                                                                    <th translate>
+                                                                        MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN_MAX
+                                                                    </th>
+                                                                    <th class="align-right" translate>
+                                                                        VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT
+                                                                    </th>
+                                                                    <th class="align-right" translate>
+                                                                        VERGUENSTIGUNG_PRO_NEBENMAHLZEIT
+                                                                    </th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe1_min_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe1_min_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                [value]="'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate"
+                                                                                disabled>
+                                                                            <dv-error-messages></dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe1_max_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe1_max_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe1_max='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="1"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen"
+                                                                                (keyup)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen(konfigurationsListe[i], i)">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe1_max_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe1_max.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe1_hauptmahlzeit_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe1_hauptmahlzeit_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe1_hauptmahlzeit='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="0"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe1_hauptmahlzeit_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe1_hauptmahlzeit.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe1_nebenmahlzeit_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe1_nebenmahlzeit_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe1_nebenmahlzeit='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="0"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe1_nebenmahlzeit_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe1_nebenmahlzeit.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe2_min_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe2_min_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                disabled
+                                                                                [value]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1">
+                                                                            <dv-error-messages></dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe2_max_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe2_max_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe2_max='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 2"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe2_max_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe2_max.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe2_hauptmahlzeit_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe2_hauptmahlzeit_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe2_hauptmahlzeit='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="0"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe2_hauptmahlzeit_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe2_hauptmahlzeit.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe2_nebenmahlzeit_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe2_nebenmahlzeit_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe2_nebenmahlzeit='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="0"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe2_nebenmahlzeit_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe2_nebenmahlzeit.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe3_min_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe3_min_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                [value]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen + 1"
+                                                                                disabled>
+                                                                            <dv-error-messages></dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe3_hauptmahlzeit_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe3_hauptmahlzeit_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe3_hauptmahlzeit='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="0"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe3_hauptmahlzeit_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe3_hauptmahlzeit.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input
+                                                                                id="mahlzeitenverguenstigung_stufe3_nebenmahlzeit_id_{{i}}"
+                                                                                name="mahlzeitenverguenstigung_stufe3_nebenmahlzeit_id_{{i}}"
+                                                                                class="form-control"
+                                                                                type="number"
+                                                                                #mahlzeitenverguenstigung_stufe3_nebenmahlzeit='ngModel'
+                                                                                required
+                                                                                customMinMax
+                                                                                [minValue]="0"
+                                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit"
+                                                                                (change)="changeKonfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit(konfigurationsListe[i])">
+
+                                                                            <dv-error-messages
+                                                                                inputId="mahlzeitenverguenstigung_stufe3_nebenmahlzeit_id_{{i}}"
+                                                                                [errorObject]="mahlzeitenverguenstigung_stufe3_nebenmahlzeit.errors">
+                                                                            </dv-error-messages>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <!--                                            Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
+                                                        <div class="form-group"
+                                                             *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                            <mat-checkbox
+                                                                id="mahlzeitenverguenstigung_sozialhilfeempfaenger_enabled_{{i}}"
+                                                                name="mahlzeitenverguenstigung_sozialhilfeempfaenger_enabled_{{i}}"
+                                                                [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled"
+                                                                (change)="changeKonfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled(konfigurationsListe[i])">
+                                                            <span translate>
+                                                                MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
+                                                            </span>
+                                                            </mat-checkbox>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -337,132 +810,143 @@
     <ng-template #viewModeTemplate>
         <fieldset>
             <div class="row">
+                <div class="col-sm-6">
+                    <!-- BANKVERBINDUNG -->
+                    <div class="form-group">
+                        <h3 translate>BANKVERBINDUNG</h3>
+                        <p>{{stammdaten.kontoinhaber}}</p>
+                        <p>{{stammdaten.bic}}</p>
+                        <p>{{stammdaten.iban}}</p>
+                    </div>
 
-                <!-- Beschwerdeadresse -->
-                <div>
-                    <div *ngIf="!altBGAdresse; else displayBGAdresse" class="col-sm-6">
+                    <!--            Benachrichtigungen bei Verfügungen automatisch per Email senden-->
+                    <div class="mt-5">
+                        <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
+                        </h3>
+                        <h3 *ngIf="!stammdaten.benachrichtigungBgEmailAuto">
+                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
+                        </h3>
+                        <p></p>
+                    </div>
+                    <!--            standard Fusszeile bei Verfügungen verwenden-->
+                    <div>
                         <div class="form-group">
-                            <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
-                        </div>
-                    </div>
-                    <ng-template #displayBGAdresse>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <h3 translate>ALTERNATIVE_ADRESSE</h3>
-                                <p>{{stammdaten.bgAdresse.organisation}}</p>
-                                <p>{{stammdaten.bgAdresse.strasse}}
-                                    {{stammdaten.bgAdresse.hausnummer}}</p>
-                                <p>{{stammdaten.bgAdresse.plz}} {{stammdaten.bgAdresse.ort}}</p>
+                            <div *ngIf="stammdaten.standardDokSignature">
+                                <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
                             </div>
-                        </div>
-                    </ng-template>
-                </div>
-
-                <!-- Standardverantwortliche -->
-                <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
-                        <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!-- Betreuungsgutscheine anbieten ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>BEGU_START</h3>
-                        <p>{{beguStartStr}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <h3 *ngIf="stammdaten.benachrichtigungBgEmailAuto">
-                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
-                    </h3>
-                    <h3 *ngIf="!stammdaten.benachrichtigungBgEmailAuto">
-                        {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
-                    </h3>
-                    <p></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <div *ngIf="stammdaten.standardDokSignature">
-                            <h3>{{'STANDARD_DOK_SIGNATURE_JA'|translate}}</h3>
-                        </div>
-                        <div *ngIf="!stammdaten.standardDokSignature">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
-                                    <div>
+                            <div *ngIf="!stammdaten.standardDokSignature">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
+                                        <div>
+                                            <div class="form-group">
+                                                <label translate
+                                                       for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
+                                                <input id="standardDokTitleDisplay_id"
+                                                       type="text"
+                                                       name="standardDokTitleDisplay_id"
+                                                       [(ngModel)]="stammdaten.standardDokTitle"
+                                                       class="form-control"
+                                                       disabled="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- Unterschrift 1 Titel-->
+                                    <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label translate for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
-                                            <input id="standardDokTitleDisplay_id"
+                                            <label translate
+                                                   for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
+                                            <input id="standardDokUnterschriftTitelDisplay_id" type="text"
+                                                   name="standardDokUnterschriftTitelDisplay_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
+                                                   class="form-control" disabled="true">
+                                        </div>
+                                    </div>
+                                    <!-- Unterschrift 1 Name -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label translate for="standardDokUnterschriftNameDisplay_id">
+                                                STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
+                                            <input id="standardDokUnterschriftNameDisplay_id"
                                                    type="text"
-                                                   name="standardDokTitleDisplay_id"
-                                                   [(ngModel)]="stammdaten.standardDokTitle"
-                                                   class="form-control"
-                                                   disabled="true">
+                                                   name="standardDokUnterschriftNameDisplay_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName"
+                                                   class="form-control" disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- Unterschrift 2 Titel-->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label translate
+                                                   for="standardDokUnterschriftTitel2Display_id">
+                                                STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
+                                            <input id="standardDokUnterschriftTitel2Display_id" type="text"
+                                                   name="standardDokUnterschriftTitel2Display_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
+                                                   class="form-control" disabled="true">
+                                        </div>
+                                    </div>
+                                    <!-- Unterschrift 2 Name -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label translate for="standardDokUnterschriftName2Display_id">
+                                                STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
+                                            <input id="standardDokUnterschriftName2Display_id"
+                                                   type="text"
+                                                   name="standardDokUnterschriftName2Display_id"
+                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName2"
+                                                   class="form-control" disabled="true">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <!-- Unterschrift 1 Titel-->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate
-                                               for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
-                                        <input id="standardDokUnterschriftTitelDisplay_id" type="text"
-                                               name="standardDokUnterschriftTitelDisplay_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                                <!-- Unterschrift 1 Name -->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate for="standardDokUnterschriftNameDisplay_id">
-                                            STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
-                                        <input id="standardDokUnterschriftNameDisplay_id"
-                                               type="text"
-                                               name="standardDokUnterschriftNameDisplay_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftName"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <!-- Unterschrift 2 Titel-->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate
-                                               for="standardDokUnterschriftTitel2Display_id">
-                                            STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
-                                        <input id="standardDokUnterschriftTitel2Display_id" type="text"
-                                               name="standardDokUnterschriftTitel2Display_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                                <!-- Unterschrift 2 Name -->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label translate for="standardDokUnterschriftName2Display_id">
-                                            STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
-                                        <input id="standardDokUnterschriftName2Display_id"
-                                               type="text"
-                                               name="standardDokUnterschriftName2Display_id"
-                                               [(ngModel)]="stammdaten.standardDokUnterschriftName2"
-                                               class="form-control" disabled="true">
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="mt-5">
+                        <div class="form-group">
+                            <h3 translate>BEGU_START</h3>
+                            <p>{{beguStartStr}}</p>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-sm-6">
+                    <!-- Standardverantwortliche -->
+                    <div *ngIf="stammdaten.defaultBenutzerBG">
+                        <div class="form-group">
+                            <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
+                            <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
+                        </div>
+                    </div>
+
+                    <!-- Beschwerdeadresse -->
+                    <div>
+                        <div *ngIf="!altBGAdresse; else displayBGAdresse">
+                            <div class="form-group">
+                                <h3 translate>NO_ALTERNATIVE_ADRESSE</h3>
+                            </div>
+                        </div>
+                        <ng-template #displayBGAdresse>
+                            <div>
+                                <div class="form-group">
+                                    <h3 translate>ALTERNATIVE_ADRESSE</h3>
+                                    <p>{{stammdaten.bgAdresse.organisation}}</p>
+                                    <p>{{stammdaten.bgAdresse.strasse}}
+                                        {{stammdaten.bgAdresse.hausnummer}}</p>
+                                    <p>{{stammdaten.bgAdresse.plz}} {{stammdaten.bgAdresse.ort}}</p>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+
             </div>
 
             <div class="row">
@@ -499,7 +983,101 @@
                                                     EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
                                                 </span>
                                                 </p>
+                                                <div *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
+                                                     class="mt-2">
+                                                    <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}
+                                                        :</strong>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragKita}">
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_KITA_VALUE_READONLY
+                                                    </p>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherGutscheinBetragTfo}">
+                                                        ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE_READONLY
+                                                    </p>
+                                                    <p>
+                                                        {{'ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT' | translate}}
+                                                        {{konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeKita | translate}}
+                                                    </p>
+                                                    <p>
+                                                        {{'ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT' | translate}}
+                                                        {{konfigurationsListe[i].konfigZusaetzlicherGutscheinBisUndMitSchulstufeTfo | translate}}
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
+                                                    class="mt-2">
+                                                    <strong>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate}}
+                                                        :</strong>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita}">
+                                                        ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA_READONLY
+                                                    </p>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragTfo}">
+                                                        ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO_READONLY
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    *ngIf="konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled"
+                                                    class="mt-2">
+                                                    <strong>{{'ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT' | translate}}
+                                                        :</strong>
+                                                    <p translate
+                                                       [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitMaxprozent}">
+                                                        ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX_READONLY
+                                                    </p>
+                                                </div>
                                             </div>
+                                        </div>
+                                        <!--                                        Mahlzeitenverguenstigung -->
+                                        <div class="col-sm-12"
+                                             *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                            <p><strong translate>MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE</strong></p>
+
+                                            <!--                                            Mahlzeitenverguenstigung pro Einkommensstufe-->
+                                            <div class="table-responsive"
+                                                 *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
+                                                <table class="mahlzeitenverguenstigung-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <td translate>MAHLZEITENVERGUENSTIGUNG_MASSGEBENDES_EINKOMMEN
+                                                        </td>
+                                                        <td class="align-right" translate>
+                                                            VERGUENSTIGUNG_PRO_HAUPTMAHLZEIT
+                                                        </td>
+                                                        <td class="align-right" translate>
+                                                            VERGUENSTIGUNG_PRO_NEBENMAHLZEIT
+                                                        </td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{{'MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN' | translate}}
+                                                            - {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{(konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe1MaxEinkommen + 1).toLocaleString('de-CH') }}
+                                                            -
+                                                            {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{'AB' | translate}} {{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe2MaxEinkommen.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit.toLocaleString('de-CH') }}</td>
+                                                        <td class="align-right">{{konfigurationsListe[i].konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit.toLocaleString('de-CH') }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!--                                            Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
+                                            <p *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled"
+                                               translate>
+                                                MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
+                                            </p>
                                         </div>
                                     </div>
                                 </tab-body>

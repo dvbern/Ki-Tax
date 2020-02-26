@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -96,6 +97,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
@@ -1306,6 +1308,24 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
 		return jaxInstitution;
+	}
+
+	public JaxInstitutionListDTO institutionListDTOToJAX(final Entry<Institution,InstitutionStammdaten> entry) {
+		final JaxInstitutionListDTO jaxInstitutionListDTO = new JaxInstitutionListDTO();
+		convertAbstractVorgaengerFieldsToJAX(entry.getKey(), jaxInstitutionListDTO);
+		jaxInstitutionListDTO.setName(entry.getKey().getName());
+		assert entry.getKey().getMandant() != null;
+		jaxInstitutionListDTO.setMandant(mandantToJAX(entry.getKey().getMandant()));
+		jaxInstitutionListDTO.setStatus(entry.getKey().getStatus());
+		jaxInstitutionListDTO.setStammdatenCheckRequired(entry.getKey().isStammdatenCheckRequired());
+
+		if (entry.getKey().getTraegerschaft() != null) {
+			jaxInstitutionListDTO.setTraegerschaft(traegerschaftToJAX(entry.getKey().getTraegerschaft()));
+		}
+
+		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
+
+		return jaxInstitutionListDTO;
 	}
 
 	public boolean institutionToEntity(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
@@ -2599,6 +2619,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
+		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -3387,6 +3408,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
 			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
+		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
@@ -4104,9 +4126,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());
-		if (persistedMitteilung.getSender() != null) {
-			jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
-		}
+		jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());
 		jaxMitteilung.setSentDatum(persistedMitteilung.getSentDatum());
@@ -4584,21 +4604,11 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
 		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
-		// Konfiguration
-		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
-			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
-			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
-					stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
-		} else {
-			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
-			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
-					stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
+		// Konfiguration: Wir laden immer alle Gesuchsperioden
+		for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+				stammdaten.getGemeinde(),
+				gesuchsperiode));
 		}
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
@@ -4707,20 +4717,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
 
 		return jaxTextRessource;
-	}
-
-	/**
-	 * Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
-	 * Die Gesuchsperiode wo das BEGU Startdatum drin liegt, falls diese bereits existert,
-	 * falls diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
-	 */
-	@Nullable
-	private Gesuchsperiode findRelevantGesuchsperiode(@Nonnull GemeindeStammdaten stammdaten) {
-		Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
-			.getBetreuungsgutscheineStartdatum());
-		Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
-
-		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
 	}
 
 	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(
