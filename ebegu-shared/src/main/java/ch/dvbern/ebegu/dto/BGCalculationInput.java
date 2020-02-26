@@ -495,6 +495,7 @@ public class BGCalculationInput {
 		return sb;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void add(@Nonnull BGCalculationInput other) {
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
