@@ -340,7 +340,9 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             name =  `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
         if (group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH) {
-            return name + ' (' + this.translate.instant(group.modulTagesschuleName) + ')'
+            const scolarisName = this.translate.instant(group.modulTagesschuleName);
+            // tslint:disable-next-line:prefer-template restrict-plus-operands
+            return name + ' (' + scolarisName + ')';
         }
         return name;
     }
