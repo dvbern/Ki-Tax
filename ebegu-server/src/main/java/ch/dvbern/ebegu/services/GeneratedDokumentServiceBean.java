@@ -624,7 +624,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.EMPTY_LIST, enableDebugOutput);
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.emptyList(), enableDebugOutput);
 		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;
 	}

@@ -522,7 +522,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.EMPTY_LIST, enableDebugOutput);
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.emptyList(), enableDebugOutput);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
@@ -547,7 +547,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.EMPTY_LIST, enableDebugOutput);
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.emptyList(), enableDebugOutput);
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
