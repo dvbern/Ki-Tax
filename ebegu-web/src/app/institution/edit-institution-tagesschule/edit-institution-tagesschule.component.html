@@ -153,6 +153,11 @@
                                 </div>
                             </div>
                             <div *ngIf="editMode && isModulTagesschuleTypScolaris(einstellungGP)">
+                                <div *ngIf="einstellungGP && !isScolarisVollstaendig(einstellungGP)">
+                                    <a class="pointer" (click)="addFehlendeScolarisModule(einstellungGP)">
+                                        <span>{{'ADD_FEHLENDE_SCOLARIS_MODULE' | translate}}</span>
+                                    </a>
+                                </div>
                                 <p>{{ 'MODULE_FUER_SCOLARIS_ERSTELLT' | translate }}
                                     <a *ngIf="canEditEinstellungen(einstellungGP)" (click)="changeToDynamisch(einstellungGP)" class="pointer">
                                         {{ 'ZURUECKWECHSELN_ZU_DYNAMISCH' | translate }}

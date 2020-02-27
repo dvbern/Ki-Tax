@@ -748,6 +748,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
             this.getGesuch().finSitStatus).then(() => {
             this.gesuchModelManager.setGesuch(this.getGesuch());
+            // Die Berechnungen neu ausführen, da der FinSit-Status (zumindest bei TS) Einfluss hat auf den Tarif
+            this.refreshKinderListe();
             this.form.$setPristine();
         });
     }
