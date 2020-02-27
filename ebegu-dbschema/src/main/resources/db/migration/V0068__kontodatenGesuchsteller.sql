@@ -16,6 +16,6 @@ ALTER TABLE familiensituation_aud ADD COLUMN zahlungsadresse_id VARCHAR(36);
 
 -- add FK on adresse
 ALTER TABLE familiensituation
-  ADD CONSTRAINT FK_familiensituation_zahlungs_adresse
+  ADD CONSTRAINT FK_familiensituation_adresse
 FOREIGN KEY (zahlungsadresse_id)
-REFERENCES adresse (id);
+REFERENCES adresse(id);
