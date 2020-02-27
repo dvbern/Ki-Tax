@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -63,6 +64,8 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -73,6 +76,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -80,6 +84,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -121,6 +126,8 @@ import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenExcelConverter;
+import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleDataRow;
+import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragExcelConverter;
 import ch.dvbern.ebegu.reporting.zahlungauftrag.ZahlungAuftragPeriodeExcelConverter;
 import ch.dvbern.ebegu.types.DateRange;
@@ -168,6 +175,9 @@ import static java.util.Objects.requireNonNull;
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
 
 	private static final String NO_USER_IS_LOGGED_IN = "No User is logged in";
+	private static final String NO_STAMMDATEN_FOUND = "Keine Stammdaten gefunden";
+	private static final String ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION = "Ein Kind kann nur eine Anmeldung für eine "
+		+ "bestimmte Tagesschule haben";
 
 	@Inject
 	private BenutzerService benutzerService;
@@ -205,6 +215,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private GesuchstellerKinderBetreuungExcelConverter gesuchstellerKinderBetreuungExcelConverter;
 
 	@Inject
+	private TagesschuleExcelConverter tagesschuleExcelConverter;
+
+	@Inject
 	private PrincipalBean principalBean;
 
 	@Inject
@@ -212,6 +225,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private ModulTagesschuleService modulTagesschuleService;
 
 	@Inject
 	private TraegerschaftService traegerschaftService;
@@ -2023,5 +2039,132 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS };
 
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
+	}
+
+	@Nonnull
+	@Override
+	public List<TagesschuleDataRow> getReportDataTagesschuleOhneFinSit(
+		@Nonnull String stammdatenID,
+		String gesuchsperiodeID) {
+
+		requireNonNull(stammdatenID, "Das Argument 'stammdatenID' darf nicht leer sein");
+
+		// todo: change this
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_USER_IS_LOGGED_IN));
+
+		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
+		final CriteriaQuery<KindContainer> query = builder.createQuery(KindContainer.class);
+
+		Root<KindContainer> root = query.from(KindContainer.class);
+		Join<KindContainer, AnmeldungTagesschule> joinAnmeldungTagesschule =
+			root.join(KindContainer_.anmeldungenTagesschule);
+
+		List<Predicate> predicates = new ArrayList<>();
+		if (gesuchsperiodeID != null) {
+			predicates.add(builder.equal(root.get(KindContainer_.gesuch)
+					.get(Gesuch_.gesuchsperiode)
+					.get(Gesuchsperiode_.id),
+				gesuchsperiodeID));
+		}
+		predicates.add(builder.equal(
+			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.institutionStammdaten).get(InstitutionStammdaten_.id),
+			stammdatenID));
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
+		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
+		List<TagesschuleDataRow> tagesschuleDataRowList = convertToTagesschuleDataRows(kindContainerList);
+		return tagesschuleDataRowList;
+	}
+
+	private EinstellungenTagesschule findEinstellungenTagesschule(@Nonnull String stammdatenId,
+		@Nonnull String gesuchsperiodeId) {
+
+		requireNonNull(stammdatenId, "Das Argument 'stammdatenID' darf nicht leer sein");
+		requireNonNull(gesuchsperiodeId, "Das Argument 'gesuchsperiodeId' darf nicht leer sein");
+
+		InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.findInstitutionStammdaten(stammdatenId).orElseThrow(() -> new EbeguRuntimeException(
+				"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_STAMMDATEN_FOUND));
+
+		EinstellungenTagesschule einstellungenTagesschule;
+		for (EinstellungenTagesschule e :
+			institutionStammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule() ) {
+			if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	private List<TagesschuleDataRow> convertToTagesschuleDataRows(List<KindContainer> kindContainerList) {
+		return kindContainerList.stream()
+			.map(this::kindContainerToTagesschuleDataRow)
+			.collect(Collectors.toList());
+	}
+
+	private TagesschuleDataRow kindContainerToTagesschuleDataRow(KindContainer kindContainer) {
+
+		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
+			kindContainer.getAnmeldungenTagesschule().iterator();
+		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
+
+		if (anmeldungTagesschule == null || anmeldungTagesschuleIterator.hasNext()) {
+			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow", ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
+		}
+
+		TagesschuleDataRow tdr = new TagesschuleDataRow();
+		tdr.setTagesschuleName(anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName());
+		tdr.setVornameKind(kindContainer.getKindJA().getVorname());
+		tdr.setNachnameKind(kindContainer.getKindJA().getNachname());
+		tdr.setGeburtsdatum(kindContainer.getKindJA().getGeburtsdatum());
+		tdr.setStatus(anmeldungTagesschule.getBetreuungsstatus());
+		tdr.setReferenznummer(anmeldungTagesschule.getBGNummer());
+		tdr.setAnmeldungTagesschule(anmeldungTagesschule);
+
+		return tdr;
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE}) // TODO: check roles
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Nonnull
+	public UploadFileInfo generateExcelReportTagesschuleOhneFinSit(
+		@Nonnull String stammdatenID,
+		String gesuchsperiodeID,
+		@Nonnull Locale locale) throws ExcelMergeException {
+
+		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT;
+		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+
+		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
+		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"generateExcelReportTagesschuleOhneFinSit",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeID));
+
+		EinstellungenTagesschule einstellungenTagesschule = findEinstellungenTagesschule(stammdatenID, gesuchsperiode.getId());
+		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule nicht gefunden."); // TODO: replace
+
+		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);
+
+		ExcelMergerDTO excelMergerDTO = tagesschuleExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode, einstellungenTagesschule);
+
+		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+		institutionenExcelConverter.applyAutoSize(sheet);
+
+		byte[] bytes = createWorkbook(workbook);
+
+		return fileSaverService.save(
+			bytes,
+			getFileName(reportVorlage, locale),
+			Constants.TEMP_REPORT_FOLDERNAME,
+			getContentTypeForExport());
 	}
 }

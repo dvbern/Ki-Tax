@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.kanton.KantonDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
+import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleDataRow;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
@@ -137,4 +138,17 @@ public interface ReportService {
 
 	@Nonnull
 	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException;
+
+	@Nonnull
+	UploadFileInfo generateExcelReportTagesschuleOhneFinSit(
+		@Nonnull String stammdatenId,
+		String gesuchsperiodeId,
+		@Nonnull Locale locale
+	)
+		throws ExcelMergeException;
+
+	@Nonnull
+	List<TagesschuleDataRow> getReportDataTagesschuleOhneFinSit(
+		@Nonnull String stammdatenID,
+		String gesuchsperiodeID);
 }

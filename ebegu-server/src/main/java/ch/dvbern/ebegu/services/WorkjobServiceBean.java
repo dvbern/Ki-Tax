@@ -169,6 +169,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			datumVon,
 			datumBis,
 			gesuchPeriodIdParam,
+			null,
 			inklBgGesuche,
 			inklMischGesuche,
 			inklTsGesuche,
@@ -188,6 +189,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
 		@Nullable String gesuchPeriodIdParam,
+		@Nullable String stammdatenIdParam,
 		boolean inklBgGesuche,
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
@@ -225,6 +227,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		jobParameters.setProperty(LANGUAGE, locale.getLanguage());
 
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
+		setPropertyIfPresent(jobParameters, WorkJobConstants.STAMMDATEN_ID_PARAM, stammdatenIdParam);
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
 		jobOperator.getJobNames();
 		workJob.setStatus(BatchJobStatus.REQUESTED);
@@ -280,6 +283,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			null,
 			null,
+			null,
 			false,
 			false,
 			false,
@@ -292,8 +296,27 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	public Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlageReportTagesschuleOhneFinsit, @Nonnull String stammdatenId, @Nonnull String gesuchsperiodeId, @Nonnull Locale locale) {
-		return null;
+	public Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		@Nonnull String stammdatenId,
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Locale locale) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			null,
+			null,
+			gesuchsperiodeId,
+			stammdatenId,
+			false,
+			false,
+			false,
+			false,
+			null,
+			false,
+			BigDecimal.ZERO,
+			locale);
 	}
 
 	private void setPropertyIfPresent(@Nonnull Properties jobParameters, @Nonnull String paramName, @Nullable String paramValue) {
