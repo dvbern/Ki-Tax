@@ -99,6 +99,12 @@ export class StatistikViewController implements IController {
     ) {
     }
 
+    private static sortInstitutions(stammdaten: TSInstitutionStammdaten[]): TSInstitutionStammdaten[] {
+        return stammdaten.sort((a, b) => {
+            return a.institution.name.localeCompare(b.institution.name);
+        });
+    }
+
     public $onInit(): void {
         this._statistikParameter = new TSStatistikParameter();
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: any) => {
@@ -112,15 +118,11 @@ export class StatistikViewController implements IController {
 
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
             .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
-                this.institutionStammdatenList = institutionStammdatenList.sort(this.sortInstitutions);
+                this.institutionStammdatenList = StatistikViewController.sortInstitutions(institutionStammdatenList);
             });
 
         this.refreshUserJobs();
         this.initBatchJobPolling();
-    }
-
-    private sortInstitutions(a: TSInstitutionStammdaten, b: TSInstitutionStammdaten): number {
-        return a.institution.name.localeCompare(b.institution.name);
     }
 
     public $onDestroy(): void {
