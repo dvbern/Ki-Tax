@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
+import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -91,6 +92,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -225,9 +227,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
-
-	@Inject
-	private ModulTagesschuleService modulTagesschuleService;
 
 	@Inject
 	private TraegerschaftService traegerschaftService;
@@ -437,7 +436,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		validateDateParams(datumVon, datumBis);
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_USER_IS_LOGGED_IN));
+			"getReportDataKanton", NO_USER_IS_LOGGED_IN));
 
 		Collection<Gesuchsperiode> relevanteGesuchsperioden =
 			gesuchsperiodeService.getGesuchsperiodenBetween(datumVon, datumBis);
@@ -589,7 +588,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	private List<Tuple> getAllVerantwortlicheGesuche() {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_USER_IS_LOGGED_IN));
+			"getAllVerantwortlicheGesuche", NO_USER_IS_LOGGED_IN));
 
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Tuple> query = builder.createTupleQuery();
@@ -2049,10 +2048,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		requireNonNull(stammdatenID, "Das Argument 'stammdatenID' darf nicht leer sein");
 
-		// todo: change this
-		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_USER_IS_LOGGED_IN));
-
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindContainer> query = builder.createQuery(KindContainer.class);
 
@@ -2073,8 +2068,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
-		List<TagesschuleDataRow> tagesschuleDataRowList = convertToTagesschuleDataRows(kindContainerList);
-		return tagesschuleDataRowList;
+		requireNonNull(kindContainerList);
+		return convertToTagesschuleDataRows(kindContainerList);
 	}
 
 	private EinstellungenTagesschule findEinstellungenTagesschule(@Nonnull String stammdatenId,
@@ -2085,30 +2080,35 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		InstitutionStammdaten institutionStammdaten =
 			institutionStammdatenService.findInstitutionStammdaten(stammdatenId).orElseThrow(() -> new EbeguRuntimeException(
-				"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_STAMMDATEN_FOUND));
+				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
 
-		EinstellungenTagesschule einstellungenTagesschule;
-		for (EinstellungenTagesschule e :
-			institutionStammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule() ) {
-			if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
-				return e;
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
+			institutionStammdaten.getInstitutionStammdatenTagesschule();
+		if (institutionStammdatenTagesschule != null) {
+			for (EinstellungenTagesschule e : institutionStammdatenTagesschule.getEinstellungenTagesschule() ) {
+				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
+					return e;
+				}
 			}
 		}
 		return null;
 	}
 
-	private List<TagesschuleDataRow> convertToTagesschuleDataRows(List<KindContainer> kindContainerList) {
+	@Nonnull
+	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList) {
 		return kindContainerList.stream()
 			.map(this::kindContainerToTagesschuleDataRow)
 			.collect(Collectors.toList());
 	}
 
-	private TagesschuleDataRow kindContainerToTagesschuleDataRow(KindContainer kindContainer) {
+	@Nonnull
+	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer) {
 
 		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
 			kindContainer.getAnmeldungenTagesschule().iterator();
 		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
 
+		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
 		if (anmeldungTagesschule == null || anmeldungTagesschuleIterator.hasNext()) {
 			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow", ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
 		}
@@ -2122,6 +2122,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		tdr.setReferenznummer(anmeldungTagesschule.getBGNummer());
 		tdr.setAnmeldungTagesschule(anmeldungTagesschule);
 
+		BelegungTagesschule belegung = anmeldungTagesschule.getBelegungTagesschule();
+		if (belegung != null) {
+			tdr.setAb(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
+		}
+
 		return tdr;
 	}
 
@@ -2133,8 +2138,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	public UploadFileInfo generateExcelReportTagesschuleOhneFinSit(
 		@Nonnull String stammdatenID,
-		String gesuchsperiodeID,
+		@Nonnull String gesuchsperiodeID,
 		@Nonnull Locale locale) throws ExcelMergeException {
+
+		requireNonNull(stammdatenID, "stammdatenID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
+		requireNonNull(gesuchsperiodeID, "gesuchsperiodeID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
 		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT;
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
@@ -2150,7 +2158,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				gesuchsperiodeID));
 
 		EinstellungenTagesschule einstellungenTagesschule = findEinstellungenTagesschule(stammdatenID, gesuchsperiode.getId());
-		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule nicht gefunden."); // TODO: replace
+		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
 		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);
 

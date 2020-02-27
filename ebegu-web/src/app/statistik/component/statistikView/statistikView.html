@@ -747,7 +747,7 @@
                             <span class="uppercase" data-translate="TAGESSCHULE_OHNE_FINSIT_STATISTIK"></span>
                             <dv-tooltip input-id="lastenausgleich_info"
                                         ng-click="$event.stopPropagation()"
-                                        text="'TAGESSCHULE_OHNE_FINSIT_STATISTIK_HINT' | translate">
+                                        text="'TAGESSCHULE_OHNE_FINSIT_STATISTIK_INFO' | translate">
                             </dv-tooltip>
                         </tab-title>
                         <tab-body>
@@ -762,7 +762,8 @@
                                             <div class="dv-select-style">
                                                 <select name="tagesschuleOhneFinsitSelect" id="tagesschuleOhneFinsitSelect"
                                                         ng-model="vm.statistikParameter.tagesschuleOhneFinSit"
-                                                        class="form-control">
+                                                        class="form-control"
+                                                        required>
                                                     <option ng-repeat="institutionStammdaten in vm.institutionStammdatenList"
                                                             ng-value="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
                                                 </select>
@@ -778,7 +779,8 @@
                                             <div class="dv-select-style">
                                                 <select name="tagesschuleOhneFinsitGesuchsperiode" id="tagesschuleOhneFinsitGesuchsperiode"
                                                         ng-model="vm.statistikParameter.gesuchsperiode"
-                                                        class="form-control">
+                                                        class="form-control"
+                                                        required>
                                                     <option ng-repeat="gesuchsperiode in vm.getGesuchsperiodenForTagesschule(vm.statistikParameter.tagesschuleOhneFinSit)"
                                                             ng-value="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
                                                 </select>

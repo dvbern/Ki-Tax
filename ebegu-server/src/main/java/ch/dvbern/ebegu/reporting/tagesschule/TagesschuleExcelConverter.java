@@ -46,12 +46,15 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		@Nonnull Locale locale,
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull EinstellungenTagesschule einstellungenTagesschule) {
+
 		checkNotNull(data);
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
 		excelMerger.addValue(MergeFieldTagesschule.tagesschuleOhneFinSitTitle, data.get(0).getTagesschuleName());
-		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsperiode.getGesuchsperiodeDisplayName(locale));
+
+		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ")";
+		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
 
 		addHeaders(excelMerger, locale, einstellungenTagesschule);
 
@@ -61,8 +64,8 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldTagesschule.vornameKind, dataRow.getVornameKind());
 			excelRowGroup.addValue(MergeFieldTagesschule.geburtsdatumKind, dataRow.getGeburtsdatum());
 			excelRowGroup.addValue(MergeFieldTagesschule.referenznummer, dataRow.getReferenznummer());
-//			excelRowGroup.addValue(MergeFieldTagesschule.ab, dataRow.getAb());
-			excelRowGroup.addValue(MergeFieldTagesschule.status, dataRow.getStatus().toString());
+			excelRowGroup.addValue(MergeFieldTagesschule.ab, dataRow.getAb());
+			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
 			setAnmeldungenForModule(dataRow, einstellungenTagesschule, excelRowGroup);
 		});

@@ -43,7 +43,7 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	vornameKind(new SimpleMergeField<>("vornameKind", STRING_CONVERTER)),
 	geburtsdatumKind(new SimpleMergeField<>("geburtsdatumKind", DATE_CONVERTER)),
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
-	ab(new SimpleMergeField<>("ab", STRING_CONVERTER)),
+	ab(new SimpleMergeField<>("ab", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 
 	repeatCol(new RepeatColMergeField<>("repeatCol", STRING_CONVERTER)),

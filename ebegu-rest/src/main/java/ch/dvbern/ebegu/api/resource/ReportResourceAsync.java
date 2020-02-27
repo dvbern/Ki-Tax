@@ -43,12 +43,18 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Workjob;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WorkJobType;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -87,6 +93,7 @@ public class ReportResourceAsync {
 	public static final String DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN =
 		"Das von-Datum muss vor dem bis-Datum sein.";
 	public static final String URL_PART_EXCEL = "excel/";
+	private static final int MAX_MODULGROUPS_TAGESSCHULE = 20;
 
 	@Inject
 	private DownloadResource downloadResource;
@@ -96,6 +103,12 @@ public class ReportResourceAsync {
 
 	@Inject
 	private WorkjobService workjobService;
+
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private Authorizer authorizer;
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuch-Stichtag'", response = JaxDownloadFile.class)
 	@Nonnull
@@ -622,6 +635,16 @@ public class ReportResourceAsync {
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
+		InstitutionStammdaten stammdaten = institutionStammdatenService.findInstitutionStammdaten(stammdatenId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+			"getTagesschuleOhneFinSitReportExcel", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, stammdatenId));
+		authorizer.checkReadAuthorizationInstitutionStammdaten(stammdaten);
+
+		if (checkMaxTagesschulModuleExceeded(stammdaten, gesuchsperiodeId)) {
+			throw new EbeguRuntimeException("getTagesschuleOhneFinSitReportExcel", "Für diese Tagesschule gibt es zu "
+				+ "viele Module. Mehr als " + MAX_MODULGROUPS_TAGESSCHULE + " können im Excel nicht angezeigt werden");
+		}
+
 		workJob = workjobService.createNewReporting(
 			workJob,
 			ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT,
@@ -631,6 +654,22 @@ public class ReportResourceAsync {
 		);
 
 		return Response.ok(workJob.getId()).build();
+	}
+
+	/*
+	Überprüft, ob für eine bestimmte Gesuchsperiode die Anzahl Module über dem maximalen Wert liegt.
+	Dieser maximale Wert ist durch das Exceltemplate gegeben
+	 */
+	private boolean checkMaxTagesschulModuleExceeded(@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull String gesuchsperiodeId) {
+		if (stammdaten.getInstitutionStammdatenTagesschule() != null) {
+			for (EinstellungenTagesschule e : stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule()) {
+				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
+					return e.getModulTagesschuleGroups().size() > MAX_MODULGROUPS_TAGESSCHULE;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Nonnull
