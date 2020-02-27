@@ -172,6 +172,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("PMD.NcssTypeCount")
 @Stateless
 @Local(ReportService.class)
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
