@@ -624,7 +624,7 @@ public class ReportResourceAsync {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_INSTITUTION })
 	public Response getTagesschuleOhneFinSitReportExcel(
 		@QueryParam("stammdatenId") @Nonnull String stammdatenId,
 		@QueryParam("gesuchsperiodeId") @Nonnull String gesuchsperiodeId,

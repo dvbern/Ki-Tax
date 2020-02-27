@@ -112,13 +112,15 @@ export class StatistikViewController implements IController {
 
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
             .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
-                this.institutionStammdatenList = institutionStammdatenList.sort((a, b) => {
-                    return a.institution.name.localeCompare(b.institution.name);
-                });
+                this.institutionStammdatenList = institutionStammdatenList.sort(this.sortInstitutions);
             });
 
         this.refreshUserJobs();
         this.initBatchJobPolling();
+    }
+
+    private sortInstitutions(a: TSInstitutionStammdaten, b: TSInstitutionStammdaten): number {
+        return a.institution.name.localeCompare(b.institution.name);
     }
 
     public $onDestroy(): void {
