@@ -471,11 +471,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && this.aktuellGueltig;
     }
 
-    public anmeldungSchulamtUebernehmen(): void {
+    public anmeldungSchulamtUebernehmen(isScolaris: { isScolaris: boolean }): void {
         this.copyBGNumberLToClipboard();
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
-            deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
+            deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
         }).then(() => {
             let betreuungsstatus: TSBetreuungsstatus;
             (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
