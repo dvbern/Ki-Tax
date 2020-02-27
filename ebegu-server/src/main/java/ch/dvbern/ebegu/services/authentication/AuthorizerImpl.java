@@ -436,6 +436,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		boolean isTagesschule = verfuegung.getPlatz().getBetreuungsangebotTyp().isTagesschule();
 		if (isTagesschule) {
+			// Der Gesuchsteller darf seine eigene Verfügung speichern: Wenn er eine Mutation macht
+			// wird im Vorgängergesuch eine Verfügung erstellt
+			if (isGSOwner(() -> extractGesuch(verfuegung.getPlatz()).getFall())) {
+				return;
+			}
 			// Tagesschulen werden neu "verfuegt", wenn die Module akzeptiert werden und das Gesuch schon
 			// verfügt/abgeschlossen war. Damit müssen alle Rollen, die Module akzeptieren dürfen, auch
 			// die Verfügung speichern dürfen!
@@ -912,8 +917,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return persistence.find(Gesuch.class, gesuchID);
 	}
 
-	private Gesuch extractGesuch(Betreuung betreuung) {
-		return betreuung.extractGesuch();
+	private Gesuch extractGesuch(AbstractPlatz platz) {
+		return platz.extractGesuch();
 	}
 
 	@Nullable
