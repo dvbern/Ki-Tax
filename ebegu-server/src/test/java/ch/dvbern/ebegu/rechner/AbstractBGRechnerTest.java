@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +161,7 @@ public abstract class AbstractBGRechnerTest {
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
-		return new BetreuungsgutscheinEvaluator(rules, Collections.emptyList());
+		return new BetreuungsgutscheinEvaluator(rules);
 	}
 
 	public static void assertZeitabschnitt(

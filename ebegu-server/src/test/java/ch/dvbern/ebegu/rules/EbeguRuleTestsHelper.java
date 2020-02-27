@@ -113,14 +113,14 @@ public final class EbeguRuleTestsHelper {
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		// Abschnitte
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		// Abschnitte
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
 	}
@@ -131,7 +131,7 @@ public final class EbeguRuleTestsHelper {
 	 */
 	public static List<VerfuegungZeitabschnitt> calculateWithRemainingRestanspruch(Betreuung betreuung, int existingRestanspruch) {
 		// Abschnitte
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
 			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);

@@ -363,9 +363,10 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		List<BGCalculationInput> inputList = new ArrayList<>();
-		inputList.add(zeitabschnitt.getBgCalculationInputAsiv());
-		if (this.ruleValidity == RuleValidity.GEMEINDE) {
-			inputList.add(zeitabschnitt.getBgCalculationInputGemeinde());
+		// Wenn ASIV -> beide, wenn GEMEINDE -> nur Gemeinde
+		inputList.add(zeitabschnitt.getBgCalculationInputGemeinde());
+		if (this.ruleValidity == RuleValidity.ASIV) {
+			inputList.add(zeitabschnitt.getBgCalculationInputAsiv());
 		}
 		return inputList;
 	}

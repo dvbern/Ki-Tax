@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
+import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
@@ -56,15 +57,13 @@ public class BetreuungsgutscheinEvaluator {
 	private boolean isDebug = true;
 
 	private final List<Rule> rules;
-	private final List<RechnerRule> rechnerRules;
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, List<RechnerRule> rechnerRules) {
+	public BetreuungsgutscheinEvaluator(List<Rule> rules) {
 		this.rules = rules;
-		this.rechnerRules = rechnerRules;
 	}
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, List<RechnerRule> rechnerRules, boolean enableDebugOutput) {
-		this(rules, rechnerRules);
+	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput) {
+		this.rules = rules;
 		this.isDebug = enableDebugOutput;
 	}
 
@@ -88,14 +87,10 @@ public class BetreuungsgutscheinEvaluator {
 		// finden, da es keine gibt.
 		AbstractPlatz firstBetreuungOfGesuch = gesuch.getStatus() == AntragStatus.KEIN_ANGEBOT
 			? null
-			: gesuch.getFirstBetreuung();
-		// Für die Berechnung der Familiensituation-Finanzen genügt auch eine Tagesschul-Anmeldung
-		if (firstBetreuungOfGesuch == null) {
-			firstBetreuungOfGesuch = gesuch.getFirstAnmeldungTagesschule();
-		}
+			: gesuch.getFirstBetreuungOrAnmeldungTagesschule();
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
-		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
 
 		if (firstBetreuungOfGesuch != null) {
 			for (Rule rule : rulesToRun) {
@@ -138,6 +133,7 @@ public class BetreuungsgutscheinEvaluator {
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
+		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO);
 		List<KindContainer> kinder = new ArrayList<>(gesuch.getKindContainers());
 		Collections.sort(kinder);
 		for (KindContainer kindContainer : kinder) {
@@ -145,7 +141,7 @@ public class BetreuungsgutscheinEvaluator {
 			// Betreuung den "Restanspruch" merken für die Berechnung der nächsten Betreuung, am Schluss kommt dann
 			// jeweils eine Reduktionsregel die den Anspruch auf den Restanspruch beschraenkt
 			List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte =
-				createInitialenRestanspruch(gesuch.getGesuchsperiode());
+				createInitialenRestanspruch(gesuch.getGesuchsperiode(), !rechnerRulesForGemeinde.isEmpty());
 
 			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
 			// EBEGU-561)
@@ -227,7 +223,7 @@ public class BetreuungsgutscheinEvaluator {
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						verfuegungZeitabschnitt.copyValuesToResult();
-						rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRules);
+						rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRulesForGemeinde);
 					});
 
 					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
@@ -329,11 +325,20 @@ public class BetreuungsgutscheinEvaluator {
 		return rulesForGesuchsperiode;
 	}
 
-	public static List<VerfuegungZeitabschnitt> createInitialenRestanspruch(Gesuchsperiode gesuchsperiode) {
+	private List<RechnerRule> rechnerRulesForGemeinde(@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO) {
+		List<RechnerRule> rechnerRules = new LinkedList<>();
+		if (bgRechnerParameterDTO.getGemeindeZusaetzlicherGutscheinEnabled()) {
+			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule());
+		}
+		return rechnerRules;
+	}
+
+	public static List<VerfuegungZeitabschnitt> createInitialenRestanspruch(Gesuchsperiode gesuchsperiode, boolean hasGemeindeSpezifischeBerechnung) {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
 		VerfuegungZeitabschnitt initialerRestanspruch = new VerfuegungZeitabschnitt(gesuchsperiode.getGueltigkeit());
 		// Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
 		initialerRestanspruch.setAnspruchspensumRestForAsivAndGemeinde(-1);
+		initialerRestanspruch.setHasGemeindeSpezifischeBerechnung(hasGemeindeSpezifischeBerechnung);
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
 	}

@@ -71,6 +71,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	private static final long serialVersionUID = 7250339356897563374L;
 
+	@Transient
+	private boolean hasGemeindeSpezifischeBerechnung = false;
+
 	/**
 	 * Input-Werte für die Rules. Berechnung nach ASIV (Standard)
 	 */
@@ -136,11 +139,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod" })
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
-
+		this.hasGemeindeSpezifischeBerechnung = toCopy.hasGemeindeSpezifischeBerechnung;
 		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde = new BGCalculationInput(toCopy.bgCalculationInputGemeinde);
 		this.bgCalculationResultAsiv = new BGCalculationResult(toCopy.getBgCalculationResultAsiv());
-		if (toCopy.getBgCalculationResultGemeinde() != null) {
+		if (this.hasGemeindeSpezifischeBerechnung && toCopy.getBgCalculationResultGemeinde() != null) {
 			this.bgCalculationResultGemeinde = new BGCalculationResult(toCopy.getBgCalculationResultGemeinde());
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
@@ -155,6 +158,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	public VerfuegungZeitabschnitt(DateRange gueltigkeit) {
 		this.setGueltigkeit(new DateRange(gueltigkeit));
+	}
+
+	public boolean isHasGemeindeSpezifischeBerechnung() {
+		return hasGemeindeSpezifischeBerechnung;
+	}
+
+	public void setHasGemeindeSpezifischeBerechnung(boolean hasGemeindeSpezifischeBerechnung) {
+		this.hasGemeindeSpezifischeBerechnung = hasGemeindeSpezifischeBerechnung;
 	}
 
 	@Nonnull
@@ -513,6 +524,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount" })
 	public void add(VerfuegungZeitabschnitt other) {
+		this.hasGemeindeSpezifischeBerechnung = (this.hasGemeindeSpezifischeBerechnung || other.hasGemeindeSpezifischeBerechnung);
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
 		this.addAllBemerkungen(other.getBemerkungenMap());
@@ -529,15 +541,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Bemerkungen: " + bemerkungen;
-		return sb;
-	}
-
-	public String toStringTagesschuleInfos() {
-		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
-			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
-			+ " massgebendesEinkommen: " + bgCalculationResultAsiv.getMassgebendesEinkommen() + '\n'
-			+ " mitBetreuung: " + bgCalculationResultAsiv.getTsCalculationResultMitPaedagogischerBetreuung() + '\n'
-			+ " ohneBetreuung: " + bgCalculationResultAsiv.getTsCalculationResultOhnePaedagogischerBetreuung();
 		return sb;
 	}
 
@@ -558,7 +561,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return
 			bgCalculationInputAsiv.isSame(otherVerfuegungZeitabschnitt.getBgCalculationInputAsiv()) &&
-			(!this.hasGemeindeSpezfischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
+			(!this.isHasGemeindeSpezifischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
 			EbeguUtil.isSameObject(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSameObject(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
@@ -573,7 +576,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		return
 			this.bgCalculationInputAsiv.isSameSichtbareDaten(that.bgCalculationInputAsiv) &&
-			(!this.hasGemeindeSpezfischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
+			(!this.isHasGemeindeSpezifischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
 			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
@@ -591,7 +594,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// gelangt sind
 		return
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
-			(!this.hasGemeindeSpezfischeBerechnung() ||
+			(!this.isHasGemeindeSpezifischeBerechnung() ||
 				BGCalculationResult.isSamePersistedValues(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde)) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0;
 	}
@@ -658,13 +661,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return compareToBuilder.toComparison();
 	}
 
-	public boolean hasGemeindeSpezfischeBerechnung() {
-		return this.bgCalculationResultGemeinde != null;
-	}
-
 	@Nonnull
 	public BGCalculationResult getRelevantBgCalculationResult() {
-		if (hasGemeindeSpezfischeBerechnung()) {
+		if (isHasGemeindeSpezifischeBerechnung()) {
 			Objects.requireNonNull(this.getBgCalculationResultGemeinde());
 			return this.getBgCalculationResultGemeinde();
 		}
@@ -673,7 +672,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	public BGCalculationInput getRelevantBgCalculationInput() {
-		if (hasGemeindeSpezfischeBerechnung()) {
+		if (isHasGemeindeSpezifischeBerechnung()) {
 			Objects.requireNonNull(this.getBgCalculationInputGemeinde());
 			return this.getBgCalculationInputGemeinde();
 		}

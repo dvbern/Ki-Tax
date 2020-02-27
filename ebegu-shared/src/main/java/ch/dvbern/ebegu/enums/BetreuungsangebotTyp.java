@@ -58,4 +58,8 @@ public enum BetreuungsangebotTyp {
 	public static List<BetreuungsangebotTyp> getBetreuungsgutscheinTypes() {
 		return Arrays.asList(KITA, TAGESFAMILIEN);
 	}
+
+	public boolean isBerechnetesAngebot() {
+		return isKita() || isTagesfamilien() || isTagesschule();
+	}
 }

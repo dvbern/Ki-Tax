@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +41,24 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
+import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -522,7 +538,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.emptyList(), enableDebugOutput);
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gemeinde, gesuchsperiode);
 
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
@@ -547,7 +563,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);
-		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, Collections.emptyList(), enableDebugOutput);
+		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
