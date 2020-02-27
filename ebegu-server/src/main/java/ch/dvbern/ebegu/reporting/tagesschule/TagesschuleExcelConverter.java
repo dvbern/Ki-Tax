@@ -15,8 +15,10 @@
 package ch.dvbern.ebegu.reporting.tagesschule;
 
 import java.time.format.TextStyle;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -25,6 +27,7 @@ import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschule;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -45,18 +48,23 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		@Nonnull List<TagesschuleDataRow> data,
 		@Nonnull Locale locale,
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull EinstellungenTagesschule einstellungenTagesschule) {
+		@Nonnull EinstellungenTagesschule einstellungenTagesschule,
+		@Nonnull String tagesschuleName) {
 
 		checkNotNull(data);
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		excelMerger.addValue(MergeFieldTagesschule.tagesschuleOhneFinSitTitle, data.get(0).getTagesschuleName());
+		excelMerger.addValue(MergeFieldTagesschule.tagesschuleOhneFinSitTitle, tagesschuleName);
 
 		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ")";
 		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
 
-		addHeaders(excelMerger, locale, einstellungenTagesschule);
+		List<ModulTagesschuleGroup> sortedModules =
+			einstellungenTagesschule.getModulTagesschuleGroups().stream().sorted(Comparator.reverseOrder())
+				.collect(Collectors.toList());
+
+		addHeaders(excelMerger, locale, sortedModules);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschule.repeatRow);
@@ -67,14 +75,14 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldTagesschule.ab, dataRow.getAb());
 			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
-			setAnmeldungenForModule(dataRow, einstellungenTagesschule, excelRowGroup);
+			setAnmeldungenForModule(dataRow, sortedModules, excelRowGroup);
 		});
 
 		return excelMerger;
 	}
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale,
-		@Nonnull EinstellungenTagesschule einstellungenTagesschule) {
+		@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups) {
 		excelMerger.addValue(MergeFieldTagesschule.nachnameKindTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle",	locale));
 		excelMerger.addValue(MergeFieldTagesschule.vornameKindTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
@@ -83,7 +91,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschule.abTitle, ServerMessageUtil.getMessage("Reports_abTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
 
-		einstellungenTagesschule.getModulTagesschuleGroups().forEach(group -> {
+		modulTagesschuleGroups.forEach(group -> {
 			boolean first = true;
 			for (ModulTagesschule module : group.getModule()) {
 				excelMerger.addValue(MergeFieldTagesschule.repeatCol, "");
@@ -102,9 +110,9 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 	private void setAnmeldungenForModule(
 		@Nonnull TagesschuleDataRow dataRow,
-		@Nonnull EinstellungenTagesschule einstellungenTagesschule,
+		@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups,
 		@Nonnull ExcelMergerDTO excelRowGroup) {
-			einstellungenTagesschule.getModulTagesschuleGroups().forEach(group -> {
+			modulTagesschuleGroups.forEach(group -> {
 				group.getModule().forEach(module -> {
 					if (isAngemeldet(module, dataRow)) {
 						excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "X");

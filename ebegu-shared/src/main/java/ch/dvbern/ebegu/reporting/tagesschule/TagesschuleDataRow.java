@@ -27,8 +27,6 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
  */
 public class TagesschuleDataRow {
 
-	private String tagesschuleName;
-	private String gesuchsperiodeStr;
 	private String nachnameKind;
 	private String vornameKind;
 	private LocalDate geburtsdatum;
@@ -36,22 +34,6 @@ public class TagesschuleDataRow {
 	private LocalDate ab;
 	private @NotNull Betreuungsstatus status;
 	private AnmeldungTagesschule anmeldungTagesschule;
-
-	public String getTagesschuleName() {
-		return tagesschuleName;
-	}
-
-	public void setTagesschuleName(String tagesschuleName) {
-		this.tagesschuleName = tagesschuleName;
-	}
-
-	public String getGesuchsperiodeStr() {
-		return gesuchsperiodeStr;
-	}
-
-	public void setGesuchsperiodeStr(String gesuchsperiodeStr) {
-		this.gesuchsperiodeStr = gesuchsperiodeStr;
-	}
 
 	public String getNachnameKind() {
 		return nachnameKind;

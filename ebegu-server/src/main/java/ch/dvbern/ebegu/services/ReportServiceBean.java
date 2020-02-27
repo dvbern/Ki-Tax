@@ -2072,20 +2072,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return convertToTagesschuleDataRows(kindContainerList);
 	}
 
-	private EinstellungenTagesschule findEinstellungenTagesschule(@Nonnull String stammdatenId,
+	private EinstellungenTagesschule findEinstellungenTagesschuleByPeriode(@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull String gesuchsperiodeId) {
 
-		requireNonNull(stammdatenId, "Das Argument 'stammdatenID' darf nicht leer sein");
+		requireNonNull(stammdaten, "Das Argument 'stammdatenID' darf nicht leer sein");
 		requireNonNull(gesuchsperiodeId, "Das Argument 'gesuchsperiodeId' darf nicht leer sein");
 
-		InstitutionStammdaten institutionStammdaten =
-			institutionStammdatenService.findInstitutionStammdaten(stammdatenId).orElseThrow(() -> new EbeguRuntimeException(
-				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
-
-		InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
-			institutionStammdaten.getInstitutionStammdatenTagesschule();
-		if (institutionStammdatenTagesschule != null) {
-			for (EinstellungenTagesschule e : institutionStammdatenTagesschule.getEinstellungenTagesschule() ) {
+		if (stammdaten.getInstitutionStammdatenTagesschule() != null) {
+			for (EinstellungenTagesschule e : stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule() ) {
 				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
 					return e;
 				}
@@ -2114,7 +2108,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		TagesschuleDataRow tdr = new TagesschuleDataRow();
-		tdr.setTagesschuleName(anmeldungTagesschule.getInstitutionStammdaten().getInstitution().getName());
 		tdr.setVornameKind(kindContainer.getKindJA().getVorname());
 		tdr.setNachnameKind(kindContainer.getKindJA().getNachname());
 		tdr.setGeburtsdatum(kindContainer.getKindJA().getGeburtsdatum());
@@ -2157,12 +2150,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsperiodeID));
 
-		EinstellungenTagesschule einstellungenTagesschule = findEinstellungenTagesschule(stammdatenID, gesuchsperiode.getId());
+		InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.findInstitutionStammdaten(stammdatenID).orElseThrow(() -> new EbeguRuntimeException(
+				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
+
+		EinstellungenTagesschule einstellungenTagesschule = findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
 		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
 		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);
 
-		ExcelMergerDTO excelMergerDTO = tagesschuleExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode, einstellungenTagesschule);
+		ExcelMergerDTO excelMergerDTO = tagesschuleExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode,
+			einstellungenTagesschule, institutionStammdaten.getInstitution().getName());
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		institutionenExcelConverter.applyAutoSize(sheet);
