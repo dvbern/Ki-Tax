@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckFamiliensituationContainerComplete;
-import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.envers.Audited;
 
 /**
@@ -79,8 +78,7 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamiliensituationGS(null);
 		Objects.requireNonNull(getFamiliensituationJA());
-		target.setFamiliensituationJA(getFamiliensituationJA().copyFamiliensituation(new Familiensituation(),
-			copyType));
+		target.setFamiliensituationJA(getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
 		copySocialhilfeZeitraeume(target, copyType);
 		switch (copyType) {
 		case MUTATION:
@@ -98,8 +96,6 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
-			target.setFamiliensituationJA(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(),
-				copyType));
 			break;
 		}
 		return target;
@@ -138,6 +134,21 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 	}
 
 	@Nonnull
+	public Set<SocialhilfeZeitraumContainer> getSocialhilfeZeitraumContainers() {
+		return socialhilfeZeitraumContainers;
+	}
+
+	public void setSocialhilfeZeitraumContainers(@Nonnull Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
+		this.socialhilfeZeitraumContainers = socialhilfeZeitraumContainers;
+	}
+
+	public boolean addSocialhilfeZeitraumContainer(@Nonnull final SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToAdd) {
+		socialhilfeZeitraumContainerToAdd.setFamiliensituationContainer(this);
+		return !socialhilfeZeitraumContainers.contains(socialhilfeZeitraumContainerToAdd) &&
+			socialhilfeZeitraumContainers.add(socialhilfeZeitraumContainerToAdd);
+	}
+
+	@Nonnull
 	public Familiensituation getFamiliensituationAm(LocalDate stichtag) {
 		Objects.requireNonNull(getFamiliensituationJA());
 		if (getFamiliensituationJA().getAenderungPer() == null || getFamiliensituationJA().getAenderungPer().isBefore(stichtag)) {
@@ -161,21 +172,6 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		}
 		final FamiliensituationContainer otherFamSitContainer = (FamiliensituationContainer) other;
 		return EbeguUtil.isSameObject(getFamiliensituationJA(), otherFamSitContainer.getFamiliensituationJA());
-	}
-
-	@Nonnull
-	public Set<SocialhilfeZeitraumContainer> getSocialhilfeZeitraumContainers() {
-		return socialhilfeZeitraumContainers;
-	}
-
-	public void setSocialhilfeZeitraumContainers(@Nonnull Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
-		this.socialhilfeZeitraumContainers = socialhilfeZeitraumContainers;
-	}
-
-	public boolean addSocialhilfeZeitraumContainer(final SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToAdd) {
-		socialhilfeZeitraumContainerToAdd.setFamiliensituationContainer(this);
-		return !socialhilfeZeitraumContainers.contains(socialhilfeZeitraumContainerToAdd) &&
-			socialhilfeZeitraumContainers.add(socialhilfeZeitraumContainerToAdd);
 	}
 
 	private void copySocialhilfeZeitraeume(@Nonnull FamiliensituationContainer target,

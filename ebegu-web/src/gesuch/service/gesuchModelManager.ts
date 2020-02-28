@@ -1625,6 +1625,6 @@ export class GesuchModelManager {
     }
 
     public isSocialHilfeBezueger(): boolean {
-            return this.getFamiliensituation().sozialhilfeBezueger;
+        return this.getFamiliensituation().sozialhilfeBezueger;
     }
 }

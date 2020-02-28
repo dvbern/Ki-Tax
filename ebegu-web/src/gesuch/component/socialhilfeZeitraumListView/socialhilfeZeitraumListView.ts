@@ -142,8 +142,7 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
 
     public isRemoveAllowed(_socialhilfeZeitraumToEdit: TSSocialhilfeZeitraumContainer): boolean {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
-        // erfasste Taetigkeiten bei nicht-zustandekommen des Jobs nicht mehr geloescht werden koennen
-        // Siehe auch EBEGU-1146 und EBEGU-580
+        // erfasste Sozialhilfe-Zeiträume bei doch nicht Eintreten der Sozialhilfe nicht gelöscht werden können
         return !this.isGesuchReadonly() && _socialhilfeZeitraumToEdit.isGSContainerEmpty();
     }
 }

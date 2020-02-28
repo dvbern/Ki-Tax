@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,10 +28,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer_;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -73,13 +71,6 @@ public class SocialhilfeZeitraumServiceBean extends AbstractBaseService implemen
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		SocialhilfeZeitraumContainer shzCnt = persistence.find(SocialhilfeZeitraumContainer.class, key);
 		return Optional.ofNullable(shzCnt);
-	}
-
-	@Override
-	public Collection<SocialhilfeZeitraumContainer> findSocialhilfeZeitraumForFamSit(@Nonnull FamiliensituationContainer famSitCtn) {
-		return criteriaQueryHelper.getEntitiesByAttribute(
-			SocialhilfeZeitraumContainer.class, famSitCtn,
-			SocialhilfeZeitraumContainer_.familiensituationContainer);
 	}
 
 	@Override

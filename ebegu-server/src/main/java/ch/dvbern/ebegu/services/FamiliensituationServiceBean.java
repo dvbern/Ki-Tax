@@ -102,11 +102,10 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 		// get old FamSit to compare with
 		Familiensituation oldFamiliensituation;
-		if (mergedFamiliensituationContainer != null && mergedFamiliensituationContainer
-			.getFamiliensituationErstgesuch() != null) {
-			oldFamiliensituation = mergedFamiliensituationContainer.getFamiliensituationErstgesuch();  //bei
-			// mutation
-			// immer die Situation vom Erstgesuch als  Basis fuer Wizardstepanpassung
+		if (mergedFamiliensituationContainer != null
+				&& mergedFamiliensituationContainer .getFamiliensituationErstgesuch() != null) {
+			// Bei Mutation immer die Situation vom Erstgesuch als  Basis fuer Wizardstepanpassung
+			oldFamiliensituation = mergedFamiliensituationContainer.getFamiliensituationErstgesuch();
 		} else {
 			oldFamiliensituation = loadedFamiliensituation;
 		}

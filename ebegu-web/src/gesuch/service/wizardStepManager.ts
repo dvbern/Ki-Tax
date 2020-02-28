@@ -226,8 +226,8 @@ export class WizardStepManager {
     }
 
     /**
-     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given
-     * stepName. Use this method to avoid changing the status of a different Step than the one you have to change.
+     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given stepName.
+     * Use this method to avoid changing the status of a different Step than the one you have to change.
      */
     public updateCurrentWizardStepStatusSafe(
         stepName: TSWizardStepName,

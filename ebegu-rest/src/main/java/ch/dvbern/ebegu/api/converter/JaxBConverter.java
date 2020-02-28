@@ -219,7 +219,6 @@ import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -727,7 +726,7 @@ public class JaxBConverter extends AbstractConverter {
 				containerJAX.getFamiliensituationErstgesuch(),
 				famsitToMergeWith));
 		}
-		if(containerJAX.getSocialhilfeZeitraumContainers() != null){
+		if (containerJAX.getSocialhilfeZeitraumContainers() != null) {
 			socialhilfeZeitraumContainersToEntity(containerJAX.getSocialhilfeZeitraumContainers(),
 					container.getSocialhilfeZeitraumContainers());
 		}
@@ -1718,8 +1717,8 @@ public class JaxBConverter extends AbstractConverter {
 				.filter(existingEinstellung -> existingEinstellung.getId().equals(jaxEinstellung.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
 				.orElseGet(EinstellungenTagesschule::new);
-			final EinstellungenTagesschule einstellungToAdd = einstellungenTagesschuleToEntity(jaxEinstellung,
-				einstellungenToMergeWith);
+			final EinstellungenTagesschule einstellungToAdd =
+				einstellungenTagesschuleToEntity(jaxEinstellung, einstellungenToMergeWith);
 			einstellungToAdd.setInstitutionStammdatenTagesschule(owner);
 			final boolean added = convertedEinstellungen.add(einstellungToAdd);
 			if (!added) {
@@ -4712,7 +4711,6 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final JaxTextRessource textRessourceJAX,
 		@Nullable TextRessource textRessource) {
 		requireNonNull(textRessourceJAX);
-		//		requireNonNull(textRessource);
 
 		if (textRessource == null) {
 			textRessource = new TextRessource();
@@ -4801,6 +4799,7 @@ public class JaxBConverter extends AbstractConverter {
 		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
+	@Nonnull
 	public SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToStorableEntity(@Nonnull final JaxSocialhilfeZeitraumContainer jaxShZCont) {
 		SocialhilfeZeitraumContainer containerToMergeWith =
 			Optional.ofNullable(jaxShZCont.getId())
@@ -4809,6 +4808,7 @@ public class JaxBConverter extends AbstractConverter {
 		return socialhilfeZeitraumContainerToEntity(jaxShZCont, containerToMergeWith);
 	}
 
+	@Nonnull
 	public SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToEntity(
 		@Nonnull final JaxSocialhilfeZeitraumContainer jaxShZCont,
 		@Nonnull final SocialhilfeZeitraumContainer socialhilfeZeitraumCont) {
@@ -4848,6 +4848,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxShZCont;
 	}
 
+	@Nonnull
 	private SocialhilfeZeitraum socialhilfeZeitraumToEntity(
 		@Nonnull final JaxSocialhilfeZeitraum jaxSocialhilfeZeitraum,
 		@Nonnull final SocialhilfeZeitraum socialhilfeZeitraum) {
@@ -4868,9 +4869,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	private void socialhilfeZeitraumContainersToEntity(
-		final List<JaxSocialhilfeZeitraumContainer> jaxShZContainers,
-		final Collection<SocialhilfeZeitraumContainer> existingSocialhilfeZeitraeume) {
-
+		@Nonnull final List<JaxSocialhilfeZeitraumContainer> jaxShZContainers,
+		@Nonnull final Collection<SocialhilfeZeitraumContainer> existingSocialhilfeZeitraeume
+	) {
 		final Set<SocialhilfeZeitraumContainer> transformedShZContainers = new HashSet<>();
 		for (final JaxSocialhilfeZeitraumContainer jaxShZContainer : jaxShZContainers) {
 			final SocialhilfeZeitraumContainer containerToMergeWith = existingSocialhilfeZeitraeume
@@ -4890,7 +4891,8 @@ public class JaxBConverter extends AbstractConverter {
 		existingSocialhilfeZeitraeume.addAll(transformedShZContainers);
 	}
 
-	private List<JaxSocialhilfeZeitraumContainer> socialhilfeZeitraumContainersToJAX(final Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
+	@Nonnull
+	private List<JaxSocialhilfeZeitraumContainer> socialhilfeZeitraumContainersToJAX(@Nullable final Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
 		if (socialhilfeZeitraumContainers == null) {
 			return Collections.emptyList();
 		}

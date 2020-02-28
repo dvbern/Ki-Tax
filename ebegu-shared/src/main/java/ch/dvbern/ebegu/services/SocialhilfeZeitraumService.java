@@ -17,13 +17,11 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
 
 public interface SocialhilfeZeitraumService {
@@ -42,11 +40,6 @@ public interface SocialhilfeZeitraumService {
 	 */
 	@Nonnull
 	Optional<SocialhilfeZeitraumContainer> findSocialhilfeZeitraum(@Nonnull String key);
-
-	/**
-	 * Sucht die Erwerbspensen des übergebenen Gesuchstellers.
-	 */
-	Collection<SocialhilfeZeitraumContainer> findSocialhilfeZeitraumForFamSit(@Nonnull FamiliensituationContainer famSitId);
 
 	/**
 	 * entfernt eine Erwerbspensum aus der Databse

@@ -89,8 +89,7 @@ public class SocialhilfeZeitraumResource {
 		return jaxShzCont;
 	}
 
-	@ApiOperation(value = "Remove the SocialhilfeZeitraum Container with the specified ID from the database.",
-		response = Void.class)
+	@ApiOperation("Remove the SocialhilfeZeitraum Container with the specified ID from the database.")
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
 	@DELETE

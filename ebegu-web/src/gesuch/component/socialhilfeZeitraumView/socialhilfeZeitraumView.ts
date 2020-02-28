@@ -88,7 +88,6 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
             }
         } else {
             errorService.addMesageAsError('Unerwarteter Zustand: Familiensituation unbekannt');
-            console.log('kein Familiensituation gefunden');
         }
     }
 
@@ -147,5 +146,4 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
         }
         return false;
     }
-
 }

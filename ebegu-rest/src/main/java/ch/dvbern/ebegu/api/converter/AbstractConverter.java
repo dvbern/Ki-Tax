@@ -160,6 +160,7 @@ public class AbstractConverter {
 	 * @param dateRangedJAXP AbstractDateRanged jax where to take the date from
 	 * @param dateRangedEntity AbstractDateRanged entity where to store the date into
 	 */
+	@Nonnull
 	protected AbstractDateRangedEntity convertAbstractDateRangedFieldsToEntity(
 		final JaxAbstractDateRangedDTO dateRangedJAXP, final AbstractDateRangedEntity
 		dateRangedEntity) {
