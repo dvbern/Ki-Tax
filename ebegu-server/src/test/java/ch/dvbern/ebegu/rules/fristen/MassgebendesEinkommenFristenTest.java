@@ -595,7 +595,9 @@ public class MassgebendesEinkommenFristenTest {
 			TestDataUtil.ENDE_PERIODE,
 			BetreuungsangebotTyp.KITA,
 			100,
-			BigDecimal.valueOf(2000));
+			BigDecimal.valueOf(2000),
+			0,
+			0);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		Gesuch gesuch = betreuung.extractGesuch();
 		GesuchstellerContainer gs1 = gesuch.getGesuchsteller1();
@@ -759,7 +761,9 @@ public class MassgebendesEinkommenFristenTest {
 			TestDataUtil.ENDE_PERIODE,
 			BetreuungsangebotTyp.KITA,
 			100,
-			BigDecimal.valueOf(2000));
+			BigDecimal.valueOf(2000),
+			0,
+			0);
 		kind.getBetreuungen().add(betreuung);
 		betreuung.setKind(kind);
 	}

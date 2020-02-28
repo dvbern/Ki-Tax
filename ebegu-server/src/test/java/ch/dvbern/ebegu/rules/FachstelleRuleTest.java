@@ -40,7 +40,7 @@ public class FachstelleRuleTest {
 	@Test
 	public void testKitaMitFachstelleWenigerAlsPensum() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000), 0, 0);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
@@ -65,7 +65,7 @@ public class FachstelleRuleTest {
 	@Test
 	public void testKitaMitFachstelleMehrAlsPensum() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000), 0, 0);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
@@ -91,7 +91,7 @@ public class FachstelleRuleTest {
 	@Test
 	public void testKitaMitFachstelleUndRestPensum() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000), 0, 0);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 

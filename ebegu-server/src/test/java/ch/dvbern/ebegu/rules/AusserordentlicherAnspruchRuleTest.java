@@ -84,7 +84,7 @@ public class AusserordentlicherAnspruchRuleTest {
 
 	private Betreuung createBetreuung(int betreuungspensum, int erwerbspensum, int ausserordentlicherAnspruch) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, betreuungspensum, new BigDecimal(2000));
+			BetreuungsangebotTyp.KITA, betreuungspensum, new BigDecimal(2000), 0, 0);
 		ErwerbspensumContainer erwerbspensumContainer =
 			TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, erwerbspensum);
 		GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();

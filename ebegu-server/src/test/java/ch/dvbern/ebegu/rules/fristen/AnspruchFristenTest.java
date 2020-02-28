@@ -333,7 +333,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 	}
 
 	private Betreuung createErstgesuch(@Nonnull LocalDate eingangsdatum) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 75,  BigDecimal.valueOf(2000));
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 75,  BigDecimal.valueOf(2000), 0, 0);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		Gesuch gesuch = betreuung.extractGesuch();
@@ -373,7 +373,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 	}
 
 	private void addBetreuung(@Nonnull KindContainer kind) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 100,  BigDecimal.valueOf(2000));
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 100,  BigDecimal.valueOf(2000), 0, 0);
 		kind.getBetreuungen().add(betreuung);
 		betreuung.setKind(kind);
 	}
