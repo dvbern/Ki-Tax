@@ -647,13 +647,13 @@ export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
     };
 }
 
-export class EbeguSocialhilfeZeitraumListState implements Ng1StateDeclaration {
-    public name = 'gesuch.SocialhilfeZeitraeume';
-    public url = '/socialhilfeZeitraeume/:gesuchId';
+export class EbeguSozialhilfeZeitraumListState implements Ng1StateDeclaration {
+    public name = 'gesuch.SozialhilfeZeitraeume';
+    public url = '/sozialhilfeZeitraeume/:gesuchId';
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<socialhilfe-zeitraum-list-view>',
+            template: '<sozialhilfe-zeitraum-list-view>',
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -669,16 +669,16 @@ export class EbeguSocialhilfeZeitraumListState implements Ng1StateDeclaration {
     };
 }
 
-export class EbeguSocialhilfeZeitraumState implements Ng1StateDeclaration {
-    public name = 'gesuch.SocialhilfeZeitraum';
-    public url = '/socialhilfeZeitraeume/socialhilfeZeitraum/:gesuchId/:socialhilfeZeitraumNum';
+export class EbeguSozialhilfeZeitraumState implements Ng1StateDeclaration {
+    public name = 'gesuch.SozialhilfeZeitraum';
+    public url = '/sozialhilfeZeitraeume/sozialhilfeZeitraum/:gesuchId/:sozialhilfeZeitraumNum';
     public params = {
-        socialhilfeZeitraumNum: '',
+        sozialhilfeZeitraumNum: '',
     };
 
     public views: { [name: string]: Ng1StateDeclaration } = {
         gesuchViewPort: {
-            template: '<socialhilfe-zeitraum-view>',
+            template: '<sozialhilfe-zeitraum-view>',
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -721,8 +721,8 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguDokumenteState(),
     new EbeguFreigabeState(),
     new EbeguBetreuungMitteilungState(),
-    new EbeguSocialhilfeZeitraumListState(),
-    new EbeguSocialhilfeZeitraumState(),
+    new EbeguSozialhilfeZeitraumListState(),
+    new EbeguSozialhilfeZeitraumState(),
     // new OnboardingTest()
 ];
 
@@ -773,8 +773,8 @@ export class IEinkommensverschlechterungResultateStateParams {
     public basisjahrPlus: string;
 }
 
-export class ISocialhilfeZeitraumStateParams {
-    public socialhilfeZeitraumNum: string;
+export class ISozialhilfeZeitraumStateParams {
+    public sozialhilfeZeitraumNum: string;
 }
 
 // FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen

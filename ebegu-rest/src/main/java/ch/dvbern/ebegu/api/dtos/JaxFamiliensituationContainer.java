@@ -39,7 +39,7 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 	private JaxFamiliensituation familiensituationErstgesuch;
 
 	@Nullable
-	private List<JaxSocialhilfeZeitraumContainer> socialhilfeZeitraumContainers = new ArrayList<>();
+	private List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = new ArrayList<>();
 
 	public JaxFamiliensituation getFamiliensituationJA() {
 		return familiensituationJA;
@@ -66,11 +66,11 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public List<JaxSocialhilfeZeitraumContainer> getSocialhilfeZeitraumContainers() {
-		return socialhilfeZeitraumContainers;
+	public List<JaxSozialhilfeZeitraumContainer> getSozialhilfeZeitraumContainers() {
+		return sozialhilfeZeitraumContainers;
 	}
 
-	public void setSocialhilfeZeitraumContainers(@Nullable List<JaxSocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
-		this.socialhilfeZeitraumContainers = socialhilfeZeitraumContainers;
+	public void setSozialhilfeZeitraumContainers(@Nullable List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers) {
+		this.sozialhilfeZeitraumContainers = sozialhilfeZeitraumContainers;
 	}
 }

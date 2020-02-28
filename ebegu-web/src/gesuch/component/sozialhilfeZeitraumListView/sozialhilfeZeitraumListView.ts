@@ -20,9 +20,9 @@ import {IComponentOptions, IScope, ITimeoutService} from 'angular';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {SocialhilfeZeitraumRS} from '../../../app/core/service/socialhilfeZeitraumRS.rest';
+import {SozialhilfeZeitraumRS} from '../../../app/core/service/sozialhilfeZeitraumRS.rest';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSSocialhilfeZeitraumContainer} from '../../../models/TSSocialhilfeZeitraumContainer';
+import {TSSozialhilfeZeitraumContainer} from '../../../models/TSSozialhilfeZeitraumContainer';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -31,15 +31,15 @@ import {AbstractGesuchViewController} from '../abstractGesuchView';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
-export class SocialhilfeZeitraumListViewComponentConfig implements IComponentOptions {
+export class SozialhilfeZeitraumListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {};
-    public template = require('./socialhilfeZeitraumListView.html');
-    public controller = SocialhilfeZeitraumListViewController;
+    public template = require('./sozialhilfeZeitraumListView.html');
+    public controller = SozialhilfeZeitraumListViewController;
     public controllerAs = 'vm';
 }
 
-export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewController<TSSocialhilfeZeitraumContainer> implements IDVFocusableController {
+export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewController<TSSozialhilfeZeitraumContainer> implements IDVFocusableController {
 
     public static $inject: string[] = [
         '$state',
@@ -50,11 +50,11 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
         'DvDialog',
         '$scope',
         '$timeout',
-        'SocialhilfeZeitraumRS',
+        'SozialhilfeZeitraumRS',
     ];
 
     public gesuchModelManager: GesuchModelManager;
-    public socialhilfeZeitraeume: TSSocialhilfeZeitraumContainer[];
+    public sozialhilfeZeitraeume: TSSozialhilfeZeitraumContainer[];
 
     public constructor(
         private readonly $state: StateService,
@@ -65,69 +65,69 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
         private readonly dvDialog: DvDialog,
         $scope: IScope,
         $timeout: ITimeoutService,
-        private readonly socialhilfeZeitraumRS: SocialhilfeZeitraumRS,
+        private readonly sozialhilfeZeitraumRS: SozialhilfeZeitraumRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
-            TSWizardStepName.SOCIALHILFEZEITRAEUME,
+            TSWizardStepName.SOZIALHILFEZEITRAEUME,
             $timeout);
         this.initViewModel();
     }
 
     private initViewModel(): void {
-        this.initSocialhilfeZeitraumList();
+        this.initSozialhilfeZeitraumList();
     }
 
-    public initSocialhilfeZeitraumList(): void {
-        if (this.socialhilfeZeitraeume !== undefined) {
+    public initSozialhilfeZeitraumList(): void {
+        if (this.sozialhilfeZeitraeume !== undefined) {
             return;
         }
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().familiensituationContainer &&
-            this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers) {
+            this.gesuchModelManager.getGesuch().familiensituationContainer.sozialhilfeZeitraumContainers) {
             const familiensituationContainer = this.gesuchModelManager.getGesuch().familiensituationContainer;
-            this.socialhilfeZeitraeume = familiensituationContainer.socialhilfeZeitraumContainers;
+            this.sozialhilfeZeitraeume = familiensituationContainer.sozialhilfeZeitraumContainers;
         } else {
-            this.socialhilfeZeitraeume = [];
+            this.sozialhilfeZeitraeume = [];
         }
     }
 
-    public createSocialhilfeZeitraum(): void {
-        this.openSocialhilfeZeitraumView(undefined);
+    public createSozialhilfeZeitraum(): void {
+        this.openSozialhilfeZeitraumView(undefined);
     }
 
-    public removeSocialhilfeZeitraum(
-        socialhilfeZeitraum: TSSocialhilfeZeitraumContainer,
+    public removeSozialhilfeZeitraum(
+        sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer,
         elementId: string,
         index: any,
     ): void {
         this.errorService.clearAll();
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             deleteText: '',
-            title: 'SOCIALHILFEZEITRAUM_LOESCHEN',
+            title: 'SOZIALHILFEZEITRAUM_LOESCHEN',
             parentController: this,
             elementID: elementId + String(index),
         })
             .then(() => {   // User confirmed removal
-                this.socialhilfeZeitraumRS.removeSocialhilfeZeitraum(socialhilfeZeitraum.id).then(() => {
-                    this.socialhilfeZeitraeume.splice(index, 1);
+                this.sozialhilfeZeitraumRS.removeSozialhilfeZeitraum(sozialhilfeZeitraum.id).then(() => {
+                    this.sozialhilfeZeitraeume.splice(index, 1);
                 });
             });
     }
 
-    public editSocialhilfeZeitraum(socialhilfeZeitraum: any): void {
-        const index = this.findIndexOfSocialhilfeZeitraum(socialhilfeZeitraum);
-        this.openSocialhilfeZeitraumView(index);
+    public editSozialhilfeZeitraum(sozialhilfeZeitraum: any): void {
+        const index = this.findIndexOfSozialhilfeZeitraum(sozialhilfeZeitraum);
+        this.openSozialhilfeZeitraumView(index);
     }
 
-    private findIndexOfSocialhilfeZeitraum(socialhilfeZeitraum: any): number {
-        return this.gesuchModelManager.getGesuch().familiensituationContainer.socialhilfeZeitraumContainers.indexOf(socialhilfeZeitraum);
+    private findIndexOfSozialhilfeZeitraum(sozialhilfeZeitraum: any): number {
+        return this.gesuchModelManager.getGesuch().familiensituationContainer.sozialhilfeZeitraumContainers.indexOf(sozialhilfeZeitraum);
     }
 
-    private openSocialhilfeZeitraumView(socialhilfeZeitraumNum: number): void {
-        this.$state.go('gesuch.SocialhilfeZeitraum', {
-            socialhilfeZeitraumNum,
+    private openSozialhilfeZeitraumView(sozialhilfeZeitraumNum: number): void {
+        this.$state.go('gesuch.SozialhilfeZeitraum', {
+            sozialhilfeZeitraumNum,
             gesuchId: this.getGesuchId(),
         });
     }
@@ -140,9 +140,9 @@ export class SocialhilfeZeitraumListViewController extends AbstractGesuchViewCon
         return false;
     }
 
-    public isRemoveAllowed(_socialhilfeZeitraumToEdit: TSSocialhilfeZeitraumContainer): boolean {
+    public isRemoveAllowed(_sozialhilfeZeitraumToEdit: TSSozialhilfeZeitraumContainer): boolean {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
         // erfasste Sozialhilfe-Zeiträume bei doch nicht Eintreten der Sozialhilfe nicht gelöscht werden können
-        return !this.isGesuchReadonly() && _socialhilfeZeitraumToEdit.isGSContainerEmpty();
+        return !this.isGesuchReadonly() && _sozialhilfeZeitraumToEdit.isGSContainerEmpty();
     }
 }

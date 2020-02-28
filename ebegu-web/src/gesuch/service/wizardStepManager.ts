@@ -145,7 +145,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.BETREUUNG);
         this.allowedSteps.push(TSWizardStepName.ABWESENHEIT);
         this.allowedSteps.push(TSWizardStepName.VERFUEGEN);
-        this.allowedSteps.push(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+        this.allowedSteps.push(TSWizardStepName.SOZIALHILFEZEITRAEUME);
     }
 
     private setAllowedStepsForSteueramt(): void {
@@ -157,7 +157,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
-        this.allowedSteps.push(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+        this.allowedSteps.push(TSWizardStepName.SOZIALHILFEZEITRAEUME);
     }
 
     private setAllAllowedSteps(): void {

@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -45,9 +45,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Stateless
-@Local(SocialhilfeZeitraumService.class)
+@Local(SozialhilfeZeitraumService.class)
 @PermitAll
-public class SocialhilfeZeitraumServiceBean extends AbstractBaseService implements SocialhilfeZeitraumService {
+public class SozialhilfeZeitraumServiceBean extends AbstractBaseService implements SozialhilfeZeitraumService {
 
 	@Inject
 	private Persistence persistence;
@@ -58,39 +58,39 @@ public class SocialhilfeZeitraumServiceBean extends AbstractBaseService implemen
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public SocialhilfeZeitraumContainer saveSocialhilfeZeitraum(@Nonnull @Valid SocialhilfeZeitraumContainer socialhilfeZeitraumContainer) {
-		Objects.requireNonNull(socialhilfeZeitraumContainer);
-		final SocialhilfeZeitraumContainer mergedSocialhilfeZeitraum = persistence.merge(socialhilfeZeitraumContainer);
-		mergedSocialhilfeZeitraum.getFamiliensituationContainer().addSocialhilfeZeitraumContainer(mergedSocialhilfeZeitraum);
-		return mergedSocialhilfeZeitraum;
+	public SozialhilfeZeitraumContainer saveSozialhilfeZeitraum(@Nonnull @Valid SozialhilfeZeitraumContainer sozialhilfeZeitraumContainer) {
+		Objects.requireNonNull(sozialhilfeZeitraumContainer);
+		final SozialhilfeZeitraumContainer mergedSozialhilfeZeitraum = persistence.merge(sozialhilfeZeitraumContainer);
+		mergedSozialhilfeZeitraum.getFamiliensituationContainer().addSozialhilfeZeitraumContainer(mergedSozialhilfeZeitraum);
+		return mergedSozialhilfeZeitraum;
 	}
 
 	@Nonnull
 	@Override
-	public Optional<SocialhilfeZeitraumContainer> findSocialhilfeZeitraum(@Nonnull String key) {
+	public Optional<SozialhilfeZeitraumContainer> findSozialhilfeZeitraum(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
-		SocialhilfeZeitraumContainer shzCnt = persistence.find(SocialhilfeZeitraumContainer.class, key);
+		SozialhilfeZeitraumContainer shzCnt = persistence.find(SozialhilfeZeitraumContainer.class, key);
 		return Optional.ofNullable(shzCnt);
 	}
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public void removeSocialhilfeZeitraum(@Nonnull String socialhilfeZeitraumContainerID) {
-		Objects.requireNonNull(socialhilfeZeitraumContainerID);
-		SocialhilfeZeitraumContainer shzCont =
-			this.findSocialhilfeZeitraum(socialhilfeZeitraumContainerID).orElseThrow(
+	public void removeSozialhilfeZeitraum(@Nonnull String sozialhilfeZeitraumContainerID) {
+		Objects.requireNonNull(sozialhilfeZeitraumContainerID);
+		SozialhilfeZeitraumContainer shzCont =
+			this.findSozialhilfeZeitraum(sozialhilfeZeitraumContainerID).orElseThrow(
 			() -> new EbeguEntityNotFoundException(
-				"removeSocialhilfeZeitraum",
+				"removeSozialhilfeZeitraum",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				socialhilfeZeitraumContainerID)
+				sozialhilfeZeitraumContainerID)
 		);
 		FamiliensituationContainer famSit = shzCont.getFamiliensituationContainer();
 		persistence.remove(shzCont);
 
-		// the socialhilfeContainer needs to be removed from the famSit object as well
-		if(!famSit.getSocialhilfeZeitraumContainers().isEmpty()){
-			famSit.getSocialhilfeZeitraumContainers().removeIf(shz -> shz.getId().equalsIgnoreCase(socialhilfeZeitraumContainerID));
+		// the sozialhilfeContainer needs to be removed from the famSit object as well
+		if(!famSit.getSozialhilfeZeitraumContainers().isEmpty()){
+			famSit.getSozialhilfeZeitraumContainers().removeIf(shz -> shz.getId().equalsIgnoreCase(sozialhilfeZeitraumContainerID));
 		}
 	}
 }

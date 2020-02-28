@@ -262,10 +262,10 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
-                if (this.gesuchModelManager.isSocialHilfeBezueger()
+                if (this.gesuchModelManager.isSozialhilfeBezueger()
                     && (this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
 						|| this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled)) {
-                    return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+                    return this.navigateToStep(TSWizardStepName.SOZIALHILFEZEITRAEUME);
                 }
                 // finanzielleSituationStart
                 if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
@@ -323,9 +323,9 @@ export class NavigatorController implements IController {
 
             return undefined;
         }
-        if (TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
+        if (TSWizardStepName.SOZIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
             && this.dvSubStep === 2) {
-            return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+            return this.navigateToStep(TSWizardStepName.SOZIALHILFEZEITRAEUME);
         }
 
         // by default navigieren wir zum naechsten erlaubten Step
@@ -405,12 +405,12 @@ export class NavigatorController implements IController {
             return this.navigateToStep(TSWizardStepName.VERFUEGEN);
         }
 
-        if (TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
+        if (TSWizardStepName.SOZIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
             && this.dvSubStep === 2) {
-            return this.navigateToStep(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+            return this.navigateToStep(TSWizardStepName.SOZIALHILFEZEITRAEUME);
         }
 
-        if (TSWizardStepName.SOCIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.SOZIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()) {
             return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
         }
 
@@ -453,8 +453,8 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.freigabe', gesuchIdParam);
             case TSWizardStepName.VERFUEGEN:
                 return this.state.go('gesuch.verfuegen', gesuchIdParam);
-            case TSWizardStepName.SOCIALHILFEZEITRAEUME:
-                return this.state.go('gesuch.SocialhilfeZeitraeume', gesuchIdParam);
+            case TSWizardStepName.SOZIALHILFEZEITRAEUME:
+                return this.state.go('gesuch.SozialhilfeZeitraeume', gesuchIdParam);
             default:
                 throw new Error(`not implemented for step ${stepName}`);
         }

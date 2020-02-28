@@ -40,25 +40,25 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxSocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.FamiliensituationService;
-import ch.dvbern.ebegu.services.SocialhilfeZeitraumService;
+import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Path("socialhilfeZeitraeume")
+@Path("sozialhilfeZeitraeume")
 @Stateless
-@Api(description = "Resource fuer Socialhilfe Zeitraeume")
-public class SocialhilfeZeitraumResource {
+@Api(description = "Resource fuer Sozialhilfe Zeitraeume")
+public class SozialhilfeZeitraumResource {
 
 	@Inject
 	private JaxBConverter converter;
 	@Inject
-	private SocialhilfeZeitraumService socialhilfeZeitraumService;
+	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 	@Inject
 	private FamiliensituationService familiensituationService;
 
@@ -69,38 +69,38 @@ public class SocialhilfeZeitraumResource {
 	@Path("/{famSitId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxSocialhilfeZeitraumContainer saveSocialhilfeZeitraum(
+	public JaxSozialhilfeZeitraumContainer saveSozialhilfeZeitraum(
 		@Nonnull @NotNull @PathParam("famSitId") JaxId famSitId,
-		@Nonnull @NotNull @Valid JaxSocialhilfeZeitraumContainer jaxSocialhilfeZeitraumContainer,
+		@Nonnull @NotNull @Valid JaxSozialhilfeZeitraumContainer jaxSozialhilfeZeitraumContainer,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) throws EbeguEntityNotFoundException {
 
 		FamiliensituationContainer famSit =
-			familiensituationService.findFamiliensituation(famSitId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("saveSocialhilfeZeitraum", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Familliensituation id invalid: " + famSitId.getId()));
-		SocialhilfeZeitraumContainer convertedSocialhilfeZeitraumContainer =
-			converter.socialhilfeZeitraumContainerToStorableEntity(jaxSocialhilfeZeitraumContainer);
+			familiensituationService.findFamiliensituation(famSitId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("saveSozialhilfeZeitraum", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Familliensituation id invalid: " + famSitId.getId()));
+		SozialhilfeZeitraumContainer convertedSozialhilfeZeitraumContainer =
+			converter.sozialhilfeZeitraumContainerToStorableEntity(jaxSozialhilfeZeitraumContainer);
 
-		convertedSocialhilfeZeitraumContainer.setFamiliensituationContainer(famSit);
+		convertedSozialhilfeZeitraumContainer.setFamiliensituationContainer(famSit);
 
-		SocialhilfeZeitraumContainer storedShZCont =
-			socialhilfeZeitraumService.saveSocialhilfeZeitraum(convertedSocialhilfeZeitraumContainer);
+		SozialhilfeZeitraumContainer storedShZCont =
+			sozialhilfeZeitraumService.saveSozialhilfeZeitraum(convertedSozialhilfeZeitraumContainer);
 
-		JaxSocialhilfeZeitraumContainer jaxShzCont = converter.socialhilfeZeitraumContainerToJAX(storedShZCont);
+		JaxSozialhilfeZeitraumContainer jaxShzCont = converter.sozialhilfeZeitraumContainerToJAX(storedShZCont);
 		return jaxShzCont;
 	}
 
-	@ApiOperation("Remove the SocialhilfeZeitraum Container with the specified ID from the database.")
+	@ApiOperation("Remove the SozialhilfeZeitraum Container with the specified ID from the database.")
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
 	@DELETE
-	@Path("/socialhilfeZeitraumId/{socialhilfeZeitraumContID}")
+	@Path("/sozialhilfeZeitraumId/{sozialhilfeZeitraumContID}")
 	@Consumes(MediaType.WILDCARD)
-	public Response removeSocialhilfeZeitraum(
-		@Nonnull @NotNull @PathParam("socialhilfeZeitraumContID") JaxId socialhilfeZeitraumContIDJAXPId,
+	public Response removeSozialhilfeZeitraum(
+		@Nonnull @NotNull @PathParam("sozialhilfeZeitraumContID") JaxId sozialhilfeZeitraumContIDJAXPId,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(socialhilfeZeitraumContIDJAXPId.getId());
-		socialhilfeZeitraumService.removeSocialhilfeZeitraum(converter.toEntityId(socialhilfeZeitraumContIDJAXPId));
+		Objects.requireNonNull(sozialhilfeZeitraumContIDJAXPId.getId());
+		sozialhilfeZeitraumService.removeSozialhilfeZeitraum(converter.toEntityId(sozialhilfeZeitraumContIDJAXPId));
 
 		return Response.ok().build();
 	}

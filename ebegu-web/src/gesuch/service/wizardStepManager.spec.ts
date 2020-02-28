@@ -77,7 +77,7 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[3]).toBe(TSWizardStepName.BETREUUNG);
             expect(wizardStepManager.getAllowedSteps()[4]).toBe(TSWizardStepName.ABWESENHEIT);
             expect(wizardStepManager.getAllowedSteps()[5]).toBe(TSWizardStepName.VERFUEGEN);
-            expect(wizardStepManager.getAllowedSteps()[6]).toBe(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+            expect(wizardStepManager.getAllowedSteps()[6]).toBe(TSWizardStepName.SOZIALHILFEZEITRAEUME);
         });
         it('constructs the steps for JA', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
@@ -94,7 +94,7 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[6]).toBe(TSWizardStepName.ABWESENHEIT);
             expect(wizardStepManager.getAllowedSteps()[7]).toBe(TSWizardStepName.ERWERBSPENSUM);
             expect(wizardStepManager.getAllowedSteps()[8]).toBe(TSWizardStepName.FINANZIELLE_SITUATION);
-            expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.SOCIALHILFEZEITRAEUME);
+            expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.SOZIALHILFEZEITRAEUME);
             expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.DOKUMENTE);
             expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.FREIGABE);

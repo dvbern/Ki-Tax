@@ -17,30 +17,30 @@
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {SocialhilfeZeitraumRS} from '../../../app/core/service/socialhilfeZeitraumRS.rest';
+import {SozialhilfeZeitraumRS} from '../../../app/core/service/sozialhilfeZeitraumRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
-import {TSSocialhilfeZeitraum} from '../../../models/TSSocialhilfeZeitraum';
-import {TSSocialhilfeZeitraumContainer} from '../../../models/TSSocialhilfeZeitraumContainer';
+import {TSSozialhilfeZeitraum} from '../../../models/TSSozialhilfeZeitraum';
+import {TSSozialhilfeZeitraumContainer} from '../../../models/TSSozialhilfeZeitraumContainer';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {ISocialhilfeZeitraumStateParams} from '../../gesuch.route';
+import {ISozialhilfeZeitraumStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
 
-export class SocialhilfeZeitraumViewComponentConfig implements IComponentOptions {
+export class SozialhilfeZeitraumViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {};
-    public template = require('./socialhilfeZeitraumView.html');
-    public controller = SocialhilfeZeitraumViewController;
+    public template = require('./sozialhilfeZeitraumView.html');
+    public controller = SozialhilfeZeitraumViewController;
     public controllerAs = 'vm';
 }
 
-export class SocialhilfeZeitraumViewController extends AbstractGesuchViewController<TSSocialhilfeZeitraumContainer> {
+export class SozialhilfeZeitraumViewController extends AbstractGesuchViewController<TSSozialhilfeZeitraumContainer> {
 
     public static $inject: string[] = [
         '$stateParams',
@@ -53,13 +53,13 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
         '$q',
         '$translate',
         '$timeout',
-        'SocialhilfeZeitraumRS',
+        'SozialhilfeZeitraumRS',
     ];
 
     public familiensituation: TSFamiliensituationContainer;
 
     public constructor(
-        $stateParams: ISocialhilfeZeitraumStateParams,
+        $stateParams: ISozialhilfeZeitraumStateParams,
         gesuchModelManager: GesuchModelManager,
         berechnungsManager: BerechnungsManager,
         $scope: IScope,
@@ -69,20 +69,20 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
-        private readonly socialhilfeZeitraumRS: SocialhilfeZeitraumRS,
+        private readonly sozialhilfeZeitraumRS: SozialhilfeZeitraumRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
-            TSWizardStepName.SOCIALHILFEZEITRAEUME,
+            TSWizardStepName.SOZIALHILFEZEITRAEUME,
             $timeout);
 
         this.familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer;
         if (this.familiensituation) {
-            if ($stateParams.socialhilfeZeitraumNum) {
-                const ewpNum = parseInt($stateParams.socialhilfeZeitraumNum, 10) || 0;
-                this.model = angular.copy(this.familiensituation.socialhilfeZeitraumContainers[ewpNum]);
+            if ($stateParams.sozialhilfeZeitraumNum) {
+                const ewpNum = parseInt($stateParams.sozialhilfeZeitraumNum, 10) || 0;
+                this.model = angular.copy(this.familiensituation.sozialhilfeZeitraumContainers[ewpNum]);
             } else {
                 this.model = this.initEmptyShZContainer();
             }
@@ -102,27 +102,27 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
             return this.$q.when(this.model);
         }
         this.errorService.clearAll();
-        return this.saveSocialhilfeZeitraum(this.familiensituation, this.model);
+        return this.saveSozialhilfeZeitraum(this.familiensituation, this.model);
     }
 
-    public saveSocialhilfeZeitraum(
+    public saveSozialhilfeZeitraum(
         familiensituation: TSFamiliensituationContainer,
-        socialhilfeZeitraum: TSSocialhilfeZeitraumContainer,
-    ): IPromise<TSSocialhilfeZeitraumContainer> {
-        if (socialhilfeZeitraum.id) {
-            return this.socialhilfeZeitraumRS.saveSocialhilfeZeitraum(socialhilfeZeitraum, familiensituation.id)
-                .then((response: TSSocialhilfeZeitraumContainer) => {
-                    const i = EbeguUtil.getIndexOfElementwithID(socialhilfeZeitraum, familiensituation.socialhilfeZeitraumContainers);
+        sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer,
+    ): IPromise<TSSozialhilfeZeitraumContainer> {
+        if (sozialhilfeZeitraum.id) {
+            return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)
+                .then((response: TSSozialhilfeZeitraumContainer) => {
+                    const i = EbeguUtil.getIndexOfElementwithID(sozialhilfeZeitraum, familiensituation.sozialhilfeZeitraumContainers);
                     if (i >= 0) {
-                        familiensituation.socialhilfeZeitraumContainers[i] = socialhilfeZeitraum;
+                        familiensituation.sozialhilfeZeitraumContainers[i] = sozialhilfeZeitraum;
                     }
                     return response;
                 });
         }
-        return this.socialhilfeZeitraumRS.saveSocialhilfeZeitraum(socialhilfeZeitraum, familiensituation.id)
-            .then((storedSocialhilfeZeitraum: TSSocialhilfeZeitraumContainer) => {
-                familiensituation.socialhilfeZeitraumContainers.push(storedSocialhilfeZeitraum);
-                return storedSocialhilfeZeitraum;
+        return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)
+            .then((storedSozialhilfeZeitraum: TSSozialhilfeZeitraumContainer) => {
+                familiensituation.sozialhilfeZeitraumContainers.push(storedSozialhilfeZeitraum);
+                return storedSozialhilfeZeitraum;
             });
     }
 
@@ -130,18 +130,18 @@ export class SocialhilfeZeitraumViewController extends AbstractGesuchViewControl
         this.form.$setPristine();
     }
 
-    private initEmptyShZContainer(): TSSocialhilfeZeitraumContainer {
-        const shz = new TSSocialhilfeZeitraum();
-        const shzContainer = new TSSocialhilfeZeitraumContainer();
-        shzContainer.socialhilfeZeitraumJA = shz;
+    private initEmptyShZContainer(): TSSozialhilfeZeitraumContainer {
+        const shz = new TSSozialhilfeZeitraum();
+        const shzContainer = new TSSozialhilfeZeitraumContainer();
+        shzContainer.sozialhilfeZeitraumJA = shz;
         return shzContainer;
 
     }
 
-    public socialhilfeZeitraumDisabled(): boolean {
+    public sozialhilfeZeitraumDisabled(): boolean {
         // Disabled wenn Mutation, ausser bei Bearbeiter Jugendamt oder Schulamt
-        if (this.model && this.model.socialhilfeZeitraumJA) {
-            return this.model.socialhilfeZeitraumJA.vorgaengerId
+        if (this.model && this.model.sozialhilfeZeitraumJA) {
+            return this.model.sozialhilfeZeitraumJA.vorgaengerId
                 && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
         }
         return false;

@@ -33,31 +33,31 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
 /**
- * Container-Entity für die Socialhilfe Zeiträume: Diese muss für die  Benutzertypen (GS, JA) einzeln geführt werden,
+ * Container-Entity für die Sozialhilfe Zeiträume: Diese muss für die  Benutzertypen (GS, JA) einzeln geführt werden,
  * damit die Veränderungen / Korrekturen angezeigt werden können.
  */
 @Audited
 @Entity
-public class SocialhilfeZeitraumContainer extends AbstractMutableEntity {
+public class SozialhilfeZeitraumContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -9132257320978372422L;
 
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_socialhilfe_zeitraum_container_familliensituation_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_sozialhilfe_zeitraum_container_familliensituation_id"))
 	private FamiliensituationContainer familiensituationContainer;
 
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_socialhilfe_zeitraum_container_socialhilfezeitraumgs_id"))
-	private SocialhilfeZeitraum socialhilfeZeitraumGS;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_sozialhilfe_zeitraum_container_sozialhilfezeitraumgs_id"))
+	private SozialhilfeZeitraum sozialhilfeZeitraumGS;
 
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_socialhilfe_zeitraum_container_socialhilfezeitraumja_id"))
-	private SocialhilfeZeitraum socialhilfeZeitraumJA;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_sozialhilfe_zeitraum_container_sozialhilfezeitraumja_id"))
+	private SozialhilfeZeitraum sozialhilfeZeitraumJA;
 
 
 	@Override
@@ -69,25 +69,25 @@ public class SocialhilfeZeitraumContainer extends AbstractMutableEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof SocialhilfeZeitraumContainer)) {
+		if (!(other instanceof SozialhilfeZeitraumContainer)) {
 			return false;
 		}
-		final SocialhilfeZeitraumContainer otherSocialhilfeZeitraumContainer = (SocialhilfeZeitraumContainer) other;
-		return EbeguUtil.isSameObject(getSocialhilfeZeitraumJA(), otherSocialhilfeZeitraumContainer.getSocialhilfeZeitraumJA());
+		final SozialhilfeZeitraumContainer otherSozialhilfeZeitraumContainer = (SozialhilfeZeitraumContainer) other;
+		return EbeguUtil.isSameObject(getSozialhilfeZeitraumJA(), otherSozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA());
 	}
 
 	@Nonnull
-	public SocialhilfeZeitraumContainer copySocialhilfeZeitraumContainer(
-		@Nonnull SocialhilfeZeitraumContainer target, @Nonnull AntragCopyType copyType,
+	public SozialhilfeZeitraumContainer copySozialhilfeZeitraumContainer(
+		@Nonnull SozialhilfeZeitraumContainer target, @Nonnull AntragCopyType copyType,
 		@Nonnull FamiliensituationContainer targetFamiliensituationContainer) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			target.setFamiliensituationContainer(targetFamiliensituationContainer);
-			target.setSocialhilfeZeitraumGS(null);
-			if (this.getSocialhilfeZeitraumJA() != null) {
-				target.setSocialhilfeZeitraumJA(this.getSocialhilfeZeitraumJA().copySocialhilfeZeitraum(new SocialhilfeZeitraum(), copyType));
+			target.setSozialhilfeZeitraumGS(null);
+			if (this.getSozialhilfeZeitraumJA() != null) {
+				target.setSozialhilfeZeitraumJA(this.getSozialhilfeZeitraumJA().copySozialhilfeZeitraum(new SozialhilfeZeitraum(), copyType));
 			}
 			break;
 		case ERNEUERUNG:
@@ -106,20 +106,20 @@ public class SocialhilfeZeitraumContainer extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public SocialhilfeZeitraum getSocialhilfeZeitraumGS() {
-		return socialhilfeZeitraumGS;
+	public SozialhilfeZeitraum getSozialhilfeZeitraumGS() {
+		return sozialhilfeZeitraumGS;
 	}
 
-	public void setSocialhilfeZeitraumGS(@Nullable SocialhilfeZeitraum socialhilfeZeitraumGS) {
-		this.socialhilfeZeitraumGS = socialhilfeZeitraumGS;
+	public void setSozialhilfeZeitraumGS(@Nullable SozialhilfeZeitraum sozialhilfeZeitraumGS) {
+		this.sozialhilfeZeitraumGS = sozialhilfeZeitraumGS;
 	}
 
 	@Nullable
-	public SocialhilfeZeitraum getSocialhilfeZeitraumJA() {
-		return socialhilfeZeitraumJA;
+	public SozialhilfeZeitraum getSozialhilfeZeitraumJA() {
+		return sozialhilfeZeitraumJA;
 	}
 
-	public void setSocialhilfeZeitraumJA(@Nullable SocialhilfeZeitraum socialhilfeZeitraumJA) {
-		this.socialhilfeZeitraumJA = socialhilfeZeitraumJA;
+	public void setSozialhilfeZeitraumJA(@Nullable SozialhilfeZeitraum sozialhilfeZeitraumJA) {
+		this.sozialhilfeZeitraumJA = sozialhilfeZeitraumJA;
 	}
 }

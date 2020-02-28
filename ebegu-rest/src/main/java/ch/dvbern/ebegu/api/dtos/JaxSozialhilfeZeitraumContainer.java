@@ -22,32 +22,32 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * DTO fuer SocialhilfeZeitraum Container
+ * DTO fuer SozialhilfeZeitraum Container
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxSocialhilfeZeitraumContainer extends JaxAbstractDTO {
+public class JaxSozialhilfeZeitraumContainer extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 4879926292956257346L;
 
 	@Valid
-	private JaxSocialhilfeZeitraum socialhilfeZeitraumGS;
+	private JaxSozialhilfeZeitraum sozialhilfeZeitraumGS;
 
 	@Valid
-	private JaxSocialhilfeZeitraum socialhilfeZeitraumJA;
+	private JaxSozialhilfeZeitraum sozialhilfeZeitraumJA;
 
-	public JaxSocialhilfeZeitraum getSocialhilfeZeitraumGS() {
-		return socialhilfeZeitraumGS;
+	public JaxSozialhilfeZeitraum getSozialhilfeZeitraumGS() {
+		return sozialhilfeZeitraumGS;
 	}
 
-	public void setSocialhilfeZeitraumGS(JaxSocialhilfeZeitraum socialhilfeZeitraumGS) {
-		this.socialhilfeZeitraumGS = socialhilfeZeitraumGS;
+	public void setSozialhilfeZeitraumGS(JaxSozialhilfeZeitraum sozialhilfeZeitraumGS) {
+		this.sozialhilfeZeitraumGS = sozialhilfeZeitraumGS;
 	}
 
-	public JaxSocialhilfeZeitraum getSocialhilfeZeitraumJA() {
-		return socialhilfeZeitraumJA;
+	public JaxSozialhilfeZeitraum getSozialhilfeZeitraumJA() {
+		return sozialhilfeZeitraumJA;
 	}
 
-	public void setSocialhilfeZeitraumJA(JaxSocialhilfeZeitraum socialhilfeZeitraumJA) {
-		this.socialhilfeZeitraumJA = socialhilfeZeitraumJA;
+	public void setSozialhilfeZeitraumJA(JaxSozialhilfeZeitraum sozialhilfeZeitraumJA) {
+		this.sozialhilfeZeitraumJA = sozialhilfeZeitraumJA;
 	}
 }

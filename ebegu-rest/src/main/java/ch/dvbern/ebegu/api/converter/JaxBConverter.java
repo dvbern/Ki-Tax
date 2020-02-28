@@ -114,8 +114,8 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
-import ch.dvbern.ebegu.api.dtos.JaxSocialhilfeZeitraum;
-import ch.dvbern.ebegu.api.dtos.JaxSocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
@@ -201,8 +201,8 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraum;
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -249,7 +249,7 @@ import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
-import ch.dvbern.ebegu.services.SocialhilfeZeitraumService;
+import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -337,7 +337,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Inject
 	private PensumFachstelleService pensumFachstelleService;
 	@Inject
-	private SocialhilfeZeitraumService socialhilfeZeitraumService;
+	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 
 	public JaxBConverter() {
 		//nop
@@ -726,9 +726,9 @@ public class JaxBConverter extends AbstractConverter {
 				containerJAX.getFamiliensituationErstgesuch(),
 				famsitToMergeWith));
 		}
-		if (containerJAX.getSocialhilfeZeitraumContainers() != null) {
-			socialhilfeZeitraumContainersToEntity(containerJAX.getSocialhilfeZeitraumContainers(),
-					container.getSocialhilfeZeitraumContainers());
+		if (containerJAX.getSozialhilfeZeitraumContainers() != null) {
+			sozialhilfeZeitraumContainersToEntity(containerJAX.getSozialhilfeZeitraumContainers(),
+					container.getSozialhilfeZeitraumContainers());
 		}
 
 		return container;
@@ -790,7 +790,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxfc.setFamiliensituationErstgesuch(familiensituationToJAX(persistedFamiliensituation.getFamiliensituationErstgesuch()));
 		}
 
-		jaxfc.setSocialhilfeZeitraumContainers(socialhilfeZeitraumContainersToJAX(persistedFamiliensituation.getSocialhilfeZeitraumContainers()));
+		jaxfc.setSozialhilfeZeitraumContainers(sozialhilfeZeitraumContainersToJAX(persistedFamiliensituation.getSozialhilfeZeitraumContainers()));
 
 		return jaxfc;
 	}
@@ -4800,105 +4800,105 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToStorableEntity(@Nonnull final JaxSocialhilfeZeitraumContainer jaxShZCont) {
-		SocialhilfeZeitraumContainer containerToMergeWith =
+	public SozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToStorableEntity(@Nonnull final JaxSozialhilfeZeitraumContainer jaxShZCont) {
+		SozialhilfeZeitraumContainer containerToMergeWith =
 			Optional.ofNullable(jaxShZCont.getId())
-				.flatMap(socialhilfeZeitraumService::findSocialhilfeZeitraum)
-				.orElseGet(SocialhilfeZeitraumContainer::new);
-		return socialhilfeZeitraumContainerToEntity(jaxShZCont, containerToMergeWith);
+				.flatMap(sozialhilfeZeitraumService::findSozialhilfeZeitraum)
+				.orElseGet(SozialhilfeZeitraumContainer::new);
+		return sozialhilfeZeitraumContainerToEntity(jaxShZCont, containerToMergeWith);
 	}
 
 	@Nonnull
-	public SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToEntity(
-		@Nonnull final JaxSocialhilfeZeitraumContainer jaxShZCont,
-		@Nonnull final SocialhilfeZeitraumContainer socialhilfeZeitraumCont) {
+	public SozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToEntity(
+		@Nonnull final JaxSozialhilfeZeitraumContainer jaxShZCont,
+		@Nonnull final SozialhilfeZeitraumContainer sozialhilfeZeitraumCont) {
 
-		convertAbstractVorgaengerFieldsToEntity(jaxShZCont, socialhilfeZeitraumCont);
-		if (jaxShZCont.getSocialhilfeZeitraumGS() != null) {
-			SocialhilfeZeitraum shzToMergeWith =
-				Optional.ofNullable(socialhilfeZeitraumCont.getSocialhilfeZeitraumGS())
-					.orElseGet(SocialhilfeZeitraum::new);
-			SocialhilfeZeitraum socialhilfeZeitraumGS =
-				socialhilfeZeitraumToEntity(jaxShZCont.getSocialhilfeZeitraumGS(),
+		convertAbstractVorgaengerFieldsToEntity(jaxShZCont, sozialhilfeZeitraumCont);
+		if (jaxShZCont.getSozialhilfeZeitraumGS() != null) {
+			SozialhilfeZeitraum shzToMergeWith =
+				Optional.ofNullable(sozialhilfeZeitraumCont.getSozialhilfeZeitraumGS())
+					.orElseGet(SozialhilfeZeitraum::new);
+			SozialhilfeZeitraum sozialhilfeZeitraumGS =
+				sozialhilfeZeitraumToEntity(jaxShZCont.getSozialhilfeZeitraumGS(),
 					shzToMergeWith);
-			socialhilfeZeitraumCont.setSocialhilfeZeitraumGS(socialhilfeZeitraumGS);
+			sozialhilfeZeitraumCont.setSozialhilfeZeitraumGS(sozialhilfeZeitraumGS);
 		}
-		if (jaxShZCont.getSocialhilfeZeitraumJA() != null) {
-			SocialhilfeZeitraum shzToMergeWith =
-				Optional.ofNullable(socialhilfeZeitraumCont.getSocialhilfeZeitraumJA())
-					.orElseGet(SocialhilfeZeitraum::new);
-			SocialhilfeZeitraum socialhilfeZeitraumJA =
-				socialhilfeZeitraumToEntity(jaxShZCont.getSocialhilfeZeitraumJA(),
+		if (jaxShZCont.getSozialhilfeZeitraumJA() != null) {
+			SozialhilfeZeitraum shzToMergeWith =
+				Optional.ofNullable(sozialhilfeZeitraumCont.getSozialhilfeZeitraumJA())
+					.orElseGet(SozialhilfeZeitraum::new);
+			SozialhilfeZeitraum sozialhilfeZeitraumJA =
+				sozialhilfeZeitraumToEntity(jaxShZCont.getSozialhilfeZeitraumJA(),
 					shzToMergeWith);
-			socialhilfeZeitraumCont.setSocialhilfeZeitraumJA(socialhilfeZeitraumJA);
+			sozialhilfeZeitraumCont.setSozialhilfeZeitraumJA(sozialhilfeZeitraumJA);
 		}
 
-		return socialhilfeZeitraumCont;
+		return sozialhilfeZeitraumCont;
 	}
 
 	@Nonnull
-	public JaxSocialhilfeZeitraumContainer socialhilfeZeitraumContainerToJAX(
-		@Nonnull final SocialhilfeZeitraumContainer storedSocialhilfeZeitraumCont) {
+	public JaxSozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToJAX(
+		@Nonnull final SozialhilfeZeitraumContainer storedSozialhilfeZeitraumCont) {
 
-		final JaxSocialhilfeZeitraumContainer jaxShZCont = new JaxSocialhilfeZeitraumContainer();
-		convertAbstractVorgaengerFieldsToJAX(storedSocialhilfeZeitraumCont, jaxShZCont);
-		jaxShZCont.setSocialhilfeZeitraumGS(socialhilfeZeitraumToJax(storedSocialhilfeZeitraumCont.getSocialhilfeZeitraumGS()));
-		jaxShZCont.setSocialhilfeZeitraumJA(socialhilfeZeitraumToJax(storedSocialhilfeZeitraumCont.getSocialhilfeZeitraumJA()));
+		final JaxSozialhilfeZeitraumContainer jaxShZCont = new JaxSozialhilfeZeitraumContainer();
+		convertAbstractVorgaengerFieldsToJAX(storedSozialhilfeZeitraumCont, jaxShZCont);
+		jaxShZCont.setSozialhilfeZeitraumGS(sozialhilfeZeitraumToJax(storedSozialhilfeZeitraumCont.getSozialhilfeZeitraumGS()));
+		jaxShZCont.setSozialhilfeZeitraumJA(sozialhilfeZeitraumToJax(storedSozialhilfeZeitraumCont.getSozialhilfeZeitraumJA()));
 
 		return jaxShZCont;
 	}
 
 	@Nonnull
-	private SocialhilfeZeitraum socialhilfeZeitraumToEntity(
-		@Nonnull final JaxSocialhilfeZeitraum jaxSocialhilfeZeitraum,
-		@Nonnull final SocialhilfeZeitraum socialhilfeZeitraum) {
+	private SozialhilfeZeitraum sozialhilfeZeitraumToEntity(
+		@Nonnull final JaxSozialhilfeZeitraum jaxSozialhilfeZeitraum,
+		@Nonnull final SozialhilfeZeitraum sozialhilfeZeitraum) {
 
-		convertAbstractDateRangedFieldsToEntity(jaxSocialhilfeZeitraum, socialhilfeZeitraum);
+		convertAbstractDateRangedFieldsToEntity(jaxSozialhilfeZeitraum, sozialhilfeZeitraum);
 
-		return socialhilfeZeitraum;
+		return sozialhilfeZeitraum;
 	}
 
 	@Nullable
-	private JaxSocialhilfeZeitraum socialhilfeZeitraumToJax(@Nullable final SocialhilfeZeitraum socialhilfeZeitraum) {
-		if (socialhilfeZeitraum == null) {
+	private JaxSozialhilfeZeitraum sozialhilfeZeitraumToJax(@Nullable final SozialhilfeZeitraum sozialhilfeZeitraum) {
+		if (sozialhilfeZeitraum == null) {
 			return null;
 		}
-		JaxSocialhilfeZeitraum jaxSocialhilfeZeitraum = new JaxSocialhilfeZeitraum();
-		convertAbstractDateRangedFieldsToJAX(socialhilfeZeitraum, jaxSocialhilfeZeitraum);
-		return jaxSocialhilfeZeitraum;
+		JaxSozialhilfeZeitraum jaxSozialhilfeZeitraum = new JaxSozialhilfeZeitraum();
+		convertAbstractDateRangedFieldsToJAX(sozialhilfeZeitraum, jaxSozialhilfeZeitraum);
+		return jaxSozialhilfeZeitraum;
 	}
 
-	private void socialhilfeZeitraumContainersToEntity(
-		@Nonnull final List<JaxSocialhilfeZeitraumContainer> jaxShZContainers,
-		@Nonnull final Collection<SocialhilfeZeitraumContainer> existingSocialhilfeZeitraeume
+	private void sozialhilfeZeitraumContainersToEntity(
+		@Nonnull final List<JaxSozialhilfeZeitraumContainer> jaxShZContainers,
+		@Nonnull final Collection<SozialhilfeZeitraumContainer> existingSozialhilfeZeitraeume
 	) {
-		final Set<SocialhilfeZeitraumContainer> transformedShZContainers = new HashSet<>();
-		for (final JaxSocialhilfeZeitraumContainer jaxShZContainer : jaxShZContainers) {
-			final SocialhilfeZeitraumContainer containerToMergeWith = existingSocialhilfeZeitraeume
+		final Set<SozialhilfeZeitraumContainer> transformedShZContainers = new HashSet<>();
+		for (final JaxSozialhilfeZeitraumContainer jaxShZContainer : jaxShZContainers) {
+			final SozialhilfeZeitraumContainer containerToMergeWith = existingSozialhilfeZeitraeume
 				.stream()
 				.filter(existingShZEntity -> existingShZEntity.getId().equals(jaxShZContainer.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
-				.orElse(new SocialhilfeZeitraumContainer());
-			final SocialhilfeZeitraumContainer contToAdd =
-				socialhilfeZeitraumContainerToEntity(jaxShZContainer, containerToMergeWith);
+				.orElse(new SozialhilfeZeitraumContainer());
+			final SozialhilfeZeitraumContainer contToAdd =
+				sozialhilfeZeitraumContainerToEntity(jaxShZContainer, containerToMergeWith);
 			final boolean added = transformedShZContainers.add(contToAdd);
 			if (!added) {
 				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", contToAdd);
 			}
 		}
 
-		existingSocialhilfeZeitraeume.clear();
-		existingSocialhilfeZeitraeume.addAll(transformedShZContainers);
+		existingSozialhilfeZeitraeume.clear();
+		existingSozialhilfeZeitraeume.addAll(transformedShZContainers);
 	}
 
 	@Nonnull
-	private List<JaxSocialhilfeZeitraumContainer> socialhilfeZeitraumContainersToJAX(@Nullable final Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
-		if (socialhilfeZeitraumContainers == null) {
+	private List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainersToJAX(@Nullable final Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers) {
+		if (sozialhilfeZeitraumContainers == null) {
 			return Collections.emptyList();
 		}
 
-		return socialhilfeZeitraumContainers.stream()
-			.map(this::socialhilfeZeitraumContainerToJAX)
+		return sozialhilfeZeitraumContainers.stream()
+			.map(this::sozialhilfeZeitraumContainerToJAX)
 			.collect(Collectors.toList());
 	}
 }

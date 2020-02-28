@@ -17,7 +17,7 @@
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export class TSSocialhilfeZeitraum extends TSAbstractDateRangedEntity {
+export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
 
     public constructor() {
         super();

@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -64,7 +64,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	@Inject
 	private WizardStepService wizardStepService;
 	@Inject
-	private SocialhilfeZeitraumService socialhilfeZeitraumService;
+	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
@@ -151,9 +151,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		FamiliensituationContainer familiensituationToRemove =
 			findFamiliensituation(familiensituation.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
 				"removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, familiensituation));
-		for (SocialhilfeZeitraumContainer socialhilfeZeitraumCtn :
-			familiensituationToRemove.getSocialhilfeZeitraumContainers()) {
-			socialhilfeZeitraumService.removeSocialhilfeZeitraum(socialhilfeZeitraumCtn.getId());
+		for (SozialhilfeZeitraumContainer sozialhilfeZeitraumCtn :
+			familiensituationToRemove.getSozialhilfeZeitraumContainers()) {
+			sozialhilfeZeitraumService.removeSozialhilfeZeitraum(sozialhilfeZeitraumCtn.getId());
 		}
 		persistence.remove(familiensituationToRemove);
 	}

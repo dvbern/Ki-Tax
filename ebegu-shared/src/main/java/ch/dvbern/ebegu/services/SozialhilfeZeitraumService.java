@@ -22,29 +22,29 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.SocialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 
-public interface SocialhilfeZeitraumService {
+public interface SozialhilfeZeitraumService {
 
 	/**
-	 * Speichert die SocialhilfeZeitraum neu in der DB falls der Key noch nicht existiert.
+	 * Speichert die SozialhilfeZeitraum neu in der DB falls der Key noch nicht existiert.
 	 *
-	 * @param erwerbspensumContainer Das SocialhilfeZeitraum das gespeichert werden soll
+	 * @param erwerbspensumContainer Das SozialhilfeZeitraum das gespeichert werden soll
 	 */
 	@Nonnull
-	SocialhilfeZeitraumContainer saveSocialhilfeZeitraum(@Valid @Nonnull SocialhilfeZeitraumContainer socialhilfeZeitraumContainer);
+	SozialhilfeZeitraumContainer saveSozialhilfeZeitraum(@Valid @Nonnull SozialhilfeZeitraumContainer sozialhilfeZeitraumContainer);
 
 	/**
-	 * @param key PK (id) des SocialhilfeZeitraumContainers
-	 * @return Optional mit dem  SocialhilfeZeitraumContainers mit fuer den gegebenen Key
+	 * @param key PK (id) des SozialhilfeZeitraumContainers
+	 * @return Optional mit dem  SozialhilfeZeitraumContainers mit fuer den gegebenen Key
 	 */
 	@Nonnull
-	Optional<SocialhilfeZeitraumContainer> findSocialhilfeZeitraum(@Nonnull String key);
+	Optional<SozialhilfeZeitraumContainer> findSozialhilfeZeitraum(@Nonnull String key);
 
 	/**
 	 * entfernt eine Erwerbspensum aus der Databse
 	 *
 	 * @param erwerbspensumContainerID der Entfernt werden soll
 	 */
-	void removeSocialhilfeZeitraum(@Nonnull String socialhilfeZeitraumContainerID);
+	void removeSozialhilfeZeitraum(@Nonnull String sozialhilfeZeitraumContainerID);
 }

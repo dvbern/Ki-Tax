@@ -16,10 +16,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import {TSSocialhilfeZeitraumContainer} from '../../../models/TSSocialhilfeZeitraumContainer';
+import {TSSozialhilfeZeitraumContainer} from '../../../models/TSSozialhilfeZeitraumContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
-export class SocialhilfeZeitraumRS {
+export class SozialhilfeZeitraumRS {
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log'];
 
@@ -31,27 +31,27 @@ export class SocialhilfeZeitraumRS {
         public readonly ebeguRestUtil: EbeguRestUtil,
         public readonly log: ILogService,
     ) {
-        this.serviceURL = `${REST_API}socialhilfeZeitraeume`;
+        this.serviceURL = `${REST_API}sozialhilfeZeitraeume`;
     }
 
     public getServiceName(): string {
-        return 'SocialhilfeZeitraumRS';
+        return 'SozialhilfeZeitraumRS';
     }
 
-    public saveSocialhilfeZeitraum(socialhilfeZeitraumContainer: TSSocialhilfeZeitraumContainer, famSitID: string,
-    ): IPromise<TSSocialhilfeZeitraumContainer> {
-        let restSocialhilfeZaitraum = {};
-        restSocialhilfeZaitraum =
-            this.ebeguRestUtil.socialhilfeZeitraumContainerToRestObject(restSocialhilfeZaitraum, socialhilfeZeitraumContainer);
+    public saveSozialhilfeZeitraum(sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer, famSitID: string,
+    ): IPromise<TSSozialhilfeZeitraumContainer> {
+        let restSozialhilfeZaitraum = {};
+        restSozialhilfeZaitraum =
+            this.ebeguRestUtil.sozialhilfeZeitraumContainerToRestObject(restSozialhilfeZaitraum, sozialhilfeZeitraumContainer);
         const url = `${this.serviceURL}/${encodeURIComponent(famSitID)}`;
-        return this.http.put(url, restSocialhilfeZaitraum).then((response: any) => {
-            this.log.debug('PARSING SocialhilfeZeitraumContainer REST object ', response.data);
-            return this.ebeguRestUtil.parseSocialhilfeZeitraumContainer(new TSSocialhilfeZeitraumContainer(), response.data);
+        return this.http.put(url, restSozialhilfeZaitraum).then((response: any) => {
+            this.log.debug('PARSING SozialhilfeZeitraumContainer REST object ', response.data);
+            return this.ebeguRestUtil.parseSozialhilfeZeitraumContainer(new TSSozialhilfeZeitraumContainer(), response.data);
         });
     }
 
-    public removeSocialhilfeZeitraum(socialhilfeZeitraumContainerID: string): IPromise<any> {
-        const url = `${this.serviceURL}/socialhilfeZeitraumId/${encodeURIComponent(socialhilfeZeitraumContainerID)}`;
+    public removeSozialhilfeZeitraum(sozialhilfeZeitraumContainerID: string): IPromise<any> {
+        const url = `${this.serviceURL}/sozialhilfeZeitraumId/${encodeURIComponent(sozialhilfeZeitraumContainerID)}`;
         return this.http.delete(url)
             .then(response => {
                 return response;

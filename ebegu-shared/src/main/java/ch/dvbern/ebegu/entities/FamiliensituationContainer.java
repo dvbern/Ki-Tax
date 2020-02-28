@@ -67,7 +67,7 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 	@Nonnull
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "familiensituationContainer")
-	private Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers = new HashSet<>();
+	private Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = new HashSet<>();
 
 	public FamiliensituationContainer() {
 	}
@@ -79,7 +79,7 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		target.setFamiliensituationGS(null);
 		Objects.requireNonNull(getFamiliensituationJA());
 		target.setFamiliensituationJA(getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
-		copySocialhilfeZeitraeume(target, copyType);
+		copySozialhilfeZeitraeume(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setFamiliensituationJA(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(),
@@ -134,18 +134,18 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 	}
 
 	@Nonnull
-	public Set<SocialhilfeZeitraumContainer> getSocialhilfeZeitraumContainers() {
-		return socialhilfeZeitraumContainers;
+	public Set<SozialhilfeZeitraumContainer> getSozialhilfeZeitraumContainers() {
+		return sozialhilfeZeitraumContainers;
 	}
 
-	public void setSocialhilfeZeitraumContainers(@Nonnull Set<SocialhilfeZeitraumContainer> socialhilfeZeitraumContainers) {
-		this.socialhilfeZeitraumContainers = socialhilfeZeitraumContainers;
+	public void setSozialhilfeZeitraumContainers(@Nonnull Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers) {
+		this.sozialhilfeZeitraumContainers = sozialhilfeZeitraumContainers;
 	}
 
-	public boolean addSocialhilfeZeitraumContainer(@Nonnull final SocialhilfeZeitraumContainer socialhilfeZeitraumContainerToAdd) {
-		socialhilfeZeitraumContainerToAdd.setFamiliensituationContainer(this);
-		return !socialhilfeZeitraumContainers.contains(socialhilfeZeitraumContainerToAdd) &&
-			socialhilfeZeitraumContainers.add(socialhilfeZeitraumContainerToAdd);
+	public boolean addSozialhilfeZeitraumContainer(@Nonnull final SozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToAdd) {
+		sozialhilfeZeitraumContainerToAdd.setFamiliensituationContainer(this);
+		return !sozialhilfeZeitraumContainers.contains(sozialhilfeZeitraumContainerToAdd) &&
+			sozialhilfeZeitraumContainers.add(sozialhilfeZeitraumContainerToAdd);
 	}
 
 	@Nonnull
@@ -174,10 +174,10 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		return EbeguUtil.isSameObject(getFamiliensituationJA(), otherFamSitContainer.getFamiliensituationJA());
 	}
 
-	private void copySocialhilfeZeitraeume(@Nonnull FamiliensituationContainer target,
+	private void copySozialhilfeZeitraeume(@Nonnull FamiliensituationContainer target,
 		@Nonnull AntragCopyType copyType) {
-		for (SocialhilfeZeitraumContainer socialhilfeZeitraumContainer : this.getSocialhilfeZeitraumContainers()) {
-			target.addSocialhilfeZeitraumContainer(socialhilfeZeitraumContainer.copySocialhilfeZeitraumContainer(new SocialhilfeZeitraumContainer(),
+		for (SozialhilfeZeitraumContainer sozialhilfeZeitraumContainer : this.getSozialhilfeZeitraumContainers()) {
+			target.addSozialhilfeZeitraumContainer(sozialhilfeZeitraumContainer.copySozialhilfeZeitraumContainer(new SozialhilfeZeitraumContainer(),
 				copyType, this));
 		}
 	}

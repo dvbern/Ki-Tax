@@ -1624,7 +1624,7 @@ export class GesuchModelManager {
         return this.authServiceRS.hasMandantAngebotFI();
     }
 
-    public isSocialHilfeBezueger(): boolean {
+    public isSozialhilfeBezueger(): boolean {
         return this.getFamiliensituation().sozialhilfeBezueger;
     }
 }

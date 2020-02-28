@@ -26,19 +26,19 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 /**
- * Socialhilfe Zeiträume des Socialhilfe Bezüger
+ * Sozialhilfe Zeiträume des Sozialhilfe Bezüger
  */
 @Entity
 @Audited
-public class SocialhilfeZeitraum extends AbstractDateRangedEntity {
+public class SozialhilfeZeitraum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -9132257320978372420L;
 
-	public SocialhilfeZeitraum() {
+	public SozialhilfeZeitraum() {
 	}
 
 	@Nonnull
-	public SocialhilfeZeitraum copySocialhilfeZeitraum(@Nonnull SocialhilfeZeitraum target,
+	public SozialhilfeZeitraum copySozialhilfeZeitraum(@Nonnull SozialhilfeZeitraum target,
 		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractDateRangedEntity(target, copyType);
 		return target;
@@ -57,10 +57,10 @@ public class SocialhilfeZeitraum extends AbstractDateRangedEntity {
 		if (!super.isSame(other)) {
 			return false;
 		}
-		if (!(other instanceof SocialhilfeZeitraum)) {
+		if (!(other instanceof SozialhilfeZeitraum)) {
 			return false;
 		}
-		final SocialhilfeZeitraum otherSocialhilfeZeitraum = (SocialhilfeZeitraum) other;
-		return Objects.equals(this.getGueltigkeit(), otherSocialhilfeZeitraum.getGueltigkeit());
+		final SozialhilfeZeitraum otherSozialhilfeZeitraum = (SozialhilfeZeitraum) other;
+		return Objects.equals(this.getGueltigkeit(), otherSozialhilfeZeitraum.getGueltigkeit());
 	}
 }

@@ -21,9 +21,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * DTO fuer SocialhilfeZeitraum
+ * DTO fuer SozialhilfeZeitraum
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxSocialhilfeZeitraum extends JaxAbstractDateRangedDTO {
+public class JaxSozialhilfeZeitraum extends JaxAbstractDateRangedDTO {
 	private static final long serialVersionUID = 4879926292956257349L;
 }
