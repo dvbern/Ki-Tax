@@ -46,7 +46,12 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	ab(new SimpleMergeField<>("ab", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 
-	repeatCol(new RepeatColMergeField<>("repeatCol", STRING_CONVERTER)),
+	repeatCol1(new RepeatColMergeField<>("repeatCol1", STRING_CONVERTER)),
+	repeatCol2(new RepeatColMergeField<>("repeatCol2", STRING_CONVERTER)),
+	repeatCol3(new RepeatColMergeField<>("repeatCol3", STRING_CONVERTER)),
+	repeatCol4(new RepeatColMergeField<>("repeatCol4", STRING_CONVERTER)),
+	repeatCol5(new RepeatColMergeField<>("repeatCol5", STRING_CONVERTER)),
+
 	modulName(new RepeatValMergeField<>("modulName", STRING_CONVERTER)),
 	wochentag(new RepeatValMergeField<>("wochentag", STRING_CONVERTER)),
 	angemeldet(new RepeatValMergeField<>("angemeldet", STRING_CONVERTER));

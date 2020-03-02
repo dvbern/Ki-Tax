@@ -93,7 +93,6 @@ public class ReportResourceAsync {
 	public static final String DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN =
 		"Das von-Datum muss vor dem bis-Datum sein.";
 	public static final String URL_PART_EXCEL = "excel/";
-	private static final int MAX_MODULGROUPS_TAGESSCHULE = 20;
 
 	@Inject
 	private DownloadResource downloadResource;
@@ -623,8 +622,8 @@ public class ReportResourceAsync {
 	@Path("/excel/tagesschuleOhneFinSit")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
 	public Response getTagesschuleOhneFinSitReportExcel(
 		@QueryParam("stammdatenId") @Nonnull String stammdatenId,
 		@QueryParam("gesuchsperiodeId") @Nonnull String gesuchsperiodeId,
@@ -642,7 +641,8 @@ public class ReportResourceAsync {
 
 		if (checkMaxTagesschulModuleExceeded(stammdaten, gesuchsperiodeId)) {
 			throw new EbeguRuntimeException("getTagesschuleOhneFinSitReportExcel", "Für diese Tagesschule gibt es zu "
-				+ "viele Module. Mehr als " + MAX_MODULGROUPS_TAGESSCHULE + " können im Excel nicht angezeigt werden");
+				+ "viele Module. Mehr als " + Constants.MAX_MODULGROUPS_TAGESSCHULE + " können im Excel nicht "
+				+ "angezeigt werden");
 		}
 
 		workJob = workjobService.createNewReporting(
@@ -665,7 +665,7 @@ public class ReportResourceAsync {
 		if (stammdaten.getInstitutionStammdatenTagesschule() != null) {
 			for (EinstellungenTagesschule e : stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule()) {
 				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
-					return e.getModulTagesschuleGroups().size() > MAX_MODULGROUPS_TAGESSCHULE;
+					return e.getModulTagesschuleGroups().size() > Constants.MAX_MODULGROUPS_TAGESSCHULE;
 				}
 			}
 		}

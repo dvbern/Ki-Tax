@@ -14,7 +14,9 @@
  */
 package ch.dvbern.ebegu.reporting.tagesschule;
 
+import java.time.DayOfWeek;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +31,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschule;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -60,11 +63,14 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ")";
 		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
 
-		List<ModulTagesschuleGroup> sortedModules =
+		List<ModulTagesschuleGroup> sortedGroups =
 			einstellungenTagesschule.getModulTagesschuleGroups().stream().sorted(Comparator.reverseOrder())
 				.collect(Collectors.toList());
 
-		addHeaders(excelMerger, locale, sortedModules);
+		List<RepeatColGroup> repeatColGroupList =
+			generateWeekdayModuleGroups(sortedGroups);
+
+		addHeaders(excelMerger, locale, repeatColGroupList);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschule.repeatRow);
@@ -75,14 +81,44 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldTagesschule.ab, dataRow.getAb());
 			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
-			setAnmeldungenForModule(dataRow, sortedModules, excelRowGroup);
+			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
 		});
 
 		return excelMerger;
 	}
 
+	/**
+	 * erstellt eine Liste allen Modulgruppen pro Wochentag. Z.B.:
+	 * [
+	 * 	montag: [modulGroup1, modulGroup2, ...],
+	 * 	dienstag: [modulGroup2, modulGroup3, ...]
+	 * ]
+	 * Wochentage ohne Module werden gefiltert.
+	 */
+	@Nonnull
+	private List<RepeatColGroup> generateWeekdayModuleGroups(@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups) {
+
+		List<RepeatColGroup> repeatColGroupList = new ArrayList<>();
+		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.MONDAY, "repeatCol1"));
+		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.TUESDAY, "repeatCol2"));
+		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.WEDNESDAY, "repeatCol3"));
+		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.THURSDAY, "repeatCol4"));
+		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.FRIDAY, "repeatCol5"));
+
+		for (RepeatColGroup repeatColGroup : repeatColGroupList) {
+			for (ModulTagesschuleGroup moduleGroup : modulTagesschuleGroups) {
+				for (ModulTagesschule module : moduleGroup.getModule()) {
+					if (module.getWochentag().compareTo(repeatColGroup.getWochentag()) == 0) {
+						repeatColGroup.appendModulGroup(moduleGroup);
+					}
+				}
+			}
+		}
+		return repeatColGroupList;
+	}
+
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale,
-		@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups) {
+		@Nonnull List<RepeatColGroup> repeatColGroups) {
 		excelMerger.addValue(MergeFieldTagesschule.nachnameKindTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle",	locale));
 		excelMerger.addValue(MergeFieldTagesschule.vornameKindTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
@@ -91,18 +127,25 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschule.abTitle, ServerMessageUtil.getMessage("Reports_abTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
 
-		modulTagesschuleGroups.forEach(group -> {
+		repeatColGroups.forEach(group -> {
+			int counter = Constants.MAX_MODULGROUPS_TAGESSCHULE;
 			boolean first = true;
-			for (ModulTagesschule module : group.getModule()) {
-				excelMerger.addValue(MergeFieldTagesschule.repeatCol, "");
+			for (ModulTagesschuleGroup moduleGroup : group.getModulTagesschuleList()) {
+				excelMerger.addValue(MergeFieldTagesschule.valueOf(group.getRepeatColName()), "");
 				if (first) {
-					excelMerger.addValue(MergeFieldTagesschule.modulName, group.getBezeichnung().findTextByLocale(locale));
+					excelMerger.addValue(MergeFieldTagesschule.wochentag,
+						group.getWochentag().getDisplayName(TextStyle.SHORT, locale));
 					first = false;
-				} else {
-					excelMerger.addValue(MergeFieldTagesschule.modulName, "");
 				}
-				excelMerger.addValue(MergeFieldTagesschule.wochentag,
-					module.getWochentag().getDisplayName(TextStyle.SHORT, locale));
+				excelMerger.addValue(MergeFieldTagesschule.modulName,
+					moduleGroup.getBezeichnung().findTextByLocale(locale));
+				counter--;
+			}
+			// Eine maximale anzahl Spalten wurden im Excel vorbereitet. Diese müssen ausgefüllt leer ausgefüllt
+			// werden, damit sie ausgeblendet werden.
+			while (counter > 0) {
+				excelMerger.addValue(MergeFieldTagesschule.modulName, "");
+				counter--;
 			}
 		});
 
@@ -110,16 +153,26 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 	private void setAnmeldungenForModule(
 		@Nonnull TagesschuleDataRow dataRow,
-		@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups,
+		@Nonnull List<RepeatColGroup> repeatColGroups,
 		@Nonnull ExcelMergerDTO excelRowGroup) {
-			modulTagesschuleGroups.forEach(group -> {
-				group.getModule().forEach(module -> {
-					if (isAngemeldet(module, dataRow)) {
-						excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "X");
-					} else {
-						excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "");
+			repeatColGroups.forEach(weekday -> {
+				int counter = Constants.MAX_MODULGROUPS_TAGESSCHULE;
+				for (ModulTagesschuleGroup moduleGroup : weekday.getModulTagesschuleList()) {
+					for (ModulTagesschule module : moduleGroup.getModule()) {
+						if (module.getWochentag().equals(weekday.getWochentag())) {
+							if (isAngemeldet(module, dataRow)) {
+								excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "X");
+							} else {
+								excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "");
+							}
+							counter--;
+						}
 					}
-				});
+				}
+				while (counter > 0) {
+					excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "");
+					counter--;
+				}
 			});
 	}
 

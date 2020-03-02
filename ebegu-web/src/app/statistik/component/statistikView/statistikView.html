@@ -739,65 +739,67 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div dv-show-element
-                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
-                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_INSTITUTION']">
-                    <dv-accordion-tab tabid="tagesschuleOhneFinSit">
-                        <tab-title>
-                            <span class="uppercase" data-translate="TAGESSCHULE_OHNE_FINSIT_STATISTIK"></span>
-                            <dv-tooltip input-id="lastenausgleich_info"
-                                        ng-click="$event.stopPropagation()"
-                                        text="'TAGESSCHULE_OHNE_FINSIT_STATISTIK_INFO' | translate">
-                            </dv-tooltip>
-                        </tab-title>
-                        <tab-body>
-                            <form name="tagesschuleOhneFinSit"
-                                  ng-submit="vm.generateStatistik(tagesschuleOhneFinSit, vm.TSStatistikParameterType.TAGESSCHULE_OHNE_FINSIT)"
-                                  novalidate>
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <div class="form-group">
-                                            <label class="md-no-float" for="tagesschuleOhneFinsitSelect"
-                                                   data-translate="TAGESSCHULE"></label>
-                                            <div class="dv-select-style">
-                                                <select name="tagesschuleOhneFinsitSelect" id="tagesschuleOhneFinsitSelect"
-                                                        ng-model="vm.statistikParameter.tagesschuleOhneFinSit"
-                                                        class="form-control"
-                                                        required>
-                                                    <option ng-repeat="institutionStammdaten in vm.institutionStammdatenList"
-                                                            ng-value="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
-                                                </select>
-                                                <dv-error-messages for="tagesschuleOhneFinSit.tagesschuleOhneFinsitSelect.$error"
-                                                                   class="error"></dv-error-messages>
+                <div ng-if="vm.institutionStammdatenList.length">
+                    <div dv-show-element
+                         dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
+                     'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION']">
+                        <dv-accordion-tab tabid="tagesschuleOhneFinSit">
+                            <tab-title>
+                                <span class="uppercase" data-translate="TAGESSCHULE_OHNE_FINSIT_STATISTIK"></span>
+                                <dv-tooltip input-id="lastenausgleich_info"
+                                            ng-click="$event.stopPropagation()"
+                                            text="'TAGESSCHULE_OHNE_FINSIT_STATISTIK_INFO' | translate">
+                                </dv-tooltip>
+                            </tab-title>
+                            <tab-body>
+                                <form name="tagesschuleOhneFinSit"
+                                      ng-submit="vm.generateStatistik(tagesschuleOhneFinSit, vm.TSStatistikParameterType.TAGESSCHULE_OHNE_FINSIT)"
+                                      novalidate>
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label class="md-no-float" for="tagesschuleOhneFinsitSelect"
+                                                       data-translate="TAGESSCHULE"></label>
+                                                <div class="dv-select-style">
+                                                    <select name="tagesschuleOhneFinsitSelect" id="tagesschuleOhneFinsitSelect"
+                                                            ng-model="vm.statistikParameter.tagesschuleOhneFinSit"
+                                                            class="form-control"
+                                                            required>
+                                                        <option ng-repeat="institutionStammdaten in vm.institutionStammdatenList"
+                                                                ng-value="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
+                                                    </select>
+                                                    <dv-error-messages for="tagesschuleOhneFinSit.tagesschuleOhneFinsitSelect.$error"
+                                                                       class="error"></dv-error-messages>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-xs-3" ng-if="vm.statistikParameter.tagesschuleOhneFinSit">
-                                        <div class="form-group">
-                                            <label class="md-no-float" for="tagesschuleOhneFinsitGesuchsperiode"
-                                                   data-translate="GESUCHSPERIODEN"></label>
-                                            <div class="dv-select-style">
-                                                <select name="tagesschuleOhneFinsitGesuchsperiode" id="tagesschuleOhneFinsitGesuchsperiode"
-                                                        ng-model="vm.statistikParameter.gesuchsperiode"
-                                                        class="form-control"
-                                                        required>
-                                                    <option ng-repeat="gesuchsperiode in vm.getGesuchsperiodenForTagesschule(vm.statistikParameter.tagesschuleOhneFinSit)"
-                                                            ng-value="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
-                                                </select>
-                                                <dv-error-messages for="tagesschuleOhneFinSit.tagesschuleOhneFinsitSelect.$error"
-                                                                   class="error"></dv-error-messages>
+                                        <div class="col-xs-3" ng-if="vm.statistikParameter.tagesschuleOhneFinSit">
+                                            <div class="form-group">
+                                                <label class="md-no-float" for="tagesschuleOhneFinsitGesuchsperiode"
+                                                       data-translate="GESUCHSPERIODEN"></label>
+                                                <div class="dv-select-style">
+                                                    <select name="tagesschuleOhneFinsitGesuchsperiode" id="tagesschuleOhneFinsitGesuchsperiode"
+                                                            ng-model="vm.statistikParameter.gesuchsperiode"
+                                                            class="form-control"
+                                                            required>
+                                                        <option ng-repeat="gesuchsperiode in vm.getGesuchsperiodenForTagesschule(vm.statistikParameter.tagesschuleOhneFinSit)"
+                                                                ng-value="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                    </select>
+                                                    <dv-error-messages for="tagesschuleOhneFinSit.tagesschuleOhneFinsitSelect.$error"
+                                                                       class="error"></dv-error-messages>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="col-xs-3 statistik-button statistik-no-fields">
+                                            <dv-loading-button type="submit">
+                                                <span class="uppercase" data-translate="GENERIEREN"></span>
+                                            </dv-loading-button>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-3 statistik-button statistik-no-fields">
-                                        <dv-loading-button type="submit">
-                                            <span class="uppercase" data-translate="GENERIEREN"></span>
-                                        </dv-loading-button>
-                                    </div>
-                                </div>
-                            </form>
-                        </tab-body>
-                    </dv-accordion-tab>
+                                </form>
+                            </tab-body>
+                        </dv-accordion-tab>
+                    </div>
                 </div>
 
             </dv-accordion>
