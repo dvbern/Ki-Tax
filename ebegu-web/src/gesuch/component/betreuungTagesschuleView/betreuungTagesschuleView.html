@@ -196,7 +196,7 @@
                                      name="abweichungZweitesSemester"
                                      id="abweichungZweitesSemester"
                                      aria-label="{{'BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX' | translate}}"
-                                     ng-disabled="vm.isGesuchReadonly()">
+                                     ng-disabled="!vm.isAnmeldungTSEditable()">
                             <span data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_CHECKBOX"></span>
                         </md-checkbox>
                         <dv-input-container class="form-group">
