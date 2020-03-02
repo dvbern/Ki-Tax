@@ -665,7 +665,7 @@ export class EbeguSozialhilfeZeitraumListState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -690,7 +690,7 @@ export class EbeguSozialhilfeZeitraumState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
