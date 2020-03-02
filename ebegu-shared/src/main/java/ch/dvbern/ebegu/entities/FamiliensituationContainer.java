@@ -79,7 +79,6 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		target.setFamiliensituationGS(null);
 		Objects.requireNonNull(getFamiliensituationJA());
 		target.setFamiliensituationJA(getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
-		copySozialhilfeZeitraeume(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setFamiliensituationJA(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(),
@@ -92,9 +91,12 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 			} else {
 				target.setFamiliensituationErstgesuch(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
 			}
+			copySozialhilfeZeitraeume(target, copyType);
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			copySozialhilfeZeitraeume(target, copyType);
 			break;
 		case ERNEUERUNG:
-		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
