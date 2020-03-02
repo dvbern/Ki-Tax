@@ -14,24 +14,30 @@
  */
 
 export enum TSModulTagesschuleName {
-    VORMITTAG = 'VORMITTAG',
-    MITTAG = 'MITTAG',
-    MITTAG_HALB = 'MITTAG_HALB',
-    NACHMITTAGS_1 = 'NACHMITTAGS_1',
-    NACHMITTAGS_1_HALB = 'NACHMITTAGS_1_HALB',
-    NACHMITTAGS_2 = 'NACHMITTAGS_2',
-    NACHMITTAGS_2_HALB = 'NACHMITTAGS_2_HALB',
+    SCOLARIS_01 = 'SCOLARIS_01',
+    SCOLARIS_02 = 'SCOLARIS_02',
+    SCOLARIS_03 = 'SCOLARIS_03',
+    SCOLARIS_04 = 'SCOLARIS_04',
+    SCOLARIS_05 = 'SCOLARIS_05',
+    SCOLARIS_06 = 'SCOLARIS_06',
+    SCOLARIS_07 = 'SCOLARIS_07',
+    SCOLARIS_08 = 'SCOLARIS_08',
+    SCOLARIS_09 = 'SCOLARIS_09',
+    SCOLARIS_10 = 'SCOLARIS_10',
     DYNAMISCH = 'DYNAMISCH',
 }
 
 export function getTSModulTagesschuleNameValues(): Array<TSModulTagesschuleName> {
     return [
-        TSModulTagesschuleName.VORMITTAG,
-        TSModulTagesschuleName.MITTAG,
-        TSModulTagesschuleName.MITTAG_HALB,
-        TSModulTagesschuleName.NACHMITTAGS_1,
-        TSModulTagesschuleName.NACHMITTAGS_1_HALB,
-        TSModulTagesschuleName.NACHMITTAGS_2,
-        TSModulTagesschuleName.NACHMITTAGS_2_HALB,
+        TSModulTagesschuleName.SCOLARIS_01,
+        TSModulTagesschuleName.SCOLARIS_02,
+        TSModulTagesschuleName.SCOLARIS_03,
+        TSModulTagesschuleName.SCOLARIS_04,
+        TSModulTagesschuleName.SCOLARIS_05,
+        TSModulTagesschuleName.SCOLARIS_06,
+        TSModulTagesschuleName.SCOLARIS_07,
+        TSModulTagesschuleName.SCOLARIS_08,
+        TSModulTagesschuleName.SCOLARIS_09,
+        TSModulTagesschuleName.SCOLARIS_10,
     ];
 }

@@ -260,10 +260,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     ): TSModulTagesschuleGroup {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = modulname;
-        group.bezeichnung = this.translate.instant(modulname);
         group.intervall = TSModulTagesschuleIntervall.WOECHENTLICH;
         group.wirdPaedagogischBetreut = true;
         group.module = [];
+        group.bezeichnung = new TSTextRessource();
         this.createModuleScolaris(group);
         return group;
     }
@@ -335,10 +335,16 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public getBezeichnung(group: TSModulTagesschuleGroup): string {
-        if (group.modulTagesschuleName === TSModulTagesschuleName.DYNAMISCH) {
-            return `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
+        let name = '';
+        if (group.bezeichnung.textDeutsch) {
+            name =  `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
-        return this.translate.instant(group.modulTagesschuleName);
+        if (group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH) {
+            const scolarisName = this.translate.instant(group.modulTagesschuleName);
+            // tslint:disable-next-line:prefer-template restrict-plus-operands
+            return name + ' (' + scolarisName + ')';
+        }
+        return name;
     }
 
     public trackById(einstellungGP: TSEinstellungenTagesschule): string {
@@ -384,5 +390,23 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             showGesuchsperiode = showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
         }
         return showGesuchsperiode;
+    }
+
+    public isScolarisVollstaendig(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        if (einstellungenTagesschule.modulTagesschuleGroups.length === getTSModulTagesschuleNameValues().length) {
+            return true;
+        }
+        return false;
+    }
+
+    public addFehlendeScolarisModule(einstellungenTagesschule: TSEinstellungenTagesschule): void {
+        getTSModulTagesschuleNameValues().forEach((modulname: TSModulTagesschuleName) => {
+            const mtg = einstellungenTagesschule.modulTagesschuleGroups.filter(
+                modulTagesschuleGroup => modulTagesschuleGroup.modulTagesschuleName === modulname);
+            if (mtg.length === 0) {
+                const group = this.createModulGroupScolaris(modulname);
+                einstellungenTagesschule.modulTagesschuleGroups.push(group);
+            }
+        });
     }
 }

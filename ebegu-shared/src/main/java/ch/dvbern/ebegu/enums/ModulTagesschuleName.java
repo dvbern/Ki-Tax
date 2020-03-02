@@ -19,13 +19,16 @@ package ch.dvbern.ebegu.enums;
  * Enum fuer the names of the ModulTagesschule for Tagesschule.
  */
 public enum ModulTagesschuleName {
-	VORMITTAG,
-	MITTAG,
-	MITTAG_HALB,
-	NACHMITTAGS_1,
-	NACHMITTAGS_1_HALB,
-	NACHMITTAGS_2,
-	NACHMITTAGS_2_HALB,
+	SCOLARIS_01,
+	SCOLARIS_02,
+	SCOLARIS_03,
+	SCOLARIS_04,
+	SCOLARIS_05,
+	SCOLARIS_06,
+	SCOLARIS_07,
+	SCOLARIS_08,
+	SCOLARIS_09,
+	SCOLARIS_10,
 	DYNAMISCH
 
 }
