@@ -360,13 +360,13 @@ export class NavigatorController implements IController {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 2) {
-				if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
-					return this.navigateToStepFinanzielleSituation('1');
-				}
+                if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
+                    return this.navigateToStepFinanzielleSituation('1');
+                }
 
-				if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
-					return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
-				}
+                if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
+                    return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
+                }
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 3) {
@@ -466,13 +466,15 @@ export class NavigatorController implements IController {
     }
 
     private navigateToSozialhilfeZeitraeume(): TransitionPromise {
-        return this.state.go('gesuch.SozialhilfeZeitraeume', {
-            gesuchId: this.getGesuchId(),
-        });
+        return this.navigateToPath('gesuch.SozialhilfeZeitraeume');
     }
 
     private navigateToFinanziellSituationResultate(): TransitionPromise {
-        return this.state.go('gesuch.finanzielleSituationResultate', {
+        return this.navigateToPath('gesuch.finanzielleSituationResultate');
+    }
+
+    private navigateToPath(path: string): TransitionPromise {
+        return this.state.go(path, {
             gesuchId: this.getGesuchId(),
         });
     }
