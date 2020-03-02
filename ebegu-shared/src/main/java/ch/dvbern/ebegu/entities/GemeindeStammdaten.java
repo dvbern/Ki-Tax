@@ -42,6 +42,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckKontodatenGemeinde;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +62,7 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 		@UniqueConstraint(columnNames = "ts_adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id")
 	}
 )
+@CheckKontodatenGemeinde
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
@@ -140,16 +142,16 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true)
 	private String logoType;
 
-	@NotNull
-	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String kontoinhaber;
 
-	@NotNull
-	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String bic;
 
-	@NotNull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	@Embedded
 	@Valid
 	private IBAN iban;
@@ -311,29 +313,32 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.logoType = logoType;
 	}
 
+	@Nullable
 	@SuppressFBWarnings("NM_CONFUSING")
 	public String getKontoinhaber() {
 		return kontoinhaber;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
-	public void setKontoinhaber(String kontoinhaber) {
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
 		this.kontoinhaber = kontoinhaber;
 	}
 
+	@Nullable
 	public String getBic() {
 		return bic;
 	}
 
-	public void setBic(String bic) {
+	public void setBic(@Nullable String bic) {
 		this.bic = bic;
 	}
 
+	@Nullable
 	public IBAN getIban() {
 		return iban;
 	}
 
-	public void setIban(IBAN iban) {
+	public void setIban(@Nullable IBAN iban) {
 		this.iban = iban;
 	}
 
