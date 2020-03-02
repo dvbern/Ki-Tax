@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -51,8 +50,7 @@ public class SozialhilfeZeitraumServiceBean extends AbstractBaseService implemen
 
 	@Inject
 	private Persistence persistence;
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
+
 
 	@Nonnull
 	@Override
