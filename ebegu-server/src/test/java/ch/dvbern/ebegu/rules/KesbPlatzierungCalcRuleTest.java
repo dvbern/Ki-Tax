@@ -50,9 +50,7 @@ public class KesbPlatzierungCalcRuleTest {
 			Constants.DEFAULT_GUELTIGKEIT.getGueltigBis(),
 			BetreuungsangebotTyp.KITA,
 			60,
-			new BigDecimal(2000),
-			0,
-			0);
+			new BigDecimal(2000));
 		ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
 		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumJA());
 		erwerbspensumContainer.getErwerbspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);

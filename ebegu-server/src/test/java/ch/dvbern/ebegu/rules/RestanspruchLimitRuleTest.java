@@ -93,7 +93,7 @@ public class RestanspruchLimitRuleTest {
 		BetreuungsangebotTyp type
 	) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			type, betreuungspensum, BigDecimal.valueOf(2000), 0, 0);
+			type, betreuungspensum, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.

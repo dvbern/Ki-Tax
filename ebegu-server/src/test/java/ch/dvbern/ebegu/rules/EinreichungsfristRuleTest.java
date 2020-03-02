@@ -45,7 +45,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 	@Test
 	public void testKitaEinreichungRechtzeitig() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000), 0, 0);
+			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -71,7 +71,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 	@Test
 	public void testKitaEinreichungZuSpaet() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000), 0, 0);
+			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -110,7 +110,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 	@Test
 	public void testKitaEinreichungNachBeginnBetreuung() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000), 0, 0);
+			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -147,7 +147,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 	public void testKitaEinreichungInZuSpaetAberNachDemErsten() {
 		LocalDate betreuungsStart = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.AUGUST, 8);
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(betreuungsStart, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA,
-			60, BigDecimal.valueOf(2000), 0, 0);
+			60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
@@ -188,7 +188,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		final LocalDate betreuungStart = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 12, 20);
 		final LocalDate betreuungEnde = LocalDate.of(TestDataUtil.START_PERIODE.plusYears(1).getYear(), 3, 15);
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(
-			betreuungStart, betreuungEnde, BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000), 0, 0);
+			betreuungStart, betreuungEnde, BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		LocalDate pensumAEnd = TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1);
 		LocalDate pensumBStart = pensumAEnd.plusDays(1);
 		Gesuch gesuch = betreuung.extractGesuch();
@@ -281,7 +281,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 			LocalDate.of(TestDataUtil.START_PERIODE.plusYears(1).getYear(), 3, 15)
 		);
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(
-			betreuungRange.getGueltigAb(), betreuungRange.getGueltigBis(), BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000), 0, 0);
+			betreuungRange.getGueltigAb(), betreuungRange.getGueltigBis(), BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 
 		// Erwerbspensum1: 01.08.2017 - 31.08.2017: 50%
 		DateRange ewpRange1 = new DateRange(

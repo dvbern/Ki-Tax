@@ -384,7 +384,7 @@ public class MutationsMergerTest {
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
-			BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000), 0, 0);
+			BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setTyp(antragTyp);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);

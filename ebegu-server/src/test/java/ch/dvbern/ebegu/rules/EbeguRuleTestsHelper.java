@@ -178,6 +178,15 @@ public final class EbeguRuleTestsHelper {
 		LocalDate von, LocalDate bis,
 		BetreuungsangebotTyp angebot,
 		int pensum,
+		BigDecimal monatlicheBetreuungskosten
+	) {
+		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, 0, 0);
+	}
+
+	public static Betreuung createBetreuungWithPensum(
+		LocalDate von, LocalDate bis,
+		BetreuungsangebotTyp angebot,
+		int pensum,
 		BigDecimal monatlicheBetreuungskosten,
 		Integer monatlicheHauptmahlzeiten,
 		Integer monatlicheNebenmahlzeiten
