@@ -262,10 +262,8 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
-                if (this.gesuchModelManager.isSozialhilfeBezueger()
-                    && (this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
-						|| this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled)) {
-                    return this.navigateToStep(TSWizardStepName.SOZIALHILFEZEITRAEUME);
+                if (this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired()) {
+                    return this.navigateToSozialhilfeZeitraeume();
                 }
                 // finanzielleSituationStart
                 if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
@@ -323,10 +321,6 @@ export class NavigatorController implements IController {
 
             return undefined;
         }
-        if (TSWizardStepName.SOZIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
-            && this.dvSubStep === 2) {
-            return this.navigateToStep(TSWizardStepName.SOZIALHILFEZEITRAEUME);
-        }
 
         // by default navigieren wir zum naechsten erlaubten Step
         return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
@@ -366,13 +360,13 @@ export class NavigatorController implements IController {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 2) {
-                if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
-                    return this.navigateToStepFinanzielleSituation('1');
-                }
+				if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
+					return this.navigateToStepFinanzielleSituation('1');
+				}
 
-                if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
-                    return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
-                }
+				if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
+					return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
+				}
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 3) {
@@ -403,15 +397,6 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.VERFUEGEN === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 2) {
             return this.navigateToStep(TSWizardStepName.VERFUEGEN);
-        }
-
-        if (TSWizardStepName.SOZIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()
-            && this.dvSubStep === 2) {
-            return this.navigateToStep(TSWizardStepName.SOZIALHILFEZEITRAEUME);
-        }
-
-        if (TSWizardStepName.SOZIALHILFEZEITRAEUME === this.wizardStepManager.getCurrentStepName()) {
-            return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
         }
 
         return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
@@ -453,8 +438,6 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.freigabe', gesuchIdParam);
             case TSWizardStepName.VERFUEGEN:
                 return this.state.go('gesuch.verfuegen', gesuchIdParam);
-            case TSWizardStepName.SOZIALHILFEZEITRAEUME:
-                return this.state.go('gesuch.SozialhilfeZeitraeume', gesuchIdParam);
             default:
                 throw new Error(`not implemented for step ${stepName}`);
         }
@@ -478,6 +461,12 @@ export class NavigatorController implements IController {
         return this.state.go('gesuch.einkommensverschlechterung', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    private navigateToSozialhilfeZeitraeume(): TransitionPromise {
+        return this.state.go('gesuch.SozialhilfeZeitraeume', {
             gesuchId: this.getGesuchId(),
         });
     }

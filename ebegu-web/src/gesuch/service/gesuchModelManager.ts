@@ -1627,4 +1627,10 @@ export class GesuchModelManager {
     public isSozialhilfeBezueger(): boolean {
         return this.getFamiliensituation().sozialhilfeBezueger;
     }
+
+    public isSozialhilfeBezuegerZeitraeumeRequired(): boolean {
+        return this.getFamiliensituation().sozialhilfeBezueger
+            && (this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
+                || this.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled);
+    }
 }

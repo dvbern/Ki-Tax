@@ -75,7 +75,7 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
             berechnungsManager,
             wizardStepManager,
             $scope,
-            TSWizardStepName.SOZIALHILFEZEITRAEUME,
+            TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
 
         this.familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer;

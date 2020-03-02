@@ -71,7 +71,7 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
             berechnungsManager,
             wizardStepManager,
             $scope,
-            TSWizardStepName.SOZIALHILFEZEITRAEUME,
+            TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
         this.initViewModel();
     }
