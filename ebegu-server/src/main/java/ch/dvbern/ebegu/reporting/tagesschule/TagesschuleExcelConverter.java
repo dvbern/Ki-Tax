@@ -60,14 +60,14 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 		excelMerger.addValue(MergeFieldTagesschule.tagesschuleOhneFinSitTitle, tagesschuleName);
 
-		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ")";
+		String gesuchsPeriodeStr = gesuchsperiode.getGesuchsperiodeString() + " (" + gesuchsperiode.getGesuchsperiodeDisplayName(locale) + ')';
 		excelMerger.addValue(MergeFieldTagesschule.periode, gesuchsPeriodeStr);
 
 		List<ModulTagesschuleGroup> sortedGroups =
 			einstellungenTagesschule.getModulTagesschuleGroups().stream().sorted(Comparator.reverseOrder())
 				.collect(Collectors.toList());
 
-		List<RepeatColGroup> repeatColGroupList =
+		List<TagesschuleRepeatColGroup> repeatColGroupList =
 			generateWeekdayModuleGroups(sortedGroups);
 
 		addHeaders(excelMerger, locale, repeatColGroupList);
@@ -96,16 +96,16 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 	 * Wochentage ohne Module werden gefiltert.
 	 */
 	@Nonnull
-	private List<RepeatColGroup> generateWeekdayModuleGroups(@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups) {
+	private List<TagesschuleRepeatColGroup> generateWeekdayModuleGroups(@Nonnull List<ModulTagesschuleGroup> modulTagesschuleGroups) {
 
-		List<RepeatColGroup> repeatColGroupList = new ArrayList<>();
-		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.MONDAY, "repeatCol1"));
-		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.TUESDAY, "repeatCol2"));
-		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.WEDNESDAY, "repeatCol3"));
-		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.THURSDAY, "repeatCol4"));
-		repeatColGroupList.add(new RepeatColGroup(DayOfWeek.FRIDAY, "repeatCol5"));
+		List<TagesschuleRepeatColGroup> repeatColGroupList = new ArrayList<>();
+		repeatColGroupList.add(new TagesschuleRepeatColGroup(DayOfWeek.MONDAY, "repeatCol1"));
+		repeatColGroupList.add(new TagesschuleRepeatColGroup(DayOfWeek.TUESDAY, "repeatCol2"));
+		repeatColGroupList.add(new TagesschuleRepeatColGroup(DayOfWeek.WEDNESDAY, "repeatCol3"));
+		repeatColGroupList.add(new TagesschuleRepeatColGroup(DayOfWeek.THURSDAY, "repeatCol4"));
+		repeatColGroupList.add(new TagesschuleRepeatColGroup(DayOfWeek.FRIDAY, "repeatCol5"));
 
-		for (RepeatColGroup repeatColGroup : repeatColGroupList) {
+		for (TagesschuleRepeatColGroup repeatColGroup : repeatColGroupList) {
 			for (ModulTagesschuleGroup moduleGroup : modulTagesschuleGroups) {
 				for (ModulTagesschule module : moduleGroup.getModule()) {
 					if (module.getWochentag().compareTo(repeatColGroup.getWochentag()) == 0) {
@@ -118,7 +118,7 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 	}
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale,
-		@Nonnull List<RepeatColGroup> repeatColGroups) {
+		@Nonnull List<TagesschuleRepeatColGroup> repeatColGroups) {
 		excelMerger.addValue(MergeFieldTagesschule.nachnameKindTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle",	locale));
 		excelMerger.addValue(MergeFieldTagesschule.vornameKindTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
@@ -153,13 +153,13 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 	private void setAnmeldungenForModule(
 		@Nonnull TagesschuleDataRow dataRow,
-		@Nonnull List<RepeatColGroup> repeatColGroups,
+		@Nonnull List<TagesschuleRepeatColGroup> repeatColGroups,
 		@Nonnull ExcelMergerDTO excelRowGroup) {
 			repeatColGroups.forEach(weekday -> {
 				int counter = Constants.MAX_MODULGROUPS_TAGESSCHULE;
 				for (ModulTagesschuleGroup moduleGroup : weekday.getModulTagesschuleList()) {
 					for (ModulTagesschule module : moduleGroup.getModule()) {
-						if (module.getWochentag().equals(weekday.getWochentag())) {
+						if (module.getWochentag() == weekday.getWochentag()) {
 							if (isAngemeldet(module, dataRow)) {
 								excelRowGroup.addValue(MergeFieldTagesschule.angemeldet, "X");
 							} else {

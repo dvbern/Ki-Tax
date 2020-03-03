@@ -656,9 +656,9 @@ public class ReportResourceAsync {
 		return Response.ok(workJob.getId()).build();
 	}
 
-	/*
-	Überprüft, ob für eine bestimmte Gesuchsperiode die Anzahl Module über dem maximalen Wert liegt.
-	Dieser maximale Wert ist durch das Exceltemplate gegeben
+	/**
+	 * Überprüft, ob für eine bestimmte Gesuchsperiode die Anzahl Module über dem maximalen Wert liegt.
+	 * Dieser maximale Wert ist durch das Exceltemplate gegeben
 	 */
 	private boolean checkMaxTagesschulModuleExceeded(@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull String gesuchsperiodeId) {

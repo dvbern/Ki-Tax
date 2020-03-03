@@ -25,13 +25,13 @@ import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
  * DTO fuer die TagesschuleStatistik für eine RepeatCol Gruppe (Wochentag und die ModulGruppen, die
  * an diesem Wochentag ein Modul anbieten).
  */
-public class RepeatColGroup {
+public class TagesschuleRepeatColGroup {
 
 	private DayOfWeek wochentag;
 	private List<ModulTagesschuleGroup> modulTagesschuleList;
 	private String repeatColName;
 
-	public RepeatColGroup(DayOfWeek wochentag, String repeatColName) {
+	public TagesschuleRepeatColGroup(DayOfWeek wochentag, String repeatColName) {
 		this.wochentag = wochentag;
 		this.repeatColName = repeatColName;
 		this.modulTagesschuleList = new ArrayList<>();

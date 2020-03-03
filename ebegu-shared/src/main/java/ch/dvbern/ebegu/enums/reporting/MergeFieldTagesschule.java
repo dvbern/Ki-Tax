@@ -15,7 +15,6 @@
 package ch.dvbern.ebegu.enums.reporting;
 
 import javax.annotation.Nonnull;
-import javax.print.DocFlavor.STRING;
 
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;

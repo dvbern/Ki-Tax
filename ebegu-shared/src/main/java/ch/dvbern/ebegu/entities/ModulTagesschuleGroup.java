@@ -229,12 +229,8 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		builder.append(this.getIdentifier(), o.getIdentifier());
 		builder.append(this.getZeitVon(), o.getZeitVon());
 		builder.append(this.getZeitBis(), o.getZeitBis());
-		// bei Scolaris Modulen muss ModultagesschuleName verwendet werden
-		if (this.getBezeichnung().getTextDeutsch() == null || o.getBezeichnung().getTextDeutsch() == null ) {
-			builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
-		} else {
-			builder.append(this.getBezeichnung().getTextDeutsch(), o.getBezeichnung().getTextDeutsch());
-		}
+		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
+		builder.append(this.getBezeichnung().getTextDeutsch(), o.getBezeichnung().getTextDeutsch());
 		builder.append(this.isWirdPaedagogischBetreut(), o.isWirdPaedagogischBetreut());
 		return builder.toComparison();
 	}

@@ -92,7 +92,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -2045,7 +2044,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Override
 	public List<TagesschuleDataRow> getReportDataTagesschuleOhneFinSit(
 		@Nonnull String stammdatenID,
-		String gesuchsperiodeID) {
+		@Nonnull String gesuchsperiodeID) {
 
 		requireNonNull(stammdatenID, "Das Argument 'stammdatenID' darf nicht leer sein");
 
@@ -2057,12 +2056,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			root.join(KindContainer_.anmeldungenTagesschule);
 
 		List<Predicate> predicates = new ArrayList<>();
-		if (gesuchsperiodeID != null) {
-			predicates.add(builder.equal(root.get(KindContainer_.gesuch)
-					.get(Gesuch_.gesuchsperiode)
-					.get(Gesuchsperiode_.id),
-				gesuchsperiodeID));
-		}
+		predicates.add(builder.equal(root.get(KindContainer_.gesuch).get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.id),
+			gesuchsperiodeID));
 		predicates.add(builder.equal(
 			joinAnmeldungTagesschule.get(AnmeldungTagesschule_.institutionStammdaten).get(InstitutionStammdaten_.id),
 			stammdatenID));
@@ -2073,6 +2068,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return convertToTagesschuleDataRows(kindContainerList);
 	}
 
+	@Nonnull
 	private EinstellungenTagesschule findEinstellungenTagesschuleByPeriode(@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull String gesuchsperiodeId) {
 
@@ -2086,7 +2082,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				}
 			}
 		}
-		return null;
+		throw new EbeguEntityNotFoundException("findEinstellungenTagesschuleByPeriode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 	}
 
 	@Nonnull

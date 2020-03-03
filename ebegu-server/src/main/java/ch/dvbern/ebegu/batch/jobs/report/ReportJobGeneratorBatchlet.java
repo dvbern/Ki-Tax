@@ -41,7 +41,6 @@ import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
-import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -186,6 +185,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
 		}
 		case VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT: {
+			Objects.requireNonNull(gesuchPeriodeId);
 			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
 			return this.reportService.generateExcelReportTagesschuleOhneFinSit(stammdatenId, gesuchPeriodeId, locale);
 		}
