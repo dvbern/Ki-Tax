@@ -283,6 +283,8 @@ public final class TestJaxDataUtil {
 
 		jaxBetreuungspensum.setPensum(BigDecimal.valueOf(40));
 		jaxBetreuungspensum.setMonatlicheBetreuungskosten(new BigDecimal(2000));
+		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(0);
+		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(0);
 		return jaxBetreuungspensum;
 	}
 

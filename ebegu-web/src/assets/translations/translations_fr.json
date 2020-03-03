@@ -1143,6 +1143,7 @@
     "MUTATIONSMELDUNG_CONFIRMATION": "Voulez-vous vraiment communiquer les changements saisis ? ",
     "MUTATIONSMELDUNG_BESCHREIBUNG": "Les données saisies sont envoyées à la commune. ",
     "MUTATIONSMELDUNG_MESSAGE": "Taux {{num}} de {{von}} à {{bis}}: {{pensum}}%, frais de prise en charge mensuels : CHF {{kosten}}",
+    "MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG": "",
     "MUTATIONSMELDUNG_UEBERNEHMEN": "Voulez-vous vraiment ajouter des changements ? ",
     "MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG": "Les données saisies sont ajoutées au changement.",
     "ZAHLUNG_FAELLIGKEIT": "Date d'échéance",

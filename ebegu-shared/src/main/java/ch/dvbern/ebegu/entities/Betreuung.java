@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -489,6 +490,8 @@ public class Betreuung extends AbstractPlatz {
 				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 				abweichung.addPensum(pensum.getPensum().multiply(anteil));
 				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
+				abweichung.addHauptmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheHauptmahlzeiten()).multiply(anteil).intValue());
+				abweichung.addNebenmahlzeiten(BigDecimal.valueOf(pensum.getMonatlicheNebenmahlzeiten()).multiply(anteil).intValue());
 			}
 		}
 		return abweichung;
@@ -518,9 +521,16 @@ public class Betreuung extends AbstractPlatz {
 		return abweichungen;
 	}
 
+	@SuppressFBWarnings(value ="NP_NONNULL_PARAM_VIOLATION", justification = "initially the affected fields need to "
+		+ "be null, we want to force the user to enter data")
 	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien) {
 		BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
 		abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
+		// initially those fields need to be null, we want to force the user to enter data
+		abweichung.setPensum(null);
+		abweichung.setMonatlicheHauptmahlzeiten(null);
+		abweichung.setMonatlicheNebenmahlzeiten(null);
+		abweichung.setMonatlicheBetreuungskosten(null);
 		YearMonth month = YearMonth.from(from);
 		abweichung.setGueltigkeit(new DateRange(month.atDay(1), month.atEndOfMonth()));
 
