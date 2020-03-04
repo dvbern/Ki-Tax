@@ -1143,6 +1143,7 @@
     "MUTATIONSMELDUNG_CONFIRMATION": "Möchten Sie wirklich die eingegebene Mutation mitteilen?",
     "MUTATIONSMELDUNG_BESCHREIBUNG": "Die eingegebenen Daten werden an die Gemeinde gesendet",
     "MUTATIONSMELDUNG_MESSAGE": "Pensum {{num}} von {{von}} bis {{bis}}: {{pensum}}%, monatliche Betreuungskosten: CHF {{kosten}}",
+    "MUTATIONSMELDUNG_MESSAGE_MAHLZEITENVERGUENSTIGUNG": "Pensum {{num}} von {{von}} bis {{bis}}: {{pensum}}%, monatliche Betreuungskosten: CHF {{kosten}}, monatliche Hauptmahlzeiten: {{hauptmahlzeiten}}, monatliche Nebenmahlzeiten: {{nebenmahlzeiten}}",
     "MUTATIONSMELDUNG_UEBERNEHMEN": "Möchten Sie wirklich die Änderungen zur Mutation hinzufügen?",
     "MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG": "Die eingegebenen Daten werden der bestehenden Mutation bzw. einer neuen Mutation hinzugefügt",
     "ZAHLUNG_FAELLIGKEIT": "Fälligkeitsdatum",
@@ -1892,8 +1893,9 @@
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": "Vorlage_Merkblatt_Anmeldung_Tagesschule.docx",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": " Merkblatt Anmeldung Tagesschule Deutsch",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Merkblatt Anmeldung Tagesschule Französich",
-    "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": " Merkblatt_Anmeldung_Tagesschule.pdf",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME": "Merkblatt_Anmeldung_Tagesschule.pdf",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN": "Merkblatt Anmeldung Tagesschule hochladen",
+    "MERKBLATT_ANMELDUNG_TAGESSCHULE_HOCHLADEN_HELP": "TODO",
     "ERLAUTERUNG_ZUR_VERFUEGUNG_DATEI_NAME": "Erlaeuterung_zur_Verfuegung.pdf",
     "MODUL_NICHT_BEARBEITBAR_TOOLTIP": "Dieses Modul kann nicht mehr gelöscht oder bearbeitet werden, weil die Anmeldung bereits offen ist",
     "TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL": "Provisorische Berechnung",
@@ -1905,5 +1907,9 @@
     "SOZIALHILFEZEITRAUM_LOESCHEN": "Wollen Sie der Sozialhilfe-Zeitraum wirklich löschen?",
     "SOZIALHILFEZEITRAUM_TITLE": "Sozialhilfe erfassen",
     "ZEITRAUM_HINZUFUEGEN": "Zeitraum hinzufügen",
+    "MONATLICHE_HAUPTMAHLZEITEN": "Anzahl monatliche Hauptmahlzeiten",
+    "MONATLICHE_HAUPTMAHLZEITEN_HELP": "TODO",
+    "MONATLICHE_NEBENMAHLZEITEN": "Anzahl monatliche Nebenmahlzeiten",
+    "MONATLICHE_NEBENMAHLZEITEN_HELP": "TODO",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -35,7 +35,6 @@ import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
-import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
@@ -116,7 +115,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isNewestGesuch: boolean;
     public dvDialog: DvDialog;
     public $translate: ITranslateService;
-    public moduleBackup: TSBelegungTagesschuleModul[] = undefined;
     public aktuellGueltig: boolean = true;
     public isDuplicated: boolean = false;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
@@ -567,7 +565,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private filterInstiForScolaris(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
-         return institutionenList.filter(instStamm => {
+        return institutionenList.filter(instStamm => {
                 let isScolaris = false;
                 instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
                     einstellungTagesschule => {
@@ -956,7 +954,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             elementID: undefined,
         }).then(() => {   // User confirmed removal
             this.mitteilungRS.sendbetreuungsmitteilung(this.gesuchModelManager.getDossier(),
-                this.mutationsmeldungModel).then(() => {
+                this.mutationsmeldungModel,
+                this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled).then(() => {
 
                 this.form.$setUntouched();
                 this.form.$setPristine();
@@ -1269,5 +1268,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 ((this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
                     || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                     && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())));
+    }
+
+    public isMahlzeitenverguenstigungActive(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
     }
 }
