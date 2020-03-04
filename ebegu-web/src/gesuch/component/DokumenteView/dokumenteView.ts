@@ -211,8 +211,4 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         this.gesuchModelManager.getGesuch().dokumenteHochgeladen = false;
         this.gesuchModelManager.updateGesuch();
     }
-
-    public isSteueramt(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
-    }
 }

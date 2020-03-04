@@ -319,4 +319,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
         return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
     }
+
+    public isLastStepOfSteueramt(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())
+            && this.gesuchModelManager.isLastGesuchsteller();
+    }
 }

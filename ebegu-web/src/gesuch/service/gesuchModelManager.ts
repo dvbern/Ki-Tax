@@ -212,10 +212,13 @@ export class GesuchModelManager {
      */
     public setGesuch(gesuch: TSGesuch): TSGesuch {
         this.setGesuchDaten(gesuch);
+
         this.loadGemeindeStammdaten().then(stammdaten => {
             this.gemeindeStammdaten = stammdaten;
             this.initGemeindeKonfiguration();
         });
+
+
         return gesuch;
     }
 
@@ -243,6 +246,12 @@ export class GesuchModelManager {
         }
 
         return false;
+    }
+
+    public isLastGesuchsteller(): boolean {
+        return this.isGesuchsteller2Required()
+            ? this.getGesuchstellerNumber() === 2
+            : this.getGesuchstellerNumber() === 1;
     }
 
     // tslint:disable-next-line:naming-convention
