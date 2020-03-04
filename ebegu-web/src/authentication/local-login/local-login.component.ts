@@ -47,6 +47,8 @@ export class LocalLoginComponent {
 
     public administratorInstitutionKitaBruennen: TSBenutzer;
     public sachbearbeiterInstitutionKitaBruennen: TSBenutzer;
+    public administratorInstitutionTagesschuleParis: TSBenutzer;
+    public sachbearbeiterInstitutionTagesschuleParis: TSBenutzer;
     public sachbearbeiterTraegerschaftStadtBern: TSBenutzer;
     public administratorTraegerschaftStadtBern: TSBenutzer;
 
@@ -95,6 +97,7 @@ export class LocalLoginComponent {
     private gemeindeParis: TSGemeinde;
     private gemeindeLondon: TSGemeinde;
     private readonly institution: TSInstitution;
+    private readonly tagesschule: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
 
     public constructor(
@@ -107,6 +110,7 @@ export class LocalLoginComponent {
         this.mandant = LocalLoginComponent.getMandant();
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern();
         this.institution = this.getInsitution();
+        this.tagesschule = this.getTagesschule();
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
         });
@@ -189,6 +193,24 @@ export class LocalLoginComponent {
             TSRole.SACHBEARBEITER_INSTITUTION,
             undefined,
             this.institution);
+        this.administratorInstitutionTagesschuleParis = new TSBenutzer('Serge',
+            'Gainsbourg',
+            'serge.gainsbourg@mailbucket.dvbern.ch',
+            'password1',
+            'serge.gainsbourg@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.ADMIN_INSTITUTION,
+            undefined,
+            this.tagesschule);
+        this.sachbearbeiterInstitutionTagesschuleParis = new TSBenutzer('Charlotte',
+            'Gainsbourg',
+            'charlotte.gainsbourg@mailbucket.dvbern.ch',
+            'password3',
+            'charlotte.gainsbourg@mailbucket.dvbern.ch',
+            this.mandant,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            undefined,
+            this.tagesschule);
         this.sachbearbeiterTraegerschaftStadtBern = new TSBenutzer('Agnes',
             'Krause',
             'krad',
@@ -524,6 +546,17 @@ export class LocalLoginComponent {
         institution.traegerschaft = this.traegerschaftStadtBern;
         institution.mandant = this.mandant;
         return institution;
+    }
+
+    /**
+     * Die Tagesschule Institution wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
+     */
+    private getTagesschule(): TSInstitution {
+        const tagesschule = new TSInstitution();
+        tagesschule.name = 'Tagesschule Paris';
+        tagesschule.id = 'f44a68f2-dda2-4bf2-936a-68e20264b610';
+        tagesschule.mandant = this.mandant;
+        return tagesschule;
     }
 
     public logIn(credentials: TSBenutzer): void {

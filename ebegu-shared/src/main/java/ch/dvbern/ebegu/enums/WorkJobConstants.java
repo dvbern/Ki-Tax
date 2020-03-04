@@ -33,6 +33,7 @@ public final class WorkJobConstants {
 	public static final String BETRAG_PRO_KIND = "betragProKind";
 	public static final String EMAIL_OF_USER = "emailOfUser";
 	public static final String LANGUAGE = "language";
+	public static final String STAMMDATEN_ID_PARAM = "stammdatenId";
 
 	private WorkJobConstants() {
 	}

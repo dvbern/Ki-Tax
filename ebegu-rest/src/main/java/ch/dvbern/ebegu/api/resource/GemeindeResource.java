@@ -116,7 +116,6 @@ public class GemeindeResource {
 	@Inject
 	private JaxBConverter converter;
 
-
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@POST
@@ -313,8 +312,8 @@ public class GemeindeResource {
 
 		Gesuchsperiode gesuchsperiode =
 			gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("saveJaxGemeindeKonfiguration",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
 			saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
@@ -505,7 +504,7 @@ public class GemeindeResource {
 				String gemeindeName;
 				//Wir pruefen ob der ID ist einen UUID, sonst es ist einen BFS Nummer und der Gemeinde existiert noch
 				// nicht so es heisst das es einen Kind von einen Schulverbund ist
-				if(gemeindeTSId.matches(Constants.REGEX_UUID)){
+				if (gemeindeTSId.matches(Constants.REGEX_UUID)) {
 					Gemeinde gemeindeTS =
 						gemeindeService.findGemeinde(gemeindeTSId).orElseThrow(() -> new EbeguEntityNotFoundException(
 							"findGemeinde",
@@ -513,14 +512,13 @@ public class GemeindeResource {
 					gemeindeTSVerbund =
 						gemeindeService.findRegistredGemeindeVerbundIfExist(gemeindeTS.getBfsNummer()).orElse(null);
 					gemeindeName = gemeindeTS.getName();
-				}
-				else{
+				} else {
 					BfsGemeinde bfsGemeinde =
-						gemeindeService.findBfsGemeinde(Long.parseLong(gemeindeTSId)).orElseThrow(()-> new EbeguEntityNotFoundException(
+						gemeindeService.findBfsGemeinde(Long.parseLong(gemeindeTSId)).orElseThrow(() -> new EbeguEntityNotFoundException(
 							"findBfsGemeinde",
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeTSId));
 					gemeindeTSVerbund =
-						gemeindeService.findRegistredGemeindeVerbundIfExist(bfsGemeinde.getBfsNummer()).orElseThrow(()-> new EbeguEntityNotFoundException(
+						gemeindeService.findRegistredGemeindeVerbundIfExist(bfsGemeinde.getBfsNummer()).orElseThrow(() -> new EbeguEntityNotFoundException(
 							"findRegistredGemeindeVerbundIfExist",
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, bfsGemeinde.getBfsNummer()));
 					gemeindeName = bfsGemeinde.getName();
@@ -600,22 +598,22 @@ public class GemeindeResource {
 		requireNonNull(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 
 		Gemeinde gemeinde =
-			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow( () -> new EbeguEntityNotFoundException(
+			gemeindeService.findGemeinde(jaxGemeinde.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
 				"updateAngebotTS", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, jaxGemeinde.getId()));
 		boolean datesChanged = false;
-		if(!gemeinde.getBetreuungsgutscheineStartdatum().isEqual(jaxGemeinde.getBetreuungsgutscheineStartdatum())){
+		if (!gemeinde.getBetreuungsgutscheineStartdatum().isEqual(jaxGemeinde.getBetreuungsgutscheineStartdatum())) {
 			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
 			datesChanged = true;
 		}
-		if(!gemeinde.getTagesschulanmeldungenStartdatum().equals(jaxGemeinde.getTagesschulanmeldungenStartdatum())){
+		if (!gemeinde.getTagesschulanmeldungenStartdatum().equals(jaxGemeinde.getTagesschulanmeldungenStartdatum())) {
 			gemeinde.setTagesschulanmeldungenStartdatum(jaxGemeinde.getTagesschulanmeldungenStartdatum());
 			datesChanged = true;
 		}
-		if(!gemeinde.getFerieninselanmeldungenStartdatum().equals(jaxGemeinde.getFerieninselanmeldungenStartdatum())){
+		if (!gemeinde.getFerieninselanmeldungenStartdatum().equals(jaxGemeinde.getFerieninselanmeldungenStartdatum())) {
 			gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 			datesChanged = true;
 		}
-		if(datesChanged){
+		if (datesChanged) {
 			gemeinde = gemeindeService.saveGemeinde(gemeinde);
 		}
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
@@ -631,9 +629,8 @@ public class GemeindeResource {
 		return Response.ok().build();
 	}
 
-
-
-	@ApiOperation("Returns a specific document of the Gemeinde with the given type or an errorcode if none is available")
+	@ApiOperation("Returns a specific document of the Gemeinde with the given type or an errorcode if none is "
+		+ "available")
 	@GET
 	@Path("/gemeindeGesuchsperiodeDoku/{gemeindeId}/{gesuchsperiodeId}/{sprache}/{dokumentTyp}")
 	@Consumes(MediaType.WILDCARD)
@@ -643,13 +640,24 @@ public class GemeindeResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
 		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Nonnull @PathParam("dokumentTyp") DokumentTyp dokumentTyp
-		) {
+	) {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
 
+		// wir schauen welche Sprache sind bei der Gemeinde konfiguriert, falls nur eine ist der Dokument in dieser
+		// Sprache zurueckgegeben
+		GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"GemeindeStammdaten",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		Sprache[] korrespondenzsprachen = gemeindeStammdaten.getKorrespondenzsprache().getSprache();
+		if (korrespondenzsprachen.length == 1) {
+			sprache = korrespondenzsprachen[0];
+		}
+
 		final byte[] content = gemeindeService.downloadGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId,
-		 sprache, dokumentTyp);
+			sprache, dokumentTyp);
 		if (content != null && content.length > 0) {
 			try {
 				return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".pdf",

@@ -129,6 +129,8 @@ public final class Constants {
 	public static final String CSV_DELIMITER = ";";
 	public static final String CSV_NEW_LINE = "\n";
 
+	public static final int MAX_MODULGROUPS_TAGESSCHULE = 20;
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :
