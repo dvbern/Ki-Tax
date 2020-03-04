@@ -229,6 +229,18 @@ export class ReportAsyncRS {
             });
     }
 
+    public getTagesschuleOhneFinSitReportExcel(stammdatenId: string, gesuchsperiodeId: string): IPromise<string> {
+        const reportParams = this.httpParamSerializer({
+            stammdatenId,
+            gesuchsperiodeId
+        });
+        return this.http
+            .get(`${this.serviceURL}/excel/tagesschuleOhneFinSit?${reportParams}`, {timeout: this.reportingTimeout})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }
