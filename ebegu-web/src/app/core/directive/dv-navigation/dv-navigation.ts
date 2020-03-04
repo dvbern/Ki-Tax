@@ -268,7 +268,10 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.wizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
-            return this.navigateToSubStepFinanzielleSituation(nextSubStep);
+            const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
+            return this.navigateToSubStepFinanzielleSituation(
+                nextSubStep,
+                nextMainStep);
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
@@ -337,7 +340,10 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.wizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
-            return this.navigateToSubStepFinanzielleSituation(previousSubStep);
+            let previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
+            return this.navigateToSubStepFinanzielleSituation(
+                previousSubStep,
+                previousMainStep);
         }
 
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
@@ -364,10 +370,13 @@ export class NavigatorController implements IController {
         return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
     }
 
-    private navigateToSubStepFinanzielleSituation(nextSubStep: TSWizardSubStepName): TransitionPromise | undefined {
-        switch (nextSubStep) {
+    private navigateToSubStepFinanzielleSituation(
+        navigateToSubStep: TSWizardSubStepName,
+        navigateToStepIfNoSubstep: TSWizardStepName
+    ): TransitionPromise {
+        switch (navigateToSubStep) {
             case TSWizardSubStepName.KEIN_WEITERER_SUBSTEP:
-                return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+                return this.navigateToStep(navigateToStepIfNoSubstep);
             case TSWizardSubStepName.FINANZIELLE_SITUATION_START:
                 return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
             case TSWizardSubStepName.FINANZIELLE_SITUATON_GS1:
@@ -381,7 +390,7 @@ export class NavigatorController implements IController {
             case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE_DETAIL:
                 return this.navigateToSozialhilfeZeitraeume();
             default:
-                throw new Error(`not implemented for Substep ${nextSubStep}`);
+                throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
     }
 
