@@ -83,7 +83,7 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 				// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle Pensum als
 				// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
 				int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
-				//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
+				// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 				if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
 					verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(roundedPensumFachstelle);
 				}
