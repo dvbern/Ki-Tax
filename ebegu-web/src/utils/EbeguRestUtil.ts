@@ -1928,6 +1928,10 @@ export class EbeguRestUtil {
 
         restAbweichung.vertraglichesPensum = originalPensum;
         restAbweichung.pensum = pensum;
+        restAbweichung.monatlicheHauptmahlzeiten = abweichung.monatlicheHauptmahlzeiten;
+        restAbweichung.monatlicheNebenmahlzeiten = abweichung.monatlicheNebenmahlzeiten;
+        restAbweichung.vertraglicheHauptmahlzeiten = abweichung.vertraglicheHauptmahlzeiten;
+        restAbweichung.vertraglicheNebenmahlzeiten = abweichung.vertraglicheNebenmahlzeiten;
 
         return restAbweichung;
     }
@@ -1960,6 +1964,8 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -1970,6 +1976,8 @@ export class EbeguRestUtil {
         betreuungspensum: TSBetreuungsmitteilungPensum,
     ): any {
         this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
+        restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
         return restBetreuungspensum;
     }
 
@@ -2056,6 +2064,10 @@ export class EbeguRestUtil {
         const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
 
+        abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
+        abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
+        abweichungTS.monatlicheHauptmahlzeiten = abweichungFromServer.monatlicheHauptmahlzeiten;
+        abweichungTS.monatlicheNebenmahlzeiten = abweichungFromServer.monatlicheNebenmahlzeiten;
         abweichungTS.vertraglichesPensum = originalPensum;
         abweichungTS.pensum = pensum;
 
@@ -2131,6 +2143,8 @@ export class EbeguRestUtil {
         if (betreuungspensumFromServer) {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
+            betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
+            betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
@@ -2143,6 +2157,8 @@ export class EbeguRestUtil {
     ): TSBetreuungsmitteilungPensum {
         if (betreuungspensumFromServer) {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
+            betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             return betreuungspensumTS;
         }
         return undefined;

@@ -28,6 +28,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungspensumAbweichung} from '../../../models/TSBetreuungspensumAbweichung';
 import {TSKindContainer} from '../../../models/TSKindContainer';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -208,7 +209,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         if (!this.isGesuchValid()) {
             return;
         }
-        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier())
+        this.mitteilungRS.abweichungenFreigeben(this.model, this.gesuchModelManager.getDossier(),
+            this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled)
             .then(result => {
                 this.model.betreuungspensumAbweichungen = result;
             });
@@ -264,5 +266,22 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public cancel(): void {
         this.form.$setPristine();
         this.$state.go(GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+    }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    public isRowRequired(index: number): boolean {
+        const abweichung = this.getAbweichung(index);
+
+        if (this.isMahlzeitenverguenstigungEnabled()) {
+            return EbeguUtil.isNotNullAndPositive(abweichung.monatlicheHauptmahlzeiten)
+                || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheNebenmahlzeiten)
+                || EbeguUtil.isNotNullAndPositive(abweichung.pensum)
+                || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
+        }
+        return EbeguUtil.isNotNullAndPositive(abweichung.pensum)
+            || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
     }
 }

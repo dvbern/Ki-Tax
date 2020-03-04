@@ -222,6 +222,10 @@ export class EbeguUtil {
         return this.isNullOrUndefined(data) || !data;
     }
 
+    public static isNotNullAndPositive(data: number): boolean {
+        return this.isNotNullOrUndefined(data) && data >= 0;
+    }
+
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
     }
