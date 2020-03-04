@@ -340,10 +340,9 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.wizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
-            let previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
-            return this.navigateToSubStepFinanzielleSituation(
-                previousSubStep,
-                previousMainStep);
+            const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
+
+            return this.navigateToSubStepFinanzielleSituation(previousSubStep, previousMainStep);
         }
 
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
