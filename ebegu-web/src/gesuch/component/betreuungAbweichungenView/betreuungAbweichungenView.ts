@@ -197,6 +197,15 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             return;
         }
 
+        // die felder sind not null und müssen auf 0 gesetzt werden, damit die validierung nicht fehlschlägt falls
+        // die gemeinde die vergünstigung deaktiviert hat
+        if (!this.isMahlzeitenverguenstigungEnabled()) {
+            this.model.betreuungspensumAbweichungen.forEach(a => {
+                a.monatlicheNebenmahlzeiten = 0;
+                a.monatlicheHauptmahlzeiten = 0;
+            })
+        }
+
         this.betreuungRS.saveAbweichungen(this.model).then(result => {
             this.model.betreuungspensumAbweichungen = result;
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
