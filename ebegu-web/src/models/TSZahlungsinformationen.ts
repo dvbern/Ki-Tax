@@ -22,6 +22,8 @@ export class TSZahlungsinformationen extends TSAdresse {
     private _iban: string;
     private _kontoinhaber: string;
     private _abweichendeZahlungsadresse: boolean;
+    private _zahlungsadresse: TSAdresse;
+    private _keineMahlzeitenverguenstigungBeantragt: boolean;
 
     public constructor() {
         super();
@@ -49,5 +51,21 @@ export class TSZahlungsinformationen extends TSAdresse {
 
     public set abweichendeZahlungsadresse(value: boolean) {
         this._abweichendeZahlungsadresse = value;
+    }
+
+    public get zahlungsadresse(): TSAdresse {
+        return this._zahlungsadresse;
+    }
+
+    public set zahlungsadresse(value: TSAdresse) {
+        this._zahlungsadresse = value;
+    }
+
+    public get keineMahlzeitenverguenstigungBeantragt(): boolean {
+        return this._keineMahlzeitenverguenstigungBeantragt;
+    }
+
+    public set keineMahlzeitenverguenstigungBeantragt(value: boolean) {
+        this._keineMahlzeitenverguenstigungBeantragt = value;
     }
 }

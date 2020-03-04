@@ -114,6 +114,16 @@ export class TSFinanzModel {
         if (gesuch.gesuchsteller2) {
             this.finanzielleSituationContainerGS2 = angular.copy(gesuch.gesuchsteller2.finanzielleSituationContainer);
         }
+
+        this.zahlungsinformationen = new TSZahlungsinformationen();
+        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaber;
+        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().iban;
+        this.zahlungsinformationen.abweichendeZahlungsadresse =
+            gesuch.extractFamiliensituation().abweichendeZahlungsadresse;
+        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
+        this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
+            gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
+
         this.initFinSit();
     }
 
@@ -167,6 +177,15 @@ export class TSFinanzModel {
             console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
         }
         this.resetSteuerveranlagungErhalten(gesuch);
+
+        gesuch.extractFamiliensituation().kontoinhaber = this.zahlungsinformationen.kontoinhaber;
+        gesuch.extractFamiliensituation().iban = this.zahlungsinformationen.iban;
+        gesuch.extractFamiliensituation().abweichendeZahlungsadresse =
+            this.zahlungsinformationen.abweichendeZahlungsadresse;
+        gesuch.extractFamiliensituation().zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt =
+            this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+
         return gesuch;
     }
 

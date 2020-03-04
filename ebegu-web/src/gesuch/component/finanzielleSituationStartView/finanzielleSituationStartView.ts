@@ -245,7 +245,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
     }
 
-    public isIbanRequired(): boolean {
-        return this.isMahlzeitenverguenstigungEnabled(); // TODO also check for the flag
+    public isZahlungsdatenRequired(): boolean {
+        return this.isMahlzeitenverguenstigungEnabled() && !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
     }
 }

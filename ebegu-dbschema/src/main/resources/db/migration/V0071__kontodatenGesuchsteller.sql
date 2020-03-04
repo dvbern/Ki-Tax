@@ -11,11 +11,11 @@ ALTER TABLE familiensituation_aud ADD COLUMN kontoinhaber VARCHAR(255);
 ALTER TABLE familiensituation ADD COLUMN abweichende_zahlungsadresse BIT NOT NULL DEFAULT FALSE;
 ALTER TABLE familiensituation_aud ADD COLUMN abweichende_zahlungsadresse BIT;
 
-ALTER TABLE familiensituation ADD COLUMN zahlungsadresse_id VARCHAR(36);
-ALTER TABLE familiensituation_aud ADD COLUMN zahlungsadresse_id VARCHAR(36);
+ALTER TABLE familiensituation ADD COLUMN zahlungsadresse_id BINARY(16);
+ALTER TABLE familiensituation_aud ADD COLUMN zahlungsadresse_id BINARY(16);
 
 -- add FK on adresse
 ALTER TABLE familiensituation
-  ADD CONSTRAINT FK_familiensituation_adresse
+  ADD CONSTRAINT FK_familiensituation_zahlungs_adresse
 FOREIGN KEY (zahlungsadresse_id)
 REFERENCES adresse(id);
