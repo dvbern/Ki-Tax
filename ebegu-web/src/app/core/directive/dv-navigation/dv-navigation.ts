@@ -17,9 +17,11 @@ import {StateService, TransitionPromise} from '@uirouter/core';
 import {IController, IDirective, IDirectiveFactory, IQService, ITimeoutService} from 'angular';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
+import {WizardSubStepManager} from '../../../../gesuch/service/wizardSubStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {TSWizardSubStepName} from '../../../../models/enums/TSWizardSubStepName';
 import {ErrorService} from '../../errors/service/ErrorService';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -49,6 +51,7 @@ export class DVNavigation implements IDirective {
         dvCancel: '&?',
         dvNextDisabled: '&?',
         dvSubStep: '<',
+        dvSubStepName: '@',
         dvSave: '&?',
         dvSavingPossible: '<?',
         dvTranslateNext: '@',
@@ -69,6 +72,7 @@ export class NavigatorController implements IController {
 
     public static $inject: string[] = [
         'WizardStepManager',
+        'WizardSubStepManager',
         '$state',
         'GesuchModelManager',
         '$translate',
@@ -84,12 +88,14 @@ export class NavigatorController implements IController {
     public dvNextDisabled: () => any;
     public dvSavingPossible: boolean;
     public dvSubStep: number;
+    public dvSubStepName: TSWizardSubStepName;
     public dvTranslateNext: string;
     public dvTranslatePrevious: string;
     public containerClass: string;
 
     public constructor(
         private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardSubStepManager: WizardSubStepManager,
         private readonly state: StateService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $translate: ITranslateService,
@@ -261,34 +267,8 @@ export class NavigatorController implements IController {
             return undefined;
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
-            if (this.dvSubStep === 1) {
-                if (this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired()) {
-                    return this.navigateToSozialhilfeZeitraeume();
-                }
-                // finanzielleSituationStart
-                if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
-                    || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
-                    return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-                }
-                return this.navigateToStepFinanzielleSituation('1');
-            }
-            if (this.dvSubStep === 2) {
-                // finanzielleSituation
-                if (!this.gesuchModelManager.isFinanzielleSituationRequired()) {
-                    return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-                }
-                if (this.gesuchModelManager.getGesuchstellerNumber() === 1
-                    && this.gesuchModelManager.isGesuchsteller2Required()) {
-                    return this.navigateToStepFinanzielleSituation('2');
-                }
-                return this.navigateToFinanziellSituationResultate();
-            }
-            if (this.dvSubStep === 3) {
-                // finanzielleSituationResultate
-                return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-            }
-
-            return undefined;
+            const nextSubStep = this.wizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
+            return this.navigateToSubStepFinanzielleSituation(nextSubStep);
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
@@ -356,26 +336,8 @@ export class NavigatorController implements IController {
         }
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
-            if (this.dvSubStep === 1) {
-                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
-            }
-            if (this.dvSubStep === 2) {
-                if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
-                    return this.navigateToStepFinanzielleSituation('1');
-                }
-
-                if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
-                    return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
-                }
-                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
-            }
-            if (this.dvSubStep === 3) {
-                return this.navigateToStepFinanzielleSituation(this.gesuchModelManager.getGesuchstellerNumber() === 2 ?
-                    '2' :
-                    '1');
-            }
-
-            return undefined; // TODO is this allowed?
+            const previousSubStep = this.wizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
+            return this.navigateToSubStepFinanzielleSituation(previousSubStep);
         }
 
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
@@ -400,6 +362,27 @@ export class NavigatorController implements IController {
         }
 
         return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
+    }
+
+    private navigateToSubStepFinanzielleSituation(nextSubStep: TSWizardSubStepName): TransitionPromise | undefined {
+        switch (nextSubStep) {
+            case TSWizardSubStepName.KEIN_WEITERER_SUBSTEP:
+                return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+            case TSWizardSubStepName.FINANZIELLE_SITUATION_START:
+                return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
+            case TSWizardSubStepName.FINANZIELLE_SITUATON_GS1:
+                return this.navigateToStepFinanzielleSituation('1');
+            case TSWizardSubStepName.FINANZIELLE_SITUATON_GS2:
+                return this.navigateToStepFinanzielleSituation('2');
+            case TSWizardSubStepName.FINANZIELLE_SITUATION_RESULTATE:
+                return this.navigateToFinanziellSituationResultate();
+            case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE:
+                return this.navigateToSozialhilfeZeitraeume();
+            case TSWizardSubStepName.FINANZIELLE_SITUATION_SOZIALHILFE_DETAIL:
+                return this.navigateToSozialhilfeZeitraeume();
+            default:
+                throw new Error(`not implemented for Substep ${nextSubStep}`);
+        }
     }
 
     /**

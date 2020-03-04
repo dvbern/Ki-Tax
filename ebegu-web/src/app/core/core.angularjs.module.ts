@@ -61,6 +61,7 @@ import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {WizardStepRS} from '../../gesuch/service/WizardStepRS.rest';
+import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
@@ -261,6 +262,7 @@ export const CORE_JS_MODULE = angular
     .service('HttpVersionInterceptor', HttpVersionInterceptor)
     .service('HttpI18nInterceptor', HttpI18nInterceptor)
     .service('WizardStepManager', WizardStepManager)
+    .service('WizardSubStepManager', WizardSubStepManager)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .service('applicationPropertyRS', ApplicationPropertyRS)
