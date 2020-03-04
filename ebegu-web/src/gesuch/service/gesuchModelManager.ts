@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ILogService, IPromise, IQService, IScope} from 'angular';
+import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
@@ -93,7 +93,7 @@ export class GesuchModelManager {
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
-        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', '$scope',
+        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS',
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -137,7 +137,6 @@ export class GesuchModelManager {
         private readonly dossierRS: DossierRS,
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly $scope: IScope,
     ) {
     }
 
@@ -149,11 +148,6 @@ export class GesuchModelManager {
                 },
                 err => this.log.error(err),
             );
-        // Die Gemeinde-Konfiguration ist gesuchsperiodenabhaengig und muss bei einer Aenderung der Gesuchsperiode
-        // neu gelesen werden
-        this.$scope.$watch('gesuch.gesuchsperiode', function (newValue, oldValue) {
-            this.initGemeindeKonfiguration();
-        });
     }
 
     /**
@@ -442,7 +436,6 @@ export class GesuchModelManager {
         return this.gesuchGenerator.createNewDossier(this.gesuch.dossier)
             .then((dossierResponse: TSDossier) => {
                 this.gesuch.dossier = angular.copy(dossierResponse);
-
                 return this.createNewGesuchForCurrentDossier();
             });
     }
@@ -452,8 +445,7 @@ export class GesuchModelManager {
      */
     private createNewGesuchForCurrentDossier(): IPromise<TSGesuch> {
         return this.gesuchGenerator.createNewGesuch(this.gesuch).then(gesuchResponse => {
-            this.gesuch = gesuchResponse;
-
+            this.setGesuch(gesuchResponse);
             return this.gesuch;
         });
     }
