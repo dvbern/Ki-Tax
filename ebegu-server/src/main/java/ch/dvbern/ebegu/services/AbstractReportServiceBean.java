@@ -41,6 +41,7 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 	protected static final String VALIDIERUNG_STICHTAG = "Das Argument 'stichtag' darf nicht leer sein";
 	protected static final String VALIDIERUNG_DATUM_VON = "Das Argument 'datumVon' darf nicht leer sein";
 	protected static final String VALIDIERUNG_DATUM_BIS = "Das Argument 'datumBis' darf nicht leer sein";
+	protected static final String VALIDIERUNG_DARF_NICHT_NULL_SEIN = " darf nicht null sein";
 	protected static final String NICHT_GEFUNDEN = "' nicht gefunden";
 	protected static final String VORLAGE = "Vorlage '";
 	protected static final String MIME_TYPE_EXCEL = "application/vnd.ms-excel";
