@@ -2635,6 +2635,8 @@ public class JaxBConverter extends AbstractConverter {
 		final @Nonnull BetreuungspensumAbweichung abweichung
 	) {
 		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
+		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
+		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
 		abweichung.setStatus(jaxAbweichung.getStatus());
 
 		return abweichung;
@@ -2936,11 +2938,14 @@ public class JaxBConverter extends AbstractConverter {
 		final Betreuungspensum betreuungspensum) {
 
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
+		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
 		return betreuungspensum;
 	}
+
 
 	@Nonnull
 	private Set<JaxBetreuung> betreuungListToJax(@Nullable final Set<Betreuung> betreuungen) {
@@ -2980,6 +2985,8 @@ public class JaxBConverter extends AbstractConverter {
 		final BetreuungsmitteilungPensum betreuungspensum) {
 
 		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		betreuungspensum.setMonatlicheHauptmahlzeiten(jaxBetreuungspensum.getMonatlicheHauptmahlzeiten());
+		betreuungspensum.setMonatlicheNebenmahlzeiten(jaxBetreuungspensum.getMonatlicheNebenmahlzeiten());
 
 		return betreuungspensum;
 	}
@@ -2990,6 +2997,8 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum = new JaxBetreuungsmitteilungPensum();
 
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
+		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 
 		return jaxBetreuungspensum;
 	}
@@ -3105,7 +3114,11 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
 		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
 		jaxAbweichung.setVertraglichesPensum(abweichung.getVertraglichesPensum());
+		jaxAbweichung.setVertraglicheHauptmahlzeiten(abweichung.getVertraglicheHauptmahlzeiten());
+		jaxAbweichung.setVertraglicheNebenmahlzeiten(abweichung.getVertraglicheNebenmahlzeiten());
 		jaxAbweichung.setStatus(abweichung.getStatus());
+		jaxAbweichung.setMonatlicheHauptmahlzeiten(abweichung.getMonatlicheHauptmahlzeiten());
+		jaxAbweichung.setMonatlicheNebenmahlzeiten(abweichung.getMonatlicheNebenmahlzeiten());
 
 		return jaxAbweichung;
 	}
@@ -3378,6 +3391,8 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
+		jaxBetreuungspensum.setMonatlicheHauptmahlzeiten(betreuungspensum.getMonatlicheHauptmahlzeiten());
+		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 
 		return jaxBetreuungspensum;
 	}

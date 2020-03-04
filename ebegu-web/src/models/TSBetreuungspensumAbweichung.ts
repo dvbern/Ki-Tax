@@ -16,13 +16,15 @@
  */
 
 import {TSBetreuungspensumAbweichungStatus} from './enums/TSBetreuungspensumAbweichungStatus';
-import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
+import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 
-export class TSBetreuungspensumAbweichung extends TSAbstractDecimalPensumEntity {
+export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {
 
     private _status: TSBetreuungspensumAbweichungStatus;
     private _vertraglichesPensum: number;
     private _vertraglicheKosten: number;
+    private _vertraglicheHauptmahlzeiten: number;
+    private _vertraglicheNebenmahlzeiten: number;
 
     public constructor() {
         super();
@@ -50,5 +52,21 @@ export class TSBetreuungspensumAbweichung extends TSAbstractDecimalPensumEntity 
 
     public set vertraglicheKosten(value: number) {
         this._vertraglicheKosten = value;
+    }
+
+    public get vertraglicheHauptmahlzeiten(): number {
+        return this._vertraglicheHauptmahlzeiten;
+    }
+
+    public set vertraglicheHauptmahlzeiten(value: number) {
+        this._vertraglicheHauptmahlzeiten = value;
+    }
+
+    public get vertraglicheNebenmahlzeiten(): number {
+        return this._vertraglicheNebenmahlzeiten;
+    }
+
+    public set vertraglicheNebenmahlzeiten(value: number) {
+        this._vertraglicheNebenmahlzeiten = value;
     }
 }
