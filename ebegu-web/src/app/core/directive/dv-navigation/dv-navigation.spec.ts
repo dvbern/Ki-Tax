@@ -18,6 +18,7 @@ import {IHttpBackendService, IQService, IScope} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
+import {WizardSubStepManager} from '../../../../gesuch/service/wizardSubStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -37,6 +38,7 @@ describe('dvNavigation', () => {
 
     let navController: NavigatorController;
     let wizardStepManager: WizardStepManager;
+    let wizardSubStepManager: WizardSubStepManager;
     let $state: StateService;
     let $q: IQService;
     let $rootScope: IScope;
@@ -54,12 +56,13 @@ describe('dvNavigation', () => {
         const $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
         wizardStepManager = $injector.get('WizardStepManager');
+        wizardSubStepManager = $injector.get('WizardSubStepManager');
         $state = $injector.get('$state');
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
         $httpBackend = $injector.get('$httpBackend');
 
-        navController = new NavigatorController(wizardStepManager, $state, gesuchModelManager,
+        navController = new NavigatorController(wizardStepManager, wizardSubStepManager, $state, gesuchModelManager,
             $injector.get('$translate'), $injector.get('ErrorService'), $q, $timeout);
         navController.dvSave = () => {
             return $q.when({});

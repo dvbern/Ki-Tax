@@ -15,16 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {LogFactory} from '../../app/core/logging/LogFactory';
 import {TSWizardSubStepName} from '../../models/enums/TSWizardSubStepName';
 import {GesuchModelManager} from './gesuchModelManager';
-
-const LOG = LogFactory.createLog('WizardSubStepManager');
 
 export class WizardSubStepManager {
 
     public static $inject = ['GesuchModelManager'];
-
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
