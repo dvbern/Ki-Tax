@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource.schulamt;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -44,11 +45,9 @@ import ch.dvbern.ebegu.api.dtos.JaxExternalFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxExternalFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxExternalModul;
 import ch.dvbern.ebegu.api.dtos.JaxExternalRechnungsAdresse;
-import ch.dvbern.ebegu.api.enums.JaxExternalAntragstatus;
-import ch.dvbern.ebegu.api.enums.JaxExternalBetreuungsstatus;
+import ch.dvbern.ebegu.api.enums.JaxExternalBetreuungsangebotTyp;
 import ch.dvbern.ebegu.api.enums.JaxExternalErrorCode;
 import ch.dvbern.ebegu.api.enums.JaxExternalFerienName;
-import ch.dvbern.ebegu.api.enums.JaxExternalModulName;
 import ch.dvbern.ebegu.api.enums.JaxExternalTarifart;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
@@ -61,10 +60,10 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.SchulamtException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -75,6 +74,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -103,6 +103,9 @@ public class SchulamtBackendResource {
 
 	@Inject
 	private VerfuegungService verfuegungService;
+
+	@Inject
+	private ScolarisConverter converter;
 
 	@ApiOperation(value = "Gibt die Version von kiBon zurück. Kann als Testmethode verwendet werden, da ohne "
 		+ "Authentifizierung aufrufbar",
@@ -155,16 +158,24 @@ public class SchulamtBackendResource {
 
 			final AbstractAnmeldung betreuung = betreuungen.get(0);
 
-			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
+			// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten createDrittanwendungNotAllowedResponse()
+
+			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp = converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
+			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.TAGESSCHULE) {
 				// Betreuung ist Tagesschule
 				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
 				if (anmeldungTagesschule.isKeineDetailinformationen()) {
 					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
 					return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
 				}
-				return Response.ok(getAnmeldungTagesschule(anmeldungTagesschule)).build();
+				try {
+					JaxExternalAnmeldungTagesschule jaxResult = getAnmeldungTagesschule(anmeldungTagesschule);
+					return Response.ok(jaxResult).build();
+				} catch (SchulamtException e) {
+					return createNoResultsResponse("No Scolaris Modules found for " + bgNummer);
+				}
 			}
-			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.FERIENINSEL) {
+			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.FERIENINSEL) {
 				// Betreuung ist Ferieninsel
 				AnmeldungFerieninsel anmeldungFerieninsel = (AnmeldungFerieninsel) betreuung;
 				return Response.ok(getAnmeldungFerieninsel(anmeldungFerieninsel)).build();
@@ -178,19 +189,20 @@ public class SchulamtBackendResource {
 		}
 	}
 
+	@Nonnull
 	private JaxExternalAnmeldungTagesschule getAnmeldungTagesschule(AnmeldungTagesschule betreuung) {
 		Objects.requireNonNull(betreuung.getBelegungTagesschule());
 
 		List<JaxExternalModul> anmeldungen = new ArrayList<>();
-		betreuung.getBelegungTagesschule()
-			.getBelegungTagesschuleModule()
-			.forEach(modulTagesschule -> anmeldungen.add(new JaxExternalModul(modulTagesschule.getModulTagesschule()
-				.getWochentag(),
-				JaxExternalModulName.valueOf(modulTagesschule.getModulTagesschule().getModulTagesschuleGroup().getModulTagesschuleName().name())))
-			);
+			betreuung.getBelegungTagesschule()
+				.getBelegungTagesschuleModule()
+				.forEach(modulTagesschule -> anmeldungen.add(converter.modulToScolaris(modulTagesschule)));
+		if (CollectionUtils.isEmpty(anmeldungen)) {
+			throw new SchulamtException("No Modules found for " + betreuung.getBGNummer());
+		}
 		return new JaxExternalAnmeldungTagesschule(
 			betreuung.getBGNummer(),
-			JaxExternalBetreuungsstatus.valueOf(betreuung.getBetreuungsstatus().name()),
+			converter.betreuungsstatusToScolaris(betreuung.getBetreuungsstatus()),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
 			anmeldungen,
 			betreuung.getKind().getKindJA().getVorname(),
@@ -205,15 +217,13 @@ public class SchulamtBackendResource {
 			.getTage()
 			.forEach(belegungFerieninselTag -> datumList.add(belegungFerieninselTag.getTag()));
 
+		JaxExternalFerienName jaxExternalFerienName = converter.feriennameToScolaris(betreuung.getBelegungFerieninsel().getFerienname());
 		JaxExternalFerieninsel ferieninsel =
-			new JaxExternalFerieninsel(JaxExternalFerienName.valueOf(betreuung.getBelegungFerieninsel()
-				.getFerienname()
-				.name
-					()), datumList);
+			new JaxExternalFerieninsel(jaxExternalFerienName, datumList);
 
 		return new JaxExternalAnmeldungFerieninsel(
 			betreuung.getBGNummer(),
-			JaxExternalBetreuungsstatus.valueOf(betreuung.getBetreuungsstatus().name()),
+			converter.betreuungsstatusToScolaris(betreuung.getBetreuungsstatus()),
 			betreuung.getInstitutionStammdaten().getInstitution().getName(),
 			ferieninsel,
 			betreuung.getKind().getKindJA().getVorname(),
@@ -289,6 +299,8 @@ public class SchulamtBackendResource {
 			}
 			final Gesuch neustesGesuch = neustesGesuchOpt.get();
 
+			// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten createDrittanwendungNotAllowedResponse()
+
 			return getExternalFinanzielleSituationResponse(fallNummer, stichtag, neustesGesuch);
 
 		} catch (Exception e) {
@@ -361,12 +373,14 @@ public class SchulamtBackendResource {
 		Objects.requireNonNull(gesuchsteller1);
 		final GesuchstellerAdresse rechnungsAdresse = gesuchsteller1.extractEffectiveRechnungsAdresse(stichtag);
 		Objects.requireNonNull(rechnungsAdresse);
+		BigDecimal abzugFamGroesse = zeitabschnitt.getAbzugFamGroesse() != null
+			? zeitabschnitt.getAbzugFamGroesse() : BigDecimal.ZERO;
 		return new JaxExternalFinanzielleSituation(
 			fallNummer,
 			stichtag,
 			zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr(),
-			zeitabschnitt.getAbzugFamGroesse(),
-			JaxExternalAntragstatus.valueOf(neustesGesuch.getStatus().name()),
+			abzugFamGroesse,
+			converter.antragstatusToScolaris(neustesGesuch.getStatus()),
 			JaxExternalTarifart.DETAILBERECHNUNG,
 			new JaxExternalRechnungsAdresse(
 				gesuchsteller1.extractVorname(),
@@ -390,7 +404,7 @@ public class SchulamtBackendResource {
 		return new JaxExternalFinanzielleSituation(
 			fallNummer,
 			stichtag,
-			JaxExternalAntragstatus.valueOf(neustesGesuch.getStatus().name()),
+			converter.antragstatusToScolaris(neustesGesuch.getStatus()),
 			tarifart,
 			new JaxExternalRechnungsAdresse(
 				gesuchsteller1.extractVorname(),
@@ -436,6 +450,13 @@ public class SchulamtBackendResource {
 		return Response.status(Response.Status.BAD_REQUEST).entity(
 			new JaxExternalError(
 				JaxExternalErrorCode.TOO_MANY_RESULTS,
+				message)).build();
+	}
+
+	private Response createDrittanwendungNotAllowedResponse(String message) {
+		return Response.status(Response.Status.BAD_REQUEST).entity(
+			new JaxExternalError(
+				JaxExternalErrorCode.DRITTANWENDUNG_NOT_ALLOWED,
 				message)).build();
 	}
 }
