@@ -453,10 +453,10 @@ public class SchulamtBackendResource {
 				message)).build();
 	}
 
-	private Response createDrittanwendungNotAllowedResponse(String message) {
-		return Response.status(Response.Status.BAD_REQUEST).entity(
-			new JaxExternalError(
-				JaxExternalErrorCode.DRITTANWENDUNG_NOT_ALLOWED,
-				message)).build();
-	}
+//	private Response createDrittanwendungNotAllowedResponse(String message) {
+//		return Response.status(Response.Status.BAD_REQUEST).entity(
+//			new JaxExternalError(
+//				JaxExternalErrorCode.DRITTANWENDUNG_NOT_ALLOWED,
+//				message)).build();
+//	}
 }

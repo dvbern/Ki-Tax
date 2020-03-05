@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.errors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.ApplicationException;
 
 
@@ -27,14 +26,7 @@ public class SchulamtException extends RuntimeException {
 
 	private static final long serialVersionUID = 306424922900479199L;
 
-	private KibonLogLevel logLevel = KibonLogLevel.WARN; // Defaultmaessig loggen wir im WARN-level
-
 	public SchulamtException(@Nonnull String message) {
 		super(message);
-	}
-
-	public SchulamtException(@Nonnull KibonLogLevel logLevel, @Nullable String message) {
-		super(message);
-		this.logLevel = logLevel;
 	}
 }
