@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,6 +76,8 @@ import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -103,11 +106,13 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
@@ -204,6 +209,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private GesuchService self;
 	@Inject
 	private VerfuegungService verfuegungService;
+	@Inject
+	private EinstellungService einstellungService;
 
 
 	@Nonnull
@@ -239,6 +246,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			logInfo.append('\n').append("Es ist entweder das erste Gesuch überhaupt oder das erste in einem neuen "
 				+ "Dossier");
 			gesuchToPersist = createErstgesuch(gesuchToCreate, gesuchsperiodeOfGesuchToCreate, eingangsart, logInfo);
+			//  Jetzt wurde das Gesuch so kopiert, wie es in der "alten" Gemeinde war. Wir müssen
+			// sicherstellen, dass diese Daten auch in der neuen Gemeinde gültig sind
+			stripGesuchOfInvalidData(gesuchToPersist);
 		}
 		gesuchToPersist.setEingangsart(eingangsart);
 		gesuchToPersist.setStatus(initialStatus);
@@ -248,6 +258,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (regelnGueltigAb != null) {
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
+
 		authorizer.checkReadAuthorization(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
 
@@ -257,6 +268,32 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		LOG.info(logInfo.toString());
 		return persistedGesuch;
+	}
+
+	private void stripGesuchOfInvalidData(@Nonnull Gesuch gesuch) {
+		Einstellung freiwilligenarbeitEnabled = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		if (!freiwilligenarbeitEnabled.getValueAsBoolean()) {
+			stripFreiwilligenarbeitFromErwerbspensen(gesuch.getGesuchsteller1());
+			stripFreiwilligenarbeitFromErwerbspensen(gesuch.getGesuchsteller2());
+		}
+	}
+
+	private void stripFreiwilligenarbeitFromErwerbspensen(@Nullable GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer == null) {
+			return;
+		}
+		Set<ErwerbspensumContainer> validErwerbspensen = new HashSet<>();
+		for (ErwerbspensumContainer erwerbspensumContainer : gesuchstellerContainer.getErwerbspensenContainers()) {
+			if (erwerbspensumContainer.getErwerbspensumJA() != null &&
+					erwerbspensumContainer.getErwerbspensumJA().getTaetigkeit() != Taetigkeit.FREIWILLIGENARBEIT) {
+				validErwerbspensen.add(erwerbspensumContainer);
+			}
+		}
+		gesuchstellerContainer.setErwerbspensenContainers(validErwerbspensen);
 	}
 
 	@Nonnull
