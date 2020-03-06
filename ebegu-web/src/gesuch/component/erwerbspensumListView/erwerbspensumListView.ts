@@ -21,7 +21,6 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import {getTSTaetigkeit, getTSTaetigkeitWithFreiwilligenarbeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
@@ -122,7 +121,9 @@ export class ErwerbspensumListViewController
         if (this.erwerbspensenGS1 === undefined) {
             if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1 &&
                 this.gesuchModelManager.getGesuch().gesuchsteller1.erwerbspensenContainer) {
-                this.erwerbspensenGS1 = this.gesuchModelManager.getGesuch().gesuchsteller1.erwerbspensenContainer;
+                const gesuchsteller1 = this.gesuchModelManager.getGesuch().gesuchsteller1;
+                this.erwerbspensenGS1 = gesuchsteller1.erwerbspensenContainer;
+
             } else {
                 this.erwerbspensenGS1 = [];
             }
@@ -134,7 +135,9 @@ export class ErwerbspensumListViewController
         if (this.erwerbspensenGS2 === undefined) {
             if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2 &&
                 this.gesuchModelManager.getGesuch().gesuchsteller2.erwerbspensenContainer) {
-                this.erwerbspensenGS2 = this.gesuchModelManager.getGesuch().gesuchsteller2.erwerbspensenContainer;
+                const gesuchsteller2 = this.gesuchModelManager.getGesuch().gesuchsteller2;
+                this.erwerbspensenGS2 = gesuchsteller2.erwerbspensenContainer;
+
             } else {
                 this.erwerbspensenGS2 = [];
             }
