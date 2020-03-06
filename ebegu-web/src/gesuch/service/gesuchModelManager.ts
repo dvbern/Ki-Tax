@@ -212,13 +212,10 @@ export class GesuchModelManager {
      */
     public setGesuch(gesuch: TSGesuch): TSGesuch {
         this.setGesuchDaten(gesuch);
-
         this.loadGemeindeStammdaten().then(stammdaten => {
             this.gemeindeStammdaten = stammdaten;
             this.initGemeindeKonfiguration();
         });
-
-
         return gesuch;
     }
 

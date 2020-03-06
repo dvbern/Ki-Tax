@@ -492,6 +492,7 @@ export class NavigatorController implements IController {
     /**
      * Checks whether the button should be disable for the current conditions. By default (auch fuer Mutaionen) enabled
      */
+    // tslint:disable-next-line:cognitive-complexity
     public isNextButtonDisabled(): boolean {
         // Wenn das Gesuch disabled ist (z.B. in Rolle Mandant), darf man nur soweit navigieren, wie die Steps
         // besucht sind
