@@ -54,7 +54,6 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public $onInit(): void {
-        this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
         this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
             this.gesuchModelManager.getDossier().gemeinde.id,
@@ -71,15 +70,6 @@ export class DVFinanzielleSituationRequireController implements IController {
     public showFinanzielleSituationDeklarieren(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
             && !this.sozialhilfeBezueger;
-    }
-
-    public setFinanziellesituationRequired(): void {
-        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
-        // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
-        if (required !== this.finanzielleSituationRequired && this.gesuchModelManager.getGesuch()) {
-            this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
-        }
-        this.finanzielleSituationRequired = required;
     }
 
     public getMaxMassgebendesEinkommen(): string {

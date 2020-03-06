@@ -50,25 +50,4 @@ describe('finanzielleSituationRequire', () => {
         component = $componentController('dvFinanzielleSituationRequire', {}, bindings);
         expect(component).toBeDefined();
     });
-
-    describe('Test for boolean finanzielleSituationRequired', () => {
-        it('should be true when nothing is set', () => {
-            controller.setFinanziellesituationRequired();
-            expect(controller.finanzielleSituationRequired).toBe(false);
-        });
-        it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
-            () => {
-                controller.sozialhilfeBezueger = false;
-                controller.verguenstigungGewuenscht = true;
-                controller.setFinanziellesituationRequired();
-                expect(controller.finanzielleSituationRequired).toBe(true);
-            });
-        it('should be true when not sozialhilfeBezueger and not verguenstigungGewuenscht',
-            () => {
-                controller.sozialhilfeBezueger = false;
-                controller.verguenstigungGewuenscht = false;
-                controller.setFinanziellesituationRequired();
-                expect(controller.finanzielleSituationRequired).toBe(false);
-            });
-    });
 });

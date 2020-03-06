@@ -35,9 +35,11 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -135,6 +137,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
+		// Der FinSit-Status wird automatisch auf TRUE gesetzt, wenn der Benutzer keine FinSit angeben muss
+		boolean finSitRequired = EbeguUtil.isNullOrFalse(sozialhilfebezueger) && EbeguUtil.isNotNullAndTrue(verguenstigungGewuenscht);
+		if (gesuch.getFinSitStatus() == null && !finSitRequired) {
+			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+		}
 		return gesuch;
 	}
 
