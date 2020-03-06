@@ -215,7 +215,6 @@ import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -4032,7 +4031,7 @@ public class JaxBConverter extends AbstractConverter {
 	 */
 	private Set<BetreuungsangebotTyp> createAngeboteList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
-			.flatMap(kc -> kc.getBetreuungen().stream())
+			.flatMap(kc -> kc.getAllPlaetze().stream())
 			.map(b -> b.getInstitutionStammdaten().getBetreuungsangebotTyp())
 			.collect(Collectors.toSet());
 	}
