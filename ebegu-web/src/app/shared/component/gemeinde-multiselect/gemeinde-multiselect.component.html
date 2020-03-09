@@ -16,7 +16,7 @@
   -->
 
 
-<div *ngIf="allowedMap$ | async as allowedGemeinden" class="form-group">
+<div *ngIf="allowedMap$ | async as allowedGemeinden" [ngClass]="{'form-group': true, 'ie-workaround': isIE()}">
     <label *ngIf="showLabel" [for]="inputId" translate>GEMEINDEN</label>
     <mat-select class="form-control"
                 [ngModel]="selected"

@@ -169,6 +169,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			datumVon,
 			datumBis,
 			gesuchPeriodIdParam,
+			null,
 			inklBgGesuche,
 			inklMischGesuche,
 			inklTsGesuche,
@@ -188,6 +189,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
 		@Nullable String gesuchPeriodIdParam,
+		@Nullable String stammdatenIdParam,
 		boolean inklBgGesuche,
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
@@ -225,6 +227,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		jobParameters.setProperty(LANGUAGE, locale.getLanguage());
 
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
+		setPropertyIfPresent(jobParameters, WorkJobConstants.STAMMDATEN_ID_PARAM, stammdatenIdParam);
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
 		jobOperator.getJobNames();
 		workJob.setStatus(BatchJobStatus.REQUESTED);
@@ -280,6 +283,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			null,
 			null,
+			null,
 			false,
 			false,
 			false,
@@ -287,6 +291,33 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			doSave,
 			betragProKind,
+			locale);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		@Nonnull String stammdatenId,
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Locale locale) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			null,
+			null,
+			gesuchsperiodeId,
+			stammdatenId,
+			false,
+			false,
+			false,
+			false,
+			null,
+			false,
+			BigDecimal.ZERO,
 			locale);
 	}
 

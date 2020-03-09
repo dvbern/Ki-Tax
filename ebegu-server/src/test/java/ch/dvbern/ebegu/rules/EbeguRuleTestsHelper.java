@@ -201,6 +201,17 @@ public final class EbeguRuleTestsHelper {
 		int pensum,
 		BigDecimal monatlicheBetreuungskosten
 	) {
+		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, 0, 0);
+	}
+
+	public static Betreuung createBetreuungWithPensum(
+		LocalDate von, LocalDate bis,
+		BetreuungsangebotTyp angebot,
+		int pensum,
+		BigDecimal monatlicheBetreuungskosten,
+		Integer monatlicheHauptmahlzeiten,
+		Integer monatlicheNebenmahlzeiten
+	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
@@ -212,6 +223,8 @@ public final class EbeguRuleTestsHelper {
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(pensum));
 		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(monatlicheHauptmahlzeiten);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(monatlicheNebenmahlzeiten);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 
 		ErweiterteBetreuungContainer container = TestDataUtil.createDefaultErweiterteBetreuungContainer();

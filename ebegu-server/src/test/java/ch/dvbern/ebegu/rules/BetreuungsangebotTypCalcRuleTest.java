@@ -86,6 +86,8 @@ public class BetreuungsangebotTypCalcRuleTest {
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(80));
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(0);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(0);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		if (betreuungsangebotTyp.isTagesschule()) {
 			AnmeldungTagesschule anmeldung = TestDataUtil.createAnmeldungTagesschuleWithModules(betreuung.getKind(),
