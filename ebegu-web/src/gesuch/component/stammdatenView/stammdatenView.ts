@@ -154,9 +154,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.isLastVerfuegtesGesuch = this.gesuchModelManager.isNeuestesGesuch();
     }
 
-    public preSave(): IPromise<TSGesuchstellerContainer>{
+    public preSave(): IPromise<TSGesuchstellerContainer> {
         if (this.areEmailTelefonEditable() && this.isGesuchReadonly()) {
-            let properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch())
+            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
             if (this.gesuchstellerNumber === 2) {
                 properties.mailGS2 = this.getModelJA().mail;
                 properties.mobileGS2 = this.getModelJA().mobile;
@@ -176,9 +176,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 return g.gesuchsteller1;
             });
 
-        } else {
-            return this.save();
         }
+
+        return this.save();
     }
 
     public save(): IPromise<TSGesuchstellerContainer> {

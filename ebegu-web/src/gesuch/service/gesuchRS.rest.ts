@@ -266,11 +266,9 @@ export class GesuchRS implements IEntityRS {
             });
     }
 
-    public updateAlwaysEditableProperties(gesuch: TSGesuch, properties: any): IPromise<TSGesuch> {
-        return this.$http.put(this.serviceURL+'/updateAlwaysEditableProperties', properties).then(response => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+    public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
+        return this.$http.put(this.serviceURL + '/updateAlwaysEditableProperties', properties).then(response => {
+            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
     }
 }

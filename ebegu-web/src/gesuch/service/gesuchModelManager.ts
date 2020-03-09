@@ -1629,7 +1629,7 @@ export class GesuchModelManager {
     }
 
     public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
-        return this.gesuchRS.updateAlwaysEditableProperties(this.gesuch, properties)
+        return this.gesuchRS.updateAlwaysEditableProperties(properties)
             .then(gesuchResponse => {
                 this.setGesuch(gesuchResponse);
                 return gesuchResponse;

@@ -273,7 +273,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
     public preSave():  IPromise<TSGesuch> {
         if (this.areZahlungsdatenEditable() && this.isGesuchReadonly()) {
-            let properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch())
+            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
 
             properties.keineMahlzeitenverguenstigungBeantragt = this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
             properties.iban = this.model.zahlungsinformationen.iban;
@@ -282,8 +282,8 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             properties.zahlungsadresse = this.model.zahlungsinformationen.zahlungsadresse;
 
             return this.gesuchModelManager.updateAlwaysEditableProperties(properties);
-        } else {
-            return this.confirmAndSave();
         }
+
+        return this.confirmAndSave();
     }
 }
