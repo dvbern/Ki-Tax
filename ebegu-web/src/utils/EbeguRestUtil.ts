@@ -114,6 +114,8 @@ import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSSozialhilfeZeitraum} from '../models/TSSozialhilfeZeitraum';
+import {TSSozialhilfeZeitraumContainer} from '../models/TSSozialhilfeZeitraumContainer';
 import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
@@ -632,6 +634,9 @@ export class EbeguRestUtil {
             containerTS.familiensituationErstgesuch =
                 this.parseFamiliensituation(containerTS.familiensituationErstgesuch
                     || new TSFamiliensituation(), containerFromServer.familiensituationErstgesuch);
+            containerTS.sozialhilfeZeitraumContainers =
+                this.parseSozialhilfeZeitraumContainers(containerFromServer.sozialhilfeZeitraumContainers);
+
             return containerTS;
         }
         return undefined;
@@ -656,8 +661,70 @@ export class EbeguRestUtil {
                 restFamiliensituationContainer.familiensituationGS =
                     this.familiensituationToRestObject({}, familiensituationContainer.familiensituationGS);
             }
+            restFamiliensituationContainer.sozialhilfeZeitraumContainers = [];
+            if (Array.isArray(familiensituationContainer.sozialhilfeZeitraumContainers)) {
+                restFamiliensituationContainer.sozialhilfeZeitraumContainers =
+                    familiensituationContainer.sozialhilfeZeitraumContainers.map(szc => this.sozialhilfeZeitraumContainerToRestObject({}, szc));
+            }
 
             return restFamiliensituationContainer;
+        }
+        return undefined;
+    }
+
+    public sozialhilfeZeitraumContainerToRestObject(
+        restSozialhilfeZeitraumContainer: any,
+        sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer,
+    ): any {
+        if (sozialhilfeZeitraumContainer) {
+            this.abstractMutableEntityToRestObject(restSozialhilfeZeitraumContainer, sozialhilfeZeitraumContainer);
+            restSozialhilfeZeitraumContainer.sozialhilfeZeitraumGS =
+                this.sozialhilfeZeitraumToRestObject({}, sozialhilfeZeitraumContainer.sozialhilfeZeitraumGS);
+            restSozialhilfeZeitraumContainer.sozialhilfeZeitraumJA =
+                this.sozialhilfeZeitraumToRestObject({}, sozialhilfeZeitraumContainer.sozialhilfeZeitraumJA);
+            return restSozialhilfeZeitraumContainer;
+        }
+        return undefined;
+    }
+
+    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any, sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
+        if (sozialhilfeZeitraum) {
+            this.abstractDateRangeEntityToRestObject(restSozialhilfeZeitraum, sozialhilfeZeitraum);
+            return restSozialhilfeZeitraum;
+        }
+        return undefined;
+    }
+
+    private parseSozialhilfeZeitraumContainers(data: Array<any>): TSSozialhilfeZeitraumContainer[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseSozialhilfeZeitraumContainer(new TSSozialhilfeZeitraumContainer(), item))
+            : [this.parseSozialhilfeZeitraumContainer(new TSSozialhilfeZeitraumContainer(), data)];
+    }
+
+    public parseSozialhilfeZeitraumContainer(
+        sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer,
+        sozialhilfeZeitraumContFromServer: any,
+    ): TSSozialhilfeZeitraumContainer {
+        if (sozialhilfeZeitraumContFromServer) {
+            this.parseAbstractMutableEntity(sozialhilfeZeitraumContainer, sozialhilfeZeitraumContFromServer);
+            sozialhilfeZeitraumContainer.sozialhilfeZeitraumGS =
+                this.parseSozialhilfeZeitraum(sozialhilfeZeitraumContainer.sozialhilfeZeitraumGS || new TSSozialhilfeZeitraum(),
+                    sozialhilfeZeitraumContFromServer.sozialhilfeZeitraumGS);
+            sozialhilfeZeitraumContainer.sozialhilfeZeitraumJA =
+                this.parseSozialhilfeZeitraum(sozialhilfeZeitraumContainer.sozialhilfeZeitraumJA || new TSSozialhilfeZeitraum(),
+                    sozialhilfeZeitraumContFromServer.sozialhilfeZeitraumJA);
+            return sozialhilfeZeitraumContainer;
+        }
+        return undefined;
+    }
+
+    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum, sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
+        if (sozialhilfeZeitraumFromServer) {
+            this.parseDateRangeEntity(sozialhilfeZeitraum, sozialhilfeZeitraumFromServer);
+            return sozialhilfeZeitraum;
         }
         return undefined;
     }
