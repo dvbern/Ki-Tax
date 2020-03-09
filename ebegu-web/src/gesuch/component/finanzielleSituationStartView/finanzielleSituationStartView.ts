@@ -119,7 +119,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         if (!this.form.$dirty) {
-            if (this.updateStepDueToOnlyFerieninsel()) {
+            if (this.updateStepDueToOnlyFerieninsel() || this.updateStepDueToSozialhilfeOhneBenoetigteZeitraeume()) {
                 return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
                     TSWizardStepStatus.OK).then(() => {
                     return this.gesuchModelManager.getGesuch();
@@ -147,6 +147,17 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         return this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG)
             && this.gesuchModelManager.getGesuch().areThereOnlyFerieninsel();
+    }
+
+    /**
+     * Step ist noch in Bearbeitung, es handelt sich aber um einen Sozialhilfebezüger in einer Gemeinde
+     * in welcher die Zeiträume nicht angegeben werden müssen -> direkt auf OK setzen
+     */
+    private updateStepDueToSozialhilfeOhneBenoetigteZeitraeume(): boolean {
+        return this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION,
+            TSWizardStepStatus.IN_BEARBEITUNG)
+            && this.gesuchModelManager.isSozialhilfeBezueger()
+            && !this.gesuchModelManager.isSozialhilfeBezuegerZeitraeumeRequired();
     }
 
     public finanzielleSituationTurnedNotRequired(): boolean {

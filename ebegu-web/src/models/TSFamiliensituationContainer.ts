@@ -15,12 +15,13 @@
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFamiliensituation} from './TSFamiliensituation';
+import {TSSozialhilfeZeitraumContainer} from './TSSozialhilfeZeitraumContainer';
 
 export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
-
     private _familiensituationJA: TSFamiliensituation;
     private _familiensituationGS: TSFamiliensituation;
     private _familiensituationErstgesuch: TSFamiliensituation;
+    private _sozialhilfeZeitraumContainers: Array<TSSozialhilfeZeitraumContainer>;
 
     public constructor() {
         super();
@@ -48,5 +49,13 @@ export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
 
     public set familiensituationErstgesuch(value: TSFamiliensituation) {
         this._familiensituationErstgesuch = value;
+    }
+
+    public get sozialhilfeZeitraumContainers(): Array<TSSozialhilfeZeitraumContainer> {
+        return this._sozialhilfeZeitraumContainers;
+    }
+
+    public set sozialhilfeZeitraumContainers(value: Array<TSSozialhilfeZeitraumContainer>) {
+        this._sozialhilfeZeitraumContainers = value;
     }
 }

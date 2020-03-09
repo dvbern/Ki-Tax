@@ -112,7 +112,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull ReportVorlage workJobType,
 		@Nonnull LocalDate dateFrom,
 		@Nonnull LocalDate dateTo,
-		@Nullable String gesuchPeriodeID,
+		@Nullable String gesuchPeriodeId,
 		@Nullable String zahlungsauftragId,
 		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
@@ -121,11 +121,11 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 		case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
 		case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
-			return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
+			return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-			return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
+			return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_KANTON: {
 			return this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
@@ -141,20 +141,20 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
-			Objects.requireNonNull(gesuchPeriodeID);
-			return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID, locale);
+			Objects.requireNonNull(gesuchPeriodeId);
+			return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-			return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID, locale);
+			return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_KINDER: {
-			return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID, locale);
+			return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER: {
 			return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
-			Objects.requireNonNull(gesuchPeriodeID);
+			Objects.requireNonNull(gesuchPeriodeId);
 			boolean inklBgGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
 			boolean inklMischGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
 			boolean inklTsGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
@@ -163,7 +163,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			UploadFileInfo uploadFileInfo = reportMassenversandService.generateExcelReportMassenversand(
 				dateFrom,
 				dateTo,
-				gesuchPeriodeID,
+				gesuchPeriodeId,
 				inklBgGesuche,
 				inklMischGesuche,
 				inklTsGesuche,
@@ -183,6 +183,11 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		}
 		case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
 			return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
+		}
+		case VORLAGE_REPORT_TAGESSCHULE_OHNE_FINSIT: {
+			Objects.requireNonNull(gesuchPeriodeId);
+			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
+			return this.reportService.generateExcelReportTagesschuleOhneFinSit(stammdatenId, gesuchPeriodeId, locale);
 		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
