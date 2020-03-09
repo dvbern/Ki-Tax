@@ -233,7 +233,6 @@ public class Familiensituation extends AbstractMutableEntity {
 		return false;
 	}
 
-	// TODO KIBON-1042
 	@Nonnull
 	public Familiensituation copyFamiliensituation(@Nonnull Familiensituation target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
@@ -245,11 +244,25 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
+			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
+			target.setIban(this.getIban());
+			target.setKontoinhaber(this.getKontoinhaber());
+			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			if (this.getZahlungsadresse() != null) {
+				target.setZahlungsadresse(this.getZahlungsadresse().copyAdresse(new Adresse(), copyType));
+			}
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
+			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
+			target.setIban(this.getIban());
+			target.setKontoinhaber(this.getKontoinhaber());
+			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			if (this.getZahlungsadresse() != null) {
+				target.setZahlungsadresse(this.getZahlungsadresse().copyAdresse(new Adresse(), copyType));
+			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

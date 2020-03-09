@@ -155,6 +155,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public preSave(): IPromise<TSGesuchstellerContainer> {
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+
         if (this.areEmailTelefonEditable() && this.isGesuchReadonly()) {
             const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
             if (this.gesuchstellerNumber === 2) {

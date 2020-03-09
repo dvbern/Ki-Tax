@@ -20,6 +20,7 @@ import {ListResourceRS} from '../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSAdresse} from '../../../models/TSAdresse';
 import {TSFinanzielleSituation} from '../../../models/TSFinanzielleSituation';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../models/TSGesuch';
@@ -283,6 +284,10 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public preSave():  IPromise<TSGesuch> {
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+
         if (this.areZahlungsdatenEditable() && this.isGesuchReadonly()) {
             const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
 
@@ -290,11 +295,19 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             properties.iban = this.model.zahlungsinformationen.iban;
             properties.kontoinhaber = this.model.zahlungsinformationen.kontoinhaber;
             properties.abweichendeZahlungsadresse = this.model.zahlungsinformationen.abweichendeZahlungsadresse;
-            properties.zahlungsadresse = this.model.zahlungsinformationen.zahlungsadresse;
+            properties.zahlungsadresse = this.ebeguRestUtil.adresseToRestObject({}, this.model.zahlungsinformationen.zahlungsadresse);
 
             return this.gesuchModelManager.updateAlwaysEditableProperties(properties);
         }
 
         return this.confirmAndSave();
+    }
+
+    public changeAbweichendeZahlungsadresse(): void {
+        if (this.model.zahlungsinformationen.abweichendeZahlungsadresse) {
+            this.model.zahlungsinformationen.zahlungsadresse = new TSAdresse();
+        } else {
+            this.model.zahlungsinformationen.zahlungsadresse = null;
+        }
     }
 }

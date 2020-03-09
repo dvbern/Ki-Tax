@@ -176,6 +176,7 @@
                             <div class="col-sm-12 dv-input-container-medium">
                                 <div class=" checkbox">
                                     <md-checkbox ng-model="vm.model.zahlungsinformationen.abweichendeZahlungsadresse"
+                                                 ng-change="vm.changeAbweichendeZahlungsadresse()"
                                                  name="abweichendeZahlungsadresse" id="abweichendeZahlungsadresse"
                                                  aria-label="{{'MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE'|translate}}">
                                         <span data-translate="MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE"></span>
@@ -259,7 +260,7 @@
                                         <div class="dv-select-style">
                                             <select name="adresseLand" id="adresseLand"
                                                     ng-model="vm.model.zahlungsinformationen.zahlungsadresse.land"
-                                                    ng-options="land.code as land.name for land in vm.laenderList | orderBy: 'name'"
+                                                    ng-options="land.code as land.translationKey | translate for land in vm.laenderList | orderBy: 'name'"
                                                     class="form-control"
                                                     required>
                                             </select>
