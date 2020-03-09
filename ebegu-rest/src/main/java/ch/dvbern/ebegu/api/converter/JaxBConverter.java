@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAlwaysEditableProperties;
 import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
@@ -669,9 +670,6 @@ public class JaxBConverter extends AbstractConverter {
 		// muessen wir sicher stellen, dass alle relevanten Felder wieder auf null gesetzt werden.
 		// Falls er eine wuenscht, muss er mindestens die IBAN Nummer sowie den Kontoinhaber ausfuellen.
 		if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
-			requireNonNull(familiensituationJAXP.getIban());
-			requireNonNull(familiensituationJAXP.getKontoinhaber());
-
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
 			if (familiensituationJAXP.getIban() != null) {
 				familiensituation.setIban(new IBAN(familiensituationJAXP.getIban()));
@@ -4804,6 +4802,58 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxLastenausgleich;
 	}
 
+	public void alwaysEditablePropertiesToGesuch(@Nonnull final JaxAlwaysEditableProperties properties,
+		@Nonnull Gesuch gesuch) {
+
+
+		// fields on GS1
+		Gesuchsteller gs1 = gesuch.extractGesuchsteller1().orElseThrow(() -> new EbeguEntityNotFoundException(
+			"alwaysEditablePropertiesToGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		gs1.setMail(properties.getMailGS1());
+		gs1.setMobile(properties.getMobileGS1());
+		gs1.setTelefon(properties.getTelefonGS1());
+		gs1.setTelefonAusland(properties.getTelefonAuslandGS1());
+
+		// fields on GS2
+		if (gesuch.getGesuchsteller2() != null) {
+
+			Gesuchsteller gs2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
+
+			gs2.setMail(properties.getMailGS2());
+			gs2.setMobile(properties.getMobileGS2());
+			gs2.setTelefon(properties.getTelefonGS2());
+			gs2.setTelefonAusland(properties.getTelefonAuslandGS2());
+
+		}
+
+		// fields on Familiensituation
+		Familiensituation famSit = gesuch.extractFamiliensituation();
+
+		if (famSit != null) {
+			famSit.setKeineMahlzeitenverguenstigungBeantragt(properties.isKeineMahlzeitenverguenstigungBeantragt());
+
+			if (properties.isKeineMahlzeitenverguenstigungBeantragt()) {
+				properties.setIban(null);
+				properties.setKontoinhaber(null);
+				properties.setAbweichendeZahlungsadresse(false);
+				properties.setZahlungsadresse(null);
+			}
+
+			if (properties.getIban() != null) {
+				famSit.setIban(new IBAN(properties.getIban()));
+			} else {
+				famSit.setIban(null);
+			}
+			famSit.setKontoinhaber(properties.getKontoinhaber());
+			famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
+
+			if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
+				famSit.setZahlungsadresse(this.adresseToEntity(properties.getZahlungsadresse(),
+					famSit.getZahlungsadresse() == null ? new Adresse() : famSit.getZahlungsadresse()));
+			}
+		}
+	}
 
 	public void lastenausgleichGrundlagenToEntity() {
 		throw new EbeguFingerWegException("lastenausgleichGrundlagenToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);

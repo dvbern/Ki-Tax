@@ -1627,4 +1627,12 @@ export class GesuchModelManager {
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
     }
+
+    public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
+        return this.gesuchRS.updateAlwaysEditableProperties(this.gesuch, properties)
+            .then(gesuchResponse => {
+                this.setGesuch(gesuchResponse);
+                return gesuchResponse;
+            });
+    }
 }

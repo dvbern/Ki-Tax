@@ -22,12 +22,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -40,6 +42,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -97,6 +100,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
+		boolean keineMahlzeitenverguenstigungGewuenscht,
+		@Nullable String iban,
+		@Nullable String kontoinhaber,
+		boolean abweichendeZahlungsadresse,
+		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId
 	) {
 		// Die eigentliche FinSit speichern
@@ -108,6 +116,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			sozialhilfebezueger,
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
+			keineMahlzeitenverguenstigungGewuenscht,
+			iban,
+			kontoinhaber,
+			abweichendeZahlungsadresse,
+			zahlungsadresse,
 			gesuchId
 		);
 
@@ -125,6 +138,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
+		boolean keineMahlzeitenverguenstigungGewuenscht,
+		@Nullable String iban,
+		@Nullable String kontoinhaber,
+		boolean abweichendeZahlungsadresse,
+		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId
 	) {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
@@ -135,6 +153,13 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
+		if (iban != null) {
+			familiensituation.setIban(new IBAN(iban));
+		}
+		familiensituation.setKontoinhaber(kontoinhaber);
+		familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
+		familiensituation.setZahlungsadresse(zahlungsadresse);
 		return gesuch;
 	}
 

@@ -16,11 +16,15 @@
 import {IComponentOptions} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ListResourceRS} from '../../../app/core/service/listResourceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituation} from '../../../models/TSFinanzielleSituation';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../models/TSGesuch';
+import {TSLand} from '../../../models/types/TSLand';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -52,6 +56,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         '$scope',
         '$timeout',
         'DvDialog',
+        'AuthServiceRS',
+        'EbeguRestUtil',
+        'ListResourceRS',
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -59,6 +66,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     public areThereOnlyFerieninsel: boolean;
     public allowedRoles: ReadonlyArray<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
+    public laenderList: TSLand[];
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -69,6 +77,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         $scope: IScope,
         $timeout: ITimeoutService,
         private readonly dvDialog: DvDialog,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly ebeguRestUtil: EbeguRestUtil,
+        listResourceRS: ListResourceRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -76,6 +87,10 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             $scope,
             TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
+
+        listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
+            this.laenderList = laenderList;
+        });
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             null);
@@ -247,5 +262,28 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
     public isZahlungsdatenRequired(): boolean {
         return this.isMahlzeitenverguenstigungEnabled() && !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+    }
+
+    public areZahlungsdatenEditable(): boolean {
+        return this.gesuchModelManager.isNeuestesGesuch()
+        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()) ?
+            true :
+            !this.isGesuchReadonly();
+    }
+
+    public preSave():  IPromise<TSGesuch> {
+        if (this.areZahlungsdatenEditable() && this.isGesuchReadonly()) {
+            let properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch())
+
+            properties.keineMahlzeitenverguenstigungBeantragt = this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+            properties.iban = this.model.zahlungsinformationen.iban;
+            properties.kontoinhaber = this.model.zahlungsinformationen.kontoinhaber;
+            properties.abweichendeZahlungsadresse = this.model.zahlungsinformationen.abweichendeZahlungsadresse;
+            properties.zahlungsadresse = this.model.zahlungsinformationen.zahlungsadresse;
+
+            return this.gesuchModelManager.updateAlwaysEditableProperties(properties);
+        } else {
+            return this.confirmAndSave();
+        }
     }
 }
