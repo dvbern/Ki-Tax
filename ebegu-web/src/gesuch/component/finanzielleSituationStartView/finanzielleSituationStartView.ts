@@ -295,7 +295,8 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             properties.iban = this.model.zahlungsinformationen.iban;
             properties.kontoinhaber = this.model.zahlungsinformationen.kontoinhaber;
             properties.abweichendeZahlungsadresse = this.model.zahlungsinformationen.abweichendeZahlungsadresse;
-            properties.zahlungsadresse = this.ebeguRestUtil.adresseToRestObject({}, this.model.zahlungsinformationen.zahlungsadresse);
+            properties.zahlungsadresse =
+                this.ebeguRestUtil.adresseToRestObject({}, this.model.zahlungsinformationen.zahlungsadresse);
 
             return this.gesuchModelManager.updateAlwaysEditableProperties(properties);
         }
@@ -304,10 +305,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public changeAbweichendeZahlungsadresse(): void {
-        if (this.model.zahlungsinformationen.abweichendeZahlungsadresse) {
-            this.model.zahlungsinformationen.zahlungsadresse = new TSAdresse();
-        } else {
-            this.model.zahlungsinformationen.zahlungsadresse = null;
-        }
+        this.model.zahlungsinformationen.zahlungsadresse =
+            this.model.zahlungsinformationen.abweichendeZahlungsadresse ? new TSAdresse() : null;
     }
 }
