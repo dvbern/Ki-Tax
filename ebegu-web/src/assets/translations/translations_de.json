@@ -1907,7 +1907,7 @@
     "SOZIALHILFEZEITRAUM_LIST_TITLE": "Geben Sie hier die Zeiträume an, in welchen Sie Sozialhilfe bezogen haben oder beziehen werden:",
     "SOZIALHILFEZEITRAUM_DELETE": "Sozialhilfe-Zeitraum löschen",
     "NO_SOZIALHILFEZEITRAUM_DATA": "Keine Daten zur Sozialhilfe vorhanden",
-    "SOZIALHILFEZEITRAUM_LOESCHEN": "Wollen Sie der Sozialhilfe-Zeitraum wirklich löschen?",
+    "SOZIALHILFEZEITRAUM_LOESCHEN": "Wollen Sie den Sozialhilfe-Zeitraum wirklich löschen?",
     "SOZIALHILFEZEITRAUM_TITLE": "Sozialhilfe erfassen",
     "ZEITRAUM_HINZUFUEGEN": "Zeitraum hinzufügen",
     "MONATLICHE_HAUPTMAHLZEITEN": "Anzahl monatliche Hauptmahlzeiten",
