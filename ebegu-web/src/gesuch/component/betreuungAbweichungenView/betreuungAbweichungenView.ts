@@ -203,7 +203,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             this.model.betreuungspensumAbweichungen.forEach(a => {
                 a.monatlicheNebenmahlzeiten = 0;
                 a.monatlicheHauptmahlzeiten = 0;
-            })
+            });
         }
 
         this.betreuungRS.saveAbweichungen(this.model).then(result => {
