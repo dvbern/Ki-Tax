@@ -38,11 +38,14 @@ public class JaxAlwaysEditableProperties {
 	private String mailGS1;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
+	@Nullable
 	private String mobileGS1;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
+	@Nullable
 	private String telefonGS1;
 
+	@Nullable
 	private String telefonAuslandGS1;
 
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
@@ -51,11 +54,14 @@ public class JaxAlwaysEditableProperties {
 	private String mailGS2;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
+	@Nullable
 	private String mobileGS2;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
+	@Nullable
 	private String telefonGS2;
 
+	@Nullable
 	private String telefonAuslandGS2;
 
 	private boolean keineMahlzeitenverguenstigungBeantragt;
@@ -88,27 +94,30 @@ public class JaxAlwaysEditableProperties {
 		this.mailGS1 = mailGS1;
 	}
 
+	@Nullable
 	public String getMobileGS1() {
 		return mobileGS1;
 	}
 
-	public void setMobileGS1(String mobileGS1) {
+	public void setMobileGS1(@Nullable String mobileGS1) {
 		this.mobileGS1 = mobileGS1;
 	}
 
+	@Nullable
 	public String getTelefonGS1() {
 		return telefonGS1;
 	}
 
-	public void setTelefonGS1(String telefonGS1) {
+	public void setTelefonGS1(@Nullable String telefonGS1) {
 		this.telefonGS1 = telefonGS1;
 	}
 
+	@Nullable
 	public String getTelefonAuslandGS1() {
 		return telefonAuslandGS1;
 	}
 
-	public void setTelefonAuslandGS1(String telefonAuslandGS1) {
+	public void setTelefonAuslandGS1(@Nullable String telefonAuslandGS1) {
 		this.telefonAuslandGS1 = telefonAuslandGS1;
 	}
 
@@ -121,27 +130,30 @@ public class JaxAlwaysEditableProperties {
 		this.mailGS2 = mailGS2;
 	}
 
+	@Nullable
 	public String getMobileGS2() {
 		return mobileGS2;
 	}
 
-	public void setMobileGS2(String mobileGS2) {
+	public void setMobileGS2(@Nullable String mobileGS2) {
 		this.mobileGS2 = mobileGS2;
 	}
 
+	@Nullable
 	public String getTelefonGS2() {
 		return telefonGS2;
 	}
 
-	public void setTelefonGS2(String telefonGS2) {
+	public void setTelefonGS2(@Nullable String telefonGS2) {
 		this.telefonGS2 = telefonGS2;
 	}
 
+	@Nullable
 	public String getTelefonAuslandGS2() {
 		return telefonAuslandGS2;
 	}
 
-	public void setTelefonAuslandGS2(String telefonAuslandGS2) {
+	public void setTelefonAuslandGS2(@Nullable String telefonAuslandGS2) {
 		this.telefonAuslandGS2 = telefonAuslandGS2;
 	}
 

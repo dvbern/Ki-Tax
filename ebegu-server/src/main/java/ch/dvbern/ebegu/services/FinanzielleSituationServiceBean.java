@@ -157,9 +157,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
-		if (iban != null) {
-			familiensituation.setIban(new IBAN(iban));
-		}
+		familiensituation.setIban(new IBAN(iban));
 		familiensituation.setKontoinhaber(kontoinhaber);
 		familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
 		familiensituation.setZahlungsadresse(zahlungsadresse);

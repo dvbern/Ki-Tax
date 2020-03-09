@@ -15,9 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
 
-export class TSZahlungsinformationen extends TSAdresse {
+export class TSZahlungsinformationen extends TSAbstractEntity {
 
     private _iban: string;
     private _kontoinhaber: string;
