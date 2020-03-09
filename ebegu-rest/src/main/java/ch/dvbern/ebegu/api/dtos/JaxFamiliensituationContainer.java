@@ -15,6 +15,10 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,6 +37,9 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 	private JaxFamiliensituation familiensituationGS;
 
 	private JaxFamiliensituation familiensituationErstgesuch;
+
+	@Nullable
+	private List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = new ArrayList<>();
 
 	public JaxFamiliensituation getFamiliensituationJA() {
 		return familiensituationJA;
@@ -56,5 +63,14 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 
 	public void setFamiliensituationErstgesuch(JaxFamiliensituation familiensituationErstgesuch) {
 		this.familiensituationErstgesuch = familiensituationErstgesuch;
+	}
+
+	@Nullable
+	public List<JaxSozialhilfeZeitraumContainer> getSozialhilfeZeitraumContainers() {
+		return sozialhilfeZeitraumContainers;
+	}
+
+	public void setSozialhilfeZeitraumContainers(@Nullable List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers) {
+		this.sozialhilfeZeitraumContainers = sozialhilfeZeitraumContainers;
 	}
 }

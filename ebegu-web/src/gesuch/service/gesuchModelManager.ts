@@ -1624,6 +1624,16 @@ export class GesuchModelManager {
         return this.authServiceRS.hasMandantAngebotFI();
     }
 
+    public isSozialhilfeBezueger(): boolean {
+        return this.getFamiliensituation().sozialhilfeBezueger;
+    }
+
+    public isSozialhilfeBezuegerZeitraeumeRequired(): boolean {
+        return this.getFamiliensituation().sozialhilfeBezueger
+            && (this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
+                || this.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled);
+    }
+
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
     }

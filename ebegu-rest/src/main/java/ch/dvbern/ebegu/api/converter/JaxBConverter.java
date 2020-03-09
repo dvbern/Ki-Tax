@@ -115,6 +115,8 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
@@ -200,6 +202,8 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
@@ -216,7 +220,6 @@ import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -247,6 +250,7 @@ import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
+import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -333,6 +337,8 @@ public class JaxBConverter extends AbstractConverter {
 	private Persistence persistence;
 	@Inject
 	private PensumFachstelleService pensumFachstelleService;
+	@Inject
+	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 
 	public JaxBConverter() {
 		//nop
@@ -752,6 +758,11 @@ public class JaxBConverter extends AbstractConverter {
 				containerJAX.getFamiliensituationErstgesuch(),
 				famsitToMergeWith));
 		}
+		if (containerJAX.getSozialhilfeZeitraumContainers() != null) {
+			sozialhilfeZeitraumContainersToEntity(containerJAX.getSozialhilfeZeitraumContainers(),
+					container.getSozialhilfeZeitraumContainers());
+		}
+
 		return container;
 	}
 
@@ -810,6 +821,9 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedFamiliensituation.getFamiliensituationErstgesuch() != null) {
 			jaxfc.setFamiliensituationErstgesuch(familiensituationToJAX(persistedFamiliensituation.getFamiliensituationErstgesuch()));
 		}
+
+		jaxfc.setSozialhilfeZeitraumContainers(sozialhilfeZeitraumContainersToJAX(persistedFamiliensituation.getSozialhilfeZeitraumContainers()));
+
 		return jaxfc;
 	}
 
@@ -1735,7 +1749,8 @@ public class JaxBConverter extends AbstractConverter {
 				.filter(existingEinstellung -> existingEinstellung.getId().equals(jaxEinstellung.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
 				.orElseGet(EinstellungenTagesschule::new);
-			final EinstellungenTagesschule einstellungToAdd = einstellungenTagesschuleToEntity(jaxEinstellung, einstellungenToMergeWith);
+			final EinstellungenTagesschule einstellungToAdd =
+				einstellungenTagesschuleToEntity(jaxEinstellung, einstellungenToMergeWith);
 			einstellungToAdd.setInstitutionStammdatenTagesschule(owner);
 			final boolean added = convertedEinstellungen.add(einstellungToAdd);
 			if (!added) {
@@ -1805,14 +1820,15 @@ public class JaxBConverter extends AbstractConverter {
 		modulTagesschuleGroup.setWirdPaedagogischBetreut(jaxModulTagesschuleGroup.isWirdPaedagogischBetreut());
 		modulTagesschuleGroup.setReihenfolge(jaxModulTagesschuleGroup.getReihenfolge());
 
-		Set<ModulTagesschule> convertedModules = moduleTagesschuleListToEntity(jaxModulTagesschuleGroup.getModule(), modulTagesschuleGroup.getModule(),
+		Set<ModulTagesschule> convertedModules = moduleTagesschuleListToEntity(jaxModulTagesschuleGroup.getModule(),
+			modulTagesschuleGroup.getModule(),
 			einstellungenTagesschule);
 		if (convertedModules != null) {
 			for (ModulTagesschule convertedModule : convertedModules) {
 				convertedModule.setModulTagesschuleGroup(modulTagesschuleGroup);
 			}
 		}
-		if(convertedModules != null){
+		if (convertedModules != null) {
 			modulTagesschuleGroup.getModule().clear();
 			modulTagesschuleGroup.getModule().addAll(convertedModules);
 		}
@@ -1834,7 +1850,8 @@ public class JaxBConverter extends AbstractConverter {
 					.reduce(StreamsUtil.toOnlyElement())
 					.orElse(new ModulTagesschuleGroup());
 				final ModulTagesschuleGroup modulTagesschuleToAdd =
-					modulTagesschuleGroupToEntity(jaxModulTagesschule, modulTagesschuleToMergeWith, institutionStammdatenTagesschule);
+					modulTagesschuleGroupToEntity(jaxModulTagesschule, modulTagesschuleToMergeWith,
+						institutionStammdatenTagesschule);
 				if (modulTagesschuleToAdd != null) {
 					final boolean added = transformedModule.add(modulTagesschuleToAdd);
 					if (!added) {
@@ -2506,12 +2523,14 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setAnmeldungMutationZustand(betreuungJAXP.getAnmeldungMutationZustand());
 		betreuung.setKeineDetailinformationen(betreuungJAXP.isKeineDetailinformationen());
 		// Die korrekten EinstellungenTagesschule ermitteln fuer diese Betreuung
-		InstitutionStammdatenTagesschule institutionStammdatenTagesschule = betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
+		InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
+			betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
 		Objects.requireNonNull(institutionStammdatenTagesschule);
 		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode());
 		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode().getId());
-		EinstellungenTagesschule einstellungenTagesschule = getEinstellungenTagesschule(institutionStammdatenTagesschule,
-			betreuungJAXP.getGesuchsperiode().getId());
+		EinstellungenTagesschule einstellungenTagesschule =
+			getEinstellungenTagesschule(institutionStammdatenTagesschule,
+				betreuungJAXP.getGesuchsperiode().getId());
 		if (betreuungJAXP.getBelegungTagesschule() != null) {
 			requireNonNull(
 				einstellungenTagesschule,
@@ -2678,7 +2697,6 @@ public class JaxBConverter extends AbstractConverter {
 		return erweiterteBetreuung;
 	}
 
-
 	private BelegungTagesschule belegungTagesschuleToEntity(
 		@Nonnull JaxBelegungTagesschule belegungTagesschuleJAXP,
 		@Nonnull BelegungTagesschule belegungTagesschule,
@@ -2725,7 +2743,8 @@ public class JaxBConverter extends AbstractConverter {
 				.filter(existingBelegungModul -> existingBelegungModul.getId().equals(jaxBelegungTagesschuleModul.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
 				.orElseGet(BelegungTagesschuleModul::new);
-			final BelegungTagesschuleModul belegungModulToAdd = belegungTagesschuleModulToEntity(jaxBelegungTagesschuleModul, belegungModulToMergeWith, parent);
+			final BelegungTagesschuleModul belegungModulToAdd =
+				belegungTagesschuleModulToEntity(jaxBelegungTagesschuleModul, belegungModulToMergeWith, parent);
 			final boolean added = convertedBelegungTagesschuleModule.add(belegungModulToAdd);
 			if (!added) {
 				LOGGER.warn("dropped duplicate BelegungTagesschuleModul {}", belegungModulToAdd);
@@ -2759,7 +2778,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(betreuungJAXP);
 
 		Betreuung betreuungToMergeWith = Optional.ofNullable(betreuungJAXP.getId())
-			.flatMap(id ->  betreuungService.findBetreuung(id))
+			.flatMap(id -> betreuungService.findBetreuung(id))
 			.orElseGet(Betreuung::new);
 
 		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
@@ -4253,9 +4272,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZahlungsauftrag.setHasNegativeZahlungen(persistedZahlungsauftrag.getHasNegativeZahlungen());
 
 		if (convertZahlungen) {
-		List<JaxZahlung> zahlungen = persistedZahlungsauftrag.getZahlungen().stream()
-			.map(this::zahlungToJAX)
-			.collect(Collectors.toList());
+			List<JaxZahlung> zahlungen = persistedZahlungsauftrag.getZahlungen().stream()
+				.map(this::zahlungToJAX)
+				.collect(Collectors.toList());
 			jaxZahlungsauftrag.getZahlungen().addAll(zahlungen);
 		}
 		return jaxZahlungsauftrag;
@@ -4283,7 +4302,7 @@ public class JaxBConverter extends AbstractConverter {
 			boolean hasAnyNegativeZahlung = false;
 			for (JaxZahlung zahlung : jaxZahlungsauftrag.getZahlungen()) {
 				total = MathUtil.DEFAULT.add(total, zahlung.getBetragTotalZahlung());
-				if(MathUtil.isNegative(zahlung.getBetragTotalZahlung())){
+				if (MathUtil.isNegative(zahlung.getBetragTotalZahlung())) {
 					hasAnyNegativeZahlung = true;
 				}
 			}
@@ -4739,7 +4758,6 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final JaxTextRessource textRessourceJAX,
 		@Nullable TextRessource textRessource) {
 		requireNonNull(textRessourceJAX);
-//		requireNonNull(textRessource);
 
 		if (textRessource == null) {
 			textRessource = new TextRessource();
@@ -4856,7 +4874,8 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public void lastenausgleichGrundlagenToEntity() {
-		throw new EbeguFingerWegException("lastenausgleichGrundlagenToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+		throw new EbeguFingerWegException("lastenausgleichGrundlagenToEntity",
+			ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	public void lastenausgleichGrundlagenToJAX() {
@@ -4864,7 +4883,8 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public void lastenausgleichDetailListToEntity() {
-		throw new EbeguFingerWegException("lastenausgleichDetailListToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+		throw new EbeguFingerWegException("lastenausgleichDetailListToEntity",
+			ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	public void lastenausgleichDetailListToJax() {
@@ -4872,9 +4892,113 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public void lastenausgleichDetailToEntity() {
-		throw new EbeguFingerWegException("lastenausgleichDetailToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);}
+		throw new EbeguFingerWegException("lastenausgleichDetailToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
 
 	public void lastenausgleichDetailToJAX() {
 		throw new EbeguFingerWegException("lastenausgleichDetailToJAX", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nonnull
+	public SozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToStorableEntity(@Nonnull final JaxSozialhilfeZeitraumContainer jaxShZCont) {
+		SozialhilfeZeitraumContainer containerToMergeWith =
+			Optional.ofNullable(jaxShZCont.getId())
+				.flatMap(sozialhilfeZeitraumService::findSozialhilfeZeitraum)
+				.orElseGet(SozialhilfeZeitraumContainer::new);
+		return sozialhilfeZeitraumContainerToEntity(jaxShZCont, containerToMergeWith);
+	}
+
+	@Nonnull
+	public SozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToEntity(
+		@Nonnull final JaxSozialhilfeZeitraumContainer jaxShZCont,
+		@Nonnull final SozialhilfeZeitraumContainer sozialhilfeZeitraumCont) {
+
+		convertAbstractVorgaengerFieldsToEntity(jaxShZCont, sozialhilfeZeitraumCont);
+		if (jaxShZCont.getSozialhilfeZeitraumGS() != null) {
+			SozialhilfeZeitraum shzToMergeWith =
+				Optional.ofNullable(sozialhilfeZeitraumCont.getSozialhilfeZeitraumGS())
+					.orElseGet(SozialhilfeZeitraum::new);
+			SozialhilfeZeitraum sozialhilfeZeitraumGS =
+				sozialhilfeZeitraumToEntity(jaxShZCont.getSozialhilfeZeitraumGS(),
+					shzToMergeWith);
+			sozialhilfeZeitraumCont.setSozialhilfeZeitraumGS(sozialhilfeZeitraumGS);
+		}
+		if (jaxShZCont.getSozialhilfeZeitraumJA() != null) {
+			SozialhilfeZeitraum shzToMergeWith =
+				Optional.ofNullable(sozialhilfeZeitraumCont.getSozialhilfeZeitraumJA())
+					.orElseGet(SozialhilfeZeitraum::new);
+			SozialhilfeZeitraum sozialhilfeZeitraumJA =
+				sozialhilfeZeitraumToEntity(jaxShZCont.getSozialhilfeZeitraumJA(),
+					shzToMergeWith);
+			sozialhilfeZeitraumCont.setSozialhilfeZeitraumJA(sozialhilfeZeitraumJA);
+		}
+
+		return sozialhilfeZeitraumCont;
+	}
+
+	@Nonnull
+	public JaxSozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToJAX(
+		@Nonnull final SozialhilfeZeitraumContainer storedSozialhilfeZeitraumCont) {
+
+		final JaxSozialhilfeZeitraumContainer jaxShZCont = new JaxSozialhilfeZeitraumContainer();
+		convertAbstractVorgaengerFieldsToJAX(storedSozialhilfeZeitraumCont, jaxShZCont);
+		jaxShZCont.setSozialhilfeZeitraumGS(sozialhilfeZeitraumToJax(storedSozialhilfeZeitraumCont.getSozialhilfeZeitraumGS()));
+		jaxShZCont.setSozialhilfeZeitraumJA(sozialhilfeZeitraumToJax(storedSozialhilfeZeitraumCont.getSozialhilfeZeitraumJA()));
+
+		return jaxShZCont;
+	}
+
+	@Nonnull
+	private SozialhilfeZeitraum sozialhilfeZeitraumToEntity(
+		@Nonnull final JaxSozialhilfeZeitraum jaxSozialhilfeZeitraum,
+		@Nonnull final SozialhilfeZeitraum sozialhilfeZeitraum) {
+
+		convertAbstractDateRangedFieldsToEntity(jaxSozialhilfeZeitraum, sozialhilfeZeitraum);
+
+		return sozialhilfeZeitraum;
+	}
+
+	@Nullable
+	private JaxSozialhilfeZeitraum sozialhilfeZeitraumToJax(@Nullable final SozialhilfeZeitraum sozialhilfeZeitraum) {
+		if (sozialhilfeZeitraum == null) {
+			return null;
+		}
+		JaxSozialhilfeZeitraum jaxSozialhilfeZeitraum = new JaxSozialhilfeZeitraum();
+		convertAbstractDateRangedFieldsToJAX(sozialhilfeZeitraum, jaxSozialhilfeZeitraum);
+		return jaxSozialhilfeZeitraum;
+	}
+
+	private void sozialhilfeZeitraumContainersToEntity(
+		@Nonnull final List<JaxSozialhilfeZeitraumContainer> jaxShZContainers,
+		@Nonnull final Collection<SozialhilfeZeitraumContainer> existingSozialhilfeZeitraeume
+	) {
+		final Set<SozialhilfeZeitraumContainer> transformedShZContainers = new HashSet<>();
+		for (final JaxSozialhilfeZeitraumContainer jaxShZContainer : jaxShZContainers) {
+			final SozialhilfeZeitraumContainer containerToMergeWith = existingSozialhilfeZeitraeume
+				.stream()
+				.filter(existingShZEntity -> existingShZEntity.getId().equals(jaxShZContainer.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElse(new SozialhilfeZeitraumContainer());
+			final SozialhilfeZeitraumContainer contToAdd =
+				sozialhilfeZeitraumContainerToEntity(jaxShZContainer, containerToMergeWith);
+			final boolean added = transformedShZContainers.add(contToAdd);
+			if (!added) {
+				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", contToAdd);
+			}
+		}
+
+		existingSozialhilfeZeitraeume.clear();
+		existingSozialhilfeZeitraeume.addAll(transformedShZContainers);
+	}
+
+	@Nonnull
+	private List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainersToJAX(@Nullable final Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers) {
+		if (sozialhilfeZeitraumContainers == null) {
+			return Collections.emptyList();
+		}
+
+		return sozialhilfeZeitraumContainers.stream()
+			.map(this::sozialhilfeZeitraumContainerToJAX)
+			.collect(Collectors.toList());
 	}
 }
