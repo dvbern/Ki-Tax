@@ -81,6 +81,7 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -280,6 +281,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			stripFreiwilligenarbeitFromErwerbspensen(gesuch.getGesuchsteller1());
 			stripFreiwilligenarbeitFromErwerbspensen(gesuch.getGesuchsteller2());
 		}
+
+		Einstellung mahlzeitenverguenstigungEnabled = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		if (!mahlzeitenverguenstigungEnabled.getValueAsBoolean()) {
+			stripMahlzeitenverguenstigungInfos(gesuch.getFamiliensituationContainer());
+		}
 	}
 
 	private void stripFreiwilligenarbeitFromErwerbspensen(@Nullable GesuchstellerContainer gesuchstellerContainer) {
@@ -294,6 +304,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			}
 		}
 		gesuchstellerContainer.setErwerbspensenContainers(validErwerbspensen);
+	}
+
+	private void stripMahlzeitenverguenstigungInfos(@Nullable FamiliensituationContainer familiensituationContainer) {
+		if (familiensituationContainer == null) {
+			return;
+		}
+		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
+		if (familiensituation == null) {
+			return;
+		}
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
+		familiensituation.setIban(null);
+		familiensituation.setKontoinhaber(null);
+		familiensituation.setAbweichendeZahlungsadresse(false);
+		familiensituation.setZahlungsadresse(null);
 	}
 
 	@Nonnull
