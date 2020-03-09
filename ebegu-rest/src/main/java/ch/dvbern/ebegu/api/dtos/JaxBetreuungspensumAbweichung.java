@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
  * DTO fuer Daten des Betreuungspensum
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
+public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDTO {
 
 	private static final long serialVersionUID = 4496021781469239269L;
 
@@ -38,10 +38,14 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	private BigDecimal vertraglicheKosten;
 
+	private Integer vertraglicheHauptmahlzeiten;
+
+	private Integer vertraglicheNebenmahlzeiten;
+
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
 	}
-
+	
 	public void setStatus(BetreuungspensumAbweichungStatus status) {
 		this.status = status;
 	}
@@ -60,5 +64,21 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractDecimalPensumDTO {
 
 	public void setVertraglicheKosten(BigDecimal vertraglicheKosten) {
 		this.vertraglicheKosten = vertraglicheKosten;
+	}
+
+	public Integer getVertraglicheHauptmahlzeiten() {
+		return vertraglicheHauptmahlzeiten;
+	}
+
+	public void setVertraglicheHauptmahlzeiten(Integer vertraglicheHauptmahlzeiten) {
+		this.vertraglicheHauptmahlzeiten = vertraglicheHauptmahlzeiten;
+	}
+
+	public Integer getVertraglicheNebenmahlzeiten() {
+		return vertraglicheNebenmahlzeiten;
+	}
+
+	public void setVertraglicheNebenmahlzeiten(Integer vertraglicheNebenmahlzeiten) {
+		this.vertraglicheNebenmahlzeiten = vertraglicheNebenmahlzeiten;
 	}
 }

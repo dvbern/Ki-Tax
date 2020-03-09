@@ -29,7 +29,6 @@ import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -370,12 +369,6 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		neuesEWP.getErwerbspensumJA().setPensum(neuesPensum);
 		neuesEWP.getErwerbspensumJA().getGueltigkeit().setGueltigAb(stichtag);
 		gesuch.getGesuchsteller1().getErwerbspensenContainers().add(neuesEWP);
-	}
-
-	private void addBetreuung(@Nonnull KindContainer kind) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 100,  BigDecimal.valueOf(2000));
-		kind.getBetreuungen().add(betreuung);
-		betreuung.setKind(kind);
 	}
 }
 

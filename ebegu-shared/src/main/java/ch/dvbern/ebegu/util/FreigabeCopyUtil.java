@@ -46,6 +46,8 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -90,7 +92,31 @@ public final class FreigabeCopyUtil {
 			} else {
 				container.setFamiliensituationGS(null);
 			}
+
+			// Sozialhilfe
+			for (SozialhilfeZeitraumContainer sozialhilfeContainer : container.getSozialhilfeZeitraumContainers()) {
+				copySozialhilfeZeitraumContainer(sozialhilfeContainer);
+			}
 		}
+	}
+
+
+	private static void copySozialhilfeZeitraumContainer(@Nullable SozialhilfeZeitraumContainer container) {
+		if (container != null) {
+			if (container.getSozialhilfeZeitraumJA() != null) {
+				if (container.getSozialhilfeZeitraumGS() == null) {
+					container.setSozialhilfeZeitraumGS(new SozialhilfeZeitraum());  //init
+				}
+				//noinspection ConstantConditions
+				copySozialhilfeZeitraum(container.getSozialhilfeZeitraumGS(), container.getSozialhilfeZeitraumJA());
+			} else {
+				container.setSozialhilfeZeitraumGS(null);
+			}
+		}
+	}
+
+	private static void copySozialhilfeZeitraum(@Nonnull SozialhilfeZeitraum sozialhilfeGS, @Nonnull SozialhilfeZeitraum sozialhilfeJA) {
+		sozialhilfeGS.setGueltigkeit(sozialhilfeJA.getGueltigkeit());
 	}
 
 	private static void copyFamiliensituation(

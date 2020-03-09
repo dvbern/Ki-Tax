@@ -262,16 +262,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			tagesschuleModuleMap.values().stream().sorted((oneList, otherList) -> {
 				ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
 				ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
-				CompareToBuilder builder = new CompareToBuilder();
-				builder.append(one.getZeitVon(), other.getZeitVon());
-				builder.append(one.getZeitBis(), other.getZeitBis());
-				// bei Scolaris Modulen muss ModultagesschuleName verwendet werden
-				if (one.getBezeichnung().getTextDeutsch() == null || other.getBezeichnung().getTextDeutsch() == null ) {
-					builder.append(one.getModulTagesschuleName(), other.getModulTagesschuleName());
-				} else {
-					builder.append(one.getBezeichnung().getTextDeutsch(), other.getBezeichnung().getTextDeutsch());
-				}
-				return builder.toComparison();
+				return other.compareTo(one);
 			}).forEach(v -> {
 				boolean monday = false;
 				boolean tuesday = false;

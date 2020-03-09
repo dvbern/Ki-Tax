@@ -15,6 +15,7 @@
 
 import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _jahr: string;
@@ -29,6 +30,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _ohneFolgegesuche: boolean;
     private _doSave: boolean;
     private _betragProKind: number;
+    private _tagesschuleOhneFinSit: TSInstitutionStammdaten;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment,
@@ -134,5 +136,13 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set jahr(value: string) {
         this._jahr = value;
+    }
+
+    public get tagesschuleOhneFinSit(): TSInstitutionStammdaten {
+        return this._tagesschuleOhneFinSit;
+    }
+
+    public set tagesschuleOhneFinSit(value: TSInstitutionStammdaten) {
+        this._tagesschuleOhneFinSit = value;
     }
 }
