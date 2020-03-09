@@ -130,7 +130,7 @@
                           dv-enable-expression="vm.areZahlungsdatenEditable()">
 
                     <!-- Keine Mahlzeitenverguenstigung gewuenscht -->
-                    <div class="row marginBottom20 marginTop20">
+                    <div class="row marginBottom20 marginTop20" ng-if="vm.isMahlzeitenverguenstigungEnabled()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"

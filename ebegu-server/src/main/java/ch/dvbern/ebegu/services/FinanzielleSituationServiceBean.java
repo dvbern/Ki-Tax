@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -156,11 +157,24 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		}
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
-		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
-		familiensituation.setIban(new IBAN(iban));
-		familiensituation.setKontoinhaber(kontoinhaber);
-		familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
-		familiensituation.setZahlungsadresse(zahlungsadresse);
+		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
+			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
+			if (StringUtils.isNoneEmpty(iban)) {
+				familiensituation.setIban(new IBAN(iban));
+			} else {
+				familiensituation.setIban(null);
+			}
+			familiensituation.setKontoinhaber(kontoinhaber);
+			familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
+			familiensituation.setZahlungsadresse(zahlungsadresse);
+		} else {
+			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
+			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
+			familiensituation.setIban(null);
+			familiensituation.setKontoinhaber(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
+			familiensituation.setZahlungsadresse(null);
+		}
 		return gesuch;
 	}
 
