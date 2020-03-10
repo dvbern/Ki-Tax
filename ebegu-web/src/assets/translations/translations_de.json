@@ -681,7 +681,7 @@
     "ERNEUERUNGSGESUCH": "Antrag",
     "MUTATION": "Mutation",
     "ALLE": "alle",
-    "GESUCHSPERIODEN": "Periode"
+    "GESUCHSPERIODEN": "Periode",
     "GESUCHSPERIODE": "Periode {{gesuchsperiode}}",
     "GESUCHSPERIODE_GUELTIG_AB": "Beginn",
     "GESUCHSPERIODE_GUELTIG_BIS": "Ende",
