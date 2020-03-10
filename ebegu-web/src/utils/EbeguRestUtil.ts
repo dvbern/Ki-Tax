@@ -554,8 +554,16 @@ export class EbeguRestUtil {
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
             restFamiliensituation.verguenstigungGewuenscht =
                 familiensituation.verguenstigungGewuenscht;
+            restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
+                familiensituation.keineMahlzeitenverguenstigungBeantragt;
+            restFamiliensituation.iban = familiensituation.iban;
+            restFamiliensituation.kontoinhaber = familiensituation.kontoinhaber;
+            restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
+            restFamiliensituation.zahlungsadresse =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresse);
             return restFamiliensituation;
         }
+
         return undefined;
     }
 
@@ -615,6 +623,13 @@ export class EbeguRestUtil {
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
             familiensituation.verguenstigungGewuenscht =
                 familiensituationFromServer.verguenstigungGewuenscht;
+            familiensituation.keineMahlzeitenverguenstigungBeantragt =
+                familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
+            familiensituation.iban = familiensituationFromServer.iban;
+            familiensituation.kontoinhaber = familiensituationFromServer.kontoinhaber;
+            familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
+            familiensituation.zahlungsadresse =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
             return familiensituation;
         }
         return undefined;
@@ -1032,6 +1047,35 @@ export class EbeguRestUtil {
             return dossierTS;
         }
         return undefined;
+    }
+
+    public alwaysEditablePropertiesToRestObject(restProperties: any, gesuch: TSGesuch): any {
+        if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.gesuchstellerJA) {
+            restProperties.gesuchId = gesuch.id;
+            restProperties.mailGS1 = gesuch.gesuchsteller1.gesuchstellerJA.mail;
+            restProperties.mobileGS1 = gesuch.gesuchsteller1.gesuchstellerJA.mobile;
+            restProperties.telefonGS1 = gesuch.gesuchsteller1.gesuchstellerJA.telefon;
+            restProperties.telefonAuslandGS1 = gesuch.gesuchsteller1.gesuchstellerJA.telefonAusland;
+        }
+        if (gesuch.gesuchsteller2 && gesuch.gesuchsteller2.gesuchstellerJA) {
+            restProperties.mailGS2 = gesuch.gesuchsteller2.gesuchstellerJA.mail;
+            restProperties.mobileGS2 = gesuch.gesuchsteller2.gesuchstellerJA.mobile;
+            restProperties.telefonGS2 = gesuch.gesuchsteller2.gesuchstellerJA.telefon;
+            restProperties.telefonAuslandGS2 = gesuch.gesuchsteller2.gesuchstellerJA.telefonAusland;
+        }
+
+        if (gesuch.familiensituationContainer && gesuch.familiensituationContainer.familiensituationJA) {
+            restProperties.keineMahlzeitenverguenstigungBeantragt =
+                gesuch.familiensituationContainer.familiensituationJA.keineMahlzeitenverguenstigungBeantragt;
+            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.iban;
+            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaber;
+            restProperties.abweichendeZahlungsadresse =
+                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresse;
+            restProperties.zahlungsadresse =
+                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresse);
+        }
+
+        return restProperties;
     }
 
     public gesuchToRestObject(restGesuch: any, gesuch: TSGesuch): TSGesuch {

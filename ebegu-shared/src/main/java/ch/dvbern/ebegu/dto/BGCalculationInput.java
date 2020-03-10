@@ -53,6 +53,8 @@ public class BGCalculationInput {
 
 	private int fachstellenpensum;
 
+	private boolean betreuungspensumMustBeAtLeastFachstellenpensum = false;
+
 	private int ausserordentlicherAnspruch;
 
 	//es muss by default null sein um zu wissen, wann es nicht definiert wurde
@@ -143,6 +145,7 @@ public class BGCalculationInput {
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
+		this.betreuungspensumMustBeAtLeastFachstellenpensum = toCopy.betreuungspensumMustBeAtLeastFachstellenpensum;
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
@@ -210,6 +213,14 @@ public class BGCalculationInput {
 
 	public void setFachstellenpensum(int fachstellenpensum) {
 		this.fachstellenpensum = fachstellenpensum;
+	}
+
+	public boolean isBetreuungspensumMustBeAtLeastFachstellenpensum() {
+		return this.betreuungspensumMustBeAtLeastFachstellenpensum;
+	}
+
+	public void setBetreuungspensumMustBeAtLeastFachstellenpensum(boolean betreuungspensumMustBeAtLeastFachstellenpensum) {
+		this.betreuungspensumMustBeAtLeastFachstellenpensum = betreuungspensumMustBeAtLeastFachstellenpensum;
 	}
 
 	public int getAusserordentlicherAnspruch() {
@@ -497,6 +508,7 @@ public class BGCalculationInput {
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	public void add(@Nonnull BGCalculationInput other) {
+		this.setBetreuungspensumMustBeAtLeastFachstellenpensum(this.isBetreuungspensumMustBeAtLeastFachstellenpensum() || other.isBetreuungspensumMustBeAtLeastFachstellenpensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
 			+ other.getAusserordentlicherAnspruch());
