@@ -494,15 +494,19 @@ export class NavigatorController implements IController {
     /**
      * Checks whether the button should be disable for the current conditions. By default (auch fuer Mutaionen) enabled
      */
+    // tslint:disable-next-line:cognitive-complexity
     public isNextButtonDisabled(): boolean {
         // Wenn das Gesuch disabled ist (z.B. in Rolle Mandant), darf man nur soweit navigieren, wie die Steps
         // besucht sind
+        const nextStepBesucht = this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
+        const nextStepEnabled = this.wizardStepManager.isNextStepEnabled(this.gesuchModelManager.getGesuch());
         if (this.gesuchModelManager.isGesuchReadonly()
-            && TSWizardStepName.DOKUMENTE !== this.wizardStepManager.getCurrentStepName()) {
-            return !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
+            && TSWizardStepName.GESUCHSTELLER !== this.wizardStepManager.getCurrentStepName()) {
+            return !nextStepBesucht;
         }
+
         // if step is disabled in manager we can stop here
-        if (!this.wizardStepManager.isNextStepEnabled(this.gesuchModelManager.getGesuch())) {
+        if (!nextStepEnabled) {
             return true;
         }
 
@@ -510,18 +514,22 @@ export class NavigatorController implements IController {
             return false;
         }
 
+        if (TSWizardStepName.GESUCHSTELLER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
+            return !this.gesuchModelManager.isGesuchsteller2Required()
+                && !nextStepBesucht;
+        }
         if (TSWizardStepName.KINDER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
             return (!this.gesuchModelManager.isThereAnyKindWithBetreuungsbedarf()
                 || this.gesuchModelManager.isThereAnyNotGeprueftesKind())
-                && !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
+                && !nextStepBesucht;
         }
         if (TSWizardStepName.BETREUUNG === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
             return !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
-                && !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
+                && !nextStepBesucht;
         }
         if (TSWizardStepName.ERWERBSPENSUM === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
             return this.dvNextDisabled()
-                && !this.wizardStepManager.isNextStepBesucht(this.gesuchModelManager.getGesuch());
+                && !nextStepBesucht;
         }
 
         return false;

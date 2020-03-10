@@ -245,6 +245,12 @@ export class GesuchModelManager {
         return false;
     }
 
+    public isLastGesuchsteller(): boolean {
+        return this.isGesuchsteller2Required()
+            ? this.getGesuchstellerNumber() === 2
+            : this.getGesuchstellerNumber() === 1;
+    }
+
     // tslint:disable-next-line:naming-convention
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         return gs === 2 ?

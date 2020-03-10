@@ -235,6 +235,17 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getAdministratorBgTsGemeindeOrMandantRole(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ];
+    }
+
     public static getAdministratorOrAmtRole(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,

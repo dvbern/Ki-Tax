@@ -94,7 +94,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private static final String VERPFLEGUNGSKOSTEN_PRO_WOCHE =
 		"PdfGeneration_AnmeldungBestaetigung_VerplfegungsProWoche";
 	private static final String TOTAL_PRO_WOCHE = "PdfGeneration_AnmeldungBestaetigung_TotalProWoche";
-	private static final String ERSTE_RECHNUND_AUGUST = "PdfGeneration_AnmeldungBestaetigung_ErsteRechnungAugust";
 	private static final String NICHT_EINVERSTANDEN = "PdfGeneration_AnmeldungBestaetigung_NichtEinverstandenInfo";
 	private static final String CHF = "CHF ";
 
@@ -144,7 +143,6 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 				Verfuegung verfuegung = anmeldungTagesschule.getVerfuegungOrVerfuegungPreview();
 				Objects.requireNonNull(verfuegung);
 				createGebuehrenTabelle(verfuegung, document);
-				abschlussElemente.add(PdfUtil.createParagraph(translate(ERSTE_RECHNUND_AUGUST)));
 			}
 			abschlussElemente.add(PdfUtil.createParagraph(translate(NICHT_EINVERSTANDEN)));
 			abschlussElemente.add(createParagraphGruss());

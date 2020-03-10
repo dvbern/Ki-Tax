@@ -151,11 +151,6 @@ export class WizardStepManager {
         this.allowedSteps = [];
         this.allowedSteps.push(TSWizardStepName.FAMILIENSITUATION);
         this.allowedSteps.push(TSWizardStepName.GESUCHSTELLER);
-        this.allowedSteps.push(TSWizardStepName.UMZUG);
-        this.allowedSteps.push(TSWizardStepName.KINDER);
-        this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
-        this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-        this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
     }
 
     private setAllAllowedSteps(): void {
@@ -276,6 +271,7 @@ export class WizardStepManager {
         if (!step) {
             return false;
         }
+
         return step.wizardStepStatus !== TSWizardStepStatus.UNBESUCHT;
     }
 
@@ -284,9 +280,9 @@ export class WizardStepManager {
      */
     public isNextStepEnabled(gesuch: TSGesuch): boolean {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())
-            && this.currentStepName === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG) {
-            // Dies ist ein Hack. Das Problem ist, dass der Step EKV der letzte fuer das Steueramt ist, und da er
-            // substeps hat, ist es sehr schwierig zu wissen, wann man darf und wann nicht. Wir sollten die ganze
+            && this.currentStepName === TSWizardStepName.GESUCHSTELLER) {
+            // Dies ist ein Hack. Das Problem ist, dass der Step GESUCHSTELLER der letzte fuer das Steueramt ist, und
+            // da er substeps hat, ist es sehr schwierig zu wissen, wann man darf und wann nicht. Wir sollten die ganze
             // Funktionalitaet von Steps verbessern
             return true;
         }
