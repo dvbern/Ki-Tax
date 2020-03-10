@@ -60,8 +60,8 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		Betreuung betreuung = (Betreuung) platz;
 		int pensumFachstelle = inputData.getFachstellenpensum();
-		boolean betreuungspensumMustBeAtLeastFachstellenpensum = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBetreuungspensumMustBeAtLeastFachstellenpensum();
-		BigDecimal pensumBetreuung = verfuegungZeitabschnitt.getBetreuungspensumProzent();
+		boolean betreuungspensumMustBeAtLeastFachstellenpensum = inputData.isBetreuungspensumMustBeAtLeastFachstellenpensum();
+		BigDecimal pensumBetreuung = inputData.getBetreuungspensumProzent();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
@@ -80,10 +80,10 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 			} else {
 				// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle Pensum als
 				// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
-				int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
+				int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
 				// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 				if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
-					verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(roundedPensumFachstelle);
+					inputData.setAnspruchspensumRest(roundedPensumFachstelle);
 				}
 			}
 		}
