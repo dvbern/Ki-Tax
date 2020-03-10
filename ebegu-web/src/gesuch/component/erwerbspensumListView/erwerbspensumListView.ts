@@ -143,7 +143,6 @@ export class ErwerbspensumListViewController
             }
         }
         return this.erwerbspensenGS2;
-
     }
 
     public createErwerbspensum(gesuchstellerNumber: number): void {
