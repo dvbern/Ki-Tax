@@ -43,10 +43,11 @@
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebeguH1 required">
-                <span data-translate="FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT"
-                      translate-values="{maxEinkommen: vm.getMaxMassgebendesEinkommen()}"></span>
+                <span data-translate="FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT"></span>
+                <dv-tooltip input-id="verguenstigungGewuenscht" text="'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_HELP' | translate:{maxEinkommen: vm.getMaxMassgebendesEinkommen()}"></dv-tooltip>
             </span>
             <dv-radio-container name="verguenstigungGewuenscht" class="input-element"
+                                id="verguenstigungGewuenscht"
                                 ng-model="vm.verguenstigungGewuenscht"
                                 ng-required="true" class="radio" ng-change="vm.setFinanziellesituationRequired()"
                                 dv-enable-element
