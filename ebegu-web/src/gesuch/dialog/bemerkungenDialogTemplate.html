@@ -13,7 +13,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-dialog md-theme="default" aria-label="bestätigen" class="md-default-theme md-transition-in"
+<md-dialog md-theme="default" aria-label="bestätigen"
+           class="md-default-theme md-transition-in md-dialog"
+           style="min-width: 700px"
            role="dialog" tabindex="-1">
 
     <form role="form" name="vm.form" class="" novalidate layout="column">
@@ -21,7 +23,6 @@
 			<h2 class="md-title ng-binding" ng-bind="vm.title"></h2>
             <textarea md-no-autogrow class="form-control" rows="4" id="kommentarDialog"
                       ng-model="vm.bemerkungen" maxlength="4000" required
-                      style="min-width: 700px"
                       ng-attr-placeholder="{{'SEND_TO_STV_PLACEHOLDER' | translate}}">
             </textarea>
 		</md-dialog-content>
@@ -29,11 +30,11 @@
 		<md-dialog-actions layout-align="center center">
 			<button class="dv-btn ng-scope md-default-theme cancel-button" type="button"
 					ng-click="vm.cancel()" aria-label="{{'LABEL_ABBRECHEN' | translate}}" style="">
-				<span class="ng-binding ng-scope uppercase" data-translate="LABEL_ABBRECHEN"></span>
+				<span class="ng-binding ng-scope" data-translate="LABEL_ABBRECHEN"></span>
 			</button>
 			<button class="dv-btn md-default-theme" type="button"
 					ng-click="vm.hide()" md-autofocus="dialog.$type==='alert'" aria-label="{{'LABEL_ABSENDEN' | translate}}">
-				<span class="ng-binding ng-scope uppercase" data-translate="LABEL_ABSENDEN"></span>
+				<span class="ng-binding ng-scope" data-translate="LABEL_ABSENDEN"></span>
 			</button>
 		</md-dialog-actions>
     </form>
