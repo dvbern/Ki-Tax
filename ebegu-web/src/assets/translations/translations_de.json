@@ -689,7 +689,7 @@
     "GESUCHSPERIODE_STATUS_TAGESSCHULEANMELDUNG": "Tagesschule",
     "GESUCHSPERIODE_INAKTIV_HINT": "Achtung, diese Periode ist inaktiv!",
     "GESUCHSPERIODE_DIALOG_TITLE": "Sind Sie sicher, dass Sie die Periode speichern wollen?",
-    "GESUCHSPERIODE_DIALOG_TEXT_ENTWURF": "Im Status ENTWURF können Sie jederzeit alle Parameter ändern und Vorlagen korrigieren. Weder die Gemeinde noch der Gesuchsteller können Anträge zu dieser Gesuchsperiode erfassen",
+    "GESUCHSPERIODE_DIALOG_TEXT_ENTWURF": "Im Status ENTWURF können Sie jederzeit alle Parameter ändern und Vorlagen korrigieren. Weder die Gemeinde noch der Antragsteller können Anträge zu dieser Gesuchsperiode erfassen",
     "GESUCHSPERIODE_DIALOG_TEXT_AKTIV": "Im Status AKTIV wird die Periode für die Antragsteller geöffnet. Achtung: Beim Aktivieren wird eine E-Mail an alle Antragsteller der vergangenen Periode gesendet!",
     "GESUCHSPERIODE_DIALOG_TEXT_INAKTIV": "Im Status INAKTIV kann die Gemeinde weiterhin Anträge für diese Periode erstellen. Für den Antragsteller wird die Periode jedoch gesperrt.",
     "GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN": "Im Status GESCHLOSSEN können weder die Gemeinde noch die Antragsteller Anträge für diese Periode erfassen. Die Periode kann nur geschlossen werden, wenn keine Pendenzen (inkl. Beschwerden und Steuerbüro der Gemeinde) mehr offen sind.",
