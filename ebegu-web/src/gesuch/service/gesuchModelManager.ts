@@ -1639,4 +1639,16 @@ export class GesuchModelManager {
             && (this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
                 || this.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled);
     }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
+        return this.gesuchRS.updateAlwaysEditableProperties(properties)
+            .then(gesuchResponse => {
+                this.setGesuch(gesuchResponse);
+                return gesuchResponse;
+            });
+    }
 }

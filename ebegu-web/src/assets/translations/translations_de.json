@@ -1924,5 +1924,8 @@
     "MONATLICHE_HAUPTMAHLZEITEN_HELP": "TODO",
     "MONATLICHE_NEBENMAHLZEITEN": "Anzahl monatliche Nebenmahlzeiten",
     "MONATLICHE_NEBENMAHLZEITEN_HELP": "TODO",
+    "MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT": "Wir beantragen keine Mahlzeitenvergünstigung (Massgebendes Einkommen > CHF 70'000)",
+    "MAHLZEITENVERGUENSTIGUNG_KONTOINHABER": "Lautend auf (Name und Vorname)",
+    "MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE": "Abweichende Zahlungsadresse",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
