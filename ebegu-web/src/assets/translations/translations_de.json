@@ -73,6 +73,7 @@
     "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Haben Sie eine gemeinsame Steuererklärung {{basisjahr}} mit {{namegs2}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
+    "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",
     "FINANZIELLE_SITUATION_HINT1": "Es sind die Einkommens- und Vermögensverhältnisse des Jahres {{basisjahr}} massgebend.",
     "FINANZIELLE_SITUATION_NETTOLOHN": "Nettolohn",
     "FINANZIELLE_SITUATION_NETTOLOHN_HELP": "Ziffer 2.21 der Steuererklärung (Formular 2) oder Lohnausweise Ziffer 11",
