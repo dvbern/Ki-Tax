@@ -331,6 +331,6 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public isGemeindeEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeOrMandantRole());
     }
 }
