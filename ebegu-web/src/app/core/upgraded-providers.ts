@@ -27,6 +27,7 @@ import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
+import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {ErrorService} from './errors/service/ErrorService';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
@@ -240,6 +241,17 @@ export function wizardStepManagerServiceFactory(i: IInjectorService): WizardStep
 export const wizardStepManagerProvider = {
     provide: WizardStepManager,
     useFactory: wizardStepManagerServiceFactory,
+    deps: ['$injector'],
+};
+
+// WizardSubStepManager
+export function wizardSubStepManagerServiceFactory(i: IInjectorService): WizardSubStepManager {
+    return i.get('WizardSubStepManager');
+}
+
+export const wizardSubStepManagerProvider = {
+    provide: WizardSubStepManager,
+    useFactory: wizardSubStepManagerServiceFactory,
     deps: ['$injector'],
 };
 

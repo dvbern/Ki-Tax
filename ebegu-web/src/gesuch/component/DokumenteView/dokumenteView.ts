@@ -23,7 +23,6 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDokument} from '../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {DokumenteRS} from '../../service/dokumenteRS.rest';
@@ -210,9 +209,5 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public setDokumenteGeprueft(): void {
         this.gesuchModelManager.getGesuch().dokumenteHochgeladen = false;
         this.gesuchModelManager.updateGesuch();
-    }
-
-    public isSteueramt(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
     }
 }
