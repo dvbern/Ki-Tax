@@ -16,7 +16,9 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,6 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
@@ -61,32 +64,40 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_container_familiensituation_erstgesuch_id"))
 	private Familiensituation familiensituationErstgesuch;
 
+	@Nonnull
+	@Valid
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "familiensituationContainer")
+	private Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = new HashSet<>();
+
 	public FamiliensituationContainer() {
 	}
 
 	@Nonnull
 	public FamiliensituationContainer copyFamiliensituationContainer(
-			@Nonnull FamiliensituationContainer target, @Nonnull AntragCopyType copyType, boolean sourceGesuchIsMutation) {
+		@Nonnull FamiliensituationContainer target, @Nonnull AntragCopyType copyType, boolean sourceGesuchIsMutation) {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamiliensituationGS(null);
 		Objects.requireNonNull(getFamiliensituationJA());
 		target.setFamiliensituationJA(getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
-
 		switch (copyType) {
 		case MUTATION:
-			target.setFamiliensituationJA(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
-			// Falls das zu kopierende Gesuch bereits eine Mutation war, muss die FamiliensituationErstgesuch auch gesetzt werden
+			target.setFamiliensituationJA(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(),
+				copyType));
+			// Falls das zu kopierende Gesuch bereits eine Mutation war, muss die FamiliensituationErstgesuch auch
+			// gesetzt werden
 			if (sourceGesuchIsMutation) {
 				Objects.requireNonNull(this.getFamiliensituationErstgesuch());
 				target.setFamiliensituationErstgesuch(this.getFamiliensituationErstgesuch().copyFamiliensituation(new Familiensituation(), copyType));
 			} else {
 				target.setFamiliensituationErstgesuch(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
 			}
+			copySozialhilfeZeitraeume(target, copyType);
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			copySozialhilfeZeitraeume(target, copyType);
 			break;
 		case ERNEUERUNG:
-		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
-			target.setFamiliensituationJA(this.getFamiliensituationJA().copyFamiliensituation(new Familiensituation(), copyType));
 			break;
 		}
 		return target;
@@ -125,6 +136,21 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 	}
 
 	@Nonnull
+	public Set<SozialhilfeZeitraumContainer> getSozialhilfeZeitraumContainers() {
+		return sozialhilfeZeitraumContainers;
+	}
+
+	public void setSozialhilfeZeitraumContainers(@Nonnull Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers) {
+		this.sozialhilfeZeitraumContainers = sozialhilfeZeitraumContainers;
+	}
+
+	public boolean addSozialhilfeZeitraumContainer(@Nonnull final SozialhilfeZeitraumContainer sozialhilfeZeitraumContainerToAdd) {
+		sozialhilfeZeitraumContainerToAdd.setFamiliensituationContainer(this);
+		return !sozialhilfeZeitraumContainers.contains(sozialhilfeZeitraumContainerToAdd) &&
+			sozialhilfeZeitraumContainers.add(sozialhilfeZeitraumContainerToAdd);
+	}
+
+	@Nonnull
 	public Familiensituation getFamiliensituationAm(LocalDate stichtag) {
 		Objects.requireNonNull(getFamiliensituationJA());
 		if (getFamiliensituationJA().getAenderungPer() == null || getFamiliensituationJA().getAenderungPer().isBefore(stichtag)) {
@@ -148,5 +174,13 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 		}
 		final FamiliensituationContainer otherFamSitContainer = (FamiliensituationContainer) other;
 		return EbeguUtil.isSameObject(getFamiliensituationJA(), otherFamSitContainer.getFamiliensituationJA());
+	}
+
+	private void copySozialhilfeZeitraeume(@Nonnull FamiliensituationContainer target,
+		@Nonnull AntragCopyType copyType) {
+		for (SozialhilfeZeitraumContainer sozialhilfeZeitraumContainer : this.getSozialhilfeZeitraumContainers()) {
+			target.addSozialhilfeZeitraumContainer(sozialhilfeZeitraumContainer.copySozialhilfeZeitraumContainer(new SozialhilfeZeitraumContainer(),
+				copyType, this));
+		}
 	}
 }

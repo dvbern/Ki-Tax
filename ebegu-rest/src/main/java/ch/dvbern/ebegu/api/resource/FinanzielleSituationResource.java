@@ -47,12 +47,15 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import io.swagger.annotations.Api;
@@ -72,6 +75,9 @@ public class FinanzielleSituationResource {
 	private FinanzielleSituationService finanzielleSituationService;
 	@Inject
 	private GesuchstellerService gesuchstellerService;
+
+	@Inject
+	private FamiliensituationService familiensituationService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -158,8 +164,40 @@ public class FinanzielleSituationResource {
 			gesuchsteller.getFinanzielleSituationContainer());
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
-		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(convertedFinSitCont,
-			sozialhilfeBezueger, gemeinsameSteuererklaerung, verguenstigungGewuenscht, gesuchId);
+		if (familiensituationJA.isAbweichendeZahlungsadresse()) {
+			requireNonNull(familiensituationJA.getZahlungsadresse());
+		}
+
+		if (familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt()) {
+			familiensituationJA.setIban(null);
+			familiensituationJA.setKontoinhaber(null);
+			familiensituationJA.setAbweichendeZahlungsadresse(false);
+			familiensituationJA.setZahlungsadresse(null);
+		}
+
+		Adresse storedAdresse = new Adresse();
+		if (jaxFamiliensituationContainer.getId() != null) {
+			Optional<FamiliensituationContainer> storedFamSitCont =
+				familiensituationService.findFamiliensituation(jaxFamiliensituationContainer.getId());
+
+			Familiensituation storedFamSit = storedFamSitCont.get().getFamiliensituationJA();
+			if (storedFamSit != null && storedFamSit.getZahlungsadresse() != null) {
+				storedAdresse =  storedFamSit.getZahlungsadresse();
+			}
+		}
+
+		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
+			convertedFinSitCont,
+			sozialhilfeBezueger,
+			gemeinsameSteuererklaerung,
+			verguenstigungGewuenscht,
+			familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt(),
+			familiensituationJA.getIban(),
+			familiensituationJA.getKontoinhaber(),
+			familiensituationJA.isAbweichendeZahlungsadresse(),
+			familiensituationJA.getZahlungsadresse() == null ? null :
+				converter.adresseToEntity(familiensituationJA.getZahlungsadresse(), storedAdresse),
+			gesuchId);
 		return converter.gesuchToJAX(persistedGesuch);
 	}
 

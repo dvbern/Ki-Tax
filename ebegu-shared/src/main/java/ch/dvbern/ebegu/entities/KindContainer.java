@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -248,6 +250,15 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.getAnmeldungenTagesschule().add(anmeldungTagesschule.copyAnmeldungTagesschule(
 				new AnmeldungTagesschule(), copyType, target, targetGesuch.getEingangsart()));
 		}
+	}
+
+	@Nonnull
+	public List<AbstractPlatz> getAllPlaetze() {
+		List<AbstractPlatz> plaetze = new ArrayList<>();
+		plaetze.addAll(getBetreuungen());
+		plaetze.addAll(getAnmeldungenTagesschule());
+		plaetze.addAll(getAnmeldungenFerieninsel());
+		return plaetze;
 	}
 
 	@Nonnull
