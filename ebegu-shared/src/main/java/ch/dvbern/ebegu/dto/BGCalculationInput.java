@@ -31,13 +31,6 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.Validate;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Transient;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.Map.Entry;
-
 public class BGCalculationInput {
 
 	private VerfuegungZeitabschnitt parent;
@@ -500,6 +493,7 @@ public class BGCalculationInput {
 		return sb;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void add(@Nonnull BGCalculationInput other) {
 		this.setBetreuungspensumMustBeAtLeastFachstellenpensum(this.isBetreuungspensumMustBeAtLeastFachstellenpensum() || other.isBetreuungspensumMustBeAtLeastFachstellenpensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
