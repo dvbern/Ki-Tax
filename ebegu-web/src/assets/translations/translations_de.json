@@ -1363,7 +1363,7 @@
     "SCHULAMT_ANMELDUNG_AKZEPTIEREN": "Akzeptieren",
     "AKTION_SCHULAMT_FALSCHE_INSTITUTION": "Falsche Institution",
     "CONFIRM_UEBERNAHME_SCHULAMT": "Anmeldung definitiv übernehmen?",
-    "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "Die BetreuungsId wurde ins Zwischenablage übernommen, bitte übernehmen Sie die Daten in Scolaris, bevor Sie okay klicken",
+    "BESCHREIBUNG_UEBERNAHME_SCHULAMT": "Die BetreuungsId wurde in die Zwischenablage übernommen, bitte übernehmen Sie die Daten in Scolaris, bevor Sie okay klicken",
     "AKZEPTIERT": "Finanzielle Verhältnisse akzeptiert",
     "ABGELEHNT": "Finanzielle Verhältnisse abgelehnt",
     "CLEANDOWNLOADFILES_BATCH_EXECUTED_OK": "Abgelaufene Download Files wurden erfolgreich gelöscht",
