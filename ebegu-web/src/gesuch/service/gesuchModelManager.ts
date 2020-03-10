@@ -245,6 +245,12 @@ export class GesuchModelManager {
         return false;
     }
 
+    public isLastGesuchsteller(): boolean {
+        return this.isGesuchsteller2Required()
+            ? this.getGesuchstellerNumber() === 2
+            : this.getGesuchstellerNumber() === 1;
+    }
+
     // tslint:disable-next-line:naming-convention
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         return gs === 2 ?
@@ -1632,5 +1638,17 @@ export class GesuchModelManager {
         return this.getFamiliensituation().sozialhilfeBezueger
             && (this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled
                 || this.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled);
+    }
+
+    public isMahlzeitenverguenstigungEnabled(): boolean {
+        return this.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
+    }
+
+    public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
+        return this.gesuchRS.updateAlwaysEditableProperties(properties)
+            .then(gesuchResponse => {
+                this.setGesuch(gesuchResponse);
+                return gesuchResponse;
+            });
     }
 }

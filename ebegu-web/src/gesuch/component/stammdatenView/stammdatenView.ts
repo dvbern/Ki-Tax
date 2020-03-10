@@ -154,6 +154,37 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.isLastVerfuegtesGesuch = this.gesuchModelManager.isNeuestesGesuch();
     }
 
+    public preSave(): IPromise<TSGesuchstellerContainer> {
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+
+        if (this.areEmailTelefonEditable() && this.isGesuchReadonly()) {
+            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
+            if (this.gesuchstellerNumber === 2) {
+                properties.mailGS2 = this.getModelJA().mail;
+                properties.mobileGS2 = this.getModelJA().mobile;
+                properties.telefonGS2 = this.getModelJA().telefon;
+                properties.telefonAuslandGS2 = this.getModelJA().telefonAusland;
+            } else {
+                properties.mailGS1 = this.getModelJA().mail;
+                properties.mobileGS1 = this.getModelJA().mobile;
+                properties.telefonGS1 = this.getModelJA().telefon;
+                properties.telefonAuslandGS1 = this.getModelJA().telefonAusland;
+            }
+
+            return this.gesuchModelManager.updateAlwaysEditableProperties(properties).then( g => {
+                if (this.gesuchstellerNumber === 2) {
+                    return g.gesuchsteller2;
+                }
+                return g.gesuchsteller1;
+            });
+
+        }
+
+        return this.save();
+    }
+
     public save(): IPromise<TSGesuchstellerContainer> {
         if (!this.isGesuchValid()) {
             return undefined;
@@ -176,7 +207,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
         this.updateStatusStepUmzug();
         this.errorService.clearAll();
-        // todo bei Aenderungen von Kontaktdaten sollte man nicht den ganzen GS updaten sondern nur die Kontakdaten
         return this.gesuchModelManager.updateGesuchsteller(false);
     }
 
@@ -318,5 +348,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             return true;
         }
         return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
+    }
+
+    public isLastStepOfSteueramt(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())
+            && this.gesuchModelManager.isLastGesuchsteller();
     }
 }

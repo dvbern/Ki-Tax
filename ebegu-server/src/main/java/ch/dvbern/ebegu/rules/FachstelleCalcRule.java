@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -59,18 +60,32 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		Betreuung betreuung = (Betreuung) platz;
 		int pensumFachstelle = inputData.getFachstellenpensum();
+		boolean betreuungspensumMustBeAtLeastFachstellenpensum = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBetreuungspensumMustBeAtLeastFachstellenpensum();
+		BigDecimal pensumBetreuung = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
 		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
-			// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
-			inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
-			inputData.getParent().addBemerkung(
-				RuleKey.FACHSTELLE,
-				MsgKey.FACHSTELLE_MSG,
-				getLocale(),
-				getIndikation(betreuung),
-				getFachstelle(betreuung));
+			if (!betreuungspensumMustBeAtLeastFachstellenpensum
+				|| pensumBetreuung.compareTo(BigDecimal.valueOf(roundedPensumFachstelle)) >= 0) {
+
+				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
+				inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
+				inputData.getParent().addBemerkung(
+					RuleKey.FACHSTELLE,
+					MsgKey.FACHSTELLE_MSG,
+					getLocale(),
+					getIndikation(betreuung),
+					getFachstelle(betreuung));
+			} else {
+				// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle Pensum als
+				// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
+				int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
+				// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
+				if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
+					verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(roundedPensumFachstelle);
+				}
+			}
 		}
 	}
 
