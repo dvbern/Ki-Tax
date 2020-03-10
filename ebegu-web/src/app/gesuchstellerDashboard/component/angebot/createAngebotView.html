@@ -113,39 +113,6 @@
                                         </div>
                                     </div>
 
-                                    <!--Wohnhaft im gleichen Haushalt-->
-                                    <div class="row">
-                                        <div class="col-sm-12 dv-input-container-question">
-                                            <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
-                                                <dv-input-container class="form-group">
-                                                    <label class="md-no-float"
-                                                           for="gleichemHaushalt">
-                                                        <span data-translate="WOHNHAFT_IM_GLEICHEN_HAUSHALT"
-                                                              class="ebeguH1">
-                                                        </span>
-                                                        <dv-tooltip input-id="gleichemHaushalt"
-                                                                    text="'WOHNHAFT_IM_GLEICHEN_HAUSHALT_HELP' | translate"></dv-tooltip>
-                                                    </label>
-                                                    <div class="dv-input-container-small" style="padding-right:32px;">
-                                                        <input aria-describedby="gleichemHaushalt-error"
-                                                               id="gleichemHaushalt"
-                                                               type="number" name="gleichemHaushalt"
-                                                               ng-model="vm.anmeldungDTO.wohnhaftImGleichenHaushalt"
-                                                               max="100"
-                                                               dv-max-length class="form-control"
-                                                               ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
-                                                               ng-required="vm.anmeldungDTO.additionalKindQuestions"
-                                                               ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
-                                                        <dv-error-messages input-id="gleichemHaushalt"
-                                                                           for="vm.form.gleichemHaushalt.$error"
-                                                                           class="error"></dv-error-messages>
-                                                    </div>
-                                                </dv-input-container>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
                                     <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
                                     <div class="row">
                                         <div class="col-sm-12 dv-input-container-medium form-group"

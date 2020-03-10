@@ -22,12 +22,14 @@ import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.resource.DossierResource;
 import ch.dvbern.ebegu.api.resource.EinkommensverschlechterungInfoResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -100,8 +102,11 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 		JaxDossier returnedDossier = (JaxDossier) dossierResource.create(testJaxGesuch.getDossier(), DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 		testJaxGesuch.setDossier(returnedDossier);
 		Assert.assertNotNull(returnedFall);
-		testJaxGesuch.setGesuchsperiode(saveGesuchsperiodeInStatusAktiv(testJaxGesuch.getGesuchsperiode()));
+		JaxGesuchsperiode jaxGesuchsperiode = saveGesuchsperiodeInStatusAktiv(testJaxGesuch.getGesuchsperiode());
+		testJaxGesuch.setGesuchsperiode(jaxGesuchsperiode);
 		testJaxGesuch.getDossier().setFall(returnedFall);
+		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, jaxGesuchsperiode.getId());
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		return (JaxGesuch) gesuchResource.create(testJaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE).getEntity();
 	}
 }

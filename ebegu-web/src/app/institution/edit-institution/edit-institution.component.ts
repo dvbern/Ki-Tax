@@ -30,7 +30,6 @@ import {StateService, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {isJugendamt, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -93,7 +92,6 @@ export class EditInstitutionComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
-        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 

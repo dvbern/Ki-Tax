@@ -114,6 +114,8 @@ import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSSozialhilfeZeitraum} from '../models/TSSozialhilfeZeitraum';
+import {TSSozialhilfeZeitraumContainer} from '../models/TSSozialhilfeZeitraumContainer';
 import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
@@ -552,8 +554,16 @@ export class EbeguRestUtil {
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
             restFamiliensituation.verguenstigungGewuenscht =
                 familiensituation.verguenstigungGewuenscht;
+            restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
+                familiensituation.keineMahlzeitenverguenstigungBeantragt;
+            restFamiliensituation.iban = familiensituation.iban;
+            restFamiliensituation.kontoinhaber = familiensituation.kontoinhaber;
+            restFamiliensituation.abweichendeZahlungsadresse = familiensituation.abweichendeZahlungsadresse;
+            restFamiliensituation.zahlungsadresse =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresse);
             return restFamiliensituation;
         }
+
         return undefined;
     }
 
@@ -613,6 +623,13 @@ export class EbeguRestUtil {
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
             familiensituation.verguenstigungGewuenscht =
                 familiensituationFromServer.verguenstigungGewuenscht;
+            familiensituation.keineMahlzeitenverguenstigungBeantragt =
+                familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
+            familiensituation.iban = familiensituationFromServer.iban;
+            familiensituation.kontoinhaber = familiensituationFromServer.kontoinhaber;
+            familiensituation.abweichendeZahlungsadresse = familiensituationFromServer.abweichendeZahlungsadresse;
+            familiensituation.zahlungsadresse =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
             return familiensituation;
         }
         return undefined;
@@ -632,6 +649,9 @@ export class EbeguRestUtil {
             containerTS.familiensituationErstgesuch =
                 this.parseFamiliensituation(containerTS.familiensituationErstgesuch
                     || new TSFamiliensituation(), containerFromServer.familiensituationErstgesuch);
+            containerTS.sozialhilfeZeitraumContainers =
+                this.parseSozialhilfeZeitraumContainers(containerFromServer.sozialhilfeZeitraumContainers);
+
             return containerTS;
         }
         return undefined;
@@ -656,8 +676,70 @@ export class EbeguRestUtil {
                 restFamiliensituationContainer.familiensituationGS =
                     this.familiensituationToRestObject({}, familiensituationContainer.familiensituationGS);
             }
+            restFamiliensituationContainer.sozialhilfeZeitraumContainers = [];
+            if (Array.isArray(familiensituationContainer.sozialhilfeZeitraumContainers)) {
+                restFamiliensituationContainer.sozialhilfeZeitraumContainers =
+                    familiensituationContainer.sozialhilfeZeitraumContainers.map(szc => this.sozialhilfeZeitraumContainerToRestObject({}, szc));
+            }
 
             return restFamiliensituationContainer;
+        }
+        return undefined;
+    }
+
+    public sozialhilfeZeitraumContainerToRestObject(
+        restSozialhilfeZeitraumContainer: any,
+        sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer,
+    ): any {
+        if (sozialhilfeZeitraumContainer) {
+            this.abstractMutableEntityToRestObject(restSozialhilfeZeitraumContainer, sozialhilfeZeitraumContainer);
+            restSozialhilfeZeitraumContainer.sozialhilfeZeitraumGS =
+                this.sozialhilfeZeitraumToRestObject({}, sozialhilfeZeitraumContainer.sozialhilfeZeitraumGS);
+            restSozialhilfeZeitraumContainer.sozialhilfeZeitraumJA =
+                this.sozialhilfeZeitraumToRestObject({}, sozialhilfeZeitraumContainer.sozialhilfeZeitraumJA);
+            return restSozialhilfeZeitraumContainer;
+        }
+        return undefined;
+    }
+
+    public sozialhilfeZeitraumToRestObject(restSozialhilfeZeitraum: any, sozialhilfeZeitraum: TSSozialhilfeZeitraum): any {
+        if (sozialhilfeZeitraum) {
+            this.abstractDateRangeEntityToRestObject(restSozialhilfeZeitraum, sozialhilfeZeitraum);
+            return restSozialhilfeZeitraum;
+        }
+        return undefined;
+    }
+
+    private parseSozialhilfeZeitraumContainers(data: Array<any>): TSSozialhilfeZeitraumContainer[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseSozialhilfeZeitraumContainer(new TSSozialhilfeZeitraumContainer(), item))
+            : [this.parseSozialhilfeZeitraumContainer(new TSSozialhilfeZeitraumContainer(), data)];
+    }
+
+    public parseSozialhilfeZeitraumContainer(
+        sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer,
+        sozialhilfeZeitraumContFromServer: any,
+    ): TSSozialhilfeZeitraumContainer {
+        if (sozialhilfeZeitraumContFromServer) {
+            this.parseAbstractMutableEntity(sozialhilfeZeitraumContainer, sozialhilfeZeitraumContFromServer);
+            sozialhilfeZeitraumContainer.sozialhilfeZeitraumGS =
+                this.parseSozialhilfeZeitraum(sozialhilfeZeitraumContainer.sozialhilfeZeitraumGS || new TSSozialhilfeZeitraum(),
+                    sozialhilfeZeitraumContFromServer.sozialhilfeZeitraumGS);
+            sozialhilfeZeitraumContainer.sozialhilfeZeitraumJA =
+                this.parseSozialhilfeZeitraum(sozialhilfeZeitraumContainer.sozialhilfeZeitraumJA || new TSSozialhilfeZeitraum(),
+                    sozialhilfeZeitraumContFromServer.sozialhilfeZeitraumJA);
+            return sozialhilfeZeitraumContainer;
+        }
+        return undefined;
+    }
+
+    public parseSozialhilfeZeitraum(sozialhilfeZeitraum: TSSozialhilfeZeitraum, sozialhilfeZeitraumFromServer: any): TSSozialhilfeZeitraum {
+        if (sozialhilfeZeitraumFromServer) {
+            this.parseDateRangeEntity(sozialhilfeZeitraum, sozialhilfeZeitraumFromServer);
+            return sozialhilfeZeitraum;
         }
         return undefined;
     }
@@ -965,6 +1047,35 @@ export class EbeguRestUtil {
             return dossierTS;
         }
         return undefined;
+    }
+
+    public alwaysEditablePropertiesToRestObject(restProperties: any, gesuch: TSGesuch): any {
+        if (gesuch.gesuchsteller1 && gesuch.gesuchsteller1.gesuchstellerJA) {
+            restProperties.gesuchId = gesuch.id;
+            restProperties.mailGS1 = gesuch.gesuchsteller1.gesuchstellerJA.mail;
+            restProperties.mobileGS1 = gesuch.gesuchsteller1.gesuchstellerJA.mobile;
+            restProperties.telefonGS1 = gesuch.gesuchsteller1.gesuchstellerJA.telefon;
+            restProperties.telefonAuslandGS1 = gesuch.gesuchsteller1.gesuchstellerJA.telefonAusland;
+        }
+        if (gesuch.gesuchsteller2 && gesuch.gesuchsteller2.gesuchstellerJA) {
+            restProperties.mailGS2 = gesuch.gesuchsteller2.gesuchstellerJA.mail;
+            restProperties.mobileGS2 = gesuch.gesuchsteller2.gesuchstellerJA.mobile;
+            restProperties.telefonGS2 = gesuch.gesuchsteller2.gesuchstellerJA.telefon;
+            restProperties.telefonAuslandGS2 = gesuch.gesuchsteller2.gesuchstellerJA.telefonAusland;
+        }
+
+        if (gesuch.familiensituationContainer && gesuch.familiensituationContainer.familiensituationJA) {
+            restProperties.keineMahlzeitenverguenstigungBeantragt =
+                gesuch.familiensituationContainer.familiensituationJA.keineMahlzeitenverguenstigungBeantragt;
+            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.iban;
+            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaber;
+            restProperties.abweichendeZahlungsadresse =
+                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresse;
+            restProperties.zahlungsadresse =
+                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresse);
+        }
+
+        return restProperties;
     }
 
     public gesuchToRestObject(restGesuch: any, gesuch: TSGesuch): TSGesuch {
@@ -1861,6 +1972,10 @@ export class EbeguRestUtil {
 
         restAbweichung.vertraglichesPensum = originalPensum;
         restAbweichung.pensum = pensum;
+        restAbweichung.monatlicheHauptmahlzeiten = abweichung.monatlicheHauptmahlzeiten;
+        restAbweichung.monatlicheNebenmahlzeiten = abweichung.monatlicheNebenmahlzeiten;
+        restAbweichung.vertraglicheHauptmahlzeiten = abweichung.vertraglicheHauptmahlzeiten;
+        restAbweichung.vertraglicheNebenmahlzeiten = abweichung.vertraglicheNebenmahlzeiten;
 
         return restAbweichung;
     }
@@ -1893,6 +2008,8 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -1903,6 +2020,8 @@ export class EbeguRestUtil {
         betreuungspensum: TSBetreuungsmitteilungPensum,
     ): any {
         this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
+        restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
         return restBetreuungspensum;
     }
 
@@ -1989,6 +2108,10 @@ export class EbeguRestUtil {
         const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
 
+        abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
+        abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
+        abweichungTS.monatlicheHauptmahlzeiten = abweichungFromServer.monatlicheHauptmahlzeiten;
+        abweichungTS.monatlicheNebenmahlzeiten = abweichungFromServer.monatlicheNebenmahlzeiten;
         abweichungTS.vertraglichesPensum = originalPensum;
         abweichungTS.pensum = pensum;
 
@@ -2064,6 +2187,8 @@ export class EbeguRestUtil {
         if (betreuungspensumFromServer) {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
+            betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
+            betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
@@ -2076,6 +2201,8 @@ export class EbeguRestUtil {
     ): TSBetreuungsmitteilungPensum {
         if (betreuungspensumFromServer) {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
+            betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             return betreuungspensumTS;
         }
         return undefined;
