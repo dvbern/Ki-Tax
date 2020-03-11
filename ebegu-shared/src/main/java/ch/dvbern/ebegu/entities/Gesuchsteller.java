@@ -15,10 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.util.Constants;
-import org.hibernate.envers.Audited;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,7 +26,11 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Objects;
+
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.Constants;
+import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -48,14 +49,17 @@ public class Gesuchsteller extends AbstractPersonEntity {
 	@Column(nullable = true)
 	private String mail;
 
+	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
 	private String mobile;
 
+	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
 	private String telefon;
 
+	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String telefonAusland;
 
@@ -80,27 +84,30 @@ public class Gesuchsteller extends AbstractPersonEntity {
 		this.mail = mail;
 	}
 
+	@Nullable
 	public String getMobile() {
 		return mobile;
 	}
 
-	public void setMobile(final String mobile) {
+	public void setMobile(@Nullable final String mobile) {
 		this.mobile = mobile;
 	}
 
+	@Nullable
 	public String getTelefon() {
 		return telefon;
 	}
 
-	public void setTelefon(final String telefon) {
+	public void setTelefon(@Nullable final String telefon) {
 		this.telefon = telefon;
 	}
 
+	@Nullable
 	public String getTelefonAusland() {
 		return telefonAusland;
 	}
 
-	public void setTelefonAusland(final String telefonAusland) {
+	public void setTelefonAusland(@Nullable final String telefonAusland) {
 		this.telefonAusland = telefonAusland;
 	}
 

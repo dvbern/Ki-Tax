@@ -22,12 +22,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -42,6 +44,8 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -99,6 +103,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
+		boolean keineMahlzeitenverguenstigungGewuenscht,
+		@Nullable String iban,
+		@Nullable String kontoinhaber,
+		boolean abweichendeZahlungsadresse,
+		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId
 	) {
 		// Die eigentliche FinSit speichern
@@ -110,6 +119,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			sozialhilfebezueger,
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
+			keineMahlzeitenverguenstigungGewuenscht,
+			iban,
+			kontoinhaber,
+			abweichendeZahlungsadresse,
+			zahlungsadresse,
 			gesuchId
 		);
 
@@ -127,6 +141,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
 		@Nonnull Boolean verguenstigungGewuenscht,
+		boolean keineMahlzeitenverguenstigungGewuenscht,
+		@Nullable String iban,
+		@Nullable String kontoinhaber,
+		boolean abweichendeZahlungsadresse,
+		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId
 	) {
 		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
@@ -135,8 +154,29 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
+		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
+			familiensituationContainer.getSozialhilfeZeitraumContainers().clear();
+		}
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		familiensituation.setVerguenstigungGewuenscht(verguenstigungGewuenscht);
+		if (verguenstigungGewuenscht.equals(Boolean.TRUE)) {
+			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(keineMahlzeitenverguenstigungGewuenscht);
+			if (StringUtils.isNoneEmpty(iban)) {
+				familiensituation.setIban(new IBAN(iban));
+			} else {
+				familiensituation.setIban(null);
+			}
+			familiensituation.setKontoinhaber(kontoinhaber);
+			familiensituation.setAbweichendeZahlungsadresse(abweichendeZahlungsadresse);
+			familiensituation.setZahlungsadresse(zahlungsadresse);
+		} else {
+			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
+			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
+			familiensituation.setIban(null);
+			familiensituation.setKontoinhaber(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
+			familiensituation.setZahlungsadresse(null);
+		}
 		// Der FinSit-Status wird automatisch auf TRUE gesetzt, wenn der Benutzer keine FinSit angeben muss
 		boolean finSitRequired = EbeguUtil.isNullOrFalse(sozialhilfebezueger) && EbeguUtil.isNotNullAndTrue(verguenstigungGewuenscht);
 		if (gesuch.getFinSitStatus() == null && !finSitRequired) {

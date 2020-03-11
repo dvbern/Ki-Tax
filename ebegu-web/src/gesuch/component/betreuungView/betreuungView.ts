@@ -631,6 +631,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
         tsBetreuungspensum.nichtEingetreten = false;
         tsBetreuungspensum.gueltigkeit = new TSDateRange();
+
+        if (!this.isMahlzeitenverguenstigungActive()) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die validierung nicht fehlschlägt falls
+            // die gemeinde die vergünstigung deaktiviert hat
+            tsBetreuungspensum.monatlicheNebenmahlzeiten = 0;
+            tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
+        }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }

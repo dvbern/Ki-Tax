@@ -19,6 +19,7 @@ import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzie
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSWizardSubStepName} from '../../../models/enums/TSWizardSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -203,5 +204,11 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)
             && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)
             && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
+    }
+
+    public subStepName(): TSWizardSubStepName {
+        return this.gesuchModelManager.gesuchstellerNumber === 2 ?
+            TSWizardSubStepName.FINANZIELLE_SITUATON_GS2 :
+            TSWizardSubStepName.FINANZIELLE_SITUATON_GS1;
     }
 }
