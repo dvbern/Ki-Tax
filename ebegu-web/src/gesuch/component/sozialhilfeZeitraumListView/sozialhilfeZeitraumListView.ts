@@ -22,6 +22,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {SozialhilfeZeitraumRS} from '../../../app/core/service/sozialhilfeZeitraumRS.rest';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialhilfeZeitraumContainer} from '../../../models/TSSozialhilfeZeitraumContainer';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -78,6 +79,15 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
 
     private initViewModel(): void {
         this.initSozialhilfeZeitraumList();
+        if (this.isSaveDisabled()) {
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepStatus.IN_BEARBEITUNG);
+        } else {
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepStatus.OK);
+        }
     }
 
     public initSozialhilfeZeitraumList(): void {
@@ -137,6 +147,9 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     }
 
     public isSaveDisabled(): boolean {
+        if (this.sozialhilfeZeitraeume && this.sozialhilfeZeitraeume.length <= 0) {
+            return true;
+        }
         return false;
     }
 
