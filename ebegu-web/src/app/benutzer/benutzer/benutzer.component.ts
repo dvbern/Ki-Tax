@@ -37,7 +37,7 @@ import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('BenutzerComponent');
@@ -51,6 +51,9 @@ const LOG = LogFactory.createLog('BenutzerComponent');
 export class BenutzerComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
+
+    private readonly log: Log = LogFactory.createLog('BenutzerComponent');
+
 
     public readonly TSRoleUtil = TSRoleUtil;
     public readonly TSBenutzerStatus = TSBenutzerStatus;
@@ -282,5 +285,37 @@ export class BenutzerComponent implements OnInit {
                     ));
                 });
             });
+    }
+
+    public canBenutzerBeDeleted(): boolean {
+        // Alle ausser Superadmin dürfen gelöscht werden
+        return this.selectedUser.getCurrentRole() !== TSRole.SUPER_ADMIN;
+    }
+
+    public deleteBenutzer(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'BENUTZER_DELETE_CONFIRMATION_TITLE',
+            text: 'BENUTZER_DELETE_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.benutzerRS.removeBenutzer(this.selectedUser.username).then(value => {
+                        this.$state.go('admin.benutzerlist').then(() => {
+                            this.errorService.addMesageAsInfo(this.translate.instant(
+                                'BENUTZER_DELETED_MESSAGE',
+                                {fullName: this.selectedUser.getFullName()}
+                            ));
+                        });
+                    });
+                },
+                () => {
+                    this.log.error('error in observable. deleteBenutzer');
+                }
+            );
     }
 }
