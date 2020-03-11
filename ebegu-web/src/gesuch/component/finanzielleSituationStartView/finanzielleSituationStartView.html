@@ -111,6 +111,7 @@
                                                         ng-required="true"
                                                         ng-change="vm.steuererklaerungClicked()"
                                                         dv-enable-element
+                                                        false-option-label="{{'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN' | translate}}"
                                                         dv-enable-allowed-roles="vm.allowedRoles"
                                                         dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                         aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}"
