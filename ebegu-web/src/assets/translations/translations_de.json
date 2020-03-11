@@ -1444,7 +1444,7 @@
     "BENUTZER_STATUS_AKTIV": "aktiv",
     "BENUTZER_STATUS_GESPERRT": "gesperrt",
     "BENUTZER_STATUS_EINGELADEN": "eingeladen",
-    "BENUTZER_EINLADEN_NUTZUNGSBEDINGUNGEN_INFO": "Wenn Sie neue Mitarbeiter einladen, sind Sie verantwortlich dafür, dass die Benutzer die Nutzungsbedingungen/Datenschutzbestimmungen gelesen haben und bewusst sind",
+    "BENUTZER_EINLADEN_NUTZUNGSBEDINGUNGEN_INFO": "Wenn Sie neue Mitarbeiter einladen, sind Sie verantwortlich, dass die Benutzer die Nutzungsbedingungen/Datenschutzbestimmungen gelesen haben und sich deren bewusst sind",
     "DEUTSCH": "Deutsch",
     "FRANZOESISCH": "Französisch",
     "DEUTSCH_ODER_FRANZOESISCH": "Deutsch oder Französisch",
