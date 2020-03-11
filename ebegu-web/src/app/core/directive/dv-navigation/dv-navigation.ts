@@ -518,6 +518,11 @@ export class NavigatorController implements IController {
             return false;
         }
 
+        // Wenn dvNtextDisabled gesetzt ist und true zurückgibt, soll dies immer alle anderen Regeln übersteuern
+        if (this.dvNextDisabled && this.dvNextDisabled() === true) {
+            return true;
+        }
+
         if (TSWizardStepName.GESUCHSTELLER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
             return !this.gesuchModelManager.isGesuchsteller2Required()
                 && !nextStepBesucht;
@@ -531,11 +536,6 @@ export class NavigatorController implements IController {
             return !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
                 && !nextStepBesucht;
         }
-        if (TSWizardStepName.ERWERBSPENSUM === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return this.dvNextDisabled()
-                && !nextStepBesucht;
-        }
-
         return false;
     }
 
