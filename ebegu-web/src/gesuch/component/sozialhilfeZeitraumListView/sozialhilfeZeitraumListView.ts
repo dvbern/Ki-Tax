@@ -80,11 +80,11 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     private initViewModel(): void {
         this.initSozialhilfeZeitraumList();
         if (this.isSaveDisabled()) {
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            this.wizardStepManager.updateWizardStepStatus(
                 TSWizardStepName.FINANZIELLE_SITUATION,
-                TSWizardStepStatus.IN_BEARBEITUNG);
+                TSWizardStepStatus.NOK);
         } else {
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            this.wizardStepManager.updateWizardStepStatus(
                 TSWizardStepName.FINANZIELLE_SITUATION,
                 TSWizardStepStatus.OK);
         }
@@ -147,10 +147,7 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     }
 
     public isSaveDisabled(): boolean {
-        if (this.sozialhilfeZeitraeume && this.sozialhilfeZeitraeume.length <= 0) {
-            return true;
-        }
-        return false;
+        return this.sozialhilfeZeitraeume && this.sozialhilfeZeitraeume.length <= 0;
     }
 
     public isRemoveAllowed(_sozialhilfeZeitraumToEdit: TSSozialhilfeZeitraumContainer): boolean {
