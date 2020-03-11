@@ -920,7 +920,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 					monat);
 				auszahlungDTO.setZahlungText(zahlungstext);
 
-				pain001DTO.getAuszahlungen().add(auszahlungDTO);
+				if (!debitorIban.equals(auszahlungDTO.getZahlungsempfaegerIBAN())) {
+					pain001DTO.getAuszahlungen().add(auszahlungDTO);
+				}
 			});
 
 		return pain001DTO;
