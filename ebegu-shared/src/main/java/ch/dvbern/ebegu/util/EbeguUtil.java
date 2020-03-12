@@ -161,6 +161,14 @@ public final class EbeguUtil {
 		return value == null || !value;
 	}
 
+	public static boolean isNotNullAndTrue(@Nullable Boolean value) {
+		return value != null && value;
+	}
+
+	public static boolean isNotNullAndFalse(@Nullable Boolean value) {
+		return value != null && !value;
+	}
+
 	/**
 	 * Returns true if both list are null or if they have the same number of elements
 	 */
