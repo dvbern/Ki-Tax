@@ -153,6 +153,20 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Objects.requireNonNull(familiensituationContainer);
 		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
 		Objects.requireNonNull(familiensituation);
+
+		// Falls vorher keine Vergünstigung gewünscht war, müssen wir den FinSitStatus wieder zurücksetzen, da dieser automatisch auf
+		// AKZEPTIERT gesetzt wurde
+		Boolean verguenstigungGewuenschtVorher = familiensituation.getVerguenstigungGewuenscht();
+		if (!verguenstigungGewuenscht.equals(verguenstigungGewuenschtVorher) && EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
+			if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
+				// Es war vorher explizit nicht gewünscht -> wir setzen den Wert zurück
+				gesuch.setFinSitStatus(null);
+			} else if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht)) {
+				// Es ist neu explizit nicht mehr gewünscht -> wir setzen den Wert auf AKZEPTIERT
+				gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+			}
+		}
+
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
 			familiensituationContainer.getSozialhilfeZeitraumContainers().clear();
@@ -176,12 +190,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			familiensituation.setKontoinhaber(null);
 			familiensituation.setAbweichendeZahlungsadresse(false);
 			familiensituation.setZahlungsadresse(null);
-		}
-
-		// Der FinSit-Status wird automatisch auf TRUE gesetzt, wenn der Benutzer keine FinSit angeben will
-		boolean finSitNotRequired = EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht);
-		if (gesuch.getFinSitStatus() == null && finSitNotRequired) {
-			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		}
 		return gesuch;
 	}
