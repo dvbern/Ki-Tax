@@ -37,9 +37,11 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -151,6 +153,20 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		Objects.requireNonNull(familiensituationContainer);
 		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
 		Objects.requireNonNull(familiensituation);
+
+		// Falls vorher keine Vergünstigung gewünscht war, müssen wir den FinSitStatus wieder zurücksetzen, da dieser automatisch auf
+		// AKZEPTIERT gesetzt wurde
+		Boolean verguenstigungGewuenschtVorher = familiensituation.getVerguenstigungGewuenscht();
+		if (!verguenstigungGewuenscht.equals(verguenstigungGewuenschtVorher) && EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
+			if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
+				// Es war vorher explizit nicht gewünscht -> wir setzen den Wert zurück
+				gesuch.setFinSitStatus(null);
+			} else if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht)) {
+				// Es ist neu explizit nicht mehr gewünscht -> wir setzen den Wert auf AKZEPTIERT
+				gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+			}
+		}
+
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
 			familiensituationContainer.getSozialhilfeZeitraumContainers().clear();
