@@ -157,11 +157,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		// Falls vorher keine Vergünstigung gewünscht war, müssen wir den FinSitStatus wieder zurücksetzen, da dieser automatisch auf
 		// AKZEPTIERT gesetzt wurde
 		Boolean verguenstigungGewuenschtVorher = familiensituation.getVerguenstigungGewuenscht();
-		if (!verguenstigungGewuenscht.equals(verguenstigungGewuenschtVorher) && EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
-			if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
-				// Es war vorher explizit nicht gewünscht -> wir setzen den Wert zurück
-				gesuch.setFinSitStatus(null);
-			}
+		if (!verguenstigungGewuenscht.equals(verguenstigungGewuenschtVorher)
+			&& EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
+			// Es war vorher explizit nicht gewünscht -> wir setzen den Wert zurück
+			gesuch.setFinSitStatus(null);
 		}
 
 		if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht)) {
