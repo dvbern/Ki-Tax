@@ -178,14 +178,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			familiensituation.setZahlungsadresse(null);
 		}
 
-		// falls sich der Antragsteller umentscheidet, müssen wir den Wert wieder zurücksetzen
-		if (gesuch.getFinSitStatus() == FinSitStatus.AKZEPTIERT && !gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen()) {
-			gesuch.setFinSitStatus(null);
-		}
-
-		// Der FinSit-Status wird automatisch auf TRUE gesetzt, wenn der Benutzer keine FinSit angeben muss
-		boolean finSitRequired = EbeguUtil.isNullOrFalse(sozialhilfebezueger) && EbeguUtil.isNotNullAndTrue(verguenstigungGewuenscht);
-		if (gesuch.getFinSitStatus() == null && !finSitRequired) {
+		// Der FinSit-Status wird automatisch auf TRUE gesetzt, wenn der Benutzer keine FinSit angeben will
+		boolean finSitNotRequired = EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht);
+		if (gesuch.getFinSitStatus() == null && finSitNotRequired) {
 			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		}
 		return gesuch;
