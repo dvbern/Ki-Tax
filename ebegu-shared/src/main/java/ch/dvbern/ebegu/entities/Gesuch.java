@@ -880,8 +880,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
-				&& getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
-				&& getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht().equals(Boolean.FALSE)) {
+				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht())) {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
 			break;
@@ -897,8 +896,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyDokumentGruende(target, copyType);
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
-				&& getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
-				&& getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht().equals(Boolean.FALSE)) {
+				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht())) {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
 			break;
