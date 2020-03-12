@@ -161,10 +161,12 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenschtVorher)) {
 				// Es war vorher explizit nicht gewünscht -> wir setzen den Wert zurück
 				gesuch.setFinSitStatus(null);
-			} else if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht)) {
-				// Es ist neu explizit nicht mehr gewünscht -> wir setzen den Wert auf AKZEPTIERT
-				gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
+		}
+
+		if (EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht)) {
+			// Es ist neu explizit nicht mehr gewünscht -> wir setzen den Wert auf AKZEPTIERT
+			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		}
 
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
