@@ -342,6 +342,13 @@ export class TSGesuch extends TSAbstractAntragEntity {
         return false;
     }
 
+    public extractFamiliensituationGS(): TSFamiliensituation {
+        if (this.familiensituationContainer) {
+            return this.familiensituationContainer.familiensituationGS;
+        }
+        return undefined;
+    }
+
     public extractFamiliensituation(): TSFamiliensituation {
         if (this.familiensituationContainer) {
             return this.familiensituationContainer.familiensituationJA;

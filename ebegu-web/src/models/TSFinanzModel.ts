@@ -33,6 +33,7 @@ export class TSFinanzModel {
     private _einkommensverschlechterungContainerGS2: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer;
 
+    private _zahlungsinformationenGS: TSZahlungsinformationen;
     private _zahlungsinformationen: TSZahlungsinformationen;
 
     private readonly basisjahr: number;
@@ -123,6 +124,17 @@ export class TSFinanzModel {
         this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
         this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
             gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
+
+        if (gesuch.extractFamiliensituationGS()) {
+            this.zahlungsinformationenGS = new TSZahlungsinformationen();
+            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaber;
+            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().iban;
+            this.zahlungsinformationenGS.abweichendeZahlungsadresse =
+                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresse;
+            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
+            this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
+                gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
+        }
 
         this.initFinSit();
     }
@@ -285,6 +297,14 @@ export class TSFinanzModel {
 
     public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
         this._einkommensverschlechterungInfoContainer = value;
+    }
+
+    public get zahlungsinformationenGS(): TSZahlungsinformationen {
+        return this._zahlungsinformationenGS;
+    }
+
+    public set zahlungsinformationenGS(value: TSZahlungsinformationen) {
+        this._zahlungsinformationenGS = value;
     }
 
     // tslint:disable-next-line:cognitive-complexity
