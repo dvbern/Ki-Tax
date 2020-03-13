@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -128,6 +129,18 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setAenderungPer(familiensituationJA.getAenderungPer());
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
+		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
+		familiensituationGS.setIban(familiensituationJA.getIban());
+		familiensituationGS.setKontoinhaber(familiensituationJA.getKontoinhaber());
+		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
+
+		Adresse zahlungsadresseJA = familiensituationJA.getZahlungsadresse();
+		Adresse zahlungsadresseGS = null;
+		if (zahlungsadresseJA != null) {
+			zahlungsadresseGS = new Adresse();
+			copyAdresse(zahlungsadresseGS, zahlungsadresseJA);
+		}
+		familiensituationGS.setZahlungsadresse(zahlungsadresseJA);
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {
@@ -298,6 +311,12 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyGesuchstellerAdresse(@Nonnull GesuchstellerAdresse gs, @Nonnull GesuchstellerAdresse ja) {
+		copyAdresse(gs, ja);
+		gs.setAdresseTyp(ja.getAdresseTyp());
+		gs.setNichtInGemeinde(ja.isNichtInGemeinde());
+	}
+
+	private static void copyAdresse (Adresse gs, Adresse ja) {
 		gs.setGueltigkeit(new DateRange(ja.getGueltigkeit()));
 		gs.setStrasse(ja.getStrasse());
 		gs.setHausnummer(ja.getHausnummer());
@@ -307,8 +326,6 @@ public final class FreigabeCopyUtil {
 		gs.setLand(ja.getLand());
 		gs.setGemeinde(ja.getGemeinde());
 		gs.setOrganisation(ja.getOrganisation());
-		gs.setAdresseTyp(ja.getAdresseTyp());
-		gs.setNichtInGemeinde(ja.isNichtInGemeinde());
 	}
 
 	private static void copyAbstractFinanzielleSituation(
