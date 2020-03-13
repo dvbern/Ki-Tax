@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
-import ch.dvbern.ebegu.errors.SchulamtException;
+import ch.dvbern.ebegu.errors.ScolarisException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class ScolarisConverterTest {
 				try {
 					converter.betreuungsangebotTypToScolaris(betreuungsangebotTyp);
 					Assert.fail("SchulamtException expected");
-				} catch (SchulamtException e) {
+				} catch (ScolarisException e) {
 					// Exception expected
 				}
 			}
@@ -83,7 +83,7 @@ public class ScolarisConverterTest {
 				try {
 					converter.betreuungsstatusToScolaris(betreuungsstatus);
 					Assert.fail("SchulamtException expected");
-				} catch (SchulamtException e) {
+				} catch (ScolarisException e) {
 					// Exception expected
 				}
 			}
@@ -107,7 +107,7 @@ public class ScolarisConverterTest {
 				try {
 					converter.modulnameToScolaris(modulTagesschuleName);
 					Assert.fail("SchulamtException expected");
-				} catch (SchulamtException e) {
+				} catch (ScolarisException e) {
 					// Exception expected
 				}
 			} else {

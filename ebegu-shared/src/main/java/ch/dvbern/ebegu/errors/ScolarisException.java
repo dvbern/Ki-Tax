@@ -22,11 +22,11 @@ import javax.ejb.ApplicationException;
 
 
 @ApplicationException(rollback = true)
-public class SchulamtException extends RuntimeException {
+public class ScolarisException extends Exception {
 
 	private static final long serialVersionUID = 306424922900479199L;
 
-	public SchulamtException(@Nonnull String message) {
+	public ScolarisException(@Nonnull String message) {
 		super(message);
 	}
 }
