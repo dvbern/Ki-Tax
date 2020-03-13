@@ -139,6 +139,8 @@
                                              aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}">
                                     <span data-translate="MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT"></span>
                                 </md-checkbox>
+                                <dv-bisher gs="vm.model.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt"
+                                           ja="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -152,6 +154,8 @@
                                     <input id="iban" type="text" name="iban"
                                            ng-model="vm.model.zahlungsinformationen.iban"
                                            dv-max-length class="form-control" required>
+                                    <dv-bisher gs="vm.model.zahlungsinformationenGS.iban"
+                                               ja="vm.model.zahlungsinformationen.iban"></dv-bisher>
                                     <dv-error-messages for="vm.form.iban.$error" class="error"
                                                        input-id="iban">></dv-error-messages>
                                 </dv-input-container>
@@ -167,6 +171,8 @@
                                     <input id="kontoinhaber" type="text" name="kontoinhaber"
                                            ng-model="vm.model.zahlungsinformationen.kontoinhaber" required
                                            dv-max-length class="form-control">
+                                    <dv-bisher gs="vm.model.zahlungsinformationenGS.kontoinhaber"
+                                               ja="vm.model.zahlungsinformationen.kontoinhaber"></dv-bisher>
                                     <dv-error-messages for="vm.form.kontoinhaber.$error" class="error"
                                                        input-id="kontoinhaber"></dv-error-messages>
                                 </dv-input-container>
@@ -181,6 +187,8 @@
                                                  aria-label="{{'MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE'|translate}}">
                                         <span data-translate="MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE"></span>
                                     </md-checkbox>
+                                    <dv-bisher gs="vm.model.zahlungsinformationenGS.abweichendeZahlungsadresse"
+                                               ja="vm.model.zahlungsinformationen.abweichendeZahlungsadresse"></dv-bisher>
                                 </div>
                             </div>
                         </div>
@@ -193,6 +201,8 @@
                                         <input id="adresseStrasse" type="text" name="adresseStrasse"
                                                ng-model="vm.model.zahlungsinformationen.zahlungsadresse.strasse"
                                                dv-max-length class="form-control" required>
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.strasse"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.strasse"></dv-bisher>
                                         <dv-error-messages for="adresseForm.adresseStrasse.$error"
                                                            class="error"></dv-error-messages>
                                     </dv-input-container>
@@ -205,6 +215,8 @@
                                                name="adresseHausnummer"
                                                ng-model="vm.model.zahlungsinformationen.zahlungsadresse.hausnummer"
                                                dv-max-length class="form-control">
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.hausnummer"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.hausnummer"></dv-bisher>
                                         <dv-error-messages for="adresseForm.adresseHausnummer.$error"
                                                            class="error"></dv-error-messages>
                                     </dv-input-container>
@@ -220,6 +232,8 @@
                                                name="adresseZusatzzeile"
                                                ng-model="vm.model.zahlungsinformationen.zahlungsadresse.zusatzzeile"
                                                dv-max-length class="form-control">
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.zusatzzeile"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.zusatzzeile"></dv-bisher>
                                         <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
                                                            class="error"></dv-error-messages>
                                     </dv-input-container>
@@ -235,6 +249,8 @@
                                         <input id="adressePlz" type="text" name="adressePlz"
                                                ng-model="vm.model.zahlungsinformationen.zahlungsadresse.plz"
                                                dv-max-length class="form-control" required>
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.plz"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.plz"></dv-bisher>
                                         <dv-error-messages for="adresseForm.adressePlz.$error"
                                                            class="error"></dv-error-messages>
                                     </dv-input-container>
@@ -245,6 +261,8 @@
                                         <input id="adresseOrt" type="text" name="adresseOrt"
                                                ng-model="vm.model.zahlungsinformationen.zahlungsadresse.ort"
                                                dv-max-length class="form-control" required>
+                                        <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.ort"
+                                                   ja="vm.model.zahlungsinformationen.zahlungsadresse.ort"></dv-bisher>
                                         <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
                                     </dv-input-container>
                                 </div>
@@ -264,6 +282,8 @@
                                                     class="form-control"
                                                     required>
                                             </select>
+                                            <dv-bisher gs="vm.model.zahlungsinformationenGS.zahlungsadresse.land"
+                                                       ja="vm.model.zahlungsinformationen.zahlungsadresse.land"></dv-bisher>
                                             <dv-error-messages for="adresseForm.adresseLand.$error"
                                                                class="error"></dv-error-messages>
                                         </div>

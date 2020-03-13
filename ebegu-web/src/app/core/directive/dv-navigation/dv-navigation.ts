@@ -171,12 +171,16 @@ export class NavigatorController implements IController {
         if (this.isSavingEnabled() && this.dvSave) {
             const returnValue = this.dvSave();  // callback ausfuehren, could return promise
             if (returnValue) {
-                this.$q.when(returnValue).then(() => {
-                    this.$timeout(() => {
-                        this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
+                this.$q.when(returnValue)
+                    .then(() => {
+                        this.$timeout(() => {
+                            this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
+                        });
+                    })
+                    .catch(() => {
+                        // the promise was rejected, the navigation aborted:
+                        this.wizardStepManager.isTransitionInProgress = false;
                     });
-
-                });
             } else {
                 // we need to release the semaphore because we stay in the page and we need to allow the user to move on
                 this.wizardStepManager.isTransitionInProgress = false;
@@ -371,7 +375,7 @@ export class NavigatorController implements IController {
 
     private navigateToSubStepFinanzielleSituation(
         navigateToSubStep: TSWizardSubStepName,
-        navigateToStepIfNoSubstep: TSWizardStepName
+        navigateToStepIfNoSubstep: TSWizardStepName,
     ): TransitionPromise {
         switch (navigateToSubStep) {
             case TSWizardSubStepName.KEIN_WEITERER_SUBSTEP:
@@ -514,6 +518,11 @@ export class NavigatorController implements IController {
             return false;
         }
 
+        // Wenn dvNtextDisabled gesetzt ist und true zurückgibt, soll dies immer alle anderen Regeln übersteuern
+        if (this.dvNextDisabled && this.dvNextDisabled() === true) {
+            return true;
+        }
+
         if (TSWizardStepName.GESUCHSTELLER === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
             return !this.gesuchModelManager.isGesuchsteller2Required()
                 && !nextStepBesucht;
@@ -527,11 +536,6 @@ export class NavigatorController implements IController {
             return !this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
                 && !nextStepBesucht;
         }
-        if (TSWizardStepName.ERWERBSPENSUM === this.wizardStepManager.getCurrentStepName() && this.dvSubStep === 1) {
-            return this.dvNextDisabled()
-                && !nextStepBesucht;
-        }
-
         return false;
     }
 
