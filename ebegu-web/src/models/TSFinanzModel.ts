@@ -33,7 +33,6 @@ export class TSFinanzModel {
     private _einkommensverschlechterungContainerGS2: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer;
 
-
     private _zahlungsinformationenGS: TSZahlungsinformationen;
     private _zahlungsinformationen: TSZahlungsinformationen;
 
