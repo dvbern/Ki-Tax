@@ -67,11 +67,13 @@ export class DvDialog {
         controller?: any,
         params?: { [k in RemoveDialogParams]?: any },
     ): IPromise<any> {
+        // form is the only required parameter, thus it's explicitly kept in the method signature
+        params.form = form;
         const confirm: IDialogOptions = {
             template,
             controller,
             controllerAs: 'vm',
-            locals: {params, form},
+            locals: {params},
         };
         return this.$mdDialog.show(confirm);
     }

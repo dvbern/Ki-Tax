@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -62,9 +63,12 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	private GesuchstellerService gesuchstellerService;
 	@Inject
 	private WizardStepService wizardStepService;
+	@Inject
+	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public FamiliensituationContainer saveFamiliensituation(
 		Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
@@ -83,7 +87,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 				newFamiliensituation.setGemeinsameSteuererklaerung(false);
 			}
 		} else {
-			Familiensituation familiensituationErstgesuch = familiensituationContainer.getFamiliensituationErstgesuch();
+			Familiensituation familiensituationErstgesuch =
+				familiensituationContainer.getFamiliensituationErstgesuch();
 			if (familiensituationErstgesuch != null &&
 				(!familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)
 					&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))) {
@@ -91,30 +96,30 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 				newFamiliensituation.setGemeinsameSteuererklaerung(null);
 			}
 		}
-
 		final FamiliensituationContainer mergedFamiliensituationContainer = persistence.merge
 			(familiensituationContainer);
 		gesuch.setFamiliensituationContainer(mergedFamiliensituationContainer);
 
 		// get old FamSit to compare with
 		Familiensituation oldFamiliensituation;
-		if (mergedFamiliensituationContainer != null && mergedFamiliensituationContainer
-			.getFamiliensituationErstgesuch() != null) {
-			oldFamiliensituation = mergedFamiliensituationContainer.getFamiliensituationErstgesuch();  //bei mutation
-			// immer die Situation vom Erstgesuch als  Basis fuer Wizardstepanpassung
+		if (mergedFamiliensituationContainer != null
+				&& mergedFamiliensituationContainer .getFamiliensituationErstgesuch() != null) {
+			// Bei Mutation immer die Situation vom Erstgesuch als  Basis fuer Wizardstepanpassung
+			oldFamiliensituation = mergedFamiliensituationContainer.getFamiliensituationErstgesuch();
 		} else {
 			oldFamiliensituation = loadedFamiliensituation;
 		}
 
-			//Alle Daten des GS2 loeschen wenn man von 2GS auf 1GS wechselt und GS2 bereits erstellt wurde
+		//Alle Daten des GS2 loeschen wenn man von 2GS auf 1GS wechselt und GS2 bereits erstellt wurde
 		assert mergedFamiliensituationContainer != null;
 		if (gesuch.getGesuchsteller2() != null
-			&& isNeededToRemoveGesuchsteller2(gesuch, mergedFamiliensituationContainer.extractFamiliensituation(), oldFamiliensituation)
+			&& isNeededToRemoveGesuchsteller2(gesuch, mergedFamiliensituationContainer.extractFamiliensituation(),
+			oldFamiliensituation)
 		) {
-				gesuchstellerService.removeGesuchsteller(gesuch.getGesuchsteller2());
-				gesuch.setGesuchsteller2(null);
-				newFamiliensituation.setGemeinsameSteuererklaerung(false);
-			}
+			gesuchstellerService.removeGesuchsteller(gesuch.getGesuchsteller2());
+			gesuch.setGesuchsteller2(null);
+			newFamiliensituation.setGemeinsameSteuererklaerung(false);
+		}
 
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
@@ -138,13 +143,18 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeFamiliensituation(@Nonnull FamiliensituationContainer familiensituation) {
 		Objects.requireNonNull(familiensituation);
 		FamiliensituationContainer familiensituationToRemove =
 			findFamiliensituation(familiensituation.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
 				"removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, familiensituation));
+		for (SozialhilfeZeitraumContainer sozialhilfeZeitraumCtn :
+			familiensituationToRemove.getSozialhilfeZeitraumContainers()) {
+			sozialhilfeZeitraumService.removeSozialhilfeZeitraum(sozialhilfeZeitraumCtn.getId());
+		}
 		persistence.remove(familiensituationToRemove);
 	}
 
@@ -162,7 +172,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		return (!EbeguUtil.isKorrekturmodusGemeinde(gesuch) || (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getGesuchstellerGS() == null))
 			&& ((!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
-			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch)));
+			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation,
+			familiensituationErstgesuch)));
 	}
 
 	private boolean isChanged1To2Reverted(

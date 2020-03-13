@@ -171,11 +171,11 @@ export class DVBarcodeController implements IController {
                             gesuch: response
                         });
                     }).catch(error => {
-                    this.errorService.addMesageAsError('Gesuch konnte nicht freigegeben werden!');
+                    this.errorService.addMesageAsError(this.$translate.instant('FREIGABE_GESUCH_NICHT_MOEGLICH'));
                     LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
                 });
             } else {
-                this.errorService.addMesageAsError('Barcode hat falsches Format: ' + barcodeRead);
+                this.errorService.addMesageAsError(this.$translate.instant('BARCODE_FALSCHES_FORMAT') + barcodeRead);
             }
         } else {
             this.$log.debug('Begin Barcode read');

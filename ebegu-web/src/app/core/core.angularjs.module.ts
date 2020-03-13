@@ -61,6 +61,7 @@ import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {WizardStepRS} from '../../gesuch/service/WizardStepRS.rest';
+import {WizardSubStepManager} from '../../gesuch/service/wizardSubStepManager';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
@@ -151,6 +152,7 @@ import {HttpVersionInterceptor} from './service/version/HttpVersionInterceptor';
 import {ZahlungRS} from './service/zahlungRS.rest';
 import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
 import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
+import {SozialhilfeZeitraumRS} from './service/sozialhilfeZeitraumRS.rest';
 
 const dependencies = [
     /* Angular modules */
@@ -232,6 +234,7 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('EinstellungRS', EinstellungRS)
+    .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
@@ -259,6 +262,7 @@ export const CORE_JS_MODULE = angular
     .service('HttpVersionInterceptor', HttpVersionInterceptor)
     .service('HttpI18nInterceptor', HttpI18nInterceptor)
     .service('WizardStepManager', WizardStepManager)
+    .service('WizardSubStepManager', WizardSubStepManager)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)
     .service('applicationPropertyRS', ApplicationPropertyRS)

@@ -191,7 +191,6 @@ export class EditGemeindeComponent implements OnInit {
             this.setViewMode();
 
             this.errorService.clearAll();
-
             this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
@@ -212,9 +211,11 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private setEmptyUnrequiredFieldsToUndefined(stammdaten: TSGemeindeStammdaten): void {
-        if (this.keineBeschwerdeAdresse) {
-            // Reset Beschwerdeadresse if not used
+        if (this.keineBeschwerdeAdresse || !stammdaten.standardRechtsmittelbelehrung) {
+            // Reset Beschwerdeadresse if not used:
+            // Wenn nicht angewählt, oder wenn nicht Standard-Rechtsmittelbelehrung
             stammdaten.beschwerdeAdresse = undefined;
+
         }
         if (!this.altBGAdresse) {
             // Reset BGAdresse if not used
@@ -331,6 +332,6 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public isGemeindeEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeOrMandantRole());
     }
 }

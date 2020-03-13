@@ -51,7 +51,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
-@Transactional(TransactionMode.DISABLED)
+@Transactional(TransactionMode.DEFAULT)
 public class FamiliensituationServiceTest extends AbstractEbeguLoginTest {
 
 	@Inject
