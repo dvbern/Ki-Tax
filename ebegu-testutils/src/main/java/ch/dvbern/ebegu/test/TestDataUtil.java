@@ -76,8 +76,8 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
-import ch.dvbern.ebegu.entities.FerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -1942,12 +1942,12 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
-	public static FerieninselStammdaten createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
-		FerieninselStammdaten stammdaten = new FerieninselStammdaten();
+	public static GemeindeStammdatenGesuchsperiodeFerieninsel createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
+		GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		stammdaten.setFerienname(Ferienname.SOMMERFERIEN);
 		stammdaten.setAnmeldeschluss(LocalDate.now().plusMonths(1));
-		List<FerieninselZeitraum> zeitraumList = new ArrayList<>();
-		FerieninselZeitraum zeitraum = new FerieninselZeitraum();
+		List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<>();
+		GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraum = new GemeindeStammdatenGesuchsperiodeFerieninselZeitraum();
 		zeitraum.setGueltigkeit(new DateRange(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3)));
 		zeitraumList.add(zeitraum);
 		stammdaten.setZeitraumList(zeitraumList);

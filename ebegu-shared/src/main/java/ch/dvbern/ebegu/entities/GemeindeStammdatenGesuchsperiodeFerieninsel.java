@@ -46,7 +46,7 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @CheckFerieninselStammdatenDatesOverlapping
-public class FerieninselStammdaten extends AbstractMutableEntity {
+public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6703477164293147908L;
 
@@ -55,11 +55,13 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 	@Enumerated(EnumType.STRING)
 	private Ferienname ferienname;
 
+
 	@NotNull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(
+		name = "gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum",
 		joinColumns = @JoinColumn(name = "ferieninsel_stammdaten_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "zeitraum_id", nullable = false),
 		foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_ferieninsel_stammdaten_id"),
@@ -69,13 +71,13 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 			@Index(name = "IX_ferieninsel_stammdaten_ferieninsel_stammdaten_id", columnList = "ferieninsel_stammdaten_id"),
 			@Index(name = "IX_ferieninsel_stammdaten_zeitraum_id", columnList = "zeitraum_id"),
 		})
-
-	private List<FerieninselZeitraum> zeitraumList = new ArrayList<>();
+	private List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<>();
 
 	@NotNull
 	@Column(nullable = false)
 	private LocalDate anmeldeschluss;
 
+	//TODO FERIENINSEL: Gesuchsperiode entfernen, ist schon auf dem GemeindeStammdatenGesuchsperiode
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_gesuchsperiodeId"))
@@ -89,11 +91,11 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 		this.ferienname = ferienname;
 	}
 
-	public List<FerieninselZeitraum> getZeitraumList() {
+	public List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> getZeitraumList() {
 		return zeitraumList;
 	}
 
-	public void setZeitraumList(List<FerieninselZeitraum> zeitraumList) {
+	public void setZeitraumList(List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList) {
 		this.zeitraumList = zeitraumList;
 	}
 
@@ -121,10 +123,10 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof FerieninselStammdaten)) {
+		if (!(other instanceof GemeindeStammdatenGesuchsperiodeFerieninsel)) {
 			return false;
 		}
-		final FerieninselStammdaten otherFerieninselStammdaten = (FerieninselStammdaten) other;
+		final GemeindeStammdatenGesuchsperiodeFerieninsel otherFerieninselStammdaten = (GemeindeStammdatenGesuchsperiodeFerieninsel) other;
 		return Objects.equals(getFerienname(), otherFerieninselStammdaten.getFerienname()) &&
 			Objects.equals(getGesuchsperiode(), otherFerieninselStammdaten.getGesuchsperiode());
 	}

@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.services.FerieninselStammdatenService;
@@ -48,11 +48,11 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 	@Test
 	public void saveFerieninselStammdaten() throws Exception {
 		Assert.assertNotNull(ferieninselStammdatenService);
-		FerieninselStammdaten ferieninselStammdaten = createFerieninselStammdaten();
+		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = createFerieninselStammdaten();
 
-		Collection<FerieninselStammdaten> allStammdaten = ferieninselStammdatenService.getAllFerieninselStammdaten();
+		Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> allStammdaten = ferieninselStammdatenService.getAllFerieninselStammdaten();
 		Assert.assertEquals(1, allStammdaten.size());
-		FerieninselStammdaten firstStammdaten = allStammdaten.iterator().next();
+		GemeindeStammdatenGesuchsperiodeFerieninsel firstStammdaten = allStammdaten.iterator().next();
 		Assert.assertEquals(Ferienname.SOMMERFERIEN, firstStammdaten.getFerienname());
 
 		firstStammdaten.setFerienname(Ferienname.HERBSTFERIEN);
@@ -65,8 +65,8 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 
 	@Test
 	public void findFerieninselStammdaten() throws Exception {
-		FerieninselStammdaten ferieninselStammdaten = createFerieninselStammdaten();
-		Optional<FerieninselStammdaten> readStammdatenOptional = ferieninselStammdatenService.findFerieninselStammdaten(ferieninselStammdaten.getId());
+		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = createFerieninselStammdaten();
+		Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> readStammdatenOptional = ferieninselStammdatenService.findFerieninselStammdaten(ferieninselStammdaten.getId());
 		Assert.assertTrue(readStammdatenOptional.isPresent());
 		Assert.assertEquals(readStammdatenOptional.get(), ferieninselStammdaten);
 	}
@@ -74,7 +74,7 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 	@Test
 	public void getAllFerieninselStammdaten() throws Exception {
 		createFerieninselStammdaten();
-		Collection<FerieninselStammdaten> allStammdaten = ferieninselStammdatenService.getAllFerieninselStammdaten();
+		Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> allStammdaten = ferieninselStammdatenService.getAllFerieninselStammdaten();
 		Assert.assertNotNull(allStammdaten);
 		Assert.assertEquals(1, allStammdaten.size());
 		createFerieninselStammdaten();
@@ -95,12 +95,12 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 		ferieninselStammdatenService.saveFerieninselStammdaten(TestDataUtil.createDefaultFerieninselStammdaten(gp2017));
 		ferieninselStammdatenService.saveFerieninselStammdaten(TestDataUtil.createDefaultFerieninselStammdaten(gp2018));
 
-		Collection<FerieninselStammdaten> gp17Stammdaten = ferieninselStammdatenService.
+		Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> gp17Stammdaten = ferieninselStammdatenService.
 			findFerieninselStammdatenForGesuchsperiode(gp2017.getId());
 		Assert.assertNotNull(gp17Stammdaten);
 		Assert.assertEquals(2, gp17Stammdaten.size());
 
-		Collection<FerieninselStammdaten> gp18Stammdaten = ferieninselStammdatenService.
+		Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> gp18Stammdaten = ferieninselStammdatenService.
 			findFerieninselStammdatenForGesuchsperiode(gp2018.getId());
 		Assert.assertNotNull(gp18Stammdaten);
 		Assert.assertEquals(1, gp18Stammdaten.size());
@@ -108,8 +108,8 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 
 	@Test
 	public void removeFerieninselStammdaten() throws Exception {
-		FerieninselStammdaten persistedStammdaten = createFerieninselStammdaten();
-		Collection<FerieninselStammdaten> allStammdaten = ferieninselStammdatenService.getAllFerieninselStammdaten();
+		GemeindeStammdatenGesuchsperiodeFerieninsel persistedStammdaten = createFerieninselStammdaten();
+		Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> allStammdaten = ferieninselStammdatenService.getAllFerieninselStammdaten();
 		Assert.assertNotNull(allStammdaten);
 		Assert.assertEquals(1, allStammdaten.size());
 
@@ -119,10 +119,10 @@ public class FerieninselStammdatenServiceBeanTest extends AbstractEbeguLoginTest
 		Assert.assertEquals(0, allStammdaten.size());
 	}
 
-	private FerieninselStammdaten createFerieninselStammdaten() {
+	private GemeindeStammdatenGesuchsperiodeFerieninsel createFerieninselStammdaten() {
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode = persistence.merge(gesuchsperiode);
-		FerieninselStammdaten ferieninselStammdaten = TestDataUtil.createDefaultFerieninselStammdaten(gesuchsperiode);
+		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = TestDataUtil.createDefaultFerieninselStammdaten(gesuchsperiode);
 		return ferieninselStammdatenService.saveFerieninselStammdaten(ferieninselStammdaten);
 	}
 }

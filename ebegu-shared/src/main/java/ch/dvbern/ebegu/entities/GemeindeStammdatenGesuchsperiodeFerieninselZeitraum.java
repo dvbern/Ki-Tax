@@ -26,12 +26,12 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class FerieninselZeitraum extends AbstractDateRangedEntity implements Comparable<FerieninselZeitraum> {
+public class GemeindeStammdatenGesuchsperiodeFerieninselZeitraum extends AbstractDateRangedEntity implements Comparable<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> {
 
 	private static final long serialVersionUID = 2918865169295094143L;
 
 	@Override
-	public int compareTo(@Nonnull FerieninselZeitraum o) {
+	public int compareTo(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninselZeitraum o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getGueltigkeit().getGueltigAb(), o.getGueltigkeit().getGueltigAb());
 		builder.append(this.getGueltigkeit().getGueltigBis(), o.getGueltigkeit().getGueltigBis());

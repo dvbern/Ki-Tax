@@ -22,6 +22,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +30,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Sprache;
@@ -70,6 +72,11 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] merkblattAnmeldungTagesschuleFr;
 
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gp_fi_id"), nullable = true)
+	private GemeindeStammdatenGesuchsperiodeFerieninsel gemeindeStammdatenGesuchsperiodeFerieninsel;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return false;
@@ -91,6 +98,15 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 
 	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	@Nullable
+	public GemeindeStammdatenGesuchsperiodeFerieninsel getGemeindeStammdatenGesuchsperiodeFerieninsel() {
+		return gemeindeStammdatenGesuchsperiodeFerieninsel;
+	}
+
+	public void setGemeindeStammdatenGesuchsperiodeFerieninsel(@Nullable GemeindeStammdatenGesuchsperiodeFerieninsel gemeindeStammdatenGesuchsperiodeFerieninsel) {
+		this.gemeindeStammdatenGesuchsperiodeFerieninsel = gemeindeStammdatenGesuchsperiodeFerieninsel;
 	}
 
 	@Nonnull
@@ -149,6 +165,7 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 		copy.setMerkblattAnmeldungTagesschuleDe(this.merkblattAnmeldungTagesschuleDe);
 		copy.setMerkblattAnmeldungTagesschuleFr(this.merkblattAnmeldungTagesschuleFr);
 		copy.setGesuchsperiode(gesuchsperiodeToCreate);
+		//TODO FERIENINSEL: GemeindeStammdatenGesuchsperiodeFerieninsel auch kopieren
 		return copy;
 	}
 }

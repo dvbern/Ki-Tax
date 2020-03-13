@@ -174,8 +174,8 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
-import ch.dvbern.ebegu.entities.FerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -4326,9 +4326,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public FerieninselStammdaten ferieninselStammdatenToEntity(
+	public GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenToEntity(
 		@Nonnull JaxFerieninselStammdaten ferieninselStammdatenJAX,
-		@Nonnull FerieninselStammdaten ferieninselStammdaten) {
+		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
 
 		requireNonNull(ferieninselStammdatenJAX);
 		requireNonNull(ferieninselStammdaten);
@@ -4360,17 +4360,17 @@ public class JaxBConverter extends AbstractConverter {
 
 	private void ferieninselZeitraumListToEntity(
 		@Nonnull List<JaxFerieninselZeitraum> zeitraeumeListJAX,
-		@Nonnull Collection<FerieninselZeitraum> zeitraeumeList) {
+		@Nonnull Collection<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraeumeList) {
 
-		final Set<FerieninselZeitraum> transformedZeitraeume = new TreeSet<>();
+		final Set<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> transformedZeitraeume = new TreeSet<>();
 		for (final JaxFerieninselZeitraum zeitraumJAX : zeitraeumeListJAX) {
-			final FerieninselZeitraum zeitraumToMergeWith = zeitraeumeList
+			final GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraumToMergeWith = zeitraeumeList
 				.stream()
 				.filter(existingZeitraum -> existingZeitraum.getId().equals(zeitraumJAX.getId()))
 				.reduce(StreamsUtil.toOnlyElement())
-				.orElseGet(FerieninselZeitraum::new);
-			final FerieninselZeitraum zeitraumToAdd =
-				(FerieninselZeitraum) convertAbstractDateRangedFieldsToEntity(zeitraumJAX, zeitraumToMergeWith);
+				.orElseGet(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum::new);
+			final GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraumToAdd =
+				(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum) convertAbstractDateRangedFieldsToEntity(zeitraumJAX, zeitraumToMergeWith);
 			final boolean added = transformedZeitraeume.add(zeitraumToAdd);
 			if (!added) {
 				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", zeitraumToAdd);
@@ -4382,7 +4382,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public JaxFerieninselStammdaten ferieninselStammdatenToJAX(
-		@Nonnull FerieninselStammdaten persistedFerieninselStammdaten) {
+		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel persistedFerieninselStammdaten) {
 
 		final JaxFerieninselStammdaten jaxFerieninselStammdaten = new JaxFerieninselStammdaten();
 
@@ -4391,7 +4391,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFerieninselStammdaten.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
 		jaxFerieninselStammdaten.setGesuchsperiode(gesuchsperiodeToJAX(persistedFerieninselStammdaten.getGesuchsperiode()));
 		Collections.sort(persistedFerieninselStammdaten.getZeitraumList());
-		for (FerieninselZeitraum ferieninselZeitraum : persistedFerieninselStammdaten.getZeitraumList()) {
+		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : persistedFerieninselStammdaten.getZeitraumList()) {
 			JaxFerieninselZeitraum jaxFerieninselZeitraum = new JaxFerieninselZeitraum();
 			convertAbstractDateRangedFieldsToJAX(ferieninselZeitraum, jaxFerieninselZeitraum);
 			jaxFerieninselStammdaten.getZeitraumList().add(jaxFerieninselZeitraum);
