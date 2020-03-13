@@ -268,6 +268,8 @@ public class WohnsitzRuleTest {
 		DateRange gueltigkeit = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(100));
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(0);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(0);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		if (zweigesuchsteller) {

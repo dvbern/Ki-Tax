@@ -19,8 +19,10 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 
@@ -40,6 +42,11 @@ public interface FinanzielleSituationService {
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
 		Boolean verguenstigungGewuenscht,
+		boolean keineMahlzeitenverguenstigungGewuenscht,
+		@Nullable String iban,
+		@Nullable String kontoinhaber,
+		boolean abweichendeZahlungsadresse,
+		@Nullable Adresse zahlungsadresse,
 		@Nonnull String gesuchId);
 
 	/**

@@ -56,7 +56,7 @@ public final class Constants {
 	public static final String REGEX_TELEFON = "(0|\\+41|0041)[ ]*[\\d]{2}[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
 	public static final String REGEX_TELEFON_MOBILE = "(0|\\+41|0041)[ ]*(74|75|76|77|78|79)[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
 	public static final String REGEX_URL =
-		"^$|[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
+		"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
 	public static final String REGEX_ZEMIS = "^[0-9]{8}\\.[0-9]$";
 	public static final String PATTERN_DATE = "dd.MM.yyyy";
 	public static final String PATTERN_FILENAME_DATE_TIME = "dd.MM.yyyy_HH.mm.ss";
@@ -128,6 +128,8 @@ public final class Constants {
 
 	public static final String CSV_DELIMITER = ";";
 	public static final String CSV_NEW_LINE = "\n";
+
+	public static final int MAX_MODULGROUPS_TAGESSCHULE = 20;
 
 	private Constants() {
 		//this prevents even the native class from

@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,6 +42,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxAlwaysEditableProperties;
 import ch.dvbern.ebegu.api.dtos.JaxAntragSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -935,5 +937,27 @@ public class GesuchResource {
 		}
 		throw new EbeguEntityNotFoundException("setKeinKontingent",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId());
+	}
+
+	@ApiOperation(value = "Setzt und speichert Properties auf dem Gesuch, welche immer bearbeitet werden dürfen",
+		response = JaxAlwaysEditableProperties.class)
+	@PUT
+	@Path("/updateAlwaysEditableProperties")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGesuch updateAlwaysEditableProperties(
+		@Nonnull @NotNull @Valid JaxAlwaysEditableProperties properties,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(properties.getGesuchId().getId());
+		final String antragId = converter.toEntityId(properties.getGesuchId());
+		Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow( () -> new EbeguEntityNotFoundException(
+			"updateAlwaysEditableProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragId));
+
+		converter.alwaysEditablePropertiesToGesuch(properties,gesuch);
+		gesuchService.updateGesuch(gesuch, false);
+
+		return converter.gesuchToJAX(gesuch);
 	}
 }

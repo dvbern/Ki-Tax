@@ -175,7 +175,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void createGesuch() {
 		Assert.assertNotNull(gesuchService);
 		loginAsSachbearbeiterJA();
-		TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
+		TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 
 		final Collection<Gesuch> allGesuche = readGesucheAsAdmin();
 		Assert.assertEquals(1, allGesuche.size());
@@ -186,7 +186,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void updateGesuch() {
 		Assert.assertNotNull(gesuchService);
 		loginAsSachbearbeiterJA();
-		final Gesuch insertedGesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
+		final Gesuch insertedGesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(insertedGesuch.getId());
 		Assert.assertTrue(gesuch.isPresent());
@@ -342,7 +342,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testAntragEinreichenAndFreigeben() {
 		LocalDate now = LocalDate.now();
 		loginAsGesuchsteller("gesuchst");
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService);
+		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService, gesuchsperiode);
 
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
@@ -363,7 +363,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testExceptionOnInvalidFreigabe() {
 		LocalDate now = LocalDate.now();
 		loginAsGesuchsteller("gesuchst");
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService);
+		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService, gesuchsperiode);
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
@@ -422,7 +422,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_VERFUEGT() {
 		//wenn das Gesuch nicht im Status PRUEFUNG_STV ist, wird nichts gemacht
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		gesuch = persistence.merge(gesuch);
 		gesuch.setStatus(AntragStatus.VERFUEGEN);
@@ -444,7 +444,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_PRUEFUNGSTV() {
 		//Wenn das Gesuch im Status PRUEFUNG_STV ist, wechselt der Status beim Ablesen auf IN_BEARBEITUNG_STV
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		gesuch = persistence.merge(gesuch);
 		gesuch.setStatus(AntragStatus.VERFUEGEN);
@@ -467,6 +467,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
 		loginAsGesuchsteller("gesuchst");
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence, gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, gesuch.getStatus());

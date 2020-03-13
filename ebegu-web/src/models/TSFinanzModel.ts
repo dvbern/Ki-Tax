@@ -20,6 +20,7 @@ import {TSEinkommensverschlechterungInfoContainer} from './TSEinkommensverschlec
 import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from './TSFinanzielleSituationContainer';
 import {TSGesuch} from './TSGesuch';
+import {TSZahlungsinformationen} from './TSZahlungsinformationen';
 
 export class TSFinanzModel {
 
@@ -31,6 +32,9 @@ export class TSFinanzModel {
     private _einkommensverschlechterungContainerGS1: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungContainerGS2: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer;
+
+    private _zahlungsinformationenGS: TSZahlungsinformationen;
+    private _zahlungsinformationen: TSZahlungsinformationen;
 
     private readonly basisjahr: number;
     private readonly basisjahrPlus: number;
@@ -89,6 +93,14 @@ export class TSFinanzModel {
         this._finanzielleSituationContainerGS2 = value;
     }
 
+    public get zahlungsinformationen(): TSZahlungsinformationen {
+        return this._zahlungsinformationen;
+    }
+
+    public set zahlungsinformationen(value: TSZahlungsinformationen) {
+        this._zahlungsinformationen = value;
+    }
+
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
@@ -103,6 +115,27 @@ export class TSFinanzModel {
         if (gesuch.gesuchsteller2) {
             this.finanzielleSituationContainerGS2 = angular.copy(gesuch.gesuchsteller2.finanzielleSituationContainer);
         }
+
+        this.zahlungsinformationen = new TSZahlungsinformationen();
+        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaber;
+        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().iban;
+        this.zahlungsinformationen.abweichendeZahlungsadresse =
+            gesuch.extractFamiliensituation().abweichendeZahlungsadresse;
+        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
+        this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
+            gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
+
+        if (gesuch.extractFamiliensituationGS()) {
+            this.zahlungsinformationenGS = new TSZahlungsinformationen();
+            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaber;
+            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().iban;
+            this.zahlungsinformationenGS.abweichendeZahlungsadresse =
+                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresse;
+            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
+            this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
+                gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
+        }
+
         this.initFinSit();
     }
 
@@ -156,6 +189,15 @@ export class TSFinanzModel {
             console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
         }
         this.resetSteuerveranlagungErhalten(gesuch);
+
+        gesuch.extractFamiliensituation().kontoinhaber = this.zahlungsinformationen.kontoinhaber;
+        gesuch.extractFamiliensituation().iban = this.zahlungsinformationen.iban;
+        gesuch.extractFamiliensituation().abweichendeZahlungsadresse =
+            this.zahlungsinformationen.abweichendeZahlungsadresse;
+        gesuch.extractFamiliensituation().zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
+        gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt =
+            this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+
         return gesuch;
     }
 
@@ -255,6 +297,14 @@ export class TSFinanzModel {
 
     public set einkommensverschlechterungInfoContainer(value: TSEinkommensverschlechterungInfoContainer) {
         this._einkommensverschlechterungInfoContainer = value;
+    }
+
+    public get zahlungsinformationenGS(): TSZahlungsinformationen {
+        return this._zahlungsinformationenGS;
+    }
+
+    public set zahlungsinformationenGS(value: TSZahlungsinformationen) {
+        this._zahlungsinformationenGS = value;
     }
 
     // tslint:disable-next-line:cognitive-complexity

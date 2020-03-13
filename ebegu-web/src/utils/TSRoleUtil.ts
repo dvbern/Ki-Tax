@@ -211,6 +211,8 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
         ];
     }
 
@@ -230,6 +232,17 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
+        ];
+    }
+
+    public static getAdministratorBgTsGemeindeOrMandantRole(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 

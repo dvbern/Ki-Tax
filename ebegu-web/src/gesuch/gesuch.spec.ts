@@ -74,13 +74,13 @@ describe('gesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(g);
-            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Erstgesuch vom 01.07.2016');
+            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Antrag vom 01.07.2016');
         });
         it('should return Erstgesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Erstgesuch');
+            expect(gesuchRouteController.getGesuchErstellenStepTitle()).toBe('Antrag');
         });
     });
 });

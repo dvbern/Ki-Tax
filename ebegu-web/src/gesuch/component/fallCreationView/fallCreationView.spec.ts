@@ -106,13 +106,13 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch der Periode 2016/17');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Antrag der Periode 2016/17');
         });
         it('should return kiBon – Erstgesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Antrag');
         });
     });
 });
