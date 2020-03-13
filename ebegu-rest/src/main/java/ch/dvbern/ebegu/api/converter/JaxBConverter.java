@@ -4083,7 +4083,7 @@ public class JaxBConverter extends AbstractConverter {
 	 */
 	private Set<BetreuungsangebotTyp> createAngeboteList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
-			.flatMap(kc -> kc.getBetreuungen().stream())
+			.flatMap(kc -> kc.getAllPlaetze().stream())
 			.map(b -> b.getInstitutionStammdaten().getBetreuungsangebotTyp())
 			.collect(Collectors.toSet());
 	}

@@ -173,7 +173,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		final String bemerkungen = result.get(0).getBemerkungen();
 		assertNotNull(bemerkungen);
-		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Gesuchsteller kann 100% nicht übertreffen."));
+		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Antragsteller/in kann 100% nicht übertreffen."));
 	}
 
 	@Test
@@ -402,7 +402,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		final String bemerkungen = result.get(0).getBemerkungen();
 		assertNotNull(bemerkungen);
-		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Gesuchsteller kann 100% nicht übertreffen."));
+		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Antragsteller/in kann 100% nicht übertreffen."));
 	}
 
 	@Test

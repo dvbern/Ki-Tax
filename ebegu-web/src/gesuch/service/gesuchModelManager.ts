@@ -442,7 +442,6 @@ export class GesuchModelManager {
         return this.gesuchGenerator.createNewDossier(this.gesuch.dossier)
             .then((dossierResponse: TSDossier) => {
                 this.gesuch.dossier = angular.copy(dossierResponse);
-
                 return this.createNewGesuchForCurrentDossier();
             });
     }
@@ -452,8 +451,7 @@ export class GesuchModelManager {
      */
     private createNewGesuchForCurrentDossier(): IPromise<TSGesuch> {
         return this.gesuchGenerator.createNewGesuch(this.gesuch).then(gesuchResponse => {
-            this.gesuch = gesuchResponse;
-
+            this.setGesuch(gesuchResponse);
             return this.gesuch;
         });
     }
