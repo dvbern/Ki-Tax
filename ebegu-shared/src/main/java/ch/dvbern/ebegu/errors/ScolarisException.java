@@ -22,7 +22,7 @@ import javax.ejb.ApplicationException;
 
 
 @ApplicationException(rollback = true)
-public class ScolarisException extends Exception {
+public class ScolarisException extends RuntimeException {
 
 	private static final long serialVersionUID = 306424922900479199L;
 
