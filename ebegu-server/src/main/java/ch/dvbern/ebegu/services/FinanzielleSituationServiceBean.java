@@ -192,7 +192,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			familiensituation.setAbweichendeZahlungsadresse(false);
 			familiensituation.setZahlungsadresse(null);
 		}
-		return gesuch;
+		return gesuchService.updateGesuch(gesuch, false);
 	}
 
 	@Nonnull
