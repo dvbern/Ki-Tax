@@ -215,9 +215,9 @@ public class ScolarisBackendResource {
 			}
 
 			// Parse Stichtag
-			LocalDate stichtag;
+			LocalDate parsedStichtag;
 			try {
-				stichtag = DateUtil.parseStringToDateOrReturnNow(stichtagParam);
+				parsedStichtag = DateUtil.parseStringToDateOrReturnNow(stichtagParam);
 			} catch (Exception e) {
 				LOG.info("getFinanzielleSituation()", e);
 				return createBadParameterResponse("Can not parse date for stichtagParam");
@@ -232,33 +232,32 @@ public class ScolarisBackendResource {
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						bgNummer));
 
-			stichtag = rearrangeStichtag(stichtag, gesuchsperiodeFromBGNummer);
+			LocalDate stichtag = rearrangeStichtag(parsedStichtag, gesuchsperiodeFromBGNummer);
 
 			//Get "neustes" Gesuch on Stichtag an fallnummer
-			Optional<Gesuch> neustesGesuchOpt =
-				gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gesuchsperiodeFromBGNummer,
-					fallNummer);
-			if (!neustesGesuchOpt.isPresent()) {
-				return createNoResultsResponse("No gesuch found for fallnummer or finSit not yet set");
-			}
-			final Gesuch neustesGesuch = neustesGesuchOpt.get();
-
-			// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten createDrittanwendungNotAllowedResponse()
-			// Calculate Verfuegungszeitabschnitte for Familiensituation
-			final Verfuegung famGroessenVerfuegung =
-				verfuegungService.getEvaluateFamiliensituationVerfuegung(neustesGesuch);
-			JaxExternalFinanzielleSituation dto = converter.finanzielleSituationToScolaris(fallNummer, stichtag, neustesGesuch,
-				famGroessenVerfuegung);
-			if (dto == null) {
-				// If no Finanzdaten found on Verfügungszeitabschnitt from Stichtag, return ErrorObject
-				return createNoResultsResponse("No FinanzielleSituation for Stichtag");
-			}
-			return Response.ok(dto).build();
-
+			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gesuchsperiodeFromBGNummer, fallNummer)
+				.map(neustesGesuch -> toFinanzielleSituationDTO(fallNummer, stichtag, neustesGesuch)
+					.map(dto -> Response.ok(dto).build())
+					.orElseGet(() -> createNoResultsResponse("No FinanzielleSituation for Stichtag")))
+				.orElseGet(() -> createNoResultsResponse("No gesuch found for fallnummer or finSit not yet set"));
 		} catch (Exception e) {
 			LOG.error("getFinanzielleSituation()", e);
 			return createInternalServerErrorResponse("Please inform the adminstrator of this application");
 		}
+	}
+
+	@Nonnull
+	private Optional<JaxExternalFinanzielleSituation> toFinanzielleSituationDTO(
+		long fallNummer,
+		LocalDate stichtag,
+		Gesuch neustesGesuch) {
+
+		// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten
+		//  createDrittanwendungNotAllowedResponse()
+		// Calculate Verfuegungszeitabschnitte for Familiensituation
+		Verfuegung famGroessenVerfuegung = verfuegungService.getEvaluateFamiliensituationVerfuegung(neustesGesuch);
+
+		return converter.finanzielleSituationToScolaris(fallNummer, stichtag, neustesGesuch, famGroessenVerfuegung);
 	}
 
 	private LocalDate rearrangeStichtag(@Nonnull LocalDate stichtag, @Nonnull Gesuchsperiode periode) {

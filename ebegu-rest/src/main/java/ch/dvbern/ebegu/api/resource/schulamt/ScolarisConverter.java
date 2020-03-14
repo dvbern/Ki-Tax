@@ -22,9 +22,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.api.dtos.JaxExternalAnmeldungFerieninsel;
@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.ModulTagesschuleName;
 import ch.dvbern.ebegu.errors.ScolarisException;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.collections.CollectionUtils;
 
 @Dependent
@@ -102,8 +103,8 @@ public class ScolarisConverter {
 			betreuung.getKind().getKindJA().getNachname());
 	}
 
-	@Nullable
-	public JaxExternalFinanzielleSituation finanzielleSituationToScolaris(
+	@Nonnull
+	public Optional<JaxExternalFinanzielleSituation> finanzielleSituationToScolaris(
 		long fallNummer,
 		LocalDate stichtag,
 		Gesuch neustesGesuch,
@@ -113,21 +114,19 @@ public class ScolarisConverter {
 		final Familiensituation familiensituation = neustesGesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
 
-		if (familiensituation.getSozialhilfeBezueger() != null && familiensituation.getSozialhilfeBezueger()
+		if (EbeguUtil.isNotNullAndTrue(familiensituation.getSozialhilfeBezueger())
 			&& neustesGesuch.getFinSitStatus() == FinSitStatus.AKZEPTIERT) {
 			// SozialhilfeBezüger Ja -> Basiszahler (keine finSit!)
-			return convertToJaxExternalFinanzielleSituationWithoutFinDaten(
-				fallNummer, stichtag, neustesGesuch, JaxExternalTarifart.BASISZAHLER);
+			return Optional.of(convertToJaxExternalFinanzielleSituationWithoutFinDaten(
+				fallNummer, stichtag, neustesGesuch, JaxExternalTarifart.BASISZAHLER));
 		}
 
-		if ((familiensituation.getSozialhilfeBezueger() != null
-			&& !familiensituation.getSozialhilfeBezueger()
-			&& familiensituation.getVerguenstigungGewuenscht() != null
-			&& !familiensituation.getVerguenstigungGewuenscht())
+		if ((EbeguUtil.isNotNullAndFalse(familiensituation.getSozialhilfeBezueger())
+			&& EbeguUtil.isNotNullAndFalse(familiensituation.getVerguenstigungGewuenscht()))
 			|| neustesGesuch.getFinSitStatus() == FinSitStatus.ABGELEHNT) {
 			// SozialhilfeBezüger Nein + Vergünstigung gewünscht Nein  -> Vollzahler (keine finSit!)
-			return convertToJaxExternalFinanzielleSituationWithoutFinDaten(
-				fallNummer, stichtag, neustesGesuch, JaxExternalTarifart.VOLLZAHLER);
+			return Optional.of(convertToJaxExternalFinanzielleSituationWithoutFinDaten(
+				fallNummer, stichtag, neustesGesuch, JaxExternalTarifart.VOLLZAHLER));
 
 		}
 		// SozialhilfeBezüger Nein + Vergünstigung gewünscht ja  oder Kita-Betreuung vorhanden -> Detailrechnung (mit finSit!)
@@ -136,12 +135,12 @@ public class ScolarisConverter {
 		// get finanzielleSituation only for stichtag
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitten) {
 			if (zeitabschnitt.getGueltigkeit().contains(stichtag)) {
-				return convertToJaxExternalFinanzielleSituation(
-					fallNummer, stichtag, neustesGesuch, zeitabschnitt);
+				return Optional.of(convertToJaxExternalFinanzielleSituation(
+					fallNummer, stichtag, neustesGesuch, zeitabschnitt));
 			}
 		}
 		// If no Finanzdaten found on Verfügungszeitabschnitt from Stichtag, return ErrorObject
-		return null;
+		return Optional.empty();
 	}
 
 	@Nonnull
@@ -250,6 +249,7 @@ public class ScolarisConverter {
 		Objects.requireNonNull(gesuchsteller1);
 		final GesuchstellerAdresse rechnungsAdresse = gesuchsteller1.extractEffectiveRechnungsAdresse(stichtag);
 		Objects.requireNonNull(rechnungsAdresse);
+
 		return new JaxExternalRechnungsAdresse(
 			gesuchsteller1.extractVorname(),
 			gesuchsteller1.extractNachname(),
