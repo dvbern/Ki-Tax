@@ -131,8 +131,8 @@ export class FreigabeController {
             }
 
         } else if (this.isUserInList(this.authService.getPrincipal().username, listOfBerechtigteUser)) {
-			// Der eingeloggte Benutzer ist berechtigt fuer was wir suchen -> Wir nehmen diesen
-			return this.authService.getPrincipal().username;
+            // Der eingeloggte Benutzer ist berechtigt fuer was wir suchen -> Wir nehmen diesen
+            return this.authService.getPrincipal().username;
         }
         return undefined;
     }

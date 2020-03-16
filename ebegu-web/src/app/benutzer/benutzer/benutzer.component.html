@@ -267,13 +267,6 @@
                     [textContent]="'BENUTZER_ERNEUT_EINLADEN' | translate">
             </button>
 
-            <button type="button" class="dv-btn cancel-button"
-                    *dvNgShowElement="canBenutzerBeDeleted();
-                        roles: TSRoleUtil.getSuperAdminRoles()"
-                    (click)="deleteBenutzer()"
-                    [textContent]="'BENUTZER_DELETE' | translate">
-            </button>
-
         </div>
 
     </form>
