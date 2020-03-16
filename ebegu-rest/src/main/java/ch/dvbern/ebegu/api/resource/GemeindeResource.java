@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,7 @@ import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -78,6 +80,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FerieninselStammdatenService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
@@ -115,6 +118,9 @@ public class GemeindeResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private FerieninselStammdatenService ferieninselStammdatenService;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
@@ -283,11 +289,40 @@ public class GemeindeResource {
 		// Die Konfiguratoin kann bearbeitet werden, bis die Periode geschlossen ist.
 		boolean eingeladen = GemeindeStatus.EINGELADEN == jaxStammdaten.getGemeinde().getStatus();
 		jaxStammdaten.getKonfigurationsListe().forEach(konfiguration -> {
+			Objects.requireNonNull(konfiguration.getGesuchsperiode());
 			if (eingeladen) {
 				// KIBON-360: die Konfiguration in der aktuellen und in allen zukünftigen Gesuchsperioden speichern
 				saveAllFutureJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			} else if (GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiode().getStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
+			}
+			// ferieninseln
+			if (stammdaten.getGemeinde().isAngebotFI()) {
+				Optional<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeOpt =
+					gemeindeService.findGemeindeStammdatenGesuchsperiode(
+						stammdaten.getGemeinde().getId(),
+						konfiguration.getGesuchsperiode().getId()
+					);
+
+				// GemeindeStammdatenGesuchsperiode erstellen falls diese noch nicht existieren
+				GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode;
+				gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiodeOpt.orElseGet(() -> gemeindeStammdatenGesuchsperiodeOpt.orElseGet(() ->
+					gemeindeService.saveGemeindeStammdatenGesuchsperiode(
+						gemeindeService.createGemeindeStammdatenGesuchsperiode(
+							stammdaten.getGemeinde().getId(),
+							konfiguration.getGesuchsperiode().getId()
+						)
+					)));
+
+				// beim Aktivieren der FI auf der Gemeinde werden die Ferieninseln initialisiert
+				if (gemeindeStammdatenGesuchsperiode.getGemeindeStammdatenGesuchsperiodeFerieninseln() == null ||
+					gemeindeStammdatenGesuchsperiode.getGemeindeStammdatenGesuchsperiodeFerieninseln().isEmpty()) {
+					ferieninselStammdatenService.initFerieninselStammdaten(gemeindeStammdatenGesuchsperiode);
+				// ansonsten kann Ferieninselkonfiguration nicht leer sein und wird gespeichert
+				} else {
+					Objects.requireNonNull(konfiguration.getFerieninselStammdaten());
+					// TODO: ferieninseln. speichern
+				}
 			}
 		});
 

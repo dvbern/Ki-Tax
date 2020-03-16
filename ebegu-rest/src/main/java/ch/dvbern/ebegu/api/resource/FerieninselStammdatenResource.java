@@ -11,7 +11,8 @@
  * GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ *//*
+
 
 package ch.dvbern.ebegu.api.resource;
 
@@ -54,9 +55,11 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+*/
 /**
  * REST Resource fuer FerieninselStammdaten
- */
+ *//*
+
 @Path("ferieninselStammdaten")
 @Stateless
 @Api(description = "Resource fuer die Verwaltung von FerieninselStammdaten")
@@ -169,3 +172,4 @@ public class FerieninselStammdatenResource {
 		return null;
 	}
 }
+*/

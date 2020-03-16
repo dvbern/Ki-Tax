@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +31,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Sprache;
@@ -73,9 +74,8 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 	private byte[] merkblattAnmeldungTagesschuleFr;
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gp_fi_id"), nullable = true)
-	private GemeindeStammdatenGesuchsperiodeFerieninsel gemeindeStammdatenGesuchsperiodeFerieninsel;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gemeindeStammdatenGesuchsperiode")
+	private List<GemeindeStammdatenGesuchsperiodeFerieninsel> gemeindeStammdatenGesuchsperiodeFerieninsel;
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -101,11 +101,11 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 	}
 
 	@Nullable
-	public GemeindeStammdatenGesuchsperiodeFerieninsel getGemeindeStammdatenGesuchsperiodeFerieninsel() {
+	public List<GemeindeStammdatenGesuchsperiodeFerieninsel> getGemeindeStammdatenGesuchsperiodeFerieninseln() {
 		return gemeindeStammdatenGesuchsperiodeFerieninsel;
 	}
 
-	public void setGemeindeStammdatenGesuchsperiodeFerieninsel(@Nullable GemeindeStammdatenGesuchsperiodeFerieninsel gemeindeStammdatenGesuchsperiodeFerieninsel) {
+	public void setGemeindeStammdatenGesuchsperiodeFerieninsel(@Nullable List<GemeindeStammdatenGesuchsperiodeFerieninsel> gemeindeStammdatenGesuchsperiodeFerieninsel) {
 		this.gemeindeStammdatenGesuchsperiodeFerieninsel = gemeindeStammdatenGesuchsperiodeFerieninsel;
 	}
 

@@ -274,12 +274,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				removeDossierIfEmpty(dossier, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 				removeFallIfEmpty(fall, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 			}
+			// TODO: FERIENINSEL. Remove Ferieninseln for periode
 			// FerieninselStammdaten dieser Gesuchsperiode loeschen
-			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
+/*			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
 				ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsPeriodeId);
 			for (GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
-			}
+			}*/
 
 			// EinstellungenTagesschule dieser Gesuchsperiode loeschen
 			Collection<EinstellungenTagesschule> einstellungenTagesschuleList =

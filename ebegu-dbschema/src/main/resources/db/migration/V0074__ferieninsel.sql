@@ -15,7 +15,7 @@ create table gemeinde_stammdaten_gesuchsperiode_ferieninsel (
 	vorgaenger_id varchar(36),
 	anmeldeschluss date not null,
 	ferienname varchar(255) not null,
-	gesuchsperiode_id binary(16) not null,
+	gemeinde_stammdaten_gesuchsperiode_id binary(16) not null,
 	primary key (id)
 );
 
@@ -30,7 +30,7 @@ create table gemeinde_stammdaten_gesuchsperiode_ferieninsel_aud (
 	vorgaenger_id varchar(36),
 	anmeldeschluss date,
 	ferienname varchar(255),
-	gesuchsperiode_id binary(16),
+	gemeinde_stammdaten_gesuchsperiode_id binary(16) not null,
 	primary key (id, rev)
 );
 
@@ -74,9 +74,6 @@ create table gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum_aud (
 	primary key (rev, ferieninsel_stammdaten_id, zeitraum_id)
 );
 
-alter table gemeinde_stammdaten_gesuchsperiode add gemeinde_stammdaten_gesuchsperiode_ferieninsel_id binary(16);
-alter table gemeinde_stammdaten_gesuchsperiode_aud add  gemeinde_stammdaten_gesuchsperiode_ferieninsel_id binary(16);
-
 create index IX_ferieninsel_stammdaten_ferieninsel_stammdaten_id on gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum (ferieninsel_stammdaten_id);
 create index IX_ferieninsel_stammdaten_zeitraum_id on gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum (zeitraum_id);
 
@@ -98,15 +95,10 @@ alter table gemeinde_stammdaten_gesuchsperiode_ferieninsel_zeitraum_aud
 foreign key (rev)
 references revinfo (rev);
 
-alter table gemeinde_stammdaten_gesuchsperiode
-	add constraint FK_gemeinde_stammdaten_gp_fi_id
-foreign key (gemeinde_stammdaten_gesuchsperiode_ferieninsel_id)
-references gemeinde_stammdaten_gesuchsperiode_ferieninsel (id);
-
 alter table gemeinde_stammdaten_gesuchsperiode_ferieninsel
-	add constraint FK_ferieninsel_stammdaten_gesuchsperiodeId
-foreign key (gesuchsperiode_id)
-references gesuchsperiode (id);
+	add constraint FK_ferieninsel_stammdaten_gemeinde_stammdaten_gesuchsperiodeId
+foreign key (gemeinde_stammdaten_gesuchsperiode_id)
+references gemeinde_stammdaten_gesuchsperiode (id);
 
 alter table gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum
 	add constraint FK_ferieninsel_stammdaten_ferieninsel_zeitraum_id

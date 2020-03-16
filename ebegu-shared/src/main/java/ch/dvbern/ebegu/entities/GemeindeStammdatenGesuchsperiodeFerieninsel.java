@@ -55,6 +55,10 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 	@Enumerated(EnumType.STRING)
 	private Ferienname ferienname;
 
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_gemeinde_stammdaten_gesuchsperiodeId"), nullable = false)
+	private GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode;
 
 	@NotNull
 	@Valid
@@ -76,12 +80,6 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 	@NotNull
 	@Column(nullable = false)
 	private LocalDate anmeldeschluss;
-
-	//TODO FERIENINSEL: Gesuchsperiode entfernen, ist schon auf dem GemeindeStammdatenGesuchsperiode
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_gesuchsperiodeId"))
-	private Gesuchsperiode gesuchsperiode;
 
 	public Ferienname getFerienname() {
 		return ferienname;
@@ -107,14 +105,6 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 		this.anmeldeschluss = anmeldeschluss;
 	}
 
-	public Gesuchsperiode getGesuchsperiode() {
-		return gesuchsperiode;
-	}
-
-	public void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
-		this.gesuchsperiode = gesuchsperiode;
-	}
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
@@ -126,8 +116,16 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 		if (!(other instanceof GemeindeStammdatenGesuchsperiodeFerieninsel)) {
 			return false;
 		}
+		// TODO: Ferieninsel. Validator schreiben
 		final GemeindeStammdatenGesuchsperiodeFerieninsel otherFerieninselStammdaten = (GemeindeStammdatenGesuchsperiodeFerieninsel) other;
-		return Objects.equals(getFerienname(), otherFerieninselStammdaten.getFerienname()) &&
-			Objects.equals(getGesuchsperiode(), otherFerieninselStammdaten.getGesuchsperiode());
+		return Objects.equals(getFerienname(), otherFerieninselStammdaten.getFerienname());
+	}
+
+	public GemeindeStammdatenGesuchsperiode getGemeindeStammdatenGesuchsperiode() {
+		return gemeindeStammdatenGesuchsperiode;
+	}
+
+	public void setGemeindeStammdatenGesuchsperiode(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
+		this.gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiode;
 	}
 }

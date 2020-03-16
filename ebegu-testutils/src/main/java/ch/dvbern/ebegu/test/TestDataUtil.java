@@ -1942,6 +1942,7 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
+	// TODO: FERIENINSEL ANPASSEN
 	public static GemeindeStammdatenGesuchsperiodeFerieninsel createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
 		GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		stammdaten.setFerienname(Ferienname.SOMMERFERIEN);
@@ -1951,7 +1952,6 @@ public final class TestDataUtil {
 		zeitraum.setGueltigkeit(new DateRange(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3)));
 		zeitraumList.add(zeitraum);
 		stammdaten.setZeitraumList(zeitraumList);
-		stammdaten.setGesuchsperiode(gesuchsperiode);
 		return stammdaten;
 	}
 

@@ -238,6 +238,7 @@ import ch.dvbern.ebegu.services.ErwerbspensumService;
 import ch.dvbern.ebegu.services.FachstelleService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
+import ch.dvbern.ebegu.services.FerieninselStammdatenService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -339,6 +340,8 @@ public class JaxBConverter extends AbstractConverter {
 	private PensumFachstelleService pensumFachstelleService;
 	@Inject
 	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
+	@Inject
+	private FerieninselStammdatenService ferieninselStammdatenService;
 
 	public JaxBConverter() {
 		//nop
@@ -4337,20 +4340,6 @@ public class JaxBConverter extends AbstractConverter {
 		ferieninselStammdaten.setFerienname(ferieninselStammdatenJAX.getFerienname());
 		ferieninselStammdaten.setAnmeldeschluss(ferieninselStammdatenJAX.getAnmeldeschluss());
 
-		if (ferieninselStammdatenJAX.getGesuchsperiode() != null
-			&& ferieninselStammdatenJAX.getGesuchsperiode().getId() != null) {
-			final Optional<Gesuchsperiode> gesuchsperiode =
-				gesuchsperiodeService.findGesuchsperiode(ferieninselStammdatenJAX.getGesuchsperiode().getId());
-			if (gesuchsperiode.isPresent()) {
-				// Gesuchsperiode darf nicht vom Client ueberschrieben werden
-				ferieninselStammdaten.setGesuchsperiode(gesuchsperiode.get());
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"ferieninselStammdatenToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					ferieninselStammdatenJAX.getGesuchsperiode().getId());
-			}
-		}
 		ferieninselZeitraumListToEntity(
 			ferieninselStammdatenJAX.getZeitraumList(),
 			ferieninselStammdaten.getZeitraumList());
@@ -4389,7 +4378,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedFerieninselStammdaten, jaxFerieninselStammdaten);
 		jaxFerieninselStammdaten.setFerienname(persistedFerieninselStammdaten.getFerienname());
 		jaxFerieninselStammdaten.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
-		jaxFerieninselStammdaten.setGesuchsperiode(gesuchsperiodeToJAX(persistedFerieninselStammdaten.getGesuchsperiode()));
 		Collections.sort(persistedFerieninselStammdaten.getZeitraumList());
 		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : persistedFerieninselStammdaten.getZeitraumList()) {
 			JaxFerieninselZeitraum jaxFerieninselZeitraum = new JaxFerieninselZeitraum();
@@ -4804,6 +4792,16 @@ public class JaxBConverter extends AbstractConverter {
 					einstellung.getKey().equals(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG))
 				.findFirst().get().getValueAsInteger()
 		);
+
+		List<JaxFerieninselStammdaten> ferieninselStammdaten =
+			ferieninselStammdatenService.findGesuchsperiodeFerieninselByGemeindeAndPeriode(gemeinde.getId(),
+				gesuchsperiode.getId())
+				.stream()
+				.map(this::ferieninselStammdatenToJAX)
+				.collect(Collectors.toList());
+
+		konfiguration.setFerieninselStammdaten(ferieninselStammdaten);
+
 		return konfiguration;
 	}
 

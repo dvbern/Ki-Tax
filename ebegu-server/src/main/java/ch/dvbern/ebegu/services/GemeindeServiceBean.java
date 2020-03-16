@@ -492,7 +492,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return new byte[0];
 	}
 
-	private Optional<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
+	public Optional<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiode> query =
@@ -534,13 +534,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Nonnull
-	private GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode stammdaten) {
+	public GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode stammdaten) {
 		requireNonNull(stammdaten);
 		authorizer.checkWriteAuthorization(stammdaten.getGemeinde());
 		return persistence.merge(stammdaten);
 	}
 
-	private GemeindeStammdatenGesuchsperiode createGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
+	public GemeindeStammdatenGesuchsperiode createGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
 		@Nonnull String gesuchsperiodeId) {
 		GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode = new GemeindeStammdatenGesuchsperiode();
 		Gemeinde gemeinde = findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
