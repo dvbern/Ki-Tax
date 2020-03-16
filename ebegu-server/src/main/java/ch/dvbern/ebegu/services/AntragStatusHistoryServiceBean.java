@@ -199,8 +199,9 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	public AntragStatusHistory findLastStatusChangeBeforePruefungSTV(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
 		authorizer.checkReadAuthorization(gesuch);
-		if (gesuch.getStatus() != AntragStatus.GEPRUEFT_STV) {
-			throw new EbeguRuntimeException("findLastStatusChangeBeforePruefungSTV", ErrorCodeEnum.ERROR_ONLY_IN_GEPRUEFT_STV_ALLOWED, gesuch.getId());
+		if (gesuch.getStatus() != AntragStatus.GEPRUEFT_STV && gesuch.getStatus() != AntragStatus.PRUEFUNG_STV) {
+			throw new EbeguRuntimeException("findLastStatusChangeBeforePruefungSTV",
+				ErrorCodeEnum.ERROR_ONLY_IN_PRUEFUNG_GEPRUEFT_STV_ALLOWED, gesuch.getId());
 		}
 
 		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch.getId());
