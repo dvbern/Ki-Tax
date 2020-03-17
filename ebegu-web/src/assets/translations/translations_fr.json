@@ -1932,5 +1932,7 @@
     "MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT": "Nous ne demandons pas de réduction de repas (Revenu pertinent > 70'000 CHF)",
     "MAHLZEITENVERGUENSTIGUNG_KONTOINHABER": "Propriétaire (nom et prénom)",
     "MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE": "Adresse de versement différente",
+    "INSTITUTION_TAGESSCHULE_TAGIS": "est une Tagi",
+    "TAGESSCHULE_TAGIS_ENABLED": "Tagis activée",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

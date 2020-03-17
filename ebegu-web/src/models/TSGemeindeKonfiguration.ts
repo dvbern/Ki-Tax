@@ -29,6 +29,7 @@ export class TSGemeindeKonfiguration {
     public gesuchsperiode: TSGesuchsperiode;
     public konfigKontingentierung: boolean; // only on client
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
+    public konfigTagesschuleTagisEnabled: boolean;
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
     public konfigZusaetzlicherGutscheinEnabled: boolean; // only on client
@@ -92,6 +93,7 @@ export class TSGemeindeKonfiguration {
         this.konfigKontingentierung = false;
         this.konfigTagesschuleAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
         this.konfigTagesschuleErsterSchultag = this.gesuchsperiode.gueltigkeit.gueltigAb;
+        this.konfigTagesschuleTagisEnabled = false;
 
         this.konfigurationen.forEach(property => {
             switch (property.key) {
@@ -199,6 +201,10 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED: {
                     this.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_TAGESSCHULE_TAGIS_ENABLED: {
+                    this.konfigTagesschuleTagisEnabled = (property.value === 'true');
                     break;
                 }
                 default: {

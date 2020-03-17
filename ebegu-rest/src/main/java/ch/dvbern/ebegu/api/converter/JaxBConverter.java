@@ -1733,6 +1733,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxEinstellungenTagesschule.setModulTagesschuleGroups(modulTagesschuleGroupListToJax(persistedEinstellungenTagesschule.getModulTagesschuleGroups()));
 		jaxEinstellungenTagesschule.setModulTagesschuleTyp(persistedEinstellungenTagesschule.getModulTagesschuleTyp());
 		jaxEinstellungenTagesschule.setErlaeuterung(persistedEinstellungenTagesschule.getErlaeuterung());
+		jaxEinstellungenTagesschule.setTagis(persistedEinstellungenTagesschule.isTagis());
 		return jaxEinstellungenTagesschule;
 	}
 
@@ -1793,6 +1794,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		einstellungenTagesschule.setModulTagesschuleTyp(jaxEinstellungenTagesschule.getModulTagesschuleTyp());
 		einstellungenTagesschule.setErlaeuterung(jaxEinstellungenTagesschule.getErlaeuterung());
+		einstellungenTagesschule.setTagis(jaxEinstellungenTagesschule.isTagis());
 
 		return einstellungenTagesschule;
 	}

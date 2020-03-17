@@ -21,11 +21,13 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {getTSModulTagesschuleNameValues, TSModulTagesschuleName} from '../../../models/enums/TSModulTagesschuleName';
 import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
@@ -67,7 +69,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
-        private readonly ref: ChangeDetectorRef
+        private readonly ref: ChangeDetectorRef,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -337,7 +340,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     public getBezeichnung(group: TSModulTagesschuleGroup): string {
         let name = '';
         if (group.bezeichnung.textDeutsch) {
-            name =  `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
+            name = `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
         if (group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH) {
             const scolarisName = this.translate.instant(group.modulTagesschuleName);
@@ -408,5 +411,22 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 einstellungenTagesschule.modulTagesschuleGroups.push(group);
             }
         });
+    }
+
+    public showTagisCheckbox(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        const konfiguration = this.konfigurationsListe.find(
+            gemeindeKonfiguration =>
+                gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
+        if (konfiguration) {
+            return konfiguration.konfigTagesschuleTagisEnabled;
+        }
+        return false;
+    }
+
+    public canEditTagis(): boolean {
+        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+            return this.editMode;
+        }
+        return false;
     }
 }

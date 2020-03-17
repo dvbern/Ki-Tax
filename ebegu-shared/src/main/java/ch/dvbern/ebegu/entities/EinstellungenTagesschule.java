@@ -77,6 +77,9 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String erlaeuterung;
 
+	@Column(nullable = false)
+	private @NotNull boolean tagis = false;
+
 	public EinstellungenTagesschule() {
 	}
 
@@ -145,12 +148,20 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		this.erlaeuterung = erlaeuterung;
 	}
 
+	public boolean isTagis() {
+		return tagis;
+	}
+
+	public void setTagis(boolean tagis) {
+		this.tagis = tagis;
+	}
 	@Nonnull
 	public EinstellungenTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		EinstellungenTagesschule copy = new EinstellungenTagesschule();
 		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
 		copy.setGesuchsperiode(gesuchsperiode);
 		copy.setErlaeuterung(this.getErlaeuterung());
+		copy.setTagis(this.isTagis());
 		copy.setModulTagesschuleTyp(this.getModulTagesschuleTyp());
 		if (CollectionUtils.isNotEmpty(this.getModulTagesschuleGroups())) {
 			copy.setModulTagesschuleGroups(new TreeSet<>());

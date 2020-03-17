@@ -46,6 +46,8 @@ public class JaxEinstellungenTagesschule extends JaxAbstractDTO {
 	@Nullable
 	private String erlaeuterung;
 
+	private boolean tagis = false;
+
 	public JaxGesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
@@ -77,5 +79,13 @@ public class JaxEinstellungenTagesschule extends JaxAbstractDTO {
 
 	public void setErlaeuterung(@Nullable String erlaeuterung) {
 		this.erlaeuterung = erlaeuterung;
+	}
+
+	public boolean isTagis() {
+		return tagis;
+	}
+
+	public void setTagis(boolean tagis) {
+		this.tagis = tagis;
 	}
 }
