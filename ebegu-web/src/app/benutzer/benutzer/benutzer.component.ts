@@ -271,18 +271,13 @@ export class BenutzerComponent implements OnInit {
     }
 
     private navigateBackToUsersList(): void {
-        this.$state.go('admin.benutzerlist');
+        this.gotoBenutzerlist(null);
     }
 
     public erneutEinladen(): void {
         this.benutzerRS.erneutEinladen(this.selectedUser)
             .then(() => {
-                this.$state.go('admin.benutzerlist').then(() => {
-                    this.errorService.addMesageAsInfo(this.translate.instant(
-                        'BENUTZER_REINVITED_MESSAGE',
-                        {fullName: this.selectedUser.getFullName()}
-                    ));
-                });
+                this.gotoBenutzerlist('BENUTZER_REINVITED_MESSAGE');
             });
     }
 
@@ -303,18 +298,25 @@ export class BenutzerComponent implements OnInit {
                     if (!userAccepted) {
                         return;
                     }
-                    this.benutzerRS.removeBenutzer(this.selectedUser.username).then(value => {
-                        this.$state.go('admin.benutzerlist').then(() => {
-                            this.errorService.addMesageAsInfo(this.translate.instant(
-                                'BENUTZER_DELETED_MESSAGE',
-                                {fullName: this.selectedUser.getFullName()}
-                            ));
-                        });
+                    this.benutzerRS.removeBenutzer(this.selectedUser.username).then(() => {
+                        this.gotoBenutzerlist('BENUTZER_DELETED_MESSAGE');
                     });
                 },
                 () => {
                     this.log.error('error in observable. deleteBenutzer');
                 }
             );
+    }
+
+    private gotoBenutzerlist(infoMessageKey: string): void {
+        this.$state.go('admin.benutzerlist').then(() => {
+            if (!EbeguUtil.isNotNullOrUndefined(infoMessageKey)) {
+                return;
+            }
+            this.errorService.addMesageAsInfo(this.translate.instant(
+                infoMessageKey,
+                {fullName: this.selectedUser.getFullName()}
+            ));
+        });
     }
 }
