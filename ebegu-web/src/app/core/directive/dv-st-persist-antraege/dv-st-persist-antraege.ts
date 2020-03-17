@@ -264,7 +264,7 @@ export class DVSTPersistAntraege implements IDirective {
                 const principal = this.authServiceRS.getPrincipal();
                 const berechtigung = principal.currentBerechtigung;
 
-                if (TSRoleUtil.getGemeindeOrBGOrTSRoles().indexOf(berechtigung.role) > -1) {
+                if (TSRoleUtil.getGemeindeOnlyRoles().indexOf(berechtigung.role) > -1) {
                     savedStateToReturn.search.predicateObject.verantwortlicherGemeinde =
                         principal.getFullName();
                 } else if (TSRoleUtil.getGemeindeOrBGRoles().indexOf(berechtigung.role) > -1) {
@@ -285,7 +285,7 @@ export class DVSTPersistAntraege implements IDirective {
             const berechtigung = principal.currentBerechtigung;
             const fullName = principal.getFullName();
 
-            if (TSRoleUtil.getGemeindeOrBGOrTSRoles().indexOf(berechtigung.role) > -1) {
+            if (TSRoleUtil.getGemeindeOnlyRoles().indexOf(berechtigung.role) > -1) {
                 return {verantwortlicherGemeinde: fullName};
             }
             else if (TSRoleUtil.getGemeindeOrBGRoles().indexOf(berechtigung.role) > -1) {
