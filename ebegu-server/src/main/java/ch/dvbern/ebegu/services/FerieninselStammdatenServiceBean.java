@@ -52,8 +52,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
 	@Override
