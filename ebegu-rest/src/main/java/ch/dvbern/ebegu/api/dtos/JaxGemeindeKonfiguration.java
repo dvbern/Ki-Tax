@@ -32,7 +32,7 @@ public class JaxGemeindeKonfiguration {
 	@Nonnull
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
 	@Nonnull
-	private List<JaxFerieninselStammdaten> ferieninselStammdaten;
+	private List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten;
 
 	private int erwerbspensumZuschlagMax;
 
@@ -81,11 +81,11 @@ public class JaxGemeindeKonfiguration {
 	}
 
 	@Nonnull
-	public List<JaxFerieninselStammdaten> getFerieninselStammdaten() {
+	public List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> getFerieninselStammdaten() {
 		return ferieninselStammdaten;
 	}
 
-	public void setFerieninselStammdaten(@Nonnull List<JaxFerieninselStammdaten> ferieninselStammdaten) {
+	public void setFerieninselStammdaten(@Nonnull List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten) {
 		this.ferieninselStammdaten = ferieninselStammdaten;
 	}
 }

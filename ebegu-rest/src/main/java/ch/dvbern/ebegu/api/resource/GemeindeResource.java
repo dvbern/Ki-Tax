@@ -51,6 +51,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeRegistrierung;
@@ -68,6 +69,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -296,34 +298,7 @@ public class GemeindeResource {
 			} else if (GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiode().getStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			}
-			// ferieninseln
-			if (stammdaten.getGemeinde().isAngebotFI()) {
-				Optional<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeOpt =
-					gemeindeService.findGemeindeStammdatenGesuchsperiode(
-						stammdaten.getGemeinde().getId(),
-						konfiguration.getGesuchsperiode().getId()
-					);
-
-				// GemeindeStammdatenGesuchsperiode erstellen falls diese noch nicht existieren
-				GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode;
-				gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiodeOpt.orElseGet(() -> gemeindeStammdatenGesuchsperiodeOpt.orElseGet(() ->
-					gemeindeService.saveGemeindeStammdatenGesuchsperiode(
-						gemeindeService.createGemeindeStammdatenGesuchsperiode(
-							stammdaten.getGemeinde().getId(),
-							konfiguration.getGesuchsperiode().getId()
-						)
-					)));
-
-				// beim Aktivieren der FI auf der Gemeinde werden die Ferieninseln initialisiert
-				if (gemeindeStammdatenGesuchsperiode.getGemeindeStammdatenGesuchsperiodeFerieninseln() == null ||
-					gemeindeStammdatenGesuchsperiode.getGemeindeStammdatenGesuchsperiodeFerieninseln().isEmpty()) {
-					ferieninselStammdatenService.initFerieninselStammdaten(gemeindeStammdatenGesuchsperiode);
-				// ansonsten kann Ferieninselkonfiguration nicht leer sein und wird gespeichert
-				} else {
-					Objects.requireNonNull(konfiguration.getFerieninselStammdaten());
-					// TODO: ferieninseln. speichern
-				}
-			}
+			saveOrInitFerieninseln(konfiguration, stammdaten);
 		});
 
 		// Statuswechsel
@@ -385,6 +360,50 @@ public class GemeindeResource {
 		}
 		einstellung.setValue(jaxKonfig.getValue());
 		einstellungService.saveEinstellung(einstellung);
+	}
+
+	private void saveOrInitFerieninseln(JaxGemeindeKonfiguration konfiguration, GemeindeStammdaten gemeindeStammdaten) {
+
+		// ferieninseln
+		if (gemeindeStammdaten.getGemeinde().isAngebotFI()) {
+			Optional<GemeindeStammdatenGesuchsperiode> gemeindeStammdatenGesuchsperiodeOpt =
+				gemeindeService.findGemeindeStammdatenGesuchsperiode(
+					gemeindeStammdaten.getGemeinde().getId(),
+					konfiguration.getGesuchsperiode().getId()
+				);
+
+			// GemeindeStammdatenGesuchsperiode erstellen falls diese noch nicht existieren
+			GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode;
+			gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiodeOpt.orElseGet(() -> gemeindeStammdatenGesuchsperiodeOpt.orElseGet(() ->
+				gemeindeService.saveGemeindeStammdatenGesuchsperiode(
+					gemeindeService.createGemeindeStammdatenGesuchsperiode(
+						gemeindeStammdaten.getGemeinde().getId(),
+						konfiguration.getGesuchsperiode().getId()
+					)
+				)));
+
+			// Falls noch keine GemeindeStammdatenGesuchsperiodeFerieninseln existieren, werden diese initialisiert
+			// Dies ist z.b. beim Aktivieren der FI auf der Gemeinde der Fall
+			if (gemeindeStammdatenGesuchsperiode.getGemeindeStammdatenGesuchsperiodeFerieninseln() == null ||
+				gemeindeStammdatenGesuchsperiode.getGemeindeStammdatenGesuchsperiodeFerieninseln().isEmpty()) {
+				ferieninselStammdatenService.initFerieninselStammdaten(gemeindeStammdatenGesuchsperiode);
+				// ansonsten kann Ferieninselkonfiguration nicht leer sein und wird gespeichert
+			} else {
+				Objects.requireNonNull(konfiguration.getFerieninselStammdaten());
+				for (JaxGemeindeStammdatenGesuchsperiodeFerieninsel fiStammdaten : konfiguration.getFerieninselStammdaten()) {
+					Objects.requireNonNull(fiStammdaten.getId());
+					GemeindeStammdatenGesuchsperiodeFerieninsel fiStammdatenFromDB =
+						ferieninselStammdatenService.findFerieninselStammdaten(fiStammdaten.getId()).orElseThrow(()->
+						new EbeguRuntimeException("saveOrInitFerieninseln", "fiStammdaten nicht gefunden")
+					);
+					ferieninselStammdatenService.saveFerieninselStammdaten(
+						converter.ferieninselStammdatenToEntity(fiStammdaten,
+							fiStammdatenFromDB,
+							gemeindeStammdatenGesuchsperiode)
+					);
+				}
+			}
+		}
 	}
 
 	@ApiOperation("Stores the logo image of the Gemeinde with the given id")

@@ -13,7 +13,7 @@ create table gemeinde_stammdaten_gesuchsperiode_ferieninsel (
 	user_mutiert varchar(255) not null,
 	version bigint not null,
 	vorgaenger_id varchar(36),
-	anmeldeschluss date not null,
+	anmeldeschluss date,
 	ferienname varchar(255) not null,
 	gemeinde_stammdaten_gesuchsperiode_id binary(16) not null,
 	primary key (id)

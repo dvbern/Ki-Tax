@@ -85,7 +85,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
-import ch.dvbern.ebegu.api.dtos.JaxFerieninselStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
@@ -174,6 +174,7 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
@@ -4330,8 +4331,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenToEntity(
-		@Nonnull JaxFerieninselStammdaten ferieninselStammdatenJAX,
-		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
+		@Nonnull JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenJAX,
+		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten, GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
 
 		requireNonNull(ferieninselStammdatenJAX);
 		requireNonNull(ferieninselStammdaten);
@@ -4339,6 +4340,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(ferieninselStammdatenJAX, ferieninselStammdaten);
 		ferieninselStammdaten.setFerienname(ferieninselStammdatenJAX.getFerienname());
 		ferieninselStammdaten.setAnmeldeschluss(ferieninselStammdatenJAX.getAnmeldeschluss());
+		ferieninselStammdaten.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
 
 		ferieninselZeitraumListToEntity(
 			ferieninselStammdatenJAX.getZeitraumList(),
@@ -4370,21 +4372,21 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public JaxFerieninselStammdaten ferieninselStammdatenToJAX(
+	public JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenToJAX(
 		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel persistedFerieninselStammdaten) {
 
-		final JaxFerieninselStammdaten jaxFerieninselStammdaten = new JaxFerieninselStammdaten();
+		final JaxGemeindeStammdatenGesuchsperiodeFerieninsel jaxGemeindeStammdatenGesuchsperiodeFerieninsel = new JaxGemeindeStammdatenGesuchsperiodeFerieninsel();
 
-		convertAbstractVorgaengerFieldsToJAX(persistedFerieninselStammdaten, jaxFerieninselStammdaten);
-		jaxFerieninselStammdaten.setFerienname(persistedFerieninselStammdaten.getFerienname());
-		jaxFerieninselStammdaten.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
+		convertAbstractVorgaengerFieldsToJAX(persistedFerieninselStammdaten, jaxGemeindeStammdatenGesuchsperiodeFerieninsel);
+		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienname(persistedFerieninselStammdaten.getFerienname());
+		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
 		Collections.sort(persistedFerieninselStammdaten.getZeitraumList());
 		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : persistedFerieninselStammdaten.getZeitraumList()) {
 			JaxFerieninselZeitraum jaxFerieninselZeitraum = new JaxFerieninselZeitraum();
 			convertAbstractDateRangedFieldsToJAX(ferieninselZeitraum, jaxFerieninselZeitraum);
-			jaxFerieninselStammdaten.getZeitraumList().add(jaxFerieninselZeitraum);
+			jaxGemeindeStammdatenGesuchsperiodeFerieninsel.getZeitraumList().add(jaxFerieninselZeitraum);
 		}
-		return jaxFerieninselStammdaten;
+		return jaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 	}
 
 	@Nullable
@@ -4793,7 +4795,7 @@ public class JaxBConverter extends AbstractConverter {
 				.findFirst().get().getValueAsInteger()
 		);
 
-		List<JaxFerieninselStammdaten> ferieninselStammdaten =
+		List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten =
 			ferieninselStammdatenService.findGesuchsperiodeFerieninselByGemeindeAndPeriode(gemeinde.getId(),
 				gesuchsperiode.getId())
 				.stream()

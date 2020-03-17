@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 
+import ch.dvbern.ebegu.types.DateRange;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -36,5 +37,15 @@ public class GemeindeStammdatenGesuchsperiodeFerieninselZeitraum extends Abstrac
 		builder.append(this.getGueltigkeit().getGueltigAb(), o.getGueltigkeit().getGueltigAb());
 		builder.append(this.getGueltigkeit().getGueltigBis(), o.getGueltigkeit().getGueltigBis());
 		return builder.toComparison();
+	}
+
+	GemeindeStammdatenGesuchsperiodeFerieninselZeitraum copyForGesuchsperiode() {
+		GemeindeStammdatenGesuchsperiodeFerieninselZeitraum copy =
+			new GemeindeStammdatenGesuchsperiodeFerieninselZeitraum();
+		DateRange dateRange = new DateRange();
+		dateRange.setGueltigAb(this.getGueltigkeit().getGueltigAb());
+		dateRange.setGueltigBis(this.getGueltigkeit().getGueltigBis());
+		copy.setGueltigkeit(dateRange);
+		return copy;
 	}
 }

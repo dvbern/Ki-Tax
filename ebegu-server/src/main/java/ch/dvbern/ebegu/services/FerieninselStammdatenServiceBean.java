@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -77,34 +78,40 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	public void initFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
 		GemeindeStammdatenGesuchsperiodeFerieninsel fruehlingsFerien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		fruehlingsFerien.setFerienname(Ferienname.FRUEHLINGSFERIEN);
-		// TODO: ferieninsel. remove this date
-		fruehlingsFerien.setAnmeldeschluss(LocalDate.of(2021, 1, 1));
 		fruehlingsFerien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
 		persistence.persist(fruehlingsFerien);
 
 		GemeindeStammdatenGesuchsperiodeFerieninsel sommerferien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		sommerferien.setFerienname(Ferienname.SOMMERFERIEN);
-		sommerferien.setAnmeldeschluss(LocalDate.of(2021, 1, 1));
 		sommerferien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
 		persistence.persist(sommerferien);
 
 		GemeindeStammdatenGesuchsperiodeFerieninsel herbstferien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		herbstferien.setFerienname(Ferienname.HERBSTFERIEN);
-		herbstferien.setAnmeldeschluss(LocalDate.of(2021, 1, 1));
 		herbstferien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
 		persistence.persist(herbstferien);
 
 		GemeindeStammdatenGesuchsperiodeFerieninsel sportferien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		sportferien.setFerienname(Ferienname.SPORTFERIEN);
-		sportferien.setAnmeldeschluss(LocalDate.of(2021, 1, 1));
 		sportferien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
 		persistence.persist(sportferien);
 	}
 
 	@Nonnull
 	@Override
-	public GemeindeStammdatenGesuchsperiodeFerieninsel saveFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
-		return null;
+	public GemeindeStammdatenGesuchsperiodeFerieninsel saveFerieninselStammdaten(
+		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten
+	) {
+		return persistence.merge(ferieninselStammdaten);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
+		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
+		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = persistence.find(GemeindeStammdatenGesuchsperiodeFerieninsel.class, ferieninselStammdatenId);
+		return Optional.ofNullable(ferieninselStammdaten);
 	}
 
 /*	@Nonnull

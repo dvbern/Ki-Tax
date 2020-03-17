@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -165,7 +166,13 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 		copy.setMerkblattAnmeldungTagesschuleDe(this.merkblattAnmeldungTagesschuleDe);
 		copy.setMerkblattAnmeldungTagesschuleFr(this.merkblattAnmeldungTagesschuleFr);
 		copy.setGesuchsperiode(gesuchsperiodeToCreate);
-		//TODO FERIENINSEL: GemeindeStammdatenGesuchsperiodeFerieninsel auch kopieren
+		if (this.getGemeindeStammdatenGesuchsperiodeFerieninseln() != null) {
+			final List<GemeindeStammdatenGesuchsperiodeFerieninsel> gpFerieninselStammdaten = new ArrayList<>();
+			this.getGemeindeStammdatenGesuchsperiodeFerieninseln().forEach(stammdaten -> {
+				gpFerieninselStammdaten.add(stammdaten.copyForGesuchsperiode(copy));
+			});
+			copy.setGemeindeStammdatenGesuchsperiodeFerieninsel(gpFerieninselStammdaten);
+		}
 		return copy;
 	}
 }
