@@ -355,8 +355,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 	}
 
+	@Override
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer){
+	public void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer){
 		// falls gesuchsteller, und darf einladen
 		if(!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER){
 			//check if Gesuch exist

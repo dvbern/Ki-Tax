@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -400,9 +401,25 @@ public class BenutzerResource {
 
 		authorizer.checkWriteAuthorization(benutzer);
 
-		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzer);
+		try {
+			benutzerService.checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
+			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
+			return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
+		} catch (BenutzerExistException b) {
+			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
+			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
+				return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
+			} else {
+				throw b;
+			}
+		}
+	}
+
+	@Nonnull
+	private JaxBenutzer saveBenutzerBerechtigungenForced(@Nonnull Benutzer benutzerFromDB, @Nonnull JaxBenutzer benutzerJax) {
+		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzerFromDB);
 		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
-			converter.jaxBenutzerToBenutzer(benutzerJax, benutzer),
+			converter.jaxBenutzerToBenutzer(benutzerJax, benutzerFromDB),
 			currentBerechtigungChanged);
 
 		return converter.benutzerToJaxBenutzer(mergedBenutzer);
