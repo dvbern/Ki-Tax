@@ -15,26 +15,21 @@
 
 package ch.dvbern.ebegu.services;
 
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
-import ch.dvbern.ebegu.errors.*;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.services.util.SearchUtil;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.types.DateRange_;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EnumUtil;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,16 +43,75 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.function.Consumer;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
+import javax.persistence.criteria.Subquery;
+
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Benutzer_;
+import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.BerechtigungHistory;
+import ch.dvbern.ebegu.entities.BerechtigungHistory_;
+import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
+import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.Traegerschaft_;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.SearchMode;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.errors.BenutzerExistException;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRole.*;
+import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
@@ -67,7 +121,12 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-import static ch.dvbern.ebegu.services.util.FilterFunctions.*;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -286,7 +345,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 		}
 
-		checkGesuchstellerHoehreRolleEinladen(benutzer);
+		checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
 
 		if (benutzer.isNew() && benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
 			throw new EbeguRuntimeException(
@@ -297,7 +356,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkGesuchstellerHoehreRolleEinladen(@Nonnull Benutzer benutzer){
+	private void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer){
 		// falls gesuchsteller, und darf einladen
 		if(!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER){
 			//check if Gesuch exist
@@ -324,12 +383,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				for (String id : gesuchIdList) {
 					Gesuch gs = gesuchService.findGesuch(id, false)
 						.orElseThrow(() -> new EbeguRuntimeException(
-						"checkGesuchstellerHoehreRolleEinladen", "Gesuch nicht gefunden"));
-					if(gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
+						"checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch", "Gesuch nicht gefunden"));
+					if (gs.getStatus() != AntragStatus.IN_BEARBEITUNG_GS){
 						hasGesuchFreigegeben = true;
 						break;
 					}
-				}
+					}
 				if (hasGesuchFreigegeben) {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
@@ -616,8 +675,29 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeBenutzer(@Nonnull String username) {
+		requireNonNull(username);
+		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"removeBenutzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			username));
+
+		try {
+			checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
+			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
+			removeBenutzerForced(benutzer.getUsername());
+		} catch (BenutzerExistException b) {
+			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
+			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
+				removeBenutzerForced(benutzer.getUsername());
+			} else {
+				throw b;
+			}
+		}
+	}
+
+	private void removeBenutzerForced(@Nonnull String username) {
 		requireNonNull(username);
 		Benutzer benutzer = findBenutzer(username).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"removeBenutzer",

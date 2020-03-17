@@ -168,7 +168,7 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public void removeFall(@Nonnull Fall fall, GesuchDeletionCause deletionCause) {
+	public void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(fall);
 		Optional<Fall> fallToRemove = findFall(fall.getId());
 		Fall loadedFall = fallToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fall));
