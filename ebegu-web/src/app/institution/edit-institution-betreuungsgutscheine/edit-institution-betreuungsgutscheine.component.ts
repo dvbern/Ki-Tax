@@ -26,7 +26,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
     selector: 'dv-edit-institution-betreuungsgutscheine',
     templateUrl: './edit-institution-betreuungsgutscheine.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 
 export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
@@ -40,6 +40,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
         private readonly translate: TranslateService,
     ) {
     }
+
     //
     public ngOnInit(): void {
         this.abweichendeZahlungsAdresse =
@@ -50,6 +51,9 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit {
     public onPrePersist(): void {
         if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.adresseKontoinhaber = undefined;
+        }
+        if (this.stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen === 0) {
+            this.stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen = undefined;
         }
     }
 
