@@ -306,7 +306,7 @@ export class DVAntragListController implements IController {
     }
 
     public getVerantwortlicheBgAndTs(antrag: TSAntragDTO): string {
-        let verantwortliche: string[] = [];
+        const verantwortliche: string[] = [];
         if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicherBG)) {
             verantwortliche.push(antrag.verantwortlicherBG);
         }

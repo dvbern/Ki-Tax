@@ -19,7 +19,6 @@ import {AuthLifeCycleService} from '../../../../authentication/service/authLifeC
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
-import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {LogFactory} from '../../logging/LogFactory';
@@ -288,10 +287,10 @@ export class DVSTPersistAntraege implements IDirective {
             if (TSRoleUtil.getGemeindeOnlyRoles().indexOf(berechtigung.role) > -1) {
                 return {verantwortlicherGemeinde: fullName};
             }
-            else if (TSRoleUtil.getGemeindeOrBGRoles().indexOf(berechtigung.role) > -1) {
-                return {verantwortlicherBG: fullName}
+            if (TSRoleUtil.getGemeindeOrBGRoles().indexOf(berechtigung.role) > -1) {
+                return {verantwortlicherBG: fullName};
             }
-            else if (TSRoleUtil.getGemeindeOrTSRoles().indexOf(berechtigung.role) > -1) {
+            if (TSRoleUtil.getGemeindeOrTSRoles().indexOf(berechtigung.role) > -1) {
                 return {verantwortlicherTS: fullName};
             }
         }
