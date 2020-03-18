@@ -292,6 +292,10 @@ export class FallToolbarComponent implements OnChanges {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 
+    public isGemeindeUser(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
+    }
+
     /**
      * Only for a Gesuchsteller it introduces Text in the variable gemeindeText when it is not defined or sets it to
      * undefined when it already has a text
