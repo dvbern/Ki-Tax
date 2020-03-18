@@ -531,12 +531,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.getGesuchsperiode());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
-        if (this.gesuchModelManager.isTagesschuleTagisEnabled()) {
-            this.betreuungsangebotValues.push({
-                key: TSBetreuungsangebotTyp.TAGESSCHULE,
-                value: this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)
-            });
+        if (!this.gesuchModelManager.isTagesschuleTagisEnabled()) {
+            return;
         }
+        this.betreuungsangebotValues.push({
+            key: TSBetreuungsangebotTyp.TAGESSCHULE,
+            value: this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)
+        });
     }
 
     public cancel(): void {
