@@ -74,8 +74,9 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
      * or EbeguExceptionReports in case there was some other application exception
      */
     private handleErrorResponse(response: any): Array<TSExceptionReport> {
+        const http404 = 404;
         // Ki-Tax API may respond with 404 if no matching cases could be found
-        if (response.status == 404 && response.config.url.startsWith(this.applicationPropertyRS.getKitaxHost())) {
+        if (response.status === http404 && response.config.url.startsWith(this.applicationPropertyRS.getKitaxHost())) {
             return [];
         }
         let errors: Array<TSExceptionReport>;

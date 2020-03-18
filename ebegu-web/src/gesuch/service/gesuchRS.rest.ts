@@ -277,7 +277,7 @@ export class GesuchRS implements IEntityRS {
         return this.$http.get(`${url}/${userUuid}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseKitaxResponse(response.data);
-            }).catch( (error: any) => {
+            }).catch( () => {
                 return undefined;
             });
     }

@@ -3734,7 +3734,7 @@ export class EbeguRestUtil {
 
     public parseKitaxResponse (response: any): TSKitaxResponse {
 
-        let kitaxResponse = new TSKitaxResponse();
+        const kitaxResponse = new TSKitaxResponse();
 
         kitaxResponse.url = response.url;
         kitaxResponse.fallNummer = response.fallNr;

@@ -326,6 +326,7 @@ export class FallToolbarComponent implements OnChanges {
             this.addNewDossierToCreateToDossiersList();
             this.retrieveListOfAvailableGemeinden();
 
+            // tslint:disable-next-line:early-exit
             if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID) {
                 this.applicationPropertyRS.getKitaxHost().then( host => {
                     this.kitaxHost = host;
@@ -335,7 +336,7 @@ export class FallToolbarComponent implements OnChanges {
                     this.gesuchRS.lookupKitax(url, this.selectedDossier.fall.besitzer.externalUUID).then(response => {
                         this.kitaxResponse = response;
                     });
-                })
+                });
             }
         });
     }
