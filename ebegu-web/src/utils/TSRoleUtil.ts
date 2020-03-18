@@ -454,6 +454,17 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getGemeindeOrBGOrTSRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+        ];
+    }
+
     public static getGemeindeOrBGRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.ADMIN_GEMEINDE,
@@ -469,6 +480,13 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
+        ];
+    }
+
+    public static getGemeindeOnlyRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
         ];
     }
 
