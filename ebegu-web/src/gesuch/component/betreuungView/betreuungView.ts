@@ -76,6 +76,7 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
+const TAGIS_ANGEBOT_VALUE = 'TAGIS';
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -530,6 +531,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.getGesuchsperiode());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
+        if (this.gesuchModelManager.isTagesschuleTagisEnabled()) {
+            this.betreuungsangebotValues.push({
+                key: TSBetreuungsangebotTyp.TAGESSCHULE,
+                value: this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)
+            });
+        }
     }
 
     public cancel(): void {
@@ -561,6 +568,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
             institutionenSDList = this.filterInstiForScolaris(institutionenSDList);
         }
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
+            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)) {
+            institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+        }
         return institutionenSDList;
     }
 
@@ -576,6 +587,21 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     }
                 );
                 return isScolaris;
+            }
+        );
+    }
+
+    private filterTagisTagesschule(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
+        return institutionenList.filter(instStamm => {
+                let isTagis = false;
+                instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
+                    einstellungTagesschule => {
+                        if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
+                            isTagis = einstellungTagesschule.tagis;
+                        }
+                    }
+                );
+                return isTagis;
             }
         );
     }

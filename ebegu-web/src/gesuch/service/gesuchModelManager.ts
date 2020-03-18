@@ -1649,4 +1649,8 @@ export class GesuchModelManager {
                 return gesuchResponse;
             });
     }
+
+    public isTagesschuleTagisEnabled(): boolean {
+        return this.gemeindeKonfiguration.konfigTagesschuleTagisEnabled;
+    }
 }

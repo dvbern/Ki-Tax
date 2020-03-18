@@ -30,6 +30,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
@@ -596,5 +597,18 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
+    }
+
+    public isTagesschuleTagis(): boolean {
+        const gesuchsPeriode = this.getGesuchsperiode();
+        const tsEinstellungenTagesschule =
+            this.getBetreuung().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+                .filter((einstellung: TSEinstellungenTagesschule) =>
+                    einstellung.gesuchsperiode.id === gesuchsPeriode.id)
+                .pop();
+        if (!tsEinstellungenTagesschule) {
+            return false;
+        }
+        return tsEinstellungenTagesschule.tagis;
     }
 }
