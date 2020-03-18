@@ -185,7 +185,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
-                    if (obj.key === this.$stateParams.betreuungsangebotTyp) {
+                    if (obj.key === this.$stateParams.betreuungsangebotTyp
+                        && obj.value !== this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)) {
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
