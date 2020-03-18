@@ -14,5 +14,5 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
 	  from gesuchsperiode as gp) as tmp;
 
-alter table einstellungen_tagesschule add if not exists tagis BIT NOT NULL DEFAULT FALSE;
-alter table einstellungen_tagesschule_aud add if not exists tagis BIT;
+alter table einstellungen_tagesschule add if not exists tagi BIT NOT NULL DEFAULT FALSE;
+alter table einstellungen_tagesschule_aud add if not exists tagi BIT;

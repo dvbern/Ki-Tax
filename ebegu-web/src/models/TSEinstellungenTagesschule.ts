@@ -26,5 +26,5 @@ export class TSEinstellungenTagesschule extends TSAbstractEntity {
     public modulTagesschuleTyp: TSModulTagesschuleTyp;
     public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
     public erlaeuterung: string;
-    public tagis: boolean;
+    public tagi: boolean;
 }
