@@ -15,6 +15,7 @@
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
+import {TSKitaxResponse} from '../../models/dto/TSKitaxResponse';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
@@ -270,5 +271,14 @@ export class GesuchRS implements IEntityRS {
         return this.$http.put(this.serviceURL + '/updateAlwaysEditableProperties', properties).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
+    }
+
+    public lookupKitax(url: string, userUuid: string): IPromise<TSKitaxResponse> {
+        return this.$http.get(`${url}/${userUuid}`)
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseKitaxResponse(response.data);
+            }).catch( (error: any) => {
+                return undefined;
+            });
     }
 }

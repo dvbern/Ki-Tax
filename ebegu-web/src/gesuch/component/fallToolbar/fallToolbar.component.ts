@@ -21,7 +21,9 @@ import {from as fromPromise, from, Observable, of} from 'rxjs';
 import {filter, map, switchMap} from 'rxjs/operators';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSKitaxResponse} from '../../../models/dto/TSKitaxResponse';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {getTSEingangsartFromRole, TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -50,6 +52,7 @@ export class FallToolbarComponent implements OnChanges {
     @Input() public dossierId: string;
     @Input() public currentDossier: TSDossier;
     @Input() public mobileMode?: boolean = false;
+    @Input() public kitaxEnabled?: boolean = false;
 
     public dossierList: TSDossier[] = [];
     public dossierListWithoutSelected: TSDossier[] = [];
@@ -58,6 +61,8 @@ export class FallToolbarComponent implements OnChanges {
     private availableGemeindeList: TSGemeinde[] = [];
     public gemeindeText: string;
     public showdropdown: boolean = false;
+    public kitaxResponse: TSKitaxResponse;
+    public kitaxHost: string;
 
     public constructor(
         private readonly dossierRS: DossierRS,
@@ -66,6 +71,7 @@ export class FallToolbarComponent implements OnChanges {
         private readonly $state: StateService,
         private readonly gesuchRS: GesuchRS,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -319,6 +325,18 @@ export class FallToolbarComponent implements OnChanges {
                 dossier && this.selectedDossier && dossier.id !== this.selectedDossier.id);
             this.addNewDossierToCreateToDossiersList();
             this.retrieveListOfAvailableGemeinden();
+
+            if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID) {
+                this.applicationPropertyRS.getKitaxHost().then( host => {
+                    this.kitaxHost = host;
+                });
+
+                this.applicationPropertyRS.getKitaxUrl().then( url => {
+                    this.gesuchRS.lookupKitax(url, this.selectedDossier.fall.besitzer.externalUUID).then(response => {
+                        this.kitaxResponse = response;
+                    });
+                })
+            }
         });
     }
 }

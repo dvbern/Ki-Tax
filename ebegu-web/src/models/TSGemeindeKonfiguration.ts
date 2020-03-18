@@ -51,6 +51,7 @@ export class TSGemeindeKonfiguration {
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
+    public konfigSchnittstelleKitaxEnabled: boolean;
     public erwerbspensumZuschlag: number;
     // never override this property. we just load it for validation reasons
     public erwerbspensumZuschlagMax: number;
@@ -199,6 +200,10 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED: {
                     this.konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED: {
+                    this.konfigSchnittstelleKitaxEnabled = (property.value === 'true');
                     break;
                 }
                 default: {

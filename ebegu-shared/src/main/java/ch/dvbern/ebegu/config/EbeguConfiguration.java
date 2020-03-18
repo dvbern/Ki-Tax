@@ -276,4 +276,8 @@ public interface EbeguConfiguration {
 	 * @return null oder wsdl url
 	 */
 	String getEbeguPersonensucheGERESWsdl();
+
+	String getKitaxHost();
+
+	String getKitaxEndpoint();
 }
