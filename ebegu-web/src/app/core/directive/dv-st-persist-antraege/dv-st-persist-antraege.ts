@@ -19,7 +19,6 @@ import {AuthLifeCycleService} from '../../../../authentication/service/authLifeC
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
-import {TSRole} from '../../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
 import {LogFactory} from '../../logging/LogFactory';
@@ -147,6 +146,8 @@ export class DVSTPersistAntraege implements IDirective {
                 savedState.search.predicateObject.verantwortlicherBG);
             this.setVerantwortlicherTSFromName(antragListController,
                 savedState.search.predicateObject.verantwortlicherTS);
+            this.setVerantwortlicherGemeindeFromName(antragListController,
+                savedState.search.predicateObject.verantwortlicherGemeinde);
         }
         const tableState = stTableCtrl.tableState();
         angular.extend(tableState, savedState);
@@ -157,6 +158,7 @@ export class DVSTPersistAntraege implements IDirective {
      * Extracts the user out of her name. This method is needed because the filter saves the user using its name
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
+     * Fuer alle Benutzer mit Rolle BG oder Gemeinde
      */
     private setVerantwortlicherBGFromName(
         antragListController: DVAntragListController,
@@ -176,6 +178,7 @@ export class DVSTPersistAntraege implements IDirective {
      * Extracts the user out of her name. This method is needed because the filter saves the user using its name
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
+     * Fuer alle Benutzer mit Rolle TS oder Gemeinde
      */
     private setVerantwortlicherTSFromName(
         antragListController: DVAntragListController,
@@ -188,6 +191,26 @@ export class DVSTPersistAntraege implements IDirective {
         this.benutzerRS.getAllBenutzerTsOrGemeinde().then(userList => {
             antragListController.selectedVerantwortlicherTS = userList.find(
                 user => user.getFullName() === verantwortlicherTSFullname);
+        });
+    }
+
+    /**
+     * Extracts the user out of her name. This method is needed because the filter saves the user using its name
+     * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
+     * with need the complete object and not only its Fullname.
+     * Fuer alle Benutzer mit Rolle Gemeinde
+     */
+    private setVerantwortlicherGemeindeFromName(
+        antragListController: DVAntragListController,
+        verantwortlicherGemeindeFullname: string,
+    ): void {
+        if (!(verantwortlicherGemeindeFullname && antragListController)) {
+            return;
+        }
+
+        this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(userList => {
+            antragListController.selectedVerantwortlicherGemeinde = userList.find(
+                user => user.getFullName() === verantwortlicherGemeindeFullname);
         });
     }
 
@@ -238,13 +261,16 @@ export class DVSTPersistAntraege implements IDirective {
             }
             if (!savedStateToReturn.search.predicateObject.verantwortlicher) {
                 const principal = this.authServiceRS.getPrincipal();
-
                 const berechtigung = principal.currentBerechtigung;
-                if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
-                    savedStateToReturn.search.predicateObject.verantwortlicherTS =
+
+                if (TSRoleUtil.getGemeindeOnlyRoles().indexOf(berechtigung.role) > -1) {
+                    savedStateToReturn.search.predicateObject.verantwortlicherGemeinde =
                         principal.getFullName();
-                } else { // JA
+                } else if (TSRoleUtil.getGemeindeOrBGRoles().indexOf(berechtigung.role) > -1) {
                     savedStateToReturn.search.predicateObject.verantwortlicherBG =
+                        principal.getFullName();
+                } else if (TSRoleUtil.getGemeindeOrTSRoles().indexOf(berechtigung.role) > -1) {
+                    savedStateToReturn.search.predicateObject.verantwortlicherTS =
                         principal.getFullName();
                 }
             }
@@ -254,16 +280,20 @@ export class DVSTPersistAntraege implements IDirective {
 
     private extractVerantwortlicherFullName(): any {
         const principal = this.authServiceRS.getPrincipal();
-
         if (principal) {
             const berechtigung = principal.currentBerechtigung;
             const fullName = principal.getFullName();
 
-            return berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS ?
-                {verantwortlicherTS: fullName} :
-                {verantwortlicherBG: fullName};
+            if (TSRoleUtil.getGemeindeOnlyRoles().indexOf(berechtigung.role) > -1) {
+                return {verantwortlicherGemeinde: fullName};
+            }
+            if (TSRoleUtil.getGemeindeOrBGRoles().indexOf(berechtigung.role) > -1) {
+                return {verantwortlicherBG: fullName};
+            }
+            if (TSRoleUtil.getGemeindeOrTSRoles().indexOf(berechtigung.role) > -1) {
+                return {verantwortlicherTS: fullName};
+            }
         }
-
         return '';
     }
 }
