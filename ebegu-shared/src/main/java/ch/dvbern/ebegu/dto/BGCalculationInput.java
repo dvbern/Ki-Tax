@@ -129,6 +129,10 @@ public class BGCalculationInput {
 	@NotNull @Nonnull
 	private BigDecimal tsVerpflegungskostenOhneBetreuung = BigDecimal.ZERO;
 
+	private boolean sozialhilfeempfaenger = false;
+
+	private boolean betreuungInGemeinde = false;
+
 
 	public BGCalculationInput(VerfuegungZeitabschnitt parent) {
 		this.parent = parent;
@@ -171,6 +175,8 @@ public class BGCalculationInput {
 		this.tsVerpflegungskostenMitBetreuung = toCopy.tsVerpflegungskostenMitBetreuung;
 		this.tsBetreuungszeitProWocheOhneBetreuung = toCopy.tsBetreuungszeitProWocheOhneBetreuung;
 		this.tsVerpflegungskostenOhneBetreuung = toCopy.tsVerpflegungskostenOhneBetreuung;
+		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
+		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 	}
 
 	public VerfuegungZeitabschnitt getParent() {
@@ -498,6 +504,22 @@ public class BGCalculationInput {
 		this.tsVerpflegungskostenOhneBetreuung = tsVerpflegungskostenOhneBetreuung;
 	}
 
+	public boolean isSozialhilfeempfaenger() {
+		return sozialhilfeempfaenger;
+	}
+
+	public void setSozialhilfeempfaenger(boolean sozialhilfeempfaenger) {
+		this.sozialhilfeempfaenger = sozialhilfeempfaenger;
+	}
+
+	public boolean isBetreuungInGemeinde() {
+		return betreuungInGemeinde;
+	}
+
+	public void setBetreuungInGemeinde(boolean betreuungInGemeinde) {
+		this.betreuungInGemeinde = betreuungInGemeinde;
+	}
+
 	@Override
 	public String toString() {
 		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
@@ -571,6 +593,8 @@ public class BGCalculationInput {
 		this.tsVerpflegungskostenMitBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenMitBetreuung, other.tsVerpflegungskostenMitBetreuung);
 		this.tsBetreuungszeitProWocheOhneBetreuung = this.tsBetreuungszeitProWocheOhneBetreuung + other.tsBetreuungszeitProWocheOhneBetreuung;
 		this.tsVerpflegungskostenOhneBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenOhneBetreuung, other.tsVerpflegungskostenOhneBetreuung);
+		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
+		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {

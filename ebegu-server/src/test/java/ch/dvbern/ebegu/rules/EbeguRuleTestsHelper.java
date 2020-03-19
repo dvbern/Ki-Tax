@@ -89,6 +89,7 @@ public final class EbeguRuleTestsHelper {
 			new BigDecimal(PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS),
 			DEFAULT_LOCALE);
 	private static final StorniertCalcRule storniertCalcRule = new StorniertCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final SozialhilfeAbschnittRule sozialhilfeAbschnittRule = new SozialhilfeAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 
 	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
 	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true);
@@ -150,47 +151,48 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	@Nonnull
-	private static List<VerfuegungZeitabschnitt> calculateAllRules(AbstractPlatz betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte,
+	private static List<VerfuegungZeitabschnitt> calculateAllRules(AbstractPlatz platz, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte,
 		boolean doMonatsstueckelungen) {
 		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
-		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
-		result = urlaubAbschnittRule.calculate(betreuung, result);
-		result = familienabzugAbschnittRule.calculate(betreuung, result);
-		result = kindTarifAbschnittRule.calculate(betreuung, result);
-		result = betreuungsangebotTypAbschnittRule.calculate(betreuung, result);
-		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
-		result = tagesschuleAbschnittRule.calculate(betreuung, result);
-		result = fachstelleAbschnittRule.calculate(betreuung, result);
-		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
-		result = einkommenAbschnittRule.calculate(betreuung, result);
-		result = wohnsitzAbschnittRule.calculate(betreuung, result);
-		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
-		result = abwesenheitAbschnittRule.calculate(betreuung, result);
-		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
+		result = erwerbspensumAbschnittRule.calculate(platz, result);
+		result = urlaubAbschnittRule.calculate(platz, result);
+		result = familienabzugAbschnittRule.calculate(platz, result);
+		result = kindTarifAbschnittRule.calculate(platz, result);
+		result = betreuungsangebotTypAbschnittRule.calculate(platz, result);
+		result = betreuungspensumAbschnittRule.calculate(platz, result);
+		result = tagesschuleAbschnittRule.calculate(platz, result);
+		result = fachstelleAbschnittRule.calculate(platz, result);
+		result = ausserordentlicherAnspruchAbschnittRule.calculate(platz, result);
+		result = einkommenAbschnittRule.calculate(platz, result);
+		result = wohnsitzAbschnittRule.calculate(platz, result);
+		result = einreichungsfristAbschnittRule.calculate(platz, result);
+		result = abwesenheitAbschnittRule.calculate(platz, result);
+		result = zivilstandsaenderungAbschnittRule.calculate(platz, result);
+		result = sozialhilfeAbschnittRule.calculate(platz, result);
 		// Anspruch
-		result = storniertCalcRule.calculate(betreuung, result);
-		result = erwerbspensumCalcRule.calculate(betreuung, result);
-		result = fachstelleCalcRule.calculate(betreuung, result);
-		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
+		result = storniertCalcRule.calculate(platz, result);
+		result = erwerbspensumCalcRule.calculate(platz, result);
+		result = fachstelleCalcRule.calculate(platz, result);
+		result = ausserordentlicherAnspruchCalcRule.calculate(platz, result);
 		// Restanspruch
 		// Reduktionen
-		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
-		result = betreuungsangebotTypCalcRule.calculate(betreuung, result);
-		result = wohnsitzCalcRule.calculate(betreuung, result);
-		result = einreichungsfristCalcRule.calculate(betreuung, result);
-		result = abwesenheitCalcRule.calculate(betreuung, result);
-		result = schulstufeCalcRule.calculate(betreuung, result);
-		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
-		result = restanspruchLimitCalcRule.calculate(betreuung, result);
+		result = maximalesEinkommenCalcRule.calculate(platz, result);
+		result = betreuungsangebotTypCalcRule.calculate(platz, result);
+		result = wohnsitzCalcRule.calculate(platz, result);
+		result = einreichungsfristCalcRule.calculate(platz, result);
+		result = abwesenheitCalcRule.calculate(platz, result);
+		result = schulstufeCalcRule.calculate(platz, result);
+		result = kesbPlatzierungCalcRule.calculate(platz, result);
+		result = restanspruchLimitCalcRule.calculate(platz, result);
 
-		result = anspruchFristRule.executeIfApplicable(betreuung, result);
-		restanspruchInitializer.executeIfApplicable(betreuung, result);
-		result = abschlussNormalizerDismissMonate.executeIfApplicable(betreuung, result);
+		result = anspruchFristRule.executeIfApplicable(platz, result);
+		restanspruchInitializer.executeIfApplicable(platz, result);
+		result = abschlussNormalizerDismissMonate.executeIfApplicable(platz, result);
 		if (doMonatsstueckelungen) {
-			result = monatsRule.executeIfApplicable(betreuung, result);
+			result = monatsRule.executeIfApplicable(platz, result);
 		}
-		result = mutationsMerger.executeIfApplicable(betreuung, result);
-		result = abschlussNormalizerKeepMonate.executeIfApplicable(betreuung, result);
+		result = mutationsMerger.executeIfApplicable(platz, result);
+		result = abschlussNormalizerKeepMonate.executeIfApplicable(platz, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 
 		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);

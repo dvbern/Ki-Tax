@@ -171,6 +171,10 @@ public class BetreuungsgutscheinConfigurator {
 		// Zivilstandsaenderung
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(zivilstandsaenderungAbschnittRule);
+
+		// Sozialhilfe
+		SozialhilfeAbschnittRule sozialhilfeAbschnittRule = new SozialhilfeAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(sozialhilfeAbschnittRule);
 	}
 
 	private void berechnenAnspruchRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
