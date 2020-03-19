@@ -18,18 +18,24 @@
 package ch.dvbern.ebegu.rechner.rules;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.util.MathUtil;
 
-public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
+public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRule {
 
-	protected static final MathUtil EXACT = MathUtil.EXACT;
+
+	public ZusaetzlicherGutscheinGemeindeRechnerRule(@Nonnull Locale locale) {
+		super(locale);
+	}
 
 	@Override
 	public boolean isConfigueredForGemeinde(@Nonnull BGRechnerParameterDTO parameterDTO) {
@@ -38,12 +44,28 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 
 	@Override
 	public boolean isRelevantForVerfuegung(@Nonnull BGCalculationInput inputGemeinde, @Nonnull BGRechnerParameterDTO parameterDTO) {
+		boolean hasAnspruch = true;
+		// (1) Anspruchsgrenze
 		EinschulungTyp einschulungsTypAnspruchsgrenze = getAnspruchsgrenzeSchulstufe(inputGemeinde, parameterDTO);
 		EinschulungTyp einschulungTyp = inputGemeinde.getEinschulungTyp();
 		if (einschulungTyp != null) {
-			return einschulungTyp.ordinal() <= einschulungsTypAnspruchsgrenze.ordinal();
+			boolean schulstufeErfuellt = einschulungTyp.ordinal() <= einschulungsTypAnspruchsgrenze.ordinal();
+			if (!schulstufeErfuellt) {
+				hasAnspruch = false;
+				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_SCHULSTUFE);
+			}
 		}
-		return false;
+		// (2) Sozialhilfe
+		if (inputGemeinde.isSozialhilfeempfaenger()) {
+			hasAnspruch = false;
+			addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE);
+		}
+		// (3) Betreuung in Bern
+		if (!inputGemeinde.isBetreuungInGemeinde()) {
+			hasAnspruch = false;
+			addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
+		}
+		return hasAnspruch;
 	}
 
 	@Override
@@ -58,8 +80,10 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		BigDecimal minBetrag = resultGemeinde.getMinimalerElternbeitrag();
 
 		// Eigentliche Regel: Vergünstigung vor Vollkosten und Minimalbeitrag um den konfigurierten Wert erhöhen
-		BigDecimal verguenstigungVorVollkostenUndMinimalbetragGemeinde = MathUtil.EXACT.add(verguenstigungVorVollkostenUndMinimalbetragASIV,
-			getBetragZusaetzlicherGutschein(inputGemeinde, parameterDTO));
+		BigDecimal betragZusaetzlicherGutschein = getBetragZusaetzlicherGutschein(inputGemeinde, parameterDTO);
+		BigDecimal verguenstigungVorVollkostenUndMinimalbetragGemeinde = MathUtil.EXACT.add(
+			verguenstigungVorVollkostenUndMinimalbetragASIV,
+			betragZusaetzlicherGutschein);
 
 		// Alle davon berechneten Werte aufgrund dieser Anpassung neu berechnen
 		BigDecimal vollkostenMinusMinimaltarifGemeinde = EXACT.subtract(vollkosten, minBetrag);
@@ -83,27 +107,51 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		return resultGemeinde;
 	}
 
-	private BigDecimal getBetragZusaetzlicherGutschein(
+	@Nonnull
+	public BigDecimal getBetragZusaetzlicherGutschein(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO rechnerParameterDTO
 	) {
-		if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
-			return rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragKita();
-		} else if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
-			return rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragTfo();
+		// Zusatzgutschein gibts nur, wenn grundsaetzlich Anspruch vorhanden
+		if (inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
+			if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
+				BigDecimal betragKita = rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragKita();
+				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragKita);
+				return betragKita;
+			}
+			if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
+				BigDecimal betragTfo = rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragTfo();
+				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragTfo);
+				return betragTfo;
+			}
+			throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
 		}
-		throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
+		// Kein Anspruch: Zusatzgutschein ebenfalls 0
+		return BigDecimal.ZERO;
 	}
 
+	@Nonnull
 	private EinschulungTyp getAnspruchsgrenzeSchulstufe(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO rechnerParameterDTO
 	) {
 		if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
 			return rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita();
-		} else if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
+		}
+		if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
 			return rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo();
 		}
 		throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
+	}
+
+	private void addMessage(@Nonnull BGCalculationInput inputGemeinde, @Nonnull MsgKey msgKey, Object... args) {
+		// Saemtliche Bemerkungen werden nur dann angezeigt, wenn ueberhaupt prinzipiell Anspruch besteht
+		if (inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
+			inputGemeinde.getParent().addBemerkung(
+				RuleKey.ZUSATZGUTSCHEIN,
+				msgKey,
+				getLocale(),
+				args);
+		}
 	}
 }
