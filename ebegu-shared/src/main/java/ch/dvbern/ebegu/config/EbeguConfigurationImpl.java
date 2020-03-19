@@ -67,6 +67,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_PERSONENSUCHE_GERES_ENDPOINT = "ebegu.personensuche.geres.endpoint";
 	public static final String EBEGU_PERSONENSUCHE_GERES_WSDL = "ebegu.personensuche.geres.wsdl";
 
+
+	public static final String EBEGU_KITAX_HOST = "ebegu.kitax.host";
+	public static final String EBEGU_KITAX_ENDPOINT = "ebegu.kitax.endpoint";
+
 	public static final String EBEGU_LOGIN_PROVIDER_API_URL = "ebegu.login.provider.api.url";
 	private static final String EBEGU_LOGIN_API_ALLOW_REMOTE = "ebegu.login.api.allow.remote";
 	private static final String EBEGU_LOGIN_API_INTERNAL_USER = "ebegu.login.api.internal.user";
@@ -334,5 +338,15 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getEbeguPersonensucheGERESWsdl() {
 		return getString(EBEGU_PERSONENSUCHE_GERES_WSDL);
+	}
+
+	@Override
+	public String getKitaxHost() {
+		return getString(EBEGU_KITAX_HOST, "https://ebegu.dvbern.ch");
+	}
+
+	@Override
+	public String getKitaxEndpoint() {
+		return getString(EBEGU_KITAX_ENDPOINT, "/ebegu/api/v1/kibon/lookup");
 	}
 }
