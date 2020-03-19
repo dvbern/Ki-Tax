@@ -12,7 +12,9 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-<dv-fall-toolbar [fall-id]="vm.getFallId()" [dossier-id]="vm.getDossierId()"
+<dv-fall-toolbar [fall-id]="vm.getFallId()"
+                 [kitax-enabled]="vm.gesuchModelManager.gemeindeKonfiguration.konfigSchnittstelleKitaxEnabled"
+                 [dossier-id]="vm.getDossierId()"
                  [current-dossier]="vm.getDossier()" hide-xs hide-sm>
 </dv-fall-toolbar>
 

@@ -48,6 +48,7 @@ public class AntragPredicateObjectDTO implements Serializable {
 	private String institutionen;   //Gesuch.kindContainers.betreuungen.institutionStammdaten.institution.name
 	private String verantwortlicherBG; //Dossier.verwantwortlicherBG.name
 	private String verantwortlicherTS; //Dossier.verwantwortlicherTS.name
+	private String verantwortlicherGemeinde; //Dossier.verwantwortlicherBG.name OR Dossier.verantwortlicherTS.name
 	private String kinder; //Gesuch.kindContainers.kindJa.vorname
 
 	public String getKinder() {
@@ -168,6 +169,14 @@ public class AntragPredicateObjectDTO implements Serializable {
 
 	public void setVerantwortlicherTS(String verantwortlicherTS) {
 		this.verantwortlicherTS = verantwortlicherTS;
+	}
+
+	public String getVerantwortlicherGemeinde() {
+		return verantwortlicherGemeinde;
+	}
+
+	public void setVerantwortlicherGemeinde(String verantwortlicherGemeinde) {
+		this.verantwortlicherGemeinde = verantwortlicherGemeinde;
 	}
 
 	@Override

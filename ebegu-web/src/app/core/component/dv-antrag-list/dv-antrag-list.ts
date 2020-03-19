@@ -99,6 +99,7 @@ export class DVAntragListController implements IController {
     public selectedEingangsdatumSTV: string;
     public selectedVerantwortlicherBG: TSBenutzer;
     public selectedVerantwortlicherTS: TSBenutzer;
+    public selectedVerantwortlicherGemeinde: TSBenutzer;
     public selectedDokumenteHochgeladen: string;
     public pendenz: boolean;
     public selectedInstitutionName: string;
@@ -298,5 +299,20 @@ export class DVAntragListController implements IController {
             bezeichnung = `${bezeichnung} ${antrag.laufnummer}`;
         }
         return bezeichnung;
+    }
+
+    public isPendenzGemeindeRolle(): boolean {
+        return this.pendenz && this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGemeindeOnlyRoles());
+    }
+
+    public getVerantwortlicheBgAndTs(antrag: TSAntragDTO): string {
+        const verantwortliche: string[] = [];
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicherBG)) {
+            verantwortliche.push(antrag.verantwortlicherBG);
+        }
+        if (EbeguUtil.isNotNullOrUndefined(antrag.verantwortlicherTS)) {
+            verantwortliche.push(antrag.verantwortlicherTS);
+        }
+        return verantwortliche.join(', ');
     }
 }
