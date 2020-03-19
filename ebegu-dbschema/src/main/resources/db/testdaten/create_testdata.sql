@@ -423,6 +423,24 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
 	  from gesuchsperiode as gp) as tmp;
 
+-- GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+		  '2020-01-01 00:00:00'              as timestamp_erstellt,
+		  '2020-01-01 00:00:00'              as timestamp_mutiert,
+		  'flyway'                           as user_erstellt,
+		  'flyway'                           as user_mutiert,
+		  0                                  as version,
+		  'GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED' as einstellung_key,
+		  'true' 								as value,
+		  UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+		  gp.id                              as gesuchsperiode_id,
+		  UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+
 -- Tagesschule Gemeinde Paris
 INSERT INTO institution (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,name,status,mandant_id,traegerschaft_id,stammdaten_check_required,event_published) VALUES (UNHEX(REPLACE('f44a68f2-dda2-4bf2-936a-68e20264b610', '-', '')),'2020-02-28 09:48:18','2020-02-28 10:11:35','flyway','flyway',0,null,'Tagesschule Paris','AKTIV', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')),null,false,true);
 INSERT INTO adresse (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,gueltig_ab,gueltig_bis,gemeinde,hausnummer,land,organisation,ort,plz,strasse,zusatzzeile) VALUES (UNHEX(REPLACE('a805a101-4200-473a-accc-bbb423ea1937', '-', '')),'2020-02-28 09:48:18','2020-02-28 10:11:35','flyway','flyway',1,null,'1000-01-01','9999-12-31',null,'2','CH','Tageschule Paris','Paris','3000','Pariser Strasse',null);

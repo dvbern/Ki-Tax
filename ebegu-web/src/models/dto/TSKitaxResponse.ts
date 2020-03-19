@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,15 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export class TSPublicAppConfig {
-    public currentNode: string;
-    public devmode: boolean;
-    public whitelist: string;
-    public dummyMode: boolean;
-    public sentryEnvName: string;
-    public backgroundColor: string = '#FFFFFF';
-    public zahlungentestmode: boolean;
-    public personenSucheDisabled: boolean;
-    public kitaxHost: string;
-    public kitaxEndpoint: string;
+export class TSKitaxResponse {
+
+    private _url: string;
+    private _fallNummer: string;
+
+    public get url(): string {
+        return this._url;
+    }
+
+    public set url(value: string) {
+        this._url = value;
+    }
+
+    public get fallNummer(): string {
+        return this._fallNummer;
+    }
+
+    public set fallNummer(value: string) {
+        this._fallNummer = value;
+    }
 }

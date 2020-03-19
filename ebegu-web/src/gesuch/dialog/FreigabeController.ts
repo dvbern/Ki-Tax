@@ -129,10 +129,10 @@ export class FreigabeController {
             if (this.isUserInList(usernameVorjahr, listOfBerechtigteUser)) {
                 return usernameVorjahr;
             }
-            if (this.isUserInList(this.authService.getPrincipal().username, listOfBerechtigteUser)) {
-                // Der eingeloggte Benutzer ist berechtigt fuer was wir suchen -> Wir nehmen diesen
-                return this.authService.getPrincipal().username;
-            }
+
+        } else if (this.isUserInList(this.authService.getPrincipal().username, listOfBerechtigteUser)) {
+            // Der eingeloggte Benutzer ist berechtigt fuer was wir suchen -> Wir nehmen diesen
+            return this.authService.getPrincipal().username;
         }
         return undefined;
     }

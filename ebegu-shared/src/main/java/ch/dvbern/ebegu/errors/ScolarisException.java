@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,15 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export class TSPublicAppConfig {
-    public currentNode: string;
-    public devmode: boolean;
-    public whitelist: string;
-    public dummyMode: boolean;
-    public sentryEnvName: string;
-    public backgroundColor: string = '#FFFFFF';
-    public zahlungentestmode: boolean;
-    public personenSucheDisabled: boolean;
-    public kitaxHost: string;
-    public kitaxEndpoint: string;
+package ch.dvbern.ebegu.errors;
+
+import javax.annotation.Nonnull;
+import javax.ejb.ApplicationException;
+
+
+@ApplicationException(rollback = true)
+public class ScolarisException extends RuntimeException {
+
+	private static final long serialVersionUID = 306424922900479199L;
+
+	public ScolarisException(@Nonnull String message) {
+		super(message);
+	}
 }

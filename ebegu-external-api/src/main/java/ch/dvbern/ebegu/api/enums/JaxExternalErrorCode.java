@@ -20,4 +20,5 @@ public enum JaxExternalErrorCode {
 	NO_RESULTS,
 	SERVER_ERROR,
 	BAD_PARAMETER,
+	DRITTANWENDUNG_NOT_ALLOWED
 }
