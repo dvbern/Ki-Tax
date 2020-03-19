@@ -77,6 +77,9 @@ public enum EinstellungKey {
 	// Die Gemeinde gewährt die Mahlzeitenvergünstigung auch für Sozialhilfebezüger
 	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED(EinstellungTyp.GEMEINDE),
 
+	// Die Schnittstelle zu Ki-Tax ist aktiviert
+	GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED(EinstellungTyp.GEMEINDE),
+
 	// *** Einstellungen fuer die Gutscheinberechnung
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten

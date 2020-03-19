@@ -257,7 +257,7 @@ export class DVSTPersistAntraege implements IDirective {
                 savedStateToReturn = {search: {predicateObject: this.extractVerantwortlicherFullName()}};
             }
             if (!savedStateToReturn.search.predicateObject) {
-                savedStateToReturn.search.predicateObject = this.extractVerantwortlicherFullName();
+                savedStateToReturn.search.predicateObject = {};
             }
             if (!savedStateToReturn.search.predicateObject.verantwortlicher) {
                 const principal = this.authServiceRS.getPrincipal();
