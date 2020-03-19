@@ -51,7 +51,7 @@ export class BenutzerEinladenComponent {
         if (!form.valid) {
             return;
         }
-
+        this.benutzer.email = this.benutzer.email.trim();
         this.benutzer.status = TSBenutzerStatus.EINGELADEN;
         this.benutzer.username = this.benutzer.email;
         this.benutzer.mandant = this.authServiceRS.getPrincipal().mandant;
