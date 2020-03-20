@@ -390,7 +390,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				// Bei Akzeptieren einer Anmeldung muss eine E-Mail geschickt werden
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
-				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !isTagesschuleTagis(anmeldungTagesschule)) {
+				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !isTagesschuleTagi(anmeldungTagesschule)) {
 					mailService.sendInfoSchulamtAnmeldungAkzeptiert(persistedBetreuung);
 				}
 			} catch (MailException e) {
@@ -439,7 +439,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 					"anmeldungSchulamtModuleAkzeptieren",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					"AnmeldungTagesschule: " + betreuung.getId()));
-			tagis = isTagesschuleTagis(anmeldungTagesschule);
+			tagis = isTagesschuleTagi(anmeldungTagesschule);
 		}
 		try {
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
@@ -1118,7 +1118,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	public boolean isTagesschuleTagis(AnmeldungTagesschule anmeldung) {
+	public boolean isTagesschuleTagi(AnmeldungTagesschule anmeldung) {
 		assert anmeldung.getBelegungTagesschule() != null;
 		Set<BelegungTagesschuleModul> belegungTagesschuleModulList =
 			anmeldung.getBelegungTagesschule().getBelegungTagesschuleModule();
@@ -1126,6 +1126,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			belegungTagesschuleModulList.iterator().next();
 		ModulTagesschuleGroup modulTagesschuleGroup =
 			belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup();
-		return modulTagesschuleGroup.getEinstellungenTagesschule().isTagis();
+		return modulTagesschuleGroup.getEinstellungenTagesschule().isTagi();
 	}
 }

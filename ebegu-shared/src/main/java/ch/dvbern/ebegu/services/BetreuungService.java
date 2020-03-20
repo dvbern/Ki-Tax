@@ -220,10 +220,7 @@ public interface BetreuungService {
 	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
 	/**
-	 * Kontroll ob der Tagesschule während dieser Anmeldung war eine Tagis oder nicht
-	 *
-	 * @param anmeldung
-	 * @return
+	 * Kontroll ob der Tagesschule während dieser Anmeldung war eine Tagi oder nicht
 	 */
-	boolean isTagesschuleTagis(AnmeldungTagesschule anmeldung);
+	boolean isTagesschuleTagi(AnmeldungTagesschule anmeldung);
 }

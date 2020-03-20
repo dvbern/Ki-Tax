@@ -599,7 +599,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
-    public isTagesschuleTagis(): boolean {
+    public isTagesschuleTagi(): boolean {
         const gesuchsPeriode = this.getGesuchsperiode();
         const tsEinstellungenTagesschule =
             this.getBetreuung().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
@@ -609,6 +609,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (!tsEinstellungenTagesschule) {
             return false;
         }
-        return tsEinstellungenTagesschule.tagis;
+        return tsEinstellungenTagesschule.tagi;
     }
 }

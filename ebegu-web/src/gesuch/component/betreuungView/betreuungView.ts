@@ -76,7 +76,7 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
-const TAGIS_ANGEBOT_VALUE = 'TAGIS';
+const TAGI_ANGEBOT_VALUE = 'TAGI';
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -186,7 +186,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
-                        && obj.value !== this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)) {
+                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
@@ -537,7 +537,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.betreuungsangebotValues.push({
             key: TSBetreuungsangebotTyp.TAGESSCHULE,
-            value: this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)
+            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
         });
     }
 
@@ -571,7 +571,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             institutionenSDList = this.filterInstiForScolaris(institutionenSDList);
         }
         if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
-            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGIS_ANGEBOT_VALUE)) {
+            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
             institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
         }
         return institutionenSDList;
@@ -595,15 +595,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private filterTagisTagesschule(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
         return institutionenList.filter(instStamm => {
-                let isTagis = false;
+                let isTagi = false;
                 instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
                     einstellungTagesschule => {
                         if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
-                            isTagis = einstellungTagesschule.tagis;
+                            isTagi = einstellungTagesschule.tagi;
                         }
                     }
                 );
-                return isTagis;
+                return isTagi;
             }
         );
     }
