@@ -34,7 +34,7 @@
     "postinstall": "npm run set-version && npm rebuild node-sass && mkdirp build"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/build-angular": "~0.13.9",
     "@angular/cli": "^7.3.9",
     "@angular/compiler-cli": "^7.2.15",
     "@types/angular": "^1.6.54",
@@ -72,12 +72,12 @@
     "cache-loader": "^1.2.5",
     "check-engine": "~1.7.0",
     "codelyzer": "^4.5.0",
-    "concurrently": "^3.6.1",
+    "concurrently": "^5.1.0",
     "css-loader": "~2.1.1",
     "file-loader": "~1.1.5",
     "font-awesome": "~4.7.0",
     "html-loader": "~0.5.1",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12.1",
     "istanbul-instrumenter-loader": "~3.0.1",
     "jasmine": "^3.4.0",
     "jasmine-core": "^3.4.0",
@@ -126,7 +126,7 @@
   },
   "engines": {
     "node": "=10.16.2",
-    "npm": "=6.9.0"
+    "npm": "=6.14.3"
   },
   "dependencies": {
     "@angular/animations": "^7.2.15",
@@ -150,8 +150,8 @@
     "@uirouter/core": "^5.0.23",
     "@uirouter/visualizer": "^7.0.0",
     "angular-utf8-base64": "0.0.5",
-    "browserslist": "^4.7.1",
-    "caniuse-lite": "^1.0.30000999",
+    "browserslist": "^4.10.0",
+    "caniuse-lite": "^1.0.30001035",
     "core-js": "~2.5.5",
     "detect-browser": "^3.0.1",
     "iban": "0.0.12",
@@ -163,6 +163,7 @@
     "rxjs": "^6.5.2",
     "rxjs-compat": "^6.4.0",
     "tslib": "^1.9.0",
-    "zone.js": "^0.8.29"
+    "zone.js": "^0.8.29",
+    "tree-kill": "1.2.2"
   }
 }
