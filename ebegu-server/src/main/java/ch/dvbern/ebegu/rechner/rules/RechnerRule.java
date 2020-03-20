@@ -20,8 +20,8 @@ package ch.dvbern.ebegu.rechner.rules;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 
 public interface RechnerRule {
 
@@ -39,10 +39,10 @@ public interface RechnerRule {
 		@Nonnull BGRechnerParameterDTO parameterDTO);
 
 	/**
-	 * Berechnet aufgrund der (vorgängig erfolgten) Berechnung ASIV und den Input-Daten der Gemeinde das Resultat Gemeinde
+	 * Setzt die Parameter, welche fuer diese Rule benoetigt werden
 	 */
-	BGCalculationResult executeRule(
+	void prepareParameter(
 		@Nonnull BGCalculationInput inputGemeinde,
-		@Nonnull BGCalculationResult resultGemeinde,
-		@Nonnull BGRechnerParameterDTO parameterDTO);
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull RechnerRuleParameterDTO recherParameter);
 }

@@ -33,7 +33,7 @@ public abstract class AbstractRechner {
 	/**
 	 * Führt die Gesamtberechnung durch: Also Berechnung gemäss ASIV und - falls konfiguriert - Berechnung der Gemeinde
 	 */
-	public abstract void calculate(
+	public abstract void calculateAsivAndGemeinde(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull List<RechnerRule> rechnerRules);

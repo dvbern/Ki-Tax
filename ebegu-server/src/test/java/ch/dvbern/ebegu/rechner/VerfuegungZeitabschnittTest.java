@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
@@ -32,7 +33,7 @@ import org.junit.Test;
 public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final TageselternRechner tageselternRechner = new TageselternRechner();
+	private final TageselternRechner tageselternRechner = new TageselternRechner(Collections.emptyList());
 
 	@Nonnull
 	private static final BigDecimal MAX_STUNDEN_MONTH = MathUtil.DEFAULT.from(220);

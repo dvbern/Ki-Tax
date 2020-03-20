@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
@@ -44,7 +45,7 @@ import static org.hamcrest.Matchers.is;
 public class KitaRechnerTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final KitaRechner kitaRechner = new KitaRechner();
+	private final KitaRechner kitaRechner = new KitaRechner(Collections.emptyList());
 
 	private final LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
 	private final LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);

@@ -23,18 +23,18 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 import ch.dvbern.ebegu.rules.RuleKey;
-import ch.dvbern.ebegu.util.MathUtil;
 
-public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRule {
+public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 
+	private final Locale locale;
 
 	public ZusaetzlicherGutscheinGemeindeRechnerRule(@Nonnull Locale locale) {
-		super(locale);
+		this.locale = locale;
 	}
 
 	@Override
@@ -69,46 +69,16 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRu
 	}
 
 	@Override
-	public BGCalculationResult executeRule(
+	public void prepareParameter(
 		@Nonnull BGCalculationInput inputGemeinde,
-		@Nonnull BGCalculationResult resultGemeinde,
-		@Nonnull BGRechnerParameterDTO parameterDTO
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull RechnerRuleParameterDTO recherParameter
 	) {
-		// Werte, die aus ASIV uebernommen werden:
-		BigDecimal vollkosten = resultGemeinde.getVollkosten();
-		BigDecimal verguenstigungVorVollkostenUndMinimalbetragASIV = resultGemeinde.getVerguenstigungOhneBeruecksichtigungVollkosten();
-		BigDecimal minBetrag = resultGemeinde.getMinimalerElternbeitrag();
-
-		// Eigentliche Regel: Vergünstigung vor Vollkosten und Minimalbeitrag um den konfigurierten Wert erhöhen
-		BigDecimal betragZusaetzlicherGutschein = getBetragZusaetzlicherGutschein(inputGemeinde, parameterDTO);
-		BigDecimal verguenstigungVorVollkostenUndMinimalbetragGemeinde = MathUtil.EXACT.add(
-			verguenstigungVorVollkostenUndMinimalbetragASIV,
-			betragZusaetzlicherGutschein);
-
-		// Alle davon berechneten Werte aufgrund dieser Anpassung neu berechnen
-		BigDecimal vollkostenMinusMinimaltarifGemeinde = EXACT.subtract(vollkosten, minBetrag);
-		BigDecimal verguenstigungVorMinimalbetragGemeinde = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetragGemeinde);
-
-		BigDecimal verguenstigungGemeinde = verguenstigungVorVollkostenUndMinimalbetragGemeinde.min(vollkostenMinusMinimaltarifGemeinde);
-		BigDecimal elternbeitragGemeinde = EXACT.subtract(vollkosten, verguenstigungGemeinde);
-
-		BigDecimal minimalerElternbeitragGekuerztGemeinde = MathUtil.DEFAULT.from(0);
-		BigDecimal vollkostenMinusVerguenstigungGemeinde = MathUtil.DEFAULT.subtract(vollkosten, verguenstigungVorMinimalbetragGemeinde);
-		if (vollkostenMinusVerguenstigungGemeinde.compareTo(minBetrag) <= 0) {
-			minimalerElternbeitragGekuerztGemeinde = MathUtil.DEFAULT.subtract(minBetrag, vollkostenMinusVerguenstigungGemeinde);
-		}
-
-		// Das Resultat mit den neu berechneten Werten überschreiben
-		resultGemeinde.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetragGemeinde);
-		resultGemeinde.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetragGemeinde);
-		resultGemeinde.setVerguenstigung(verguenstigungGemeinde);
-		resultGemeinde.setElternbeitrag(elternbeitragGemeinde);
-		resultGemeinde.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerztGemeinde);
-		return resultGemeinde;
+		recherParameter.setZusaetzlicherGutscheinGemeindeBetrag(getBetragZusaetzlicherGutschein(inputGemeinde, parameterDTO));
 	}
 
 	@Nonnull
-	public BigDecimal getBetragZusaetzlicherGutschein(
+	private BigDecimal getBetragZusaetzlicherGutschein(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO rechnerParameterDTO
 	) {
@@ -150,7 +120,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule extends AbstractRechnerRu
 			inputGemeinde.getParent().addBemerkung(
 				RuleKey.ZUSATZGUTSCHEIN,
 				msgKey,
-				getLocale(),
+				locale,
 				args);
 		}
 	}

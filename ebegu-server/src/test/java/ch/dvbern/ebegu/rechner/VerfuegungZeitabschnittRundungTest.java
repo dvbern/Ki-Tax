@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
@@ -49,7 +50,7 @@ import static org.hamcrest.Matchers.is;
 public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final TageselternRechner tageselternRechner = new TageselternRechner();
+	private final TageselternRechner tageselternRechner = new TageselternRechner(Collections.emptyList());
 
 	@Test
 	public void testVerguenstigungProZeiteinheit() {

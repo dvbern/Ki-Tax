@@ -35,7 +35,11 @@ public class TagesschuleRechner extends AbstractRechner {
 	}
 
 	@Override
-	public void calculate(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO, @Nonnull List<RechnerRule> rechnerRules) {
+	public void calculateAsivAndGemeinde(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull List<RechnerRule> rechnerRules
+	) {
 		calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
 	}
 

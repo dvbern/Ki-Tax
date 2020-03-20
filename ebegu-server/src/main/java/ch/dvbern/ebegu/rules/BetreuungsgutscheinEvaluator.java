@@ -72,7 +72,7 @@ public class BetreuungsgutscheinEvaluator {
 	 * existieren
 	 */
 	@Nonnull
-	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale) {
+	public Verfuegung evaluateFamiliensituation(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -133,7 +133,7 @@ public class BetreuungsgutscheinEvaluator {
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
-		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO);
+		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO, locale);
 		List<KindContainer> kinder = new ArrayList<>(gesuch.getKindContainers());
 		Collections.sort(kinder);
 		for (KindContainer kindContainer : kinder) {
@@ -219,11 +219,11 @@ public class BetreuungsgutscheinEvaluator {
 				platz.setVerfuegungPreview(verfuegungPreview);
 
 				// Den richtigen Rechner anwerfen
-				AbstractRechner rechner = BGRechnerFactory.getRechner(platz);
+				AbstractRechner rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 						verfuegungZeitabschnitt.copyValuesToResult();
-						rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRulesForGemeinde);
+						rechner.calculateAsivAndGemeinde(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRulesForGemeinde);
 					});
 
 					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
@@ -325,10 +325,10 @@ public class BetreuungsgutscheinEvaluator {
 		return rulesForGesuchsperiode;
 	}
 
-	private List<RechnerRule> rechnerRulesForGemeinde(@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO) {
+	private List<RechnerRule> rechnerRulesForGemeinde(@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO, @Nonnull Locale locale) {
 		List<RechnerRule> rechnerRules = new LinkedList<>();
 		if (bgRechnerParameterDTO.getGemeindeZusaetzlicherGutscheinEnabled()) {
-			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule());
+			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
 		}
 		return rechnerRules;
 	}

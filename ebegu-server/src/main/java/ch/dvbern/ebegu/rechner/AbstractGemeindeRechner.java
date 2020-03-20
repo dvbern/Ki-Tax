@@ -17,58 +17,105 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
-import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Superklasse für BG-Rechner der Gemeinde: Berechnet sowohl nach ASIV wie auch nach Gemeinde-spezifischen Regeln
  */
 public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 
+	private final List<RechnerRule> rechnerRulesForGemeinde;
+	private final RechnerRuleParameterDTO rechnerParameter = new RechnerRuleParameterDTO();
+
+
+	protected AbstractGemeindeRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+		this.rechnerRulesForGemeinde = rechnerRulesForGemeinde;
+	}
+
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
 	@Override
-	public void calculate(
+	public void calculateAsivAndGemeinde(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull List<RechnerRule> rechnerRules
 	) {
 		// Wir berechnen ASIV und Gemeinde separat:
+		doCalculateAsiv(verfuegungZeitabschnitt, parameterDTO);
+		doCalculateGemeinde(verfuegungZeitabschnitt, parameterDTO);
+	}
+
+	private void prepareRechnerParameterForAsiv() {
+		rechnerParameter.reset();
+	}
+
+	private void prepareRechnerParameterForGemeinde(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		for (RechnerRule rechnerRule : rechnerRulesForGemeinde) {
+			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
+			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
+				rechnerParameter.setHasGemeindeRules(true);
+				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
+					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
+				}
+			}
+		}
+	}
+
+	private void doCalculateAsiv(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		// Fuer ASIV alles zuruecksetzen
+		prepareRechnerParameterForAsiv();
+
 		BGCalculationResult resultAsiv = calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
 		resultAsiv.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(resultAsiv);
+	}
 
-		// Zuerst die "normale" berechnung nach ASIV durchführen - jedoch mit den Input-Werten der Gemeinde
-		BGCalculationResult resultGemeinde = calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputGemeinde(), parameterDTO);
+	private void doCalculateGemeinde(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		// Fuer Gemeinde die richtigen Werte setzen
+		prepareRechnerParameterForGemeinde(verfuegungZeitabschnitt.getBgCalculationInputGemeinde(), parameterDTO);
 
-		// Ermitteln, ob für diese Gemeinde überhaupt eine Rule definiert ist: Falls nicht, wollen
-		// wir gar kein BGCalculationResult für die Gemeinde erstellen
-		List<RechnerRule> relevantRules =
-			rechnerRules
-				.stream()
-				.filter(abstractRechnerRule ->
-					abstractRechnerRule.isConfigueredForGemeinde(parameterDTO))
-				.collect(Collectors.toList());
-
-		// Es gibt Rules: Gemeinde-Gutschein berechnen
-		if (CollectionUtils.isNotEmpty(relevantRules)) {
-			for (RechnerRule rechnerRule : relevantRules) {
-				if (rechnerRule.isRelevantForVerfuegung(verfuegungZeitabschnitt.getBgCalculationInputGemeinde(), parameterDTO)) {
-					rechnerRule.executeRule(
-						verfuegungZeitabschnitt.getBgCalculationInputGemeinde(),
-						resultGemeinde,
-						parameterDTO);
-				}
-			}
+		// Jetzt die Berechnung mit den Input-Werten der Gemeinde durchfuehren
+		if (rechnerParameter.isHasGemeindeRules()) {
+			BGCalculationResult resultGemeinde = calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputGemeinde(), parameterDTO);
+			resultGemeinde.roundAllValues();
 			verfuegungZeitabschnitt.setBgCalculationResultGemeinde(resultGemeinde);
 		}
+	}
+
+	@Nonnull
+	@Override
+	BigDecimal getVerguenstigungProZeiteinheit(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull Boolean unter12Monate,
+		@Nonnull Boolean eingeschult,
+		@Nonnull Boolean besonderebeduerfnisse,
+		@Nonnull BigDecimal massgebendesEinkommen,
+		boolean bezahltVollkosten
+	) {
+		// "Normale" Verguentigung pro Zeiteinheit
+		BigDecimal verguenstigungProZeiteinheit = super.getVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult, besonderebeduerfnisse,
+			massgebendesEinkommen,
+			bezahltVollkosten);
+		// Zusaetzlicher Gutschein Gemeinde
+		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
+		return verguenstigungProZeiteinheit;
 	}
 }
