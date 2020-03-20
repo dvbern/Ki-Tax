@@ -57,6 +57,11 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
+
+		// Resultat erstellen und benoetigte Daten aus Input kopieren
+		BGCalculationResult result = new BGCalculationResult();
+		VerfuegungZeitabschnitt.copyValuesToResult(input, result);
+
 		// Benoetigte Daten
 		boolean unter12Monate = input.isBabyTarif();
 		boolean eingeschult = input.getEinschulungTyp().isEingeschult();
@@ -116,9 +121,6 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		if (vollkostenMinusVerguenstigung.compareTo(minBetrag) <= 0) {
 			minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.subtract(minBetrag, vollkostenMinusVerguenstigung);
 		}
-
-		// Resultat
-		BGCalculationResult result = new BGCalculationResult();
 
 		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
 		result.setMinimalerElternbeitrag(minBetrag);
