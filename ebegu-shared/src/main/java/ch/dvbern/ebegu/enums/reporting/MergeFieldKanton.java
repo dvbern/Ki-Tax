@@ -46,7 +46,9 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	kostenCHFTitle(new SimpleMergeField<>("kostenCHFTitle", STRING_CONVERTER)),
 	vollkostenTitle(new SimpleMergeField<>("vollkostenTitle", STRING_CONVERTER)),
 	elternbeitragTitle(new SimpleMergeField<>("elternbeitragTitle", STRING_CONVERTER)),
-	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
+	gutscheinKantonTitel(new SimpleMergeField<>("gutscheinKantonTitel", STRING_CONVERTER)),
+	gutscheinGemeindeTitel(new SimpleMergeField<>("gutscheinGemeindeTitel", STRING_CONVERTER)),
+	gutscheinTotalTitel(new SimpleMergeField<>("gutscheinTotalTitel", STRING_CONVERTER)),
 	babyFaktorTitle(new SimpleMergeField<>("babyFaktorTitle", STRING_CONVERTER)),
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
 	totalTitle(new SimpleMergeField<>("totalTitle", STRING_CONVERTER)),
@@ -66,7 +68,9 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
 	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
 	elternbeitrag(new SimpleMergeField<>("elternbeitrag", BIGDECIMAL_CONVERTER)),
-	verguenstigung(new SimpleMergeField<>("verguenstigung", BIGDECIMAL_CONVERTER)),
+	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),
+	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
+	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
 	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER));
 
