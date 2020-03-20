@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
@@ -158,6 +159,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		zeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
 		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		zeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		return zeitabschnitt;
 	}
 

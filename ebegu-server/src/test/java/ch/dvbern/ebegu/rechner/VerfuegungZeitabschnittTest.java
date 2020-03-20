@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -91,8 +92,8 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
+		zeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		zeitabschnitt.copyValuesToResult();
-
 		return zeitabschnitt;
 	}
 }
