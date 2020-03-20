@@ -701,7 +701,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 	}
 
-	private void copyValuesToResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
+	public static void copyValuesToResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
 		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
 		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
 		result.setMassgebendesEinkommenVorAbzugFamgr(input.getMassgebendesEinkommenVorAbzugFamgr());
