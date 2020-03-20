@@ -362,16 +362,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		if(!benutzer.isNew() && benutzer.getCurrentBerechtigung().getRole() == GESUCHSTELLER){
 			//check if Gesuch exist
 			Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
-			if(!fallOpt.isPresent()){
+			if (!fallOpt.isPresent()){
 				//return error code keinen Gesusch, user can be deleted without warning
 				throw new BenutzerExistException(
 					KibonLogLevel.NONE,
 					benutzer.getUsername(),
 					benutzer.getFullName(),
-					ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+					ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH,
+					null);
 
 			} else {
-				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(fallOpt.get().getId());
+				Fall existingFall = fallOpt.get();
+				List<String> gesuchIdList = gesuchService.getAllGesuchIDsForFall(existingFall.getId());
 				boolean hasGesuchFreigegeben = false;
 				if (gesuchIdList.isEmpty()) {
 					//return error code keinen Gesusch, user can be deleted without warning
@@ -379,7 +381,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
-						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH);
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH,
+						existingFall);
 				}
 				for (String id : gesuchIdList) {
 					Gesuch gs = gesuchService.findGesuch(id, false)
@@ -395,13 +398,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
-						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH);
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH,
+						existingFall);
 				} else {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
-						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH);
+						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH,
+						existingFall);
 				}
 			}
 		}

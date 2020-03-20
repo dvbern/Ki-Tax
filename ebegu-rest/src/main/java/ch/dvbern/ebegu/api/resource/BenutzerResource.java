@@ -55,9 +55,11 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.SuperAdminService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -94,6 +96,9 @@ public class BenutzerResource {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private SuperAdminService superAdminService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -408,16 +413,20 @@ public class BenutzerResource {
 		} catch (BenutzerExistException b) {
 			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
 			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
+				// Der Fall und das Dossier muessen geloescht werden
+				if (b.getExistingFall() != null) {
+					superAdminService.removeFall(b.getExistingFall());
+				}
 				return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
-			} else {
-				throw b;
 			}
+			throw b;
 		}
 	}
 
 	@Nonnull
 	private JaxBenutzer saveBenutzerBerechtigungenForced(@Nonnull Benutzer benutzerFromDB, @Nonnull JaxBenutzer benutzerJax) {
 		boolean currentBerechtigungChanged = hasCurrentBerechtigungChanged(benutzerJax, benutzerFromDB);
+
 		Benutzer mergedBenutzer = benutzerService.saveBenutzerBerechtigungen(
 			converter.jaxBenutzerToBenutzer(benutzerJax, benutzerFromDB),
 			currentBerechtigungChanged);
@@ -482,7 +491,11 @@ public class BenutzerResource {
 	public Response deleteBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		benutzerService.removeBenutzer(username);
+		Benutzer eingeloggterBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"deleteBenutzer", "No User is logged in"));
+
+		superAdminService.removeFallAndBenutzer(username, eingeloggterBenutzer);
 		return Response.ok().build();
 	}
 }
