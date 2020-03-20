@@ -51,7 +51,7 @@
                 </div>
 
                 <!-- Verfuegung Tagesschule -->
-                <div ng-if="vm.isTagesschuleVerfuegung()">
+                <div ng-if="vm.isTagesschuleVerfuegung() && !vm.getBetreuung().keineDetailinformationen">
                     <br/>
                     <!-- Eintrittsdatum -->
                     <div class="row">

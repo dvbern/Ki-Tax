@@ -601,14 +601,18 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public isTagesschuleTagi(): boolean {
         const gesuchsPeriode = this.getGesuchsperiode();
-        const tsEinstellungenTagesschule =
-            this.getBetreuung().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
-                .filter((einstellung: TSEinstellungenTagesschule) =>
-                    einstellung.gesuchsperiode.id === gesuchsPeriode.id)
-                .pop();
-        if (!tsEinstellungenTagesschule) {
-            return false;
+        const stammdatenTagesschule = this.getBetreuung().institutionStammdaten.institutionStammdatenTagesschule;
+        if (stammdatenTagesschule) {
+            const tsEinstellungenTagesschule =
+                stammdatenTagesschule.einstellungenTagesschule
+                    .filter((einstellung: TSEinstellungenTagesschule) =>
+                        einstellung.gesuchsperiode.id === gesuchsPeriode.id)
+                    .pop();
+            if (!tsEinstellungenTagesschule) {
+                return false;
+            }
+            return tsEinstellungenTagesschule.tagi;
         }
-        return tsEinstellungenTagesschule.tagi;
+        return false;
     }
 }
