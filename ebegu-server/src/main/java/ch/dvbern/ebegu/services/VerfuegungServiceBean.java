@@ -214,7 +214,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGesuch().getDossier().getGemeinde().getId()).get();
-				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !betreuungService.isTagesschuleTagi(persistedAnmeldung)) {
+				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !persistedAnmeldung.isTagesschuleTagi()) {
 					mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
 				}
 			} catch (MailException e) {

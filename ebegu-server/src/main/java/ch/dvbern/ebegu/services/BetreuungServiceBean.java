@@ -55,7 +55,6 @@ import ch.dvbern.ebegu.entities.AbwesenheitContainer_;
 import ch.dvbern.ebegu.entities.Abwesenheit_;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -76,7 +75,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -390,7 +388,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				// Bei Akzeptieren einer Anmeldung muss eine E-Mail geschickt werden
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
-				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !isTagesschuleTagi(anmeldungTagesschule)) {
+				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !anmeldungTagesschule.isTagesschuleTagi()) {
 					mailService.sendInfoSchulamtAnmeldungAkzeptiert(persistedBetreuung);
 				}
 			} catch (MailException e) {
@@ -439,7 +437,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 					"anmeldungSchulamtModuleAkzeptieren",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					"AnmeldungTagesschule: " + betreuung.getId()));
-			tagis = isTagesschuleTagi(anmeldungTagesschule);
+			tagis = anmeldungTagesschule.isTagesschuleTagi();
 		}
 		try {
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
@@ -1115,17 +1113,5 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
 			}
 		}
-	}
-
-	@Override
-	public boolean isTagesschuleTagi(AnmeldungTagesschule anmeldung) {
-		assert anmeldung.getBelegungTagesschule() != null;
-		Set<BelegungTagesschuleModul> belegungTagesschuleModulList =
-			anmeldung.getBelegungTagesschule().getBelegungTagesschuleModule();
-		BelegungTagesschuleModul belegungTagesschuleModul =
-			belegungTagesschuleModulList.iterator().next();
-		ModulTagesschuleGroup modulTagesschuleGroup =
-			belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup();
-		return modulTagesschuleGroup.getEinstellungenTagesschule().isTagi();
 	}
 }
