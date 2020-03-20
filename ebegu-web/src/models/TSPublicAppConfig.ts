@@ -24,4 +24,6 @@ export class TSPublicAppConfig {
     public backgroundColor: string = '#FFFFFF';
     public zahlungentestmode: boolean;
     public personenSucheDisabled: boolean;
+    public kitaxHost: string;
+    public kitaxEndpoint: string;
 }

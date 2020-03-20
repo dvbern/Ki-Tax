@@ -77,6 +77,10 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String erlaeuterung;
 
+	@NotNull
+	@Column(nullable = false)
+	private boolean tagi = false;
+
 	public EinstellungenTagesschule() {
 	}
 
@@ -102,19 +106,21 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		return builder.toComparison();
 	}
 
+	@Nonnull
 	public InstitutionStammdatenTagesschule getInstitutionStammdatenTagesschule() {
 		return institutionStammdatenTagesschule;
 	}
 
-	public void setInstitutionStammdatenTagesschule(InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
+	public void setInstitutionStammdatenTagesschule(@Nonnull InstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
 		this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
 	}
 
+	@Nonnull
 	public Gesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
 
-	public void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
@@ -127,12 +133,12 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		this.modulTagesschuleGroups = modulTagesschuleGroups;
 	}
 
-
+	@Nonnull
 	public ModulTagesschuleTyp getModulTagesschuleTyp() {
 		return modulTagesschuleTyp;
 	}
 
-	public void setModulTagesschuleTyp(ModulTagesschuleTyp modulTagesschuleTyp) {
+	public void setModulTagesschuleTyp(@Nonnull ModulTagesschuleTyp modulTagesschuleTyp) {
 		this.modulTagesschuleTyp = modulTagesschuleTyp;
 	}
 
@@ -145,12 +151,21 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 		this.erlaeuterung = erlaeuterung;
 	}
 
+	public boolean isTagi() {
+		return tagi;
+	}
+
+	public void setTagi(boolean tagis) {
+		this.tagi = tagis;
+	}
+
 	@Nonnull
 	public EinstellungenTagesschule copyForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		EinstellungenTagesschule copy = new EinstellungenTagesschule();
 		copy.setInstitutionStammdatenTagesschule(this.getInstitutionStammdatenTagesschule());
 		copy.setGesuchsperiode(gesuchsperiode);
 		copy.setErlaeuterung(this.getErlaeuterung());
+		copy.setTagi(this.isTagi());
 		copy.setModulTagesschuleTyp(this.getModulTagesschuleTyp());
 		if (CollectionUtils.isNotEmpty(this.getModulTagesschuleGroups())) {
 			copy.setModulTagesschuleGroups(new TreeSet<>());

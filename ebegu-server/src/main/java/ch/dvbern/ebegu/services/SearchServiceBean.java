@@ -341,6 +341,14 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 						cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherTS())
 					));
 			}
+			if (predicateObjectDto.getVerantwortlicherGemeinde() != null) {
+				Predicate predicateBG = cb.equal(joinVerantwortlicherBG.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherGemeinde());
+				Predicate predicateTS = cb.equal(joinVerantwortlicherTS.get(Benutzer_.fullName), predicateObjectDto.getVerantwortlicherGemeinde());
+				predicates.add(
+					cb.and(
+						cb.or(predicateBG, predicateTS)
+					));
+			}
 		}
 		// Construct the select- and where-clause
 		switch (mode) {

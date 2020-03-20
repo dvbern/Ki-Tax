@@ -19,6 +19,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
@@ -71,6 +72,10 @@ describe('fallToolbar', () => {
             getIdOfNewestGesuchForDossier: Promise.resolve(mockGesuchId),
         });
 
+        const applicationPropertySpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, {
+            getKitaxUrl: Promise.resolve('http://google.com'),
+        });
+
         TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
@@ -82,6 +87,7 @@ describe('fallToolbar', () => {
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: GesuchRS, useValue: gesuchServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertySpy},
             ],
             declarations: [
                 FallToolbarComponent,
