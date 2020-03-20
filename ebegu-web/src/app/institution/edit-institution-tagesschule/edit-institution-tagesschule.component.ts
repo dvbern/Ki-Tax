@@ -413,7 +413,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         });
     }
 
-    public showTagisCheckbox(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+    public showTagiCheckbox(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
@@ -423,7 +423,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         return false;
     }
 
-    public canEditTagis(): boolean {
+    public canEditTagi(): boolean {
         if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
             return this.editMode;
         }

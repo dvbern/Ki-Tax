@@ -51,13 +51,13 @@
                 </tab-title>
                 <tab-body>
                     <div class="row">
-                        <div class="col-xs-12" *ngIf="showTagisCheckbox(einstellungGP)">
+                        <div class="col-xs-12" *ngIf="showTagiCheckbox(einstellungGP)">
                             <br/>
                             <div class="form-group">
                                 <mat-checkbox id="tagisCheckbox_{{einstellungGP?.id}}_id"
                                               name="tagisCheckbox_{{einstellungGP?.id}}"
-                                              [(ngModel)]="einstellungGP.tagis"
-                                              [disabled]="!canEditTagis()">
+                                              [(ngModel)]="einstellungGP.tagi"
+                                              [disabled]="!canEditTagi()">
                                     {{'INSTITUTION_TAGESSCHULE_TAGIS'|translate}}
                                 </mat-checkbox>
                             </div>
