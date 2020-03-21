@@ -89,7 +89,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Valid
 	@Nonnull @NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = true) // warum Nullable?
 	private BGCalculationResult bgCalculationResultAsiv = new BGCalculationResult();
 
 	/**
@@ -678,6 +678,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return this.getBgCalculationInputAsiv();
 	}
 
+	// wie wäre es mit dem Namen initBGCalculationResult?
+	// am liebsten aber lieber gar keine Kopier Funktion, sondern im BGRechner alle Werte auf das Result schreiben.
+	// Siehe Kommenar in AbstractBGRechner.
 	public void copyValuesToResult() {
 		copyValuesToResult(getBgCalculationInputAsiv(), getBgCalculationResultAsiv());
 		if (getBgCalculationResultGemeinde() != null) {
@@ -685,6 +688,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 	}
 
+	// wie wäre es mit dem Namen initBGCalculationResult?
 	private void copyValuesToResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
 		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
 		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());

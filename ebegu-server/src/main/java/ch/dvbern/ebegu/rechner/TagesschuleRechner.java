@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 
+// Der TagesschuleRechner ist eigentlich komplett unabhängig vom AbstractRechner. Vererbung gleich weg lassen?
 public class TagesschuleRechner extends AbstractRechner {
 
 

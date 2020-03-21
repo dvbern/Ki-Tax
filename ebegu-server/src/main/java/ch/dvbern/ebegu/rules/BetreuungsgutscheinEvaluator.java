@@ -111,6 +111,12 @@ public class BetreuungsgutscheinEvaluator {
 			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 
+			// warum braucht man hier den BGRechner nicht? Finde es etwas undefiniertes verhalten, wenn die Resultate
+			// erstellt werden, ohne dass sie richtig berechnet wurden.
+			// Wenn diese Methode eine Verfügung zurückgeben würde, in welchen die Zeitabschnitten nur die Inputs
+			// initialisiert haben, gäbe es nicht das Risiko, auf Werte zuzugreiffen, welche nicht aktualisiert wurden.
+			// Noch klarer, wäre statt eine Verfuegung zurück zu geben ein FamiliensituationDTO mit nur den wirklich
+			// benötigten Werten zu erstellen.
 			zeitabschnitte.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
@@ -224,10 +230,12 @@ public class BetreuungsgutscheinEvaluator {
 				AbstractRechner rechner = BGRechnerFactory.getRechner(platz);
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
+						// die folgende Methode wird auch in rechner.calculate ausgeführt
 						verfuegungZeitabschnitt.copyValuesToResult();
 						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
 						result.roundAllValues();
 						verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
+						// wann wird dann das Gemeinde Resultat gespeichert? Kommt das erst mit KIBON-885?
 					});
 
 					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();

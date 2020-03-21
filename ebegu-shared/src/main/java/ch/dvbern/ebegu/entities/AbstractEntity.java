@@ -40,14 +40,12 @@ import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
 import ch.dvbern.ebegu.util.Constants;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.envers.Audited;
 
-@SuppressWarnings("ClassReferencesSubclass")
 @MappedSuperclass
 @Audited
 @EntityListeners(AbstractEntityListener.class)
@@ -141,11 +139,12 @@ public abstract class AbstractEntity implements Serializable {
 	@Transient
 	private boolean skipPreUpdate = false;
 
-	public AbstractEntity() {
+	protected AbstractEntity() {
 		//da wir teilweise schon eine id brauchen bevor die Entities gespeichert werden initialisieren wir die uuid hier
 		id = UUID.randomUUID().toString();
 	}
 
+	// es macht keinen Sinn einen @Nullable Setter zu haben, der den Wert tatsächlich NULL setzt, aber hier @Nonnull anzugeben
 	@Nonnull
 	public String getId() {
 		return id;
@@ -211,15 +210,17 @@ public abstract class AbstractEntity implements Serializable {
 		this.skipPreUpdate = skipPreUpdate;
 	}
 
-	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-	@SuppressFBWarnings(value = "BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS", justification = "Es wird Hibernate.getClass genutzt um von Proxies (LazyInit) die konkrete Klasse zu erhalten")
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (this == o) {
 			return true;
 		}
 
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+		if (!(o instanceof AbstractEntity)) {
+			return false;
+		}
+
+		if (!Hibernate.getClass(this).equals(Hibernate.getClass(o))) {
 			return false;
 		}
 

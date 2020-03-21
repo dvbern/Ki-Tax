@@ -130,11 +130,11 @@ public class BGCalculationInput {
 		this.parent = parent;
 	}
 
-	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
+	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) { // es werden nicht ganz alle felder kopiert (sameVerfuegteVerfuegungsrelevanteDaten & sameAusbezahlteVerguenstigung fehlen)
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
-		this.taetigkeiten = toCopy.taetigkeiten;
+		this.taetigkeiten = toCopy.taetigkeiten; // besser ein neues Set machen statt zu teilen?
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;

@@ -3262,6 +3262,9 @@ public class JaxBConverter extends AbstractConverter {
 			return null;
 		}
 
+		// warum gibt es teilweise Daten welche aus den (transienten) Input Werten kommen?
+		// Einige Stichproben legen nahe, dass man diese Werte aus dem Frontend löschen könnte.
+
 		final JaxVerfuegungZeitabschnitt jaxZeitabschn = new JaxVerfuegungZeitabschnitt();
 		convertAbstractDateRangedFieldsToJAX(zeitabschnitt, jaxZeitabschn);
 		jaxZeitabschn.setAbzugFamGroesse(zeitabschnitt.getAbzugFamGroesse());
@@ -3294,6 +3297,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput().isSameAusbezahlteVerguenstigung());
+		// die getRelevantBgCalculationResult() werden in allen anderen Methoden weiter oben versteckt in VerfuegungZeitabschnitt ausgeführt -> inkonsistent
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
 			tsCalculationResultToJax(
 				zeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung()));

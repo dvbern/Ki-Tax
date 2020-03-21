@@ -162,10 +162,12 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			? 0
 			: resultVorangehenderAbschnitt.getAnspruchspensumProzent();
 
+		DateRange gueltigkeit = inputData.getParent().getGueltigkeit();
+
 		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
 			//Anspruch wird erhöht
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-			if (!isMeldungRechzeitig(inputData.getParent(), mutationsEingansdatum)) {
+			if (isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
 				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
 				inputData.getParent().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
@@ -173,18 +175,15 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-			if (!isMeldungRechzeitig(inputData.getParent(), mutationsEingansdatum)) {
+			if (isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
 				inputData.getParent().addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 			}
 		}
 	}
 
-	private boolean isMeldungRechzeitig(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
-	) {
-		return verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
+	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
+		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
 	/**

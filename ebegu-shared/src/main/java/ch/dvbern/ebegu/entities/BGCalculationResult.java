@@ -54,7 +54,7 @@ public class BGCalculationResult extends AbstractEntity {
 	// Dies wird benötigt für die Migration der Daten und kann im nächsten Release wieder entfernt werden
 	@SuppressWarnings("PMD.UnusedPrivateField")
 	@Column(nullable = true)
-	private String tempIdZeitabschnitt;
+	private String tempIdZeitabschnitt; // obsolete?
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -117,10 +117,12 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
+	// @NotNull und nullable = false?
 	@Nonnull
 	@Column(nullable = true)
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
 
+	// @NotNull und nullable = false?
 	@Nonnull
 	@Column(nullable = true)
 	private BigDecimal famGroesse = BigDecimal.ZERO;
@@ -226,9 +228,11 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigung = roundToFrankenRappen(verguenstigung);
 
 		this.betreuungspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit);
-		this.betreuungspensumProzent = zeiteinheitenRoundingStrategy.apply(betreuungspensumProzent);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
 		this.bgPensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(bgPensumZeiteinheit);
+		// die zeiteinheitenRoundingStrategy scheint mir hier fehl am Platz (bei Kitas 2 Kommestallen, bei Tageseltern 1/4)
+		// die war eigentlich nur für die Zeiteinheiten (Stunden oder Tage) gedacht (betreuungspensumZeiteinheit, anspruchspensumZeiteinheit, bgPensumZeiteinheit)
+		this.betreuungspensumProzent = zeiteinheitenRoundingStrategy.apply(betreuungspensumProzent);
 
 		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);

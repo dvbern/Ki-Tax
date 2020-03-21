@@ -64,6 +64,8 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 				int anspruchVorherGemeinde = vorangehenderAbschnitt.getBgCalculationInputGemeinde().getAnspruchspensumProzent();
 				boolean anspruchVerminderungAsiv = anspruchNeuAsiv < anspruchVorherAsiv;
 				boolean anspruchVerminderungGemeinde = anspruchNeuGemeinde < anspruchVorherGemeinde;
+				// Gibt es eine anspruchVerminderungGemeinde, so könnte dies auch die ASIV Zeitabschnitte beinflussen
+				// (Güligkeit wird geänndert). Ist das gewollt?
 				if (anspruchVerminderungAsiv || anspruchVerminderungGemeinde) {
 					// Der Anspruch darf nie innerhalb des Monats kleiner werden
 					// d.h. für diesen Abschnitt bis Ende Monat gilt weiterhin der "alte" Anspruch
@@ -84,6 +86,7 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 						zeitabschnitt.getGueltigkeit().setGueltigAb(datumAbAlterMonat);
 						zeitabschnitt.getGueltigkeit().setGueltigBis(datumBisAlterMonat);
 
+						// Warum dürfen hier beide Input DTOs modifiziert werden? ist doch Asiv und Gemeinde abhängig!?
 						// Ab dem naechsten Monat gilt der neue Anspruch
 						if (anspruchVerminderungAsiv) {
 							zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(anspruchVorherAsiv);
@@ -95,7 +98,7 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
-						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
+						// we need to set both anspruch and bemerkung so both Zeitabschnitte are the same
 						if (anspruchVerminderungAsiv) {
 							zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchVorherAsiv);
 						}

@@ -88,6 +88,9 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 				isFirstAbschnitt = false;
 				result.add(zeitabschnitt);
 			} else {
+				// geht das auf? Falls Aufgrund des Gemeinde Inputs ein neuer Zeitabschnitt entsteht, mit neuer
+				// Gültigkeit, so wäre die ASIV Berechnung auch anders (da die Gültigkeit des Zeitabschnitts beide
+				// Berechnungen betrifft).
 				// Dies ist mindestens die zweite Adresse -> pruefen, ob sich an der Wohnsitz-Situation etwas geaendert hat.
 				boolean lastNichtInGemeindeAsiv = lastZeitAbschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
 				boolean newNichtInGemeindeAsiv = zeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
