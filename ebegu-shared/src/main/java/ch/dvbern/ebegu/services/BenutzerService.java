@@ -15,17 +15,23 @@
 
 package ch.dvbern.ebegu.services;
 
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.UserRole;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.BerechtigungHistory;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.UserRole;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Service fuer die Verwaltung von Benutzern
@@ -86,6 +92,8 @@ public interface BenutzerService {
 	 */
 	@Nonnull
 	void erneutEinladen(@Nonnull Benutzer eingeladener);
+
+	void checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(@Nonnull Benutzer benutzer);
 
 	@Nonnull
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
