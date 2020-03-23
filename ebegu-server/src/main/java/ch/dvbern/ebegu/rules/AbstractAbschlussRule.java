@@ -26,7 +26,6 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
-// Naming: isApplicable, executeIfApplicate, execute, getApplicableAngebotTypes (statt Anwendbar und applicable zu mischen)
 public abstract class AbstractAbschlussRule {
 
 	protected List<VerfuegungZeitabschnitt> executeIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {

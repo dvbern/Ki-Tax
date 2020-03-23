@@ -114,49 +114,14 @@ public abstract class AbstractEbeguRule implements Rule {
 	 */
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitteIfApplicable(@Nonnull AbstractPlatz platz) {
 		if (isAnwendbarForAngebot(platz)) {
-			// Warum wird der Constraint "gleiche Input Daten für ASIV und Gemeinde" benötigt?
-			// Man kann doch auch nur ASIV rechnen, wenn man keine Gemeinde spezifischen Rules hat.
-			// Oder gibt es jetzt immer 2, oft identische Resultate?
-			// getInputData gibt im ASIV Fall nur einen Input zurück. Wie kann es so überhaupt zu identischen
-			// InputAsiv und InputGemeinde Daten kommen?
-			// Evtl. ist einfach ein Fehler in der Methode getInputData, und es müsste genau umgekehrt sein, dass bei
-			// RuleValidity.ASIV BEIDE Inputs ausgeführt werden müssen, und bei RuleValidity.GEMEINDE nur der Gemeinde
-			// Input.
-
-			// Es wird immer ein neuer Zeitabschnitt pro Rule erstellt und später mit allen anderen Zeitabschnitten
-			// gemerged.
-			// Gundsätzlich wird also davon ausgegangen, dass die Zeitabschnitte für ASIV und Geminde identisch sind,
-			// mit anderen Rechner Inputs. Man hätte stattdessen den Rules auch mehr Freiheiten geben können und
-			// jeweils ein eigenes Set von VerfuegungZeitabschnitten nach ASIV und nach Gemeinde speichern.
-
-			// Ich finde das Handling mit den Delegate Methoden, welche ASIV und Gemeinde Input setzen etwas unschön.
-			// Man hätte doch auch einfach zuerst nur ASIV durchrechnen können (und den Input als Parameter übergeben
-			// können, stattem dem VerfuegungZeitabschnitt). Nachdem alle Rules durch sind macht man eine Kopie des
-			// Inputs und wendet dann nur noch die Gemeinde Rules an, falls es überhaupt welche gibt.
-			// Oder gibt das ein Problem wegen Abhängigkeiten? Kommt eine wie im folgende beschriebene Situation vor?
-			// ASIV Input:
-			// Rule 1 set Wert foo
-			// Rule 2 set Wert bar, basierend auf dem Wert von foo
-			// Asiv Input wird kopiert für Gemeinde Input:
-			// Gemeinde Rule 1 set einen anderen Wert von foo
-			// -> Wert bar des Gemeinde Inputs wird nicht mehr modifiziert, wäre immer noch abhängig vom ASIV Wert
-
 			// Nach jeder AbschnittRule erhalten wir die *neuen* Zeitabschnitte zurueck. Diese müssen bei ASIV-Regeln
 			// immer eine identische ASIV und GEMEINDE-Berechnung haben!
 			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
-
-			// die if-Bedingung im Loop body vor der Loop prüfen, z.B. so:
+			// Wenn es eine ASIV Rule ist, gilt sie fuer die Gemeinde genau gleich, die Ergebnisse (nur
+			// genau dieser Rule) muessen identisch sein
 			if (RuleValidity.ASIV == ruleValidity) {
 				assertSimilarAsivAndGemeindeInputs(zwischenresultate);
 			}
-//			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zwischenresultate) {
-//				if (RuleValidity.ASIV == ruleValidity) {
-//					boolean same = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isSame(verfuegungZeitabschnitt.getBgCalculationInputGemeinde());
-//					if (!same) {
-//						throw new EbeguRuntimeException("createVerfuegungsZeitabschnitteIfApplicable", "ASIV Rule setzt nicht beide Input-Objekte!");
-//					}
-//				}
-//			}
 			return zwischenresultate;
 		}
 		return new ArrayList<>();
@@ -230,11 +195,6 @@ public abstract class AbstractEbeguRule implements Rule {
 		return normalizedZeitabschn;
 	}
 
-	// Warum wird dieser Check nur in createVerfuegungsZeitabschnitteIfApplicable und executeRuleIfApplicalbe geprüft?
-	// Ich hätte erwartet, dass eine Rule KEINE Modifikation verursacht, wenn sie nicht applicable ist.
-	// In calculate() wird jedoch einiges gemacht. So wie es aussieht hat es momentan keinen Sideeffect, ausser dass
-	// normalize unnötigerweise ausgeführt wird.
-	// Ich würde zu Beginn der calculate() methode isApplicalbe() ausführen und schon früh abbrechen.
 	/**
 	 *
 	 * @param platz (Betreuung, Tageschhulplatz etc)
@@ -414,7 +374,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		List<BGCalculationInput> inputList = new ArrayList<>();
 		inputList.add(zeitabschnitt.getBgCalculationInputAsiv());
-		if (this.ruleValidity == RuleValidity.GEMEINDE) { // past irgendwie nicht mit dem Kommentar zusammen, oder?
+		if (this.ruleValidity == RuleValidity.GEMEINDE) {
 			inputList.add(zeitabschnitt.getBgCalculationInputGemeinde());
 		}
 		return inputList;

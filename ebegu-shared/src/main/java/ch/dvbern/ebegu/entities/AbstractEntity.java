@@ -150,6 +150,7 @@ public abstract class AbstractEntity implements Serializable {
 		return id;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	public void setId(@Nonnull String id) {
 		this.id = id;
 	}

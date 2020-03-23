@@ -178,7 +178,7 @@ public final class EbeguRuleTestsHelper {
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 
 		result = anspruchFristRule.executeIfApplicable(betreuung, result);
-		// bewusst hier den Output dem "result" zugewiesen?
+		// Der RestanspruchInitializer erstellt Restansprueche, darf nicht das Resultat ueberschreiben!
 		restanspruchInitializer.executeIfApplicable(betreuung, result);
 		result = abschlussNormalizerDismissMonate.executeIfApplicable(betreuung, result);
 		if (doMonatsstueckelungen) {

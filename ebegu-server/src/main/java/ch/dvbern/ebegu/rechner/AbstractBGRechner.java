@@ -41,34 +41,23 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 	@Override
 	@Nonnull
 	public BGCalculationResult calculate(
-		// IMHO sollte hier ein BGCalculationInput Objekt übergeben werden, der Zeitabschnitt gar nicht mehr vorkommen.
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
-		// warum muss man das schon jetzt machen? Wird das Result schon irgendwann vorher modifiziert?
-		// Ich hätte erwartet, dass das BGCalculationResult am Ende der Methode neu erstellt und ausgefüllt wird.
-		// Die Unterscheidung ob Asiv/Geminde würde der BetreuungsgutscheinEvaluator übernehmen, und das/die Results mit
-		// dem Zeitabschnitt verknüpfen.
-		// Weiter unten wird auf Werte des BGCalculationResults zugegriffen, welche man hier von Input übernommen hat.
-		// Da könnte man ja gleich den Wert aus dem Input DTO auslesen und würde mich etwas weniger verwirren :-)
 		verfuegungZeitabschnitt.copyValuesToResult();
 
 		// Benoetigte Daten
 		boolean unter12Monate = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
 		boolean eingeschult = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
-		// potentieller Bug: es wird auf das "relevant BGCalculationResult" zugegriffen
 		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		// potentieller Bug: es wird auf das "relevant BGCalculationResult" zugegriffen
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMonatlicheBetreuungskosten();
-		// potentieller Bug: es wird auf das "relevant BGCalculationResult" zugegriffen
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 
 		// Inputdaten validieren
-		// potentieller Bug: es wird auf das "relevant BGCalculationResult" zugegriffen
 		BigDecimal bgPensum = verfuegungZeitabschnitt.getBgPensum();
 		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
 
@@ -86,7 +75,6 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 		BigDecimal verfuegteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
 
-		// potentieller Bug: es wird auf das "relevant BGCalculationResult" zugegriffen
 		BigDecimal anspruchPensum = EXACT.from(verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);

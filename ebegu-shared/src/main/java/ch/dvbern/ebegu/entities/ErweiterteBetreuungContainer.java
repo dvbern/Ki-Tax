@@ -40,6 +40,7 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_ja"))
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
+	@SuppressWarnings("NullableProblems")
 	public ErweiterteBetreuungContainer() {
 		//noinspection ConstantConditions
 		setId(null);    // ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone

@@ -130,11 +130,14 @@ public class BGCalculationInput {
 		this.parent = parent;
 	}
 
-	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) { // es werden nicht ganz alle felder kopiert (sameVerfuegteVerfuegungsrelevanteDaten & sameAusbezahlteVerguenstigung fehlen)
+	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
-		this.taetigkeiten = toCopy.taetigkeiten; // besser ein neues Set machen statt zu teilen?
+		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
+		mergedTaetigkeiten.addAll(this.taetigkeiten);
+		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
+		this.taetigkeiten = mergedTaetigkeiten;
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
