@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 public abstract class AbstractAbschlussRule {
 
 	protected List<VerfuegungZeitabschnitt> executeIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		if (isAnwendbarForAngebot(platz)) {
+		if (isApplicableForAngebot(platz)) {
 			return execute(platz, zeitabschnitte);
 		}
 		return zeitabschnitte;
@@ -43,12 +43,12 @@ public abstract class AbstractAbschlussRule {
 	 * @param platz (Betreuung, Tageschhulplatz etc)
 	 * @return true wenn die Regel anwendbar ist
 	 */
-	private boolean isAnwendbarForAngebot(@Nonnull AbstractPlatz platz) {
+	private boolean isApplicableForAngebot(@Nonnull AbstractPlatz platz) {
 		Objects.requireNonNull(platz);
 		Objects.requireNonNull(platz.getBetreuungsangebotTyp());
-		return getAnwendbareAngebote().contains(platz.getBetreuungsangebotTyp());
+		return getApplicableAngebotTypes().contains(platz.getBetreuungsangebotTyp());
 	}
 
-	protected abstract List<BetreuungsangebotTyp> getAnwendbareAngebote();
+	protected abstract List<BetreuungsangebotTyp> getApplicableAngebotTypes();
 
 }

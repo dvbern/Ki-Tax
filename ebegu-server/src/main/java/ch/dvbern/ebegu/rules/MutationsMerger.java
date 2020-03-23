@@ -70,7 +70,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 	}
 
 	@Override
-	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
 		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 

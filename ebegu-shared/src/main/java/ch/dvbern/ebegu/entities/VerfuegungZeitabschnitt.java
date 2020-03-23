@@ -304,6 +304,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().isBesondereBeduerfnisseBestaetigt();
 	}
 
+	@Nullable
+	public TSCalculationResult getTsCalculationResultMitPaedagogischerBetreuung() {
+		return getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung();
+	}
+
+	@Nullable
+	public TSCalculationResult getTsCalculationResultOhnePaedagogischerBetreuung() {
+		return getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung();
+	}
+
 	/* Ende Delegator-Methoden */
 
 	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */

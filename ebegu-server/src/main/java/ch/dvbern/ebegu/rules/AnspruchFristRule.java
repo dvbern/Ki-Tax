@@ -44,7 +44,7 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 	}
 
 	@Override
-	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
