@@ -108,7 +108,7 @@ public class BetreuungsgutscheinEvaluator {
 			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 
-			zeitabschnitte.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
+			zeitabschnitte.forEach(VerfuegungZeitabschnitt::initBGCalculationResult);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
@@ -222,7 +222,6 @@ public class BetreuungsgutscheinEvaluator {
 				AbstractRechner rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-						verfuegungZeitabschnitt.copyValuesToResult();
 						rechner.calculateAsivAndGemeinde(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRulesForGemeinde);
 					});
 

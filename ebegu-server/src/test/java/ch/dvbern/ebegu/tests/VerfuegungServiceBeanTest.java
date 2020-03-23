@@ -258,7 +258,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private VerfuegungZeitabschnitt createGesuchWithVerfuegungZeitabschnitt() {
 		Verfuegung verfuegung = insertVerfuegung();
 		VerfuegungZeitabschnitt zeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
-		zeitabschnitt.copyValuesToResult();
+		zeitabschnitt.initBGCalculationResult();
 		persistence.persist(zeitabschnitt);
 		return zeitabschnitt;
 	}

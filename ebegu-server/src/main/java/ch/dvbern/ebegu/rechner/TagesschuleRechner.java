@@ -49,7 +49,7 @@ public class TagesschuleRechner extends AbstractRechner {
 	@Override
 	public BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 		BGCalculationResult bgResult = input.getParent().getBgCalculationResultAsiv();
-		VerfuegungZeitabschnitt.copyValuesToResult(input, bgResult);
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, bgResult);
 		BigDecimal minTarif = parameterDTO.getMinTarifTagesschule();
 		if (bgResult.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleMitPaedagogischerBetreuung();

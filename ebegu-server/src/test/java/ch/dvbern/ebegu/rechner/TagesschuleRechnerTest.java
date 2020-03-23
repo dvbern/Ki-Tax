@@ -101,7 +101,7 @@ public class TagesschuleRechnerTest {
 			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(10);
 		}
 
-		verfuegungZeitabschnitt.copyValuesToResult();
+		verfuegungZeitabschnitt.initBGCalculationResult();
 
 		BGCalculationResult calculationResult = tarifRechner.calculateAsiv(inputAsiv, parameterDTO);
 		TSCalculationResult tsResult;

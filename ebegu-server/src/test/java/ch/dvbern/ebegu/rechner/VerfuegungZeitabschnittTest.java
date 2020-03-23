@@ -95,7 +95,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 		inputAsiv.setAnspruchspensumProzent(100);
 		inputAsiv.setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
 		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		zeitabschnitt.copyValuesToResult();
+		zeitabschnitt.initBGCalculationResult();
 		return inputAsiv;
 	}
 }

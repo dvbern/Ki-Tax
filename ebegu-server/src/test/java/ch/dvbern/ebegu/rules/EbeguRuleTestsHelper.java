@@ -107,7 +107,7 @@ public final class EbeguRuleTestsHelper {
 	) {
 		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
-			verfuegungZeitabschnitt.copyValuesToResult();
+			verfuegungZeitabschnitt.initBGCalculationResult();
 		}
 		return result;
 	}
@@ -195,7 +195,7 @@ public final class EbeguRuleTestsHelper {
 		result = abschlussNormalizerKeepMonate.executeIfApplicable(platz, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 
-		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
+		result.forEach(VerfuegungZeitabschnitt::initBGCalculationResult);
 		return result;
 	}
 

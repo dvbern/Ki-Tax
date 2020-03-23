@@ -49,7 +49,7 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 
 		// Resultat erstellen und benoetigte Daten aus Input kopieren
 		BGCalculationResult result = new BGCalculationResult();
-		VerfuegungZeitabschnitt.copyValuesToResult(input, result);
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
 		// Benoetigte Daten
 		boolean unter12Monate = input.isBabyTarif();
