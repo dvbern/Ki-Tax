@@ -2020,7 +2020,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetze() != null) {
 				row.setKapazitaet(institutionStammdatenBG.getAnzahlPlaetze());
 			}
-			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetzeFirmen() != null) {
+			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetzeFirmen() != null &&
+				institutionStammdatenBG.getAnzahlPlaetzeFirmen().compareTo(BigDecimal.ZERO) != 0) {
 				row.setReserviertFuerFirmen(institutionStammdatenBG.getAnzahlPlaetzeFirmen());
 			}
 		}
