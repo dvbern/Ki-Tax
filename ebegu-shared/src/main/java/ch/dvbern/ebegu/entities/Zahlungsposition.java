@@ -134,7 +134,7 @@ public class Zahlungsposition extends AbstractMutableEntity implements Comparabl
 			return false;
 		}
 		final Zahlungsposition otherZahlungsposition = (Zahlungsposition) other;
-		return EbeguUtil.isSameObject(getVerfuegungZeitabschnitt(), otherZahlungsposition.getVerfuegungZeitabschnitt()) &&
+		return EbeguUtil.isSame(getVerfuegungZeitabschnitt(), otherZahlungsposition.getVerfuegungZeitabschnitt()) &&
 			Objects.equals(getStatus(), otherZahlungsposition.getStatus()) &&
 			MathUtil.isSame(getBetrag(), otherZahlungsposition.getBetrag()) &&
 			Objects.equals(isIgnoriert(), otherZahlungsposition.isIgnoriert());

@@ -100,7 +100,7 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final ErweiterteBetreuungContainer otherErwBetrContainer = (ErweiterteBetreuungContainer) other;
-		return EbeguUtil.isSameObject(getErweiterteBetreuungJA(), otherErwBetrContainer.getErweiterteBetreuungJA());
+		return EbeguUtil.isSame(getErweiterteBetreuungJA(), otherErwBetrContainer.getErweiterteBetreuungJA());
 	}
 
 	@Nonnull

@@ -131,9 +131,8 @@ public final class EbeguUtil {
 		return gesuchMap;
 	}
 
-	// isSameObject bedeutet für mich, thisEntity == otherEntity (gleiche Referenz). Passender wäre der Name "isSame".
 	// All die isSame Methoden finde ich aber fürchterlich komplex. Besser wäre es, Comparators zu definieren.
-	public static boolean isSameObject(@Nullable AbstractEntity thisEntity, @Nullable AbstractEntity otherEntity) {
+	public static boolean isSame(@Nullable AbstractEntity thisEntity, @Nullable AbstractEntity otherEntity) {
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && thisEntity.isSame(otherEntity));
 	}

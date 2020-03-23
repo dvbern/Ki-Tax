@@ -311,7 +311,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			return false;
 		}
 		final KindContainer otherKindContainer = (KindContainer) other;
-		return EbeguUtil.isSameObject(getKindJA(), otherKindContainer.getKindJA()) &&
+		return EbeguUtil.isSame(getKindJA(), otherKindContainer.getKindJA()) &&
 			Objects.equals(getKindNummer(), otherKindContainer.getKindNummer());
 	}
 }
