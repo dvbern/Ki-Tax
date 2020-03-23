@@ -408,12 +408,10 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	/**
 	 * Ob es ein BG- TS- oder Mischgesuch ist, wird anhand der Verantwortliche berechnet.
 	 * TS- oder Mischgesuche sind alle, die VerantwortlicherTS gesetzt haben, VerantwortlicherBG interessiert nicht.
-	 * Fuer TS sind sie nur so lange in der Pendenzenliste, wie das FinSit-Flag nicht gesetzt ist
 	 */
 	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
-		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
-		return cb.and(predicateIsVerantwortlicherTS, predicateIsFlagFinSitNotSet);
+		return cb.and(predicateIsVerantwortlicherTS);
 	}
 
 
