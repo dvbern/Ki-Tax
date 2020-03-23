@@ -76,6 +76,7 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
+const TAGI_ANGEBOT_VALUE = 'TAGI';
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -184,7 +185,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
-                    if (obj.key === this.$stateParams.betreuungsangebotTyp) {
+                    if (obj.key === this.$stateParams.betreuungsangebotTyp
+                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
                         this.betreuungsangebot = obj;
                         this.changedAngebot();
                     }
@@ -530,6 +532,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.getGesuchsperiode());
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
+        if (!this.gesuchModelManager.isTagesschuleTagisEnabled()) {
+            return;
+        }
+        this.betreuungsangebotValues.push({
+            key: TSBetreuungsangebotTyp.TAGESSCHULE,
+            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+        });
     }
 
     public cancel(): void {
@@ -561,6 +570,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
             institutionenSDList = this.filterInstiForScolaris(institutionenSDList);
         }
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
+            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+            institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+        }
         return institutionenSDList;
     }
 
@@ -576,6 +589,21 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     }
                 );
                 return isScolaris;
+            }
+        );
+    }
+
+    private filterTagisTagesschule(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
+        return institutionenList.filter(instStamm => {
+                let isTagi = false;
+                instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
+                    einstellungTagesschule => {
+                        if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
+                            isTagi = einstellungTagesschule.tagi;
+                        }
+                    }
+                );
+                return isTagi;
             }
         );
     }
