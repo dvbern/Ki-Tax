@@ -89,7 +89,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Valid
 	@Nonnull @NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = true) // warum Nullable?
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = false)
 	private BGCalculationResult bgCalculationResultAsiv = new BGCalculationResult();
 
 	/**
