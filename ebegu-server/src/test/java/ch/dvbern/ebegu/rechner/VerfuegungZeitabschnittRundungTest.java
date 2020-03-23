@@ -23,6 +23,7 @@ import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -153,14 +154,15 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
+	private BGCalculationInput createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
-		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
-		zeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
-		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(100));
-		zeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		return zeitabschnitt;
+		BGCalculationInput inputAsiv = zeitabschnitt.getBgCalculationInputAsiv();
+		inputAsiv.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
+		inputAsiv.setAnspruchspensumProzent(100);
+		inputAsiv.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
+		inputAsiv.setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		return inputAsiv;
 	}
 
 	@Nonnull

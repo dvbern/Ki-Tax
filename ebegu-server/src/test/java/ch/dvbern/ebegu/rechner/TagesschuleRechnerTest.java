@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -90,9 +91,10 @@ public class TagesschuleRechnerTest {
 			abzugFamiliengroesse = MathUtil.DEFAULT.fromNullSafe(11400.00);
 		}
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
+		BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		inputAsiv.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
+		inputAsiv.setAbzugFamGroesse(abzugFamiliengroesse);
+		inputAsiv.setAnspruchspensumProzent(100);
 		if (paedagogischBetreut) {
 			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(10);
 		} else {
@@ -101,7 +103,7 @@ public class TagesschuleRechnerTest {
 
 		verfuegungZeitabschnitt.copyValuesToResult();
 
-		BGCalculationResult calculationResult = tarifRechner.calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult calculationResult = tarifRechner.calculateAsiv(inputAsiv, parameterDTO);
 		TSCalculationResult tsResult;
 		if (paedagogischBetreut) {
 			tsResult = calculationResult.getTsCalculationResultMitPaedagogischerBetreuung();

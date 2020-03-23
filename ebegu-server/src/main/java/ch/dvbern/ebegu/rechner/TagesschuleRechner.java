@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -40,25 +41,26 @@ public class TagesschuleRechner extends AbstractRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull List<RechnerRule> rechnerRules
 	) {
-		calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
+		// Fuer Tagesschule gibt es (Stand heute) keine gemeindespezifischen Regeln
+		calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
 	}
 
 	@Nonnull
 	@Override
-	public BGCalculationResult calculateAsiv(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull BGRechnerParameterDTO parameterDTO) {
-		verfuegungZeitabschnitt.copyValuesToResult();
+	public BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+		BGCalculationResult bgResult = input.getParent().getBgCalculationResultAsiv();
+		VerfuegungZeitabschnitt.copyValuesToResult(input, bgResult);
 		BigDecimal minTarif = parameterDTO.getMinTarifTagesschule();
-		BGCalculationResult bgResult = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
 		if (bgResult.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleMitPaedagogischerBetreuung();
-			BigDecimal tarifProStunde = calculateTarif(verfuegungZeitabschnitt, maxTarif, minTarif, parameterDTO);
+			BigDecimal tarifProStunde = calculateTarif(input, maxTarif, minTarif, parameterDTO);
 			bgResult.getTsCalculationResultMitPaedagogischerBetreuung().setGebuehrProStunde(tarifProStunde);
 			BigDecimal totalKostenProWoche = calculateKostenProWoche(bgResult.getTsCalculationResultMitPaedagogischerBetreuung());
 			bgResult.getTsCalculationResultMitPaedagogischerBetreuung().setTotalKostenProWoche(totalKostenProWoche);
 		}
 		if (bgResult.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
 			BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleOhnePaedagogischerBetreuung();
-			BigDecimal tarifProStunde = calculateTarif(verfuegungZeitabschnitt, maxTarif, minTarif, parameterDTO);
+			BigDecimal tarifProStunde = calculateTarif(input, maxTarif, minTarif, parameterDTO);
 			bgResult.getTsCalculationResultOhnePaedagogischerBetreuung().setGebuehrProStunde(tarifProStunde);
 			BigDecimal totalKostenProWoche = calculateKostenProWoche(bgResult.getTsCalculationResultOhnePaedagogischerBetreuung());
 			bgResult.getTsCalculationResultOhnePaedagogischerBetreuung().setTotalKostenProWoche(totalKostenProWoche);
@@ -71,19 +73,20 @@ public class TagesschuleRechner extends AbstractRechner {
 	 * diese werden in einem DTO uebergeben.
 	 */
 	public BigDecimal calculateTarif(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull BGCalculationInput input,
 		@Nonnull BigDecimal maxTarif,
 		@Nonnull BigDecimal minTarif,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
 		// Massgebendes Einkommen der Familie. Mit Maximal und Minimalwerten "verrechnen"
-		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
+		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 		BigDecimal tarifProStunde = null;
 
+
 		// Falls der Gesuchsteller die Finanziellen Daten nicht angeben will, bekommt er der Max Tarif
-		if (zeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten()
-			|| zeitabschnitt.getBgCalculationResultAsiv().isZuSpaetEingereicht()
-			|| zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent() == 0) {
+		if (input.isBezahltVollkosten()
+			|| input.isZuSpaetEingereicht()
+			|| input.getAnspruchspensumProzent() == 0) {
 			tarifProStunde = maxTarif;
 		} else {
 			BigDecimal mataMinusMita = MathUtil.EXACT.subtract(maxTarif, minTarif);

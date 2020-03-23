@@ -36,24 +36,13 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
+
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
 	@Override
 	@Nonnull
 	public BGCalculationResult calculateAsiv(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO
-	) {
-		verfuegungZeitabschnitt.copyValuesToResult();
-		return calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
-	}
-
-	/**
-	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
-	 */
-	@Nonnull
-	protected BGCalculationResult calculateAsiv(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
