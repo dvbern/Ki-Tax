@@ -1,0 +1,2 @@
+alter table bgcalculation_result drop temp_id_zeitabschnitt;
+alter table bgcalculation_result_aud drop temp_id_zeitabschnitt;

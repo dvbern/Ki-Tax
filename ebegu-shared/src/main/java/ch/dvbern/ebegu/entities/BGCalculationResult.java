@@ -51,11 +51,6 @@ public class BGCalculationResult extends AbstractEntity {
 
 	private static final long serialVersionUID = 6727717920099112569L;
 
-	// Dies wird benötigt für die Migration der Daten und kann im nächsten Release wieder entfernt werden
-	@SuppressWarnings("PMD.UnusedPrivateField")
-	@Column(nullable = true)
-	private String tempIdZeitabschnitt; // obsolete?
-
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private BigDecimal vollkosten = BigDecimal.ZERO; // Punkt IV auf der Verfuegung
