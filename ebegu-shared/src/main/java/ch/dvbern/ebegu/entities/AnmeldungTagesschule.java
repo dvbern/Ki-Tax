@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -172,5 +173,13 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 				this.setBelegungTagesschule(that.getBelegungTagesschule().copyBelegungTagesschule(new BelegungTagesschule(), AntragCopyType.MUTATION));
 			}
 		}
+	}
+
+	public boolean isTagesschuleTagi() {
+		Objects.requireNonNull(getBelegungTagesschule());
+		Set<BelegungTagesschuleModul> belegungTagesschuleModulList = getBelegungTagesschule().getBelegungTagesschuleModule();
+		BelegungTagesschuleModul belegungTagesschuleModul = belegungTagesschuleModulList.iterator().next();
+		ModulTagesschuleGroup modulTagesschuleGroup = belegungTagesschuleModul.getModulTagesschule().getModulTagesschuleGroup();
+		return modulTagesschuleGroup.getEinstellungenTagesschule().isTagi();
 	}
 }

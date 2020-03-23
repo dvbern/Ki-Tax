@@ -3306,6 +3306,7 @@ export class EbeguRestUtil {
             einstellungenTagesschuleTS.modulTagesschuleGroups =
                 this.parseModuleTagesschuleGroupsArray(einstellungFromServer.modulTagesschuleGroups);
             einstellungenTagesschuleTS.erlaeuterung = einstellungFromServer.erlaeuterung;
+            einstellungenTagesschuleTS.tagi = einstellungFromServer.tagi;
             return einstellungenTagesschuleTS;
         }
         return undefined;
@@ -3331,6 +3332,7 @@ export class EbeguRestUtil {
             restEinstellung.modulTagesschuleGroups =
                 this.moduleTagesschuleGroupsArrayToRestObject(einstellungTagesschuleTS.modulTagesschuleGroups);
             restEinstellung.erlaeuterung = einstellungTagesschuleTS.erlaeuterung;
+            restEinstellung.tagi = einstellungTagesschuleTS.tagi;
             return restEinstellung;
         }
         return undefined;

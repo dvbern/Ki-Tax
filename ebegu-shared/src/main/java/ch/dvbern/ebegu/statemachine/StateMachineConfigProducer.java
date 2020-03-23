@@ -83,7 +83,9 @@ public class StateMachineConfigProducer {
 
 		gesuchFSMConfig.configure(AntragStatus.PRUEFUNG_STV)
 			.permit(AntragEvents.BESCHWEREN, AntragStatus.BESCHWERDE_HAENGIG) //?
-			.permit(AntragEvents.ERSTES_OEFFNEN_STV, AntragStatus.IN_BEARBEITUNG_STV);
+			.permit(AntragEvents.ERSTES_OEFFNEN_STV, AntragStatus.IN_BEARBEITUNG_STV)
+			.permit(AntragEvents.PRUEFUNG_STV_JA_ABGESCHLOSSEN, AntragStatus.NUR_SCHULAMT)
+			.permit(AntragEvents.PRUEFUNG_STV_SCH_ABGESCHLOSSEN, AntragStatus.VERFUEGT);
 
 		gesuchFSMConfig.configure(AntragStatus.IN_BEARBEITUNG_STV)
 			.permit(AntragEvents.GEPRUEFT_STV, AntragStatus.GEPRUEFT_STV)

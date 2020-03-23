@@ -51,7 +51,7 @@
                 </div>
 
                 <!-- Verfuegung Tagesschule -->
-                <div ng-if="vm.isTagesschuleVerfuegung()">
+                <div ng-if="vm.isTagesschuleVerfuegung() && !vm.getBetreuung().keineDetailinformationen">
                     <br/>
                     <!-- Eintrittsdatum -->
                     <div class="row">
@@ -182,124 +182,131 @@
                             </dv-input-container>
                         </div>
                     </div>
-
-                    <!-- Info bei noch provisorischem Tarif -->
-                    <div class="row"
-                         ng-if="vm.getBetreuung().betreuungsstatus !== 'SCHULAMT_ANMELDUNG_UEBERNOMMEN'">
-                        <div class="col-md-12">
-							<h3 class="md-no-float"
-								data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL"></h3>
-							<p class="inlineHint" data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT"></p>
+                    <!-- Bei Tagis Tagesschule sind die Tarif und PDF nicht angezeigt-->
+                    <ng-container ng-if="!vm.isTagesschuleTagi()">
+                        <!-- Info bei noch provisorischem Tarif -->
+                        <div class="row"
+                             ng-if="vm.getBetreuung().betreuungsstatus !== 'SCHULAMT_ANMELDUNG_UEBERNOMMEN'">
+                            <div class="col-md-12">
+                                <h3 class="md-no-float"
+                                    data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_TITEL"></h3>
+                                <p class="inlineHint"
+                                   data-translate="TAGESSCHULE_PROVISORISCHE_BERECHNUNG_INFOTEXT"></p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Preview oder definitive Verfuegung -->
-                    <div class="row" ng-if="vm.tagesschuleZeitabschnitteMitBetreuung.length > 0">
-                        <br/>
-                        <div class="col-md-12 table-responsive">
-                            <h3 class="md-no-float"
-                                data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"></h3>
+                        <!-- Preview oder definitive Verfuegung -->
+                        <div class="row" ng-if="vm.tagesschuleZeitabschnitteMitBetreuung.length > 0">
+                            <br/>
+                            <div class="col-md-12 table-responsive">
+                                <h3 class="md-no-float"
+                                    data-translate="TAGESSCHULE_GEBUEHREN_BETREUT"></h3>
 
-                            <table st-table="tsTagesschuleMitBetreuungList"
-                                   st-safe-src="vm.tagesschuleZeitabschnitteMitBetreuung"
-                                   class="table verfuegung-table">
-                                <thead>
-                                <tr class="title-row">
-                                    <th data-translate="BETREUUNG_VON"></th>
-                                    <th data-translate="BETREUUNG_BIS"></th>
-                                    <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
-                                    <th data-translate="GEBUHR_PRO_STUNDE"></th>
-                                    <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
-                                    <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="zeitabschnitt in tsTagesschuleMitBetreuungList">
-                                    <!-- Von -->
-                                    <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
-                                    <!-- Bis -->
-                                    <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                                    <!-- Betreungszeit Pro Woche -->
-                                    <td><span
-                                        ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
-                                    </td>
-                                    <!-- Gebühren Pro Stunde -->
-                                    <td><span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde"></span>
-                                    </td>
-                                    <!-- Verpflegungskosten Pro Woche -->
-                                    <td><span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten"></span>
-                                    </td>
-                                    <!-- Total Kosten Pro Woche -->
-                                    <td class="result"><span
-                                        ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche"></span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                <table st-table="tsTagesschuleMitBetreuungList"
+                                       st-safe-src="vm.tagesschuleZeitabschnitteMitBetreuung"
+                                       class="table verfuegung-table">
+                                    <thead>
+                                    <tr class="title-row">
+                                        <th data-translate="BETREUUNG_VON"></th>
+                                        <th data-translate="BETREUUNG_BIS"></th>
+                                        <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
+                                        <th data-translate="GEBUHR_PRO_STUNDE"></th>
+                                        <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
+                                        <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="zeitabschnitt in tsTagesschuleMitBetreuungList">
+                                        <!-- Von -->
+                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                        <!-- Bis -->
+                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                        <!-- Betreungszeit Pro Woche -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
+                                        </td>
+                                        <!-- Gebühren Pro Stunde -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde"></span>
+                                        </td>
+                                        <!-- Verpflegungskosten Pro Woche -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten"></span>
+                                        </td>
+                                        <!-- Total Kosten Pro Woche -->
+                                        <td class="result"><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row" ng-if="vm.tagesschuleZeitabschnitteOhneBetreuung.length > 0">
-                        <br/>
-                        <div class="col-md-12 table-responsive">
-                            <h3 class="md-no-float"
-                                data-translate="TAGESSCHULE_GEBUEHREN_NICHT_BETREUT"></h3>
+                        <div class="row" ng-if="vm.tagesschuleZeitabschnitteOhneBetreuung.length > 0">
+                            <br/>
+                            <div class="col-md-12 table-responsive">
+                                <h3 class="md-no-float"
+                                    data-translate="TAGESSCHULE_GEBUEHREN_NICHT_BETREUT"></h3>
 
-                            <table st-table="tsTagesschuleOhneBetreuungList"
-                                   st-safe-src="vm.tagesschuleZeitabschnitteOhneBetreuung"
-                                   class="table verfuegung-table">
-                                <thead>
-                                <tr class="title-row">
-                                    <th data-translate="BETREUUNG_VON"></th>
-                                    <th data-translate="BETREUUNG_BIS"></th>
-                                    <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
-                                    <th data-translate="GEBUHR_PRO_STUNDE"></th>
-                                    <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
-                                    <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="zeitabschnitt in tsTagesschuleOhneBetreuungList">
-                                    <!-- Von -->
-                                    <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
-                                    <!-- Bis -->
-                                    <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                                    <!-- Betreungszeit Pro Woche -->
-                                    <td><span
-                                        ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
-                                    </td>
-                                    <!-- Gebühren Pro Stunde -->
-                                    <td><span ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.gebuehrProStunde"></span>
-                                    </td>
-                                    <!-- Verpflegungskosten Pro Woche -->
-                                    <td><span ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskosten"></span>
-                                    </td>
-                                    <!-- Total Kosten Pro Woche -->
-                                    <td class="result"><span
-                                        ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.totalKostenProWoche"></span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                <table st-table="tsTagesschuleOhneBetreuungList"
+                                       st-safe-src="vm.tagesschuleZeitabschnitteOhneBetreuung"
+                                       class="table verfuegung-table">
+                                    <thead>
+                                    <tr class="title-row">
+                                        <th data-translate="BETREUUNG_VON"></th>
+                                        <th data-translate="BETREUUNG_BIS"></th>
+                                        <th data-translate="BETREUUNGSTUNDEN_PRO_WOCHE"></th>
+                                        <th data-translate="GEBUHR_PRO_STUNDE"></th>
+                                        <th data-translate="VERPFLEGUNGSKOSTEN_PRO_WOCHE"></th>
+                                        <th class="result" data-translate="TOTAL_KOSTEN_PRO_WOCHE"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="zeitabschnitt in tsTagesschuleOhneBetreuungList">
+                                        <!-- Von -->
+                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                        <!-- Bis -->
+                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                        <!-- Betreungszeit Pro Woche -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
+                                        </td>
+                                        <!-- Gebühren Pro Stunde -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.gebuehrProStunde"></span>
+                                        </td>
+                                        <!-- Verpflegungskosten Pro Woche -->
+                                        <td><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.verpflegungskosten"></span>
+                                        </td>
+                                        <!-- Total Kosten Pro Woche -->
+                                        <td class="result"><span
+                                            ng-bind="zeitabschnitt.tsCalculationResultOhnePaedagogischerBetreuung.totalKostenProWoche"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
 
-                    <!--VerfuegungPDF anzeigen-->
-                    <div class="row marginTop20 text-left">
-                        <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">
-                            <button type="button" class="dv-btn btn-link link-underline"
-                                    ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()">
-                                <i class="fa fa-file-text-o"></i>
-                                <span data-translate="PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN"></span>
-                            </button>
+                        <!--VerfuegungPDF anzeigen-->
+                        <div class="row marginTop20 text-left">
+                            <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">
+                                <button type="button" class="dv-btn btn-link link-underline"
+                                        ng-click="vm.openAnmeldebestaetigungOhneTarifPDF()">
+                                    <i class="fa fa-file-text-o"></i>
+                                    <span data-translate="PDF_ANMELDEBESTAETIGUNG_OHNE_TARIF_ANZEIGEN"></span>
+                                </button>
+                            </div>
+                            <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungMitTarifPdfLink()">
+                                <button type="button" class="dv-btn btn-link link-underline"
+                                        ng-click="vm.openAnmeldebestaetigungMitTarifPDF()">
+                                    <i class="fa fa-file-text-o"></i>
+                                    <span data-translate="PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN"></span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungMitTarifPdfLink()">
-                            <button type="button" class="dv-btn btn-link link-underline"
-                                    ng-click="vm.openAnmeldebestaetigungMitTarifPDF()">
-                                <i class="fa fa-file-text-o"></i>
-                                <span data-translate="PDF_ANMELDEBESTAETIGUNG_MIT_TARIF_ANZEIGEN"></span>
-                            </button>
-                        </div>
-                    </div>
+                    </ng-container>
                 </div>
 
                 <!-- Tabelle -->
@@ -542,7 +549,8 @@
                         </span>
                         <span class="ie11-fix"
                               ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten">
-                            <dv-loading-button input-id="buttonTrotzdemVerfuegen" type="submit" button-click="vm.save()">
+                            <dv-loading-button input-id="buttonTrotzdemVerfuegen" type="submit"
+                                               button-click="vm.save()">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>
                         </span>

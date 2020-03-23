@@ -357,7 +357,7 @@
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"
-                                      [disabled]="!(isSuperadminOrMandant())"
+                                      [disabled]="!(isSuperadmin())"
                                       [(ngModel)]="stammdaten.gemeinde.angebotFI" *ngIf="tageschuleEnabledForMandant">
                             {{'GEMEINDE_ANGEBOT_FERIENINSEL'|translate}}</mat-checkbox>
 
@@ -368,7 +368,7 @@
                                    [(ngModel)]="stammdaten.gemeinde.ferieninselanmeldungenStartdatum"
                                    [matDatepicker]="fi_start"
                                    [min]="minDateTSFI"
-                                   [disabled]="!(isSuperadminOrMandant())"
+                                   [disabled]="!(isSuperadmin())"
                                    placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
                             <mat-datepicker-toggle matSuffix [for]="fi_start"></mat-datepicker-toggle>
                             <mat-datepicker #fi_start></mat-datepicker>
@@ -405,7 +405,8 @@
                         <h3>&nbsp;</h3>
                         <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
                         <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
-                        <p><a href="{{stammdaten.webseite}}" target="tah">{{stammdaten.webseite}}</a></p>
+                        <p><a href="{{ebeguUtil.formatHrefUrl(stammdaten.webseite)}}"
+                              target="tah">{{stammdaten.webseite}}</a></p>
                     </div>
                 </div>
                 <!-- Angebot -->
