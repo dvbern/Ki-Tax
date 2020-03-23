@@ -89,7 +89,8 @@
                         <th><input st-search="sentDatum" class="form-control" type="text"/></th>
                         <!-- An -->
                         <th>
-                            <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger" initial-all="false"
+                            <dv-userselect input-id="empfaenger" dv-usersearch="empfaenger"
+                                           initial-all="vm.isSuperAdmin() ? true : false"
                                            show-selection-all="true" sachbearbeiter-gemeinde="true"></dv-userselect>
                         </th>
                         <!-- Verantwortung -->

@@ -17,6 +17,7 @@ import {IHttpResponse} from 'angular';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSExceptionReport} from '../../../../models/TSExceptionReport';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {ErrorService} from './ErrorService';
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
@@ -41,6 +42,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
         private readonly $q: IQService,
         private readonly errorService: ErrorService,
         private readonly $log: ILogService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -72,6 +74,11 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
      * or EbeguExceptionReports in case there was some other application exception
      */
     private handleErrorResponse(response: any): Array<TSExceptionReport> {
+        const http404 = 404;
+        // Ki-Tax API may respond with 404 if no matching cases could be found
+        if (response.status === http404 && response.config.url.startsWith(this.applicationPropertyRS.getKitaxHost())) {
+            return [];
+        }
         let errors: Array<TSExceptionReport>;
         // Alle daten loggen um das Debuggen zu vereinfachen
         // noinspection IfStatementWithTooManyBranchesJS

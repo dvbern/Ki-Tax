@@ -919,7 +919,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 					monat);
 				auszahlungDTO.setZahlungText(zahlungstext);
 
-				pain001DTO.getAuszahlungen().add(auszahlungDTO);
+				// Wenn Empfänger und Auszahler dasselbe Konto sind, soll es nicht ins PAIN File. Dies ist z.B. Gemeinde-Kitas der Fall.
+				if (!debitorIban.equals(auszahlungDTO.getZahlungsempfaegerIBAN())) {
+					pain001DTO.getAuszahlungen().add(auszahlungDTO);
+				}
 			});
 
 		return pain001DTO;

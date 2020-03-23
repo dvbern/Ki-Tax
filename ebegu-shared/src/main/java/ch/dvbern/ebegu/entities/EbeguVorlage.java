@@ -116,6 +116,6 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 		}
 		final EbeguVorlage otherEbeguVorlage = (EbeguVorlage) other;
 		return Objects.equals(getName(), otherEbeguVorlage.getName()) &&
-			EbeguUtil.isSameObject(getVorlage(), otherEbeguVorlage.getVorlage());
+			EbeguUtil.isSame(getVorlage(), otherEbeguVorlage.getVorlage());
 	}
 }

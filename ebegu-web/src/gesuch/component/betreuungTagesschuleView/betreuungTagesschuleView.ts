@@ -204,8 +204,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     private loadEinstellungPropertiesForTagesschule(): void {
+        const stammdatenTagesschule = this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule;
+        if (!stammdatenTagesschule) {
+            return;
+        }
         const tsEinstellungenTagesschule =
-            this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+            stammdatenTagesschule.einstellungenTagesschule
                 .filter((einstellung: TSEinstellungenTagesschule) =>
                     einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
                 .pop();

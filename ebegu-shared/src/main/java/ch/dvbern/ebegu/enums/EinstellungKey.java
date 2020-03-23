@@ -34,6 +34,9 @@ public enum EinstellungKey {
 	// Erster Schultag der Tagesschule
 	GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG(EinstellungTyp.GEMEINDE),
 
+	// Ob die Tageschulen koennen Tagis sein
+	GEMEINDE_TAGESSCHULE_TAGIS_ENABLED(EinstellungTyp.GEMEINDE),
+
 	// Die Gemeinde gewährt einen zusätzlichen Beitrag zum Gutschein
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED(EinstellungTyp.GEMEINDE),
 
@@ -73,6 +76,9 @@ public enum EinstellungKey {
 
 	// Die Gemeinde gewährt die Mahlzeitenvergünstigung auch für Sozialhilfebezüger
 	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED(EinstellungTyp.GEMEINDE),
+
+	// Die Schnittstelle zu Ki-Tax ist aktiviert
+	GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED(EinstellungTyp.GEMEINDE),
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 

@@ -50,9 +50,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(
-		@Nonnull AbstractPlatz platz,
-		@Nonnull BGCalculationInput inputData) {
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (areNotInBern(inputData)) {
 			inputData.setAnspruchspensumProzent(0);
 			inputData.getParent().addBemerkung(

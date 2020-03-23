@@ -49,8 +49,7 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
-	protected void executeRule(
-		@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
 		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
 			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {

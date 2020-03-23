@@ -269,7 +269,8 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
-        return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() && this.model.verguenstigungGewuenscht;
+        return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
+            (this.model.sozialhilfeBezueger || this.model.verguenstigungGewuenscht);
     }
 
     public isZahlungsdatenRequired(): boolean {

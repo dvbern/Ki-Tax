@@ -1733,6 +1733,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxEinstellungenTagesschule.setModulTagesschuleGroups(modulTagesschuleGroupListToJax(persistedEinstellungenTagesschule.getModulTagesschuleGroups()));
 		jaxEinstellungenTagesschule.setModulTagesschuleTyp(persistedEinstellungenTagesschule.getModulTagesschuleTyp());
 		jaxEinstellungenTagesschule.setErlaeuterung(persistedEinstellungenTagesschule.getErlaeuterung());
+		jaxEinstellungenTagesschule.setTagi(persistedEinstellungenTagesschule.isTagi());
 		return jaxEinstellungenTagesschule;
 	}
 
@@ -1793,6 +1794,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		einstellungenTagesschule.setModulTagesschuleTyp(jaxEinstellungenTagesschule.getModulTagesschuleTyp());
 		einstellungenTagesschule.setErlaeuterung(jaxEinstellungenTagesschule.getErlaeuterung());
+		einstellungenTagesschule.setTagi(jaxEinstellungenTagesschule.isTagi());
 
 		return einstellungenTagesschule;
 	}
@@ -2525,26 +2527,30 @@ public class JaxBConverter extends AbstractConverter {
 		// Die korrekten EinstellungenTagesschule ermitteln fuer diese Betreuung
 		InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
 			betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
-		Objects.requireNonNull(institutionStammdatenTagesschule);
-		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode());
-		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode().getId());
-		EinstellungenTagesschule einstellungenTagesschule =
-			getEinstellungenTagesschule(institutionStammdatenTagesschule,
-				betreuungJAXP.getGesuchsperiode().getId());
-		if (betreuungJAXP.getBelegungTagesschule() != null) {
-			requireNonNull(
-				einstellungenTagesschule,
-				"EinstellungTagesschule muessen gesetzt sein");
-			if (betreuung.getBelegungTagesschule() != null) {
-				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-					betreuungJAXP.getBelegungTagesschule(),
-					betreuung.getBelegungTagesschule(),
-					einstellungenTagesschule));
+		if (!betreuung.isKeineDetailinformationen()) {
+			Objects.requireNonNull(institutionStammdatenTagesschule);
+			Objects.requireNonNull(betreuungJAXP.getGesuchsperiode());
+			Objects.requireNonNull(betreuungJAXP.getGesuchsperiode().getId());
+			EinstellungenTagesschule einstellungenTagesschule =
+				getEinstellungenTagesschule(institutionStammdatenTagesschule,
+					betreuungJAXP.getGesuchsperiode().getId());
+			if (betreuungJAXP.getBelegungTagesschule() != null) {
+				requireNonNull(
+					einstellungenTagesschule,
+					"EinstellungTagesschule muessen gesetzt sein");
+				if (betreuung.getBelegungTagesschule() != null) {
+					betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+						betreuungJAXP.getBelegungTagesschule(),
+						betreuung.getBelegungTagesschule(),
+						einstellungenTagesschule));
+				} else {
+					betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+						betreuungJAXP.getBelegungTagesschule(),
+						new BelegungTagesschule(),
+						einstellungenTagesschule));
+				}
 			} else {
-				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-					betreuungJAXP.getBelegungTagesschule(),
-					new BelegungTagesschule(),
-					einstellungenTagesschule));
+				betreuung.setBelegungTagesschule(null);
 			}
 		} else {
 			betreuung.setBelegungTagesschule(null);
@@ -3257,6 +3263,11 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nullable
+	public Verfuegung verfuegungToEntity(@Nullable JaxVerfuegung jaxVerfuegung) {
+		throw new EbeguFingerWegException("verfuegungToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nullable
 	private JaxVerfuegungZeitabschnitt verfuegungZeitabschnittToJax(@Nullable VerfuegungZeitabschnitt zeitabschnitt) {
 		if (zeitabschnitt == null) {
 			return null;
@@ -3295,12 +3306,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput().isSameAusbezahlteVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
-			tsCalculationResultToJax(
-				zeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung()));
+			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
-			tsCalculationResultToJax(
-				zeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung()));
+			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
 		return jaxZeitabschn;
+	}
+
+	public VerfuegungZeitabschnitt verfuegungZeitabschnittToEntity(@Nullable JaxVerfuegungZeitabschnitt jaxVerfuegungZeitabschnitt) {
+		throw new EbeguFingerWegException("verfuegungZeitabschnittToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	@Nullable
@@ -4083,7 +4096,7 @@ public class JaxBConverter extends AbstractConverter {
 	 */
 	private Set<BetreuungsangebotTyp> createAngeboteList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
-			.flatMap(kc -> kc.getBetreuungen().stream())
+			.flatMap(kc -> kc.getAllPlaetze().stream())
 			.map(b -> b.getInstitutionStammdaten().getBetreuungsangebotTyp())
 			.collect(Collectors.toSet());
 	}

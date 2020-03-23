@@ -142,7 +142,10 @@ public class BGCalculationInput {
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
-		this.taetigkeiten = toCopy.taetigkeiten;
+		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
+		mergedTaetigkeiten.addAll(this.taetigkeiten);
+		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
+		this.taetigkeiten = mergedTaetigkeiten;
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;

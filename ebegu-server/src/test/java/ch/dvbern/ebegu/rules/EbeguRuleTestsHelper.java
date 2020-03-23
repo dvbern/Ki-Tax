@@ -186,6 +186,7 @@ public final class EbeguRuleTestsHelper {
 		result = restanspruchLimitCalcRule.calculate(platz, result);
 
 		result = anspruchFristRule.executeIfApplicable(platz, result);
+		// Der RestanspruchInitializer erstellt Restansprueche, darf nicht das Resultat ueberschreiben!
 		restanspruchInitializer.executeIfApplicable(platz, result);
 		result = abschlussNormalizerDismissMonate.executeIfApplicable(platz, result);
 		if (doMonatsstueckelungen) {

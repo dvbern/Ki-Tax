@@ -154,7 +154,10 @@ public class FinanzielleSituationResource {
 		requireNonNull(gesuchstellerId);
 		requireNonNull(sozialhilfeBezueger);
 		requireNonNull(gemeinsameSteuererklaerung);
-		if (sozialhilfeBezueger != Boolean.TRUE) {
+		if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
+			// Sozialhilfebezueger bekommen immer eine Verguenstigung
+			verguenstigungGewuenscht = Boolean.TRUE;
+		} else {
 			requireNonNull(verguenstigungGewuenscht);
 		}
 
@@ -177,12 +180,14 @@ public class FinanzielleSituationResource {
 
 		Adresse storedAdresse = new Adresse();
 		if (jaxFamiliensituationContainer.getId() != null) {
-			Optional<FamiliensituationContainer> storedFamSitCont =
+			Optional<FamiliensituationContainer> storedFamSitContOptional =
 				familiensituationService.findFamiliensituation(jaxFamiliensituationContainer.getId());
 
-			Familiensituation storedFamSit = storedFamSitCont.get().getFamiliensituationJA();
-			if (storedFamSit != null && storedFamSit.getZahlungsadresse() != null) {
-				storedAdresse =  storedFamSit.getZahlungsadresse();
+			if (storedFamSitContOptional.isPresent()) {
+				Familiensituation storedFamSit = storedFamSitContOptional.get().getFamiliensituationJA();
+				if (storedFamSit != null && storedFamSit.getZahlungsadresse() != null) {
+					storedAdresse = storedFamSit.getZahlungsadresse();
+				}
 			}
 		}
 

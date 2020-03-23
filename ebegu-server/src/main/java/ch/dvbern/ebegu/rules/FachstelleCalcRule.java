@@ -56,13 +56,15 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull BGCalculationInput inputData) {
+		@Nonnull BGCalculationInput inputData
+	) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		Betreuung betreuung = (Betreuung) platz;
 		int pensumFachstelle = inputData.getFachstellenpensum();
 		boolean betreuungspensumMustBeAtLeastFachstellenpensum = inputData.isBetreuungspensumMustBeAtLeastFachstellenpensum();
 		BigDecimal pensumBetreuung = inputData.getBetreuungspensumProzent();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
+
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
 		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {

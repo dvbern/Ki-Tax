@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -251,6 +253,15 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	}
 
 	@Nonnull
+	public List<AbstractPlatz> getAllPlaetze() {
+		List<AbstractPlatz> plaetze = new ArrayList<>();
+		plaetze.addAll(getBetreuungen());
+		plaetze.addAll(getAnmeldungenTagesschule());
+		plaetze.addAll(getAnmeldungenFerieninsel());
+		return plaetze;
+	}
+
+	@Nonnull
 	@Override
 	public String getSearchResultId() {
 		return this.getId();
@@ -300,7 +311,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			return false;
 		}
 		final KindContainer otherKindContainer = (KindContainer) other;
-		return EbeguUtil.isSameObject(getKindJA(), otherKindContainer.getKindJA()) &&
+		return EbeguUtil.isSame(getKindJA(), otherKindContainer.getKindJA()) &&
 			Objects.equals(getKindNummer(), otherKindContainer.getKindNummer());
 	}
 }

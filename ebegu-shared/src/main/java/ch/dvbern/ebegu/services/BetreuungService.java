@@ -218,4 +218,5 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
+
 }

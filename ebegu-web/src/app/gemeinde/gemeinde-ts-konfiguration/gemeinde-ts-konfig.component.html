@@ -36,6 +36,9 @@
                             <!-- readonly -->
                             <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
                                 <div class="form-group">
+                                    <p *ngIf="!konfigurationsListe[i].konfigTagesschuleTagisEnabled && isSuperAdmin()"
+                                       class="line-through">{{getKonfigTagesschuleTagisEnabledString()}}</p>
+                                    <p *ngIf="konfigurationsListe[i].konfigTagesschuleTagisEnabled">{{getKonfigTagesschuleTagisEnabledString()}}</p>
                                     <!-- Datum Aktivierung Tagesschulen -->
                                     <label>{{'TAGESSCHULE_AKTIVIERUNGSDATUM'|translate}}&nbsp;
                                         <strong>{{getTagesschuleAktivierungsdatumAsString(konfigurationsListe[i])}}</strong>
@@ -49,6 +52,17 @@
                             <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
                                 <!-- Datum Aktivierung Tagesschulen -->
                                 <div class="form-group">
+
+                                    <p *ngIf="konfigurationsListe[i].konfigTagesschuleTagisEnabled && !isSuperAdmin()">{{getKonfigTagesschuleTagisEnabledString()}}</p>
+
+                                    <div class="form-group" *ngIf="isSuperAdmin()">
+                                        <mat-checkbox id="tagesschule_tagis_enabled_id_{{i}}"
+                                                      name="tagesschule_tagis_enabled_id_{{i}}"
+                                                      [(ngModel)]="konfigurationsListe[i].konfigTagesschuleTagisEnabled"
+                                                      (change)="changeKonfigTagesschuleTagisEnabled(konfigurationsListe[i])">
+                                            {{'TAGESSCHULE_TAGIS_ENABLED'|translate}}</mat-checkbox>
+                                    </div>
+
                                     <label class="required" translate for="tsAktivierungsdatum">TAGESSCHULE_AKTIVIERUNGSDATUM</label>
                                     <input class="dv-mat-datepicker" type="text"
                                            name="tsAktivierungsdatum" id="tsAktivierungsdatum"
@@ -195,8 +209,8 @@
                                                     (click)="downloadGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.VORLAGE_MERKBLATT_TS);$event.stopPropagation()"
                                                     [disabled]="!vorlageMerkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                     class="dv-btn fa fa-file-word-o dv-btn-operation"
-                                                    title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                                                    [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                                    title="{{'VORLAGE_DOWNLOAD' | translate}}"
+                                                    [attr.aria-label]="'VORLAGE_DOWNLOAD' | translate"
                                                     aria-hidden="true"
                                                     tabindex="0"></button>
                                             </td>

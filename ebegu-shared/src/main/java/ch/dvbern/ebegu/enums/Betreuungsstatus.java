@@ -69,7 +69,7 @@ public enum Betreuungsstatus {
 	}
 
 	public boolean isAnyStatusOfVerfuegt() {
-		return VERFUEGT == this || STORNIERT == this || SCHULAMT == this
+		return VERFUEGT == this || SCHULAMT == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this;
 	}
 

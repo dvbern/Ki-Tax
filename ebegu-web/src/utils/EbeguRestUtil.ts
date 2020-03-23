@@ -16,6 +16,7 @@
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationResultateDTO} from '../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSKitaxResponse} from '../models/dto/TSKitaxResponse';
 import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
@@ -3301,6 +3302,7 @@ export class EbeguRestUtil {
             einstellungenTagesschuleTS.modulTagesschuleGroups =
                 this.parseModuleTagesschuleGroupsArray(einstellungFromServer.modulTagesschuleGroups);
             einstellungenTagesschuleTS.erlaeuterung = einstellungFromServer.erlaeuterung;
+            einstellungenTagesschuleTS.tagi = einstellungFromServer.tagi;
             return einstellungenTagesschuleTS;
         }
         return undefined;
@@ -3326,6 +3328,7 @@ export class EbeguRestUtil {
             restEinstellung.modulTagesschuleGroups =
                 this.moduleTagesschuleGroupsArrayToRestObject(einstellungTagesschuleTS.modulTagesschuleGroups);
             restEinstellung.erlaeuterung = einstellungTagesschuleTS.erlaeuterung;
+            restEinstellung.tagi = einstellungTagesschuleTS.tagi;
             return restEinstellung;
         }
         return undefined;
@@ -3657,6 +3660,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.backgroundColor = data.backgroundColor;
         publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
         publicAppConfigTS.personenSucheDisabled = data.personenSucheDisabled;
+        publicAppConfigTS.kitaxHost = data.kitaxHost;
+        publicAppConfigTS.kitaxEndpoint = data.kitaxEndpoint;
         return publicAppConfigTS;
 
     }
@@ -3727,5 +3732,15 @@ export class EbeguRestUtil {
             return anmeldungTagesschuleZeitabschnittTS;
         }
         return undefined;
+    }
+
+    public parseKitaxResponse (response: any): TSKitaxResponse {
+
+        const kitaxResponse = new TSKitaxResponse();
+
+        kitaxResponse.url = response.url;
+        kitaxResponse.fallNummer = response.fallNr;
+
+        return kitaxResponse;
     }
 }

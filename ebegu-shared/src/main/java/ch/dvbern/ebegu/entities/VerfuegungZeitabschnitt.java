@@ -94,7 +94,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Valid
 	@Nonnull @NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = false)
 	private BGCalculationResult bgCalculationResultAsiv = new BGCalculationResult();
 
 	/**
@@ -317,6 +317,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().isBesondereBeduerfnisseBestaetigt();
 	}
 
+	@Nullable
+	public TSCalculationResult getTsCalculationResultMitPaedagogischerBetreuung() {
+		return getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung();
+	}
+
+	@Nullable
+	public TSCalculationResult getTsCalculationResultOhnePaedagogischerBetreuung() {
+		return getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung();
+	}
+
 	/* Ende Delegator-Methoden */
 
 	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
@@ -485,7 +495,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputAsiv().setSozialhilfeempfaenger(sozialhilfe);
 		this.getBgCalculationInputGemeinde().setSozialhilfeempfaenger(sozialhilfe);
 	}
-	
+
 	public void setBetreuungInGemeindeForAsivAndGemeinde(boolean inGemeinde) {
 		this.getBgCalculationInputAsiv().setBetreuungInGemeinde(inGemeinde);
 		this.getBgCalculationInputGemeinde().setBetreuungInGemeinde(inGemeinde);
@@ -577,8 +587,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return
 			bgCalculationInputAsiv.isSame(otherVerfuegungZeitabschnitt.getBgCalculationInputAsiv()) &&
 			(!this.isHasGemeindeSpezifischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
-			EbeguUtil.isSameObject(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
-			EbeguUtil.isSameObject(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
+			EbeguUtil.isSame(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
+			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);

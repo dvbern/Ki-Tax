@@ -19,6 +19,8 @@ public class JaxPublicAppConfig {
 	private String backgroundColor;
 	private boolean zahlungentestmode;
 	private boolean personenSucheDisabled;
+	private String kitaxHost;
+	private String kitaxEndpoint;
 
 	public JaxPublicAppConfig(
 		String currentNode,
@@ -28,7 +30,9 @@ public class JaxPublicAppConfig {
 		String sentryEnvName,
 		String backgroundColor,
 		boolean zahlungentestmode,
-		boolean personenSucheDisabled
+		boolean personenSucheDisabled,
+		String kitaxHost,
+		String kitaxEndpoint
 	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -38,6 +42,8 @@ public class JaxPublicAppConfig {
 		this.backgroundColor = backgroundColor;
 		this.zahlungentestmode = zahlungentestmode;
 		this.personenSucheDisabled = personenSucheDisabled;
+		this.kitaxHost = kitaxHost;
+		this.kitaxEndpoint = kitaxEndpoint;
 	}
 
 	public String getCurrentNode() {
@@ -102,5 +108,21 @@ public class JaxPublicAppConfig {
 
 	public void setPersonenSucheDisabled(boolean personenSucheDisabled) {
 		this.personenSucheDisabled = personenSucheDisabled;
+	}
+
+	public String getKitaxHost() {
+		return kitaxHost;
+	}
+
+	public void setKitaxHost(String kitaxHost) {
+		this.kitaxHost = kitaxHost;
+	}
+
+	public String getKitaxEndpoint() {
+		return kitaxEndpoint;
+	}
+
+	public void setKitaxEndpoint(String kitaxEndpoint) {
+		this.kitaxEndpoint = kitaxEndpoint;
 	}
 }
