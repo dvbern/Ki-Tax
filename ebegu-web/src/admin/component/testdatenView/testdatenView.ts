@@ -85,7 +85,7 @@ export class TestdatenViewComponent implements OnInit {
         });
         this.gemeindeRS.getAktiveGemeinden().then(response => {
             this.gemeindeList = angular.copy(response);
-            this.gemeindeList = this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
+            this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
         });
     }
 
