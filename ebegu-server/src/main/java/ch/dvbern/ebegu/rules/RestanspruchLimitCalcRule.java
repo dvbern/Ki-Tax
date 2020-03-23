@@ -50,9 +50,7 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
-	protected void executeRule(
-		@Nonnull AbstractPlatz platz,
-		@Nonnull BGCalculationInput inputData) {
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		int anspruchberechtigtesPensum = inputData.getAnspruchspensumProzent();
 		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
 		//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben

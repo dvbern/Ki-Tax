@@ -74,7 +74,8 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull BGCalculationInput inputData) {
+		@Nonnull BGCalculationInput inputData
+	) {
 		requireNonNull(platz.extractGesuch(), "Gesuch muss gesetzt sein");
 		requireNonNull(platz.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
 		boolean hasSecondGesuchsteller = hasSecondGSForZeit(platz, inputData.getParent().getGueltigkeit());

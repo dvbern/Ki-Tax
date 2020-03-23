@@ -108,15 +108,12 @@ public class BetreuungsgutscheinEvaluator {
 			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true);
 
 			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten,
+			// diese auch noch mergen
 			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 
-			// warum braucht man hier den BGRechner nicht? Finde es etwas undefiniertes verhalten, wenn die Resultate
-			// erstellt werden, ohne dass sie richtig berechnet wurden.
-			// Wenn diese Methode eine Verfügung zurückgeben würde, in welchen die Zeitabschnitten nur die Inputs
-			// initialisiert haben, gäbe es nicht das Risiko, auf Werte zuzugreiffen, welche nicht aktualisiert wurden.
-			// Noch klarer, wäre statt eine Verfuegung zurück zu geben ein FamiliensituationDTO mit nur den wirklich
-			// benötigten Werten zu erstellen.
 			zeitabschnitte.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
@@ -213,11 +210,18 @@ public class BetreuungsgutscheinEvaluator {
 				MutationsMerger mutationsMerger = new MutationsMerger(locale);
 				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule());
 
+				// Innerhalb eines Monats darf der Anspruch nie sinken
 				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
+				// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
 				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
+				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 				zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
+				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 				zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
+				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 				zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);
+				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
+				// Daten, diese auch noch mergen
 				zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(platz, zeitabschnitte);
 
 				// Die Verfügung erstellen
@@ -230,12 +234,9 @@ public class BetreuungsgutscheinEvaluator {
 				AbstractRechner rechner = BGRechnerFactory.getRechner(platz);
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-						// die folgende Methode wird auch in rechner.calculate ausgeführt
-						verfuegungZeitabschnitt.copyValuesToResult();
 						BGCalculationResult result = rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
 						result.roundAllValues();
 						verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
-						// wann wird dann das Gemeinde Resultat gespeichert? Kommt das erst mit KIBON-885?
 					});
 
 					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();

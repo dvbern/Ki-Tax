@@ -53,7 +53,7 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
+		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMonatlicheBetreuungskosten();
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 

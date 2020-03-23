@@ -144,7 +144,6 @@ public abstract class AbstractEntity implements Serializable {
 		id = UUID.randomUUID().toString();
 	}
 
-	// es macht keinen Sinn einen @Nullable Setter zu haben, der den Wert tatsächlich NULL setzt, aber hier @Nonnull anzugeben
 	@Nonnull
 	public String getId() {
 		return id;
