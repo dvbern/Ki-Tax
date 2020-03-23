@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -41,6 +42,7 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
 	@SuppressWarnings("NullableProblems")
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone")
 	public ErweiterteBetreuungContainer() {
 		//noinspection ConstantConditions
 		setId(null);    // ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone
