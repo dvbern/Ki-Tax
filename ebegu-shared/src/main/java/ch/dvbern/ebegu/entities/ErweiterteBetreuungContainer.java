@@ -41,6 +41,7 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
 	public ErweiterteBetreuungContainer() {
+		//noinspection ConstantConditions
 		setId(null);    // ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone
 	}
 
