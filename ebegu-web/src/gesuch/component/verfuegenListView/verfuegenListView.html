@@ -322,6 +322,12 @@
                                    ng-if="vm.showSTVPruefungAbschliessen()">
                     <span class="uppercase" data-translate="STV_PRUEFUNG_ABSCHLIESSEN"></span>
                 </dv-loading-button>
+                 <dv-loading-button input-id="buttonSteuerverwaltungZurueckholen"
+                                    button-click="vm.stvPruefungZurueckholen()"
+                                    aria-label="{{'STV_PRUEFUNG_ZURUECKHOLEN' | translate}}"
+                                    ng-if="vm.showSTVPruefungZurueckholen()">
+                    <span class="uppercase" data-translate="STV_PRUEFUNG_ZURUECKHOLEN"></span>
+                </dv-loading-button>
             </span>
             <span>
                 <dv-navigation dv-previous="true" dv-next="false" dv-sub-step="1" container-class="avoid">
