@@ -112,14 +112,12 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
-	// @NotNull und nullable = false?
-	@Nonnull
-	@Column(nullable = true)
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
 
-	// @NotNull und nullable = false?
-	@Nonnull
-	@Column(nullable = true)
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	private BigDecimal famGroesse = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
