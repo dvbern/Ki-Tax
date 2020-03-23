@@ -464,20 +464,22 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	public void sendSupportAnfrage(@Nonnull SupportAnfrageDTO supportAnfrageDTO) {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalArgumentException());
 
-		String subject = "Supportanfrage KiBon: " + supportAnfrageDTO.getId();
+		String subject = "Supportanfrage KiBon von " + benutzer.getFullName();
 		StringBuilder content = new StringBuilder();
-		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
-		content.append("Erstellt am: ")
-			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
-			.append(Constants.LINE_BREAK);
+
 		content.append("Benutzer: ")
 			.append(benutzer.getUsername())
 			.append(" (")
 			.append(benutzer.getFullName())
 			.append(')')
 			.append(Constants.LINE_BREAK);
+		content.append("Email:").append(benutzer.getEmail()).append(Constants.LINE_BREAK);
 		content.append("Rolle: ").append(benutzer.getRole()).append(Constants.LINE_BREAK);
 		content.append(Constants.LINE_BREAK);
+		content.append("Erstellt am: ")
+			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
+			.append(Constants.LINE_BREAK);
+		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
 		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
 
 		try {
