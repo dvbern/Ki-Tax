@@ -414,8 +414,8 @@ public class BenutzerResource {
 			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
 			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
 				// Der Fall und das Dossier muessen geloescht werden
-				if (b.getExistingFall() != null) {
-					superAdminService.removeFall(b.getExistingFall());
+				if (b.getExistingFallId() != null) {
+					superAdminService.removeFallIfExists(b.getExistingFallId());
 				}
 				return saveBenutzerBerechtigungenForced(benutzer, benutzerJax);
 			}

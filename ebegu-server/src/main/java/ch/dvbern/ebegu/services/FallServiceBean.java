@@ -168,6 +168,17 @@ public class FallServiceBean extends AbstractBaseService implements FallService 
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
+	public void removeFallIfExists(@Nonnull String fallId, @Nonnull GesuchDeletionCause deletionCause) {
+		Objects.requireNonNull(fallId);
+		Optional<Fall> fallToRemove = findFall(fallId);
+		if (fallToRemove.isPresent()) {
+			Fall loadedFall = fallToRemove.get();
+			removeFall(loadedFall, deletionCause);
+		}
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
 	public void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause) {
 		Objects.requireNonNull(fall);
 		Optional<Fall> fallToRemove = findFall(fall.getId());

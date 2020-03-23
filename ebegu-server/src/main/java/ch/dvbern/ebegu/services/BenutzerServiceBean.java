@@ -382,7 +382,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						benutzer.getUsername(),
 						benutzer.getFullName(),
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_NO_GESUCH,
-						existingFall);
+						existingFall.getId());
 				}
 				for (String id : gesuchIdList) {
 					Gesuch gs = gesuchService.findGesuch(id, false)
@@ -399,14 +399,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						benutzer.getUsername(),
 						benutzer.getFullName(),
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH,
-						existingFall);
+						existingFall.getId());
 				} else {
 					throw new BenutzerExistException(
 						KibonLogLevel.NONE,
 						benutzer.getUsername(),
 						benutzer.getFullName(),
 						ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH,
-						existingFall);
+						existingFall.getId());
 				}
 			}
 		}
