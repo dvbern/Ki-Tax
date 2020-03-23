@@ -1936,5 +1936,6 @@
     "MAHLZEITENVERGUENSTIGUNG_ABWEICHENDE_ZAHLUNGSADRESSE": "Adresse de versement différente",
     "INSTITUTION_TAGESSCHULE_TAGIS": "est une Tagi",
     "TAGESSCHULE_TAGIS_ENABLED": "Tagis activée",
+    "TAGI": "Tagi",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
