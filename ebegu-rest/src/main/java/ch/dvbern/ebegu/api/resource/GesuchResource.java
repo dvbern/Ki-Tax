@@ -553,7 +553,7 @@ public class GesuchResource {
 
 	}
 
-	@ApiOperation(value = "Setzt das gegebene Gesuch als VERFUEGT und das Flag geprueftSTV als true",
+	@ApiOperation(value = "Setzt das gegebene Gesuch als VERFUEGT",
 		response = JaxGesuch.class)
 	@Nullable
 	@POST
@@ -566,7 +566,7 @@ public class GesuchResource {
 		@Context HttpServletResponse response) {
 
 		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
-		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT_STV);
+		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT_STV, AntragStatusDTO.PRUEFUNG_STV);
 
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
@@ -575,11 +575,11 @@ public class GesuchResource {
 		Gesuch gesuch = gesuchOptional.orElseThrow(() -> new EbeguEntityNotFoundException("stvPruefungAbschliessen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId()));
 
-		if (AntragStatus.GEPRUEFT_STV != gesuch.getStatus()) {
+		if (AntragStatus.GEPRUEFT_STV != gesuch.getStatus() && AntragStatus.PRUEFUNG_STV != gesuch.getStatus()) {
 			// Wir vergewissern uns dass das Gesuch im Status IN_BEARBEITUNG_STV ist, da sonst kann es nicht fuer das
 			// JA freigegeben werden
 			throw new EbeguRuntimeException("stvPruefungAbschliessen",
-				ErrorCodeEnum.ERROR_ONLY_IN_GEPRUEFT_STV_ALLOWED, "Status ist: " + gesuch.getStatus());
+				ErrorCodeEnum.ERROR_ONLY_IN_PRUEFUNG_GEPRUEFT_STV_ALLOWED, "Status ist: " + gesuch.getStatus());
 		}
 
 		Gesuch persistedGesuch = gesuchService.stvPruefungAbschliessen(gesuch);
