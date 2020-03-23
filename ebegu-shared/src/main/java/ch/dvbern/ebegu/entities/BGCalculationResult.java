@@ -225,13 +225,11 @@ public class BGCalculationResult extends AbstractEntity {
 		this.betreuungspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
 		this.bgPensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(bgPensumZeiteinheit);
-		// die zeiteinheitenRoundingStrategy scheint mir hier fehl am Platz (bei Kitas 2 Kommestallen, bei Tageseltern 1/4)
-		// die war eigentlich nur für die Zeiteinheiten (Stunden oder Tage) gedacht (betreuungspensumZeiteinheit, anspruchspensumZeiteinheit, bgPensumZeiteinheit)
-		this.betreuungspensumProzent = zeiteinheitenRoundingStrategy.apply(betreuungspensumProzent);
 
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		this.betreuungspensumProzent = MathUtil.toTwoKommastelle(betreuungspensumProzent);
+		this.abzugFamGroesse = roundToFrankenRappen(abzugFamGroesse);
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
-		this.massgebendesEinkommenVorAbzugFamgr = zeiteinheitenRoundingStrategy.apply(massgebendesEinkommenVorAbzugFamgr);
+		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	@Override
