@@ -205,18 +205,19 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     private loadEinstellungPropertiesForTagesschule(): void {
         const stammdatenTagesschule = this.getBetreuungModel().institutionStammdaten.institutionStammdatenTagesschule;
-        if (stammdatenTagesschule) {
-            const tsEinstellungenTagesschule =
-                stammdatenTagesschule.einstellungenTagesschule
-                    .filter((einstellung: TSEinstellungenTagesschule) =>
-                        einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
-                    .pop();
-            if (!tsEinstellungenTagesschule) {
-                return;
-            }
-            this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
-            this.isScolaris = (tsEinstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS);
+        if (!stammdatenTagesschule) {
+            return;
         }
+        const tsEinstellungenTagesschule =
+            stammdatenTagesschule.einstellungenTagesschule
+                .filter((einstellung: TSEinstellungenTagesschule) =>
+                    einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
+                .pop();
+        if (!tsEinstellungenTagesschule) {
+            return;
+        }
+        this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
+        this.isScolaris = (tsEinstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS);
     }
 
     public getWeekDays(): TSDayOfWeek[] {
