@@ -89,6 +89,7 @@ public class BGCalculationInput {
 
 	private boolean babyTarif;
 
+	@Nonnull
 	private EinschulungTyp einschulungTyp;
 
 	private BetreuungsangebotTyp betreuungsangebotTyp;
@@ -368,11 +369,12 @@ public class BGCalculationInput {
 		this.babyTarif = babyTarif;
 	}
 
+	@Nonnull
 	public EinschulungTyp getEinschulungTyp() {
 		return einschulungTyp;
 	}
 
-	public void setEinschulungTyp(EinschulungTyp einschulungTyp) {
+	public void setEinschulungTyp(@Nonnull EinschulungTyp einschulungTyp) {
 		this.einschulungTyp = einschulungTyp;
 	}
 

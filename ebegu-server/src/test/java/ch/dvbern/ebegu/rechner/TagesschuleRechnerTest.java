@@ -102,7 +102,6 @@ public class TagesschuleRechnerTest {
 		}
 
 		verfuegungZeitabschnitt.initBGCalculationResult();
-
 		BGCalculationResult calculationResult = tarifRechner.calculateAsiv(inputAsiv, parameterDTO);
 		TSCalculationResult tsResult;
 		if (paedagogischBetreut) {

@@ -51,13 +51,6 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
-	private VerfuegungZeitabschnitt createZeitabschnitt(DateRange gueltigkeit, boolean baby, EinschulungTyp einschulungTyp) {
-		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
-		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(baby);
-		verfuegungZeitabschnitt.setEinschulungTypForAsivAndGemeinde(einschulungTyp);
-		return verfuegungZeitabschnitt;
-	}
 
 	@Override
 	@Nonnull
@@ -70,17 +63,30 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		LocalDate stichtagBabyTarifEnde = geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth());
 		DateRange gesuchsperiode = platz.extractGesuchsperiode().getGueltigkeit();
 
+		EinschulungTyp einschulungTyp = kind.getEinschulungTyp() != null ? kind.getEinschulungTyp() : EinschulungTyp.VORSCHULALTER;
 		if (gesuchsperiode.contains(stichtagBabyTarifEnde)) {
 			DateRange abschnittBaby = new DateRange(gesuchsperiode.getGueltigAb(), stichtagBabyTarifEnde);
-			zeitabschnittList.add(createZeitabschnitt(abschnittBaby, true, kind.getEinschulungTyp()));
+			zeitabschnittList.add(createZeitabschnitt(abschnittBaby, true, einschulungTyp));
 
 			DateRange abschnittKind = new DateRange(stichtagBabyTarifEnde.plusDays(1), gesuchsperiode.getGueltigBis());
-			zeitabschnittList.add(createZeitabschnitt(abschnittKind, false, kind.getEinschulungTyp()));
+			zeitabschnittList.add(createZeitabschnitt(abschnittKind, false, einschulungTyp));
 		} else {
 			boolean baby = stichtagBabyTarifEnde.isAfter(gesuchsperiode.getGueltigBis());
-			zeitabschnittList.add(createZeitabschnitt(gesuchsperiode, baby, kind.getEinschulungTyp()));
+			zeitabschnittList.add(createZeitabschnitt(gesuchsperiode, baby, einschulungTyp));
 		}
 
 		return zeitabschnittList;
+	}
+
+	private VerfuegungZeitabschnitt createZeitabschnitt(
+		@Nonnull DateRange gueltigkeit,
+		boolean baby,
+		@Nonnull EinschulungTyp einschulungTyp
+	) {
+		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
+		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(baby);
+		verfuegungZeitabschnitt.setEinschulungTypForAsivAndGemeinde(einschulungTyp);
+		return verfuegungZeitabschnitt;
 	}
 }
