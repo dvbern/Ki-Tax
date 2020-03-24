@@ -48,7 +48,7 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 	) {
 		// Benoetigte Daten
 		boolean unter12Monate = input.isBabyTarif();
-		boolean eingeschult = input.getEinschulungTyp().isEingeschult();
+		boolean eingeschult = input.getEinschulungTyp() != null && input.getEinschulungTyp().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		boolean besonderebeduerfnisse = input.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
