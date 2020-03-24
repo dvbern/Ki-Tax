@@ -332,7 +332,8 @@ export class FallToolbarComponent implements OnChanges {
             this.retrieveListOfAvailableGemeinden();
 
             // tslint:disable-next-line:early-exit
-            if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID) {
+            if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID
+                && this.isGemeindeUserOrSuperAdmin()) {
                 this.applicationPropertyRS.getKitaxHost().then(host => {
                     this.kitaxHost = host;
                 });
