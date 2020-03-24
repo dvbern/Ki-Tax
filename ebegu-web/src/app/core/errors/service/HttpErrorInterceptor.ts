@@ -17,7 +17,6 @@ import {IHttpResponse} from 'angular';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSExceptionReport} from '../../../../models/TSExceptionReport';
-import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {ErrorService} from './ErrorService';
 import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
