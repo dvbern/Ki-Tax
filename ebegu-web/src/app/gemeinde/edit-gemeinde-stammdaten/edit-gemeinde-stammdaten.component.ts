@@ -21,12 +21,13 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
-import { CONSTANTS } from '../../core/constants/CONSTANTS';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 
@@ -54,6 +55,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public minDateTSFI = moment('20200801', 'YYYYMMDD');
 
     private readonly unsubscribe$ = new Subject<void>();
+    public ebeguUtil = EbeguUtil;
 
     public constructor(
         private readonly translate: TranslateService,
@@ -104,6 +106,10 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public isSuperadminOrMandant(): boolean {
         return this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT]);
+    }
+
+    public isSuperadmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public keineBeschwerdeAdresseChanged(newVal: boolean): void {

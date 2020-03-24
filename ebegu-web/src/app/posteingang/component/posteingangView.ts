@@ -20,6 +20,7 @@ import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
@@ -127,5 +128,9 @@ export class PosteingangViewController implements IController {
         this.pagination.numberOfPages = Math.ceil(result.totalResultSize / this.pagination.number);
         this.displayedCollection = [].concat(result.mitteilungen);
         this.totalResultCount = result.totalResultSize ? result.totalResultSize.toString() : '0';
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }
