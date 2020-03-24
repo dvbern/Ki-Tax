@@ -37,7 +37,7 @@ import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {LogFactory} from '../../core/logging/LogFactory';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRS} from '../../core/service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('BenutzerComponent');
@@ -51,6 +51,8 @@ const LOG = LogFactory.createLog('BenutzerComponent');
 export class BenutzerComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
+
+    private readonly log: Log = LogFactory.createLog('BenutzerComponent');
 
     public readonly TSRoleUtil = TSRoleUtil;
     public readonly TSBenutzerStatus = TSBenutzerStatus;
@@ -269,18 +271,52 @@ export class BenutzerComponent implements OnInit {
     }
 
     private navigateBackToUsersList(): void {
-        this.$state.go('admin.benutzerlist');
+        this.gotoBenutzerlist(null);
     }
 
     public erneutEinladen(): void {
         this.benutzerRS.erneutEinladen(this.selectedUser)
             .then(() => {
-                this.$state.go('admin.benutzerlist').then(() => {
-                    this.errorService.addMesageAsInfo(this.translate.instant(
-                        'BENUTZER_REINVITED_MESSAGE',
-                        {fullName: this.selectedUser.getFullName()}
-                    ));
-                });
+                this.gotoBenutzerlist('BENUTZER_REINVITED_MESSAGE');
             });
+    }
+
+    public canBenutzerBeDeleted(): boolean {
+        // Alle ausser Superadmin dürfen gelöscht werden
+        return this.selectedUser.getCurrentRole() !== TSRole.SUPER_ADMIN;
+    }
+
+    public deleteBenutzer(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'BENUTZER_DELETE_CONFIRMATION_TITLE',
+            text: 'BENUTZER_DELETE_CONFIRMATION_TEXT',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.benutzerRS.removeBenutzer(this.selectedUser.username).then(() => {
+                        this.gotoBenutzerlist('BENUTZER_DELETED_MESSAGE');
+                    });
+                },
+                () => {
+                    this.log.error('error in observable. deleteBenutzer');
+                }
+            );
+    }
+
+    private gotoBenutzerlist(infoMessageKey: string): void {
+        this.$state.go('admin.benutzerlist').then(() => {
+            if (!EbeguUtil.isNotNullOrUndefined(infoMessageKey)) {
+                return;
+            }
+            this.errorService.addMesageAsInfo(this.translate.instant(
+                infoMessageKey,
+                {fullName: this.selectedUser.getFullName()}
+            ));
+        });
     }
 }
