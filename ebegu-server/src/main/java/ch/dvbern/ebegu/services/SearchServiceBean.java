@@ -217,7 +217,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
 			if (searchForPendenzen) {
-				predicates.add(createPredicateSCHOrMischGesuche(cb, root, joinDossier));
+				predicates.add(createPredicateSCHOrMischGesuche(cb, joinDossier));
 			}
 			break;
 		default:
@@ -409,7 +409,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * Ob es ein BG- TS- oder Mischgesuch ist, wird anhand der Verantwortliche berechnet.
 	 * TS- oder Mischgesuche sind alle, die VerantwortlicherTS gesetzt haben, VerantwortlicherBG interessiert nicht.
 	 */
-	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
+	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Join<Gesuch, Dossier> dossier) {
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		return cb.and(predicateIsVerantwortlicherTS);
 	}
