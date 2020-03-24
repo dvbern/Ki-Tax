@@ -330,7 +330,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		persistence.merge(gesuch);
 
 		Pair<Long, List<Gesuch>> pendenzenSCH = searchService.searchPendenzen(filterDTO);
-		Assert.assertEquals(Long.valueOf(0), pendenzenSCH.getLeft());
+		Assert.assertEquals(Long.valueOf(1), pendenzenSCH.getLeft());
 
 		loginAsSachbearbeiterJA();
 		Pair<Long, List<Gesuch>> pendenzenJA = searchService.searchPendenzen(filterDTO);
