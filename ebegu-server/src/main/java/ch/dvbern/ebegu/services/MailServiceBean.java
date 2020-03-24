@@ -467,6 +467,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		String subject = "Supportanfrage KiBon von " + benutzer.getFullName();
 		StringBuilder content = new StringBuilder();
 
+		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
+		content.append(Constants.LINE_BREAK);
+
 		content.append("Benutzer: ")
 			.append(benutzer.getUsername())
 			.append(" (")
@@ -480,7 +483,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
 			.append(Constants.LINE_BREAK);
 		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
-		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
+
 
 		try {
 			String supportMail = ebeguConfiguration.getSupportMail();

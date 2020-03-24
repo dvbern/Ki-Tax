@@ -80,6 +80,12 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
+	public void removeFallIfExists(@Nonnull String fallId) {
+		fallService.removeFallIfExists(fallId, GesuchDeletionCause.USER);
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
 	public void removeFall(@Nonnull Fall fall) {
 		fallService.removeFall(fall, GesuchDeletionCause.USER);
 	}
