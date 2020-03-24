@@ -292,8 +292,9 @@ export class FallToolbarComponent implements OnChanges {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 
-    public isGemeindeUser(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
+    public isGemeindeUserOrSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles());
     }
 
     /**
@@ -331,12 +332,13 @@ export class FallToolbarComponent implements OnChanges {
             this.retrieveListOfAvailableGemeinden();
 
             // tslint:disable-next-line:early-exit
-            if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID) {
-                this.applicationPropertyRS.getKitaxHost().then( host => {
+            if (this.kitaxEnabled && this.isOnlineGesuch() && this.selectedDossier.fall.besitzer.externalUUID
+                && this.isGemeindeUserOrSuperAdmin()) {
+                this.applicationPropertyRS.getKitaxHost().then(host => {
                     this.kitaxHost = host;
                 });
 
-                this.applicationPropertyRS.getKitaxUrl().then( url => {
+                this.applicationPropertyRS.getKitaxUrl().then(url => {
                     this.gesuchRS.lookupKitax(url, this.selectedDossier.fall.besitzer.externalUUID).then(response => {
                         this.kitaxResponse = response;
                     });
