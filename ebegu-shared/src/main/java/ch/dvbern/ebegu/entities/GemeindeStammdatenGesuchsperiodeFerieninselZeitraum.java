@@ -38,14 +38,4 @@ public class GemeindeStammdatenGesuchsperiodeFerieninselZeitraum extends Abstrac
 		builder.append(this.getGueltigkeit().getGueltigBis(), o.getGueltigkeit().getGueltigBis());
 		return builder.toComparison();
 	}
-
-	GemeindeStammdatenGesuchsperiodeFerieninselZeitraum copyForGesuchsperiode() {
-		GemeindeStammdatenGesuchsperiodeFerieninselZeitraum copy =
-			new GemeindeStammdatenGesuchsperiodeFerieninselZeitraum();
-		DateRange dateRange = new DateRange();
-		dateRange.setGueltigAb(this.getGueltigkeit().getGueltigAb());
-		dateRange.setGueltigBis(this.getGueltigkeit().getGueltigBis());
-		copy.setGueltigkeit(dateRange);
-		return copy;
-	}
 }

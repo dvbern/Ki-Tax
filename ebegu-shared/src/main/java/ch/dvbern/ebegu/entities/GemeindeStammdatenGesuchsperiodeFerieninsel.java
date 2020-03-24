@@ -129,17 +129,4 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 	public void setGemeindeStammdatenGesuchsperiode(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
 		this.gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiode;
 	}
-
-	GemeindeStammdatenGesuchsperiodeFerieninsel copyForGesuchsperiode(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
-		GemeindeStammdatenGesuchsperiodeFerieninsel copy = new GemeindeStammdatenGesuchsperiodeFerieninsel();
-		copy.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
-		copy.setAnmeldeschluss(this.getAnmeldeschluss());
-		copy.setFerienname(this.getFerienname());
-		final ArrayList<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum>();
-		this.getZeitraumList().forEach(zeitraum -> {
-			zeitraumList.add(zeitraum.copyForGesuchsperiode());
-		});
-		copy.setZeitraumList(zeitraumList);
-		return copy;
-	}
 }
