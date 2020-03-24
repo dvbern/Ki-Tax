@@ -129,4 +129,8 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 	public void setGemeindeStammdatenGesuchsperiode(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
 		this.gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiode;
 	}
+
+	public boolean isFerienActive() {
+		return anmeldeschluss != null && anmeldeschluss.isAfter(LocalDate.now()) && zeitraumList.size() > 0;
+	}
 }

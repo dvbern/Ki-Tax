@@ -26,9 +26,9 @@ import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
 import {TSFerieninselZeitraum} from '../../../models/TSFerieninselZeitraum';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import * as moment from 'moment';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-gemeinde-fi-konfiguration',
@@ -97,9 +97,10 @@ export class GemeindeFiKonfigComponent implements OnInit {
     }
 
     public formatDate(date: moment.Moment): string {
-        if (!date) {
+        if (!date || !date.isValid()) {
             return '';
         }
-        return DateUtil.momentToLocalDate(date);
+
+        return date.format(CONSTANTS.DATE_FORMAT);
     }
 }

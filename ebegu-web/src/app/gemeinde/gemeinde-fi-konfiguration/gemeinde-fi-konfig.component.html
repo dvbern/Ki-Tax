@@ -32,7 +32,7 @@
                     </tab-title>
                     <tab-body>
                         <div class="row">
-                            <!--                            readonly -->
+                            <!-- readonly -->
                             <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
                                 <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
 
@@ -70,7 +70,7 @@
 
                                 </div>
                             </div>
-                            <!--                            editable -->
+                            <!-- editable -->
                             <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
                                 <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
 
