@@ -51,6 +51,17 @@
                 </tab-title>
                 <tab-body>
                     <div class="row">
+                        <div class="col-xs-12" *ngIf="showTagiCheckbox(einstellungGP)">
+                            <br/>
+                            <div class="form-group">
+                                <mat-checkbox id="tagisCheckbox_{{einstellungGP?.id}}_id"
+                                              name="tagisCheckbox_{{einstellungGP?.id}}"
+                                              [(ngModel)]="einstellungGP.tagi"
+                                              [disabled]="!canEditTagi()">
+                                    {{'INSTITUTION_TAGESSCHULE_TAGIS'|translate}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
                         <!-- Module -->
                         <div class="row mt-2">
                             <div class="col-xs-12">
@@ -159,7 +170,8 @@
                                     </a>
                                 </div>
                                 <p>{{ 'MODULE_FUER_SCOLARIS_ERSTELLT' | translate }}
-                                    <a *ngIf="canEditEinstellungen(einstellungGP)" (click)="changeToDynamisch(einstellungGP)" class="pointer">
+                                    <a *ngIf="canEditEinstellungen(einstellungGP)"
+                                       (click)="changeToDynamisch(einstellungGP)" class="pointer">
                                         {{ 'ZURUECKWECHSELN_ZU_DYNAMISCH' | translate }}
                                     </a>
                                 </p>

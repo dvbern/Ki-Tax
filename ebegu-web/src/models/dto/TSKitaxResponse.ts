@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,16 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSModulTagesschuleTyp} from './enums/TSModulTagesschuleTyp';
-import {TSAbstractEntity} from './TSAbstractEntity';
-import {TSGesuchsperiode} from './TSGesuchsperiode';
-import {TSModulTagesschuleGroup} from './TSModulTagesschuleGroup';
+export class TSKitaxResponse {
 
-export class TSEinstellungenTagesschule extends TSAbstractEntity {
+    private _url: string;
+    private _fallNummer: string;
 
-    public gesuchsperiode: TSGesuchsperiode;
-    public modulTagesschuleTyp: TSModulTagesschuleTyp;
-    public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
-    public erlaeuterung: string;
-    public tagi: boolean;
+    public get url(): string {
+        return this._url;
+    }
+
+    public set url(value: string) {
+        this._url = value;
+    }
+
+    public get fallNummer(): string {
+        return this._fallNummer;
+    }
+
+    public set fallNummer(value: string) {
+        this._fallNummer = value;
+    }
 }

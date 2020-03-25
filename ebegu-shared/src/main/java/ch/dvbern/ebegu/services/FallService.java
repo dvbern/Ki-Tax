@@ -75,9 +75,12 @@ public interface FallService {
 	Collection<Fall> getAllFalle(boolean doAuthCheck);
 
 	/**
+	 * Entfernt einen Fall aus der Datenbank, falls er dort existiert.
+	 */
+	void removeFallIfExists(@Nonnull String fallId, @Nonnull GesuchDeletionCause deletionCause);
+
+	/**
 	 * entfernt einen Fall aus der Database
-	 *
-	 * @param fall der Fall als DTO
 	 */
 	void removeFall(@Nonnull Fall fall, @Nonnull GesuchDeletionCause deletionCause);
 

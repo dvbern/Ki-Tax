@@ -40,7 +40,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
     public constructor(
         private readonly $q: IQService,
         private readonly errorService: ErrorService,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
     }
 
@@ -72,6 +72,14 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
      * or EbeguExceptionReports in case there was some other application exception
      */
     private handleErrorResponse(response: any): Array<TSExceptionReport> {
+        const http404 = 404;
+        const url = response && response.config ? response.config.url : '';
+        if (response.status === http404 && (
+                url.contains('ebegu.dvbern.ch')
+            || url.contains('ebegu-test.bern.ch')
+            || url.contains('ebegu.bern.ch'))) {
+            return [];
+        }
         let errors: Array<TSExceptionReport>;
         // Alle daten loggen um das Debuggen zu vereinfachen
         // noinspection IfStatementWithTooManyBranchesJS

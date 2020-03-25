@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,16 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSModulTagesschuleTyp} from './enums/TSModulTagesschuleTyp';
-import {TSAbstractEntity} from './TSAbstractEntity';
-import {TSGesuchsperiode} from './TSGesuchsperiode';
-import {TSModulTagesschuleGroup} from './TSModulTagesschuleGroup';
+package ch.dvbern.ebegu.errors;
 
-export class TSEinstellungenTagesschule extends TSAbstractEntity {
+import javax.annotation.Nonnull;
+import javax.ejb.ApplicationException;
 
-    public gesuchsperiode: TSGesuchsperiode;
-    public modulTagesschuleTyp: TSModulTagesschuleTyp;
-    public modulTagesschuleGroups: Array<TSModulTagesschuleGroup>;
-    public erlaeuterung: string;
-    public tagi: boolean;
+
+@ApplicationException(rollback = true)
+public class ScolarisException extends RuntimeException {
+
+	private static final long serialVersionUID = 306424922900479199L;
+
+	public ScolarisException(@Nonnull String message) {
+		super(message);
+	}
 }

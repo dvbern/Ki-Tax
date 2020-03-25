@@ -160,7 +160,7 @@
                        #anzahlPlaetzeFirmen="ngModel"
                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen"
                        class="form-control"
-                       customMinMax [minValue]="0.1"
+                       customMinMax [minValue]="0"
                        placeholder="{{getPlaceholderForPlaetze()}}">
                 <dv-error-messages [errorObject]="anzahlPlaetzeFirmen.errors"
                                    inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>

@@ -79,7 +79,10 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         // Dossier und der Fall erstellt werden, bevor die weiteren Gemeinden asynchron und parallel erstellt werden
         const gemeindenAdded: string[] = [];
         const firstGemeinde = gemList.pop();
-        const firstGemeindeId = firstGemeinde.verbundId !== null ? firstGemeinde.verbundId : firstGemeinde.id;
+        let firstGemeindeId: string;
+        if (EbeguUtil.isNotNullOrUndefined(firstGemeinde)) {
+            firstGemeindeId = firstGemeinde.verbundId === null ? firstGemeinde.id : firstGemeinde.verbundId;
+        }
         gemeindenAdded.push(firstGemeindeId);
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(firstGemeindeId).then((dossier: TSDossier) => {
             gemList.forEach(tsGemeindeRegistrierung => {
