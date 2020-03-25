@@ -112,7 +112,14 @@ public class SuperAdminServiceBean implements SuperAdminService {
 			eingeloggterBenutzer.getRole());
 
 		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
-		fallOpt.ifPresent(this::removeFall);
+		// Wir muessen den Benutzer *vor* dem Fall loeschen, da wir beim Loeschen des Benutzers pruefen
+		// ob dieser einen Fall hat
 		benutzerService.removeBenutzer(benutzernameToRemove);
+		if (fallOpt.isPresent()) {
+			Fall fall = fallOpt.get();
+			// Da der Benutzer bereits geloescht ist, muss hier der Besitzer auf null gesetzt werden
+			fall.setBesitzer(null);
+			removeFall(fall);
+		}
 	}
 }
