@@ -27,6 +27,7 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
     private _zeitraumList: TSFerieninselZeitraum[] = [];   // Evt. weitere Zeitraeume
     private _anmeldeschluss: moment.Moment;
     private _gesuchsperiode: TSGesuchsperiode;
+    private _ferienActive: boolean;
     private _potenzielleFerieninselTageFuerBelegung: TSBelegungFerieninselTag[] = [];
 
     public constructor() {
@@ -79,5 +80,13 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     public set potenzielleFerieninselTageFuerBelegung(value: TSBelegungFerieninselTag[]) {
         this._potenzielleFerieninselTageFuerBelegung = value;
+    }
+
+    public get ferienActive(): boolean {
+        return this._ferienActive;
+    }
+
+    public set ferienActive(value: boolean) {
+        this._ferienActive = value;
     }
 }

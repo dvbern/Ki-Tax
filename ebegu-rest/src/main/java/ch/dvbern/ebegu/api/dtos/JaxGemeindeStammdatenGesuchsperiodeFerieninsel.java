@@ -48,6 +48,8 @@ public class JaxGemeindeStammdatenGesuchsperiodeFerieninsel extends JaxAbstractD
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate anmeldeschluss;
 
+	private boolean ferienActive;
+
 	@Nullable
 	private List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegung;
 
@@ -82,5 +84,13 @@ public class JaxGemeindeStammdatenGesuchsperiodeFerieninsel extends JaxAbstractD
 
 	public void setPotenzielleFerieninselTageFuerBelegung(@Nullable List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegung) {
 		this.potenzielleFerieninselTageFuerBelegung = potenzielleFerieninselTageFuerBelegung;
+	}
+
+	public boolean isFerienActive() {
+		return ferienActive;
+	}
+
+	public void setFerienActive(boolean ferienActive) {
+		this.ferienActive = ferienActive;
 	}
 }

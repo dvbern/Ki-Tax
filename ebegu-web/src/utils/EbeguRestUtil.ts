@@ -3515,6 +3515,7 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.ferienname = receivedFerieninselStammdaten.ferienname;
             ferieninselStammdatenTS.anmeldeschluss =
                 DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
+            ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
             const firstZeitraum = new TSFerieninselZeitraum();
             if (receivedFerieninselStammdaten.zeitraumList[0]) {
                 this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
