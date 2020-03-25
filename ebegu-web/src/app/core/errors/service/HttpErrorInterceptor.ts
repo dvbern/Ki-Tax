@@ -73,7 +73,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
      */
     private handleErrorResponse(response: any): Array<TSExceptionReport> {
         const http404 = 404;
-        const url = response.config.url;
+        const url = response && response.config ? response.config.url : '';
         if (response.status === http404 && (
                 url.contains('ebegu.dvbern.ch')
             || url.contains('ebegu-test.bern.ch')
