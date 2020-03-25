@@ -1336,7 +1336,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
-		row.setVerguenstigt(zeitabschnitt.getVerguenstigung());
+		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+		BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
+		BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
+		BigDecimal verguenstigungTotal = verguenstigungKanton;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+			BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
+			verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
+			verguenstigungTotal = verguenstigungTotalGemeinde;
+		}
+		row.setVerguenstigungKanton(verguenstigungKanton);
+		row.setVerguenstigungGemeinde(verguenstigungGemeinde);
+		row.setVerguenstigungTotal(verguenstigungTotal);
 	}
 
 	@SuppressWarnings("Duplicates")
