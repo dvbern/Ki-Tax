@@ -166,6 +166,13 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 		copy.setMerkblattAnmeldungTagesschuleDe(this.merkblattAnmeldungTagesschuleDe);
 		copy.setMerkblattAnmeldungTagesschuleFr(this.merkblattAnmeldungTagesschuleFr);
 		copy.setGesuchsperiode(gesuchsperiodeToCreate);
+		if (this.getGemeindeStammdatenGesuchsperiodeFerieninseln() != null) {
+			final List<GemeindeStammdatenGesuchsperiodeFerieninsel> gpFerieninselStammdaten = new ArrayList<>();
+			this.getGemeindeStammdatenGesuchsperiodeFerieninseln().forEach(stammdaten -> {
+				gpFerieninselStammdaten.add(stammdaten.copyForGesuchsperiode(copy));
+			});
+			copy.setGemeindeStammdatenGesuchsperiodeFerieninsel(gpFerieninselStammdaten);
+		}
 		return copy;
 	}
 }

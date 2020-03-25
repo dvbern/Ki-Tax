@@ -100,6 +100,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 
+	@Inject
+	private FerieninselStammdatenService ferieninselStammdatenService;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
@@ -384,6 +387,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		persistence.merge(gemeinde);
 
 		if (value) {
+			//TODO
+			//ferieninselStammdatenService.initFerieninselStammdaten();
 			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.FERIENINSEL);
 		}
 	}
