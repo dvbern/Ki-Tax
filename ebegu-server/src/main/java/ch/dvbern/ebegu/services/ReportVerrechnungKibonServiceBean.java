@@ -214,8 +214,12 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 			for (Gesuch gesuch : gesuchList) {
 				Map<VerrechnungKibonKategorie, Long> kinderOfGesuch = initVerrechnungskategorieMap();
 				for (KindContainer kindContainer : gesuch.getKindContainers()) {
-					VerrechnungKibonKategorie kategorie = evaluateVerechnungskategorie(kindContainer);
-					kinderOfGesuch.put(kategorie, kinderOfGesuch.get(kategorie) + 1);
+					// Das Kind muss mindestens die Checkbox angeklickt haben, auch wenn dann vielleicht
+					// kein Angebot ausgewaehlt wird
+					if (kindContainer.getKindJA().getFamilienErgaenzendeBetreuung()) {
+						VerrechnungKibonKategorie kategorie = evaluateVerechnungskategorie(kindContainer);
+						kinderOfGesuch.put(kategorie, kinderOfGesuch.get(kategorie) + 1);
+					}
 				}
 				for (VerrechnungKibonKategorie value : VerrechnungKibonKategorie.values()) {
 					alleKinder.put(value, alleKinder.get(value) + kinderOfGesuch.get(value));
