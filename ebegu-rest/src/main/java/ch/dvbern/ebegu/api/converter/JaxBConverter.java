@@ -1733,6 +1733,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxEinstellungenTagesschule.setModulTagesschuleGroups(modulTagesschuleGroupListToJax(persistedEinstellungenTagesschule.getModulTagesschuleGroups()));
 		jaxEinstellungenTagesschule.setModulTagesschuleTyp(persistedEinstellungenTagesschule.getModulTagesschuleTyp());
 		jaxEinstellungenTagesschule.setErlaeuterung(persistedEinstellungenTagesschule.getErlaeuterung());
+		jaxEinstellungenTagesschule.setTagi(persistedEinstellungenTagesschule.isTagi());
 		return jaxEinstellungenTagesschule;
 	}
 
@@ -1793,6 +1794,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		einstellungenTagesschule.setModulTagesschuleTyp(jaxEinstellungenTagesschule.getModulTagesschuleTyp());
 		einstellungenTagesschule.setErlaeuterung(jaxEinstellungenTagesschule.getErlaeuterung());
+		einstellungenTagesschule.setTagi(jaxEinstellungenTagesschule.isTagi());
 
 		return einstellungenTagesschule;
 	}
@@ -2525,26 +2527,30 @@ public class JaxBConverter extends AbstractConverter {
 		// Die korrekten EinstellungenTagesschule ermitteln fuer diese Betreuung
 		InstitutionStammdatenTagesschule institutionStammdatenTagesschule =
 			betreuung.getInstitutionStammdaten().getInstitutionStammdatenTagesschule();
-		Objects.requireNonNull(institutionStammdatenTagesschule);
-		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode());
-		Objects.requireNonNull(betreuungJAXP.getGesuchsperiode().getId());
-		EinstellungenTagesschule einstellungenTagesschule =
-			getEinstellungenTagesschule(institutionStammdatenTagesschule,
-				betreuungJAXP.getGesuchsperiode().getId());
-		if (betreuungJAXP.getBelegungTagesschule() != null) {
-			requireNonNull(
-				einstellungenTagesschule,
-				"EinstellungTagesschule muessen gesetzt sein");
-			if (betreuung.getBelegungTagesschule() != null) {
-				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-					betreuungJAXP.getBelegungTagesschule(),
-					betreuung.getBelegungTagesschule(),
-					einstellungenTagesschule));
+		if (!betreuung.isKeineDetailinformationen()) {
+			Objects.requireNonNull(institutionStammdatenTagesschule);
+			Objects.requireNonNull(betreuungJAXP.getGesuchsperiode());
+			Objects.requireNonNull(betreuungJAXP.getGesuchsperiode().getId());
+			EinstellungenTagesschule einstellungenTagesschule =
+				getEinstellungenTagesschule(institutionStammdatenTagesschule,
+					betreuungJAXP.getGesuchsperiode().getId());
+			if (betreuungJAXP.getBelegungTagesschule() != null) {
+				requireNonNull(
+					einstellungenTagesschule,
+					"EinstellungTagesschule muessen gesetzt sein");
+				if (betreuung.getBelegungTagesschule() != null) {
+					betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+						betreuungJAXP.getBelegungTagesschule(),
+						betreuung.getBelegungTagesschule(),
+						einstellungenTagesschule));
+				} else {
+					betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
+						betreuungJAXP.getBelegungTagesschule(),
+						new BelegungTagesschule(),
+						einstellungenTagesschule));
+				}
 			} else {
-				betreuung.setBelegungTagesschule(belegungTagesschuleToEntity(
-					betreuungJAXP.getBelegungTagesschule(),
-					new BelegungTagesschule(),
-					einstellungenTagesschule));
+				betreuung.setBelegungTagesschule(null);
 			}
 		} else {
 			betreuung.setBelegungTagesschule(null);

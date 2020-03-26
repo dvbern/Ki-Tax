@@ -81,6 +81,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private isRegisteringInstitution: boolean = false;
     private initiallyAssignedClients: TSExternalClient[];
+    public ebeguUtil = EbeguUtil;
 
     public constructor(
         private readonly $transition$: Transition,

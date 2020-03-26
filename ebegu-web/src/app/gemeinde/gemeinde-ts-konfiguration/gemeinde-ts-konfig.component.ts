@@ -22,11 +22,13 @@ import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Moment} from 'moment';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
@@ -67,6 +69,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -267,5 +270,21 @@ export class GemeindeTsKonfigComponent implements OnInit {
                 this.downloadRS.openDownload(file,
                     this.translate.instant('VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME'));
             });
+    }
+
+    public changeKonfigTagesschuleTagisEnabled(config: TSGemeindeKonfiguration): void {
+        config.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_TAGESSCHULE_TAGIS_ENABLED === property.key)
+            .forEach(property => {
+                property.value = String(config.konfigTagesschuleTagisEnabled);
+            });
+    }
+
+    public getKonfigTagesschuleTagisEnabledString(): string {
+        return this.translate.instant('TAGESSCHULE_TAGIS_ENABLED');
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

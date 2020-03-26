@@ -378,7 +378,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed(SUPER_ADMIN)
 	public void updateAngebotFI(@Nonnull Gemeinde gemeinde, boolean value) {
 		gemeinde.setAngebotFI(value);
 		persistence.merge(gemeinde);

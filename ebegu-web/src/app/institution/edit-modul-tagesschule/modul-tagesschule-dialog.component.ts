@@ -72,7 +72,8 @@ export class ModulTagesschuleDialogComponent {
         if (!this.form.controls[verpflegungskosten].valid) {
             return false;
         }
-        return this.modulTagesschuleGroup.isValid();
+
+        return this.modulTagesschuleGroup.isValid() && this.form.valid;
     }
 
     public close(): void {
