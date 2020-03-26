@@ -49,8 +49,20 @@ public class VerrechnungKibonExcelConverter implements ExcelConverter {
 			ExcelMergerDTO fallRowGroup = excelMerger.createGroup(MergeFieldVerrechnungKibon.repeatRow);
 			fallRowGroup.addValue(MergeFieldVerrechnungKibon.gesuchsperiode, dataRow.getGesuchsperiode());
 			fallRowGroup.addValue(MergeFieldVerrechnungKibon.gemeinde, dataRow.getGemeinde());
-			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderTotal, dataRow.getKinderTotal());
-			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderBereitsVerrechnet, dataRow.getKinderBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderKantonTotal, dataRow.getKinderKantonTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderKantonBereitsVerrechnet, dataRow.getKinderKantonBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderBgTotal, dataRow.getKinderBgTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderBgBereitsVerrechnet, dataRow.getKinderBgBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderTsTotal, dataRow.getKinderTsTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderTsBereitsVerrechnet, dataRow.getKinderTsBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderKeinAngebotTotal, dataRow.getKinderKeinAngebotTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderKeinAngebotBereitsVerrechnet, dataRow.getKinderKeinAngebotBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderGemeindeTotal, dataRow.getKinderGemeindeTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderGemeindeBereitsVerrechnet, dataRow.getKinderGemeindeBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderFiTotal, dataRow.getKinderFiTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderFiBereitsVerrechnet, dataRow.getKinderFiBereitsVerrechnet());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderTagiTotal, dataRow.getKinderTagiTotal());
+			fallRowGroup.addValue(MergeFieldVerrechnungKibon.kinderTagiBereitsVerrechnet, dataRow.getKinderTagiBereitsVerrechnet());
 		});
 
 		return excelMerger;
