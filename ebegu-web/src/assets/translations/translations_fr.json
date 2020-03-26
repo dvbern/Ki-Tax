@@ -1872,6 +1872,7 @@
     "BETREUUNG_TAGESSCHULE_ANMELDUNG_DEFINITIV": "Je prends connaissance que l'inscription est définitive",
     "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Explications concernant les modules",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Il n'y a pas encore de module configuré pour cette école à journée continue",
+    "TAGESSCHULE_MODULE_AUTOMATISCH_ZUGEWIESEN": "",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Envoyer automatiquement des notifications par email lorsqu'une décision est prise",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Lorsqu'une décision est prise un email de confirmation est alors automatiquement envoyé. Réglage recommandé: activé.",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA": "Les notifications sont envoyées automatiquement par email lorsqu'une décision est prise",
