@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,22 +105,29 @@ public class SuperAdminServiceBean implements SuperAdminService {
 			"removeBenutzer",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			benutzernameToRemove));
+		try {
+			benutzerService.checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
+			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
+			removeFallAndBenutzerForced(benutzer, eingeloggterBenutzer);
+		} catch (BenutzerExistException b) {
+			// Es ist ein Gesuchsteller: Wir löschen, solange er keine freigegebenen/verfuegten Gesuche hat
+			if (b.getErrorCodeEnum() != ErrorCodeEnum.ERROR_GESUCHSTELLER_EXIST_WITH_FREGEGEBENE_GESUCH) {
+				removeFallAndBenutzerForced(benutzer, eingeloggterBenutzer);
+			} else {
+				throw b;
+			}
+		}
+	}
 
+	private void removeFallAndBenutzerForced(@Nonnull Benutzer benutzerToRemove, @Nonnull Benutzer eingeloggterBenutzer) {
 		LOG.warn("Der Benutzer mit Benutzername: {} und Rolle {} wird gelöscht durch Benutzer {} mit Rolle {}",
-			benutzernameToRemove,
-			benutzer.getRole(),
+			benutzerToRemove.getUsername(),
+			benutzerToRemove.getRole(),
 			eingeloggterBenutzer.getUsername(),
 			eingeloggterBenutzer.getRole());
 
-		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzer);
-		// Wir muessen den Benutzer *vor* dem Fall loeschen, da wir beim Loeschen des Benutzers pruefen
-		// ob dieser einen Fall hat
-		benutzerService.removeBenutzer(benutzernameToRemove);
-		if (fallOpt.isPresent()) {
-			Fall fall = fallOpt.get();
-			// Da der Benutzer bereits geloescht ist, muss hier der Besitzer auf null gesetzt werden
-			fall.setBesitzer(null);
-			removeFall(fall);
-		}
+		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzerToRemove);
+		fallOpt.ifPresent(this::removeFall);
+		benutzerService.removeBenutzer(benutzerToRemove.getUsername());
 	}
 }
