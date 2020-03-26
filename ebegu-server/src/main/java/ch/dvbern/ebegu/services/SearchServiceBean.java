@@ -413,7 +413,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
-		return cb.and(predicateIsVerantwortlicherTS, predicateIsFlagFinSitNotSet);
+		final Predicate predicateISVerTSAndFinSitNotSet = cb.and(predicateIsVerantwortlicherTS,
+			predicateIsFlagFinSitNotSet);
+		final Predicate predicateIsNoVerantwortlicherBG = cb.isNull(dossier.get(Dossier_.verantwortlicherBG));
+		final Predicate predicateISVerTSAndNoBG = cb.and(predicateIsVerantwortlicherTS, predicateIsNoVerantwortlicherBG);
+		return cb.or(predicateISVerTSAndFinSitNotSet, predicateISVerTSAndNoBG);
 	}
 
 
