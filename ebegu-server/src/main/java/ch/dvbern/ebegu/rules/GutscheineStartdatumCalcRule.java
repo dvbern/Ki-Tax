@@ -45,8 +45,7 @@ public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(
-		@Nonnull AbstractPlatz platz,
-		@Nonnull BGCalculationInput inputData) {
+		@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (!inputData.isAbschnittLiegtNachBEGUStartdatum()) {
 			inputData.setAnspruchspensumProzent(0);
 			inputData.getParent().addBemerkung(

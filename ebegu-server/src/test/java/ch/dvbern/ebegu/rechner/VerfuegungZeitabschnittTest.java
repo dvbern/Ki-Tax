@@ -23,8 +23,10 @@ import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -87,12 +89,13 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
+	private BGCalculationInput createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
-		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
-		zeitabschnitt.copyValuesToResult();
-
-		return zeitabschnitt;
+		BGCalculationInput inputAsiv = zeitabschnitt.getBgCalculationInputAsiv();
+		inputAsiv.setAnspruchspensumProzent(100);
+		inputAsiv.setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
+		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		zeitabschnitt.initBGCalculationResult();
+		return inputAsiv;
 	}
 }

@@ -3263,6 +3263,11 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nullable
+	public Verfuegung verfuegungToEntity(@Nullable JaxVerfuegung jaxVerfuegung) {
+		throw new EbeguFingerWegException("verfuegungToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nullable
 	private JaxVerfuegungZeitabschnitt verfuegungZeitabschnittToJax(@Nullable VerfuegungZeitabschnitt zeitabschnitt) {
 		if (zeitabschnitt == null) {
 			return null;
@@ -3301,12 +3306,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput().isSameAusbezahlteVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
-			tsCalculationResultToJax(
-				zeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung()));
+			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
-			tsCalculationResultToJax(
-				zeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung()));
+			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
 		return jaxZeitabschn;
+	}
+
+	public VerfuegungZeitabschnitt verfuegungZeitabschnittToEntity(@Nullable JaxVerfuegungZeitabschnitt jaxVerfuegungZeitabschnitt) {
+		throw new EbeguFingerWegException("verfuegungZeitabschnittToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	@Nullable

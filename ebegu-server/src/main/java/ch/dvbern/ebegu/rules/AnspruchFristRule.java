@@ -44,7 +44,7 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 	}
 
 	@Override
-	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
+	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
@@ -86,16 +86,16 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 
 						// Ab dem naechsten Monat gilt der neue Anspruch
 						if (anspruchVerminderungAsiv) {
-							zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(anspruchVorherAsiv);
+							zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchVorherAsiv);
 						}
 						if (anspruchVerminderungGemeinde) {
-							zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(anspruchVorherGemeinde);
+							zeitabschnitt.getBgCalculationInputGemeinde().setAnspruchspensumProzent(anspruchVorherGemeinde);
 						}
 						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
-						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
+						// we need to set both anspruch and bemerkung so both Zeitabschnitte are the same
 						if (anspruchVerminderungAsiv) {
 							zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchVorherAsiv);
 						}

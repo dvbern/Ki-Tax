@@ -89,6 +89,7 @@ public class BGCalculationInput {
 
 	private boolean babyTarif;
 
+	@Nullable
 	private EinschulungTyp einschulungTyp;
 
 	private BetreuungsangebotTyp betreuungsangebotTyp;
@@ -142,7 +143,10 @@ public class BGCalculationInput {
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
-		this.taetigkeiten = toCopy.taetigkeiten;
+		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
+		mergedTaetigkeiten.addAll(this.taetigkeiten);
+		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
+		this.taetigkeiten = mergedTaetigkeiten;
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
@@ -365,11 +369,12 @@ public class BGCalculationInput {
 		this.babyTarif = babyTarif;
 	}
 
+	@Nullable
 	public EinschulungTyp getEinschulungTyp() {
 		return einschulungTyp;
 	}
 
-	public void setEinschulungTyp(EinschulungTyp einschulungTyp) {
+	public void setEinschulungTyp(@Nullable EinschulungTyp einschulungTyp) {
 		this.einschulungTyp = einschulungTyp;
 	}
 

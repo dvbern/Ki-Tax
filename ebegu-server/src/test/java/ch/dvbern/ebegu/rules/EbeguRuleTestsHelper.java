@@ -107,7 +107,7 @@ public final class EbeguRuleTestsHelper {
 	) {
 		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
-			verfuegungZeitabschnitt.copyValuesToResult();
+			verfuegungZeitabschnitt.initBGCalculationResult();
 		}
 		return result;
 	}
@@ -186,6 +186,7 @@ public final class EbeguRuleTestsHelper {
 		result = restanspruchLimitCalcRule.calculate(platz, result);
 
 		result = anspruchFristRule.executeIfApplicable(platz, result);
+		// Der RestanspruchInitializer erstellt Restansprueche, darf nicht das Resultat ueberschreiben!
 		restanspruchInitializer.executeIfApplicable(platz, result);
 		result = abschlussNormalizerDismissMonate.executeIfApplicable(platz, result);
 		if (doMonatsstueckelungen) {
@@ -195,7 +196,7 @@ public final class EbeguRuleTestsHelper {
 		result = abschlussNormalizerKeepMonate.executeIfApplicable(platz, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 
-		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
+		result.forEach(VerfuegungZeitabschnitt::initBGCalculationResult);
 		return result;
 	}
 

@@ -51,11 +51,6 @@ public class BGCalculationResult extends AbstractEntity {
 
 	private static final long serialVersionUID = 6727717920099112569L;
 
-	// Dies wird benötigt für die Migration der Daten und kann im nächsten Release wieder entfernt werden
-	@SuppressWarnings("PMD.UnusedPrivateField")
-	@Column(nullable = true)
-	private String tempIdZeitabschnitt;
-
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private BigDecimal vollkosten = BigDecimal.ZERO; // Punkt IV auf der Verfuegung
@@ -117,12 +112,12 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
-	@Nonnull
-	@Column(nullable = true)
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
 
-	@Nonnull
-	@Column(nullable = true)
+	@NotNull @Nonnull
+	@Column(nullable = false)
 	private BigDecimal famGroesse = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
@@ -226,13 +221,13 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigung = roundToFrankenRappen(verguenstigung);
 
 		this.betreuungspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit);
-		this.betreuungspensumProzent = zeiteinheitenRoundingStrategy.apply(betreuungspensumProzent);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
 		this.bgPensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(bgPensumZeiteinheit);
 
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		this.betreuungspensumProzent = MathUtil.toTwoKommastelle(betreuungspensumProzent);
+		this.abzugFamGroesse = roundToFrankenRappen(abzugFamGroesse);
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
-		this.massgebendesEinkommenVorAbzugFamgr = zeiteinheitenRoundingStrategy.apply(massgebendesEinkommenVorAbzugFamgr);
+		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	@Override

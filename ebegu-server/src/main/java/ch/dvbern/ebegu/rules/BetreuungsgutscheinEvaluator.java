@@ -105,10 +105,13 @@ public class BetreuungsgutscheinEvaluator {
 			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true);
 
 			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten,
+			// diese auch noch mergen
 			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 
-			zeitabschnitte.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
+			zeitabschnitte.forEach(VerfuegungZeitabschnitt::initBGCalculationResult);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
@@ -205,11 +208,18 @@ public class BetreuungsgutscheinEvaluator {
 				MutationsMerger mutationsMerger = new MutationsMerger(locale);
 				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule());
 
+				// Innerhalb eines Monats darf der Anspruch nie sinken
 				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
+				// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
 				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
+				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 				zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
+				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 				zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
+				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 				zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);
+				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
+				// Daten, diese auch noch mergen
 				zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(platz, zeitabschnitte);
 
 				// Die Verfügung erstellen
@@ -222,7 +232,6 @@ public class BetreuungsgutscheinEvaluator {
 				AbstractRechner rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
 				if (rechner != null) {
 					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-						verfuegungZeitabschnitt.copyValuesToResult();
 						rechner.calculateAsivAndGemeinde(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRulesForGemeinde);
 					});
 

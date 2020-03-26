@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -130,14 +131,15 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 			MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruch);
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(anspruch));
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBabyTarif(geburtstag.plusYears(1)
+		BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		inputAsiv.setAnspruchspensumProzent(anspruch);
+		inputAsiv.setBetreuungspensumProzent(MathUtil.DEFAULT.from(anspruch));
+		inputAsiv.setBabyTarif(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEinschulungTyp(einschulungTyp);
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		inputAsiv.setEinschulungTyp(einschulungTyp);
+		inputAsiv.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
-		BGCalculationResult result = tageselternRechner.calculateAsiv(verfuegungZeitabschnitt, parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculateAsiv(inputAsiv, parameterDTO);
 
 		assertThat(result, pojo(BGCalculationResult.class)
 			.withProperty(

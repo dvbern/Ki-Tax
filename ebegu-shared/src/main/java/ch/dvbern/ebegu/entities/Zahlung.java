@@ -136,7 +136,7 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 		}
 		final Zahlung otherZahlung = (Zahlung) other;
 		return Objects.equals(getStatus(), otherZahlung.getStatus()) &&
-			EbeguUtil.isSameObject(getInstitutionStammdaten(), otherZahlung.getInstitutionStammdaten()) &&
+			EbeguUtil.isSame(getInstitutionStammdaten(), otherZahlung.getInstitutionStammdaten()) &&
 			MathUtil.isSame(getBetragTotalZahlung(), otherZahlung.getBetragTotalZahlung());
 	}
 }

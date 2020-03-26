@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,6 +47,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public abstract class AbstractEbeguRule implements Rule {
 
+	// da final und initialisiert, wird es schwierig dies jemals zu überschreiben -> Konstruktor Parameter
 	private final RuleValidity ruleValidity = RuleValidity.ASIV; // Normalfall
 
 	/**
@@ -115,17 +117,25 @@ public abstract class AbstractEbeguRule implements Rule {
 			// Nach jeder AbschnittRule erhalten wir die *neuen* Zeitabschnitte zurueck. Diese müssen bei ASIV-Regeln
 			// immer eine identische ASIV und GEMEINDE-Berechnung haben!
 			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
-			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zwischenresultate) {
-				if (RuleValidity.ASIV == ruleValidity) {
-					boolean same = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isSame(verfuegungZeitabschnitt.getBgCalculationInputGemeinde());
-					if (!same) {
-						throw new EbeguRuntimeException("createVerfuegungsZeitabschnitteIfApplicable", "ASIV Rule setzt nicht beide Input-Objekte!");
-					}
-				}
+			// Wenn es eine ASIV Rule ist, gilt sie fuer die Gemeinde genau gleich, die Ergebnisse (nur
+			// genau dieser Rule) muessen identisch sein
+			if (RuleValidity.ASIV == ruleValidity) {
+				assertSimilarAsivAndGemeindeInputs(zwischenresultate);
 			}
 			return zwischenresultate;
 		}
 		return new ArrayList<>();
+	}
+
+	private void assertSimilarAsivAndGemeindeInputs(@Nonnull Collection<VerfuegungZeitabschnitt> zeitabschnitte) {
+		boolean hasSameInputAsivAndGemeinde = zeitabschnitte.stream()
+			.allMatch(z -> z.getBgCalculationInputAsiv().isSame(z.getBgCalculationInputGemeinde()));
+
+		if (!hasSameInputAsivAndGemeinde) {
+			throw new EbeguRuntimeException(
+				"createVerfuegungsZeitabschnitteIfApplicable",
+				"ASIV Rule setzt nicht beide Input-Objekte!");
+		}
 	}
 
 	/**

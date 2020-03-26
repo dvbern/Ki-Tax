@@ -36,35 +36,19 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
 
+
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
 	 */
 	@Override
 	@Nonnull
 	public BGCalculationResult calculateAsiv(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO
-	) {
-		verfuegungZeitabschnitt.copyValuesToResult();
-		return calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
-	}
-
-	/**
-	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
-	 */
-	@Nonnull
-	protected BGCalculationResult calculateAsiv(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
-
-		// Resultat erstellen und benoetigte Daten aus Input kopieren
-		BGCalculationResult result = new BGCalculationResult();
-		VerfuegungZeitabschnitt.copyValuesToResult(input, result);
-
 		// Benoetigte Daten
 		boolean unter12Monate = input.isBabyTarif();
-		boolean eingeschult = input.getEinschulungTyp().isEingeschult();
+		boolean eingeschult = input.getEinschulungTyp() != null && input.getEinschulungTyp().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		boolean besonderebeduerfnisse = input.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
@@ -121,6 +105,10 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		if (vollkostenMinusVerguenstigung.compareTo(minBetrag) <= 0) {
 			minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.subtract(minBetrag, vollkostenMinusVerguenstigung);
 		}
+
+		// Resultat erstellen und benoetigte Daten aus Input kopieren
+		BGCalculationResult result = new BGCalculationResult();
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
 		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
 		result.setMinimalerElternbeitrag(minBetrag);

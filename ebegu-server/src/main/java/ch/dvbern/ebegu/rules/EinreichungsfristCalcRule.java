@@ -57,7 +57,8 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull AbstractPlatz platz,
-		@Nonnull BGCalculationInput inputData) {
+		@Nonnull BGCalculationInput inputData
+	) {
 		if (inputData.isZuSpaetEingereicht()) {
 			inputData.setAnspruchspensumProzent(0);
 			inputData.getParent().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
