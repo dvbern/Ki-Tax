@@ -196,6 +196,7 @@ public abstract class AbstractEbeguRule implements Rule {
 		return normalizedZeitabschn;
 	}
 
+	// würde ich immer noch als erstes in der calculate Methode ausführen und falls false, direkt die Inputs wieder zurück geben
 	/**
 	 *
 	 * @param platz (Betreuung, Tageschhulplatz etc)

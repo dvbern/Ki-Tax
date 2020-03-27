@@ -106,6 +106,7 @@ public final class EbeguRuleTestsHelper {
 		@Nonnull AbstractAbschlussRule abschlussRule, @Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
 		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
+		// der Teil ist wohl überflüssig, oder? das Result wird im calculator initialisiert
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
 			verfuegungZeitabschnitt.initBGCalculationResult();
 		}

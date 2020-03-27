@@ -79,10 +79,12 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal minVerguenstigungProTg;
 	private BigDecimal minVerguenstigungProStd;
 
+	// damit es etwas übersichtlicher wird alle Tagesschul abhängigen Parameter in einem Eigenen Objekt sammeln?
 	private BigDecimal maxTarifTagesschuleMitPaedagogischerBetreuung;
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
+	// damit es etwas übersichtlicher wird alle Gemeinde abhängigen Parameter in einem Eigenen Objekt sammeln?
 	private Boolean gemeindeZusaetzlicherGutscheinEnabled;
 	// Betrag des zusätzlichen Beitrags zum Gutschein
 	private BigDecimal gemeindeZusaetzlicherGutscheinBetragKita;
