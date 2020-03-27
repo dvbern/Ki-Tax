@@ -81,8 +81,6 @@ import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
@@ -92,8 +90,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Local(ReportVerrechnungKibonService.class)
 @PermitAll
 public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean implements ReportVerrechnungKibonService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ReportVerrechnungKibonServiceBean.class);
 
 	private VerrechnungKibonExcelConverter verrechnungKibonExcelConverter = new VerrechnungKibonExcelConverter();
 
