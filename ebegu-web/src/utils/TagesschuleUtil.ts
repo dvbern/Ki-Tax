@@ -128,7 +128,8 @@ export class TagesschuleUtil {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
             if (angMod.modulTagesschule.wochentag !== moduleOfGroup.wochentag ||
-                !this.isModuleGroupSimilar(angMod.modulTagesschule, oldTagesschuleGroup)) {
+                !this.isModuleGroupSimilar(angMod.modulTagesschule, oldTagesschuleGroup)  ||
+                !moduleOfGroup.angeboten) {
                 continue;
             }
             angMod.modulTagesschule.angemeldet = true; // transientes Feld, muss neu gesetzt werden!
