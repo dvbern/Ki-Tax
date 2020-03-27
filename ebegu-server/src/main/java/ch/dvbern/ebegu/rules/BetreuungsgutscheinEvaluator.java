@@ -231,9 +231,7 @@ public class BetreuungsgutscheinEvaluator {
 				// Den richtigen Rechner anwerfen
 				AbstractRechner rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
 				if (rechner != null) {
-					zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-						rechner.calculateAsivAndGemeinde(verfuegungZeitabschnitt, bgRechnerParameterDTO, rechnerRulesForGemeinde);
-					});
+					zeitabschnitte.forEach(zeitabschnitt -> rechner.calculate(zeitabschnitt, bgRechnerParameterDTO));
 
 					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
 					if (vorgaengerVerfuegung != null) {

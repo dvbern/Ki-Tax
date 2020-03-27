@@ -83,9 +83,7 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 
 	@Nonnull
 	private BGCalculationResult calculate(@Nonnull DateRange gueltigkeit) {
-		BGCalculationResult result = tageselternRechner.calculateAsiv(createZeitabschnitt(gueltigkeit), parameterDTO);
-		result.roundAllValues();
-		return result;
+		return tageselternRechner.calculateAsiv(createZeitabschnitt(gueltigkeit), parameterDTO);
 	}
 
 	@Nonnull

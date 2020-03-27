@@ -19,12 +19,12 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 
 /**
@@ -35,23 +35,37 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 	private final List<RechnerRule> rechnerRulesForGemeinde;
 	private final RechnerRuleParameterDTO rechnerParameter = new RechnerRuleParameterDTO();
 
-
 	protected AbstractGemeindeRechner(List<RechnerRule> rechnerRulesForGemeinde) {
 		this.rechnerRulesForGemeinde = rechnerRulesForGemeinde;
 	}
 
-	/**
-	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
-	 */
+	@Nonnull
 	@Override
-	public void calculateAsivAndGemeinde(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull List<RechnerRule> rechnerRules
-	) {
-		// Wir berechnen ASIV und Gemeinde separat:
-		doCalculateAsiv(verfuegungZeitabschnitt, parameterDTO);
-		doCalculateGemeinde(verfuegungZeitabschnitt, parameterDTO);
+	public BGCalculationResult calculateAsiv(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		// Fuer ASIV alles zuruecksetzen
+		prepareRechnerParameterForAsiv();
+
+		return super.calculateAsiv(input, parameterDTO);
+	}
+
+	@Nonnull
+	@Override
+	protected Optional<BGCalculationResult> calculateGemeinde(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		// Fuer Gemeinde die richtigen Werte setzen
+		prepareRechnerParameterForGemeinde(input, parameterDTO);
+
+		// Jetzt die Berechnung mit den Input-Werten der Gemeinde durchfuehren
+		if (rechnerParameter.isHasGemeindeRules()) {
+			return Optional.of(calculateAsiv(input, parameterDTO));
+		}
+
+		return Optional.empty();
 	}
 
 	private void prepareRechnerParameterForAsiv() {
@@ -70,33 +84,6 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
 				}
 			}
-		}
-	}
-
-	private void doCalculateAsiv(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO
-	) {
-		// Fuer ASIV alles zuruecksetzen
-		prepareRechnerParameterForAsiv();
-
-		BGCalculationResult resultAsiv = calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
-		resultAsiv.roundAllValues();
-		verfuegungZeitabschnitt.setBgCalculationResultAsiv(resultAsiv);
-	}
-
-	private void doCalculateGemeinde(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO
-	) {
-		// Fuer Gemeinde die richtigen Werte setzen
-		prepareRechnerParameterForGemeinde(verfuegungZeitabschnitt.getBgCalculationInputGemeinde(), parameterDTO);
-
-		// Jetzt die Berechnung mit den Input-Werten der Gemeinde durchfuehren
-		if (rechnerParameter.isHasGemeindeRules()) {
-			BGCalculationResult resultGemeinde = calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputGemeinde(), parameterDTO);
-			resultGemeinde.roundAllValues();
-			verfuegungZeitabschnitt.setBgCalculationResultGemeinde(resultGemeinde);
 		}
 	}
 

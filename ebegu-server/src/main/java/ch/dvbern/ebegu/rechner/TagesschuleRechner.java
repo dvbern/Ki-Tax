@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -28,7 +27,6 @@ import ch.dvbern.ebegu.dto.TSCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class TagesschuleRechner extends AbstractRechner {
@@ -36,14 +34,13 @@ public class TagesschuleRechner extends AbstractRechner {
 	public TagesschuleRechner() {
 	}
 
+	// Fuer Tagesschule gibt es (Stand heute) keine gemeindespezifischen Regeln
+	@Nonnull
 	@Override
-	public void calculateAsivAndGemeinde(
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull List<RechnerRule> rechnerRules
-	) {
-		// Fuer Tagesschule gibt es (Stand heute) keine gemeindespezifischen Regeln
-		calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), parameterDTO);
+	protected Optional<BGCalculationResult> calculateGemeinde(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGRechnerParameterDTO parameterDTO) {
+		return Optional.empty();
 	}
 
 	@Nonnull

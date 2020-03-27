@@ -17,14 +17,13 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 
 /**
  * Superklasse für alle kiBon-Rechner
@@ -32,19 +31,38 @@ import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 public abstract class AbstractRechner {
 
 	/**
-	 * Führt die Gesamtberechnung durch: Also Berechnung gemäss ASIV und - falls konfiguriert - Berechnung der Gemeinde
+	 * Diese Methode fuehrt die Berechnung fuer den uebergebenen VerfuegungsZeitabschnitt durch.
 	 */
-	public abstract void calculateAsivAndGemeinde(
+	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull List<RechnerRule> rechnerRules);
+		@Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		BGCalculationInput asivInput = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		BGCalculationResult asivResult = calculateAsiv(asivInput, parameterDTO).roundAllValues();
+		verfuegungZeitabschnitt.setBgCalculationResultAsiv(asivResult);
+
+		BGCalculationInput gemeindeInput = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
+		BGCalculationResult gemeindeResult = calculateGemeinde(gemeindeInput, parameterDTO)
+			.map(BGCalculationResult::roundAllValues)
+			.orElse(null);
+
+		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(gemeindeResult);
+	}
 
 	/**
-	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen Verfuegungsabschnitte durch.
+	 * Diese Methode fuehrt --falls konfiguriert -- die Berechnung mit dem Regelwerk von Gemeinden durch
+	 */
+	@Nonnull
+	protected abstract Optional<BGCalculationResult> calculateGemeinde(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGRechnerParameterDTO parameterDTO);
+
+	/**
+	 * Diese Methode fuehrt die Berechnung fuer die uebergebenen BGCalculationInput durch.
 	 * Es wird das Regelwerk von ASIV verwendet.
 	 */
 	@Nonnull
-	public abstract BGCalculationResult calculateAsiv(
+	protected abstract BGCalculationResult calculateAsiv(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO);
 }
