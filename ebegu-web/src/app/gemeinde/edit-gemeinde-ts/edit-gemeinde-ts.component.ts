@@ -20,6 +20,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 
 @Component({
@@ -36,6 +37,7 @@ export class EditGemeindeComponentTS implements OnInit {
     @Input() public altTSAdresse: boolean;
     @Input() public tsAnmeldungenStartDatum: Moment;
     @Input() public tsAnmeldungenStartStr: string;
+    @Input() public externalClients: TSExternalClientAssignment;
 
     @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
 

@@ -27,6 +27,8 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSAdresse} from '../../../models/TSAdresse';
+import {TSExternalClient} from '../../../models/TSExternalClient';
+import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSTextRessource} from '../../../models/TSTextRessource';
@@ -71,6 +73,8 @@ export class EditGemeindeComponent implements OnInit {
     public tsAnmeldungenStartDatum: Moment;
     public fiAnmeldungenStartDatum: Moment;
     private readonly startDatumFormat = 'DD.MM.YYYY';
+    private initiallyAssignedClients: TSExternalClient[];
+    public externalClients: TSExternalClientAssignment;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -102,6 +106,19 @@ export class EditGemeindeComponent implements OnInit {
 
         // initially display the first tab
         this.currentTab = 0;
+        this.fetchExternalClients(this.gemeindeId);
+    }
+
+    private fetchExternalClients(gemeindeId: string): void {
+        this.gemeindeRS.getExternalClients(gemeindeId)
+            .then(externalClients => this.initExternalClients(externalClients));
+    }
+
+    private initExternalClients(externalClients: TSExternalClientAssignment): void {
+        this.externalClients = externalClients;
+        // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
+        this.initiallyAssignedClients = [...externalClients.assignedClients];
+        //this.changeDetectorRef.markForCheck();
     }
 
     private loadStammdaten(): void {

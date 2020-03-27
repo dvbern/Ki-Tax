@@ -139,7 +139,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="form-group checkbox-with-tooltip">
                         <mat-checkbox id="benachrichtigungTsEmailAuto_id"
                                       name="benachrichtigungTsEmailAuto_id"
@@ -148,6 +148,12 @@
                         </mat-checkbox>
                         <dv-tooltip id="benachrichtigungTsEmailAuto_tooltip"
                                     [text]="'ANMELDEBESTAETIGUNGEN_EMAIL_SENDEN_HELP' | translate"></dv-tooltip>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-external-client-assignment [externalClients]="externalClients">
+                        </dv-external-client-assignment>
                     </div>
                 </div>
             </div>

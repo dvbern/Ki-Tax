@@ -5007,4 +5007,11 @@ public class JaxBConverter extends AbstractConverter {
 			.map(this::sozialhilfeZeitraumContainerToJAX)
 			.collect(Collectors.toList());
 	}
+
+	@Nonnull
+	public List<JaxExternalClient> externalClientsToJAX(@Nonnull Collection<ExternalClient> externalClients) {
+		return externalClients.stream()
+			.map(this::externalClientToJAX)
+			.collect(Collectors.toList());
+	}
 }
