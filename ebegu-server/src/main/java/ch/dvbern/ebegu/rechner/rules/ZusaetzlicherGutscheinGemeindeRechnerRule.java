@@ -91,7 +91,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 			}
 			if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
 				BigDecimal betragTfo = rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragTfo();
-				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragTfo);
+				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_TFO, betragTfo);
 				return betragTfo;
 			}
 			throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
