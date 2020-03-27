@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -118,10 +119,12 @@ public class BGCalculationInput {
 	@Nullable
 	private BigDecimal famGroesse = null;
 
+	@Valid
 	@NotNull
 	@Nonnull
 	private TSCalculationInput tsInputMitBetreuung = new TSCalculationInput();
 
+	@Valid
 	@NotNull
 	@Nonnull
 	private TSCalculationInput tsInputOhneBetreuung = new TSCalculationInput();
@@ -466,8 +469,6 @@ public class BGCalculationInput {
 	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
 		this.famGroesse = famGroesse;
 	}
-
-
 
 	public void setTsBetreuungszeitProWocheMitBetreuung(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
 		this.tsInputMitBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheMitBetreuung);
