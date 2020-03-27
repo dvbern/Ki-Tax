@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -372,12 +373,10 @@ public abstract class AbstractEbeguRule implements Rule {
 	 */
 	@Nonnull
 	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		List<BGCalculationInput> inputList = new ArrayList<>();
-		// Wenn ASIV -> beide, wenn GEMEINDE -> nur Gemeinde
-		inputList.add(zeitabschnitt.getBgCalculationInputGemeinde());
 		if (this.ruleValidity == RuleValidity.ASIV) {
-			inputList.add(zeitabschnitt.getBgCalculationInputAsiv());
+			return Arrays.asList(zeitabschnitt.getBgCalculationInputGemeinde(), zeitabschnitt.getBgCalculationInputAsiv());
 		}
-		return inputList;
+
+		return Collections.singletonList(zeitabschnitt.getBgCalculationInputGemeinde());
 	}
 }
