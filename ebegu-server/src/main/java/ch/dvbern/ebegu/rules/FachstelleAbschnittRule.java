@@ -15,6 +15,12 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -22,11 +28,6 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -61,8 +62,8 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumFachstelle pensumFachstelle) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(pensumFachstelle.getGueltigkeit());
-		zeitabschnitt.getBgCalculationInputAsiv().setFachstellenpensum(pensumFachstelle.getPensum());
-		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumMustBeAtLeastFachstellenpensum(pensumFachstelle.getIntegrationTyp()
+		zeitabschnitt.setFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getPensum());
+		zeitabschnitt.setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp()
 			== IntegrationTyp.SPRACHLICHE_INTEGRATION);
 		return zeitabschnitt;
 	}

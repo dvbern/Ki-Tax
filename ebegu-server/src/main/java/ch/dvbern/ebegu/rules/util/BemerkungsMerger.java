@@ -104,7 +104,7 @@ public final class BemerkungsMerger {
 		// 1. Ausserordentlicher Anspruch
 		// 2. Fachstelle
 		// 3. Erwerbspensum
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap();
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = verfuegungZeitabschnitt.getBemerkungenMap();
 		if (bemerkungenMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
 			bemerkungenMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
 			bemerkungenMap.remove(MsgKey.FACHSTELLE_MSG);
