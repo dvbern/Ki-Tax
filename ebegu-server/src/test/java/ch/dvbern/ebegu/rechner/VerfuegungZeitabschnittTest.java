@@ -83,17 +83,20 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 
 	@Nonnull
 	private BGCalculationResult calculate(@Nonnull DateRange gueltigkeit) {
-		return tageselternRechner.calculateAsiv(createZeitabschnitt(gueltigkeit), parameterDTO);
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnitt(gueltigkeit);
+		tageselternRechner.calculate(zeitabschnitt, parameterDTO);
+
+		return zeitabschnitt.getBgCalculationResultAsiv();
 	}
 
 	@Nonnull
-	private BGCalculationInput createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
+	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		BGCalculationInput inputAsiv = zeitabschnitt.getBgCalculationInputAsiv();
 		inputAsiv.setAnspruchspensumProzent(100);
 		inputAsiv.setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
 		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		zeitabschnitt.initBGCalculationResult();
-		return inputAsiv;
+
+		return zeitabschnitt;
 	}
 }
