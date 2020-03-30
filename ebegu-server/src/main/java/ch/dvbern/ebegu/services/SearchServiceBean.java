@@ -411,10 +411,12 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	 * Fuer TS sind sie nur so lange in der Pendenzenliste, wie das FinSit-Flag nicht gesetzt ist
 	 */
 	private Predicate createPredicateSCHOrMischGesuche(CriteriaBuilder cb, Root<Gesuch> root, Join<Gesuch, Dossier> dossier) {
+		// Grundsaetzlich gilt: Wenn ein Verantwortlicher TS gesetzt ist, ist es sichtbar bis die FinSit ausgefuellt wurde
 		final Predicate predicateIsVerantwortlicherTS = cb.isNotNull(dossier.get(Dossier_.verantwortlicherTS));
 		final Predicate predicateIsFlagFinSitNotSet = cb.isNull(root.get(Gesuch_.finSitStatus));
 		final Predicate predicateISVerTSAndFinSitNotSet = cb.and(predicateIsVerantwortlicherTS,
 			predicateIsFlagFinSitNotSet);
+		// Aber: Falls KEIN Verantwortlicher BG gesetzt ist, muss es u.U. laenger sichtbar sein
 		final Predicate predicateIsNoVerantwortlicherBG = cb.isNull(dossier.get(Dossier_.verantwortlicherBG));
 		final Predicate predicateISVerTSAndNoBG = cb.and(predicateIsVerantwortlicherTS, predicateIsNoVerantwortlicherBG);
 		return cb.or(predicateISVerTSAndFinSitNotSet, predicateISVerTSAndNoBG);
