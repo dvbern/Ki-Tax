@@ -242,7 +242,7 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
 		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
 		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
-		parameterDTO.setGemeindeZusaetzlicherGutscheinEnabled(false);
+		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		return parameterDTO;
 	}
 
