@@ -105,7 +105,12 @@ public final class EbeguRuleTestsHelper {
 	public static List<VerfuegungZeitabschnitt> runSingleAbschlussRule(
 		@Nonnull AbstractAbschlussRule abschlussRule, @Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
-		return abschlussRule.executeIfApplicable(platz, zeitabschnitte);
+		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
+		// wird eigentlich nur noch in Tests verwendet, welche nicht direkt den Rechner aufrufen
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
+			verfuegungZeitabschnitt.initBGCalculationResult();
+		}
+		return result;
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
