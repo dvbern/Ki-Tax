@@ -24,6 +24,7 @@ import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSInstitutionStammdatenSummary} from '../models/TSInstitutionStammdatenSummary';
 import {TSModulTagesschule} from '../models/TSModulTagesschule';
 import {TSModulTagesschuleGroup} from '../models/TSModulTagesschuleGroup';
+import {EbeguUtil} from './EbeguUtil';
 
 export class TagesschuleUtil {
 
@@ -215,6 +216,9 @@ export class TagesschuleUtil {
 
     public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
         TSModulTagesschuleGroup[] {
+        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) && modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
+            return this.sortModulTagesschuleGroupsScolaris(modulTagesschuleGroups);
+        }
         return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
             const referenzeDatum = '01/01/2011 ';
             const vonA = Date.parse(referenzeDatum + a.zeitVon);
@@ -229,10 +233,17 @@ export class TagesschuleUtil {
             if (vergleicheBis !== 0) {
                 return vergleicheBis;
             }
-            // bei Scolaris Modulen hat es keine bezeichnung
+            // Falls es einen Bezeichnung gibt
             if (a.bezeichnung.textDeutsch && b.bezeichnung.textDeutsch) {
                 return a.bezeichnung.textDeutsch.localeCompare(b.bezeichnung.textDeutsch);
             }
+            return a.modulTagesschuleName.localeCompare(b.modulTagesschuleName);
+        });
+    }
+
+    public static sortModulTagesschuleGroupsScolaris(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
+        TSModulTagesschuleGroup[] {
+        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
             return a.modulTagesschuleName.localeCompare(b.modulTagesschuleName);
         });
     }
