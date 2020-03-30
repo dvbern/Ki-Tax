@@ -49,7 +49,6 @@ public class TagesschuleRechner extends AbstractRechner {
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
-		// TODO warum nicht ein neues Result erstellen? Hat es schon eins?
 		BGCalculationResult bgResult = input.getParent().getBgCalculationResultAsiv();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, bgResult);
 
@@ -79,7 +78,7 @@ public class TagesschuleRechner extends AbstractRechner {
 
 		BigDecimal maxTarif = parameterDTO.getMaxTarifTagesschuleOhnePaedagogischerBetreuung();
 
-		return calculate(input, input.getTsInputMitBetreuung(), maxTarif, parameterDTO);
+		return calculate(input, input.getTsInputOhneBetreuung(), maxTarif, parameterDTO);
 	}
 
 	@Nonnull
