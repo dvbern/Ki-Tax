@@ -106,7 +106,6 @@ export class EditGemeindeComponent implements OnInit {
 
         // initially display the first tab
         this.currentTab = 0;
-        this.fetchExternalClients(this.gemeindeId);
     }
 
     private fetchExternalClients(gemeindeId: string): void {
@@ -125,6 +124,7 @@ export class EditGemeindeComponent implements OnInit {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.initializeEmptyUnrequiredFields(stammdaten);
+                this.fetchExternalClients(this.gemeindeId);
                 if (EbeguUtil.isNullOrUndefined(stammdaten.adresse)) {
                     stammdaten.adresse = new TSAdresse();
                 }
@@ -209,6 +209,7 @@ export class EditGemeindeComponent implements OnInit {
 
             this.errorService.clearAll();
             this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
+            stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
                 if (this.fileToUpload) {

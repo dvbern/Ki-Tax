@@ -302,6 +302,13 @@ public class GemeindeResource {
 			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
 		}
 
+		// ExternalCleints updaten:
+		if (jaxStammdaten.getExternalClients() != null) {
+			Collection<ExternalClient> availableClients = externalClientService.getAllForGemeinde();
+			availableClients.removeIf(client -> !jaxStammdaten.getExternalClients().contains(client.getId()));
+			convertedStammdaten.setExternalClients(new HashSet<>(availableClients));
+		}
+
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
 
 		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
@@ -730,7 +737,7 @@ public class GemeindeResource {
 	public Response getExternalClients(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 		requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeID = converter.toEntityId(gemeindeJAXPId);
-		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdaten(gemeindeID)
+		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeID)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getExternalClients",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -745,6 +752,4 @@ public class GemeindeResource {
 
 		return Response.ok(jaxExternalClientAssignment).build();
 	}
-
-
 }

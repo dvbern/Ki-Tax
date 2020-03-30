@@ -151,10 +151,9 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group">
-                        <dv-external-client-assignment [externalClients]="externalClients">
-                        </dv-external-client-assignment>
-                    </div>
+                    <dv-external-client-multiselect
+                        [externalClients]="externalClients">
+                    </dv-external-client-multiselect>
                 </div>
             </div>
             <dv-gemeinde-ts-konfiguration
@@ -211,7 +210,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">
                         {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA' | translate}}
                     </h3>
@@ -219,6 +218,12 @@
                         {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN_NEIN' | translate}}
                     </h3>
                     <p></p>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-external-client-assignment [externalClients]="externalClients">
+                        </dv-external-client-assignment>
+                    </div>
                 </div>
             </div>
             <div class="mt-2">

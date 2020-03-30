@@ -41,6 +41,8 @@ import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
+import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
@@ -107,7 +109,9 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         TooltipDirective,
         UiViewComponent,
         KiBonGuidedTourComponent,
-        DvNgGesuchstellerDialogComponent
+        DvNgGesuchstellerDialogComponent,
+        ExternalClientAssignmentComponent,
+        ExternalClientMultiselectComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,
@@ -126,6 +130,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         NavbarComponent,
         StammdatenHeaderComponent,
         DvNgGesuchstellerDialogComponent,
+        ExternalClientAssignmentComponent,
+        ExternalClientMultiselectComponent,
     ],
     exports: [
         CommonModule,
@@ -160,6 +166,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         StammdatenHeaderComponent,
         UiViewComponent,
         TooltipDirective,
+        ExternalClientAssignmentComponent,
+        ExternalClientMultiselectComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

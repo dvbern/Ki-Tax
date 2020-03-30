@@ -913,6 +913,7 @@ export class EbeguRestUtil {
             restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
             restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
             restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
+            restStammdaten.externalClients = stammdaten.externalClients ||null;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
