@@ -132,7 +132,9 @@ public class TagesschuleRechner extends AbstractRechner {
 				parameterDTO.getMinMassgebendesEinkommen());
 			BigDecimal divided = MathUtil.EXACT.divide(mataMinusMita, maxmEMinusMinmE);
 
-			BigDecimal meMinusMinmE = MathUtil.EXACT.subtract(massgebendesEinkommen, minTarif);
+			BigDecimal meMinusMinmE = MathUtil.EXACT.subtract(
+				massgebendesEinkommen,
+				parameterDTO.getMinMassgebendesEinkommen());
 
 			BigDecimal multiplyDividedMeMinusMinmE = MathUtil.EXACT.multiply(divided, meMinusMinmE);
 
