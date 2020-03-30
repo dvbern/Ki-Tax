@@ -418,10 +418,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
 		if (!verfuegung.isKategorieNichtEintreten()) {
 			for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieKeinPensum()) {
 					verfuegung.setKategorieKeinPensum(true);
 				}
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
 			}
@@ -447,7 +447,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		verfuegungPreview.getZeitabschnitte()
-			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
+			.forEach(z -> {
+				z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+				if (z.getBgCalculationResultGemeinde() != null) {
+					z.getBgCalculationResultGemeinde().setAnspruchspensumProzent(0);
+				}
+			});
 		verfuegungPreview.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(betreuungMitVerfuegungPreview.extractGesuch());
 		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
@@ -557,7 +562,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(), true);
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
 	@Override

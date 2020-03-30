@@ -90,21 +90,13 @@ public class TagesschuleRechnerTest {
 			abzugFamiliengroesse = MathUtil.DEFAULT.fromNullSafe(11400.00);
 		}
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.fromNullSafe(einkommen));
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamiliengroesse);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
 		if (paedagogischBetreut) {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultMitPaedagogischerBetreuung(new TSCalculationResult());
-			TSCalculationResult tsResultMitBetreuung =
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung();
-			Assert.assertNotNull(tsResultMitBetreuung);
-			tsResultMitBetreuung.setBetreuungszeitProWoche(10);
+			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(10);
 		} else {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setTsCalculationResultOhnePaedagogischerBetreuung(new TSCalculationResult());
-			TSCalculationResult tsResultOhneBetreuung =
-				verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung();
-			Assert.assertNotNull(tsResultOhneBetreuung);
-			tsResultOhneBetreuung.setBetreuungszeitProWoche(10);
+			verfuegungZeitabschnitt.setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(10);
 		}
 
 		BGCalculationResult calculationResult = tarifRechner.calculate(verfuegungZeitabschnitt, parameterDTO);

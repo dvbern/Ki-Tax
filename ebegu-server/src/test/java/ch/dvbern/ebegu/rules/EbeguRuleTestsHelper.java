@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -84,7 +85,25 @@ public final class EbeguRuleTestsHelper {
 			Constants.DEFAULT_LOCALE);
 	private static final StorniertCalcRule storniertCalcRule = new StorniertCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 
+	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
+	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true);
+	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false);
+	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN);
+	private static final MonatsRule monatsRule = new MonatsRule();
+	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+
 	private EbeguRuleTestsHelper() {
+	}
+
+	@Nonnull
+	public static List<VerfuegungZeitabschnitt> runSingleAbschlussRule(
+		@Nonnull AbstractAbschlussRule abschlussRule, @Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
+	) {
+		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
+			verfuegungZeitabschnitt.copyValuesToResult();
+		}
+		return result;
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
@@ -110,7 +129,7 @@ public final class EbeguRuleTestsHelper {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(existingRestanspruch);
+			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
 	}
@@ -156,22 +175,25 @@ public final class EbeguRuleTestsHelper {
 		result = abwesenheitCalcRule.calculate(betreuung, result);
 		result = schulstufeCalcRule.calculate(betreuung, result);
 		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
-
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
-		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
-		result = AnspruchFristRule.execute(result);
-		result = AbschlussNormalizer.execute(result, false);
+
+		result = anspruchFristRule.executeIfApplicable(betreuung, result);
+		// Der RestanspruchInitializer erstellt Restansprueche, darf nicht das Resultat ueberschreiben!
+		restanspruchInitializer.executeIfApplicable(betreuung, result);
+		result = abschlussNormalizerDismissMonate.executeIfApplicable(betreuung, result);
 		if (doMonatsstueckelungen) {
-			result = MonatsRule.execute(result);
+			result = monatsRule.executeIfApplicable(betreuung, result);
 		}
-		result = MutationsMerger.execute(betreuung, result, Constants.DEFAULT_LOCALE);
-		result = AbschlussNormalizer.execute(result, true);
+		result = mutationsMerger.executeIfApplicable(betreuung, result);
+		result = abschlussNormalizerKeepMonate.executeIfApplicable(betreuung, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
+
+		result.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
 		return result;
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		return RestanspruchInitializer.execute(currentBetreuung, zeitabschnitte);
+		return restanspruchInitializer.executeIfApplicable(currentBetreuung, zeitabschnitte);
 	}
 
 	public static Betreuung createBetreuungWithPensum(

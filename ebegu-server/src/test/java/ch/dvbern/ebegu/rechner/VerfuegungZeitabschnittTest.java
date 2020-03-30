@@ -88,8 +88,9 @@ public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 	@Nonnull
 	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
+		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(100);
+		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(MathUtil.DEFAULT.from(100));
+		zeitabschnitt.copyValuesToResult();
 
 		return zeitabschnitt;
 	}

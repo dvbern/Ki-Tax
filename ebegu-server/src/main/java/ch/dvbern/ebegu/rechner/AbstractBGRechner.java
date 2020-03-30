@@ -42,7 +42,9 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 	@Nonnull
 	public BGCalculationResult calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull BGRechnerParameterDTO parameterDTO) {
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		verfuegungZeitabschnitt.copyValuesToResult();
 
 		// Benoetigte Daten
 		boolean unter12Monate = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
@@ -51,7 +53,7 @@ public abstract class AbstractBGRechner extends AbstractRechner {
 		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
+		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getMonatlicheBetreuungskosten();
 		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensumProzent();
 

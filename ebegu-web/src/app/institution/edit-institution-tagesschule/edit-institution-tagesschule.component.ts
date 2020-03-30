@@ -342,12 +342,11 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         if (group.bezeichnung.textDeutsch) {
             name = `${group.bezeichnung.textDeutsch} / ${group.bezeichnung.textFranzoesisch}`;
         }
-        if (group.modulTagesschuleName !== TSModulTagesschuleName.DYNAMISCH) {
-            const scolarisName = this.translate.instant(group.modulTagesschuleName);
-            // tslint:disable-next-line:prefer-template restrict-plus-operands
-            return name + ' (' + scolarisName + ')';
-        }
         return name;
+    }
+
+    public getModulName(group: TSModulTagesschuleGroup): string {
+        return this.translate.instant(group.modulTagesschuleName);
     }
 
     public trackById(einstellungGP: TSEinstellungenTagesschule): string {
@@ -414,6 +413,10 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public showTagiCheckbox(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
+            return false;
+        }
+
         const konfiguration = this.konfigurationsListe.find(
             gemeindeKonfiguration =>
                 gemeindeKonfiguration.gesuchsperiode.id === einstellungenTagesschule.gesuchsperiode.id);
@@ -426,6 +429,13 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     public canEditTagi(): boolean {
         if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
             return this.editMode;
+        }
+        return false;
+    }
+
+    public isScolaris(modulTagesschuleGroups: Array<TSModulTagesschuleGroup>): boolean {
+        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) && modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
+            return true;
         }
         return false;
     }

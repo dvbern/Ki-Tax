@@ -22,13 +22,11 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
-import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
@@ -65,18 +63,18 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	private Persistence persistence;
 
 	@Inject
-	private VerfuegungService verfuegungService;
+	private TestfaelleService testfaelleService;
 
-	@Inject
-	private InstitutionService institutionService;
-
+	private String gemeinde;
 
 	@Before
 	public void init() {
 		gp1718 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2017, 2018);
-		TestDataUtil.prepareParameters(gp1718, persistence);
 		gp1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+		TestDataUtil.prepareParameters(gp1718, persistence);
 		TestDataUtil.prepareParameters(gp1819, persistence);
+		insertInstitutionen();
+		gemeinde = TestDataUtil.getGemeindeParis(persistence).getId();
 	}
 
 	@Test
@@ -120,6 +118,27 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheine());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1451.30), detail.getSelbstbehaltGemeinde()); // dies entspricht genau 20% der Kosten
 		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getBetragLastenausgleich()); // dies entspricht genau 80% der Kosten
+	}
+
+	@Test
+	public void createLastenausgleichAusgeglichen2018() {
+		// Die durchschnittlichen Kosten pro 100% Platz entsprechen genau den Kosten in der Gemeinde
+		Gesuch gesuch = createGesuch(gp1718);
+
+		// Lastenausgleich erstellen
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2018, waeltiSelbstbehaltPro100Prozent);
+		Assert.assertNotNull(lastenausgleich);
+		Assert.assertEquals(2018, lastenausgleich.getJahr().longValue());
+		Assert.assertEquals(1, lastenausgleich.getLastenausgleichDetails().size());
+		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), lastenausgleich.getTotalAlleGemeinden());
+
+		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
+		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
+		Assert.assertEquals(2018, detail.getJahr().longValue());
+		Assert.assertEquals(MathUtil.DEFAULT.from(26.67), detail.getTotalBelegungen());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getTotalBetragGutscheine());
+		Assert.assertEquals(MathUtil.DEFAULT.from(1161.04), detail.getSelbstbehaltGemeinde()); // dies entspricht genau 20% der Kosten
+		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), detail.getBetragLastenausgleich()); // dies entspricht genau 80% der Kosten
 	}
 
 	@Test
@@ -172,6 +191,20 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Lastenausgleich 2017 erstellen
 		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiSelbstbehaltPro100Prozent);
+
+		Assert.assertNotNull(lastenausgleich2017);
+		Assert.assertEquals(2017, lastenausgleich2017.getJahr().longValue());
+		Assert.assertEquals(1, lastenausgleich2017.getLastenausgleichDetails().size());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), lastenausgleich2017.getTotalAlleGemeinden());
+
+		LastenausgleichDetail detail = lastenausgleich2017.getLastenausgleichDetails().iterator().next();
+		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
+		Assert.assertEquals(2017, detail.getJahr().longValue());
+		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail.getTotalBelegungen());
+		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail.getTotalBetragGutscheine());
+		Assert.assertEquals(MathUtil.DEFAULT.from(1451.30), detail.getSelbstbehaltGemeinde()); // dies entspricht genau 20% der Kosten
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getBetragLastenausgleich()); // dies entspricht genau 80% der Kosten
+
 		Assert.assertNotNull(lastenausgleich2017);
 
 		// Nachtraeglich ein weiteres Gesuch verfuegen
@@ -234,13 +267,6 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private Gesuch createGesuch(Gesuchsperiode gesuchsperiode) {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT,
-			gesuchsperiode);
-		TestDataUtil.calculateFinanzDaten(gesuch);
-		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
-		for (Betreuung betreuung : erstgesuch.extractAllBetreuungen()) {
-			verfuegungService.verfuegen(erstgesuch.getId(), betreuung.getId(), "bla", false, false);
-		}
-		return erstgesuch;
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 	}
 }
