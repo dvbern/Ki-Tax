@@ -728,13 +728,13 @@
             <plugin>
                 <groupId>ch.dvbern.oss.maven.jgitflow</groupId>
                 <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>1.0-m6</version>
                 <configuration>
+                    <serverId>git.dvbern.ch</serverId>
                     <flowInitContext>
                         <developBranchName>dev</developBranchName>
                         <versionTagPrefix />
                     </flowInitContext>
-                    <!-- Nutzt das SSH-Keystore-Passwort vom OS -->
-                    <enableSshAgent>true</enableSshAgent>
                 </configuration>
             </plugin>
             <plugin>
