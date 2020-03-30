@@ -169,6 +169,9 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	@Override
 	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		if (!isAnwendbarForAngebot(platz)) {
+			return zeitabschnitte;
+		}
 
 		Collections.sort(zeitabschnitte);
 
@@ -196,7 +199,6 @@ public abstract class AbstractEbeguRule implements Rule {
 		return normalizedZeitabschn;
 	}
 
-	// würde ich immer noch als erstes in der calculate Methode ausführen und falls false, direkt die Inputs wieder zurück geben
 	/**
 	 *
 	 * @param platz (Betreuung, Tageschhulplatz etc)

@@ -628,8 +628,9 @@ public class BGCalculationInput {
 			zuSpaetEingereicht == other.zuSpaetEingereicht &&
 			minimalesEwpUnterschritten == other.minimalesEwpUnterschritten &&
 			Objects.equals(einkommensjahr, other.einkommensjahr) &&
-			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt;
-			// müssten hier nicht auch die TS Inputs verglichen werden?
+			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
+			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
+			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung);
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
