@@ -100,9 +100,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 
-	@Inject
-	private FerieninselStammdatenService ferieninselStammdatenService;
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
