@@ -48,9 +48,9 @@ public final class VerfuegungUtil {
 				// todo imanol Dies sollte auch subzeitabschnitte vergleichen
 				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(letztVerfuegteZeitabschnitte, newZeitabschnitt);
 				if (oldSameZeitabschnitt.isPresent()) {
-					newZeitabschnitt.getBgCalculationInputAsiv().setSameVerfuegteVerfuegungsrelevanteDaten(newZeitabschnitt.isSameBerechnung(oldSameZeitabschnitt.get()));
+					newZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(newZeitabschnitt.isSameBerechnung(oldSameZeitabschnitt.get()));
 				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-					newZeitabschnitt.getBgCalculationInputAsiv().setSameVerfuegteVerfuegungsrelevanteDaten(false);
+					newZeitabschnitt.setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(false);
 				}
 			}
 		}
@@ -70,9 +70,9 @@ public final class VerfuegungUtil {
 				// todo imanol Dies sollte auch subzeitabschnitte vergleichen
 				Optional<VerfuegungZeitabschnitt> oldSameZeitabschnitt = findZeitabschnittSameGueltigkeit(letztAusbezahlteZeitabschnitte, newZeitabschnitt);
 				if (oldSameZeitabschnitt.isPresent()) {
-					newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(Objects.equals(newZeitabschnitt.getVerguenstigung(), oldSameZeitabschnitt.get().getVerguenstigung()));
+					newZeitabschnitt.setSameAusbezahlteVerguenstigungForAsivAndGemeinde(Objects.equals(newZeitabschnitt.getVerguenstigung(), oldSameZeitabschnitt.get().getVerguenstigung()));
 				} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-					newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(false);
+					newZeitabschnitt.setSameAusbezahlteVerguenstigungForAsivAndGemeinde(false);
 				}
 			}
 		}

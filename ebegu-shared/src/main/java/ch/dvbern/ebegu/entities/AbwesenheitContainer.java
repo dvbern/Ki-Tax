@@ -106,8 +106,8 @@ public class AbwesenheitContainer extends AbstractMutableEntity implements Compa
 			return false;
 		}
 		final AbwesenheitContainer otherAbwesenheitContainer = (AbwesenheitContainer) other;
-		return EbeguUtil.isSameObject(getAbwesenheitGS(), otherAbwesenheitContainer.getAbwesenheitGS()) &&
-			EbeguUtil.isSameObject(getAbwesenheitJA(), otherAbwesenheitContainer.getAbwesenheitJA()) &&
+		return EbeguUtil.isSame(getAbwesenheitGS(), otherAbwesenheitContainer.getAbwesenheitGS()) &&
+			EbeguUtil.isSame(getAbwesenheitJA(), otherAbwesenheitContainer.getAbwesenheitJA()) &&
 			Objects.equals(this.getBetreuung().getBetreuungNummer(), otherAbwesenheitContainer.getBetreuung().getBetreuungNummer());
 	}
 

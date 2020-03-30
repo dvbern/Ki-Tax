@@ -18,7 +18,11 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,8 +44,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -66,14 +74,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput();
+	private BGCalculationInput bgCalculationInputAsiv = new BGCalculationInput(this);
 
 	/**
 	 * Input-Werte für die Rules. Berechnung nach Spezialwünschen der Gemeinde, optional
 	 */
 	@Transient
 	@Nonnull
-	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput();
+	private BGCalculationInput bgCalculationInputGemeinde = new BGCalculationInput(this);
 
 	/**
 	 * Berechnungsresultate. Berechnung nach ASIV (Standard)
@@ -81,7 +89,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Valid
 	@Nonnull @NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegungZeitabschnitt_resultatAsiv"), nullable = false)
 	private BGCalculationResult bgCalculationResultAsiv = new BGCalculationResult();
 
 	/**
@@ -107,6 +115,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Enumerated(EnumType.STRING)
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
+	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
+	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
+	// "bemerkungen" geschrieben
+	@Transient
+	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String bemerkungen = "";
@@ -129,6 +143,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
+		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
 		this.bemerkungen = toCopy.bemerkungen;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
 	}
@@ -185,112 +200,281 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	public BigDecimal getVollkosten() {
-		return getBgCalculationResultAsiv().getVollkosten();
+		return getRelevantBgCalculationResult().getVollkosten();
 	}
 
 	@Nonnull
 	public BigDecimal getElternbeitrag() {
-		return getBgCalculationResultAsiv().getElternbeitrag();
+		return getRelevantBgCalculationResult().getElternbeitrag();
 	}
 
 	@Nonnull
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
-		return getBgCalculationResultAsiv().getVerguenstigungOhneBeruecksichtigungVollkosten();
+		return getRelevantBgCalculationResult().getVerguenstigungOhneBeruecksichtigungVollkosten();
 	}
 
 	@Nonnull
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungMinimalbeitrag() {
-		return getBgCalculationResultAsiv().getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
+		return getRelevantBgCalculationResult().getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
 	}
 
 	@Nonnull
 	public BigDecimal getVerguenstigung() {
-		return getBgCalculationResultAsiv().getVerguenstigung();
+		return getRelevantBgCalculationResult().getVerguenstigung();
 	}
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitrag() {
-		return getBgCalculationResultAsiv().getMinimalerElternbeitrag();
+		return getRelevantBgCalculationResult().getMinimalerElternbeitrag();
 	}
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
-		return getBgCalculationResultAsiv().getMinimalerElternbeitragGekuerztNullSafe();
+		return getRelevantBgCalculationResult().getMinimalerElternbeitragGekuerztNullSafe();
 	}
 
 	@Nonnull
 	public BigDecimal getVerfuegteAnzahlZeiteinheiten() {
-		return getBgCalculationResultAsiv().getBgPensumZeiteinheit();
+		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
 	}
 
 	@Nonnull
 	public BigDecimal getAnspruchsberechtigteAnzahlZeiteinheiten() {
-		return getBgCalculationResultAsiv().getAnspruchspensumZeiteinheit();
+		return getRelevantBgCalculationResult().getAnspruchspensumZeiteinheit();
 	}
 
-	@Nonnull
 	public int getAnspruchberechtigtesPensum() {
-		return getBgCalculationResultAsiv().getAnspruchspensumProzent();
+		return getRelevantBgCalculationResult().getAnspruchspensumProzent();
 	}
 
 	@Nonnull
 	public PensumUnits getZeiteinheit() {
-		return getBgCalculationResultAsiv().getZeiteinheit();
+		return getRelevantBgCalculationResult().getZeiteinheit();
 	}
 
 	@Nonnull
 	public BigDecimal getBetreuungspensumProzent() {
-		return getBgCalculationResultAsiv().getBetreuungspensumProzent();
+		return getRelevantBgCalculationResult().getBetreuungspensumProzent();
 	}
 
 	@Nonnull
 	public BigDecimal getBgPensum() {
-		return getBgCalculationResultAsiv().getBgPensumProzent();
+		return getRelevantBgCalculationResult().getBgPensumProzent();
 	}
 
 	@Nonnull
 	public BigDecimal getBetreuungspensumZeiteinheit() {
-		return getBgCalculationResultAsiv().getBetreuungspensumZeiteinheit();
+		return getRelevantBgCalculationResult().getBetreuungspensumZeiteinheit();
 	}
 
 	@Nullable
 	public BigDecimal getAbzugFamGroesse() {
-		return getBgCalculationResultAsiv().getAbzugFamGroesse();
+		return getRelevantBgCalculationResult().getAbzugFamGroesse();
 	}
 
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommen() {
-		return getBgCalculationResultAsiv().getMassgebendesEinkommen();
+		return getRelevantBgCalculationResult().getMassgebendesEinkommen();
 	}
 
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommenVorAbzFamgr() {
-		return getBgCalculationResultAsiv().getMassgebendesEinkommenVorAbzugFamgr();
+		return getRelevantBgCalculationResult().getMassgebendesEinkommenVorAbzugFamgr();
 	}
 
 	public boolean isZuSpaetEingereicht() {
-		return getBgCalculationResultAsiv().isZuSpaetEingereicht();
+		return getRelevantBgCalculationResult().isZuSpaetEingereicht();
 	}
 
 	public boolean isMinimalesEwpUnterschritten() {
-		return getBgCalculationResultAsiv().isMinimalesEwpUnterschritten();
+		return getRelevantBgCalculationResult().isMinimalesEwpUnterschritten();
 	}
 
 	@Nullable
 	public BigDecimal getFamGroesse() {
-		return getBgCalculationResultAsiv().getFamGroesse();
+		return getRelevantBgCalculationResult().getFamGroesse();
 	}
 
 	@Nonnull
 	public Integer getEinkommensjahr() {
-		return getBgCalculationResultAsiv().getEinkommensjahr();
+		return getRelevantBgCalculationResult().getEinkommensjahr();
 	}
 
 	public boolean isBesondereBeduerfnisseBestaetigt() {
-		return getBgCalculationResultAsiv().isBesondereBeduerfnisseBestaetigt();
+		return getRelevantBgCalculationResult().isBesondereBeduerfnisseBestaetigt();
+	}
+
+	@Nullable
+	public TSCalculationResult getTsCalculationResultMitPaedagogischerBetreuung() {
+		return getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung();
+	}
+
+	@Nullable
+	public TSCalculationResult getTsCalculationResultOhnePaedagogischerBetreuung() {
+		return getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung();
 	}
 
 	/* Ende Delegator-Methoden */
+
+	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
+
+	public void setLongAbwesenheitForAsivAndGemeinde(boolean longAbwesenheit) {
+		this.getBgCalculationInputAsiv().setLongAbwesenheit(longAbwesenheit);
+		this.getBgCalculationInputGemeinde().setLongAbwesenheit(longAbwesenheit);
+	}
+
+	public void setAnspruchspensumProzentForAsivAndGemeinde(int anspruchspensumProzent) {
+		this.getBgCalculationInputAsiv().setAnspruchspensumProzent(anspruchspensumProzent);
+		this.getBgCalculationInputGemeinde().setAnspruchspensumProzent(anspruchspensumProzent);
+	}
+
+	public void setAusserordentlicherAnspruchForAsivAndGemeinde(int ausserordentlicherAnspruch) {
+		this.getBgCalculationInputAsiv().setAusserordentlicherAnspruch(ausserordentlicherAnspruch);
+		this.getBgCalculationInputGemeinde().setAusserordentlicherAnspruch(ausserordentlicherAnspruch);
+	}
+
+	public void setBetreuungspensumProzentForAsivAndGemeinde(@Nonnull BigDecimal betreuungspensumProzent) {
+		this.getBgCalculationInputAsiv().setBetreuungspensumProzent(betreuungspensumProzent);
+		this.getBgCalculationInputGemeinde().setBetreuungspensumProzent(betreuungspensumProzent);
+	}
+
+	public void setMonatlicheBetreuungskostenForAsivAndGemeinde(BigDecimal monatlicheBetreuungskosten) {
+		this.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
+		this.getBgCalculationInputGemeinde().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
+	}
+
+	public void setAnspruchspensumRestForAsivAndGemeinde(int anspruchspensumRest) {
+		this.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchspensumRest);
+		this.getBgCalculationInputGemeinde().setAnspruchspensumRest(anspruchspensumRest);
+	}
+
+	public void setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(boolean besondereBeduerfnisseBestaetigt) {
+		this.getBgCalculationInputAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		this.getBgCalculationInputGemeinde().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+	}
+
+	public void setEkv1AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv1Alleine(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv1Alleine(ekv1Alleine);
+	}
+
+	public void setEkv1ZuZweitForAsivAndGemeinde(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv1ZuZweit(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv1ZuZweit(ekv1Alleine);
+	}
+
+	public void setEkv2AlleineForAsivAndGemeinde(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv2Alleine(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv2Alleine(ekv1Alleine);
+	}
+
+	public void setEkv2ZuZweitForAsivAndGemeinde(boolean ekv1Alleine) {
+		this.getBgCalculationInputAsiv().setEkv2ZuZweit(ekv1Alleine);
+		this.getBgCalculationInputGemeinde().setEkv2ZuZweit(ekv1Alleine);
+	}
+
+	public void setZuSpaetEingereichtForAsivAndGemeinde(boolean zuSpaetEingereicht) {
+		this.getBgCalculationInputAsiv().setZuSpaetEingereicht(zuSpaetEingereicht);
+		this.getBgCalculationInputGemeinde().setZuSpaetEingereicht(zuSpaetEingereicht);
+	}
+
+	public void setErwerbspensumGS1ForAsivAndGemeinde(@Nullable Integer erwerbspensumGS1) {
+		this.getBgCalculationInputAsiv().setErwerbspensumGS1(erwerbspensumGS1);
+		this.getBgCalculationInputGemeinde().setErwerbspensumGS1(erwerbspensumGS1);
+	}
+
+	public void setErwerbspensumGS2ForAsivAndGemeinde(@Nullable Integer erwerbspensumGS1) {
+		this.getBgCalculationInputAsiv().setErwerbspensumGS2(erwerbspensumGS1);
+		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
+	}
+
+	public void addTaetigkeitForAsivAndGemeinde(@Nullable Taetigkeit taetigkeit) {
+		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
+		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
+	}
+
+	public void setFachstellenpensumForAsivAndGemeinde(int fachstellenpensum) {
+		this.getBgCalculationInputAsiv().setFachstellenpensum(fachstellenpensum);
+		this.getBgCalculationInputGemeinde().setFachstellenpensum(fachstellenpensum);
+	}
+
+	public void setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(boolean atLeastFachstellenpensum) {
+		this.getBgCalculationInputAsiv().setBetreuungspensumMustBeAtLeastFachstellenpensum(atLeastFachstellenpensum);
+		this.getBgCalculationInputGemeinde().setBetreuungspensumMustBeAtLeastFachstellenpensum(atLeastFachstellenpensum);
+	}
+
+	public void setAbschnittLiegtNachBEGUStartdatumForAsivAndGemeinde(boolean abschnittLiegtNachBEGUStartdatum) {
+		this.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+		this.getBgCalculationInputGemeinde().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+	}
+
+	public void setBabyTarifForAsivAndGemeinde(boolean babyTarif) {
+		this.getBgCalculationInputAsiv().setBabyTarif(babyTarif);
+		this.getBgCalculationInputGemeinde().setBabyTarif(babyTarif);
+	}
+
+	public void setEingeschultForAsivAndGemeinde(boolean eingeschult) {
+		this.getBgCalculationInputAsiv().setEingeschult(eingeschult);
+		this.getBgCalculationInputGemeinde().setEingeschult(eingeschult);
+	}
+
+	public void setHasSecondGesuchstellerForFinanzielleSituationForAsivAndGemeinde(boolean hasSecondGesuchstellerForFinanzielleSituation) {
+		this.getBgCalculationInputAsiv().setHasSecondGesuchstellerForFinanzielleSituation(hasSecondGesuchstellerForFinanzielleSituation);
+		this.getBgCalculationInputGemeinde().setHasSecondGesuchstellerForFinanzielleSituation(hasSecondGesuchstellerForFinanzielleSituation);
+	}
+
+	public void setWohnsitzNichtInGemeindeGS1ForAsivAndGemeinde(Boolean wohnsitzNichtInGemeindeGS1) {
+		this.getBgCalculationInputAsiv().setWohnsitzNichtInGemeindeGS1(wohnsitzNichtInGemeindeGS1);
+		this.getBgCalculationInputGemeinde().setWohnsitzNichtInGemeindeGS1(wohnsitzNichtInGemeindeGS1);
+	}
+
+	public void setTsBetreuungszeitProWocheMitBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
+		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheMitBetreuung(tsBetreuungszeitProWocheMitBetreuung);
+		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheMitBetreuung(tsBetreuungszeitProWocheMitBetreuung);
+	}
+
+	public void setTsVerpflegungskostenMitBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
+		this.getBgCalculationInputAsiv().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
+		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenMitBetreuung(tsVerpflegungskostenMitBetreuung);
+	}
+
+	public void setTsBetreuungszeitProWocheOhneBetreuungForAsivAndGemeinde(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
+		this.getBgCalculationInputAsiv().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
+		this.getBgCalculationInputGemeinde().setTsBetreuungszeitProWocheOhneBetreuung(tsBetreuungszeitProWocheOhneBetreuung);
+	}
+
+	public void setTsVerpflegungskostenOhneBetreuungForAsivAndGemeinde(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
+		this.getBgCalculationInputAsiv().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
+		this.getBgCalculationInputGemeinde().setTsVerpflegungskostenOhneBetreuung(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	public void setEinkommensjahrForAsivAndGemeinde(@Nonnull Integer einkommensjahr) {
+		this.getBgCalculationInputAsiv().setEinkommensjahr(einkommensjahr);
+		this.getBgCalculationInputGemeinde().setEinkommensjahr(einkommensjahr);
+	}
+
+	public void setAbzugFamGroesseForAsivAndGemeinde(@Nullable BigDecimal abzugFamGroesse) {
+		this.getBgCalculationInputAsiv().setAbzugFamGroesse(abzugFamGroesse);
+		this.getBgCalculationInputGemeinde().setAbzugFamGroesse(abzugFamGroesse);
+	}
+
+	public void setFamGroesseForAsivAndGemeinde(@Nullable BigDecimal famGroesse) {
+		this.getBgCalculationInputAsiv().setFamGroesse(famGroesse);
+		this.getBgCalculationInputGemeinde().setFamGroesse(famGroesse);
+	}
+
+	public void setSameVerfuegteVerfuegungsrelevanteDatenForAsivAndGemeinde(boolean sameVerfuegteVerfuegungsrelevanteDaten) {
+		this.getBgCalculationInputAsiv().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
+		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
+	}
+
+	public void setSameAusbezahlteVerguenstigungForAsivAndGemeinde(boolean sameAusbezahlteVerguenstigung) {
+		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
+		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
+	}
+
+	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
+
 
 	@Nullable
 	public String getBemerkungen() {
@@ -328,6 +512,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
+	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
+		return bemerkungenMap;
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -335,13 +523,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void add(VerfuegungZeitabschnitt other) {
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
-		this.bgCalculationResultAsiv.add(other.bgCalculationResultAsiv);
-		if (other.getBgCalculationResultGemeinde() != null) {
-			if (this.bgCalculationResultGemeinde == null) {
-				this.bgCalculationResultGemeinde = new BGCalculationResult();
-			}
-			this.bgCalculationResultGemeinde.add(other.getBgCalculationResultGemeinde());
-		}
+		this.addAllBemerkungen(other.getBemerkungenMap());
 	}
 
 	@Override
@@ -384,10 +566,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return
 			bgCalculationInputAsiv.isSame(otherVerfuegungZeitabschnitt.getBgCalculationInputAsiv()) &&
-			bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde()) &&
-			EbeguUtil.isSameObject(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
-			EbeguUtil.isSameObject(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
+			(!this.hasGemeindeSpezfischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
+			EbeguUtil.isSame(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
+			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
+			Objects.equals(bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}
 
@@ -398,9 +581,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		return
 			this.bgCalculationInputAsiv.isSameSichtbareDaten(that.bgCalculationInputAsiv) &&
-			this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde) &&
+			(!this.hasGemeindeSpezfischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
+			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
 			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
@@ -414,10 +598,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat
 		// gelangt sind
 		return
-			this.bgCalculationInputAsiv.isSamePersistedValues(that.bgCalculationInputAsiv) &&
-			this.bgCalculationInputGemeinde.isSamePersistedValues(that.bgCalculationInputGemeinde) &&
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
-			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
+			(!this.hasGemeindeSpezfischeBerechnung() ||
+				BGCalculationResult.isSamePersistedValues(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde)) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0;
 	}
 
@@ -444,6 +627,36 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 	}
 
+	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		this.bemerkungenMap.putAll(otherBemerkungenMap);
+	}
+
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
+	}
+
+	@SuppressWarnings("OverloadedVarargsMethod")
+	public void addBemerkung(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull MsgKey msgKey,
+		@Nonnull Locale locale,
+		@Nonnull Object... args) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
+	}
+
+	/**
+	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
+	 */
+	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
+			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
+				this.bemerkungenMap.put(
+					msgKeyVerfuegungsBemerkungEntry.getKey(),
+					msgKeyVerfuegungsBemerkungEntry.getValue());
+			}
+		}
+	}
+
 	@Override
 	public int compareTo(@Nonnull VerfuegungZeitabschnitt other) {
 		CompareToBuilder compareToBuilder = new CompareToBuilder();
@@ -453,4 +666,56 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return compareToBuilder.toComparison();
 	}
 
+	public boolean hasGemeindeSpezfischeBerechnung() {
+		return this.bgCalculationResultGemeinde != null;
+	}
+
+	@Nonnull
+	public BGCalculationResult getRelevantBgCalculationResult() {
+		if (hasGemeindeSpezfischeBerechnung()) {
+			Objects.requireNonNull(this.getBgCalculationResultGemeinde());
+			return this.getBgCalculationResultGemeinde();
+		}
+		return this.getBgCalculationResultAsiv();
+	}
+
+	@Nonnull
+	public BGCalculationInput getRelevantBgCalculationInput() {
+		if (hasGemeindeSpezfischeBerechnung()) {
+			Objects.requireNonNull(this.getBgCalculationInputGemeinde());
+			return this.getBgCalculationInputGemeinde();
+		}
+		return this.getBgCalculationInputAsiv();
+	}
+
+	public void copyValuesToResult() {
+		copyValuesToResult(getBgCalculationInputAsiv(), getBgCalculationResultAsiv());
+		if (getBgCalculationResultGemeinde() != null) {
+			copyValuesToResult(getBgCalculationInputGemeinde(), getBgCalculationResultGemeinde());
+		}
+	}
+
+	private void copyValuesToResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
+		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
+		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
+		result.setMassgebendesEinkommenVorAbzugFamgr(input.getMassgebendesEinkommenVorAbzugFamgr());
+		result.setBesondereBeduerfnisseBestaetigt(input.isBesondereBeduerfnisseBestaetigt());
+		result.setAbzugFamGroesse(input.getAbzugFamGroesseNonNull());
+		result.setEinkommensjahr(input.getEinkommensjahr());
+		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
+		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
+		result.setFamGroesse(input.getFamGroesseNonNull());
+		if (input.getTsBetreuungszeitProWocheMitBetreuung() > 0) {
+			TSCalculationResult tsResultMitBetreuung = new TSCalculationResult();
+			tsResultMitBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheMitBetreuung());
+			tsResultMitBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenMitBetreuung());
+			result.setTsCalculationResultMitPaedagogischerBetreuung(tsResultMitBetreuung);
+		}
+		if (input.getTsBetreuungszeitProWocheOhneBetreuung() > 0) {
+			TSCalculationResult tsResultOhneBetreuung = new TSCalculationResult();
+			tsResultOhneBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheOhneBetreuung());
+			tsResultOhneBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenOhneBetreuung());
+			result.setTsCalculationResultOhnePaedagogischerBetreuung(tsResultOhneBetreuung);
+		}
+	}
 }

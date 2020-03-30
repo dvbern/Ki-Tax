@@ -314,11 +314,7 @@ export class EbeguUtil {
     }
 
     public static formatHrefUrl(url: string): string {
-        if (!url) {
-            return undefined;
-        }
-
-        if (url.startsWith('www.')) {
+        if (EbeguUtil.isNotNullOrUndefined(url) && url.startsWith('www.')) {
             return 'http://' + url;
         }
         return url;

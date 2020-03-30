@@ -3267,6 +3267,11 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nullable
+	public Verfuegung verfuegungToEntity(@Nullable JaxVerfuegung jaxVerfuegung) {
+		throw new EbeguFingerWegException("verfuegungToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
+	}
+
+	@Nullable
 	private JaxVerfuegungZeitabschnitt verfuegungZeitabschnittToJax(@Nullable VerfuegungZeitabschnitt zeitabschnitt) {
 		if (zeitabschnitt == null) {
 			return null;
@@ -3275,11 +3280,11 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxVerfuegungZeitabschnitt jaxZeitabschn = new JaxVerfuegungZeitabschnitt();
 		convertAbstractDateRangedFieldsToJAX(zeitabschnitt, jaxZeitabschn);
 		jaxZeitabschn.setAbzugFamGroesse(zeitabschnitt.getAbzugFamGroesse());
-		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
-		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS2());
+		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS1());
+		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS2());
 		jaxZeitabschn.setBetreuungspensumProzent(zeitabschnitt.getBetreuungspensumProzent());
-		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getBgCalculationInputAsiv().getFachstellenpensum());
-		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest());
+		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getRelevantBgCalculationInput().getFachstellenpensum());
+		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
 		jaxZeitabschn.setAnspruchspensumProzent(zeitabschnitt.getAnspruchberechtigtesPensum());
 		jaxZeitabschn.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit());
@@ -3297,20 +3302,22 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setVerfuegteAnzahlZeiteinheiten(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten());
 		jaxZeitabschn.setAnspruchsberechtigteAnzahlZeiteinheiten(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
 		jaxZeitabschn.setZeiteinheit(zeitabschnitt.getZeiteinheit());
-		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum());
-		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen());
+		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.getRelevantBgCalculationInput().isKategorieKeinPensum());
+		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getBgCalculationInputAsiv().isSameVerfuegteVerfuegungsrelevanteDaten());
-		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getBgCalculationInputAsiv().isSameAusbezahlteVerguenstigung());
+		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput().isSameVerfuegteVerfuegungsrelevanteDaten());
+		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput().isSameAusbezahlteVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
-			tsCalculationResultToJax(
-				zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung()));
+			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
-			tsCalculationResultToJax(
-				zeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung()));
+			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
 		return jaxZeitabschn;
+	}
+
+	public VerfuegungZeitabschnitt verfuegungZeitabschnittToEntity(@Nullable JaxVerfuegungZeitabschnitt jaxVerfuegungZeitabschnitt) {
+		throw new EbeguFingerWegException("verfuegungZeitabschnittToEntity", ErrorCodeEnum.ERROR_OBJECT_IS_IMMUTABLE);
 	}
 
 	@Nullable

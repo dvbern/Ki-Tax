@@ -1179,7 +1179,7 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+	private static Gesuch createAndPersistWaeltiDagmarGesuch(
 		InstitutionService instService, Persistence persistence,
 		@Nullable LocalDate eingangsdatum, @Nullable AntragStatus status) {
 
@@ -1977,10 +1977,10 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
-		zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(PERIODE_JAHR_1);
-		zeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(false);
+		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(BigDecimal.valueOf(10));
+		zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(50);
+		zeitabschnitt.setEinkommensjahrForAsivAndGemeinde(PERIODE_JAHR_1);
+		zeitabschnitt.setZuSpaetEingereichtForAsivAndGemeinde(false);
 		return zeitabschnitt;
 	}
 

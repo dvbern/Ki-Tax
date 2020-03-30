@@ -22,9 +22,9 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -49,15 +49,13 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
-	protected void executeRule(
-		@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
 		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
 			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {
 			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
+			inputData.setAnspruchspensumProzent(0);
+			inputData.getParent().addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
 		}
 	}
 }
