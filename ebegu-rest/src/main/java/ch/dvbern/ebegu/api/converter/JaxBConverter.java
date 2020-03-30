@@ -4338,7 +4338,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenToEntity(
 		@Nonnull JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenJAX,
-		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten, GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
+		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
 
 		requireNonNull(ferieninselStammdatenJAX);
 		requireNonNull(ferieninselStammdaten);
@@ -4346,7 +4346,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(ferieninselStammdatenJAX, ferieninselStammdaten);
 		ferieninselStammdaten.setFerienname(ferieninselStammdatenJAX.getFerienname());
 		ferieninselStammdaten.setAnmeldeschluss(ferieninselStammdatenJAX.getAnmeldeschluss());
-		ferieninselStammdaten.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
 
 		ferieninselZeitraumListToEntity(
 			ferieninselStammdatenJAX.getZeitraumList(),

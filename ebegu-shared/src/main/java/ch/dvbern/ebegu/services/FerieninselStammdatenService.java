@@ -34,6 +34,10 @@ public interface FerieninselStammdatenService {
 	void initFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode);
 
 	/**
+	 * Loescht das uebergebene FerieninselStammdaten-Objekt
+	 */
+	void removeFerieninselStammdaten(@Nonnull String gemeindeStammdatenGesuchsperiodeFerieninselId);
+	/**
 	 * Speichert ferieninselStammdaten Objekt
 	 */
 	@Nonnull
@@ -65,10 +69,5 @@ public interface FerieninselStammdatenService {
 	 *//*
 	@Nonnull
 	List<BelegungFerieninselTag> getPossibleFerieninselTage(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten);
-
-	*//**
-	 * Loescht das uebergebene FerieninselStammdaten-Objekt
-	 *//*
-	void removeFerieninselStammdaten(@Nonnull String ferieninselStammdatenId);*/
-
+	*/
 }

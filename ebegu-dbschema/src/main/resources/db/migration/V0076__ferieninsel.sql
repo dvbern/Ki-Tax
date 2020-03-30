@@ -30,7 +30,7 @@ create table gemeinde_stammdaten_gesuchsperiode_ferieninsel_aud (
 	vorgaenger_id varchar(36),
 	anmeldeschluss date,
 	ferienname varchar(255),
-	gemeinde_stammdaten_gesuchsperiode_id binary(16) not null,
+	gemeinde_stammdaten_gesuchsperiode_id binary(16),
 	primary key (id, rev)
 );
 
@@ -68,8 +68,8 @@ create table gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum (
 
 create table gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum_aud (
 	rev integer not null,
-	ferieninsel_stammdaten_id binary(16) not null,
-	zeitraum_id binary(16) not null,
+	ferieninsel_stammdaten_id binary(16),
+	zeitraum_id binary(16),
 	revtype tinyint,
 	primary key (rev, ferieninsel_stammdaten_id, zeitraum_id)
 );

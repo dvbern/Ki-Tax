@@ -387,8 +387,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		persistence.merge(gemeinde);
 
 		if (value) {
-			//TODO
-			//ferieninselStammdatenService.initFerieninselStammdaten();
 			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.FERIENINSEL);
 		}
 	}

@@ -93,6 +93,11 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 		persistence.persist(sportferien);
 	}
 
+	@Override
+	public void removeFerieninselStammdaten(@Nonnull String gemeindeStammdatenGesuchsperiodeFerieninselId) {
+		persistence.remove(GemeindeStammdatenGesuchsperiodeFerieninsel.class, gemeindeStammdatenGesuchsperiodeFerieninselId);
+	}
+
 	@Nonnull
 	@Override
 	public GemeindeStammdatenGesuchsperiodeFerieninsel saveFerieninselStammdaten(
@@ -191,11 +196,5 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 		}
 		return potentielleFerieninselTage;
 	}
-
-	@Override
-	@RolesAllowed(SUPER_ADMIN)
-	public void removeFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
-		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
-		persistence.remove(GemeindeStammdatenGesuchsperiodeFerieninsel.class, ferieninselStammdatenId);
-	}*/
+	*/
 }
