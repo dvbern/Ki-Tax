@@ -15,6 +15,9 @@
 
 import {StateService, TargetState} from '@uirouter/core';
 import {IComponentOptions, IController, ILocationService, ITimeoutService, IWindowService} from 'angular';
+import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
+import {environment} from '../../environments/environment';
+import {OkHtmlDialogController} from '../../gesuch/dialog/OkHtmlDialogController';
 import {TSRole} from '../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {IAuthenticationStateParams} from '../authentication.route';
@@ -30,9 +33,12 @@ export const LoginComponentConfig: IComponentOptions = {
     },
 };
 
+const okHtmlDialogTempl = require('../../gesuch/dialog/okHtmlDialogTemplate.html');
+
 export class LoginComponentController implements IController {
 
-    public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location'];
+    public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location',
+        'DvDialog'];
 
     public redirectionHref: string;
     public logoutHref: string;
@@ -48,6 +54,7 @@ export class LoginComponentController implements IController {
         private readonly $timeout: ITimeoutService,
         private readonly authService: AuthServiceRS,
         private readonly $location: ILocationService,
+        private readonly dvDialog: DvDialog,
     ) {
     }
 
@@ -58,6 +65,19 @@ export class LoginComponentController implements IController {
             return;
         }
 
+        // tslint:disable-next-line:early-exit
+        if (environment.test) {
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                title: 'TESTLOGIN_REDIRECT_WARNING',
+            }).then(() => {
+                this.doRelocate();
+            });
+        } else {
+            this.doRelocate();
+        }
+    }
+
+    private doRelocate(): void {
         // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
         // wrap in burn timeout request, note that this will always produce an error
