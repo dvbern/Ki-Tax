@@ -167,7 +167,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(1, result.size());
 		assertEquals(0, (new BigDecimal("159000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		assertFalse(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(result.get(0).getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertFalse(result.get(0).getBemerkungenMap().isEmpty());
 		assertEquals(3, result.get(0).getBemerkungenMap().size());
 		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
