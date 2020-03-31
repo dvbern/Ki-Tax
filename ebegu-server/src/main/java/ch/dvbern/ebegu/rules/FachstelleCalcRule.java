@@ -45,7 +45,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class FachstelleCalcRule extends AbstractCalcRule {
 
 	public FachstelleCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

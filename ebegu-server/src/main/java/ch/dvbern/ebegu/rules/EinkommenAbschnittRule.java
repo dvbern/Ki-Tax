@@ -41,7 +41,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
 	public EinkommenAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

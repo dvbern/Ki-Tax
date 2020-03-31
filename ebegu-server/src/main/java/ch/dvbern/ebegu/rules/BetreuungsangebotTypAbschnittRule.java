@@ -39,7 +39,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class BetreuungsangebotTypAbschnittRule extends AbstractAbschnittRule {
 
 	public BetreuungsangebotTypAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

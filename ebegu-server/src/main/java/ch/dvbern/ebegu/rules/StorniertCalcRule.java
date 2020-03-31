@@ -39,7 +39,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class StorniertCalcRule extends AbstractCalcRule {
 
 	public StorniertCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
 	public ErwerbspensumAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

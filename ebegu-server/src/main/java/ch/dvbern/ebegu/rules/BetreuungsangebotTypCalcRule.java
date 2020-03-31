@@ -36,7 +36,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	public BetreuungsangebotTypCalcRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

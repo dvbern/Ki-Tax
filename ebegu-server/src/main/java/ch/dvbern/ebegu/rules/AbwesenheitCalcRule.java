@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 public class AbwesenheitCalcRule extends AbstractCalcRule {
 
 	public AbwesenheitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.ABWESENHEIT, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.ABWESENHEIT, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

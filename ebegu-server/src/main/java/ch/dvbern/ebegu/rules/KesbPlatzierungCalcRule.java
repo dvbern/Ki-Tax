@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 
 	public KesbPlatzierungCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.KESB_PLATZIERUNG, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.KESB_PLATZIERUNG, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

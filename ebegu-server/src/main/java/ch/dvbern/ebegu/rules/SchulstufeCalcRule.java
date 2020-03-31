@@ -54,7 +54,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 		@Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.einschulungsTypAnspruchsgrenze = einschulungsTypAnspruchsgrenze;
 	}
 
