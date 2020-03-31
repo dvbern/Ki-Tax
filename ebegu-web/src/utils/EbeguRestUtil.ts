@@ -21,6 +21,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
@@ -136,6 +137,10 @@ import {DateUtil} from './DateUtil';
 export class EbeguRestUtil {
 
     public constructor() {
+    }
+
+    private static sortFerieninselStammdaten(a: TSFerieninselStammdaten, b: TSFerieninselStammdaten): number {
+        return ferienInselNameOrder(a.ferienname) - ferienInselNameOrder(b.ferienname);
     }
 
     /**
@@ -3503,6 +3508,7 @@ export class EbeguRestUtil {
         }
         return Array.isArray(data)
             ? data.map(item => this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), item))
+                .sort(EbeguRestUtil.sortFerieninselStammdaten)
             : [this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data)];
     }
 

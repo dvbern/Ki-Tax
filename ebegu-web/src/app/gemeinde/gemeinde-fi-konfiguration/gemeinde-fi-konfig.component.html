@@ -34,7 +34,8 @@
                         <div class="row">
                             <!-- readonly -->
                             <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
-                                <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
+                                <div *ngIf="konfigurationsListe[i].ferieninselStammdaten | filterFiStammdaten as filteredStammdaten">
+                                    <div *ngFor="let fiStammdaten of filteredStammdaten" class="ferien">
 
                                     <div class="row">
                                         <div class="col-md-8">
@@ -69,9 +70,18 @@
                                     </div>
 
                                 </div>
+                                    <div *ngIf="!filteredStammdaten.length">
+                                        <p translate>KEINE_FERIEN_DEFINIERT</p>
+                                    </div>
+                                </div>
                             </div>
                             <!-- editable -->
-                            <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
+                            <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12" ngModelGroup="fiStammdaten"
+                                 [appOverlappingZeitraum]="konfigurationsListe[i].ferieninselStammdaten"
+								 #fiStammdatenGroup="ngModelGroup">
+                                <div class="col-sm-12">
+                                    <dv-error-messages [errorObject]="fiStammdatenGroup.errors"></dv-error-messages>
+                                </div>
                                 <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
 
                                     <div class="row">
@@ -81,7 +91,8 @@
                                             </b>
                                         </div>
                                     </div>
-                                    <!--                                   Titelzeile-->
+
+                                    <!-- Titelzeile-->
                                     <div class="row">
                                         <div class="col-md-4">
                                             <span>{{'VON' | translate}}</span>
@@ -96,7 +107,8 @@
                                     <div class="row zeitabschnitt">
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
-                                                   [name]="fiStammdaten + '_gueltigAb'" [id]="fiStammdaten + '_gueltigAb'"
+                                                   [name]="fiStammdaten.ferienname + '_gueltigAb'"
+                                                   [id]="fiStammdaten.ferienname + '_gueltigAb'"
                                                    [(ngModel)]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb"
                                                    [matDatepicker]="gueltigAb"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
@@ -107,7 +119,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
-                                                   [name]="fiStammdaten.ferienname + '_gueltigBis'" [id]="fiStammdaten.ferienname + '_gueltigBis'"
+                                                   [name]="fiStammdaten.ferienname + '_gueltigBis'"
+                                                   [id]="fiStammdaten.ferienname + '_gueltigBis'"
                                                    [(ngModel)]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis"
                                                    [matDatepicker]="gueltigBis"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
@@ -118,7 +131,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
-                                                   [name]="fiStammdaten.ferienname + '_anmeldeschluss'" [id]="fiStammdaten.ferienname + '_anmeldeschluss'"
+                                                   [name]="fiStammdaten.ferienname + '_anmeldeschluss'"
+                                                   [id]="fiStammdaten.ferienname + '_anmeldeschluss'"
                                                    [(ngModel)]="fiStammdaten.anmeldeschluss"
                                                    [matDatepicker]="anmeldeschluss"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
