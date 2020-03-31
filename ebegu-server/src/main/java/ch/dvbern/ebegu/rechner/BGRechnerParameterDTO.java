@@ -77,7 +77,7 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
-	private BGRechnerParameterGemeindeDTO gemeindeParameter;
+	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
 
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
