@@ -85,7 +85,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			}
 			// Keine FinSit erfasst, aber auch nicht Sozialhilfeempfaenger -> Bezahlt Vollkosten
 			if (keineFinSitErfasst) {
-				verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(true);
+				inputData.setBezahltVollkosten(true);
 			}
 			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
 			// aus. Da Anspruch auf die Pauschale besteht, wird das Anspruchberechtigte Pensum nicht auf 0 gesetzt!
