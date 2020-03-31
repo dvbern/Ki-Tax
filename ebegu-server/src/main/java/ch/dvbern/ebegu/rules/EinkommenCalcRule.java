@@ -83,6 +83,10 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				inputData.getParent().addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
 				return;
 			}
+			// Keine FinSit erfasst, aber auch nicht Sozialhilfeempfaenger -> Bezahlt Vollkosten
+			if (keineFinSitErfasst) {
+				verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBezahltVollkosten(true);
+			}
 			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
 			// aus. Da Anspruch auf die Pauschale besteht, wird das Anspruchberechtigte Pensum nicht auf 0 gesetzt!
 			// Dies betrifft nur Betreuungsgutscheine
