@@ -42,7 +42,6 @@ describe('ExternalClientMultiselectComponent', () => {
                 WindowRef,
                 {provide: NgForm, useValue: new NgForm([], [])},
             ],
-            declarations: [ExternalClientMultiselectComponent],
         })
             .compileComponents();
     }));
