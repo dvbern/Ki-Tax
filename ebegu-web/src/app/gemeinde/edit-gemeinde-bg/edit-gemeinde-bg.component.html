@@ -359,6 +359,65 @@
                                         <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="row">
                                                 <div class="col-sm-6">
+
+                                                    <!--                                                            Custom Minimale Erwerbspensen -->
+                                                    <div class="form-group">
+                                                        <mat-checkbox id="ewp_mininum_override_id_{{i}}"
+                                                                      name="ewp_mininum_override_id_{{i}}"
+                                                                      [(ngModel)]="konfigurationsListe[i].erwerbspensumMinimumOverriden"
+                                                                      (change)="changeKonfigErwerbspensumMinimumOverriden(konfigurationsListe[i])">
+                                                            <span translate
+                                                                  [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumVorschuleMax}">
+                                                                EWP_MINIUM_OVERRIDE
+                                                            </span>
+                                                        </mat-checkbox>
+                                                    </div>
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].erwerbspensumMinimumOverriden">
+                                                        <label for="ewp_mininum_vorschulalter_id{{i}}"
+                                                               class="required" translate
+                                                               [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumVorschuleMax}">
+                                                            EWP_MINIUM_VORSCHULKINDER_OVERRIDE</label>
+                                                        <input id="ewp_mininum_vorschulalter_id{{i}}"
+                                                               name="ewp_mininum_vorschulalter_id{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #ewp_mininum_vorschulalter='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [maxValue]="konfigurationsListe[i].erwerbspensumMiminumVorschuleMax"
+                                                               [(ngModel)]="konfigurationsListe[i].erwerbspensumMiminumVorschule"
+                                                               (change)="changeErwerbspensumMinimumVorschule(konfigurationsListe[i])">
+
+                                                        <dv-error-messages inputId="ewp_mininum_vorschulalter_id{{i}}"
+                                                                           [errorObject]="ewp_mininum_vorschulalter.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].erwerbspensumMinimumOverriden">
+                                                        <label for="ewp_mininum_schulkind_id{{i}}"
+                                                               class="required" translate
+                                                               [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumSchulkinderMax}">
+                                                            EWP_MINIUM_SCHULKINDER_OVERRIDE</label>
+                                                        <input id="ewp_mininum_schulkind_id{{i}}"
+                                                               name="ewp_mininum_schulkind_id{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #ewp_mininum_schulkind='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [maxValue]="konfigurationsListe[i].erwerbspensumMiminumSchulkinderMax"
+                                                               [(ngModel)]="konfigurationsListe[i].erwerbspensumMiminumSchulkinder"
+                                                               (change)="changeErwerbspensumMinimumSchulkinder(konfigurationsListe[i])">
+
+                                                        <dv-error-messages inputId="ewp_mininum_schulkind_id{{i}}"
+                                                                           [errorObject]="ewp_mininum_schulkind.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+
+
                                                     <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
                                                     <div class="form-group">
                                                         <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
@@ -967,7 +1026,7 @@
                                 <tab-body>
                                     <div class="row">
                                         <!-- readonly -->
-                                        <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                                        <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
                                             <div class="form-group">
                                                 <!-- BG bis Schulstufe -->
                                                 <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
@@ -975,14 +1034,30 @@
                                                 <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
                                                    class="line-through">{{getKonfigKontingentierungString()}}</p>
                                                 <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
+                                                <!-- Erwerbspensum Zuschlag -->
                                                 <p *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
-                                                <span translate
-                                                      [translateParams]="{valueMandant:
-                                                  konfigurationsListe[i].erwerbspensumZuschlagMax, value:
-                                                  konfigurationsListe[i].erwerbspensumZuschlag}">
-                                                    EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
-                                                </span>
+                                                    <span translate
+                                                          [translateParams]="{valueMandant:
+                                                      konfigurationsListe[i].erwerbspensumZuschlagMax, value:
+                                                      konfigurationsListe[i].erwerbspensumZuschlag}">
+                                                        EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
+                                                    </span>
                                                 </p>
+                                                <!-- Minimale Erwerbspensen -->
+                                                <p *ngIf="konfigurationsListe[i].erwerbspensumMinimumOverriden">
+                                                    <span translate
+                                                          [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumVorschuleMax,
+                                                                            value: konfigurationsListe[i].erwerbspensumMiminumVorschule}">
+                                                        EWP_MINIUM_VORSCHULKINDER_OVERRIDE_WITH_VALUE
+                                                    </span>
+                                                    <br/>
+                                                    <span translate
+                                                          [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumSchulkinderMax,
+                                                                            value: konfigurationsListe[i].erwerbspensumMiminumSchulkinder}">
+                                                        EWP_MINIUM_SCHULKINDER_OVERRIDE_WITH_VALUE
+                                                    </span>
+                                                </p>
+                                                <!-- Zusaetzlicher Gutschein der Gemeinde -->
                                                 <div *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
                                                      class="mt-2">
                                                     <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}

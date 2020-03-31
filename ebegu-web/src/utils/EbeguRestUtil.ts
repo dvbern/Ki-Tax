@@ -1007,6 +1007,8 @@ export class EbeguRestUtil {
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
             konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
+            konfigurationTS.erwerbspensumMiminumVorschuleMax = konfigurationFromServer.erwerbspensumMiminumVorschuleMax;
+            konfigurationTS.erwerbspensumMiminumSchulkinderMax = konfigurationFromServer.erwerbspensumMiminumSchulkinderMax;
             konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
             konfigurationTS.gesuchsperiodeStatusName = konfigurationFromServer.gesuchsperiodeStatusName;
             konfigurationTS.gesuchsperiode =

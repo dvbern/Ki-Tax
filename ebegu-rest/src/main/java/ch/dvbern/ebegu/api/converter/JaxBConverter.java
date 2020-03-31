@@ -4811,10 +4811,23 @@ public class JaxBConverter extends AbstractConverter {
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 
+		Collection<Einstellung> einstellungenByMandant = einstellungService.getAllEinstellungenByMandant(gesuchsperiode);
 		konfiguration.setErwerbspensumZuschlagMax(
-			einstellungService.getAllEinstellungenByMandant(gesuchsperiode).stream()
+			einstellungenByMandant.stream()
 				.filter(einstellung ->
-					einstellung.getKey().equals(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG))
+					einstellung.getKey() == EinstellungKey.ERWERBSPENSUM_ZUSCHLAG)
+				.findFirst().get().getValueAsInteger()
+		);
+		konfiguration.setErwerbspensumMiminumVorschuleMax(
+			einstellungenByMandant.stream()
+				.filter(einstellung ->
+					einstellung.getKey() == EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT)
+				.findFirst().get().getValueAsInteger()
+		);
+		konfiguration.setErwerbspensumMiminumSchulkinderMax(
+			einstellungenByMandant.stream()
+				.filter(einstellung ->
+					einstellung.getKey() == EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT)
 				.findFirst().get().getValueAsInteger()
 		);
 		return konfiguration;

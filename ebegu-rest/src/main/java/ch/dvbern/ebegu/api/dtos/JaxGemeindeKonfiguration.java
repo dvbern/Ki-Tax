@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 
 public class JaxGemeindeKonfiguration {
 	@Nonnull
@@ -34,6 +33,8 @@ public class JaxGemeindeKonfiguration {
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
 
 	private int erwerbspensumZuschlagMax;
+	private int erwerbspensumMiminumVorschuleMax;
+	private int erwerbspensumMiminumSchulkinderMax;
 
 	@Nonnull
 	public String getGesuchsperiodeName() {
@@ -77,5 +78,21 @@ public class JaxGemeindeKonfiguration {
 
 	public void setGesuchsperiodeStatusName(@Nonnull String gesuchsperiodeStatusName) {
 		this.gesuchsperiodeStatusName = gesuchsperiodeStatusName;
+	}
+
+	public int getErwerbspensumMiminumVorschuleMax() {
+		return erwerbspensumMiminumVorschuleMax;
+	}
+
+	public void setErwerbspensumMiminumVorschuleMax(int erwerbspensumMiminumVorschuleMax) {
+		this.erwerbspensumMiminumVorschuleMax = erwerbspensumMiminumVorschuleMax;
+	}
+
+	public int getErwerbspensumMiminumSchulkinderMax() {
+		return erwerbspensumMiminumSchulkinderMax;
+	}
+
+	public void setErwerbspensumMiminumSchulkinderMax(int erwerbspensumMiminumSchulkinderMax) {
+		this.erwerbspensumMiminumSchulkinderMax = erwerbspensumMiminumSchulkinderMax;
 	}
 }
