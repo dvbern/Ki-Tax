@@ -776,6 +776,7 @@ public final class TestDataUtil {
 	public static ErwerbspensumContainer createErwerbspensum(LocalDate von, LocalDate bis, int pensum) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 		Erwerbspensum erwerbspensum = new Erwerbspensum();
+		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(pensum);
 		erwerbspensum.setGueltigkeit(new DateRange(von, bis));
 		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);

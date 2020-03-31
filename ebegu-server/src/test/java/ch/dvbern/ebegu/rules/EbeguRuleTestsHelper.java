@@ -54,6 +54,8 @@ public final class EbeguRuleTestsHelper {
 	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000");
 
 	private static final ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final ErwerbspensumInklFreiwilligenarbeitAbschnittRule erwerbspensumInlFreiwilligenarbeitAbschnittRule =
+		new ErwerbspensumInklFreiwilligenarbeitAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final ErwerbspensumCalcRule erwerbspensumCalcRule =
 		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, DEFAULT_LOCALE);
 	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
@@ -156,6 +158,7 @@ public final class EbeguRuleTestsHelper {
 		boolean doMonatsstueckelungen) {
 		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
 		result = erwerbspensumAbschnittRule.calculate(platz, result);
+		result = erwerbspensumInlFreiwilligenarbeitAbschnittRule.calculate(platz, result);
 		result = urlaubAbschnittRule.calculate(platz, result);
 		result = familienabzugAbschnittRule.calculate(platz, result);
 		result = kindTarifAbschnittRule.calculate(platz, result);

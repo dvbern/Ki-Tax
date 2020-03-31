@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -45,7 +46,11 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
+	public ErwerbspensumAbschnittRule(@Nonnull RuleValidity validity, @Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validity, validityPeriod, locale);
+	}
+
+	public ErwerbspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
@@ -86,27 +91,33 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	 */
 	@Nullable
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Gesuch gesuch, @Nonnull Erwerbspensum erwerbspensum, boolean gs2) {
-		final DateRange gueltigkeit = new DateRange(erwerbspensum.getGueltigkeit());
+		if (getValidTaetigkeiten().contains(erwerbspensum.getTaetigkeit())) {
+			final DateRange gueltigkeit = new DateRange(erwerbspensum.getGueltigkeit());
 
-		// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
-		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
-		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
+			Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+			Familiensituation familiensituation = gesuch.extractFamiliensituation();
 
-		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
-			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
-		}
-		if (gs2 && !gesuch.isMutation()) {
-			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
-		}
-		if (!gs2) {
-			return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum);
+			if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
+				getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
+				return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
+			}
+			if (gs2 && !gesuch.isMutation()) {
+				return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
+			}
+			if (!gs2) {
+				return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum);
+			}
 		}
 		return null;
 	}
 
+	public List<Taetigkeit> getValidTaetigkeiten() {
+		return Taetigkeit.getTaetigkeitenForAsiv();
+	}
+
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
 		zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
@@ -114,7 +125,7 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
 		zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());

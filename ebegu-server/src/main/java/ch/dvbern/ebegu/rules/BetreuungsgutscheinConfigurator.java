@@ -100,6 +100,11 @@ public class BetreuungsgutscheinConfigurator {
 		ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(erwerbspensumAbschnittRule);
 
+		// - Erwerbspensum: Erweiterung fuer Gemeinden
+		ErwerbspensumInklFreiwilligenarbeitAbschnittRule erwerbspensumInklFreiwilligenarbeitAbschnittRule =
+			new ErwerbspensumInklFreiwilligenarbeitAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(erwerbspensumInklFreiwilligenarbeitAbschnittRule);
+
 		// - Unbezahlter Urlaub
 		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(unbezahlterUrlaubAbschnittRule);
