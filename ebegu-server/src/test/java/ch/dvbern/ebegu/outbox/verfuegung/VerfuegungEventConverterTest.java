@@ -175,6 +175,7 @@ public class VerfuegungEventConverterTest {
 		Verfuegung verfuegung = new Verfuegung();
 
 		VerfuegungZeitabschnitt defaultZeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
+		defaultZeitabschnitt.copyValuesToResult();
 		verfuegung.getZeitabschnitte().add(defaultZeitabschnitt);
 		verfuegung.setTimestampErstellt(TIMESTAMP_ERSTELLT);
 		verfuegung.setBetreuung(betreuung);

@@ -89,11 +89,17 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 				result.add(zeitabschnitt);
 			} else {
 				// Dies ist mindestens die zweite Adresse -> pruefen, ob sich an der Wohnsitz-Situation etwas geaendert hat.
-				if (isWohnsitzNichtInGemeinde(lastZeitAbschnitt) != isWohnsitzNichtInGemeinde(zeitabschnitt)) {
+				boolean lastNichtInGemeindeAsiv = lastZeitAbschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
+				boolean newNichtInGemeindeAsiv = zeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
+				boolean lastNichtInGemeindeGemeinde = lastZeitAbschnitt.getBgCalculationInputGemeinde().isWohnsitzNichtInGemeindeGS1();
+				boolean newNichtInGemeindeGemeinde = zeitabschnitt.getBgCalculationInputGemeinde().isWohnsitzNichtInGemeindeGS1();
+				boolean changedAsiv = lastNichtInGemeindeAsiv != newNichtInGemeindeAsiv;
+				boolean changedGemeinde = lastNichtInGemeindeGemeinde != newNichtInGemeindeGemeinde;
+				if (changedAsiv || changedGemeinde) {
+
 					// Es hat geaendert. Was war es fuer eine Anpassung?
-					if (isWohnsitzNichtInGemeinde(zeitabschnitt)) {
+					if ((changedAsiv && newNichtInGemeindeAsiv) || (changedGemeinde && newNichtInGemeindeGemeinde)) {
 						// Es ist ein Wegzug
-						LOG.info("Wegzug");
 						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth());
 						lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
 						if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
@@ -102,22 +108,17 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 						}
 					} else {
 						// Es ist ein Zuzug
-						LOG.info("Zuzug");
 						result.add(zeitabschnitt);
 					}
 				} else {
 					// Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!
-					LOG.info("Zweiter Adressen-Abschnitt mit gleichen Daten: Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!");
+					LOG.warn("Zweiter Adressen-Abschnitt mit gleichen Daten: Dieser Fall sollte gar nicht eintreten, da die Zeitabschnitte vorher gemergt wurden!");
 					result.add(zeitabschnitt);
 				}
 			}
 			lastZeitAbschnitt = zeitabschnitt;
 		}
 		return result;
-	}
-
-	private boolean isWohnsitzNichtInGemeinde(VerfuegungZeitabschnitt zeitabschnitt) {
-		return zeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 				requireNonNull(gsAdresseGueltigkeit);
 				if (gs1) {
 					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gsAdresseGueltigkeit);
-					zeitabschnitt.getBgCalculationInputAsiv().setWohnsitzNichtInGemeindeGS1(gesuchstellerAdresse.extractIsNichtInGemeinde());
+					zeitabschnitt.setWohnsitzNichtInGemeindeGS1ForAsivAndGemeinde(gesuchstellerAdresse.extractIsNichtInGemeinde());
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
 					final DateRange gueltigkeit = new DateRange(gsAdresseGueltigkeit);

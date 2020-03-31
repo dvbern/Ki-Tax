@@ -31,7 +31,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
@@ -398,7 +397,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			return false;
 		}
 		final GesuchstellerContainer otherGesuchstellerContainer = (GesuchstellerContainer) other;
-		return EbeguUtil.isSameObject(getGesuchstellerJA(), otherGesuchstellerContainer.getGesuchstellerJA());
+		return EbeguUtil.isSame(getGesuchstellerJA(), otherGesuchstellerContainer.getGesuchstellerJA());
 	}
 
 	/**

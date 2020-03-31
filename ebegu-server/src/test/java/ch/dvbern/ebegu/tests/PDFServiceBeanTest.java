@@ -385,8 +385,7 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
-		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch,
-			Constants.DEFAULT_LOCALE, true);
+		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, evaluateFamiliensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
@@ -414,7 +413,7 @@ public class PDFServiceBeanTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
-		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE, true);
+		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, familiensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
@@ -438,7 +437,7 @@ public class PDFServiceBeanTest {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
 		TestDataUtil.calculateFinanzDaten(gesuch);
-		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE, true);
+		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF, Constants.DEFAULT_LOCALE);

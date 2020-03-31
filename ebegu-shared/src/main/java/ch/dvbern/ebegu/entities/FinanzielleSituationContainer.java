@@ -136,6 +136,6 @@ public class FinanzielleSituationContainer extends AbstractMutableEntity {
 		}
 		final FinanzielleSituationContainer otherFinSitContainer = (FinanzielleSituationContainer) other;
 		return Objects.equals(getJahr(), otherFinSitContainer.getJahr()) &&
-			EbeguUtil.isSameObject(getFinanzielleSituationJA(), otherFinSitContainer.getFinanzielleSituationJA());
+			EbeguUtil.isSame(getFinanzielleSituationJA(), otherFinSitContainer.getFinanzielleSituationJA());
 	}
 }
