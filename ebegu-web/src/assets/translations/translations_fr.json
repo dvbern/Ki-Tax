@@ -1942,5 +1942,6 @@
     "INSTITUTION_TAGESSCHULE_TAGIS": "est une Tagi",
     "TAGESSCHULE_TAGIS_ENABLED": "Tagis activée",
     "TAGI": "Tagi",
+    "SCOLARIS_USERNAME": "Nom d'utilisateur scolaris",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

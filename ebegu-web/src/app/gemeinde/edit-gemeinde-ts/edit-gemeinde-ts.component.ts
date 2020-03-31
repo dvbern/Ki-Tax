@@ -38,6 +38,7 @@ export class EditGemeindeComponentTS implements OnInit {
     @Input() public tsAnmeldungenStartDatum: Moment;
     @Input() public tsAnmeldungenStartStr: string;
     @Input() public externalClients: TSExternalClientAssignment;
+    @Input() public isSuperAdmin: boolean;
 
     @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
 

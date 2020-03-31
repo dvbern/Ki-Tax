@@ -154,9 +154,6 @@ public class ScolarisBackendResource {
 
 			final AbstractAnmeldung betreuung = betreuungen.get(0);
 
-			// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten
-			//  createDrittanwendungNotAllowedResponse()
-
 			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp =
 				converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
 
@@ -165,7 +162,6 @@ public class ScolarisBackendResource {
 				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
 
 				//check if Gemeinde Scolaris erlaubt:
-
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
 					return createResponseUnauthorised("username");
 				}
@@ -197,7 +193,7 @@ public class ScolarisBackendResource {
 	}
 
 	@ApiOperation(value =
-		"Gibt das massgebende Einkommen fuer die uebergebene BgNummer zurueck. Falls das massgebende Einkommen noch "
+		"Gibt das massgebende Einkommen fuer die uebergebene referenznummer zurueck. Falls das massgebende Einkommen noch "
 			+ "nicht erfasst wurde, wird 400 zurueckgegeben.",
 		response = JaxExternalFinanzielleSituation.class)
 	@ApiResponses({
@@ -213,24 +209,25 @@ public class ScolarisBackendResource {
 	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public Response getFinanzielleSituation(
 		@Nonnull @QueryParam("stichtag") String stichtagParam,
-		@Nonnull @QueryParam("bgNummer") String bgNummer) {
+		@Nonnull @QueryParam("referenznummer") String referenznummer,
+		@Context HttpServletRequest request) {
 
 		try {
 			// Check parameters
 			if (stichtagParam.isEmpty()) {
 				return createBadParameterResponse("stichtagParam is null or empty");
 			}
-			if (bgNummer.isEmpty()) {
+			if (referenznummer.isEmpty()) {
 				return createBadParameterResponse("bgNummer is null or empty");
 			}
 
 			// Parse Fallnummer
-			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(referenznummer)) {
 				return createBgNummerFormatError();
 			}
 			long fallNummer;
 			try {
-				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
+				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(referenznummer);
 			} catch (Exception e) {
 				LOG.info("getFinanzielleSituation()", e);
 				return createBadParameterResponse("Can not parse bgNummer");
@@ -245,14 +242,40 @@ public class ScolarisBackendResource {
 				return createBadParameterResponse("Can not parse date for stichtagParam");
 			}
 
+
+			//check if Gemeinde Scolaris erlaubt:
+			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
+
+			if (betreuungen == null || betreuungen.isEmpty()) {
+				// Betreuung not found
+				return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+			}
+			if (betreuungen.size() > 1) {
+				// More than one betreuung
+				return createTooManyResultsResponse("More than one Betreuung with id " + referenznummer + " found");
+			}
+
+			final AbstractAnmeldung betreuung = betreuungen.get(0);
+
+			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp =
+				converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
+
+			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.TAGESSCHULE) {
+				// Betreuung ist Tagesschule
+				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
+				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
+					return createResponseUnauthorised("username");
+				}
+			}
+
 			// Parse Gesuchsperiode
-			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1))
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"getFinanzielleSituation",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						bgNummer));
+						referenznummer));
 
 			LocalDate stichtag = rearrangeStichtag(parsedStichtag, gesuchsperiodeFromBGNummer);
 
@@ -275,8 +298,6 @@ public class ScolarisBackendResource {
 		LocalDate stichtag,
 		Gesuch neustesGesuch) {
 
-		// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten
-		//  createDrittanwendungNotAllowedResponse()
 		// Calculate Verfuegungszeitabschnitte for Familiensituation
 		Verfuegung famGroessenVerfuegung = verfuegungService.getEvaluateFamiliensituationVerfuegung(neustesGesuch);
 

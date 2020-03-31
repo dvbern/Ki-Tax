@@ -99,12 +99,16 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String standardDokUnterschriftName2;
 	@Nullable
 	private @Valid List<String> externalClients = null;
+	@Nullable
+	private String usernameScolaris;
 
 
 	// ---------- Konfiguration ----------
 	@NotNull
 	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
 
+	public JaxGemeindeStammdaten() {
+	}
 
 	@Nullable
 	public String getAdministratoren() {
@@ -385,5 +389,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setExternalClients(@Nullable List<String> externalClients) {
 		this.externalClients = externalClients;
+	}
+
+	@Nullable
+	public String getUsernameScolaris() {
+		return usernameScolaris;
+	}
+
+	public void setUsernameScolaris(@Nullable String usernameScolaris) {
+		this.usernameScolaris = usernameScolaris;
 	}
 }

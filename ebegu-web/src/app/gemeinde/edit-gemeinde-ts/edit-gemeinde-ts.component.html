@@ -155,6 +155,25 @@
                         [externalClients]="externalClients">
                     </dv-external-client-multiselect>
                 </div>
+                <div *ngIf="isSuperAdmin" class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label translate for="anschrift_ts_id">SCOLARIS_USERNAME</label>
+                                <input id="username_scolaris_id"
+                                       type="text"
+                                       name="username_scolaris_id"
+									   #usernameScolaris="ngModel"
+                                       [(ngModel)]="stammdaten.usernameScolaris"
+                                       [maxlength]="255"
+                                       class="form-control">
+                                <dv-error-messages [errorObject]="usernameScolaris.errors"
+                                                   inputId="username_scolaris_id"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <dv-gemeinde-ts-konfiguration
                 [konfigurationsListe]="stammdaten.konfigurationsListe"
@@ -223,6 +242,17 @@
                     <div class="form-group">
                         <dv-external-client-assignment [externalClients]="externalClients">
                         </dv-external-client-assignment>
+                    </div>
+                </div>
+                <div *ngIf="isSuperAdmin" class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>SCOLARIS_USERNAME</h3>
+                                <p>{{stammdaten.usernameScolaris}}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

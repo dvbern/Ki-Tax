@@ -117,7 +117,6 @@ export class EditGemeindeComponent implements OnInit {
         this.externalClients = externalClients;
         // Store a copy of the assignedClients, such that we can later determine whetere we should PUT and update
         this.initiallyAssignedClients = [...externalClients.assignedClients];
-        //this.changeDetectorRef.markForCheck();
     }
 
     private loadStammdaten(): void {
@@ -351,5 +350,9 @@ export class EditGemeindeComponent implements OnInit {
 
     public isGemeindeEditable(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeOrMandantRole());
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

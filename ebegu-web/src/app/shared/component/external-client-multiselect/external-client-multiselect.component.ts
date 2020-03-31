@@ -37,9 +37,6 @@ export class ExternalClientMultiselectComponent implements OnChanges {
 
     public constructor(public readonly form: NgForm,
     ) {
-        if(this.externalClients !== undefined){
-            console.log('ok');
-        }
     }
 
     private static getOptions(currentValue?: TSExternalClientAssignment): TSExternalClient[] {

@@ -4618,6 +4618,8 @@ public class JaxBConverter extends AbstractConverter {
 				stammdaten.getRechtsmittelbelehrung()));
 		}
 
+		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
+
 		return stammdaten;
 	}
 
@@ -4702,6 +4704,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
 		}
+
+		jaxStammdaten.setUsernameScolaris(stammdaten.getUsernameScolaris());
 
 		return jaxStammdaten;
 	}
