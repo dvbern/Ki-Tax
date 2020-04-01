@@ -40,7 +40,9 @@ public class TagesschuleRechner extends AbstractRechner {
 	protected Optional<BGCalculationResult> calculateGemeinde(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
-		return Optional.empty();
+		// Fuer Tagesschule gibt es aktuell keine Gemeindespezifische Implementation.
+		// Wir geben einfach ASIV zurueck
+		return Optional.of(calculateAsiv(input, parameterDTO));
 	}
 
 	@Nonnull
