@@ -267,6 +267,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 
 			boolean validLogin = response.getStatus() == Status.OK.getStatusCode();
 			return getAuthStatus(httpMsgContext, validLogin);
+		} catch (RuntimeException e) {
+			throw e;
 		} catch (Exception ex) {
 			return setResponseUnauthorised(httpMsgContext);
 		}
