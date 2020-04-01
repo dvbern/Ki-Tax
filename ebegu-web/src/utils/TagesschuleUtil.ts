@@ -122,13 +122,13 @@ export class TagesschuleUtil {
     private static copyAlreadyAngemeldetModule(
         group: TSBelegungTagesschuleModulGroup,
         moduleAngemeldet: TSBelegungTagesschuleModul[],
-        oldTagesschuleGroup: TSModulTagesschuleGroup,
+        newTagesschuleGroup: TSModulTagesschuleGroup,
         moduleOfGroup: TSModulTagesschule,
     ): boolean {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
             if (angMod.modulTagesschule.wochentag !== moduleOfGroup.wochentag ||
-                !this.isModuleGroupSimilar(angMod.modulTagesschule, oldTagesschuleGroup)  ||
+                !this.isModuleGroupSimilar(angMod.modulTagesschule, newTagesschuleGroup)  ||
                 !moduleOfGroup.angeboten) {
                 continue;
             }
