@@ -132,6 +132,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
 			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, locale);
 			inputData.getParent().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
+			inputData.setMinimalesEwpUnterschritten(false);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
