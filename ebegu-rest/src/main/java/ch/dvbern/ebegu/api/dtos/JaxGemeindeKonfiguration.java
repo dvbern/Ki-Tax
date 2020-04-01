@@ -31,6 +31,8 @@ public class JaxGemeindeKonfiguration {
 	private JaxGesuchsperiode gesuchsperiode;
 	@Nonnull
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
+	@Nonnull
+	private List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten;
 
 	private int erwerbspensumZuschlagMax;
 	private int erwerbspensumMiminumVorschuleMax;
@@ -78,6 +80,15 @@ public class JaxGemeindeKonfiguration {
 
 	public void setGesuchsperiodeStatusName(@Nonnull String gesuchsperiodeStatusName) {
 		this.gesuchsperiodeStatusName = gesuchsperiodeStatusName;
+	}
+
+	@Nonnull
+	public List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> getFerieninselStammdaten() {
+		return ferieninselStammdaten;
+	}
+
+	public void setFerieninselStammdaten(@Nonnull List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten) {
+		this.ferieninselStammdaten = ferieninselStammdaten;
 	}
 
 	public int getErwerbspensumMiminumVorschuleMax() {

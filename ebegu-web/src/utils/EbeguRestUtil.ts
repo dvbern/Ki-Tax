@@ -987,6 +987,8 @@ export class EbeguRestUtil {
         if (konfiguration) {
             restKonfiguration.gesuchsperiode = this.gesuchsperiodeToRestObject({}, konfiguration.gesuchsperiode);
             restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
+            restKonfiguration.ferieninselStammdaten =
+                this.ferieninselStammdatenListToRestObject(konfiguration.ferieninselStammdaten);
             return restKonfiguration;
         }
         return undefined;
@@ -1020,6 +1022,8 @@ export class EbeguRestUtil {
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
             konfigurationTS.konfigurationen =
                 this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            konfigurationTS.ferieninselStammdaten =
+                this.parseFerieninselStammdatenList(konfigurationFromServer.ferieninselStammdaten);
             return konfigurationTS;
         }
         return undefined;
@@ -3519,13 +3523,14 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.ferienname = receivedFerieninselStammdaten.ferienname;
             ferieninselStammdatenTS.anmeldeschluss =
                 DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
-            ferieninselStammdatenTS.gesuchsperiode =
-                this.parseGesuchsperiode(new TSGesuchsperiode(), receivedFerieninselStammdaten.gesuchsperiode);
+            ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
+            const firstZeitraum = new TSFerieninselZeitraum();
             if (receivedFerieninselStammdaten.zeitraumList[0]) {
-                const firstZeitraum = new TSFerieninselZeitraum();
                 this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
-                ferieninselStammdatenTS.zeitraum = firstZeitraum;
+            } else {
+                firstZeitraum.gueltigkeit = new TSDateRange();
             }
+            ferieninselStammdatenTS.ersterZeitraum = firstZeitraum;
             ferieninselStammdatenTS.zeitraumList = [];
             for (let i = 1; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
                 const zeitraum = new TSFerieninselZeitraum();
@@ -3542,6 +3547,12 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    public ferieninselStammdatenListToRestObject(ferieninselStammdatenList: TSFerieninselStammdaten[]): Array<any> {
+        return ferieninselStammdatenList
+            ? ferieninselStammdatenList.map(item => this.ferieninselStammdatenToRestObject({}, item))
+            : [];
+    }
+
     public ferieninselStammdatenToRestObject(
         restFerieninselStammdaten: any,
         ferieninselStammdatenTS: TSFerieninselStammdaten,
@@ -3551,11 +3562,9 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            restFerieninselStammdaten.gesuchsperiode =
-                this.gesuchsperiodeToRestObject({}, ferieninselStammdatenTS.gesuchsperiode);
-            if (ferieninselStammdatenTS.zeitraum) {
+            if (ferieninselStammdatenTS.ersterZeitraum) {
                 const firstZeitraum: any = {};
-                this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.zeitraum);
+                this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.ersterZeitraum);
                 restFerieninselStammdaten.zeitraumList = [];
                 restFerieninselStammdaten.zeitraumList[0] = firstZeitraum;
             }
