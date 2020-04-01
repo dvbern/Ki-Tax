@@ -33,10 +33,153 @@
                     <tab-body>
                         <div class="row">
                             <!-- readonly -->
-                            <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
+                                <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <b>
+                                                <span>{{fiStammdaten.ferienname | translate}}</span>
+                                            </b>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <p>
+                                                <span>{{'ANMELDESCHLUSS' | translate}}:&nbsp;{{formatDate(fiStammdaten.anmeldeschluss)}}</span>
+                                            </p>
+                                            <div>
+                                                <span>Zeiträume:</span>
+                                                <ul>
+                                                    <li *ngIf="fiStammdaten.ersterZeitraum?.id">
+                                                        <span>{{formatDate(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb)}}</span> -
+                                                        <span>{{formatDate(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis)}}</span>
+                                                    </li>
+                                                    <li *ngFor="let zeitraum of fiStammdaten.zeitraumList">
+                                                        <span>{{formatDate(zeitraum.gueltigkeit.gueltigAb)}}</span> -
+                                                        <span>{{formatDate(zeitraum.gueltigkeit.gueltigBis)}}</span>
+                                                    </li>
+                                                    <li *ngIf="!fiStammdaten.ersterZeitraum?.id">
+                                                        <span>{{'KEINE_FERIENINSELZEITRAUME' | translate}}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                             <!-- editable -->
-                            <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                            <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
+                                <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <b>
+                                                <span>{{fiStammdaten.ferienname | translate}}</span>
+                                            </b>
+                                        </div>
+                                    </div>
+                                    <!--                                   Titelzeile-->
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span>{{'VON' | translate}}</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>{{'BIS' | translate}}</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span>{{'ANMELDESCHLUSS' | translate}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row zeitabschnitt">
+                                        <div class="col-md-4">
+                                            <input class="dv-mat-datepicker" type="text"
+                                                   [name]="fiStammdaten + '_gueltigAb'" [id]="fiStammdaten + '_gueltigAb'"
+                                                   [(ngModel)]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb"
+                                                   [matDatepicker]="gueltigAb"
+                                                   [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [required]="isDatumAbRequired(fiStammdaten.ersterZeitraum, fiStammdaten)">
+                                            <mat-datepicker-toggle matSuffix
+                                                                   [for]="gueltigAb"></mat-datepicker-toggle>
+                                            <mat-datepicker #gueltigAb></mat-datepicker>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input class="dv-mat-datepicker" type="text"
+                                                   [name]="fiStammdaten.ferienname + '_gueltigBis'" [id]="fiStammdaten.ferienname + '_gueltigBis'"
+                                                   [(ngModel)]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis"
+                                                   [matDatepicker]="gueltigBis"
+                                                   [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [required]="isDatumBisRequired(fiStammdaten.ersterZeitraum, fiStammdaten)">
+                                            <mat-datepicker-toggle matSuffix
+                                                                   [for]="gueltigBis"></mat-datepicker-toggle>
+                                            <mat-datepicker #gueltigBis></mat-datepicker>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input class="dv-mat-datepicker" type="text"
+                                                   [name]="fiStammdaten.ferienname + '_anmeldeschluss'" [id]="fiStammdaten.ferienname + '_anmeldeschluss'"
+                                                   [(ngModel)]="fiStammdaten.anmeldeschluss"
+                                                   [matDatepicker]="anmeldeschluss"
+                                                   [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [required]="isAnmeldeschlussRequired(fiStammdaten)">
+                                            <mat-datepicker-toggle matSuffix
+                                                                   [for]="anmeldeschluss"></mat-datepicker-toggle>
+                                            <mat-datepicker #anmeldeschluss></mat-datepicker>
+                                        </div>
+                                    </div>
+
+                                    <div class="row zeitabschnitt"
+                                         *ngFor="let zeitraum of fiStammdaten.zeitraumList">
+                                        <div class="col-md-4">
+                                            <input class="dv-mat-datepicker" type="text"
+                                                   [name]="zeitraum + '_gueltigAb'"
+                                                   [id]="zeitraum + '_gueltigAb'"
+                                                   [(ngModel)]="zeitraum.gueltigkeit.gueltigAb"
+                                                   [matDatepicker]="zeitraumGueltigAb"
+                                                   [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [required]="isDatumAbRequired(zeitraum, fiStammdaten)">
+                                            <mat-datepicker-toggle matSuffix
+                                                                   [for]="zeitraumGueltigAb"></mat-datepicker-toggle>
+                                            <mat-datepicker #zeitraumGueltigAb></mat-datepicker>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input class="dv-mat-datepicker" type="text"
+                                                   [name]="zeitraum + '_gueltigBis'"
+                                                   [id]="zeitraum + '_gueltigBis'"
+                                                   [(ngModel)]="zeitraum.gueltigkeit.gueltigBis"
+                                                   [matDatepicker]="zeitraumGueltigBis"
+                                                   [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [required]="isDatumBisRequired(zeitraum, fiStammdaten)">
+                                            <mat-datepicker-toggle matSuffix
+                                                                   [for]="zeitraumGueltigBis"></mat-datepicker-toggle>
+                                            <mat-datepicker #zeitraumGueltigBis></mat-datepicker>
+                                        </div>
+                                        <div class="col-md-1 absolute-height">
+                                            <a (click)="removeFerieninselZeitraum(fiStammdaten, zeitraum);"
+                                               class="pointer remove-ferieninsel"
+                                               title="{{'FERIENINSELZEITRAUM_DELETE' | translate}}"
+                                               [attr.aria-label]="'FERIENINSELZEITRAUM_DELETE'|translate">
+                                                <i class="fa fa-lg fa-trash-o"
+                                                   [attr.aria-label]="'FERIENINSELZEITRAUM_DELETE' | translate"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a class="add-zeitraum pointer"
+                                                    (click)="addFerieninselZeitraum(fiStammdaten)"
+                                                    title="{{'FERIENINSELZEITRAUM_ADD' | translate}}"
+                                                    [attr.aria-label]="'FERIENINSELZEITRAUM_ADD'|translate">
+                                                <i class="fa fa-plus-circle"></i>
+                                                {{'FERIENINSELZEITRAUM_ADD'|translate}}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </tab-body>
