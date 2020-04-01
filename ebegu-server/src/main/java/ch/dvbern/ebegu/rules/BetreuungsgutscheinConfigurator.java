@@ -96,14 +96,13 @@ public class BetreuungsgutscheinConfigurator {
 	private void abschnitteErstellenRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 
-		// - Erwerbspensum: Erstellt die grundlegenden Zeitschnitze (keine Korrekturen, nur einfügen)
-		ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(erwerbspensumAbschnittRule);
+		// - Erwerbspensum ASIV: Erstellt die grundlegenden Zeitschnitze (keine Korrekturen, nur einfügen)
+		ErwerbspensumAsivAbschnittRule erwerbspensumAsivAbschnittRule = new ErwerbspensumAsivAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(erwerbspensumAsivAbschnittRule);
 
 		// - Erwerbspensum: Erweiterung fuer Gemeinden
-		ErwerbspensumInklFreiwilligenarbeitAbschnittRule erwerbspensumInklFreiwilligenarbeitAbschnittRule =
-			new ErwerbspensumInklFreiwilligenarbeitAbschnittRule(defaultGueltigkeit, locale);
-		rules.add(erwerbspensumInklFreiwilligenarbeitAbschnittRule);
+		ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(erwerbspensumGmdeAbschnittRule);
 
 		// - Unbezahlter Urlaub
 		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
