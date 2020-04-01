@@ -23,10 +23,11 @@ import {TSGesuchsperiode} from './TSGesuchsperiode';
 export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     private _ferienname: TSFerienname;
-    private _zeitraum: TSFerieninselZeitraum;              // Der erste Zeitraum
+    private _ersterZeitraum: TSFerieninselZeitraum;              // Der erste Zeitraum
     private _zeitraumList: TSFerieninselZeitraum[] = [];   // Evt. weitere Zeitraeume
     private _anmeldeschluss: moment.Moment;
     private _gesuchsperiode: TSGesuchsperiode;
+    private _ferienActive: boolean;
     private _potenzielleFerieninselTageFuerBelegung: TSBelegungFerieninselTag[] = [];
 
     public constructor() {
@@ -41,12 +42,12 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
         this._ferienname = value;
     }
 
-    public get zeitraum(): TSFerieninselZeitraum {
-        return this._zeitraum;
+    public get ersterZeitraum(): TSFerieninselZeitraum {
+        return this._ersterZeitraum;
     }
 
-    public set zeitraum(value: TSFerieninselZeitraum) {
-        this._zeitraum = value;
+    public set ersterZeitraum(value: TSFerieninselZeitraum) {
+        this._ersterZeitraum = value;
     }
 
     public get zeitraumList(): TSFerieninselZeitraum[] {
@@ -79,5 +80,13 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     public set potenzielleFerieninselTageFuerBelegung(value: TSBelegungFerieninselTag[]) {
         this._potenzielleFerieninselTageFuerBelegung = value;
+    }
+
+    public get ferienActive(): boolean {
+        return this._ferienActive;
+    }
+
+    public set ferienActive(value: boolean) {
+        this._ferienActive = value;
     }
 }
