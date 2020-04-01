@@ -32,15 +32,15 @@ import ch.dvbern.ebegu.types.DateRange;
  * Diese Rule macht genau das gleiche wie die ErwerbspensumAbschnittRule. Sie gilt aber fuer die Gemeinde und
  * beachtet nur noch den Typ "Freiwilligenarbeit" (zusaetzlich zur anderen Regel). Dieser Typ ist bei ASIV ausgeschlossen.
  */
-public class ErwerbspensumInklFreiwilligenarbeitAbschnittRule extends ErwerbspensumAbschnittRule {
+public class ErwerbspensumGemeindeAbschnittRule extends ErwerbspensumAbschnittRule {
 
-	public ErwerbspensumInklFreiwilligenarbeitAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	public ErwerbspensumGemeindeAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleValidity.GEMEINDE, validityPeriod, locale);
 	}
 
 	@Override
 	@Nonnull
-	public List<Taetigkeit> getValidTaetigkeiten() {
+	protected List<Taetigkeit> getValidTaetigkeiten() {
 		List<Taetigkeit> freiwilligenarbeit = new ArrayList<>();
 		freiwilligenarbeit.add(Taetigkeit.FREIWILLIGENARBEIT);
 		return freiwilligenarbeit;
@@ -48,7 +48,7 @@ public class ErwerbspensumInklFreiwilligenarbeitAbschnittRule extends Erwerbspen
 
 	@Override
 	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
 		zeitabschnitt.getBgCalculationInputGemeinde().setErwerbspensumGS1(erwerbspensum.getPensum());
@@ -57,7 +57,7 @@ public class ErwerbspensumInklFreiwilligenarbeitAbschnittRule extends Erwerbspen
 
 	@Override
 	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
 		zeitabschnitt.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensum.getPensum());

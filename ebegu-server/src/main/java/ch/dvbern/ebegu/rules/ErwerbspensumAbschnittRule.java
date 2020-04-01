@@ -44,14 +44,10 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  * Die weiteren Rules müssen diesen Wert gegebenenfalls korrigieren.
  * Verweis 16.9.2
  */
-public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
+public abstract class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAbschnittRule(@Nonnull RuleValidity validity, @Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	protected ErwerbspensumAbschnittRule(@Nonnull RuleValidity validity, @Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validity, validityPeriod, locale);
-	}
-
-	public ErwerbspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -112,23 +108,30 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 		return null;
 	}
 
-	public List<Taetigkeit> getValidTaetigkeiten() {
-		return Taetigkeit.getTaetigkeitenForAsiv();
-	}
+	@Nonnull
+	protected abstract List<Taetigkeit> getValidTaetigkeiten();
+
+//	public List<Taetigkeit> getValidTaetigkeiten() {
+//		return Taetigkeit.getTaetigkeitenForAsiv();
+//	}
 
 	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
-		return zeitabschnitt;
-	}
+	protected abstract VerfuegungZeitabschnitt createZeitAbschnittForGS1(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum);
+//	@Nonnull
+//	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+//		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+//		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
+//		zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
+//		return zeitabschnitt;
+//	}
 
 	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
-		return zeitabschnitt;
-	}
+	protected abstract VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum);
+//	@Nonnull
+//	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+//		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+//		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
+//		zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
+//		return zeitabschnitt;
+//	}
 }
