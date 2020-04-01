@@ -74,7 +74,7 @@
                                 </goals>
                                 <configuration>
                                     <nodeVersion>v10.16.2</nodeVersion>
-                                    <npmVersion>6.14.3</npmVersion>
+                                    <npmVersion>6.14.4</npmVersion>
                                     <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
                                     <npmDownloadRoot>https://registry.npmjs.org/npm/-/</npmDownloadRoot>
                                 </configuration>
