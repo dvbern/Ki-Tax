@@ -106,6 +106,7 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 				Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 				// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat
 				for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte()) {
+					// TODO 1172 hier muesste das GEMEINDE objekt verwendet werden, aber es wird im ASIV geschaut, flag nicht gespeichert
 					if (!verfuegungZeitabschnitt.isMinimalesEwpUnterschritten()) {
 						return false;
 					}

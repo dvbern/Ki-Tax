@@ -47,20 +47,21 @@ import static java.util.Objects.requireNonNull;
  * ACHTUNG! Diese Regel gilt nur fuer Angebote vom Typ isAngebotJugendamtKleinkind
  * Verweis 16.9.2
  */
-public class ErwerbspensumCalcRule extends AbstractCalcRule {
+public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private final int zuschlagErwerbspensum;
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
 
-	public ErwerbspensumCalcRule(
-		DateRange validityPeriod,
+	protected ErwerbspensumCalcRule(
+		@Nonnull RuleValidity ruleValidity,
+		@Nonnull DateRange validityPeriod,
 		int zuschlagErwerbspensum,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, ruleValidity, validityPeriod, locale);
 		this.zuschlagErwerbspensum = zuschlagErwerbspensum;
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
@@ -118,6 +119,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			inputData.setMinimalesEwpUnterschritten(true);
 			inputData.setKategorieKeinPensum(true);
 		}
+		// TODO 1172 Die Bemerkungen muessen separat gespeichert werden... sonst haben wir sowohl KEIN_ANSPRUCH (nach ASIV) wie auch ANSPRUCH (nach Gemiende)
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;

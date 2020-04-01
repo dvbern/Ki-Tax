@@ -34,6 +34,8 @@ import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
@@ -81,6 +83,8 @@ public class BetreuungsgutscheinConfigurator {
 			GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
 			MIN_ERWERBSPENSUM_EINGESCHULT,
 			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
+			GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
 			ERWERBSPENSUM_ZUSCHLAG);
 	}
 
@@ -189,20 +193,34 @@ public class BetreuungsgutscheinConfigurator {
 		StorniertCalcRule storniertCalcRule = new StorniertCalcRule(defaultGueltigkeit, locale);
 		rules.add(storniertCalcRule);
 
-		// - Erwerbspensum
+		// - Erwerbspensum ASIV
 		Einstellung zuschlagEWP = einstellungMap.get(ERWERBSPENSUM_ZUSCHLAG);
-		Einstellung minEWP_nichtEingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
-		Einstellung minEWP_eingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
 		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
-		Objects.requireNonNull(minEWP_nichtEingeschult, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
-		Objects.requireNonNull(minEWP_eingeschult, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
-		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(
+		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+		ErwerbspensumAsivCalcRule erwerbspensumAsivCalcRule = new ErwerbspensumAsivCalcRule(
 			defaultGueltigkeit,
 			zuschlagEWP.getValueAsInteger(),
-			minEWP_nichtEingeschult.getValueAsInteger(),
-			minEWP_eingeschult.getValueAsInteger(),
+			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
+			minEWP_eingeschultAsiv.getValueAsInteger(),
 			locale);
-		rules.add(erwerbspensumCalcRule);
+		rules.add(erwerbspensumAsivCalcRule);
+
+		// - Erwerbspensum Gemeinde
+		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		Einstellung minEWP_eingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT);
+		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
+		Objects.requireNonNull(minEWP_nichtEingeschultGmde, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(minEWP_eingeschultGmde, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+		ErwerbspensumGemeindeCalcRule erwerbspensumGemeindeCalcRule = new ErwerbspensumGemeindeCalcRule(
+			defaultGueltigkeit,
+			zuschlagEWP.getValueAsInteger(),
+			minEWP_nichtEingeschultGmde.getValueAsInteger(),
+			minEWP_eingeschultGmde.getValueAsInteger(),
+			locale);
+		rules.add(erwerbspensumGemeindeCalcRule);
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit, locale);

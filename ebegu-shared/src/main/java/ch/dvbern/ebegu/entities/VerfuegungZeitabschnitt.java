@@ -71,6 +71,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	private static final long serialVersionUID = 7250339356897563374L;
 
+	// TODO 1172 dies muss gespeichert werden! z.B. fuer PensumAusserordentlicherAnspruchService
 	@Transient
 	private boolean hasGemeindeSpezifischeBerechnung = false;
 
