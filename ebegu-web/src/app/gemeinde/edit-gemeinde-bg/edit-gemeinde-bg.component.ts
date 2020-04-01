@@ -344,11 +344,13 @@ export class EditGemeindeComponentBG implements OnInit {
     }
 
     public changeErwerbspensumMinimumVorschule(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gk.erwerbspensumMiminumVorschule, gk);
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gk.erwerbspensumMiminumVorschule, gk);
     }
 
     public changeErwerbspensumMinimumSchulkinder(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gk.erwerbspensumMiminumSchulkinder, gk);
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gk.erwerbspensumMiminumSchulkinder, gk);
     }
 
     private resetErwerbspensenMinimum(gk: TSGemeindeKonfiguration): void {

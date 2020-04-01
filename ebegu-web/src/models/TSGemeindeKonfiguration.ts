@@ -233,7 +233,7 @@ export class TSGemeindeKonfiguration {
 
         this.erwerbspensumZuschlagOverriden = this.erwerbspensumZuschlag !== this.erwerbspensumZuschlagMax;
         this.erwerbspensumMinimumOverriden =
-            (this.erwerbspensumMiminumVorschule != this.erwerbspensumMiminumVorschuleMax) ||
-            (this.erwerbspensumMiminumSchulkinder != this.erwerbspensumMiminumSchulkinderMax);
+            (this.erwerbspensumMiminumVorschule !== this.erwerbspensumMiminumVorschuleMax) ||
+            (this.erwerbspensumMiminumSchulkinder !== this.erwerbspensumMiminumSchulkinderMax);
     }
 }

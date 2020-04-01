@@ -1006,14 +1006,20 @@ export class EbeguRestUtil {
         konfigurationFromServer: any,
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
-            konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
-            konfigurationTS.erwerbspensumMiminumVorschuleMax = konfigurationFromServer.erwerbspensumMiminumVorschuleMax;
-            konfigurationTS.erwerbspensumMiminumSchulkinderMax = konfigurationFromServer.erwerbspensumMiminumSchulkinderMax;
-            konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
-            konfigurationTS.gesuchsperiodeStatusName = konfigurationFromServer.gesuchsperiodeStatusName;
+            konfigurationTS.erwerbspensumZuschlagMax =
+                konfigurationFromServer.erwerbspensumZuschlagMax;
+            konfigurationTS.erwerbspensumMiminumVorschuleMax =
+                konfigurationFromServer.erwerbspensumMiminumVorschuleMax;
+            konfigurationTS.erwerbspensumMiminumSchulkinderMax =
+                konfigurationFromServer.erwerbspensumMiminumSchulkinderMax;
+            konfigurationTS.gesuchsperiodeName =
+                konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeStatusName =
+                konfigurationFromServer.gesuchsperiodeStatusName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
-            konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            konfigurationTS.konfigurationen =
+                this.parseEinstellungList(konfigurationFromServer.konfigurationen);
             return konfigurationTS;
         }
         return undefined;
