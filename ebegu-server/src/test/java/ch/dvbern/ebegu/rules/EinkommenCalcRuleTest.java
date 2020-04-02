@@ -127,7 +127,7 @@ public class EinkommenCalcRuleTest {
 		assertTrue(bemerkungenAbschnitt2.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
 		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_1;
-		VerfuegungsBemerkung bemerkungEkvAccept1 = bemerkungenAbschnitt2.findBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
+		VerfuegungsBemerkung bemerkungEkvAccept1 = bemerkungenAbschnitt2.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
 		assertNotNull(bemerkungEkvAccept1);
 		assertTrue(bemerkungEkvAccept1.getTranslated().contains(bemerkungEKV1));
 
@@ -140,7 +140,7 @@ public class EinkommenCalcRuleTest {
 		assertTrue(bemerkungenAbschnitt3.containsMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
 		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_2;
-		VerfuegungsBemerkung bemerkungEkvAccept2 = bemerkungenAbschnitt3.findBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
+		VerfuegungsBemerkung bemerkungEkvAccept2 = bemerkungenAbschnitt3.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
 		assertNotNull(bemerkungEkvAccept2);
 		assertTrue(bemerkungEkvAccept2.getTranslated().contains(bemerkungEKV2));
 	}

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,21 +76,31 @@ public class VerfuegungsBemerkungList {
 	}
 
 	public void addBemerkung(@Nonnull VerfuegungsBemerkung bemerkung) {
+		// Falls von einer frueheren Regel *dieselbe* Bemerkung schon vorhanden ist, diese loeschen (sie hat evtl. andere Argumente)
+		removeBemerkungByMsgKey(bemerkung.getMsgKey());
 		bemerkungenList.add(bemerkung);
 	}
 
 	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
 		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleKey, msgKey, locale);
-		bemerkungenList.add(bemerkung);
+		this.addBemerkung(bemerkung);
 	}
 
 	@Nullable
-	public VerfuegungsBemerkung findBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
+	public VerfuegungsBemerkung findFirstBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
 		return this.bemerkungenList.stream().filter(bemerkung -> bemerkung.getMsgKey() == msgKey).findFirst().orElse(null);
 	}
 
+	@Nonnull
+	public List<VerfuegungsBemerkung> findBemerkungenByMsgKey(@Nonnull MsgKey msgKey) {
+		return this.bemerkungenList.stream().filter(bemerkung -> bemerkung.getMsgKey() == msgKey).collect(Collectors.toList());
+	}
+
 	public void removeBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
-		this.bemerkungenList.stream().filter(bemerkung -> bemerkung.getMsgKey() == msgKey).forEach(bemerkungenList::remove);
+		List<VerfuegungsBemerkung> toRemoveList = findBemerkungenByMsgKey(msgKey);
+		for (VerfuegungsBemerkung verfuegungsBemerkung : toRemoveList) {
+			bemerkungenList.remove(verfuegungsBemerkung);
+		}
 	}
 
 	/**
