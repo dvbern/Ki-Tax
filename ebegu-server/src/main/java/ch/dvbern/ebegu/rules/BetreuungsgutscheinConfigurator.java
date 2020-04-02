@@ -130,6 +130,10 @@ public class BetreuungsgutscheinConfigurator {
 		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(kindTarifAbschnittRule);
 
+		// Betreuungsangebot
+		BetreuungsangebotTypAbschnittRule betreuungsangebotTypAbschnittRule = new BetreuungsangebotTypAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(betreuungsangebotTypAbschnittRule);
+
 		// - Betreuungspensum
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(betreuungspensumAbschnittRule);
@@ -167,6 +171,10 @@ public class BetreuungsgutscheinConfigurator {
 		// Zivilstandsaenderung
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(zivilstandsaenderungAbschnittRule);
+
+		// Sozialhilfe
+		SozialhilfeAbschnittRule sozialhilfeAbschnittRule = new SozialhilfeAbschnittRule(defaultGueltigkeit, locale);
+		rules.add(sozialhilfeAbschnittRule);
 	}
 
 	private void berechnenAnspruchRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {

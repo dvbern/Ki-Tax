@@ -16,17 +16,23 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot KITA.
  */
-public class KitaRechner extends AbstractBGRechner {
+public class KitaRechner extends AbstractGemeindeRechner {
+
+	protected KitaRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+		super(rechnerRulesForGemeinde);
+	}
 
 	@Nonnull
 	@Override
