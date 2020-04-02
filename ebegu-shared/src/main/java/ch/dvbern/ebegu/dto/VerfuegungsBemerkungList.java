@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleKey;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * DTO für eine Verfügungsbemerkung
@@ -99,8 +100,39 @@ public class VerfuegungsBemerkungList {
 			Optional<VerfuegungsBemerkung> bemerkungPresentOptional =
 				this.getBemerkungenList().stream().filter(thisBemerkung -> thisBemerkung.getMsgKey() == otherBemerkung.getMsgKey()).findAny();
 			if (!bemerkungPresentOptional.isPresent()) {
-				this.addBemerkung(otherBemerkung);;
+				this.addBemerkung(otherBemerkung);
 			}
 		}
+	}
+
+	/**
+	 * Erstellt einen String mit allen Bemerkungen. Bemerkungen, die sich gegenseitig ausschliessen (z.B.
+	 * Anspruch FACHSTELLE ueberschreibt Anspruch ERWERBSPENSUM) werden entfernt.
+	 */
+	@Nonnull
+	public String bemerkungenToString() {
+		StringBuilder sb = new StringBuilder();
+
+		// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
+		// Aktuell bekannt:
+		// 1. Ausserordentlicher Anspruch
+		// 2. Fachstelle
+		// 3. Erwerbspensum
+		if (containsMsgKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
+			removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+			removeBemerkungByMsgKey(MsgKey.FACHSTELLE_MSG);
+		}
+		if (containsMsgKey(MsgKey.FACHSTELLE_MSG)) {
+			removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+		}
+
+		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenList) {
+			sb.append(verfuegungsBemerkung.getTranslated());
+			sb.append('\n');
+		}
+		// Den letzten NewLine entfernen
+		String bemerkungen = sb.toString();
+		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
+		return bemerkungen;
 	}
 }

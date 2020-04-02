@@ -553,7 +553,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.hasGemeindeSpezifischeBerechnung = (this.hasGemeindeSpezifischeBerechnung || other.hasGemeindeSpezifischeBerechnung);
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
-		this.addAllBemerkungen(other.bemerkungenList);
+		this.bemerkungenList.addAllBemerkungen(other.bemerkungenList);
 	}
 
 	@Override
@@ -648,10 +648,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 	}
 
-	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungList bemerkungenList) {
-		this.bemerkungenList.addAllBemerkungen(bemerkungenList);
-	}
-
 	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
 		bemerkungenList.addBemerkung(new VerfuegungsBemerkung(ruleKey, msgKey, locale));
 	}
@@ -664,6 +660,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		@Nonnull Object... args) {
 		bemerkungenList.addBemerkung(new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
 	}
+
 
 	@Override
 	public int compareTo(@Nonnull VerfuegungZeitabschnitt other) {

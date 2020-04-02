@@ -119,7 +119,6 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			inputData.setMinimalesEwpUnterschritten(true);
 			inputData.setKategorieKeinPensum(true);
 		}
-		// TODO 1172 Die Bemerkungen muessen separat gespeichert werden... sonst haben wir sowohl KEIN_ANSPRUCH (nach ASIV) wie auch ANSPRUCH (nach Gemiende)
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
@@ -132,7 +131,10 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
 			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, locale);
 			inputData.getParent().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
+			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
+			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
+			inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;

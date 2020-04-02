@@ -91,7 +91,7 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 						if (anspruchVerminderungGemeinde) {
 							zeitabschnitt.getBgCalculationInputGemeinde().setAnspruchspensumProzent(anspruchVorherGemeinde);
 						}
-						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenList());
+						zeitabschnitt.getBemerkungenList().addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenList());
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
@@ -103,7 +103,7 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 							zeitabschnitt.getBgCalculationInputGemeinde().setAnspruchspensumProzent(anspruchVorherGemeinde);
 						}
 						zeitabschnitt.getBemerkungenList().clear();
-						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenList());
+						zeitabschnitt.getBemerkungenList().addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenList());
 						vorangehenderAbschnitt = zeitabschnitt;
 					}
 				} else {
