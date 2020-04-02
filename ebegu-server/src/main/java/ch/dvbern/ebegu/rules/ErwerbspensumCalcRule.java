@@ -23,6 +23,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -123,14 +124,16 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
-			inputData.getParent().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
+			inputData.getParent().getBemerkungenList().addBemerkung(
+				new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset));
 			inputData.setMinimalesEwpUnterschritten(true);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
 			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, locale);
-			inputData.getParent().addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
+			inputData.getParent().getBemerkungenList().addBemerkung(
+				new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen));
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
@@ -166,7 +169,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		@Nonnull Locale locale) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
-			inputData.getParent().addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung, locale);
+			inputData.getParent().getBemerkungenList().addBemerkung(bemerkung, locale);
 		}
 		return erwerbspensum;
 	}

@@ -77,7 +77,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 					int anspruchVorRegel = inputData.getAnspruchspensumProzent();
 					inputData.setAnspruchspensumProzent(0);
 					inputData.setAnspruchspensumRest(anspruchVorRegel);
-					inputData.getParent().addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
+					inputData.getParent().getBemerkungenList().addBemerkung(getMsgKey(), getLocale());
 				}
 			}
 		}

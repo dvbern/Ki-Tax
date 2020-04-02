@@ -23,16 +23,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
  * DTO für eine Verfügungsbemerkung
  */
 public class VerfuegungsBemerkung {
-
-	@Nonnull
-	private RuleKey ruleKey;
 
 	@Nonnull
 	private MsgKey msgKey;
@@ -43,30 +39,18 @@ public class VerfuegungsBemerkung {
 	@Nonnull
 	private Locale sprache;
 
-	public VerfuegungsBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale sprache) {
-		this.ruleKey = ruleKey;
+	public VerfuegungsBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale sprache) {
 		this.msgKey = msgKey;
 		this.sprache = sprache;
 	}
 
 	public VerfuegungsBemerkung(
-		@Nonnull RuleKey ruleKey,
 		@Nonnull MsgKey msgKey,
 		@Nonnull Locale sprache,
 		@Nonnull Object... args) {
-		this.ruleKey = ruleKey;
 		this.msgKey = msgKey;
 		this.sprache = sprache;
 		this.args = args;
-	}
-
-	@Nonnull
-	public RuleKey getRuleKey() {
-		return ruleKey;
-	}
-
-	public void setRuleKey(@Nonnull RuleKey ruleKey) {
-		this.ruleKey = ruleKey;
 	}
 
 	@Nonnull
@@ -104,15 +88,14 @@ public class VerfuegungsBemerkung {
 			return false;
 		}
 		VerfuegungsBemerkung that = (VerfuegungsBemerkung) o;
-		return ruleKey == that.ruleKey &&
-			msgKey == that.msgKey &&
+		return msgKey == that.msgKey &&
 			Arrays.equals(args, that.args) &&
 			Objects.equals(sprache, that.sprache);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(ruleKey, msgKey, sprache);
+		int result = Objects.hash(msgKey, sprache);
 		result = 31 * result + Arrays.hashCode(args);
 		return result;
 	}

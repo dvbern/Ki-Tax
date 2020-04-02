@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.rules.RuleKey;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -81,8 +80,13 @@ public class VerfuegungsBemerkungList {
 		bemerkungenList.add(bemerkung);
 	}
 
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleKey, msgKey, locale);
+	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale) {
+		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(msgKey, locale);
+		this.addBemerkung(bemerkung);
+	}
+
+	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nonnull Object... args) {
+		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(msgKey, locale, args);
 		this.addBemerkung(bemerkung);
 	}
 

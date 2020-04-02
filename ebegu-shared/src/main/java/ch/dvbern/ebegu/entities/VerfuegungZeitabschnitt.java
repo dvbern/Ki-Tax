@@ -19,10 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,7 +49,6 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -647,20 +643,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			this.bgCalculationResultGemeinde.copyCalculationResult(that.bgCalculationResultGemeinde);
 		}
 	}
-
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		bemerkungenList.addBemerkung(new VerfuegungsBemerkung(ruleKey, msgKey, locale));
-	}
-
-	@SuppressWarnings("OverloadedVarargsMethod")
-	public void addBemerkung(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull MsgKey msgKey,
-		@Nonnull Locale locale,
-		@Nonnull Object... args) {
-		bemerkungenList.addBemerkung(new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
-	}
-
 
 	@Override
 	public int compareTo(@Nonnull VerfuegungZeitabschnitt other) {
