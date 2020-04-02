@@ -39,11 +39,14 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 
 	@Override
 	public boolean isConfigueredForGemeinde(@Nonnull BGRechnerParameterDTO parameterDTO) {
-		return parameterDTO.getGemeindeZusaetzlicherGutscheinEnabled();
+		return parameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinEnabled();
 	}
 
 	@Override
 	public boolean isRelevantForVerfuegung(@Nonnull BGCalculationInput inputGemeinde, @Nonnull BGRechnerParameterDTO parameterDTO) {
+		if (!isConfigueredForGemeinde(parameterDTO)) {
+			return false;
+		}
 		boolean hasAnspruch = true;
 		// (1) Anspruchsgrenze
 		EinschulungTyp einschulungsTypAnspruchsgrenze = getAnspruchsgrenzeSchulstufe(inputGemeinde, parameterDTO);
@@ -85,16 +88,20 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		// Zusatzgutschein gibts nur, wenn grundsaetzlich Anspruch vorhanden
 		if (inputGemeinde.getBgPensumProzent().compareTo(BigDecimal.ZERO) > 0) {
 			if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
-				BigDecimal betragKita = rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragKita();
-				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragKita);
-				return betragKita;
+				BigDecimal betragKita = rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBetragKita();
+				if (betragKita != null) {
+					addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragKita);
+					return betragKita;
+				}
+			} else if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
+				BigDecimal betragTfo = rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBetragTfo();
+				if (betragTfo != null) {
+					addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_TFO, betragTfo);
+					return betragTfo;
+				}
+			} else {
+				throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
 			}
-			if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
-				BigDecimal betragTfo = rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBetragTfo();
-				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_JA_KITA, betragTfo);
-				return betragTfo;
-			}
-			throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
 		}
 		// Kein Anspruch: Zusatzgutschein ebenfalls 0
 		return BigDecimal.ZERO;
@@ -106,10 +113,10 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		@Nonnull BGRechnerParameterDTO rechnerParameterDTO
 	) {
 		if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
-			return rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita();
+			return rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita();
 		}
 		if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
-			return rechnerParameterDTO.getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo();
+			return rechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo();
 		}
 		throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
 	}

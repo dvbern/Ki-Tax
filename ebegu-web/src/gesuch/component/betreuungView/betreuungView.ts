@@ -31,7 +31,6 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
@@ -567,30 +566,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
 
         if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
-            && this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)) {
-            institutionenSDList = this.filterInstiForScolaris(institutionenSDList);
-        }
-        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
             && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
             institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
         }
         return institutionenSDList;
-    }
-
-    private filterInstiForScolaris(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {
-        return institutionenList.filter(instStamm => {
-                let isScolaris = false;
-                instStamm.institutionStammdatenTagesschule.einstellungenTagesschule.forEach(
-                    einstellungTagesschule => {
-                        if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
-                            isScolaris =
-                                einstellungTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS;
-                        }
-                    }
-                );
-                return isScolaris;
-            }
-        );
     }
 
     private filterTagisTagesschule(institutionenList: Array<TSInstitutionStammdaten>): Array<TSInstitutionStammdaten> {

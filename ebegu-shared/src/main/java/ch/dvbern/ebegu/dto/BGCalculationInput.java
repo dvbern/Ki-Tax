@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -118,17 +119,15 @@ public class BGCalculationInput {
 	@Nullable
 	private BigDecimal famGroesse = null;
 
-	@NotNull @Nonnull
-	private Integer tsBetreuungszeitProWocheMitBetreuung = 0;
+	@Valid
+	@NotNull
+	@Nonnull
+	private TSCalculationInput tsInputMitBetreuung = new TSCalculationInput();
 
-	@NotNull @Nonnull
-	private BigDecimal tsVerpflegungskostenMitBetreuung = BigDecimal.ZERO;
-
-	@NotNull @Nonnull
-	private Integer tsBetreuungszeitProWocheOhneBetreuung = 0;
-
-	@NotNull @Nonnull
-	private BigDecimal tsVerpflegungskostenOhneBetreuung = BigDecimal.ZERO;
+	@Valid
+	@NotNull
+	@Nonnull
+	private TSCalculationInput tsInputOhneBetreuung = new TSCalculationInput();
 
 	private boolean sozialhilfeempfaenger = false;
 
@@ -175,10 +174,8 @@ public class BGCalculationInput {
 		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
-		this.tsBetreuungszeitProWocheMitBetreuung = toCopy.tsBetreuungszeitProWocheMitBetreuung;
-		this.tsVerpflegungskostenMitBetreuung = toCopy.tsVerpflegungskostenMitBetreuung;
-		this.tsBetreuungszeitProWocheOhneBetreuung = toCopy.tsBetreuungszeitProWocheOhneBetreuung;
-		this.tsVerpflegungskostenOhneBetreuung = toCopy.tsVerpflegungskostenOhneBetreuung;
+		this.tsInputMitBetreuung = toCopy.tsInputMitBetreuung.copy();
+		this.tsInputOhneBetreuung = toCopy.tsInputOhneBetreuung.copy();
 		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
 	}
@@ -473,40 +470,30 @@ public class BGCalculationInput {
 		this.famGroesse = famGroesse;
 	}
 
-	@Nonnull
-	public Integer getTsBetreuungszeitProWocheMitBetreuung() {
-		return tsBetreuungszeitProWocheMitBetreuung;
-	}
-
 	public void setTsBetreuungszeitProWocheMitBetreuung(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
-		this.tsBetreuungszeitProWocheMitBetreuung = tsBetreuungszeitProWocheMitBetreuung;
-	}
-
-	@Nonnull
-	public BigDecimal getTsVerpflegungskostenMitBetreuung() {
-		return tsVerpflegungskostenMitBetreuung;
+		this.tsInputMitBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheMitBetreuung);
 	}
 
 	public void setTsVerpflegungskostenMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
-		this.tsVerpflegungskostenMitBetreuung = tsVerpflegungskostenMitBetreuung;
-	}
-
-	@Nonnull
-	public Integer getTsBetreuungszeitProWocheOhneBetreuung() {
-		return tsBetreuungszeitProWocheOhneBetreuung;
+		this.tsInputMitBetreuung.setVerpflegungskosten(tsVerpflegungskostenMitBetreuung);
 	}
 
 	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
-		this.tsBetreuungszeitProWocheOhneBetreuung = tsBetreuungszeitProWocheOhneBetreuung;
-	}
-
-	@Nonnull
-	public BigDecimal getTsVerpflegungskostenOhneBetreuung() {
-		return tsVerpflegungskostenOhneBetreuung;
+		this.tsInputOhneBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheOhneBetreuung);
 	}
 
 	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
-		this.tsVerpflegungskostenOhneBetreuung = tsVerpflegungskostenOhneBetreuung;
+		this.tsInputOhneBetreuung.setVerpflegungskosten(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	@Nonnull
+	public TSCalculationInput getTsInputMitBetreuung() {
+		return tsInputMitBetreuung;
+	}
+
+	@Nonnull
+	public TSCalculationInput getTsInputOhneBetreuung() {
+		return tsInputOhneBetreuung;
 	}
 
 	public boolean isSozialhilfeempfaenger() {
@@ -594,10 +581,8 @@ public class BGCalculationInput {
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
 		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
 		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
-		this.tsBetreuungszeitProWocheMitBetreuung = this.tsBetreuungszeitProWocheMitBetreuung + other.tsBetreuungszeitProWocheMitBetreuung;
-		this.tsVerpflegungskostenMitBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenMitBetreuung, other.tsVerpflegungskostenMitBetreuung);
-		this.tsBetreuungszeitProWocheOhneBetreuung = this.tsBetreuungszeitProWocheOhneBetreuung + other.tsBetreuungszeitProWocheOhneBetreuung;
-		this.tsVerpflegungskostenOhneBetreuung = MathUtil.DEFAULT.addNullSafe(this.tsVerpflegungskostenOhneBetreuung, other.tsVerpflegungskostenOhneBetreuung);
+		this.tsInputMitBetreuung.add(other.tsInputMitBetreuung);
+		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
 
@@ -643,7 +628,9 @@ public class BGCalculationInput {
 			zuSpaetEingereicht == other.zuSpaetEingereicht &&
 			minimalesEwpUnterschritten == other.minimalesEwpUnterschritten &&
 			Objects.equals(einkommensjahr, other.einkommensjahr) &&
-			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt;
+			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
+			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
+			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung);
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -662,12 +649,10 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.famGroesse, that.famGroesse) &&
 			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
-			(this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt) &&
-			(this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten) &&
-			Objects.equals(this.tsBetreuungszeitProWocheMitBetreuung, that.tsBetreuungszeitProWocheMitBetreuung) &&
-			MathUtil.isSame(this.tsVerpflegungskostenMitBetreuung, that.tsVerpflegungskostenMitBetreuung) &&
-			Objects.equals(this.tsBetreuungszeitProWocheOhneBetreuung, that.tsBetreuungszeitProWocheOhneBetreuung) &&
-			MathUtil.isSame(this.tsVerpflegungskostenOhneBetreuung, that.tsVerpflegungskostenOhneBetreuung);
+			this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
+			this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
+			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
+			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

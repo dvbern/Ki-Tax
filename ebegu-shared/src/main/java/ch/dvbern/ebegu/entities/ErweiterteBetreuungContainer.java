@@ -41,8 +41,8 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_ja"))
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
-	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone")
 	@SuppressWarnings("NullableProblems")
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone")
 	public ErweiterteBetreuungContainer() {
 		//noinspection ConstantConditions
 		setId(null);    // ErweiterteBetreuungContainer shares id with betreuung, it can not exist alone

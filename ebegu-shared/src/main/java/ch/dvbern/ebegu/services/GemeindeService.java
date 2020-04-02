@@ -156,4 +156,12 @@ public interface GemeindeService {
 	void copyGesuchsperiodeGemeindeStammdaten(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gesuchsperiode lastGesuchsperiode);
 
 	Collection<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
+
+	Optional<GemeindeStammdatenGesuchsperiode> findGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
+		@Nonnull String gesuchsperiodeId);
+
+	GemeindeStammdatenGesuchsperiode createGemeindeStammdatenGesuchsperiode(@Nonnull String gemeindeId,
+		@Nonnull String gesuchsperiodeId);
+
+	GemeindeStammdatenGesuchsperiode saveGemeindeStammdatenGesuchsperiode(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode);
 }

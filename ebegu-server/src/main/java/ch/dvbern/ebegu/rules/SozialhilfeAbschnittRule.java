@@ -20,13 +20,14 @@ package ch.dvbern.ebegu.rules;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -54,18 +55,17 @@ public class SozialhilfeAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		List<VerfuegungZeitabschnitt> einkommensAbschnitte = new ArrayList<>();
 		FamiliensituationContainer familiensituation = platz.extractGesuch().getFamiliensituationContainer();
-		if (familiensituation != null) {
-			Set<SozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = familiensituation.getSozialhilfeZeitraumContainers();
-			for (SozialhilfeZeitraumContainer sozialhilfeZeitraumContainer : sozialhilfeZeitraumContainers) {
-				SozialhilfeZeitraum sozialhilfeZeitraum = sozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA();
-				if (sozialhilfeZeitraum != null) {
-					einkommensAbschnitte.add(createZeitabschnitt(sozialhilfeZeitraum.getGueltigkeit()));
-				}
-			}
+		if (familiensituation == null) {
+			return new ArrayList<>();
 		}
-		return einkommensAbschnitte;
+
+		return familiensituation.getSozialhilfeZeitraumContainers().stream()
+			.map(SozialhilfeZeitraumContainer::getSozialhilfeZeitraumJA)
+			.filter(Objects::nonNull)
+			.map(AbstractDateRangedEntity::getGueltigkeit)
+			.map(this::createZeitabschnitt)
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull

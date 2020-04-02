@@ -23,16 +23,10 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -83,13 +77,7 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
-	private Boolean gemeindeZusaetzlicherGutscheinEnabled;
-	// Betrag des zusätzlichen Beitrags zum Gutschein
-	private BigDecimal gemeindeZusaetzlicherGutscheinBetragKita;
-	private BigDecimal gemeindeZusaetzlicherGutscheinBetragTfo;
-	// Zusaetzlichen Gutschein anbieten bis und mit
-	private EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita;
-	private EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo;
+	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
 
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
@@ -111,11 +99,7 @@ public final class BGRechnerParameterDTO {
 		this.setMaxTarifTagesschuleMitPaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMinTarifTagesschule(asBigDecimal(paramMap, MIN_TARIF, gesuchsperiode, gemeinde));
-		this.setGemeindeZusaetzlicherGutscheinEnabled(asBoolean(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, gesuchsperiode, gemeinde));
-		this.setGemeindeZusaetzlicherGutscheinBetragKita(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, gesuchsperiode, gemeinde));
-		this.setGemeindeZusaetzlicherGutscheinBetragTfo(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO, gesuchsperiode, gemeinde));
-		this.setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita(asSchulstufe(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA, gesuchsperiode, gemeinde));
-		this.setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo(asSchulstufe(paramMap, GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO, gesuchsperiode, gemeinde));
+		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterDTO() {
@@ -135,36 +119,6 @@ public final class BGRechnerParameterDTO {
 			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
 		}
 		return param.getValueAsBigDecimal();
-	}
-
-	private Boolean asBoolean(
-		@Nonnull Map<EinstellungKey, Einstellung> paramMap,
-		@Nonnull EinstellungKey paramKey,
-		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gemeinde gemeinde) {
-
-		Einstellung param = paramMap.get(paramKey);
-		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
-				+ '\'' + gesuchsperiode + '\'';
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
-		}
-		return param.getValueAsBoolean();
-	}
-
-	private EinschulungTyp asSchulstufe(
-		@Nonnull Map<EinstellungKey, Einstellung> paramMap,
-		@Nonnull EinstellungKey paramKey,
-		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gemeinde gemeinde) {
-
-		Einstellung param = paramMap.get(paramKey);
-		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
-				+ '\'' + gesuchsperiode + '\'';
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
-		}
-		return EinschulungTyp.valueOf(param.getValue());
 	}
 
 	public BigDecimal getMaxVerguenstigungVorschuleBabyProTg() {
@@ -311,43 +265,11 @@ public final class BGRechnerParameterDTO {
 		this.minTarifTagesschule = minTarifTagesschule;
 	}
 
-	public Boolean getGemeindeZusaetzlicherGutscheinEnabled() {
-		return gemeindeZusaetzlicherGutscheinEnabled;
+	public BGRechnerParameterGemeindeDTO getGemeindeParameter() {
+		return gemeindeParameter;
 	}
 
-	public void setGemeindeZusaetzlicherGutscheinEnabled(Boolean gemeindeZusaetzlicherGutscheinEnabled) {
-		this.gemeindeZusaetzlicherGutscheinEnabled = gemeindeZusaetzlicherGutscheinEnabled;
-	}
-
-	public BigDecimal getGemeindeZusaetzlicherGutscheinBetragKita() {
-		return gemeindeZusaetzlicherGutscheinBetragKita;
-	}
-
-	public void setGemeindeZusaetzlicherGutscheinBetragKita(BigDecimal gemeindeZusaetzlicherGutscheinBetragKita) {
-		this.gemeindeZusaetzlicherGutscheinBetragKita = gemeindeZusaetzlicherGutscheinBetragKita;
-	}
-
-	public BigDecimal getGemeindeZusaetzlicherGutscheinBetragTfo() {
-		return gemeindeZusaetzlicherGutscheinBetragTfo;
-	}
-
-	public void setGemeindeZusaetzlicherGutscheinBetragTfo(BigDecimal gemeindeZusaetzlicherGutscheinBetragTfo) {
-		this.gemeindeZusaetzlicherGutscheinBetragTfo = gemeindeZusaetzlicherGutscheinBetragTfo;
-	}
-
-	public EinschulungTyp getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita() {
-		return gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita;
-	}
-
-	public void setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita(EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita) {
-		this.gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita = gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita;
-	}
-
-	public EinschulungTyp getGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo() {
-		return gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo;
-	}
-
-	public void setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo(EinschulungTyp gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo) {
-		this.gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo = gemeindeZusaetzlicherGutscheinBisUndMitSchulstufeTfo;
+	public void setGemeindeParameter(BGRechnerParameterGemeindeDTO gemeindeParameter) {
+		this.gemeindeParameter = gemeindeParameter;
 	}
 }

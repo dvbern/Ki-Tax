@@ -71,7 +71,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	private static final long serialVersionUID = 7250339356897563374L;
 
-	@Transient
+	@Column(nullable = false)
 	private boolean hasGemeindeSpezifischeBerechnung = false;
 
 	/**
@@ -721,17 +721,5 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
-		if (input.getTsBetreuungszeitProWocheMitBetreuung() > 0) {
-			TSCalculationResult tsResultMitBetreuung = new TSCalculationResult();
-			tsResultMitBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheMitBetreuung());
-			tsResultMitBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenMitBetreuung());
-			result.setTsCalculationResultMitPaedagogischerBetreuung(tsResultMitBetreuung);
-		}
-		if (input.getTsBetreuungszeitProWocheOhneBetreuung() > 0) {
-			TSCalculationResult tsResultOhneBetreuung = new TSCalculationResult();
-			tsResultOhneBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheOhneBetreuung());
-			tsResultOhneBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenOhneBetreuung());
-			result.setTsCalculationResultOhnePaedagogischerBetreuung(tsResultOhneBetreuung);
-		}
 	}
 }
