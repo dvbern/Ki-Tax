@@ -154,10 +154,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegungPreview);
 		// Die manuelle Bemerkungen sind das einzige Attribut, welches wir vom Client uebernehmen
-		String bemerkungen = manuelleBemerkungen == null ? verfuegungPreview.getGeneratedBemerkungen() : manuelleBemerkungen;
+		String bemerkungen = manuelleBemerkungen == null ? verfuegungPreview.getGeneratedBemerkungen() :
+			manuelleBemerkungen;
 		verfuegungPreview.setManuelleBemerkungen(bemerkungen);
 
-		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.VERFUEGT);
+		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
+			Betreuungsstatus.VERFUEGT);
 		setZahlungsstatus(persistedVerfuegung, ignorieren);
 		//noinspection ResultOfMethodCallIgnored
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
@@ -180,34 +182,39 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		// Da die Module auch beim Uebernehmen noch verändert worden sein können, muss die Anmeldung zuerst nochmals gespeichert werden
+		// Da die Module auch beim Uebernehmen noch verändert worden sein können, muss die Anmeldung zuerst nochmals
+		// gespeichert werden
 		betreuungService.saveAnmeldungTagesschule(anmeldungTagesschule, false);
 
 		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(
 			anmeldungTagesschule.extractGesuch().getId(),
 			anmeldungTagesschule.getId());
-		// Wir muessen uns merken, ob dies die gueltige Anmeldung ist, da beim persistieren der Verfügung das Flag automatisch gesetzt wird.
+		// Wir muessen uns merken, ob dies die gueltige Anmeldung ist, da beim persistieren der Verfügung das Flag
+		// automatisch gesetzt wird.
 		boolean isGueltigeAnmeldung = betreuungMitVerfuegungPreview.isGueltig();
 		Objects.requireNonNull(betreuungMitVerfuegungPreview);
 		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegungPreview);
 
-		// Hier wird die Verfügung automatisch auf gueltig gsetzt. Im Fall der Tagesschulen werden aber auch die Vorgänger-Verfügungen
+		// Hier wird die Verfügung automatisch auf gueltig gsetzt. Im Fall der Tagesschulen werden aber auch die
+		// Vorgänger-Verfügungen
 		// übernommen, diese dürfen aber nicht auf gueltig gesetzt werden!
-		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 
 		AnmeldungTagesschule persistedAnmeldung = persistedVerfuegung.getAnmeldungTagesschule();
 		Objects.requireNonNull(persistedAnmeldung);
 		// Das Flag wieder auf den korrekten, vorher gemerkten Wert zurücksetzen
 		persistedAnmeldung.setGueltig(isGueltigeAnmeldung);
 
-		// Uebernommen werden jeweils auch die Vorgänger. Das Mail soll aber nur für die aktuell gültige Anmeldung geschickt werden!
+		// Uebernommen werden jeweils auch die Vorgänger. Das Mail soll aber nur für die aktuell gültige Anmeldung
+		// geschickt werden!
 		if (isGueltigeAnmeldung) {
 			try {
 				// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGesuch().getDossier().getGemeinde().getId()).get();
-				if(gemeindeStammdaten.getBenachrichtigungTsEmailAuto()) {
+				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !persistedAnmeldung.isTagesschuleTagi()) {
 					mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
 				}
 			} catch (MailException e) {
@@ -230,7 +237,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 		// Rekursiv alle Vorgänger ungültig setzen
 		if (anmeldung.getVorgaengerId() != null) {
-			final Optional<AnmeldungTagesschule> vorgaengerOpt = betreuungService.findAnmeldungTagesschule(anmeldung.getVorgaengerId());
+			final Optional<AnmeldungTagesschule> vorgaengerOpt =
+				betreuungService.findAnmeldungTagesschule(anmeldung.getVorgaengerId());
 			vorgaengerOpt.ifPresent(this::setVorgaengerAnmeldungTagesschuleAufUebernommen);
 		}
 	}
@@ -238,17 +246,20 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
-		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER })
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		GESUCHSTELLER })
 	public AnmeldungTagesschule anmeldungSchulamtAusgeloestAbschliessen(
 		@Nonnull String gesuchId,
 		@Nonnull String betreuungId
 	) {
-		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(gesuchId, betreuungId);
+		AnmeldungTagesschule betreuungMitVerfuegungPreview = (AnmeldungTagesschule) calculateAndExtractPlatz(gesuchId,
+			betreuungId);
 		Objects.requireNonNull(betreuungMitVerfuegungPreview);
 		Verfuegung verfuegungPreview = betreuungMitVerfuegungPreview.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegungPreview);
 
-		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
+		final Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 
 		AnmeldungTagesschule persistedAnmeldung = persistedVerfuegung.getAnmeldungTagesschule();
 		Objects.requireNonNull(persistedAnmeldung);
@@ -283,7 +294,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		try {
 			Gesuch gesuch = anmeldung.extractGesuch();
 
-			generatedDokumentService.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung, true,	true);
+			generatedDokumentService.getAnmeldeBestaetigungDokumentAccessTokenGeneratedDokument(gesuch, anmeldung,
+				true, true);
 		} catch (MimeTypeParseException | MergeDocException e) {
 			throw new EbeguRuntimeException(
 				"AnmeldebestaetigungsDokument",
@@ -345,8 +357,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			voraengerIgnoriertUndAusbezahlt);
 
 		// Es gelten folgende Regeln:
-		// - Wenn ein Zeitraum bereits einmal ignoriert und im Zahlungslauf behandelt wurde, muss er auch kuenftig immer
-		//   ignoriert werden
+		// - Wenn ein Zeitraum bereits einmal ignoriert und im Zahlungslauf behandelt wurde, muss er auch kuenftig
+		//   immer ignoriert werden
 		// - Wenn ein Zeitraum noch nie verrechnet wurde, erhaelt er den Status neu
 		// - Wenn der Zeitraum verrechnet wurde -> VERRECHNEND (wir muessen nochmals auszahlen), *ausser*
 		//     es wurde das "ignorieren" Flag gesetzt -> IGNORIEREND
@@ -406,10 +418,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
 		if (!verfuegung.isKategorieNichtEintreten()) {
 			for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieKeinPensum()) {
 					verfuegung.setKategorieKeinPensum(true);
 				}
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
 			}
@@ -435,10 +447,16 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		verfuegungPreview.getZeitabschnitte()
-			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
+			.forEach(z -> {
+				z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+				if (z.getBgCalculationResultGemeinde() != null) {
+					z.getBgCalculationResultGemeinde().setAnspruchspensumProzent(0);
+				}
+			});
 		verfuegungPreview.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(betreuungMitVerfuegungPreview.extractGesuch());
-		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview, Betreuungsstatus.NICHT_EINGETRETEN);
+		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
+			Betreuungsstatus.NICHT_EINGETRETEN);
 		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.VERFUEGEN);
 		// Dokument erstellen
 		try {
@@ -451,7 +469,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Nonnull
-	private Verfuegung persistVerfuegung(@Nonnull AbstractPlatz platzWithPreviewVerfuegung, @Nonnull Betreuungsstatus betreuungsstatus) {
+	private Verfuegung persistVerfuegung(@Nonnull AbstractPlatz platzWithPreviewVerfuegung,
+		@Nonnull Betreuungsstatus betreuungsstatus) {
 		// preview verfuegung als definitive verfuegung einhaengen
 		Verfuegung verfuegung = platzWithPreviewVerfuegung.getVerfuegungPreview();
 		Objects.requireNonNull(verfuegung);
@@ -474,8 +493,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		persistence.merge(platz);
 		return persist;
 	}
-
-
 
 	@Nonnull
 	@Override
@@ -545,7 +562,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(), true);
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
 	@Override
@@ -578,21 +595,21 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 */
 	@Nonnull
 	private Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung) {
-			Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
-			if (betreuung.getVorgaengerId() == null) {
-				return Optional.empty();
-			}
+		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
+		if (betreuung.getVorgaengerId() == null) {
+			return Optional.empty();
+		}
 
-			// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
-			// Leseberechtigt bin, fuer die Mutation aber schon!
-			Betreuung vorgaengerbetreuung = persistence.find(Betreuung.class, betreuung.getVorgaengerId());
-			if (vorgaengerbetreuung != null) {
-				if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-					&& isAusbezahlt(vorgaengerbetreuung)) {
-					// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
-					return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
-				}
-				return findVorgaengerAusbezahlteVerfuegung(vorgaengerbetreuung);
+		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
+		// Leseberechtigt bin, fuer die Mutation aber schon!
+		Betreuung vorgaengerbetreuung = persistence.find(Betreuung.class, betreuung.getVorgaengerId());
+		if (vorgaengerbetreuung != null) {
+			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+				&& isAusbezahlt(vorgaengerbetreuung)) {
+				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
+				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
+			}
+			return findVorgaengerAusbezahlteVerfuegung(vorgaengerbetreuung);
 		}
 		return Optional.empty();
 	}
@@ -692,7 +709,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year, @Nonnull Gemeinde einschraenkenAufGemeinde) {
+	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year,
+		@Nonnull Gemeinde einschraenkenAufGemeinde) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
 		List<Predicate> predicatesToUse = new ArrayList<>();

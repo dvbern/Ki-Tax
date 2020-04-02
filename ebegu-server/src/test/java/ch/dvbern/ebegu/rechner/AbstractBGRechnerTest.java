@@ -294,9 +294,9 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(20);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(20));
-		zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
+		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(20);
+		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(20));
+		zeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
 		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
 		zeitabschnittList.add(zeitabschnitt);

@@ -254,16 +254,16 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 			return false;
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;
-		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
+		return EbeguUtil.isSame(getInstitution(), otherInstStammdaten.getInstitution()) &&
 			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
-			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse()) &&
-			EbeguUtil.isSameObject(
+			EbeguUtil.isSame(getAdresse(), otherInstStammdaten.getAdresse()) &&
+			EbeguUtil.isSame(
 				getInstitutionStammdatenBetreuungsgutscheine(),
 				otherInstStammdaten.getInstitutionStammdatenBetreuungsgutscheine()) &&
-			EbeguUtil.isSameObject(
+			EbeguUtil.isSame(
 				getInstitutionStammdatenTagesschule(),
 				otherInstStammdaten.getInstitutionStammdatenTagesschule()) &&
-			EbeguUtil.isSameObject(
+			EbeguUtil.isSame(
 				getInstitutionStammdatenFerieninsel(),
 				otherInstStammdaten.getInstitutionStammdatenFerieninsel());
 	}

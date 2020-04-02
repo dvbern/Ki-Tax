@@ -71,7 +71,7 @@ public class BetreuungsgutscheinEvaluator {
 	 * existieren
 	 */
 	@Nonnull
-	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale, boolean executeMonatsRule) {
+	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -103,16 +103,18 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 
-			if(executeMonatsRule){
-				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
-			}
+			MonatsRule monatsRule = new MonatsRule();
+			MutationsMerger mutationsMerger = new MutationsMerger(locale);
+			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true);
 
+			zeitabschnitte = monatsRule.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte, locale);
-
+			zeitabschnitte = mutationsMerger.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
 			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten,
 			// diese auch noch mergen
-			zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
+			zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(firstBetreuungOfGesuch, zeitabschnitte);
+
+			zeitabschnitte.forEach(VerfuegungZeitabschnitt::copyValuesToResult);
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
@@ -199,26 +201,28 @@ public class BetreuungsgutscheinEvaluator {
 					}
 				}
 
-				if (!isTagesschule) {
-					// Innerhalb eines Monats darf der Anspruch nie sinken
-					zeitabschnitte = AnspruchFristRule.execute(zeitabschnitte);
+				// Die Abschluss-Rules ebenfalls ausführen
 
-					// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
-					restanspruchZeitabschnitte = RestanspruchInitializer.execute(platz, zeitabschnitte);
-				}
+				AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
+				RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+				AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false);
+				MonatsRule monatsRule = new MonatsRule();
+				MutationsMerger mutationsMerger = new MutationsMerger(locale);
+				AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(!platz.getBetreuungsangebotTyp().isTagesschule());
 
+				// Innerhalb eines Monats darf der Anspruch nie sinken
+				zeitabschnitte = anspruchFristRule.executeIfApplicable(platz, zeitabschnitte);
+				// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
+				restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
 				// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
-
+				zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
 				// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-				zeitabschnitte = MonatsRule.execute(zeitabschnitte);
-
+				zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
 				// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-				zeitabschnitte = MutationsMerger.execute(platz, zeitabschnitte, locale);
-
+				zeitabschnitte = mutationsMerger.executeIfApplicable(platz, zeitabschnitte);
 				// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten*
-				// Daten, diese auch noch mergen, ausser es ist Tagesschule
-				zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, !isTagesschule);
+				// Daten, diese auch noch mergen
+				zeitabschnitte = abschlussNormalizerMitMonate.executeIfApplicable(platz, zeitabschnitte);
 
 				// Die Verfügung erstellen
 				// Da wir die Verfügung nur beim eigentlichen Verfügen speichern wollen, wird
@@ -314,7 +318,8 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
-		restanspruchZeitabschnitte = RestanspruchInitializer.execute(
+		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
+		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 
 		return restanspruchZeitabschnitte;
@@ -337,7 +342,7 @@ public class BetreuungsgutscheinEvaluator {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
 		VerfuegungZeitabschnitt initialerRestanspruch = new VerfuegungZeitabschnitt(gesuchsperiode.getGueltigkeit());
 		// Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
-		initialerRestanspruch.getBgCalculationInputAsiv().setAnspruchspensumRest(-1);
+		initialerRestanspruch.setAnspruchspensumRestForAsivAndGemeinde(-1);
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
 	}

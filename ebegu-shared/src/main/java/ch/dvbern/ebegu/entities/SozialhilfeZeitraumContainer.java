@@ -73,7 +73,7 @@ public class SozialhilfeZeitraumContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final SozialhilfeZeitraumContainer otherSozialhilfeZeitraumContainer = (SozialhilfeZeitraumContainer) other;
-		return EbeguUtil.isSameObject(getSozialhilfeZeitraumJA(), otherSozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA());
+		return EbeguUtil.isSame(getSozialhilfeZeitraumJA(), otherSozialhilfeZeitraumContainer.getSozialhilfeZeitraumJA());
 	}
 
 	@Nonnull

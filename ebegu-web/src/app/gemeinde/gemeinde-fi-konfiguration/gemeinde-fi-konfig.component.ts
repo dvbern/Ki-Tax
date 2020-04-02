@@ -22,7 +22,13 @@ import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Moment} from 'moment';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
+import {TSFerieninselZeitraum} from '../../../models/TSFerieninselZeitraum';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
+import {TSDateRange} from '../../../models/types/TSDateRange';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import * as moment from 'moment';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Component({
     selector: 'dv-gemeinde-fi-konfiguration',
@@ -54,5 +60,47 @@ export class GemeindeFiKonfigComponent implements OnInit {
             && (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus
                 || (gk.gesuchsperiode && gk.gesuchsperiode.status &&
                     TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiode.status));
+    }
+
+    public addFerieninselZeitraum(ferieninselStammdaten: TSFerieninselStammdaten): void {
+        if (!ferieninselStammdaten.zeitraumList) {
+            ferieninselStammdaten.zeitraumList = [];
+        }
+        const zeitraum = new TSFerieninselZeitraum();
+        zeitraum.gueltigkeit = new TSDateRange();
+        ferieninselStammdaten.zeitraumList.push(zeitraum);
+    }
+
+    public isAnmeldeschlussRequired(fiStammdaten: TSFerieninselStammdaten): boolean {
+        // Wenn mindestens ein Zeitraum erfasst ist
+        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb)
+            || EbeguUtil.isNotNullOrUndefined(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis);
+    }
+
+    public isDatumAbRequired(zeitraum: TSFerieninselZeitraum, fiStammdaten: TSFerieninselStammdaten): boolean {
+        // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum bis
+        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.anmeldeschluss)
+            || (EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit)
+                && EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit.gueltigBis));
+    }
+
+    public isDatumBisRequired(zeitraum: TSFerieninselZeitraum, fiStammdaten: TSFerieninselStammdaten): boolean {
+        // Wenn entweder der Anmeldeschluss erfasst ist, oder das Datum ab
+        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.anmeldeschluss)
+            || (EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit)
+                && EbeguUtil.isNotNullOrUndefined(zeitraum.gueltigkeit.gueltigAb));
+    }
+
+    public removeFerieninselZeitraum(fiStammdaten: TSFerieninselStammdaten, zeitraum: TSFerieninselZeitraum): void {
+        const index = fiStammdaten.zeitraumList.indexOf(zeitraum, 0);
+        fiStammdaten.zeitraumList.splice(index, 1);
+    }
+
+    public formatDate(date: moment.Moment): string {
+        if (!date || !date.isValid()) {
+            return '';
+        }
+
+        return date.format(CONSTANTS.DATE_FORMAT);
     }
 }

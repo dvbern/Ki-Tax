@@ -15,36 +15,29 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten_;
-import ch.dvbern.ebegu.entities.FerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel_;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode_;
+import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.enums.Ferienname;
-import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service zum Verwalten von Ferieninsel-Stammdaten
@@ -57,13 +50,75 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
 	@Override
+	public List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<GemeindeStammdatenGesuchsperiodeFerieninsel> query =
+			cb.createQuery(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
+		Root<GemeindeStammdatenGesuchsperiodeFerieninsel> root = query.from(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
+		Join<GemeindeStammdatenGesuchsperiodeFerieninsel, GemeindeStammdatenGesuchsperiode> joinStammdaten =
+			root.join(GemeindeStammdatenGesuchsperiodeFerieninsel_.gemeindeStammdatenGesuchsperiode);
+		query.select(root);
+		Predicate predicateGesuchsperiode =
+			cb.equal(joinStammdaten.get(GemeindeStammdatenGesuchsperiode_.gesuchsperiode).get(Gesuchsperiode_.id),
+			gesuchsperiodeId);
+		Predicate gemeindePredicate = cb.equal(joinStammdaten.get(GemeindeStammdatenGesuchsperiode_.gemeinde).get(Gemeinde_.id),
+			gemeindeId);
+		query.where(predicateGesuchsperiode, gemeindePredicate);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	public void initFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
+		GemeindeStammdatenGesuchsperiodeFerieninsel fruehlingsFerien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
+		fruehlingsFerien.setFerienname(Ferienname.FRUEHLINGSFERIEN);
+		fruehlingsFerien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
+		persistence.persist(fruehlingsFerien);
+
+		GemeindeStammdatenGesuchsperiodeFerieninsel sommerferien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
+		sommerferien.setFerienname(Ferienname.SOMMERFERIEN);
+		sommerferien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
+		persistence.persist(sommerferien);
+
+		GemeindeStammdatenGesuchsperiodeFerieninsel herbstferien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
+		herbstferien.setFerienname(Ferienname.HERBSTFERIEN);
+		herbstferien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
+		persistence.persist(herbstferien);
+
+		GemeindeStammdatenGesuchsperiodeFerieninsel sportferien = new GemeindeStammdatenGesuchsperiodeFerieninsel();
+		sportferien.setFerienname(Ferienname.SPORTFERIEN);
+		sportferien.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
+		persistence.persist(sportferien);
+	}
+
+	@Override
+	public void removeFerieninselStammdaten(@Nonnull String gemeindeStammdatenGesuchsperiodeFerieninselId) {
+		persistence.remove(GemeindeStammdatenGesuchsperiodeFerieninsel.class, gemeindeStammdatenGesuchsperiodeFerieninselId);
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeStammdatenGesuchsperiodeFerieninsel saveFerieninselStammdaten(
+		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten
+	) {
+		return persistence.merge(ferieninselStammdaten);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
+		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
+		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = persistence.find(GemeindeStammdatenGesuchsperiodeFerieninsel.class, ferieninselStammdatenId);
+		return Optional.ofNullable(ferieninselStammdaten);
+	}
+
+/*	@Nonnull
+	@Override
 	@RolesAllowed(UserRoleName.SUPER_ADMIN)
-	public FerieninselStammdaten saveFerieninselStammdaten(@Nonnull FerieninselStammdaten ferieninselStammdaten) {
+	public GemeindeStammdatenGesuchsperiodeFerieninsel saveFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
 		Objects.requireNonNull(ferieninselStammdaten);
 		return persistence.merge(ferieninselStammdaten);
 	}
@@ -71,62 +126,64 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	@Nonnull
 	@Override
 	@PermitAll
-	public Optional<FerieninselStammdaten> findFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
+	public Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
 		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
-		FerieninselStammdaten ferieninselStammdaten = persistence.find(FerieninselStammdaten.class, ferieninselStammdatenId);
+		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = persistence.find(GemeindeStammdatenGesuchsperiodeFerieninsel.class, ferieninselStammdatenId);
 		return Optional.ofNullable(ferieninselStammdaten);
 	}
 
 	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<FerieninselStammdaten> getAllFerieninselStammdaten() {
-		return criteriaQueryHelper.getAll(FerieninselStammdaten.class);
+	public Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> getAllFerieninselStammdaten() {
+		return criteriaQueryHelper.getAll(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
 	}
 
-	@Nonnull
+*//*	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<FerieninselStammdaten> findFerieninselStammdatenForGesuchsperiode(@Nonnull String gesuchsperiodeId) {
+	// TODO: Anpassen
+	public Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdatenForGesuchsperiode(@Nonnull String gesuchsperiodeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<FerieninselStammdaten> query = cb.createQuery(FerieninselStammdaten.class);
-		Root<FerieninselStammdaten> root = query.from(FerieninselStammdaten.class);
+		final CriteriaQuery<GemeindeStammdatenGesuchsperiodeFerieninsel> query = cb.createQuery(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
+		Root<GemeindeStammdatenGesuchsperiodeFerieninsel> root = query.from(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
 		query.select(root);
-		Predicate predicateGesuchsperiode = cb.equal(root.get(FerieninselStammdaten_.gesuchsperiode).get(Gesuchsperiode_.id), gesuchsperiodeId);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(GemeindeStammdatenGesuchsperiodeFerieninsel_.gesuchsperiode).get(Gesuchsperiode_.id),
+			gesuchsperiodeId);
 		query.where(predicateGesuchsperiode);
-		query.orderBy(cb.asc(root.get(FerieninselStammdaten_.ferienname)));
+		query.orderBy(cb.asc(root.get(GemeindeStammdatenGesuchsperiodeFerieninsel_.ferienname)));
 		return persistence.getCriteriaResults(query);
-	}
+	}*//*
 
 	@Nonnull
 	@Override
 	@PermitAll
-	public Optional<FerieninselStammdaten> findFerieninselStammdatenForGesuchsperiodeAndFerienname(
+	public Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdatenForGesuchsperiodeAndFerienname(
 			@Nonnull String gesuchsperiodeId, @Nonnull Ferienname ferienname) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<FerieninselStammdaten> query = cb.createQuery(FerieninselStammdaten.class);
-		Root<FerieninselStammdaten> root = query.from(FerieninselStammdaten.class);
+		final CriteriaQuery<GemeindeStammdatenGesuchsperiodeFerieninsel> query = cb.createQuery(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
+		Root<GemeindeStammdatenGesuchsperiodeFerieninsel> root = query.from(GemeindeStammdatenGesuchsperiodeFerieninsel.class);
 		query.select(root);
-		Predicate predicateGesuchsperiode = cb.equal(root.get(FerieninselStammdaten_.gesuchsperiode).get(Gesuchsperiode_.id), gesuchsperiodeId);
-		Predicate predicateFerienname = cb.equal(root.get(FerieninselStammdaten_.ferienname), ferienname);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(GemeindeStammdatenGesuchsperiodeFerieninsel_.gesuchsperiode).get(Gesuchsperiode_.id), gesuchsperiodeId);
+		Predicate predicateFerienname = cb.equal(root.get(GemeindeStammdatenGesuchsperiodeFerieninsel_.ferienname), ferienname);
 		query.where(predicateGesuchsperiode, predicateFerienname);
-		query.orderBy(cb.asc(root.get(FerieninselStammdaten_.ferienname)));
-		FerieninselStammdaten fiStammdatenOrNull = persistence.getCriteriaSingleResult(query);
+		query.orderBy(cb.asc(root.get(GemeindeStammdatenGesuchsperiodeFerieninsel_.ferienname)));
+		GemeindeStammdatenGesuchsperiodeFerieninsel fiStammdatenOrNull = persistence.getCriteriaSingleResult(query);
 		return Optional.ofNullable(fiStammdatenOrNull);
 	}
 
 	@Nonnull
 	@Override
 	@PermitAll
-	public List<BelegungFerieninselTag> getPossibleFerieninselTage(@Nonnull FerieninselStammdaten ferieninselStammdaten) {
+	public List<BelegungFerieninselTag> getPossibleFerieninselTage(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten) {
 		List<BelegungFerieninselTag> potentielleFerieninselTage = new LinkedList<>();
-		for (FerieninselZeitraum ferieninselZeitraum : ferieninselStammdaten.getZeitraumList()) {
+		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : ferieninselStammdaten.getZeitraumList()) {
 			potentielleFerieninselTage.addAll(getPossibleFerieninselTageForZeitraum(ferieninselZeitraum));
 		}
 		return potentielleFerieninselTage;
 	}
 
-	private List<BelegungFerieninselTag> getPossibleFerieninselTageForZeitraum(FerieninselZeitraum zeitraum) {
+	private List<BelegungFerieninselTag> getPossibleFerieninselTageForZeitraum(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraum) {
 		List<BelegungFerieninselTag> potentielleFerieninselTage = new LinkedList<>();
 		LocalDate currentDate = zeitraum.getGueltigkeit().getGueltigAb();
 		while (!currentDate.isAfter(zeitraum.getGueltigkeit().getGueltigBis())) {
@@ -139,11 +196,5 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 		}
 		return potentielleFerieninselTage;
 	}
-
-	@Override
-	@RolesAllowed(SUPER_ADMIN)
-	public void removeFerieninselStammdaten(@Nonnull String ferieninselStammdatenId) {
-		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
-		persistence.remove(FerieninselStammdaten.class, ferieninselStammdatenId);
-	}
+	*/
 }

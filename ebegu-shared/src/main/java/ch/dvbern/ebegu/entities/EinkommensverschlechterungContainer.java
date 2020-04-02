@@ -158,9 +158,9 @@ public class EinkommensverschlechterungContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final EinkommensverschlechterungContainer otherEKVContainer = (EinkommensverschlechterungContainer) other;
-		return EbeguUtil.isSameObject(getEkvGSBasisJahrPlus1(), otherEKVContainer.getEkvGSBasisJahrPlus1()) &&
-			EbeguUtil.isSameObject(getEkvGSBasisJahrPlus2(), otherEKVContainer.getEkvGSBasisJahrPlus2()) &&
-			EbeguUtil.isSameObject(getEkvJABasisJahrPlus1(), otherEKVContainer.getEkvJABasisJahrPlus1()) &&
-			EbeguUtil.isSameObject(getEkvJABasisJahrPlus2(), otherEKVContainer.getEkvJABasisJahrPlus2());
+		return EbeguUtil.isSame(getEkvGSBasisJahrPlus1(), otherEKVContainer.getEkvGSBasisJahrPlus1()) &&
+			EbeguUtil.isSame(getEkvGSBasisJahrPlus2(), otherEKVContainer.getEkvGSBasisJahrPlus2()) &&
+			EbeguUtil.isSame(getEkvJABasisJahrPlus1(), otherEKVContainer.getEkvJABasisJahrPlus1()) &&
+			EbeguUtil.isSame(getEkvJABasisJahrPlus2(), otherEKVContainer.getEkvJABasisJahrPlus2());
 	}
 }

@@ -72,16 +72,16 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Nonnull
 	private @Valid List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
 
-	@Column(nullable = false)
+	@Column(nullable = false) // Verwendet in Statistik "Gesuche nach Zeitraum", siehe orm.xml
 	private @NotNull boolean kategorieNormal = false;
 
-	@Column(nullable = false)
+	@Column(nullable = false) // Verwendet in Statistik "Gesuche nach Zeitraum", siehe orm.xml
 	private @NotNull boolean kategorieMaxEinkommen = false;
 
-	@Column(nullable = false)
+	@Column(nullable = false) // Verwendet in Statistik "Gesuche nach Zeitraum", siehe orm.xml
 	private @NotNull boolean kategorieKeinPensum = false;
 
-	@Column(nullable = false)
+	@Column(nullable = false) // Verwendet in Statistik "Gesuche nach Zeitraum", siehe orm.xml
 	private @NotNull boolean kategorieNichtEintreten = false;
 
 	/**

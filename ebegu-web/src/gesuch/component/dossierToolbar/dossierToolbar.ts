@@ -22,7 +22,11 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfVerfuegt,
+    isAtLeastFreigegebenOrFreigabequittung,
+    isStatusVerfuegenVerfuegt
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -125,6 +129,7 @@ export class DossierToolbarController implements IDVFocusableController {
     public erneuernPossibleForCurrentAntrag: boolean = false;
     public neuesteGesuchsperiode: TSGesuchsperiode;
     public amountNewMitteilungenGS: number = 0;
+    private $kontaktLoaded: IPromise<boolean>;
 
     public constructor(private readonly ebeguUtil: EbeguUtil,
                        private readonly gesuchRS: GesuchRS,
@@ -321,8 +326,9 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private updateGemeindeStammdaten(): void {
-        this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
+        this.$kontaktLoaded = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
             this.kontaktdatenGemeindeAsHtml = this.gemeindeStammdatenToHtml(gemeindeDaten);
+            return true;
         }));
     }
 
@@ -662,11 +668,14 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
-            title: '',
-            text: this.kontaktdatenGemeindeAsHtml,
-            parentController: this,
+        this.$kontaktLoaded.then(() => {
+            this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
+                title: '',
+                text: this.kontaktdatenGemeindeAsHtml,
+                parentController: this,
+            });
         });
+
     }
 
     private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
@@ -687,7 +696,7 @@ export class DossierToolbarController implements IDVFocusableController {
             html += `<span class="marginTop20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.institution.name}</span><br>`;
         }
-        html +=    `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
+        html += `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
                     <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a><br>`;
         html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
