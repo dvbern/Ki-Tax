@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -127,15 +126,6 @@ public abstract class AbstractAsivRechner extends AbstractRechner {
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
 		return result;
-	}
-
-	@Nonnull
-	@Override
-	protected Optional<BGCalculationResult> calculateGemeinde(
-		@Nonnull BGCalculationInput input,
-		@Nonnull BGRechnerParameterDTO parameterDTO) {
-
-		return Optional.empty();
 	}
 
 	/**
