@@ -268,6 +268,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			boolean validLogin = response.getStatus() == Status.OK.getStatusCode();
 			return getAuthStatus(httpMsgContext, validLogin);
 		} catch (RuntimeException e) {
+			LOG.error("Call to Schulamt API had an unrecoverable error: {}", e.getMessage());
 			throw e;
 		} catch (Exception ex) {
 			return setResponseUnauthorised(httpMsgContext);
