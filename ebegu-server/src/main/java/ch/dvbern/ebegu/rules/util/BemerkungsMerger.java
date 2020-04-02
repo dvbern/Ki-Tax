@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -104,16 +105,16 @@ public final class BemerkungsMerger {
 		// 1. Ausserordentlicher Anspruch
 		// 2. Fachstelle
 		// 3. Erwerbspensum
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = verfuegungZeitabschnitt.getBemerkungenMap();
-		if (bemerkungenMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
-			bemerkungenMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-			bemerkungenMap.remove(MsgKey.FACHSTELLE_MSG);
+		VerfuegungsBemerkungList bemerkungList = verfuegungZeitabschnitt.getBemerkungenList();
+		if (bemerkungList.containsMsgKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
+			bemerkungList.removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+			bemerkungList.removeBemerkungByMsgKey(MsgKey.FACHSTELLE_MSG);
 		}
-		if (bemerkungenMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
-			bemerkungenMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+		if (bemerkungList.containsMsgKey(MsgKey.FACHSTELLE_MSG)) {
+			bemerkungList.removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
 		}
 		StringBuilder sb = new StringBuilder();
-		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenMap.values()) {
+		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungList.getBemerkungenList()) {
 			sb.append(verfuegungsBemerkung.getTranslated());
 			sb.append('\n');
 		}
