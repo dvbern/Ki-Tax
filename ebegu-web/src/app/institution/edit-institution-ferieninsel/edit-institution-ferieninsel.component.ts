@@ -17,11 +17,18 @@
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {TSEinstellungenFerieninsel} from '../../../models/TSEinstellungenFerieninsel';
+import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSDateRange} from '../../../models/types/TSDateRange';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-edit-institution-ferieninsel',
     templateUrl: './edit-institution-ferieninsel.component.html',
+    styleUrls: ['./edit-institution-ferieninsel.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
 })
@@ -31,8 +38,32 @@ export class EditInstitutionFerieninselComponent {
     @Input() public stammdaten: TSInstitutionStammdaten;
     @Input() public editMode: boolean;
 
+    public gemeindeList: TSGemeinde[] = [];
+
     public constructor(
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
+    public ngOnInit(): void {
+        this.gemeindeRS.getAllGemeinden().then(allGemeinden => {
+            this.gemeindeList = allGemeinden;
+        });
+    }
+
+    public trackById(einstellungGP: TSEinstellungenFerieninsel): string {
+        return einstellungGP.id;
+    }
+
+    public showGesuchsperiode(gueltigkeit: TSDateRange): boolean {
+        let showGesuchsperiode = gueltigkeit.gueltigBis.isAfter(this.stammdaten.gueltigkeit.gueltigAb);
+        if (EbeguUtil.isNotNullOrUndefined(this.stammdaten.gueltigkeit.gueltigBis)) {
+            showGesuchsperiode = showGesuchsperiode && gueltigkeit.gueltigAb.isBefore(this.stammdaten.gueltigkeit.gueltigBis);
+        }
+        return showGesuchsperiode;
+    }
+
+    public compareGemeinde(b1: TSGemeinde, b2: TSGemeinde): boolean {
+        return b1 && b2 ? b1.id === b2.id : b1 === b2;
+    }
 }

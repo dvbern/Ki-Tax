@@ -281,17 +281,21 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         return dayArray[index + 1] ? dayArray[index + 1].tag.diff(tag.tag, 'days') > 7 : false;
     }
 
+    // TODO KIBON-1147
     public hasAusweichstandort(): boolean {
-        return this.betreuung.institutionStammdaten
-            && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-            && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-                .isAusweichstandortDefined(this.betreuung.belegungFerieninsel.ferienname);
+        return true;
+        // return this.betreuung.institutionStammdaten
+        //     && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel;
+            // && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
+            //     .isAusweichstandortDefined(this.betreuung.belegungFerieninsel.ferienname);
     }
 
+    // TODO KIBON-1147
     public getAusgewaehltFeriensequenz(): string {
         if (this.hasAusweichstandort()) {
-            return this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-                .getAusweichstandortFromFerienname(this.betreuung.belegungFerieninsel.ferienname);
+            return "TODO";
+            // return this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
+                // .getAusweichstandortFromFerienname(this.betreuung.belegungFerieninsel.ferienname);
         }
         return '';
     }
