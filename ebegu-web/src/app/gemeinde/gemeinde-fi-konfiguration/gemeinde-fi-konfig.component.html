@@ -79,7 +79,7 @@
                             <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12" ngModelGroup="fiStammdaten"
                                  [appOverlappingZeitraum]="konfigurationsListe[i].ferieninselStammdaten"
 								 #fiStammdatenGroup="ngModelGroup">
-                                <div class="col-sm-12">
+                                <div class="col-sm-12" id="error-overlapping-zeitraum" *ngIf="fiStammdatenGroup.errors">
                                     <dv-error-messages [errorObject]="fiStammdatenGroup.errors"></dv-error-messages>
                                 </div>
                                 <div *ngFor="let fiStammdaten of konfigurationsListe[i].ferieninselStammdaten" class="ferien">
@@ -107,30 +107,37 @@
                                     <div class="row zeitabschnitt">
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
+												   #ersterZeitraumGueltigAbInput='ngModel'
                                                    [name]="fiStammdaten.ferienname + '_gueltigAb'"
                                                    [id]="fiStammdaten.ferienname + '_gueltigAb'"
                                                    [(ngModel)]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb"
                                                    [matDatepicker]="gueltigAb"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [max]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis"
                                                    [required]="isDatumAbRequired(fiStammdaten.ersterZeitraum, fiStammdaten)">
                                             <mat-datepicker-toggle matSuffix
                                                                    [for]="gueltigAb"></mat-datepicker-toggle>
                                             <mat-datepicker #gueltigAb></mat-datepicker>
+                                            <dv-error-messages [errorObject]="ersterZeitraumGueltigAbInput.errors"></dv-error-messages>
                                         </div>
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
+                                                   #ersterZeitraumGueltigBisInput='ngModel'
                                                    [name]="fiStammdaten.ferienname + '_gueltigBis'"
                                                    [id]="fiStammdaten.ferienname + '_gueltigBis'"
                                                    [(ngModel)]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis"
                                                    [matDatepicker]="gueltigBis"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
+                                                   [min]="fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb"
                                                    [required]="isDatumBisRequired(fiStammdaten.ersterZeitraum, fiStammdaten)">
                                             <mat-datepicker-toggle matSuffix
                                                                    [for]="gueltigBis"></mat-datepicker-toggle>
                                             <mat-datepicker #gueltigBis></mat-datepicker>
+                                            <dv-error-messages [errorObject]="ersterZeitraumGueltigBisInput.errors"></dv-error-messages>
                                         </div>
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
+                                                   #anmeldeschlussInput='ngModel'
                                                    [name]="fiStammdaten.ferienname + '_anmeldeschluss'"
                                                    [id]="fiStammdaten.ferienname + '_anmeldeschluss'"
                                                    [(ngModel)]="fiStammdaten.anmeldeschluss"
@@ -140,6 +147,7 @@
                                             <mat-datepicker-toggle matSuffix
                                                                    [for]="anmeldeschluss"></mat-datepicker-toggle>
                                             <mat-datepicker #anmeldeschluss></mat-datepicker>
+                                            <dv-error-messages [errorObject]="anmeldeschlussInput.errors"></dv-error-messages>
                                         </div>
                                     </div>
 
@@ -147,27 +155,33 @@
                                          *ngFor="let zeitraum of fiStammdaten.zeitraumList">
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
+												   #zeitraumGueltigAbInput='ngModel'
                                                    [name]="zeitraum + '_gueltigAb'"
                                                    [id]="zeitraum + '_gueltigAb'"
                                                    [(ngModel)]="zeitraum.gueltigkeit.gueltigAb"
                                                    [matDatepicker]="zeitraumGueltigAb"
+                                                   [max]="zeitraum.gueltigkeit.gueltigBis"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
                                                    [required]="isDatumAbRequired(zeitraum, fiStammdaten)">
                                             <mat-datepicker-toggle matSuffix
                                                                    [for]="zeitraumGueltigAb"></mat-datepicker-toggle>
                                             <mat-datepicker #zeitraumGueltigAb></mat-datepicker>
+                                            <dv-error-messages [errorObject]="zeitraumGueltigAbInput.errors"></dv-error-messages>
                                         </div>
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
+                                                   #zeitraumGueltigBisInput='ngModel'
                                                    [name]="zeitraum + '_gueltigBis'"
                                                    [id]="zeitraum + '_gueltigBis'"
                                                    [(ngModel)]="zeitraum.gueltigkeit.gueltigBis"
                                                    [matDatepicker]="zeitraumGueltigBis"
+                                                   [min]="zeitraum.gueltigkeit.gueltigAb"
                                                    [placeholder]="'DATE_PLACEHOLDER' | translate"
                                                    [required]="isDatumBisRequired(zeitraum, fiStammdaten)">
                                             <mat-datepicker-toggle matSuffix
                                                                    [for]="zeitraumGueltigBis"></mat-datepicker-toggle>
                                             <mat-datepicker #zeitraumGueltigBis></mat-datepicker>
+                                            <dv-error-messages [errorObject]="zeitraumGueltigBisInput.errors"></dv-error-messages>
                                         </div>
                                         <div class="col-md-1 absolute-height">
                                             <a (click)="removeFerieninselZeitraum(fiStammdaten, zeitraum);"

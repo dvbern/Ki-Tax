@@ -139,10 +139,6 @@ export class EbeguRestUtil {
     public constructor() {
     }
 
-    private static sortFerieninselStammdaten(a: TSFerieninselStammdaten, b: TSFerieninselStammdaten): number {
-        return ferienInselNameOrder(a.ferienname) - ferienInselNameOrder(b.ferienname);
-    }
-
     /**
      * Wandelt Data in einen TSApplicationProperty Array um, welches danach zurueckgeliefert wird
      */
@@ -3508,7 +3504,7 @@ export class EbeguRestUtil {
         }
         return Array.isArray(data)
             ? data.map(item => this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), item))
-                .sort(EbeguRestUtil.sortFerieninselStammdaten)
+                .sort((a, b) => ferienInselNameOrder(a.ferienname) - ferienInselNameOrder(b.ferienname))
             : [this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data)];
     }
 
