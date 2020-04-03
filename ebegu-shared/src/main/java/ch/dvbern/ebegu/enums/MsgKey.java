@@ -17,7 +17,11 @@ package ch.dvbern.ebegu.enums;
 
 /**
  * Dieses Enum dient der Verwaltung von Server Seitigen Uebersetzbaren Messages. Die hier definierten keys sollten im
- * server-messages.properties file uebersetzt werden. Die Optionale Verklinkung mit anderen Enums ist rein informativ
+ * server-messages.properties file uebersetzt werden.
+ * Achtung:
+ * - Die Reihenfolge im Enum definiert die Reihenfolge, in der die Bemerkungen auf der Verfuegung angezeigt werden
+ * - Pro MsgKey kann nur 1 Bemerkung vorhanden sein. Wenn mehrere eingefuegt werden, wird die letzte behalten. Man muss die
+ * 		Regeln also in der korrekten Reihenfolge ausfuehren, mit aufsteigender Prioritaet.
  */
 public enum MsgKey {
 

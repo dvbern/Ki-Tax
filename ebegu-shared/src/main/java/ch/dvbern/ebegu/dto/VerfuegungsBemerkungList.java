@@ -28,12 +28,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.util.VerfuegungsBemerkungComparator;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * DTO für eine Verfügungsbemerkung
  */
 public class VerfuegungsBemerkungList {
+
 
 	@Nonnull
 	private final List<VerfuegungsBemerkung> bemerkungenList = new ArrayList<>();
@@ -70,8 +72,11 @@ public class VerfuegungsBemerkungList {
 		return this.bemerkungenList.stream().anyMatch(bemerkung -> bemerkung.getMsgKey() == msgKey);
 	}
 
-	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungList bemerkungenList) {
-		this.bemerkungenList.addAll(bemerkungenList.getBemerkungenList());
+	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungList additionalBemerkungen) {
+		//  Auch hier muss sichergestellt werden, dass pro Key nur eine Bemerkung vorhanden ist. Wir loeschen die aeltere
+		for (VerfuegungsBemerkung additionalBemerkung : additionalBemerkungen.bemerkungenList) {
+			addBemerkung(additionalBemerkung);
+		}
 	}
 
 	public void addBemerkung(@Nonnull VerfuegungsBemerkung bemerkung) {
@@ -140,6 +145,9 @@ public class VerfuegungsBemerkungList {
 		if (containsMsgKey(MsgKey.FACHSTELLE_MSG)) {
 			removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
 		}
+
+		// Die Bemerkungen so sortieren, wie sie auf der Verfuegung stehen sollen
+		bemerkungenList.sort(new VerfuegungsBemerkungComparator());
 
 		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenList) {
 			sb.append(verfuegungsBemerkung.getTranslated());
