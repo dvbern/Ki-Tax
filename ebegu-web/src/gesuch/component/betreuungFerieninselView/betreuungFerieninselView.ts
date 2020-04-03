@@ -293,7 +293,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     // TODO KIBON-1147
     public getAusgewaehltFeriensequenz(): string {
         if (this.hasAusweichstandort()) {
-            return "TODO";
+            return 'TODO';
             // return this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
                 // .getAusweichstandortFromFerienname(this.betreuung.belegungFerieninsel.ferienname);
         }

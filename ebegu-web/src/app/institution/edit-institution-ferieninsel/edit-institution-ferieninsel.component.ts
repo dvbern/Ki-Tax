@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSEinstellungenFerieninsel} from '../../../models/TSEinstellungenFerieninsel';
-import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSDateRange} from '../../../models/types/TSDateRange';
