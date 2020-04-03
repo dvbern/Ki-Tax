@@ -189,13 +189,17 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, dataRow.getBgStunden());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, dataRow.getVollkosten());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, dataRow.getElternbeitrag());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigt, dataRow.getVerguenstigt());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungKanton, dataRow.getVerguenstigungKanton());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, dataRow.getVerguenstigungGemeinde());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, dataRow.getVerguenstigungTotal());
 			} else {
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensum, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigt, BigDecimal.ZERO);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungKanton, BigDecimal.ZERO);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, BigDecimal.ZERO);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, BigDecimal.ZERO);
 			}
 
 			rowFiller.fillRow(excelRowGroup);
@@ -405,8 +409,14 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.elternbeitragTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitragTitle, ServerMessageUtil.getMessage("Reports_elternbeitragTitle", locale));
 
-		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gutscheinTitle.getMergeField());
-		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gutscheinTitle, ServerMessageUtil.getMessage("Reports_gutscheinTitle", locale));
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gutscheinKantonTitel.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gutscheinKantonTitel, ServerMessageUtil.getMessage("Reports_gutscheinKantonTitel", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gutscheinGemeindeTitel.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gutscheinGemeindeTitel, ServerMessageUtil.getMessage("Reports_gutscheinGemeindeTitel", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gutscheinTotalTitel.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gutscheinTotalTitel, ServerMessageUtil.getMessage("Reports_gutscheinTotalTitel", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.statusTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));

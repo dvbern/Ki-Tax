@@ -35,7 +35,9 @@ public class KantonDataRow {
 	private LocalDate zeitabschnittBis;
 	private BigDecimal bgPensum;
 	private BigDecimal elternbeitrag;
-	private BigDecimal verguenstigung;
+	private BigDecimal verguenstigungKanton;
+	private BigDecimal verguenstigungGemeinde;
+	private BigDecimal verguenstigungTotal;
 	private String institution;
 	private String betreuungsTyp;
 
@@ -113,12 +115,28 @@ public class KantonDataRow {
 		this.elternbeitrag = elternbeitrag;
 	}
 
-	public BigDecimal getVerguenstigung() {
-		return verguenstigung;
+	public BigDecimal getVerguenstigungKanton() {
+		return verguenstigungKanton;
 	}
 
-	public void setVerguenstigung(BigDecimal verguenstigung) {
-		this.verguenstigung = verguenstigung;
+	public void setVerguenstigungKanton(BigDecimal verguenstigungKanton) {
+		this.verguenstigungKanton = verguenstigungKanton;
+	}
+
+	public BigDecimal getVerguenstigungGemeinde() {
+		return verguenstigungGemeinde;
+	}
+
+	public void setVerguenstigungGemeinde(BigDecimal verguenstigungGemeinde) {
+		this.verguenstigungGemeinde = verguenstigungGemeinde;
+	}
+
+	public BigDecimal getVerguenstigungTotal() {
+		return verguenstigungTotal;
+	}
+
+	public void setVerguenstigungTotal(BigDecimal verguenstigungTotal) {
+		this.verguenstigungTotal = verguenstigungTotal;
 	}
 
 	public String getInstitution() {
