@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -35,11 +36,15 @@ import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 
 import static ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator.createInitialenRestanspruch;
 import static ch.dvbern.ebegu.util.Constants.DEFAULT_GUELTIGKEIT;
+import static ch.dvbern.ebegu.util.Constants.DEFAULT_LOCALE;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
 
 /**
  * Hilfsklasse fuer Ebegu-Rule-Tests
@@ -48,55 +53,76 @@ public final class EbeguRuleTestsHelper {
 
 	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000");
 
-	private static final ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+	private static final ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final ErwerbspensumCalcRule erwerbspensumCalcRule =
-		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, Constants.DEFAULT_LOCALE);
-	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, DEFAULT_LOCALE);
+	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final AusserordentlicherAnspruchAbschnittRule ausserordentlicherAnspruchAbschnittRule =
-		new AusserordentlicherAnspruchAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+		new AusserordentlicherAnspruchAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final AusserordentlicherAnspruchCalcRule ausserordentlicherAnspruchCalcRule =
-		new AusserordentlicherAnspruchCalcRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule = new TagesschuleBetreuungszeitAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final EinkommenCalcRule maximalesEinkommenCalcRule = new EinkommenCalcRule(DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, Constants.DEFAULT_LOCALE);
-	private static final BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final EinreichungsfristCalcRule einreichungsfristCalcRule = new EinreichungsfristCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+		new AusserordentlicherAnspruchCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule = new TagesschuleBetreuungszeitAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final EinkommenCalcRule maximalesEinkommenCalcRule = new EinkommenCalcRule(DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, DEFAULT_LOCALE);
+	private static final BetreuungsangebotTypAbschnittRule betreuungsangebotTypAbschnittRule = new BetreuungsangebotTypAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final EinreichungsfristCalcRule einreichungsfristCalcRule = new EinreichungsfristCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule =
-		new AbwesenheitAbschnittRule(DEFAULT_GUELTIGKEIT, TestDataUtil.ABWESENHEIT_DAYS_LIMIT, Constants.DEFAULT_LOCALE);
-	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final UnbezahlterUrlaubAbschnittRule urlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
-	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2, Constants.DEFAULT_LOCALE);
-	private static final KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+		new AbwesenheitAbschnittRule(DEFAULT_GUELTIGKEIT, TestDataUtil.ABWESENHEIT_DAYS_LIMIT, DEFAULT_LOCALE);
+	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final UnbezahlterUrlaubAbschnittRule urlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2, DEFAULT_LOCALE);
+	private static final KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final FamilienabzugAbschnittRule familienabzugAbschnittRule =
 		new FamilienabzugAbschnittRule(DEFAULT_GUELTIGKEIT,
-			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS),
-			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS),
-			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS),
-			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS),
-			Constants.DEFAULT_LOCALE);
-	private static final StorniertCalcRule storniertCalcRule = new StorniertCalcRule(DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+			new BigDecimal(PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS),
+			new BigDecimal(PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS),
+			new BigDecimal(PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS),
+			new BigDecimal(PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS),
+			DEFAULT_LOCALE);
+	private static final StorniertCalcRule storniertCalcRule = new StorniertCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final SozialhilfeAbschnittRule sozialhilfeAbschnittRule = new SozialhilfeAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+
+	private static final AnspruchFristRule anspruchFristRule = new AnspruchFristRule();
+	private static final AbschlussNormalizer abschlussNormalizerKeepMonate = new AbschlussNormalizer(true);
+	private static final AbschlussNormalizer abschlussNormalizerDismissMonate = new AbschlussNormalizer(false);
+	private static final MutationsMerger mutationsMerger = new MutationsMerger(Locale.GERMAN);
+	private static final MonatsRule monatsRule = new MonatsRule();
+	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
 
 	private EbeguRuleTestsHelper() {
 	}
 
+	@Nonnull
+	public static List<VerfuegungZeitabschnitt> runSingleAbschlussRule(
+		@Nonnull AbstractAbschlussRule abschlussRule, @Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
+	) {
+		List<VerfuegungZeitabschnitt> result = abschlussRule.executeIfApplicable(platz, zeitabschnitte);
+		// wird eigentlich nur noch in Tests verwendet, welche nicht direkt den Rechner aufrufen
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
+			verfuegungZeitabschnitt.initBGCalculationResult();
+		}
+		return result;
+	}
+
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		// Abschnitte
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		// Abschnitte
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
 	}
@@ -107,10 +133,10 @@ public final class EbeguRuleTestsHelper {
 	 */
 	public static List<VerfuegungZeitabschnitt> calculateWithRemainingRestanspruch(Betreuung betreuung, int existingRestanspruch) {
 		// Abschnitte
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(existingRestanspruch);
+			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
 	}
@@ -126,52 +152,57 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	@Nonnull
-	private static List<VerfuegungZeitabschnitt> calculateAllRules(AbstractPlatz betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte,
+	private static List<VerfuegungZeitabschnitt> calculateAllRules(AbstractPlatz platz, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte,
 		boolean doMonatsstueckelungen) {
 		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
-		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
-		result = urlaubAbschnittRule.calculate(betreuung, result);
-		result = familienabzugAbschnittRule.calculate(betreuung, result);
-		result = kindTarifAbschnittRule.calculate(betreuung, result);
-		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
-		result = tagesschuleAbschnittRule.calculate(betreuung, result);
-		result = fachstelleAbschnittRule.calculate(betreuung, result);
-		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
-		result = einkommenAbschnittRule.calculate(betreuung, result);
-		result = wohnsitzAbschnittRule.calculate(betreuung, result);
-		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
-		result = abwesenheitAbschnittRule.calculate(betreuung, result);
-		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
+		result = erwerbspensumAbschnittRule.calculate(platz, result);
+		result = urlaubAbschnittRule.calculate(platz, result);
+		result = familienabzugAbschnittRule.calculate(platz, result);
+		result = kindTarifAbschnittRule.calculate(platz, result);
+		result = betreuungsangebotTypAbschnittRule.calculate(platz, result);
+		result = betreuungspensumAbschnittRule.calculate(platz, result);
+		result = tagesschuleAbschnittRule.calculate(platz, result);
+		result = fachstelleAbschnittRule.calculate(platz, result);
+		result = ausserordentlicherAnspruchAbschnittRule.calculate(platz, result);
+		result = einkommenAbschnittRule.calculate(platz, result);
+		result = wohnsitzAbschnittRule.calculate(platz, result);
+		result = einreichungsfristAbschnittRule.calculate(platz, result);
+		result = abwesenheitAbschnittRule.calculate(platz, result);
+		result = zivilstandsaenderungAbschnittRule.calculate(platz, result);
+		result = sozialhilfeAbschnittRule.calculate(platz, result);
 		// Anspruch
-		result = storniertCalcRule.calculate(betreuung, result);
-		result = erwerbspensumCalcRule.calculate(betreuung, result);
-		result = fachstelleCalcRule.calculate(betreuung, result);
-		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
+		result = storniertCalcRule.calculate(platz, result);
+		result = erwerbspensumCalcRule.calculate(platz, result);
+		result = fachstelleCalcRule.calculate(platz, result);
+		result = ausserordentlicherAnspruchCalcRule.calculate(platz, result);
 		// Restanspruch
 		// Reduktionen
-		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
-		result = betreuungsangebotTypCalcRule.calculate(betreuung, result);
-		result = wohnsitzCalcRule.calculate(betreuung, result);
-		result = einreichungsfristCalcRule.calculate(betreuung, result);
-		result = abwesenheitCalcRule.calculate(betreuung, result);
-		result = schulstufeCalcRule.calculate(betreuung, result);
-		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
+		result = maximalesEinkommenCalcRule.calculate(platz, result);
+		result = betreuungsangebotTypCalcRule.calculate(platz, result);
+		result = wohnsitzCalcRule.calculate(platz, result);
+		result = einreichungsfristCalcRule.calculate(platz, result);
+		result = abwesenheitCalcRule.calculate(platz, result);
+		result = schulstufeCalcRule.calculate(platz, result);
+		result = kesbPlatzierungCalcRule.calculate(platz, result);
+		result = restanspruchLimitCalcRule.calculate(platz, result);
 
-		result = restanspruchLimitCalcRule.calculate(betreuung, result);
-		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
-		result = AnspruchFristRule.execute(result);
-		result = AbschlussNormalizer.execute(result, false);
+		result = anspruchFristRule.executeIfApplicable(platz, result);
+		// Der RestanspruchInitializer erstellt Restansprueche, darf nicht das Resultat ueberschreiben!
+		restanspruchInitializer.executeIfApplicable(platz, result);
+		result = abschlussNormalizerDismissMonate.executeIfApplicable(platz, result);
 		if (doMonatsstueckelungen) {
-			result = MonatsRule.execute(result);
+			result = monatsRule.executeIfApplicable(platz, result);
 		}
-		result = MutationsMerger.execute(betreuung, result, Constants.DEFAULT_LOCALE);
-		result = AbschlussNormalizer.execute(result, true);
+		result = mutationsMerger.executeIfApplicable(platz, result);
+		result = abschlussNormalizerKeepMonate.executeIfApplicable(platz, result);
 		BemerkungsMerger.prepareGeneratedBemerkungen(result);
+
+		result.forEach(VerfuegungZeitabschnitt::initBGCalculationResult);
 		return result;
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		return RestanspruchInitializer.execute(currentBetreuung, zeitabschnitte);
+		return restanspruchInitializer.executeIfApplicable(currentBetreuung, zeitabschnitte);
 	}
 
 	public static Betreuung createBetreuungWithPensum(

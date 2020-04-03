@@ -243,7 +243,7 @@ export class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
-    public updateAngebote(gemeinde: TSGemeinde): any {
+    public updateAngebote(gemeinde: TSGemeinde): IPromise<any> {
         let restGemeinde = {};
         restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
         return this.$http.put(`${this.serviceURL}/updateangebote`, restGemeinde);

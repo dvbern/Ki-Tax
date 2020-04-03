@@ -136,6 +136,6 @@ public class EinkommensverschlechterungInfoContainer extends AbstractMutableEnti
 			return false;
 		}
 		final EinkommensverschlechterungInfoContainer otherEKVInfoContainer = (EinkommensverschlechterungInfoContainer) other;
-		return EbeguUtil.isSameObject(getEinkommensverschlechterungInfoJA(), otherEKVInfoContainer.getEinkommensverschlechterungInfoJA());
+		return EbeguUtil.isSame(getEinkommensverschlechterungInfoJA(), otherEKVInfoContainer.getEinkommensverschlechterungInfoJA());
 	}
 }

@@ -17,6 +17,7 @@
 <form role="form"
 	  #form="ngForm"
       [ngClass]="{'ng-submitted': form.submitted}"
+      (ngSubmit)="save()"
       novalidate>
     <mat-dialog-content
         [ngClass]="{'modul-tagesschule-dialog': isModulErfassungDynamisch(), 'modul-tagesschule-dialog-scolaris':
@@ -181,7 +182,7 @@
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button type="submit" class="dv-btn" (click)="save()" [textContent]="'OK' | translate"></button>
+            <button type="submit" class="dv-btn" [textContent]="'OK' | translate"></button>
             <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
         </div>
     </mat-dialog-actions>

@@ -32,9 +32,9 @@ import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 /**
  * DTO fuer Ferieninsel-Stammdaten
  */
-@XmlRootElement(name = "ferieninselStammdaten")
+@XmlRootElement(name = "gemeindeStammdatenGesuchsperiodeFerieninsel")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxFerieninselStammdaten extends JaxAbstractDTO {
+public class JaxGemeindeStammdatenGesuchsperiodeFerieninsel extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -755938593616840976L;
 
@@ -48,12 +48,10 @@ public class JaxFerieninselStammdaten extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate anmeldeschluss;
 
-	@NotNull
-	private JaxGesuchsperiode gesuchsperiode;
+	private boolean ferienActive;
 
 	@Nullable
 	private List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegung;
-
 
 	public Ferienname getFerienname() {
 		return ferienname;
@@ -79,14 +77,6 @@ public class JaxFerieninselStammdaten extends JaxAbstractDTO {
 		this.anmeldeschluss = anmeldeschluss;
 	}
 
-	public JaxGesuchsperiode getGesuchsperiode() {
-		return gesuchsperiode;
-	}
-
-	public void setGesuchsperiode(JaxGesuchsperiode gesuchsperiode) {
-		this.gesuchsperiode = gesuchsperiode;
-	}
-
 	@Nullable
 	public List<JaxBelegungFerieninselTag> getPotenzielleFerieninselTageFuerBelegung() {
 		return potenzielleFerieninselTageFuerBelegung;
@@ -94,5 +84,13 @@ public class JaxFerieninselStammdaten extends JaxAbstractDTO {
 
 	public void setPotenzielleFerieninselTageFuerBelegung(@Nullable List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegung) {
 		this.potenzielleFerieninselTageFuerBelegung = potenzielleFerieninselTageFuerBelegung;
+	}
+
+	public boolean isFerienActive() {
+		return ferienActive;
+	}
+
+	public void setFerienActive(boolean ferienActive) {
+		this.ferienActive = ferienActive;
 	}
 }

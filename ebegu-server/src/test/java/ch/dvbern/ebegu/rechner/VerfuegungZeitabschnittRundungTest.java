@@ -19,11 +19,14 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
@@ -49,7 +52,7 @@ import static org.hamcrest.Matchers.is;
 public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final TageselternRechner tageselternRechner = new TageselternRechner();
+	private final TageselternRechner tageselternRechner = new TageselternRechner(Collections.emptyList());
 
 	@Test
 	public void testVerguenstigungProZeiteinheit() {
@@ -68,7 +71,7 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	public void exactBGCalculationResult() {
 		DateRange gueltigkeit = new DateRange(LocalDate.of(2019, 11, 1), LocalDate.of(2019, 11, 1));
 
-		BGCalculationResult result = tageselternRechner.calculate(createZeitabschnitt(gueltigkeit), parameterDTO);
+		BGCalculationResult result = tageselternRechner.calculateAsiv(createZeitabschnitt(gueltigkeit), parameterDTO);
 
 		assertThat(result, pojo(BGCalculationResult.class)
 			// Minimalbetrag
@@ -151,14 +154,15 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
+	private BGCalculationInput createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(100);
-		zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(100));
-
-		return zeitabschnitt;
+		BGCalculationInput inputAsiv = zeitabschnitt.getBgCalculationInputAsiv();
+		inputAsiv.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
+		inputAsiv.setAnspruchspensumProzent(100);
+		inputAsiv.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
+		inputAsiv.setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		return inputAsiv;
 	}
 
 	@Nonnull

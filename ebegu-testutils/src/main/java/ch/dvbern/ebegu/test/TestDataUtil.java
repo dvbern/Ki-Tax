@@ -76,8 +76,8 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
-import ch.dvbern.ebegu.entities.FerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -1179,7 +1179,7 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+	private static Gesuch createAndPersistWaeltiDagmarGesuch(
 		InstitutionService instService, Persistence persistence,
 		@Nullable LocalDate eingangsdatum, @Nullable AntragStatus status) {
 
@@ -1947,16 +1947,16 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
-	public static FerieninselStammdaten createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
-		FerieninselStammdaten stammdaten = new FerieninselStammdaten();
+	// TODO: FERIENINSEL ANPASSEN
+	public static GemeindeStammdatenGesuchsperiodeFerieninsel createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
+		GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		stammdaten.setFerienname(Ferienname.SOMMERFERIEN);
 		stammdaten.setAnmeldeschluss(LocalDate.now().plusMonths(1));
-		List<FerieninselZeitraum> zeitraumList = new ArrayList<>();
-		FerieninselZeitraum zeitraum = new FerieninselZeitraum();
+		List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<>();
+		GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraum = new GemeindeStammdatenGesuchsperiodeFerieninselZeitraum();
 		zeitraum.setGueltigkeit(new DateRange(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3)));
 		zeitraumList.add(zeitraum);
 		stammdaten.setZeitraumList(zeitraumList);
-		stammdaten.setGesuchsperiode(gesuchsperiode);
 		return stammdaten;
 	}
 
@@ -1977,10 +1977,10 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
-		zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(PERIODE_JAHR_1);
-		zeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(false);
+		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(BigDecimal.valueOf(10));
+		zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(50);
+		zeitabschnitt.setEinkommensjahrForAsivAndGemeinde(PERIODE_JAHR_1);
+		zeitabschnitt.setZuSpaetEingereichtForAsivAndGemeinde(false);
 		return zeitabschnitt;
 	}
 

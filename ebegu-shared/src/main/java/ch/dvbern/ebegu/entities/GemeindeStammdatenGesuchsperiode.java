@@ -17,11 +17,14 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +32,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Sprache;
@@ -70,6 +74,10 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] merkblattAnmeldungTagesschuleFr;
 
+	@Nullable
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gemeindeStammdatenGesuchsperiode")
+	private List<GemeindeStammdatenGesuchsperiodeFerieninsel> gemeindeStammdatenGesuchsperiodeFerieninsel;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return false;
@@ -91,6 +99,15 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 
 	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
+	}
+
+	@Nullable
+	public List<GemeindeStammdatenGesuchsperiodeFerieninsel> getGemeindeStammdatenGesuchsperiodeFerieninseln() {
+		return gemeindeStammdatenGesuchsperiodeFerieninsel;
+	}
+
+	public void setGemeindeStammdatenGesuchsperiodeFerieninsel(@Nullable List<GemeindeStammdatenGesuchsperiodeFerieninsel> gemeindeStammdatenGesuchsperiodeFerieninsel) {
+		this.gemeindeStammdatenGesuchsperiodeFerieninsel = gemeindeStammdatenGesuchsperiodeFerieninsel;
 	}
 
 	@Nonnull
@@ -149,6 +166,13 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 		copy.setMerkblattAnmeldungTagesschuleDe(this.merkblattAnmeldungTagesschuleDe);
 		copy.setMerkblattAnmeldungTagesschuleFr(this.merkblattAnmeldungTagesschuleFr);
 		copy.setGesuchsperiode(gesuchsperiodeToCreate);
+		if (this.getGemeindeStammdatenGesuchsperiodeFerieninseln() != null) {
+			final List<GemeindeStammdatenGesuchsperiodeFerieninsel> gpFerieninselStammdaten = new ArrayList<>();
+			this.getGemeindeStammdatenGesuchsperiodeFerieninseln().forEach(stammdaten -> {
+				gpFerieninselStammdaten.add(stammdaten.copyForGesuchsperiode(copy));
+			});
+			copy.setGemeindeStammdatenGesuchsperiodeFerieninsel(gpFerieninselStammdaten);
+		}
 		return copy;
 	}
 }
