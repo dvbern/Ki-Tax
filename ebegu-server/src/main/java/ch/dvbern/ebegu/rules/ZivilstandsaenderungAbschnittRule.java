@@ -73,8 +73,6 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 		LocalDate gesuchsperiodeBis = platz.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
-		RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
-
 		if (familiensituation.getAenderungPer() != null && familiensituationErstgesuch != null &&
 			familiensituation.hasSecondGesuchsteller(gesuchsperiodeBis) != familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)) {
 
