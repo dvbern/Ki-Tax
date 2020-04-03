@@ -215,8 +215,8 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinTable(
 		joinColumns = @JoinColumn(name = "gemeinde_stammdaten_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "external_client_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_gemeinde_external_clients_gemeinde_stammdaten_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_gemeinde_external_clients_external_client_id")
+		foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_external_clients_gemeinde_stammdaten_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_external_clients_external_client_id")
 	)
 	private @Valid @NotNull Set<@ExternalClientOfType(type = GEMEINDE_SCOLARIS_SERVICE)ExternalClient> externalClients =
 		new HashSet<>();
