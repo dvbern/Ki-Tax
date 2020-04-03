@@ -1878,6 +1878,7 @@
     "BETREUUNG_TAGESSCHULE_ANMELDUNG_DEFINITIV": "Ich nehme zur Kenntnis, dass die Anmeldung definitiv ist",
     "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Erläuterungen zu den Modulen",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Für diese Tagesschule sind noch keine Module konfiguriert",
+    "TAGESSCHULE_MODULE_AUTOMATISCH_ZUGEWIESEN": "<b>Achtung</b>: Die Module für diese Tagesschule wurden automatisch, aufgrund der Anmeldungen bei der vorherigen Tagesschule, ausgewählt. Bitte kontrollieren Sie diese.",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Benachrichtigungen bei Verfügungen automatisch per Email senden",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Nach Abschluss einer Verfügung wird automatisch eine Bestätigung per Email versendet. Empfohlene Einstellung: An.",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA": "Bei einer Verfügung werden Benachrichtigungen per Email versendet",
