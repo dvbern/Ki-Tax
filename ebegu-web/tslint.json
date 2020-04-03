@@ -212,7 +212,8 @@
         "no-eval": true,
         "no-implicit-dependencies": [
             true,
-            "dev"
+            "dev",
+            ["@uirouter/core", "@uirouter/angular", "@uirouter/angularjs"]
         ],
         "no-import-side-effect": [
             true,

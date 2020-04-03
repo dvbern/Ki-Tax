@@ -38,7 +38,7 @@ const gesuchTpl = require('./gesuch.html');
 gesuchRun.$inject = ['RouterHelper'];
 
 export function gesuchRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, []);
+    routerHelper.configureStates(ng1States);
 }
 
 // STATES

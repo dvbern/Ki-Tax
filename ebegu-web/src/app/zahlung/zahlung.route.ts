@@ -21,7 +21,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 zahlungRun.$inject = ['RouterHelper'];
 
 export function zahlungRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, []);
+    routerHelper.configureStates(ng1States);
 }
 
 const ng1States: Ng1StateDeclaration[] = [

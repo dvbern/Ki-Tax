@@ -16,8 +16,7 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {IPromise} from 'angular';
 import {take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -31,6 +30,7 @@ import {LoginInfoComponent} from '../login-info/login-info.component';
 import {handleLoggedInUser} from './einladung-helpers';
 
 authentication.$inject = ['AuthServiceRS'];
+
 export function authentication(authService: AuthServiceRS): IPromise<TSBenutzer> {
     return authService.principal$
         .pipe(
@@ -39,7 +39,7 @@ export function authentication(authService: AuthServiceRS): IPromise<TSBenutzer>
         .toPromise();
 }
 
-const states: Ng2StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'einladung',
