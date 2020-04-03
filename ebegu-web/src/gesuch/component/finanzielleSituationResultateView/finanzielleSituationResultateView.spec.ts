@@ -23,14 +23,11 @@ import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationC
 import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
 
 describe('finanzielleSituationResultateView', () => {
 
     let gesuchModelManager: GesuchModelManager;
-    let berechnungsManager: BerechnungsManager;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -43,9 +40,6 @@ describe('finanzielleSituationResultateView', () => {
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
-        const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
-        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
-        berechnungsManager = $injector.get('BerechnungsManager');
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));
@@ -59,7 +53,6 @@ describe('finanzielleSituationResultateView', () => {
     }));
 
     it('should be defined', () => {
-        spyOn(berechnungsManager, 'calculateFinanzielleSituation').and.returnValue({});
         const bindings = {};
         component = $componentController('finanzielleSituationResultateView', {$scope: scope}, bindings);
         expect(component).toBeDefined();

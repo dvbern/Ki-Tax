@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as angular from 'angular';
 import {IComponentControllerService, IHttpBackendService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSDossier} from '../../../models/TSDossier';
+import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GemeindeRS} from '../../service/gemeindeRS.rest';
@@ -27,6 +29,9 @@ describe('erwerbspensumListView', () => {
 
     const gemeindeTelefon = '915445152';
     const gemeindeMail = 'mail@mail.com';
+    const gemeindeStammdaten = new TSGemeindeStammdaten();
+    gemeindeStammdaten.telefon = gemeindeTelefon;
+    gemeindeStammdaten.mail = gemeindeMail;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -53,10 +58,7 @@ describe('erwerbspensumListView', () => {
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
-        spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.when({
-            telefon: gemeindeTelefon,
-            mail: gemeindeMail
-        }));
+        spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.resolve(gemeindeStammdaten));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         $httpBackend.when('GET', '/ebegu/api/v1/erwerbspensen/required/').respond({});
