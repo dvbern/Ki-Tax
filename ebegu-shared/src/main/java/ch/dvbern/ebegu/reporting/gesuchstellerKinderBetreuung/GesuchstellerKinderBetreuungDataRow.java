@@ -96,7 +96,9 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal bgStunden;
 	@Nullable private BigDecimal vollkosten;
 	@Nullable private BigDecimal elternbeitrag;
-	@Nullable private BigDecimal verguenstigt;
+	@Nullable private BigDecimal verguenstigungKanton;
+	@Nullable private BigDecimal verguenstigungGemeinde;
+	@Nullable private BigDecimal verguenstigungTotal;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
@@ -626,12 +628,30 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public BigDecimal getVerguenstigt() {
-		return verguenstigt;
+	public BigDecimal getVerguenstigungKanton() {
+		return verguenstigungKanton;
 	}
 
-	public void setVerguenstigt(@Nullable BigDecimal verguenstigt) {
-		this.verguenstigt = verguenstigt;
+	public void setVerguenstigungKanton(@Nullable BigDecimal verguenstigungKanton) {
+		this.verguenstigungKanton = verguenstigungKanton;
+	}
+
+	@Nullable
+	public BigDecimal getVerguenstigungGemeinde() {
+		return verguenstigungGemeinde;
+	}
+
+	public void setVerguenstigungGemeinde(@Nullable BigDecimal verguenstigungGemeinde) {
+		this.verguenstigungGemeinde = verguenstigungGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getVerguenstigungTotal() {
+		return verguenstigungTotal;
+	}
+
+	public void setVerguenstigungTotal(@Nullable BigDecimal verguenstigungTotal) {
+		this.verguenstigungTotal = verguenstigungTotal;
 	}
 
 	public Integer getGs1EwpIntegration() {
