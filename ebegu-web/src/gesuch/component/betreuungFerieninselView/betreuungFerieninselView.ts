@@ -310,7 +310,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         const einstellungen = this.getEinstellungenFerieninsel();
 
         if (!einstellungen) {
-            return undefined;
+            return '';
         }
 
         if (this.hasAusweichstandort()) {
