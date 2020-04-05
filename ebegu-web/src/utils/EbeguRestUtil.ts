@@ -3556,7 +3556,8 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            if (ferieninselStammdatenTS.ersterZeitraum) {
+            if (ferieninselStammdatenTS.ersterZeitraum && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit
+                && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit.gueltigAb) {
                 const firstZeitraum: any = {};
                 this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.ersterZeitraum);
                 restFerieninselStammdaten.zeitraumList = [];

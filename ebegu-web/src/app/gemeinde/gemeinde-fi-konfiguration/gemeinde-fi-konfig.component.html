@@ -152,12 +152,12 @@
                                     </div>
 
                                     <div class="row zeitabschnitt"
-                                         *ngFor="let zeitraum of fiStammdaten.zeitraumList">
+                                         *ngFor="let zeitraum of fiStammdaten.zeitraumList; let i = index">
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
 												   #zeitraumGueltigAbInput='ngModel'
-                                                   [name]="zeitraum + '_gueltigAb'"
-                                                   [id]="zeitraum + '_gueltigAb'"
+                                                   [name]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigAb-'+i"
+                                                   [id]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigAb-'+i"
                                                    [(ngModel)]="zeitraum.gueltigkeit.gueltigAb"
                                                    [matDatepicker]="zeitraumGueltigAb"
                                                    [max]="zeitraum.gueltigkeit.gueltigBis"
@@ -171,8 +171,8 @@
                                         <div class="col-md-4">
                                             <input class="dv-mat-datepicker" type="text"
                                                    #zeitraumGueltigBisInput='ngModel'
-                                                   [name]="zeitraum + '_gueltigBis'"
-                                                   [id]="zeitraum + '_gueltigBis'"
+                                                   [name]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigBis-'+i"
+                                                   [id]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigBis-'+i"
                                                    [(ngModel)]="zeitraum.gueltigkeit.gueltigBis"
                                                    [matDatepicker]="zeitraumGueltigBis"
                                                    [min]="zeitraum.gueltigkeit.gueltigAb"
