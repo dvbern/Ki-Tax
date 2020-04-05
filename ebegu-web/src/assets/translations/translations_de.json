@@ -1313,6 +1313,8 @@
     "FERIENINSELZEITRAUM_DELETE": "Zeitraum löschen",
     "KEINE_FERIENINSELZEITRAUME": "Keine Ferieninselzeiträume definiert",
     "FERIENINSEL_TITLE": "Daten der Ferieninseln",
+    "KEINE_FERIEN_DEFINIERT": "Keine Ferien definiert",
+    "ERROR_OVERLAPPING_ZEITRAUM": "Zeiträume dürfen sich nicht überlappen",
     "EINTRITTSDATUM": "Eintrittsdatum",
     "REGELN_GUELTIG_AB": "Alternatives Datum",
     "EKV_FIN_SIT_NOT_REQUIRED": "Eine Einkommensverschlechterung muss in diesem Fall nicht erfasst werden. Klicken Sie auf \"Weiter\", um fortzufahren.",
