@@ -78,7 +78,7 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 			return false;
 		}
 		final PensumFachstelle otherPensumFachstelle = (PensumFachstelle) other;
-		return EbeguUtil.isSameObject(getFachstelle(), otherPensumFachstelle.getFachstelle())
+		return EbeguUtil.isSame(getFachstelle(), otherPensumFachstelle.getFachstelle())
 			&& getIntegrationTyp() == otherPensumFachstelle.getIntegrationTyp();
 	}
 

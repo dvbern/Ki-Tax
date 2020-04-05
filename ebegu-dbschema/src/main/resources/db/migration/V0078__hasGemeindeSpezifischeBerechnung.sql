@@ -1,0 +1,2 @@
+alter table verfuegung_zeitabschnitt add has_gemeinde_spezifische_berechnung bit not null;
+alter table verfuegung_zeitabschnitt_aud add has_gemeinde_spezifische_berechnung bit;

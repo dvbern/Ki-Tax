@@ -208,11 +208,11 @@ public class Mitteilung extends AbstractMutableEntity {
 			return false;
 		}
 		final Mitteilung otherMitteilung = (Mitteilung) other;
-		return EbeguUtil.isSameObject(getBetreuung(), otherMitteilung.getBetreuung()) &&
+		return EbeguUtil.isSame(getBetreuung(), otherMitteilung.getBetreuung()) &&
 			Objects.equals(getSender().getId(), otherMitteilung.getSender().getId()) &&
 			getSenderTyp() == otherMitteilung.getSenderTyp() &&
 			Objects.equals(getSentDatum(), otherMitteilung.getSentDatum()) &&
-			EbeguUtil.isSameObject(getEmpfaenger(), otherMitteilung.getEmpfaenger()) &&
+			EbeguUtil.isSame(getEmpfaenger(), otherMitteilung.getEmpfaenger()) &&
 			getEmpfaengerTyp() == otherMitteilung.getEmpfaengerTyp() &&
 			Objects.equals(getSubject(), otherMitteilung.getSubject()) &&
 			Objects.equals(getMessage(), otherMitteilung.getMessage()) &&

@@ -131,7 +131,8 @@ public final class EbeguUtil {
 		return gesuchMap;
 	}
 
-	public static boolean isSameObject(@Nullable AbstractEntity thisEntity, @Nullable AbstractEntity otherEntity) {
+	// All die isSame Methoden finde ich aber fürchterlich komplex. Besser wäre es, Comparators zu definieren.
+	public static boolean isSame(@Nullable AbstractEntity thisEntity, @Nullable AbstractEntity otherEntity) {
 		return (thisEntity == null && otherEntity == null)
 			|| (thisEntity != null && otherEntity != null && thisEntity.isSame(otherEntity));
 	}

@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -98,9 +97,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private DossierService dossierService;
-
-	@Inject
-	private FerieninselStammdatenService ferieninselStammdatenService;
 
 	@Inject
 	private EinstellungService einstellungService;
@@ -274,12 +270,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				removeDossierIfEmpty(dossier, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 				removeFallIfEmpty(fall, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 			}
+			// TODO: FERIENINSEL. Remove Ferieninseln for periode
 			// FerieninselStammdaten dieser Gesuchsperiode loeschen
-			Collection<FerieninselStammdaten> ferieninselStammdatenList =
+/*			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
 				ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsPeriodeId);
-			for (FerieninselStammdaten ferieninselStammdaten : ferieninselStammdatenList) {
+			for (GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
-			}
+			}*/
 
 			// EinstellungenTagesschule dieser Gesuchsperiode loeschen
 			Collection<EinstellungenTagesschule> einstellungenTagesschuleList =

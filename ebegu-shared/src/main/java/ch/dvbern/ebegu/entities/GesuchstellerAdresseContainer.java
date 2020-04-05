@@ -214,6 +214,6 @@ public class GesuchstellerAdresseContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final GesuchstellerAdresseContainer otherAdresseContainer = (GesuchstellerAdresseContainer) other;
-		return EbeguUtil.isSameObject(getGesuchstellerAdresseJA(), otherAdresseContainer.getGesuchstellerAdresseJA());
+		return EbeguUtil.isSame(getGesuchstellerAdresseJA(), otherAdresseContainer.getGesuchstellerAdresseJA());
 	}
 }

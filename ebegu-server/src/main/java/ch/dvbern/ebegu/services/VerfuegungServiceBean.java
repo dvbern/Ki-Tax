@@ -41,7 +41,24 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
+import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -418,10 +435,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
 		if (!verfuegung.isKategorieNichtEintreten()) {
 			for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieKeinPensum()) {
 					verfuegung.setKategorieKeinPensum(true);
 				}
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
 			}
@@ -447,7 +464,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		verfuegungPreview.getZeitabschnitte()
-			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
+			.forEach(z -> {
+				z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+				if (z.getBgCalculationResultGemeinde() != null) {
+					z.getBgCalculationResultGemeinde().setAnspruchspensumProzent(0);
+				}
+			});
 		verfuegungPreview.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(betreuungMitVerfuegungPreview.extractGesuch());
 		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
@@ -557,7 +579,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(), true);
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
 	@Override

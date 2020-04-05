@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
-import org.apache.commons.lang.Validate;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
@@ -51,11 +51,6 @@ import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
 public class BGCalculationResult extends AbstractEntity {
 
 	private static final long serialVersionUID = 6727717920099112569L;
-
-	// Dies wird benötigt für die Migration der Daten und kann im nächsten Release wieder entfernt werden
-	@SuppressWarnings("PMD.UnusedPrivateField")
-	@Column(nullable = true)
-	private String tempIdZeitabschnitt;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -118,13 +113,13 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal abzugFamGroesse = null;
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
 
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal famGroesse = null;
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private BigDecimal famGroesse = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	@Column(nullable = false)
@@ -217,7 +212,9 @@ public class BGCalculationResult extends AbstractEntity {
 		verguenstigung = that.verguenstigung;
 	}
 
-	public void roundAllValues() {
+	@CanIgnoreReturnValue
+	@Nonnull
+	public BGCalculationResult roundAllValues() {
 		this.vollkosten = roundToFrankenRappen(vollkosten);
 		this.verguenstigungOhneBeruecksichtigungVollkosten = roundToFrankenRappen(verguenstigungOhneBeruecksichtigungVollkosten);
 		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = roundToFrankenRappen(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
@@ -227,20 +224,15 @@ public class BGCalculationResult extends AbstractEntity {
 		this.verguenstigung = roundToFrankenRappen(verguenstigung);
 
 		this.betreuungspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit);
-		this.betreuungspensumProzent = zeiteinheitenRoundingStrategy.apply(betreuungspensumProzent);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
 		this.bgPensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(bgPensumZeiteinheit);
 
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
-		if (this.famGroesse != null) {
-			this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
-		}
+		this.betreuungspensumProzent = MathUtil.toTwoKommastelle(betreuungspensumProzent);
+		this.abzugFamGroesse = roundToFrankenRappen(abzugFamGroesse);
+		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
+		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
-		this.massgebendesEinkommenVorAbzugFamgr = zeiteinheitenRoundingStrategy.apply(massgebendesEinkommenVorAbzugFamgr);
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
-		this.abzugFamGroesse = zeiteinheitenRoundingStrategy.apply(abzugFamGroesse);
+		return this;
 	}
 
 	@Override
@@ -352,45 +344,6 @@ public class BGCalculationResult extends AbstractEntity {
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
 				isSameZeiteinheiten(thisEntity, otherEntity)
 		));
-	}
-
-	public void add(@Nonnull BGCalculationResult other) {
-		this.betreuungspensumZeiteinheit = this.betreuungspensumZeiteinheit.add(other.betreuungspensumZeiteinheit);
-		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
-		this.anspruchspensumZeiteinheit = this.anspruchspensumZeiteinheit.add(other.anspruchspensumZeiteinheit);
-		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
-		this.bgPensumZeiteinheit = this.bgPensumZeiteinheit.add(other.bgPensumZeiteinheit);
-
-		this.einkommensjahr = other.einkommensjahr;
-		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
-
-		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
-		if (other.getAbzugFamGroesse() != null) {
-			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
-			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
-		}
-		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
-		if (other.getFamGroesse() != null) {
-			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
-			this.setFamGroesse(other.getFamGroesse());
-		}
-
-		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
-		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
-		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
-
-		if (other.tsCalculationResultMitPaedagogischerBetreuung != null) {
-			if (this.tsCalculationResultMitPaedagogischerBetreuung == null) {
-				this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult();
-			}
-			this.tsCalculationResultMitPaedagogischerBetreuung.add(other.tsCalculationResultMitPaedagogischerBetreuung);
-		}
-		if (other.tsCalculationResultOhnePaedagogischerBetreuung != null) {
-			if (this.tsCalculationResultOhnePaedagogischerBetreuung == null) {
-				this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult();
-			}
-			this.tsCalculationResultOhnePaedagogischerBetreuung.add(other.tsCalculationResultOhnePaedagogischerBetreuung);
-		}
 	}
 
 	private static boolean isSameZeiteinheiten(@Nonnull BGCalculationResult thisEntity, @Nonnull BGCalculationResult otherEntity) {
@@ -579,21 +532,21 @@ public class BGCalculationResult extends AbstractEntity {
 		this.einkommensjahr = einkommensjahr;
 	}
 
-	@Nullable
+	@Nonnull
 	public BigDecimal getAbzugFamGroesse() {
 		return abzugFamGroesse;
 	}
 
-	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
+	public void setAbzugFamGroesse(@Nonnull BigDecimal abzugFamGroesse) {
 		this.abzugFamGroesse = abzugFamGroesse;
 	}
 
-	@Nullable
+	@Nonnull
 	public BigDecimal getFamGroesse() {
 		return famGroesse;
 	}
 
-	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
+	public void setFamGroesse(@Nonnull BigDecimal famGroesse) {
 		this.famGroesse = famGroesse;
 	}
 
