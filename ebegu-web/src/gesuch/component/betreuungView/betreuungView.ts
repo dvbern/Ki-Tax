@@ -331,6 +331,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     this.setErsterSchultag();
                 }
             }
+            if (this.isFerieninsel()) {
+                this.getBetreuungModel().vertrag = true;
+            }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
             if (this.isProvisorischeBetreuung()) {

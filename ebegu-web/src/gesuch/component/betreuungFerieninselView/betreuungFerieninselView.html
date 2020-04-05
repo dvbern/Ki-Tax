@@ -19,7 +19,7 @@
 
         <!-- Ferienname -->
         <div class="row">
-            <div class="col-sm-12 dv-input-container-medium form-group">
+            <div class="col-sm-12 dv-input-container-medium form-group" ng-if="vm.betreuung.institutionStammdaten">
                 <label class="md-no-float required" data-translate="FERIENNAME" for="ferienname"></label>
                 <div class="dv-select-style">
                     <select aria-describedby="ferienname-error" name="ferienname" id="ferienname"
@@ -61,7 +61,7 @@
                         </div>
                         <break class="dv-ebegu-calendar__break"
                                ng-repeat-start="tag in vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung"
-                               ng-if="tag.tag.weekday()==1"></break>
+                               ng-if="tag.tag.weekday()==0"></break>
                         <div class="dv-ebegu-calendar__day dv-ebegu-calendar__day--{{tag.tag.weekday()}}">
                             <md-checkbox ng-model="tag.angemeldet"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
@@ -72,8 +72,8 @@
                                       data-translate="{{tag.tag | amDateFormat : 'YYYY'}}"></span>
                             </md-checkbox>
                         </div>
-                        <div class="dv-ebegu-calendar__row--week"
-                             ng-if="vm.displayWeekRow(tag, $index,vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) && !vm.displayMonthRow(tag, $index,vm.betreuung.belegungFerieninsel.tage) "></div>
+<!--                        <div class="dv-ebegu-calendar__row&#45;&#45;week"-->
+<!--                             ng-if="vm.displayWeekRow(tag, $index,vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) && !vm.displayMonthRow(tag, $index,vm.betreuung.belegungFerieninsel.tage) "></div>-->
                         <break class="dv-ebegu-calendar__break" ng-repeat-end
                                ng-if="vm.displayBreak(tag, $index,vm.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung)"></break>
                     </div>

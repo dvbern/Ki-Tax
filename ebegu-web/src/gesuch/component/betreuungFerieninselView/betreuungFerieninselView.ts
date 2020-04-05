@@ -175,25 +175,28 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             return;
         }
 
+        this.betreuung.belegungFerieninsel.tage = undefined;
         this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiodeAndFerien(
             this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGemeinde().id,
             this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
-            this.ferieninselStammdaten = response;
-            // Bereits gespeicherte Daten wieder ankreuzen
-            for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
-                for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
-                    if (tagAngemeldet.tag.isSame(obj.tag)) {
-                        obj.angemeldet = true;
+                this.ferieninselStammdaten = response;
+                // Bereits gespeicherte Daten wieder ankreuzen
+                for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
+                    for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
+                        if (tagAngemeldet.tag.isSame(obj.tag)) {
+                            obj.angemeldet = true;
+                        }
                     }
                 }
-            }
-        });
+            });
     }
 
     public isAnmeldungNichtFreigegeben(): boolean {
         // Ferien sind ausgewaehlt, aber es gibt keine Stammdaten dazu
         return EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel.ferienname)
-            && EbeguUtil.isNullOrUndefined(this.ferieninselStammdaten);
+            && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten)
+            && !this.ferieninselStammdaten.ferienActive;
     }
 
     public isAnmeldeschlussAbgelaufen(): boolean {
@@ -283,6 +286,11 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public getEinstellungenFerieninsel(): TSEinstellungenFerieninsel {
+
+        if (!this.getBetreuungModel().institutionStammdaten) {
+            return undefined;
+        }
+
         const stammdatenFerieninsel = this.getBetreuungModel().institutionStammdaten.institutionStammdatenFerieninsel;
         if (!stammdatenFerieninsel) {
             return undefined;

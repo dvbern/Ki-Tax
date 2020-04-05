@@ -11,7 +11,7 @@
  * GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *//*
+ */
 
 
 package ch.dvbern.ebegu.api.resource;
@@ -41,7 +41,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
-import ch.dvbern.ebegu.api.dtos.JaxFerieninselStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
@@ -55,15 +55,15 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-*/
+
 /**
  * REST Resource fuer FerieninselStammdaten
- *//*
+ */
 
 @Path("ferieninselStammdaten")
 @Stateless
 @Api(description = "Resource fuer die Verwaltung von FerieninselStammdaten")
-public class FerieninselStammdatenResource {
+public class FerieninselResource {
 
 
 	@Inject
@@ -77,79 +77,21 @@ public class FerieninselStammdatenResource {
 	private JaxBConverter converter;
 
 
-	@ApiOperation(value = "Create a new FerieninselStammdaten in the database", response = JaxFerieninselStammdaten.class)
-	@Nonnull
-	@PUT
-	@Path("/")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxFerieninselStammdaten saveFerieninselStammdaten(
-		@Nonnull @NotNull @Valid JaxFerieninselStammdaten jaxFerieninselStammdaten,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = new GemeindeStammdatenGesuchsperiodeFerieninsel();
-		if (jaxFerieninselStammdaten.getId() != null) {
-			Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> optional = ferieninselStammdatenService.findFerieninselStammdaten(jaxFerieninselStammdaten.getId());
-			ferieninselStammdaten = optional.orElse(new GemeindeStammdatenGesuchsperiodeFerieninsel());
-		}
-		GemeindeStammdatenGesuchsperiodeFerieninsel convertedFerieninselStammdaten = converter.ferieninselStammdatenToEntity(jaxFerieninselStammdaten, ferieninselStammdaten);
-
-		GemeindeStammdatenGesuchsperiodeFerieninsel persistedFachstelle = this.ferieninselStammdatenService.saveFerieninselStammdaten(convertedFerieninselStammdaten);
-		return converter.ferieninselStammdatenToJAX(persistedFachstelle);
-	}
-
-	@ApiOperation(value = "Returns the FerieninselStammdaten with the specified ID", response = JaxFerieninselStammdaten.class)
-	@Nullable
-	@GET
-	@Path("/id/{ferieninselStammdatenId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxFerieninselStammdaten findFerieninselStammdaten(
-		@Nonnull @NotNull @PathParam("ferieninselStammdatenId") JaxId ferieninselStammdatenId) throws EbeguRuntimeException {
-
-		Objects.requireNonNull(ferieninselStammdatenId.getId());
-		String entityID = converter.toEntityId(ferieninselStammdatenId);
-		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = ferieninselStammdatenService.findFerieninselStammdaten(entityID).orElseThrow(()
-			-> new EbeguRuntimeException("findFerieninselStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, entityID));
-
-		return converter.ferieninselStammdatenToJAX(ferieninselStammdaten);
-	}
-
-	@ApiOperation(value = "Returns all the FerieninselStammdaten for the Gesuchsperiode with the specified ID",
-		responseContainer = "Collection", response = JaxFerieninselStammdaten.class)
-	@Nullable
-	@GET
-	@Path("/gesuchsperiode/{gesuchsperiodeId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<JaxFerieninselStammdaten> findFerieninselStammdatenForGesuchsperiode(
-		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeId) throws EbeguEntityNotFoundException {
-
-		Objects.requireNonNull(gesuchsperiodeId.getId());
-		String gpEntityID = converter.toEntityId(gesuchsperiodeId);
-
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gpEntityID).orElseThrow(()
-			-> new EbeguRuntimeException("findFerieninselStammdatenForGesuchsperiode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gpEntityID));
-
-		Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList = ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsperiode.getId());
-		return ferieninselStammdatenList.stream()
-			.map(fiStammdaten -> converter.ferieninselStammdatenToJAX(fiStammdaten))
-			.collect(Collectors.toList());
-	}
-
-	@ApiOperation(value = "Returns the FerieninselStammdaten for the Gesuchsperiode with the specified ID for the given Ferien. The result also contains a "
+	@ApiOperation(value = "Returns the FerieninselStammdaten for the Gesuchsperiode and Gemeinde with the specified "
+		+ "ID for the given Ferien. The result also contains a "
 		+ "list of potentially available dates of this Ferieninsel (time period minus weekends and holidays)",
-		response = JaxFerieninselStammdaten.class)
+		response = JaxGemeindeStammdatenGesuchsperiodeFerieninsel.class)
 	@Nullable
 	@GET
-	@Path("/gesuchsperiode/{gesuchsperiodeId}/{ferienname}")
+	@Path("/gesuchsperiode/{gesuchsperiodeId}/{gemeindeId}/{ferienname}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxFerieninselStammdaten findFerieninselStammdatenForGesuchsperiodeAndFerienname(
+	public JaxGemeindeStammdatenGesuchsperiodeFerieninsel findFerieninselStammdatenForGesuchsperiodeAndFerienname(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeId,
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeId,
 		@Nonnull @NotNull @PathParam("ferienname") String feriennameParam) throws EbeguEntityNotFoundException {
 
+		Objects.requireNonNull(gemeindeId.getId());
 		Objects.requireNonNull(gesuchsperiodeId.getId());
 		String gpEntityID = converter.toEntityId(gesuchsperiodeId);
 		Ferienname ferienname = Ferienname.valueOf(feriennameParam);
@@ -158,11 +100,12 @@ public class FerieninselStammdatenResource {
 			-> new EbeguRuntimeException("findFerieninselStammdatenForGesuchsperiodeAndFerienname", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gpEntityID));
 
 		Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> stammdatenOptional = ferieninselStammdatenService
-			.findFerieninselStammdatenForGesuchsperiodeAndFerienname(gesuchsperiode.getId(), ferienname);
+			.findFerieninselStammdatenForGesuchsperiodeAndFerienname(gemeindeId.getId(), gesuchsperiode.getId(),
+				ferienname);
 
 		if (stammdatenOptional.isPresent()) {
 			GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = stammdatenOptional.get();
-			JaxFerieninselStammdaten ferieninselStammdatenJAX = converter.ferieninselStammdatenToJAX(stammdaten);
+			JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenJAX = converter.ferieninselStammdatenToJAX(stammdaten);
 			// Zur gefundenen Ferieninsel die tatsaechlich verfuegbaren Tage fuer die Belegung ermitteln (nur Wochentage, ohne Feiertage)
 			List<BelegungFerieninselTag> possibleFerieninselTage = ferieninselStammdatenService.getPossibleFerieninselTage(stammdaten);
 			List<JaxBelegungFerieninselTag> possibleFerieninselTageJAX = converter.belegungFerieninselTageListToJAX(possibleFerieninselTage);
@@ -172,4 +115,3 @@ public class FerieninselStammdatenResource {
 		return null;
 	}
 }
-*/

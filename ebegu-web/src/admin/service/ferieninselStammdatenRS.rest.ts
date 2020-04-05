@@ -57,9 +57,10 @@ export class FerieninselStammdatenRS {
 
     public findFerieninselStammdatenByGesuchsperiodeAndFerien(
         gesuchsperiodeId: string,
+        gemeindeId: string,
         ferienname: TSFerienname,
     ): IPromise<TSFerieninselStammdaten> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeId)}/${ferienname}`)
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeId)}/${encodeURIComponent(gemeindeId)}/${ferienname}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
             });

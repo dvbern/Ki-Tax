@@ -60,7 +60,7 @@ export class TSGemeindeKonfiguration {
     public erwerbspensumZuschlagOverriden: boolean;
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
-    private _ferieninselStammdaten: TSFerieninselStammdaten[];
+    public ferieninselStammdaten: TSFerieninselStammdaten[];
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -221,13 +221,5 @@ export class TSGemeindeKonfiguration {
         });
 
         this.erwerbspensumZuschlagOverriden = this.erwerbspensumZuschlag !== this.erwerbspensumZuschlagMax;
-    }
-
-    public get ferieninselStammdaten(): TSFerieninselStammdaten[] {
-        return this._ferieninselStammdaten;
-    }
-
-    public set ferieninselStammdaten(value: TSFerieninselStammdaten[]) {
-        this._ferieninselStammdaten = value;
     }
 }
