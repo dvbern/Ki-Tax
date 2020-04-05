@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
@@ -211,7 +212,9 @@ public class BGCalculationResult extends AbstractEntity {
 		verguenstigung = that.verguenstigung;
 	}
 
-	public void roundAllValues() {
+	@CanIgnoreReturnValue
+	@Nonnull
+	public BGCalculationResult roundAllValues() {
 		this.vollkosten = roundToFrankenRappen(vollkosten);
 		this.verguenstigungOhneBeruecksichtigungVollkosten = roundToFrankenRappen(verguenstigungOhneBeruecksichtigungVollkosten);
 		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = roundToFrankenRappen(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
@@ -228,6 +231,8 @@ public class BGCalculationResult extends AbstractEntity {
 		this.abzugFamGroesse = roundToFrankenRappen(abzugFamGroesse);
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
+
+		return this;
 	}
 
 	@Override

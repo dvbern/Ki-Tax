@@ -15,10 +15,13 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 
 /**
  * Factory, welche für eine Betreuung den richtigen BG-Rechner ermittelt
@@ -29,13 +32,13 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractRechner getRechner(AbstractPlatz betreuung) {
+	public static AbstractRechner getRechner(AbstractPlatz betreuung, List<RechnerRule> rechnerRulesForGemeinde) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
-			return new KitaRechner();
+			return new KitaRechner(rechnerRulesForGemeinde);
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
-			return new TageselternRechner();
+			return new TageselternRechner(rechnerRulesForGemeinde);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
 			return new TagesschuleRechner();

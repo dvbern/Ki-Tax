@@ -1120,8 +1120,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
-	public AnmeldungTagesschule getFirstAnmeldungTagesschule() {
-		return extractAllAnmeldungenTagesschule().stream()
+	public AbstractPlatz getFirstBetreuungOrAnmeldungTagesschule() {
+		return extractAllPlaetze().stream()
+			.filter(platz -> platz.getBetreuungsangebotTyp().isBerechnetesAngebot())
 			.findFirst()
 			.orElse(null);
 	}
