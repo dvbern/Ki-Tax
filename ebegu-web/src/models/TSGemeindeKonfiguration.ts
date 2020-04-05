@@ -21,6 +21,7 @@ import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSEinstellungKey} from './enums/TSEinstellungKey';
 import {TSEinstellung} from './TSEinstellung';
+import {TSFerieninselStammdaten} from './TSFerieninselStammdaten';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSGemeindeKonfiguration {
@@ -59,6 +60,7 @@ export class TSGemeindeKonfiguration {
     public erwerbspensumZuschlagOverriden: boolean;
     public editMode: boolean; // only on client
     public konfigurationen: TSEinstellung[];
+    private _ferieninselStammdaten: TSFerieninselStammdaten[];
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -219,5 +221,13 @@ export class TSGemeindeKonfiguration {
         });
 
         this.erwerbspensumZuschlagOverriden = this.erwerbspensumZuschlag !== this.erwerbspensumZuschlagMax;
+    }
+
+    public get ferieninselStammdaten(): TSFerieninselStammdaten[] {
+        return this._ferieninselStammdaten;
+    }
+
+    public set ferieninselStammdaten(value: TSFerieninselStammdaten[]) {
+        this._ferieninselStammdaten = value;
     }
 }

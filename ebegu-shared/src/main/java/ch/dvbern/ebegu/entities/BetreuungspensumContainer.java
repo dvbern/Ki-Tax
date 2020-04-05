@@ -103,7 +103,7 @@ public class BetreuungspensumContainer extends AbstractMutableEntity implements 
 		}
 		final BetreuungspensumContainer otherBetreuungspensumContainer = (BetreuungspensumContainer) other;
 
-		return EbeguUtil.isSameObject(getBetreuungspensumJA(), otherBetreuungspensumContainer.getBetreuungspensumJA());
+		return EbeguUtil.isSame(getBetreuungspensumJA(), otherBetreuungspensumContainer.getBetreuungspensumJA());
 	}
 
 	/**

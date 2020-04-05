@@ -173,7 +173,7 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final FamiliensituationContainer otherFamSitContainer = (FamiliensituationContainer) other;
-		return EbeguUtil.isSameObject(getFamiliensituationJA(), otherFamSitContainer.getFamiliensituationJA());
+		return EbeguUtil.isSame(getFamiliensituationJA(), otherFamSitContainer.getFamiliensituationJA());
 	}
 
 	private void copySozialhilfeZeitraeume(@Nonnull FamiliensituationContainer target,

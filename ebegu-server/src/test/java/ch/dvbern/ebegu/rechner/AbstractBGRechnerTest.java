@@ -242,6 +242,7 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
 		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
 		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
+		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		return parameterDTO;
 	}
 
@@ -252,7 +253,7 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull LocalDate geburtsdatumKind,
 		@Nonnull LocalDate von,
 		@Nonnull LocalDate bis,
-		boolean eingeschult,
+		@Nonnull EinschulungTyp einschulungTyp,
 		boolean besondereBeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
@@ -265,7 +266,7 @@ public abstract class AbstractBGRechnerTest {
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
 		Kind kind = new Kind();
 		kind.setGeburtsdatum(geburtsdatumKind);
-		kind.setEinschulungTyp(eingeschult ? EinschulungTyp.KLASSE1 : EinschulungTyp.VORSCHULALTER);
+		kind.setEinschulungTyp(einschulungTyp);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
 		Gesuch gesuch = new Gesuch();
@@ -294,9 +295,9 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(20);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(20));
-		zeitabschnitt.getBgCalculationResultAsiv().setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
+		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(20);
+		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(20));
+		zeitabschnitt.getBgCalculationInputAsiv().setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
 		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
 		zeitabschnittList.add(zeitabschnitt);
