@@ -894,7 +894,9 @@ export class EbeguRestUtil {
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.bgAdresse = this.adresseToRestObject({}, stammdaten.bgAdresse);
             restStammdaten.tsAdresse = this.adresseToRestObject({}, stammdaten.tsAdresse);
-            restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            if (stammdaten.gemeinde.angebotBG) {
+                restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            }
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
