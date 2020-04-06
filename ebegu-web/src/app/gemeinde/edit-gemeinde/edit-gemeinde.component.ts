@@ -123,6 +123,9 @@ export class EditGemeindeComponent implements OnInit {
                     this.fiAnmeldungenStartDatum = stammdaten.gemeinde.ferieninselanmeldungenStartdatum;
                     this.fiAnmeldungenStartStr = this.fiAnmeldungenStartDatum.format(this.startDatumFormat);
                 }
+
+                this.initialFIValue = stammdaten.gemeinde.angebotFI;
+
                 return stammdaten;
             }));
 
@@ -202,7 +205,11 @@ export class EditGemeindeComponent implements OnInit {
                 }
             });
 
-            this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
+            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then( () => {
+                if (this.initialFIValue !== stammdaten.gemeinde.angebotFI) {
+                 this.loadStammdaten();
+                }
+            });
 
             // Wir initisieren die Models neu, damit nach jedem Speichern weitereditiert werden kann
             // Da sonst eine Nullpointer kommt, wenn man die Checkboxen wieder anklickt!

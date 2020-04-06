@@ -45,6 +45,8 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -68,6 +70,9 @@ import org.hibernate.envers.Audited;
 public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements Comparable<VerfuegungZeitabschnitt> {
 
 	private static final long serialVersionUID = 7250339356897563374L;
+
+	@Column(nullable = false)
+	private boolean hasGemeindeSpezifischeBerechnung = false;
 
 	/**
 	 * Input-Werte für die Rules. Berechnung nach ASIV (Standard)
@@ -134,11 +139,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod" })
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
-
+		this.hasGemeindeSpezifischeBerechnung = toCopy.hasGemeindeSpezifischeBerechnung;
 		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde = new BGCalculationInput(toCopy.bgCalculationInputGemeinde);
 		this.bgCalculationResultAsiv = new BGCalculationResult(toCopy.getBgCalculationResultAsiv());
-		if (toCopy.getBgCalculationResultGemeinde() != null) {
+		if (this.hasGemeindeSpezifischeBerechnung && toCopy.getBgCalculationResultGemeinde() != null) {
 			this.bgCalculationResultGemeinde = new BGCalculationResult(toCopy.getBgCalculationResultGemeinde());
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
@@ -153,6 +158,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	public VerfuegungZeitabschnitt(DateRange gueltigkeit) {
 		this.setGueltigkeit(new DateRange(gueltigkeit));
+	}
+
+	public boolean isHasGemeindeSpezifischeBerechnung() {
+		return hasGemeindeSpezifischeBerechnung;
+	}
+
+	public void setHasGemeindeSpezifischeBerechnung(boolean hasGemeindeSpezifischeBerechnung) {
+		this.hasGemeindeSpezifischeBerechnung = hasGemeindeSpezifischeBerechnung;
 	}
 
 	@Nonnull
@@ -413,9 +426,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBabyTarif(babyTarif);
 	}
 
-	public void setEingeschultForAsivAndGemeinde(boolean eingeschult) {
-		this.getBgCalculationInputAsiv().setEingeschult(eingeschult);
-		this.getBgCalculationInputGemeinde().setEingeschult(eingeschult);
+	public void setEinschulungTypForAsivAndGemeinde(@Nonnull EinschulungTyp einschulungTyp) {
+		this.getBgCalculationInputAsiv().setEinschulungTyp(einschulungTyp);
+		this.getBgCalculationInputGemeinde().setEinschulungTyp(einschulungTyp);
+	}
+
+	public void setBetreuungsangebotTypForAsivAndGemeinde(@Nonnull BetreuungsangebotTyp typ) {
+		this.getBgCalculationInputAsiv().setBetreuungsangebotTyp(typ);
+		this.getBgCalculationInputGemeinde().setBetreuungsangebotTyp(typ);
 	}
 
 	public void setHasSecondGesuchstellerForFinanzielleSituationForAsivAndGemeinde(boolean hasSecondGesuchstellerForFinanzielleSituation) {
@@ -473,6 +491,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
 	}
 
+	public void setSozialhilfeempfaengerForAsivAndGemeinde(boolean sozialhilfe) {
+		this.getBgCalculationInputAsiv().setSozialhilfeempfaenger(sozialhilfe);
+		this.getBgCalculationInputGemeinde().setSozialhilfeempfaenger(sozialhilfe);
+	}
+
+	public void setBetreuungInGemeindeForAsivAndGemeinde(boolean inGemeinde) {
+		this.getBgCalculationInputAsiv().setBetreuungInGemeinde(inGemeinde);
+		this.getBgCalculationInputGemeinde().setBetreuungInGemeinde(inGemeinde);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 
@@ -521,6 +549,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount" })
 	public void add(VerfuegungZeitabschnitt other) {
+		this.hasGemeindeSpezifischeBerechnung = (this.hasGemeindeSpezifischeBerechnung || other.hasGemeindeSpezifischeBerechnung);
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
 		this.addAllBemerkungen(other.getBemerkungenMap());
@@ -537,15 +566,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Bemerkungen: " + bemerkungen;
-		return sb;
-	}
-
-	public String toStringTagesschuleInfos() {
-		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - "
-			+ Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis()) + "] "
-			+ " massgebendesEinkommen: " + bgCalculationResultAsiv.getMassgebendesEinkommen() + '\n'
-			+ " mitBetreuung: " + bgCalculationResultAsiv.getTsCalculationResultMitPaedagogischerBetreuung() + '\n'
-			+ " ohneBetreuung: " + bgCalculationResultAsiv.getTsCalculationResultOhnePaedagogischerBetreuung();
 		return sb;
 	}
 
@@ -566,7 +586,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return
 			bgCalculationInputAsiv.isSame(otherVerfuegungZeitabschnitt.getBgCalculationInputAsiv()) &&
-			(!this.hasGemeindeSpezfischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
+			(!this.isHasGemeindeSpezifischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
 			EbeguUtil.isSame(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
@@ -581,7 +601,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		return
 			this.bgCalculationInputAsiv.isSameSichtbareDaten(that.bgCalculationInputAsiv) &&
-			(!this.hasGemeindeSpezfischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
+			(!this.isHasGemeindeSpezifischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
 			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
@@ -599,7 +619,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		// gelangt sind
 		return
 			BGCalculationResult.isSamePersistedValues(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
-			(!this.hasGemeindeSpezfischeBerechnung() ||
+			(!this.isHasGemeindeSpezifischeBerechnung() ||
 				BGCalculationResult.isSamePersistedValues(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde)) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0;
 	}
@@ -666,13 +686,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return compareToBuilder.toComparison();
 	}
 
-	public boolean hasGemeindeSpezfischeBerechnung() {
-		return this.bgCalculationResultGemeinde != null;
-	}
-
 	@Nonnull
 	public BGCalculationResult getRelevantBgCalculationResult() {
-		if (hasGemeindeSpezfischeBerechnung()) {
+		if (isHasGemeindeSpezifischeBerechnung()) {
 			Objects.requireNonNull(this.getBgCalculationResultGemeinde());
 			return this.getBgCalculationResultGemeinde();
 		}
@@ -681,21 +697,21 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	public BGCalculationInput getRelevantBgCalculationInput() {
-		if (hasGemeindeSpezfischeBerechnung()) {
+		if (isHasGemeindeSpezifischeBerechnung()) {
 			Objects.requireNonNull(this.getBgCalculationInputGemeinde());
 			return this.getBgCalculationInputGemeinde();
 		}
 		return this.getBgCalculationInputAsiv();
 	}
 
-	public void copyValuesToResult() {
-		copyValuesToResult(getBgCalculationInputAsiv(), getBgCalculationResultAsiv());
+	public void initBGCalculationResult() {
+		initBGCalculationResult(getBgCalculationInputAsiv(), getBgCalculationResultAsiv());
 		if (getBgCalculationResultGemeinde() != null) {
-			copyValuesToResult(getBgCalculationInputGemeinde(), getBgCalculationResultGemeinde());
+			initBGCalculationResult(getBgCalculationInputGemeinde(), getBgCalculationResultGemeinde());
 		}
 	}
 
-	private void copyValuesToResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
+	public static void initBGCalculationResult(@Nonnull BGCalculationInput input, @Nonnull BGCalculationResult result) {
 		result.setAnspruchspensumProzent(input.getAnspruchspensumProzent());
 		result.setBetreuungspensumProzent(input.getBetreuungspensumProzent());
 		result.setMassgebendesEinkommenVorAbzugFamgr(input.getMassgebendesEinkommenVorAbzugFamgr());
@@ -705,17 +721,5 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
-		if (input.getTsBetreuungszeitProWocheMitBetreuung() > 0) {
-			TSCalculationResult tsResultMitBetreuung = new TSCalculationResult();
-			tsResultMitBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheMitBetreuung());
-			tsResultMitBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenMitBetreuung());
-			result.setTsCalculationResultMitPaedagogischerBetreuung(tsResultMitBetreuung);
-		}
-		if (input.getTsBetreuungszeitProWocheOhneBetreuung() > 0) {
-			TSCalculationResult tsResultOhneBetreuung = new TSCalculationResult();
-			tsResultOhneBetreuung.setBetreuungszeitProWoche(input.getTsBetreuungszeitProWocheOhneBetreuung());
-			tsResultOhneBetreuung.setVerpflegungskosten(input.getTsVerpflegungskostenOhneBetreuung());
-			result.setTsCalculationResultOhnePaedagogischerBetreuung(tsResultOhneBetreuung);
-		}
 	}
 }

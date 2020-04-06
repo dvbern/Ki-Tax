@@ -20,27 +20,27 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
-import ch.dvbern.ebegu.entities.FerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 
 /**
  * Die Zeitraeume einer Ferieninsel duerfen sich nicht ueberschneiden.
  */
-public class CheckFerieninselStammdatenDatesOverlappingValidator implements ConstraintValidator<CheckFerieninselStammdatenDatesOverlapping, FerieninselStammdaten> {
+public class CheckFerieninselStammdatenDatesOverlappingValidator implements ConstraintValidator<CheckFerieninselStammdatenDatesOverlapping, GemeindeStammdatenGesuchsperiodeFerieninsel> {
 	@Override
 	public void initialize(CheckFerieninselStammdatenDatesOverlapping constraintAnnotation) {
 		// nop
 	}
 
 	@Override
-	public boolean isValid(FerieninselStammdaten instance, ConstraintValidatorContext context) {
+	public boolean isValid(GemeindeStammdatenGesuchsperiodeFerieninsel instance, ConstraintValidatorContext context) {
 		return !(checkOverlapping(instance.getZeitraumList()));
 	}
 
 	/**
 	 * prueft ob es eine ueberschneidung zwischen den Zeitrauemen gibt
 	 */
-	private boolean checkOverlapping(List<FerieninselZeitraum> ferieninselZeitraumList) {
+	private boolean checkOverlapping(List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> ferieninselZeitraumList) {
 		return ferieninselZeitraumList.stream()
 			.anyMatch(o1 -> ferieninselZeitraumList.stream()
 				.anyMatch(o2 -> !o1.equals(o2) && o1.getGueltigkeit().intersects(o2.getGueltigkeit())));
