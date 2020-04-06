@@ -52,7 +52,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -68,6 +67,7 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -81,7 +81,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckEmailGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
 @Entity
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(impl = GermanAnalyzer.class)
 @EntityListeners({ GesuchStatusListener.class , GesuchGueltigListener.class})
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),

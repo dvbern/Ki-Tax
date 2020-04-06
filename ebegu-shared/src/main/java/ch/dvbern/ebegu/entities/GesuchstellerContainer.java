@@ -32,7 +32,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
@@ -40,6 +39,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckGesuchstellerContainerComplete;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -52,7 +52,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckGesuchstellerContainerComplete(groups = AntragCompleteValidationGroup.class)
 @Entity
 @Indexed
-@Analyzer(impl = EBEGUGermanAnalyzer.class)
+@Analyzer(impl = GermanAnalyzer.class)
 public class GesuchstellerContainer extends AbstractMutableEntity implements Searchable {
 
 	private static final long serialVersionUID = -8403117439764700618L;

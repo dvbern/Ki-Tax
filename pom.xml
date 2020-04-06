@@ -205,6 +205,12 @@
                 <version>1.0.2</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.2</version>
+                <scope>provided</scope>
+            </dependency>
             <!-- endregion WildFly Stack -->
 
             <!-- region WildFly updates -->
@@ -229,7 +235,28 @@
             <!-- endregion -->
 
              <!-- region Hibernate-Search dependencies-->
+            <!--dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.4.5</version>
+            </dependency-->
+
             <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-elasticsearch</artifactId>
+                <version>${hibernate-search.version}</version>
+                <exclusions>
+                    <!--exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpcore</artifactId>
+                    </exclusion-->
+                </exclusions>
+            </dependency>
+           <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-search-backend-jgroups</artifactId>
                 <version>${hibernate-search.version}</version>

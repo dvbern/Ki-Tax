@@ -28,7 +28,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.LuceneUtil;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.QuickSearchResultDTO;
@@ -39,6 +38,7 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -131,8 +131,8 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	 */
 	private List<String> tokenizeAndAndAddWildcardToQuery(@Nonnull String searchText) {
 		@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-		Analyzer analyzer = new EBEGUGermanAnalyzer();
-		List<String> tokenizedStrings = LuceneUtil.tokenizeString(new EBEGUGermanAnalyzer(), searchText);
+		Analyzer analyzer = new GermanAnalyzer();
+		List<String> tokenizedStrings = LuceneUtil.tokenizeString(new GermanAnalyzer(), searchText);
 		analyzer.close();
 		return tokenizedStrings.stream().map(term -> term + WILDCARD).collect(Collectors.toList());
 	}
