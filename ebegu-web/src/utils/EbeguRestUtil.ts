@@ -21,6 +21,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
@@ -3558,6 +3559,7 @@ export class EbeguRestUtil {
         }
         return Array.isArray(data)
             ? data.map(item => this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), item))
+                .sort((a, b) => ferienInselNameOrder(a.ferienname) - ferienInselNameOrder(b.ferienname))
             : [this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data)];
     }
 
@@ -3609,7 +3611,8 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            if (ferieninselStammdatenTS.ersterZeitraum) {
+            if (ferieninselStammdatenTS.ersterZeitraum && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit
+                && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit.gueltigAb) {
                 const firstZeitraum: any = {};
                 this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.ersterZeitraum);
                 restFerieninselStammdaten.zeitraumList = [];

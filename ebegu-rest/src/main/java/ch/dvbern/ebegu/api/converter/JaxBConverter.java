@@ -4446,6 +4446,11 @@ public class JaxBConverter extends AbstractConverter {
 				.orElseGet(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum::new);
 			final GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraumToAdd =
 				(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum) convertAbstractDateRangedFieldsToEntity(zeitraumJAX, zeitraumToMergeWith);
+
+			// only save a Zeitraum if the dates are set
+			requireNonNull(zeitraumToAdd.getGueltigkeit().getGueltigAb());
+			requireNonNull(zeitraumToAdd.getGueltigkeit().getGueltigBis());
+
 			final boolean added = transformedZeitraeume.add(zeitraumToAdd);
 			if (!added) {
 				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", zeitraumToAdd);

@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Moment} from 'moment';
@@ -35,6 +35,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     templateUrl: './gemeinde-fi-konfig.component.html',
     styleUrls: ['./gemeinde-fi-konfig.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class GemeindeFiKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;

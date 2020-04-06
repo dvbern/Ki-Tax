@@ -28,8 +28,21 @@ public class VerrechnungKibonDataRow implements Comparable<VerrechnungKibonDataR
 	private BigDecimal betragProKind;
 	private String gemeinde;
 	private String gesuchsperiode;
-	private Long kinderTotal;
-	private Long kinderBereitsVerrechnet;
+
+	private Long kinderKantonTotal;
+	private Long kinderKantonBereitsVerrechnet;
+	private Long kinderBgTotal;
+	private Long kinderBgBereitsVerrechnet;
+	private Long kinderTsTotal;
+	private Long kinderTsBereitsVerrechnet;
+	private Long kinderKeinAngebotTotal;
+	private Long kinderKeinAngebotBereitsVerrechnet;
+	private Long kinderGemeindeTotal;
+	private Long kinderGemeindeBereitsVerrechnet;
+	private Long kinderFiTotal;
+	private Long kinderFiBereitsVerrechnet;
+	private Long kinderTagiTotal;
+	private Long kinderTagiBereitsVerrechnet;
 
 	public BigDecimal getBetragProKind() {
 		return betragProKind;
@@ -55,20 +68,116 @@ public class VerrechnungKibonDataRow implements Comparable<VerrechnungKibonDataR
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	public Long getKinderTotal() {
-		return kinderTotal;
+	public Long getKinderKantonTotal() {
+		return kinderKantonTotal;
 	}
 
-	public void setKinderTotal(Long kinderTotal) {
-		this.kinderTotal = kinderTotal;
+	public void setKinderKantonTotal(Long kinderKantonTotal) {
+		this.kinderKantonTotal = kinderKantonTotal;
 	}
 
-	public Long getKinderBereitsVerrechnet() {
-		return kinderBereitsVerrechnet;
+	public Long getKinderKantonBereitsVerrechnet() {
+		return kinderKantonBereitsVerrechnet;
 	}
 
-	public void setKinderBereitsVerrechnet(Long kinderBereitsVerrechnet) {
-		this.kinderBereitsVerrechnet = kinderBereitsVerrechnet;
+	public void setKinderKantonBereitsVerrechnet(Long kinderKantonBereitsVerrechnet) {
+		this.kinderKantonBereitsVerrechnet = kinderKantonBereitsVerrechnet;
+	}
+
+	public Long getKinderBgTotal() {
+		return kinderBgTotal;
+	}
+
+	public void setKinderBgTotal(Long kinderBgTotal) {
+		this.kinderBgTotal = kinderBgTotal;
+	}
+
+	public Long getKinderBgBereitsVerrechnet() {
+		return kinderBgBereitsVerrechnet;
+	}
+
+	public void setKinderBgBereitsVerrechnet(Long kinderBgBereitsVerrechnet) {
+		this.kinderBgBereitsVerrechnet = kinderBgBereitsVerrechnet;
+	}
+
+	public Long getKinderTsTotal() {
+		return kinderTsTotal;
+	}
+
+	public void setKinderTsTotal(Long kinderTsTotal) {
+		this.kinderTsTotal = kinderTsTotal;
+	}
+
+	public Long getKinderTsBereitsVerrechnet() {
+		return kinderTsBereitsVerrechnet;
+	}
+
+	public void setKinderTsBereitsVerrechnet(Long kinderTsBereitsVerrechnet) {
+		this.kinderTsBereitsVerrechnet = kinderTsBereitsVerrechnet;
+	}
+
+	public Long getKinderKeinAngebotTotal() {
+		return kinderKeinAngebotTotal;
+	}
+
+	public void setKinderKeinAngebotTotal(Long kinderKeinAngebotTotal) {
+		this.kinderKeinAngebotTotal = kinderKeinAngebotTotal;
+	}
+
+	public Long getKinderKeinAngebotBereitsVerrechnet() {
+		return kinderKeinAngebotBereitsVerrechnet;
+	}
+
+	public void setKinderKeinAngebotBereitsVerrechnet(Long kinderKeinAngebotBereitsVerrechnet) {
+		this.kinderKeinAngebotBereitsVerrechnet = kinderKeinAngebotBereitsVerrechnet;
+	}
+
+	public Long getKinderGemeindeTotal() {
+		return kinderGemeindeTotal;
+	}
+
+	public void setKinderGemeindeTotal(Long kinderGemeindeTotal) {
+		this.kinderGemeindeTotal = kinderGemeindeTotal;
+	}
+
+	public Long getKinderGemeindeBereitsVerrechnet() {
+		return kinderGemeindeBereitsVerrechnet;
+	}
+
+	public void setKinderGemeindeBereitsVerrechnet(Long kinderGemeindeBereitsVerrechnet) {
+		this.kinderGemeindeBereitsVerrechnet = kinderGemeindeBereitsVerrechnet;
+	}
+
+	public Long getKinderFiTotal() {
+		return kinderFiTotal;
+	}
+
+	public void setKinderFiTotal(Long kinderFiTotal) {
+		this.kinderFiTotal = kinderFiTotal;
+	}
+
+	public Long getKinderFiBereitsVerrechnet() {
+		return kinderFiBereitsVerrechnet;
+	}
+
+	public void setKinderFiBereitsVerrechnet(Long kinderFiBereitsVerrechnet) {
+		this.kinderFiBereitsVerrechnet = kinderFiBereitsVerrechnet;
+	}
+
+	public Long getKinderTagiTotal() {
+		return kinderTagiTotal;
+	}
+
+	public void setKinderTagiTotal(Long kinderTagiTotal) {
+		this.kinderTagiTotal = kinderTagiTotal;
+	}
+
+	public Long getKinderTagiBereitsVerrechnet() {
+		return kinderTagiBereitsVerrechnet;
+	}
+
+	public void setKinderTagiBereitsVerrechnet(Long kinderTagiBereitsVerrechnet) {
+		this.kinderTagiBereitsVerrechnet = kinderTagiBereitsVerrechnet;
 	}
 
 	@Override
