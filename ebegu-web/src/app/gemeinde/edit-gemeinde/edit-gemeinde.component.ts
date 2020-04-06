@@ -75,6 +75,7 @@ export class EditGemeindeComponent implements OnInit {
     private readonly startDatumFormat = 'DD.MM.YYYY';
     private initiallyAssignedClients: TSExternalClient[];
     public externalClients: TSExternalClientAssignment;
+    public usernameScolaris: string;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -139,17 +140,20 @@ export class EditGemeindeComponent implements OnInit {
                     this.fiAnmeldungenStartDatum = stammdaten.gemeinde.ferieninselanmeldungenStartdatum;
                     this.fiAnmeldungenStartStr = this.fiAnmeldungenStartDatum.format(this.startDatumFormat);
                 }
+                if (EbeguUtil.isNotNullOrUndefined(stammdaten.usernameScolaris)) {
+                    this.usernameScolaris = stammdaten.usernameScolaris;
+                }
                 return stammdaten;
             }));
 
         this.stammdaten$.subscribe(stammdaten => {
-            this.initialBGValue = stammdaten.gemeinde.angebotBG;
-            this.initialTSValue = stammdaten.gemeinde.angebotTS;
-            this.initialFIValue = stammdaten.gemeinde.angebotFI;
-        },
-        err => {
-            LOG.error(err);
-        });
+                this.initialBGValue = stammdaten.gemeinde.angebotBG;
+                this.initialTSValue = stammdaten.gemeinde.angebotTS;
+                this.initialFIValue = stammdaten.gemeinde.angebotFI;
+            },
+            err => {
+                LOG.error(err);
+            });
     }
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
@@ -209,6 +213,9 @@ export class EditGemeindeComponent implements OnInit {
             this.errorService.clearAll();
             this.setEmptyUnrequiredFieldsToUndefined(stammdaten);
             stammdaten.externalClients = this.externalClients.assignedClients.map(client => client.id);
+            stammdaten.usernameScolaris = EbeguUtil.isEmptyStringNullOrUndefined(this.usernameScolaris)
+                ? undefined
+                : this.usernameScolaris;
 
             this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
                 if (this.fileToUpload) {
@@ -219,7 +226,7 @@ export class EditGemeindeComponent implements OnInit {
                 }
             });
 
-            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then( () => {
+            this.gemeindeRS.updateAngebote(stammdaten.gemeinde).then(() => {
                 this.loadStammdaten();
             });
 
@@ -243,6 +250,9 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.altTSAdresse) {
             // Reset BGAdresse if not used
             stammdaten.tsAdresse = undefined;
+        }
+        if (!this.usernameScolaris) {
+            stammdaten.usernameScolaris = undefined;
         }
         if (stammdaten.standardRechtsmittelbelehrung) {
             // reset custom Rechtsmittelbelehrung if checkbox not checked
