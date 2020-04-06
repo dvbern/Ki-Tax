@@ -491,6 +491,7 @@
     "INSTITUTION_ZAHLUNGSANGABEN": "Données pour le versement",
     "INSTITUTION_KONTOINHABER": "Titulaire du compte",
     "IBAN_NUMMER": "Numéro IBAN",
+    "IBAN_NUMMER_HINT": "",
     "INSTITUTION_ALTERSKATEGORIE": "Classe d’âge",
     "INSTITUTION_ALTERSKATEGORIE_BABY": "Bébé",
     "INSTITUTION_ALTERSKATEGORIE_VORSCHULE": "Ecole enfantine",
