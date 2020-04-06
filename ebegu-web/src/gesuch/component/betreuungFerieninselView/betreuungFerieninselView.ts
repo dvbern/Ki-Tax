@@ -28,6 +28,7 @@ import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerie
 import {TSBelegungFerieninsel} from '../../../models/TSBelegungFerieninsel';
 import {TSBelegungFerieninselTag} from '../../../models/TSBelegungFerieninselTag';
 import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSEinstellungenFerieninsel} from '../../../models/TSEinstellungenFerieninsel';
 import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -281,17 +282,43 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         return dayArray[index + 1] ? dayArray[index + 1].tag.diff(tag.tag, 'days') > 7 : false;
     }
 
+    public getEinstellungenFerieninsel(): TSEinstellungenFerieninsel {
+        const institutionStammdaten = this.getBetreuungModel().institutionStammdaten;
+        if (!institutionStammdaten) {
+            return undefined;
+        }
+        const stammdatenFerieninsel = institutionStammdaten.institutionStammdatenFerieninsel;
+        if (!stammdatenFerieninsel) {
+            return undefined;
+        }
+        const tsEinstellungenTFerieninsel =
+            stammdatenFerieninsel.einstellungenFerieninsel
+                .filter((einstellung: TSEinstellungenFerieninsel) =>
+                    einstellung.gesuchsperiode.id === this.gesuchModelManager.getGesuchsperiode().id)
+                .pop();
+        return tsEinstellungenTFerieninsel;
+    }
+
     public hasAusweichstandort(): boolean {
-        return this.betreuung.institutionStammdaten
-            && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-            && this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-                .isAusweichstandortDefined(this.betreuung.belegungFerieninsel.ferienname);
+
+        const einstellungen = this.getEinstellungenFerieninsel();
+
+        if (!einstellungen) {
+            return false;
+        }
+        return einstellungen.isAusweichstandortDefined(this.betreuung.belegungFerieninsel.ferienname);
     }
 
     public getAusgewaehltFeriensequenz(): string {
+
+        const einstellungen = this.getEinstellungenFerieninsel();
+
+        if (!einstellungen) {
+            return '';
+        }
+
         if (this.hasAusweichstandort()) {
-            return this.betreuung.institutionStammdaten.institutionStammdatenFerieninsel
-                .getAusweichstandortFromFerienname(this.betreuung.belegungFerieninsel.ferienname);
+            return einstellungen.getAusweichstandortFromFerienname(this.betreuung.belegungFerieninsel.ferienname);
         }
         return '';
     }

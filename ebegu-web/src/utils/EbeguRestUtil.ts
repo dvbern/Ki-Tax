@@ -65,6 +65,7 @@ import {TSEinkommensverschlechterungContainer} from '../models/TSEinkommensversc
 import {TSEinkommensverschlechterungInfo} from '../models/TSEinkommensverschlechterungInfo';
 import {TSEinkommensverschlechterungInfoContainer} from '../models/TSEinkommensverschlechterungInfoContainer';
 import {TSEinstellung} from '../models/TSEinstellung';
+import {TSEinstellungenFerieninsel} from '../models/TSEinstellungenFerieninsel';
 import {TSEinstellungenTagesschule} from '../models/TSEinstellungenTagesschule';
 import {TSErweiterteBetreuung} from '../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../models/TSErweiterteBetreuungContainer';
@@ -1443,15 +1444,42 @@ export class EbeguRestUtil {
                 institutionStammdatenFerieninsel);
             restInstitutionStammdatenFerieninsel.gemeinde =
                 this.gemeindeToRestObject({}, institutionStammdatenFerieninsel.gemeinde);
-            restInstitutionStammdatenFerieninsel.ausweichstandortFruehlingsferien =
-                institutionStammdatenFerieninsel.ausweichstandortFruehlingsferien;
-            restInstitutionStammdatenFerieninsel.ausweichstandortHerbstferien =
-                institutionStammdatenFerieninsel.ausweichstandortHerbstferien;
-            restInstitutionStammdatenFerieninsel.ausweichstandortSommerferien =
-                institutionStammdatenFerieninsel.ausweichstandortSommerferien;
-            restInstitutionStammdatenFerieninsel.ausweichstandortSportferien =
-                institutionStammdatenFerieninsel.ausweichstandortSportferien;
+
+            restInstitutionStammdatenFerieninsel.einstellungenFerieninsel
+                = this.einstellungenFerieninselArrayToRestObject(institutionStammdatenFerieninsel.einstellungenFerieninsel);
+
             return restInstitutionStammdatenFerieninsel;
+        }
+        return undefined;
+    }
+
+    private einstellungenFerieninselArrayToRestObject(data: Array<TSEinstellungenFerieninsel>): any[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.einstellungenFerieninselToRestObject({}, item))
+            : [];
+    }
+
+    private einstellungenFerieninselToRestObject(
+        restEinstellung: any, einstellungFerieninselTS: TSEinstellungenFerieninsel
+    ): any {
+        if (einstellungFerieninselTS) {
+            this.abstractEntityToRestObject(restEinstellung, einstellungFerieninselTS);
+            restEinstellung.gesuchsperiode =
+                this.gesuchsperiodeToRestObject({}, einstellungFerieninselTS.gesuchsperiode);
+
+            restEinstellung.ausweichstandortFruehlingsferien =
+                einstellungFerieninselTS.ausweichstandortFruehlingsferien;
+            restEinstellung.ausweichstandortHerbstferien =
+                einstellungFerieninselTS.ausweichstandortHerbstferien;
+            restEinstellung.ausweichstandortSommerferien =
+                einstellungFerieninselTS.ausweichstandortSommerferien;
+            restEinstellung.ausweichstandortSportferien =
+                einstellungFerieninselTS.ausweichstandortSportferien;
+
+            return restEinstellung;
         }
         return undefined;
     }
@@ -1465,15 +1493,42 @@ export class EbeguRestUtil {
                 institutionStammdatenFerieninselFromServer);
             institutionStammdatenFerieninselTS.gemeinde =
                 this.parseGemeinde(new TSGemeinde(), institutionStammdatenFerieninselFromServer.gemeinde);
-            institutionStammdatenFerieninselTS.ausweichstandortFruehlingsferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortFruehlingsferien;
-            institutionStammdatenFerieninselTS.ausweichstandortHerbstferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortHerbstferien;
-            institutionStammdatenFerieninselTS.ausweichstandortSommerferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortSommerferien;
-            institutionStammdatenFerieninselTS.ausweichstandortSportferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortSportferien;
+
+            institutionStammdatenFerieninselTS.einstellungenFerieninsel =
+                this.parseEinstellungenFerieninselArray(institutionStammdatenFerieninselFromServer.einstellungenFerieninsel);
+
             return institutionStammdatenFerieninselTS;
+        }
+        return undefined;
+    }
+
+    public parseEinstellungenFerieninselArray(data: Array<any>): TSEinstellungenFerieninsel[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseEinstellungenFerieninsel(new TSEinstellungenFerieninsel(), item))
+            : [this.parseEinstellungenFerieninsel(new TSEinstellungenFerieninsel(), data)];
+    }
+
+    private parseEinstellungenFerieninsel(
+        einstellungenFerieninselTS: TSEinstellungenFerieninsel, einstellungFromServer: any
+    ): TSEinstellungenFerieninsel {
+        if (einstellungFromServer) {
+            this.parseAbstractEntity(einstellungenFerieninselTS, einstellungFromServer);
+            einstellungenFerieninselTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), einstellungFromServer.gesuchsperiode);
+
+            einstellungenFerieninselTS.ausweichstandortFruehlingsferien =
+                einstellungFromServer.ausweichstandortFruehlingsferien;
+            einstellungenFerieninselTS.ausweichstandortHerbstferien =
+                einstellungFromServer.ausweichstandortHerbstferien;
+            einstellungenFerieninselTS.ausweichstandortSommerferien =
+                einstellungFromServer.ausweichstandortSommerferien;
+            einstellungenFerieninselTS.ausweichstandortSportferien =
+                einstellungFromServer.ausweichstandortSportferien;
+
+            return einstellungenFerieninselTS;
         }
         return undefined;
     }

@@ -15,12 +15,14 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,14 +32,20 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel_;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel_;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.enums.Ferienname;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service zum Verwalten von Ferieninsel-Stammdaten
@@ -49,6 +57,9 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 
 	@Nonnull
@@ -113,6 +124,28 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 		Objects.requireNonNull(ferieninselStammdatenId, "ferieninselStammdatenId muss gesetzt sein");
 		GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten = persistence.find(GemeindeStammdatenGesuchsperiodeFerieninsel.class, ferieninselStammdatenId);
 		return Optional.ofNullable(ferieninselStammdaten);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void copyEinstellungenFerieninselToNewGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
+		@Nonnull Gesuchsperiode lastGesuchsperiode
+	) {
+		Collection<EinstellungenFerieninsel> lastEinstellungenFerieninsel =
+			findEinstellungenFerieninselByGesuchsperiode(lastGesuchsperiode);
+		lastEinstellungenFerieninsel.forEach(lastEinstellung -> {
+			EinstellungenFerieninsel newEinstellung = lastEinstellung.copyForGesuchsperiode(gesuchsperiodeToCreate);
+			persistence.merge(newEinstellung);
+		});
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public Collection<EinstellungenFerieninsel> findEinstellungenFerieninselByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
+		return
+			criteriaQueryHelper.getEntitiesByAttribute(
+				EinstellungenFerieninsel.class, gesuchsperiode, EinstellungenFerieninsel_.gesuchsperiode);
 	}
 
 /*	@Nonnull
