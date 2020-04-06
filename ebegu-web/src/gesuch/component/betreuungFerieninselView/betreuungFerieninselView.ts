@@ -283,7 +283,11 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public getEinstellungenFerieninsel(): TSEinstellungenFerieninsel {
-        const stammdatenFerieninsel = this.getBetreuungModel().institutionStammdaten.institutionStammdatenFerieninsel;
+        const institutionStammdaten = this.getBetreuungModel().institutionStammdaten;
+        if (!institutionStammdaten) {
+            return undefined;
+        }
+        const stammdatenFerieninsel = institutionStammdaten.institutionStammdatenFerieninsel;
         if (!stammdatenFerieninsel) {
             return undefined;
         }

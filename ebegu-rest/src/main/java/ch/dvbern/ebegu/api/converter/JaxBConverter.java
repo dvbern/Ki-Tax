@@ -1650,7 +1650,8 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstStammdatenFerieninsel;
 	}
 
-	public JaxEinstellungenFerieninsel einstellungFerieninselToJAX (
+	@Nonnull
+	private JaxEinstellungenFerieninsel einstellungFerieninselToJAX (
 		@Nonnull final EinstellungenFerieninsel persistedEinstellungFerieninsel
 	) {
 		JaxEinstellungenFerieninsel jaxEinstellungFI = new JaxEinstellungenFerieninsel();
@@ -1722,7 +1723,8 @@ public class JaxBConverter extends AbstractConverter {
 		return convertedEinstellungen;
 	}
 
-	public EinstellungenFerieninsel einstellungFerieninselToEntity (
+	@Nonnull
+	private EinstellungenFerieninsel einstellungFerieninselToEntity (
 		@Nonnull final JaxEinstellungenFerieninsel jaxEinstellungFerieninsel,
 		@Nonnull EinstellungenFerieninsel einstellungFerieninsel
 	) {
