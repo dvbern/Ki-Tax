@@ -49,8 +49,10 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
+    @Input() public keineBeschwerdeAdresse: boolean;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
@@ -389,5 +391,9 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public isSuperAdmin(): boolean {
         return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public keineBeschwerdeAdresseChanged(newVal: boolean): void {
+        this.keineBeschwerdeAdresseChange.emit(newVal);
     }
 }

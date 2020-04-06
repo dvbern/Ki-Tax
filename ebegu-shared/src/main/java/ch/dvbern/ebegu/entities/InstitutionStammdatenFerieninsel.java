@@ -15,20 +15,22 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * Entitaet zum Speichern von InstitutionStammdatenFerieninsel in der Datenbank.
@@ -41,31 +43,16 @@ public class InstitutionStammdatenFerieninsel extends AbstractEntity implements 
 
 	private static final long serialVersionUID = 3991623541799162523L;
 
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String ausweichstandortSommerferien;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String ausweichstandortHerbstferien;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String ausweichstandortSportferien;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String ausweichstandortFruehlingsferien;
-
 	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_fi_gemeinde_id"))
 	private Gemeinde gemeinde;
 
+	@Nonnull
+	@Valid
+	@SortNatural
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "institutionStammdatenFerieninsel")
+	private Set<EinstellungenFerieninsel> einstellungenFerieninsel = new TreeSet<>();
 
 	public InstitutionStammdatenFerieninsel() {
 	}
@@ -92,42 +79,6 @@ public class InstitutionStammdatenFerieninsel extends AbstractEntity implements 
 		return builder.toComparison();
 	}
 
-	@Nullable
-	public String getAusweichstandortSommerferien() {
-		return ausweichstandortSommerferien;
-	}
-
-	public void setAusweichstandortSommerferien(@Nullable String ausweichstandortSommerferien) {
-		this.ausweichstandortSommerferien = ausweichstandortSommerferien;
-	}
-
-	@Nullable
-	public String getAusweichstandortHerbstferien() {
-		return ausweichstandortHerbstferien;
-	}
-
-	public void setAusweichstandortHerbstferien(@Nullable String ausweichstandortHerbstferien) {
-		this.ausweichstandortHerbstferien = ausweichstandortHerbstferien;
-	}
-
-	@Nullable
-	public String getAusweichstandortSportferien() {
-		return ausweichstandortSportferien;
-	}
-
-	public void setAusweichstandortSportferien(@Nullable String ausweichstandortSportferien) {
-		this.ausweichstandortSportferien = ausweichstandortSportferien;
-	}
-
-	@Nullable
-	public String getAusweichstandortFruehlingsferien() {
-		return ausweichstandortFruehlingsferien;
-	}
-
-	public void setAusweichstandortFruehlingsferien(@Nullable String ausweichstandortFruehlingsferien) {
-		this.ausweichstandortFruehlingsferien = ausweichstandortFruehlingsferien;
-	}
-
 	@Nonnull
 	public Gemeinde getGemeinde() {
 		return gemeinde;
@@ -135,5 +86,14 @@ public class InstitutionStammdatenFerieninsel extends AbstractEntity implements 
 
 	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nonnull
+	public Set<EinstellungenFerieninsel> getEinstellungenFerieninsel() {
+		return einstellungenFerieninsel;
+	}
+
+	public void setEinstellungenFerieninsel(@Nonnull Set<EinstellungenFerieninsel> einstellungenFerieninsel) {
+		this.einstellungenFerieninsel = einstellungenFerieninsel;
 	}
 }

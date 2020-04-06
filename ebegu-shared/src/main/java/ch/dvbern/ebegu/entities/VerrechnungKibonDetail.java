@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,9 +25,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.util.Constants;
 
 /**
  * Entitaet zum Speichern von Verrechnungsdetails in der Datenbank.
@@ -51,47 +49,155 @@ public class VerrechnungKibonDetail extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verrechnungdetail_gesuchsperiode_id"))
 	private Gesuchsperiode gesuchsperiode;
 
-	@NotNull
+	@NotNull @Nonnull
 	@Column(nullable = false)
-	private Long totalKinderVerrechnet;
+	private Long totalBg;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Long totalTs;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Long totalBgTs;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Long totalKeinAngebot;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Long totalFi;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Long totalTagi;
+
+	@NotNull @Nonnull
+	@Column(nullable = false)
+	private Long totalFiTagi;
 
 	public VerrechnungKibonDetail() {
 	}
 
-	@NotNull
+	@Nonnull
 	public VerrechnungKibon getVerrechnungKibon() {
 		return verrechnungKibon;
 	}
 
-	public void setVerrechnungKibon(@NotNull VerrechnungKibon verrechnungKibon) {
+	public void setVerrechnungKibon(@Nonnull VerrechnungKibon verrechnungKibon) {
 		this.verrechnungKibon = verrechnungKibon;
 	}
 
-	@NotNull
+	@Nonnull
 	public Gemeinde getGemeinde() {
 		return gemeinde;
 	}
 
-	public void setGemeinde(@NotNull Gemeinde gemeinde) {
+	public void setGemeinde(@Nonnull Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
 	}
 
-	@NotNull
+	@Nonnull
 	public Gesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
 
-	public void setGesuchsperiode(@NotNull Gesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	@NotNull
-	public Long getTotalKinderVerrechnet() {
-		return totalKinderVerrechnet;
+	@Nonnull
+	public Long getTotalBg() {
+		return totalBg;
 	}
 
-	public void setTotalKinderVerrechnet(@NotNull Long totalKinderVerrechnet) {
-		this.totalKinderVerrechnet = totalKinderVerrechnet;
+	public void setTotalBg(@Nonnull Long totalBg) {
+		this.totalBg = totalBg;
+	}
+
+	@Nonnull
+	public Long getTotalTs() {
+		return totalTs;
+	}
+
+	public void setTotalTs(@Nonnull Long totalTs) {
+		this.totalTs = totalTs;
+	}
+
+	@Nonnull
+	public Long getTotalBgTs() {
+		return totalBgTs;
+	}
+
+	public void setTotalBgTs(@Nonnull Long totalBgTs) {
+		this.totalBgTs = totalBgTs;
+	}
+
+	@Nonnull
+	public Long getTotalKeinAngebot() {
+		return totalKeinAngebot;
+	}
+
+	public void setTotalKeinAngebot(@Nonnull Long totalKeinAngebot) {
+		this.totalKeinAngebot = totalKeinAngebot;
+	}
+
+	@Nonnull
+	public Long getTotalFi() {
+		return totalFi;
+	}
+
+	public void setTotalFi(@Nonnull Long totalFi) {
+		this.totalFi = totalFi;
+	}
+
+	@Nonnull
+	public Long getTotalTagi() {
+		return totalTagi;
+	}
+
+	public void setTotalTagi(@Nonnull Long totalTagi) {
+		this.totalTagi = totalTagi;
+	}
+
+	@Nonnull
+	public Long getTotalFiTagi() {
+		return totalFiTagi;
+	}
+
+	public void setTotalFiTagi(@Nonnull Long totalFiTagi) {
+		this.totalFiTagi = totalFiTagi;
+	}
+
+	@Nonnull
+	public Long getTotalBgAndBgTs() {
+		return getTotalBg() + getTotalBgTs();
+	}
+
+	@Nonnull
+	public Long getTotalTsAndBgTs() {
+		return getTotalTs() + getTotalBgTs();
+	}
+
+	@Nonnull
+	public Long getTotalFiAndFiTagi() {
+		return getTotalFi() + getTotalFiTagi();
+	}
+
+	@Nonnull
+	public Long getTotalTagiAndFiTagi() {
+		return getTotalTagi() + getTotalFiTagi();
+	}
+
+	@Nonnull
+	public Long getTotalKanton() {
+		return getTotalBg() + getTotalTs() + getTotalBgTs()+ getTotalKeinAngebot();
+	}
+
+	@Nonnull
+	public Long getTotalGemeinde() {
+		return getTotalFi() + getTotalTagi() + getTotalFiTagi();
 	}
 
 	@Override

@@ -1110,6 +1110,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			betreuungService.saveBetreuung(existingBetreuung, false);
 			mitteilung.setApplied(true);
 			mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
+			// Nach erfolgreicher Uebernahme der Daten in die neue Mitteilung soll die Mitteilung mit dieser
+			// Betreuung verknuepft werden, damit der Link auf der Mitteilung immer auf die Betreuung zeigt,
+			// in der die Daten vorhanden sind
+			mitteilung.setBetreuung(existingBetreuung);
 			persistence.merge(mitteilung);
 		}
 	}

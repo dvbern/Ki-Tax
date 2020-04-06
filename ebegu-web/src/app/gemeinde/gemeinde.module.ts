@@ -26,9 +26,11 @@ import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-g
 import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeFiKonfigComponent} from './gemeinde-fi-konfiguration/gemeinde-fi-konfig.component';
+import {OverlappingZeitraumDirective} from './gemeinde-fi-konfiguration/overlapping-zeitraum.directive';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
 import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts-konfig.component';
+import { FilterFiStammdatenPipe } from './gemeinde-fi-konfiguration/filter-fi-stammdaten.pipe';
 
 @NgModule({
     imports: [
@@ -51,6 +53,8 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         EditGemeindeComponentTS,
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
+        FilterFiStammdatenPipe,
+        OverlappingZeitraumDirective
     ],
     entryComponents: [
         GemeindeListComponent,
