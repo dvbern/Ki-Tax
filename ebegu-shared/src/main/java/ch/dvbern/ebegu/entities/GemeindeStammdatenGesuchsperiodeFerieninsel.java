@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +47,7 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @CheckFerieninselStammdatenDatesOverlapping
-public class FerieninselStammdaten extends AbstractMutableEntity {
+public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6703477164293147908L;
 
@@ -56,10 +57,16 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 	private Ferienname ferienname;
 
 	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_gemeinde_stammdaten_gesuchsperiodeId"), nullable = false)
+	private GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode;
+
+	@NotNull
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(
+		name = "gemeinde_stammdaten_gp_fi_gemeinde_stammdaten_gp_fi_zeitraum",
 		joinColumns = @JoinColumn(name = "ferieninsel_stammdaten_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "zeitraum_id", nullable = false),
 		foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_ferieninsel_stammdaten_id"),
@@ -69,17 +76,11 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 			@Index(name = "IX_ferieninsel_stammdaten_ferieninsel_stammdaten_id", columnList = "ferieninsel_stammdaten_id"),
 			@Index(name = "IX_ferieninsel_stammdaten_zeitraum_id", columnList = "zeitraum_id"),
 		})
+	private List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<>();
 
-	private List<FerieninselZeitraum> zeitraumList = new ArrayList<>();
-
-	@NotNull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private LocalDate anmeldeschluss;
-
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_gesuchsperiodeId"))
-	private Gesuchsperiode gesuchsperiode;
 
 	public Ferienname getFerienname() {
 		return ferienname;
@@ -89,11 +90,11 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 		this.ferienname = ferienname;
 	}
 
-	public List<FerieninselZeitraum> getZeitraumList() {
+	public List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> getZeitraumList() {
 		return zeitraumList;
 	}
 
-	public void setZeitraumList(List<FerieninselZeitraum> zeitraumList) {
+	public void setZeitraumList(List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList) {
 		this.zeitraumList = zeitraumList;
 	}
 
@@ -105,14 +106,6 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 		this.anmeldeschluss = anmeldeschluss;
 	}
 
-	public Gesuchsperiode getGesuchsperiode() {
-		return gesuchsperiode;
-	}
-
-	public void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
-		this.gesuchsperiode = gesuchsperiode;
-	}
-
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
@@ -121,11 +114,30 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof FerieninselStammdaten)) {
+		if (!(other instanceof GemeindeStammdatenGesuchsperiodeFerieninsel)) {
 			return false;
 		}
-		final FerieninselStammdaten otherFerieninselStammdaten = (FerieninselStammdaten) other;
-		return Objects.equals(getFerienname(), otherFerieninselStammdaten.getFerienname()) &&
-			Objects.equals(getGesuchsperiode(), otherFerieninselStammdaten.getGesuchsperiode());
+		// TODO: Ferieninsel. Validator schreiben
+		final GemeindeStammdatenGesuchsperiodeFerieninsel otherFerieninselStammdaten = (GemeindeStammdatenGesuchsperiodeFerieninsel) other;
+		return Objects.equals(getFerienname(), otherFerieninselStammdaten.getFerienname());
+	}
+
+	public GemeindeStammdatenGesuchsperiode getGemeindeStammdatenGesuchsperiode() {
+		return gemeindeStammdatenGesuchsperiode;
+	}
+
+	public void setGemeindeStammdatenGesuchsperiode(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
+		this.gemeindeStammdatenGesuchsperiode = gemeindeStammdatenGesuchsperiode;
+	}
+
+	public boolean isFerienActive() {
+		return anmeldeschluss != null && anmeldeschluss.isAfter(LocalDate.now()) && zeitraumList.size() > 0;
+	}
+
+	GemeindeStammdatenGesuchsperiodeFerieninsel copyForGesuchsperiode(GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode) {
+		GemeindeStammdatenGesuchsperiodeFerieninsel copy = new GemeindeStammdatenGesuchsperiodeFerieninsel();
+		copy.setGemeindeStammdatenGesuchsperiode(gemeindeStammdatenGesuchsperiode);
+		copy.setFerienname(this.getFerienname());
+		return copy;
 	}
 }

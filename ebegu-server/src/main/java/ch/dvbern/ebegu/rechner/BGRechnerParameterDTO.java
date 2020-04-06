@@ -77,6 +77,8 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
+	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
+
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
@@ -97,6 +99,7 @@ public final class BGRechnerParameterDTO {
 		this.setMaxTarifTagesschuleMitPaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(asBigDecimal(paramMap, MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG, gesuchsperiode, gemeinde));
 		this.setMinTarifTagesschule(asBigDecimal(paramMap, MIN_TARIF, gesuchsperiode, gemeinde));
+		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterDTO() {
@@ -260,5 +263,13 @@ public final class BGRechnerParameterDTO {
 
 	public void setMinTarifTagesschule(BigDecimal minTarifTagesschule) {
 		this.minTarifTagesschule = minTarifTagesschule;
+	}
+
+	public BGRechnerParameterGemeindeDTO getGemeindeParameter() {
+		return gemeindeParameter;
+	}
+
+	public void setGemeindeParameter(BGRechnerParameterGemeindeDTO gemeindeParameter) {
+		this.gemeindeParameter = gemeindeParameter;
 	}
 }
