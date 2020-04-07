@@ -33,14 +33,14 @@ public class JaxExternalAnmeldungFerieninsel extends JaxExternalAnmeldung {
 	private JaxExternalFerieninsel ferieninsel;
 
 	public JaxExternalAnmeldungFerieninsel(
-		@Nonnull String bgNummer,
+		@Nonnull String referenznummer,
 		@Nonnull JaxExternalBetreuungsstatus betreuungsstatus,
 		@Nonnull String keyInstitution,
 		@Nonnull JaxExternalFerieninsel ferieninsel,
 		@Nonnull String kindName,
 		@Nonnull String kindVorname) {
 
-		super(bgNummer, betreuungsstatus, JaxExternalBetreuungsangebotTyp.FERIENINSEL, keyInstitution, kindName, kindVorname);
+		super(referenznummer, betreuungsstatus, JaxExternalBetreuungsangebotTyp.FERIENINSEL, keyInstitution, kindName, kindVorname);
 		this.ferieninsel = ferieninsel;
 	}
 

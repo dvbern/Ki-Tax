@@ -34,7 +34,7 @@ import org.hibernate.envers.Audited;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
- * Entitaet zum Speichern von EinstellungenTagesschule in der Datenbank.
+ * Entitaet zum Speichern von gesuchsperiode-abhängigen Ferieninsel-Einstellungen in der Datenbank.
  */
 @Audited
 @Entity

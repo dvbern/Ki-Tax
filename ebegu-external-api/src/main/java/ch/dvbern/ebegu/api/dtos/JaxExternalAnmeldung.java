@@ -29,7 +29,7 @@ public abstract class JaxExternalAnmeldung implements Serializable {
 	private static final long serialVersionUID = 5211944101244853396L;
 
 	@Nonnull
-	private String bgNummer;
+	private String referenznummer;
 
 	@Nonnull
 	private JaxExternalBetreuungsstatus betreuungsstatus;
@@ -48,14 +48,14 @@ public abstract class JaxExternalAnmeldung implements Serializable {
 
 
 	protected JaxExternalAnmeldung(
-		@Nonnull String bgNummer,
+		@Nonnull String referenznummer,
 		@Nonnull JaxExternalBetreuungsstatus betreuungsstatus,
 		@Nonnull JaxExternalBetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull String keyInstitution,
 		@Nonnull String kindName,
 		@Nonnull String kindVorname) {
 
-		this.bgNummer = bgNummer;
+		this.referenznummer = referenznummer;
 		this.betreuungsstatus = betreuungsstatus;
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 		this.keyInstitution = keyInstitution;
@@ -65,12 +65,12 @@ public abstract class JaxExternalAnmeldung implements Serializable {
 
 
 	@Nonnull
-	public String getBgNummer() {
-		return bgNummer;
+	public String getReferenznummer() {
+		return referenznummer;
 	}
 
-	public void setBgNummer(@Nonnull String bgNummer) {
-		this.bgNummer = bgNummer;
+	public void setReferenznummer(@Nonnull String referenznummer) {
+		this.referenznummer = referenznummer;
 	}
 
 	@Nonnull

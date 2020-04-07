@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,22 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.ExternalClient;
+package ch.dvbern.ebegu.enums;
 
 /**
- * Service to get information about external (3rd-party) clients
+ * Enum fuer die Kategorien der Verechnung kiBon
  */
-public interface ExternalClientService {
-
-	@Nonnull
-	Collection<ExternalClient> getAllForGemeinde();
-
-	@Nonnull
-	Collection<ExternalClient> getAllForInstitution();
+public enum VerrechnungKibonKategorie {
+	BG, 			// BG plus eventuell weitere Angebote, *ausser* TS
+	TS, 			// TS plus eventuell weitere Angebote, *ausser* BG
+	BG_TS, 			// Mischgesuche BG und TS, plus eventuell weitere Angebote
+	KEIN_ANGEBOT, 	// Gar kein Angebot
+	FI, 			// Weder BG noch TS, nur FI
+	TAGI, 			// Weder BG noch TS, nur TAGI
+	FI_TAGI 		// Weder BG noch TS, FI und TAGI
 }

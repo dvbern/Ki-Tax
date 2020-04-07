@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -96,11 +97,18 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String standardDokUnterschriftTitel2;
 	@Nullable
 	private String standardDokUnterschriftName2;
+	@Nullable
+	private @Valid List<String> externalClients = null;
+	@Nullable
+	private String usernameScolaris;
+
 
 	// ---------- Konfiguration ----------
 	@NotNull
 	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
 
+	public JaxGemeindeStammdaten() {
+	}
 
 	@Nullable
 	public String getAdministratoren() {
@@ -372,5 +380,23 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setStandardDokUnterschriftName2(@Nullable String standardDokUnterschriftName2) {
 		this.standardDokUnterschriftName2 = standardDokUnterschriftName2;
+	}
+
+	@Nullable
+	public List<String> getExternalClients() {
+		return externalClients;
+	}
+
+	public void setExternalClients(@Nullable List<String> externalClients) {
+		this.externalClients = externalClients;
+	}
+
+	@Nullable
+	public String getUsernameScolaris() {
+		return usernameScolaris;
+	}
+
+	public void setUsernameScolaris(@Nullable String usernameScolaris) {
+		this.usernameScolaris = usernameScolaris;
 	}
 }

@@ -106,8 +106,8 @@
                             ng-class="{'mitteilungItem': true,
                             'isSender': vm.isCurrentUserTypTheSenderTyp(mitteilung),
                             'institution': vm.isSenderTypInstitution(mitteilung),
-                            'gemeinde': vm.isSenderTypJugendamt(mitteilung),
-                            'schulamt': vm.isSenderTypSchulamt(mitteilung),
+                            'gemeinde': vm.isSenderTypGemeinde(mitteilung),
+                            'schulamt': vm.isSenderTypGemeinde(mitteilung),
                             'gesuchsteller': vm.isSenderTypGesuchsteller(mitteilung)}"
                             ng-value="mitteilung.username"
                             tabid="{{mitteilung.id}}">

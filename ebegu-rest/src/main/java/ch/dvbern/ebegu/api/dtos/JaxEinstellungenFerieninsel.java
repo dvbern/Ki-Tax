@@ -50,11 +50,12 @@ public class JaxEinstellungenFerieninsel extends JaxAbstractDTO {
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String ausweichstandortFruehlingsferien;
 
+	@Nonnull
 	public JaxGesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
 
-	public void setGesuchsperiode(JaxGesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(@Nonnull JaxGesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 

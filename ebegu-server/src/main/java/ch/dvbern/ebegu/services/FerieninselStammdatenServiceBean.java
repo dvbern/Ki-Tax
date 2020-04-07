@@ -67,7 +67,7 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 	private Persistence persistence;
 
 	@Inject
-	CriteriaQueryHelper criteriaQueryHelper;
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 
 	@Nonnull
@@ -147,7 +147,6 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 			persistence.merge(newEinstellung);
 		});
 	}
-
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
