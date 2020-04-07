@@ -167,8 +167,9 @@
                                        [(ngModel)]="usernameScolaris"
                                        [maxlength]="255"
                                        class="form-control"
+                                       #usernameScolarisTS='ngModel'
                                        (ngModelChange)="usernameScolarisHasChange($event)">
-                                <dv-error-messages [errorObject]="usernameScolaris?.errors"
+                                <dv-error-messages [errorObject]="usernameScolarisTS.errors"
                                                    inputId="username_scolaris_id"></dv-error-messages>
                             </div>
                         </div>

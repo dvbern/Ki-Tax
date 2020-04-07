@@ -291,7 +291,6 @@ public class ScolarisBackendResource {
 			return createInternalServerErrorResponse("Please inform the adminstrator of this application");
 		}
 	}
-
 	@Nonnull
 	private Optional<JaxExternalFinanzielleSituation> toFinanzielleSituationDTO(
 		long fallNummer,
@@ -350,7 +349,7 @@ public class ScolarisBackendResource {
 
 	private Response createResponseUnauthorised(String message) {
 		return Response.status(SC_FORBIDDEN).entity(
-			new JaxExternalError(JaxExternalErrorCode.BAD_PARAMETER, message)
+			new JaxExternalError(JaxExternalErrorCode.DRITTANWENDUNG_NOT_ALLOWED, message)
 		).build();
 	}
 
