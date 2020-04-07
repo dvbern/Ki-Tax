@@ -4694,6 +4694,8 @@ public class JaxBConverter extends AbstractConverter {
 				stammdaten.getRechtsmittelbelehrung()));
 		}
 
+		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
+
 		return stammdaten;
 	}
 
@@ -4778,6 +4780,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
 		}
+
+		jaxStammdaten.setUsernameScolaris(stammdaten.getUsernameScolaris());
 
 		return jaxStammdaten;
 	}
@@ -5091,6 +5095,13 @@ public class JaxBConverter extends AbstractConverter {
 
 		return sozialhilfeZeitraumContainers.stream()
 			.map(this::sozialhilfeZeitraumContainerToJAX)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public List<JaxExternalClient> externalClientsToJAX(@Nonnull Collection<ExternalClient> externalClients) {
+		return externalClients.stream()
+			.map(this::externalClientToJAX)
 			.collect(Collectors.toList());
 	}
 }

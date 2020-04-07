@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,22 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
-import java.util.Collection;
+package ch.dvbern.ebegu.validators;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.enums.ExternalClientType;
 
-/**
- * Service to get information about external (3rd-party) clients
- */
-public interface ExternalClientService {
+public class ExternalClientOfTypeValidator
+	implements ConstraintValidator<ExternalClientOfType, ExternalClient> {
 
-	@Nonnull
-	Collection<ExternalClient> getAllForGemeinde();
+	@Nullable
+	private ExternalClientType type = null;
 
-	@Nonnull
-	Collection<ExternalClient> getAllForInstitution();
+	@Override
+	public void initialize(@Nonnull ExternalClientOfType constraint) {
+		this.type = constraint.type();
+	}
+
+	@Override
+	public boolean isValid(@Nonnull ExternalClient obj, ConstraintValidatorContext context) {
+		return obj.getType() == this.type;
+	}
 }

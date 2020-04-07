@@ -51,6 +51,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
@@ -66,6 +67,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
@@ -83,6 +85,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FerieninselStammdatenService;
+import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
@@ -117,6 +120,9 @@ public class GemeindeResource {
 
 	@Inject
 	private MandantService mandantService;
+
+	@Inject
+	private ExternalClientService externalClientService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -312,6 +318,13 @@ public class GemeindeResource {
 		// Statuswechsel
 		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
 			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
+		}
+
+		// ExternalCleints updaten:
+		if (jaxStammdaten.getExternalClients() != null) {
+			Collection<ExternalClient> availableClients = externalClientService.getAllForGemeinde();
+			availableClients.removeIf(client -> !jaxStammdaten.getExternalClients().contains(client.getId()));
+			convertedStammdaten.setExternalClients(new HashSet<>(availableClients));
 		}
 
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
@@ -800,5 +813,31 @@ public class GemeindeResource {
 		requireNonNull(sprache);
 		requireNonNull(dokumentTyp);
 		return gemeindeService.existGemeindeGesuchsperiodeDokument(gemeindeId, gesuchsperiodeId, sprache, dokumentTyp);
+	}
+
+	@ApiOperation(value = "Returns all still available external clients and all assigned external clients",
+		response = JaxExternalClientAssignment.class)
+	@Nonnull
+	@GET
+	@Path("/{gemeindeId}/externalclients")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getExternalClients(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+		requireNonNull(gemeindeJAXPId.getId());
+		String gemeindeID = converter.toEntityId(gemeindeJAXPId);
+		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getExternalClients",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gemeindeJAXPId.getId()));
+
+		Collection<ExternalClient> availableClients = externalClientService.getAllForGemeinde();
+		availableClients.removeAll(gemeindeStammdaten.getExternalClients());
+
+		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
+		jaxExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
+		jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(gemeindeStammdaten.getExternalClients()));
+
+		return Response.ok(jaxExternalClientAssignment).build();
 	}
 }

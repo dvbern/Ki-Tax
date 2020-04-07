@@ -19,18 +19,21 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -44,6 +47,7 @@ import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -51,6 +55,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.ScolarisException;
 import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.VerfuegungService;
@@ -60,9 +65,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.jboss.resteasy.util.BasicAuthHelper;
 import org.slf4j.Logger;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Path("/schulamt")
@@ -88,6 +95,9 @@ public class ScolarisBackendResource {
 
 	@Inject
 	private VerfuegungService verfuegungService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private ScolarisConverter converter;
@@ -121,43 +131,51 @@ public class ScolarisBackendResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/anmeldung/{bgNummer}")
+	@Path("/anmeldung/{referenznummer}")
 	@RolesAllowed(SUPER_ADMIN)
-	public Response getAnmeldung(@Nonnull @PathParam("bgNummer") String bgNummer) {
+	public Response getAnmeldung(@Nonnull @PathParam("referenznummer") String referenznummer,
+		@Context HttpServletRequest request) {
 
 		try {
-			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(referenznummer)) {
 				return createBgNummerFormatError();
 			}
 
-			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(bgNummer);
+			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
 
 			if (betreuungen == null || betreuungen.isEmpty()) {
 				// Betreuung not found
-				return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
+				return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
 			}
 			if (betreuungen.size() > 1) {
 				// More than one betreuung
-				return createTooManyResultsResponse("More than one Betreuung with id " + bgNummer + " found");
+				return createTooManyResultsResponse("More than one Betreuung with id " + referenznummer + " found");
 			}
 
 			final AbstractAnmeldung betreuung = betreuungen.get(0);
 
-			// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten createDrittanwendungNotAllowedResponse()
+			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp =
+				converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
 
-			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp = converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
 			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.TAGESSCHULE) {
 				// Betreuung ist Tagesschule
 				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
+
+				//check if Gemeinde Scolaris erlaubt:
+				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
+					return createResponseUnauthorised("username");
+				}
+
 				if (anmeldungTagesschule.isKeineDetailinformationen()) {
 					// Falls die Anmeldung ohne Detailangaben erfolgt ist, geben wir hier NO_RESULT zurueck
-					return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
+					return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
 				}
 				try {
-					JaxExternalAnmeldungTagesschule jaxResult = converter.anmeldungTagesschuleToScolaris(anmeldungTagesschule);
+					JaxExternalAnmeldungTagesschule jaxResult =
+						converter.anmeldungTagesschuleToScolaris(anmeldungTagesschule);
 					return Response.ok(jaxResult).build();
 				} catch (ScolarisException e) {
-					return createNoResultsResponse("No Scolaris Modules found for " + bgNummer);
+					return createNoResultsResponse("No Scolaris Modules found for " + referenznummer);
 				}
 			}
 			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.FERIENINSEL) {
@@ -166,7 +184,7 @@ public class ScolarisBackendResource {
 				return Response.ok(converter.anmeldungFerieninselToScolaris(anmeldungFerieninsel)).build();
 			}
 			// Betreuung ist weder Tagesschule noch Ferieninsel
-			return createNoResultsResponse("No Betreuung with id " + bgNummer + " found");
+			return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
 
 		} catch (Exception e) {
 			LOG.error("getAnmeldung()", e);
@@ -175,7 +193,7 @@ public class ScolarisBackendResource {
 	}
 
 	@ApiOperation(value =
-		"Gibt das massgebende Einkommen fuer die uebergebene BgNummer zurueck. Falls das massgebende Einkommen noch "
+		"Gibt das massgebende Einkommen fuer die uebergebene referenznummer zurueck. Falls das massgebende Einkommen noch "
 			+ "nicht erfasst wurde, wird 400 zurueckgegeben.",
 		response = JaxExternalFinanzielleSituation.class)
 	@ApiResponses({
@@ -191,24 +209,25 @@ public class ScolarisBackendResource {
 	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	public Response getFinanzielleSituation(
 		@Nonnull @QueryParam("stichtag") String stichtagParam,
-		@Nonnull @QueryParam("bgNummer") String bgNummer) {
+		@Nonnull @QueryParam("referenznummer") String referenznummer,
+		@Context HttpServletRequest request) {
 
 		try {
 			// Check parameters
 			if (stichtagParam.isEmpty()) {
 				return createBadParameterResponse("stichtagParam is null or empty");
 			}
-			if (bgNummer.isEmpty()) {
+			if (referenznummer.isEmpty()) {
 				return createBadParameterResponse("bgNummer is null or empty");
 			}
 
 			// Parse Fallnummer
-			if (!BetreuungUtil.validateBGNummer(bgNummer)) {
+			if (!BetreuungUtil.validateBGNummer(referenznummer)) {
 				return createBgNummerFormatError();
 			}
 			long fallNummer;
 			try {
-				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
+				fallNummer = BetreuungUtil.getFallnummerFromBGNummer(referenznummer);
 			} catch (Exception e) {
 				LOG.info("getFinanzielleSituation()", e);
 				return createBadParameterResponse("Can not parse bgNummer");
@@ -223,19 +242,46 @@ public class ScolarisBackendResource {
 				return createBadParameterResponse("Can not parse date for stichtagParam");
 			}
 
+
+			//check if Gemeinde Scolaris erlaubt:
+			final List<AbstractAnmeldung> betreuungen = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
+
+			if (betreuungen == null || betreuungen.isEmpty()) {
+				// Betreuung not found
+				return createNoResultsResponse("No Betreuung with id " + referenznummer + " found");
+			}
+			if (betreuungen.size() > 1) {
+				// More than one betreuung
+				return createTooManyResultsResponse("More than one Betreuung with id " + referenznummer + " found");
+			}
+
+			final AbstractAnmeldung betreuung = betreuungen.get(0);
+
+			JaxExternalBetreuungsangebotTyp jaxExternalBetreuungsangebotTyp =
+				converter.betreuungsangebotTypToScolaris(betreuung.getBetreuungsangebotTyp());
+
+			if (jaxExternalBetreuungsangebotTyp == JaxExternalBetreuungsangebotTyp.TAGESSCHULE) {
+				// Betreuung ist Tagesschule
+				AnmeldungTagesschule anmeldungTagesschule = (AnmeldungTagesschule) betreuung;
+				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
+					return createResponseUnauthorised("username");
+				}
+			}
+
 			// Parse Gesuchsperiode
-			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
+			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
 				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1))
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"getFinanzielleSituation",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						bgNummer));
+						referenznummer));
 
 			LocalDate stichtag = rearrangeStichtag(parsedStichtag, gesuchsperiodeFromBGNummer);
 
 			//Get "neustes" Gesuch on Stichtag an fallnummer
-			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gesuchsperiodeFromBGNummer, fallNummer)
+			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gesuchsperiodeFromBGNummer,
+				fallNummer)
 				.map(neustesGesuch -> toFinanzielleSituationDTO(fallNummer, stichtag, neustesGesuch)
 					.map(dto -> Response.ok(dto).build())
 					.orElseGet(() -> createNoResultsResponse("No FinanzielleSituation for Stichtag")))
@@ -245,15 +291,12 @@ public class ScolarisBackendResource {
 			return createInternalServerErrorResponse("Please inform the adminstrator of this application");
 		}
 	}
-
 	@Nonnull
 	private Optional<JaxExternalFinanzielleSituation> toFinanzielleSituationDTO(
 		long fallNummer,
 		LocalDate stichtag,
 		Gesuch neustesGesuch) {
 
-		// TODO (Team) pruefen, ob auf der Gemeinde Scolaris eingeschaltet ist, ansonsten
-		//  createDrittanwendungNotAllowedResponse()
 		// Calculate Verfuegungszeitabschnitte for Familiensituation
 		Verfuegung famGroessenVerfuegung = verfuegungService.getEvaluateFamiliensituationVerfuegung(neustesGesuch);
 
@@ -304,10 +347,41 @@ public class ScolarisBackendResource {
 				message)).build();
 	}
 
-//	private Response createDrittanwendungNotAllowedResponse(String message) {
-//		return Response.status(Response.Status.BAD_REQUEST).entity(
-//			new JaxExternalError(
-//				JaxExternalErrorCode.DRITTANWENDUNG_NOT_ALLOWED,
-//				message)).build();
-//	}
+	private Response createResponseUnauthorised(String message) {
+		return Response.status(SC_FORBIDDEN).entity(
+			new JaxExternalError(JaxExternalErrorCode.DRITTANWENDUNG_NOT_ALLOWED, message)
+		).build();
+	}
+
+	@Nonnull
+	private boolean isScolarisAktiviert(@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+		@Nonnull HttpServletRequest request) {
+		//Extract username:
+		String header = request.getHeader("Authorization");
+		final String[] strings = BasicAuthHelper.parseHeader(header);
+
+		if (strings == null || strings.length != 2) {
+			// Basic Auth without username/password
+			return false;
+		}
+
+		final String scolarisGemeindeUsername = strings[0];
+
+		//check if Gemeinde erlaubt Scolaris
+		assert anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule() != null;
+		GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule().getGemeinde().getId()).get();
+		AtomicBoolean isScolarisErlaubt = new AtomicBoolean(false);
+		gemeindeStammdaten.getExternalClients().forEach(externalClient -> {
+			if (externalClient.getClientName().equals("scolaris")) {
+				isScolarisErlaubt.set(true);
+			}
+		});
+
+		//and if username match
+		boolean usernameMatch =
+			gemeindeStammdaten.getUsernameScolaris() != null && gemeindeStammdaten.getUsernameScolaris().equals(scolarisGemeindeUsername);
+
+		return isScolarisErlaubt.get() && usernameMatch;
+	}
 }

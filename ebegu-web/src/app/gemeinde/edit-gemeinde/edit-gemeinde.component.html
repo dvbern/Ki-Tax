@@ -60,7 +60,10 @@
                                      [editMode]="editModeForTSFI()"
                                      [(altTSAdresse)]="altTSAdresse"
                                      [tsAnmeldungenStartStr]="tsAnmeldungenStartStr"
-                                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum">
+                                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
+                                     [externalClients]="externalClients"
+                                     [isSuperAdmin]="isSuperAdmin()"
+                                     [(usernameScolaris)]="usernameScolaris">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"
