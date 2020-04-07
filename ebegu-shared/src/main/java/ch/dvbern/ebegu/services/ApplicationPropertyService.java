@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -102,4 +103,12 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue);
+
+	// TODO KITAX
+	@Nonnull
+	LocalDate getStadtBernAsivStartDatum();
+
+	// TODO KITAX
+	@Nonnull
+	Boolean isStadtBernAsivConfigured();
 }

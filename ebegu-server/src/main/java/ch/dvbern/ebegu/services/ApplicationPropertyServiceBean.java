@@ -16,6 +16,8 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +42,7 @@ import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -196,5 +199,26 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			return defaultValue;
 		}
 		return property;
+	}
+
+	// TODO KITAX
+	@Override
+	@Nonnull
+	@PermitAll
+	public LocalDate getStadtBernAsivStartDatum() {
+		String valueAsString = findApplicationPropertyAsString(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM);
+		if (valueAsString != null) {
+			return LocalDate.parse(valueAsString, Constants.DATE_FORMATTER);
+		}
+		// Default ist 1.1.2021
+		return LocalDate.of(2021, Month.JANUARY, 1);
+	}
+
+	// TODO KITAX
+	@Override
+	@Nonnull
+	@PermitAll
+	public Boolean isStadtBernAsivConfigured() {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.STADT_BERN_ASIV_CONFIGURED, false);
 	}
 }
