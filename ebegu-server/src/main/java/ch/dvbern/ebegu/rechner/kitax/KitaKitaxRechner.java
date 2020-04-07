@@ -19,13 +19,19 @@ package ch.dvbern.ebegu.rechner.kitax;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
+import java.util.Optional;
 
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Verfuegung;
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import static java.math.BigDecimal.ZERO;
 
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
@@ -33,30 +39,28 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
+	@Nonnull
 	@Override
-	public VerfuegungZeitabschnitt calculate(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Verfuegung verfuegung, KitaxParameterDTO kitaxParameter) {
+	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 		// Benoetigte Daten
-		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
-		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		Objects.requireNonNull(verfuegung.getBetreuung(), "Betreuung muss gesetzt sein");
-		LocalDate geburtsdatum = verfuegung.getBetreuung().getKind().getKindJA().getGeburtsdatum();
+		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
+		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
 		BigDecimal oeffnungsstunden = kitaxParameter.getOeffnungsstundenKita();
 		BigDecimal oeffnungstage = kitaxParameter.getOeffnungstageKita();
-		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(verfuegungZeitabschnitt.getBgPensum());
-		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
+		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(input.getBgPensumProzent());
+		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 
 		// Inputdaten validieren
 		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
-		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
 		Objects.requireNonNull(oeffnungsstunden, "oeffnungsstunden darf nicht null sein");
 		Objects.requireNonNull(oeffnungstage, "oeffnungstage darf nicht null sein");
 
 		// Zwischenresultate
-		BigDecimal faktor = von.isAfter(geburtsdatum.plusMonths(kitaxParameter.getBabyAlterInMonaten()).with(TemporalAdjusters.lastDayOfMonth())) ? FAKTOR_KIND : kitaxParameter.getBabyFaktor();
+		BigDecimal faktor = BigDecimal.ONE;
 		BigDecimal anteilMonat = calculateAnteilMonat(von, bis);
 
 		// Abgeltung pro Tag: Abgeltung des Kantons plus Beitrag der Stadt
-		final BigDecimal beitragStadtProTagJahr = getBeitragStadtProTagJahr(kitaxParameter, verfuegung.getBetreuung().extractGesuch().getGesuchsperiode(), von);
+		final BigDecimal beitragStadtProTagJahr = kitaxParameter.getBeitragStadtProTagJahr();
 		BigDecimal abgeltungProTag = MathUtil.EXACT.add(kitaxParameter.getBeitragKantonProTag(), beitragStadtProTagJahr);
 		// Massgebendes Einkommen: Minimum und Maximum berücksichtigen
 
@@ -84,45 +88,54 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Runden und auf Zeitabschnitt zurückschreiben
 		BigDecimal vollkostenIntervall = MathUtil.EXACT.multiply(vollkosten, faktor, anteilMonat);
 		BigDecimal elternbeitragIntervall;
-		if (verfuegungZeitabschnitt.getBgCalculationInputGemeinde().isBezahltVollkosten()) {
+		if (input.isBezahltVollkosten()) {
 			elternbeitragIntervall = vollkostenIntervall;
 		} else {
 			elternbeitragIntervall = MathUtil.EXACT.multiply(elternbeitrag, anteilMonat);
 		}
 
+		BigDecimal verguenstigungIntervall = ZERO;
+		if (vollkostenIntervall != null && elternbeitragIntervall != null) {
+			verguenstigungIntervall = vollkostenIntervall.subtract(elternbeitragIntervall);
+		}
+		Objects.requireNonNull(elternbeitragIntervall);
+		Objects.requireNonNull(vollkostenIntervall);
+
 		// TODO KITAX: Berechnen wir den Elternbeitrag aufgrund der (fixen) Vollkosten, speichern als Kosten aber den eingegebenen Betrag aus Betreuung?
-//		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkostenIntervall));
-//		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitragIntervall));
+		//		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkostenIntervall));
+		//		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitragIntervall));
 
 		// TODO Resultat erstellen und benoetigte Daten aus Input kopieren
-//		BGCalculationResult result = new BGCalculationResult();
-//		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
-//
-//		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
-//		result.setMinimalerElternbeitrag(minBetrag);
-//		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
-//		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
-//		result.setVerguenstigung(verguenstigung);
-//		result.setVollkosten(vollkosten);
-//		result.setElternbeitrag(elternbeitrag);
-//		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
-//
-//		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
-//		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
-//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
-//		result.setZeiteinheit(getZeiteinheit());
-//		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
+				BGCalculationResult result = new BGCalculationResult();
+				VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
-		return verfuegungZeitabschnitt;
-	}
+				result.setMinimalerElternbeitrag(BigDecimal.ZERO);
+				result.setMinimalerElternbeitragGekuerzt(BigDecimal.ZERO);
+				result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungIntervall);
+				result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungIntervall);
+				result.setVerguenstigung(verguenstigungIntervall);
+				result.setElternbeitrag(elternbeitragIntervall);
+				result.setVollkosten(vollkostenIntervall);
 
-	/**
-	 * Beitrag Stadt für erstes Halbjahr oder zweites Halbjahr holen gehen
-	 */
-	private BigDecimal getBeitragStadtProTagJahr(KitaxParameterDTO parameterDTO, Gesuchsperiode gesuchsperiode, LocalDate von) {
-		if (von.getYear() == gesuchsperiode.getBasisJahrPlus1()) {
-			return parameterDTO.getBeitragStadtProTagJahr1();
-		}
-		return parameterDTO.getBeitragStadtProTagJahr2();
+				result.setZeiteinheit(PensumUnits.PERCENTAGE);
+				//TODO es fehlen die Werte in Zeiteinheiten
+		//
+//				result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
+		//		result.setMinimalerElternbeitrag(minBetrag);
+		//		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
+		//		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
+		//		result.setVerguenstigung(verguenstigungIntervall);
+		//		result.setVollkosten(vollkosten);
+		//		result.setElternbeitrag(elternbeitrag);
+		//		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
+		//
+		//		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
+		//		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
+		//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
+		//		result.setZeiteinheit(getZeiteinheit());
+		//		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
+
+
+		return Optional.of(result);
 	}
 }

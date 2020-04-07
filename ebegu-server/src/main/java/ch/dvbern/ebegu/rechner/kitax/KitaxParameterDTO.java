@@ -31,9 +31,7 @@ public final class KitaxParameterDTO {
 	private BigDecimal oeffnungstageKita; 		// TODO KITAX woher?
 
 	private BigDecimal beitragKantonProTag = MathUtil.DEFAULT.from(107.19);
-
-	private BigDecimal beitragStadtProTagJahr1 = MathUtil.DEFAULT.from(7.00);
-	private BigDecimal beitragStadtProTagJahr2 = MathUtil.DEFAULT.from(7.00);
+	private BigDecimal beitragStadtProTagJahr = MathUtil.DEFAULT.from(7.00);
 
 	private BigDecimal maxTageKita = MathUtil.DEFAULT.from(244);
 
@@ -66,12 +64,8 @@ public final class KitaxParameterDTO {
 		return beitragKantonProTag;
 	}
 
-	public BigDecimal getBeitragStadtProTagJahr1() {
-		return beitragStadtProTagJahr1;
-	}
-
-	public BigDecimal getBeitragStadtProTagJahr2() {
-		return beitragStadtProTagJahr2;
+	public BigDecimal getBeitragStadtProTagJahr() {
+		return beitragStadtProTagJahr;
 	}
 
 	public BigDecimal getMaxTageKita() {

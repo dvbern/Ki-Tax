@@ -33,7 +33,7 @@ public abstract class AbstractRechner {
 	/**
 	 * Diese Methode fuehrt die Berechnung fuer den uebergebenen VerfuegungsZeitabschnitt durch.
 	 */
-	public void calculate(
+	public final void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 

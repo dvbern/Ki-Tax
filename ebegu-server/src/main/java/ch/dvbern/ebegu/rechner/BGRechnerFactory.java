@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rechner.kitax.KitaKitaxRechner;
+import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 
 /**
@@ -42,6 +44,20 @@ public final class BGRechnerFactory {
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
 			return new TagesschuleRechner();
+		}
+		// Alle anderen Angebotstypen werden nicht berechnet
+		return null;
+	}
+
+	// TODO KITAX
+	@Nullable
+	public static AbstractRechner getKitaxRechner(AbstractPlatz betreuung) {
+		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
+		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
+			return new KitaKitaxRechner();
+		}
+		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
+			return new TageselternKitaxRechner();
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;

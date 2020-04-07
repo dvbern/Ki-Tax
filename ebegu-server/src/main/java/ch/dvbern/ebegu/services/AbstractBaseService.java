@@ -56,6 +56,9 @@ public abstract class AbstractBaseService {
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
 	@PermitAll
@@ -76,6 +79,11 @@ public abstract class AbstractBaseService {
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
+		// TODO KITAX
+		if (gemeinde.getBfsNummer() == 531) {
+			parameterDTO.setStadtBernAndAsivConfiguered(applicationPropertyService.isStadtBernAsivConfigured());
+			parameterDTO.setStadtBernAsivStartDate(applicationPropertyService.getStadtBernAsivStartDatum());
+		}
 		return parameterDTO;
 	}
 

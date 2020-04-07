@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -228,15 +229,26 @@ public class BetreuungsgutscheinEvaluator {
 				Verfuegung verfuegungPreview = new Verfuegung();
 				platz.setVerfuegungPreview(verfuegungPreview);
 
+				// TODO KITAX
 				// Den richtigen Rechner anwerfen
-				AbstractRechner rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
-				if (rechner != null) {
-					zeitabschnitte.forEach(zeitabschnitt -> rechner.calculate(zeitabschnitt, bgRechnerParameterDTO));
-
-					Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-					if (vorgaengerVerfuegung != null) {
-						usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
+				zeitabschnitte.forEach(zeitabschnitt -> {
+					// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
+					// da fuer Stadt Bern bis zum Zeitpunkt X der alte Ki-Tax Rechner verwendet werden soll.
+					LocalDate bernAsivStartDate = bgRechnerParameterDTO.getStadtBernAsivStartDate();
+					AbstractRechner rechner;
+					if (bernAsivStartDate != null && zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
+						rechner = BGRechnerFactory.getKitaxRechner(platz);
+					} else {
+						rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
 					}
+					if (rechner != null) {
+						rechner.calculate(zeitabschnitt, bgRechnerParameterDTO);
+					}
+				});
+
+				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+				if (vorgaengerVerfuegung != null) {
+					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);

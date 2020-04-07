@@ -25,25 +25,34 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.rechner.AbstractRechner;
+import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Superklasse für BG-Rechner
  */
-public abstract class AbstractKitaxRechner {
+// TODO KITAX
+public abstract class AbstractKitaxRechner extends AbstractRechner {
 
-	protected static final BigDecimal FAKTOR_KIND = MathUtil.EXACT.from(1);
+	protected KitaxParameterDTO kitaxParameter; // TODO KITAX woher kommen die?
+
 	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
 	protected static final BigDecimal NEUN = MathUtil.EXACT.from(9L);
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
 
-	/**
-	 * Diese Methode muss von den Subklassen ueberschrieben werden und fuehrt die Berechnung fuer  die uebergebenen Verfuegungsabschnitte durch.
-	 */
-	public abstract VerfuegungZeitabschnitt calculate(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Verfuegung verfuegung, KitaxParameterDTO parameterDTO);
+	@Nonnull
+	@Override
+	protected BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+		// Die ASIV Berechnung muss ausgenullt werden
+		BGCalculationResult resultAsiv = new BGCalculationResult();
+		return resultAsiv;
+	}
 
 	/**
 	 * Checkt die für alle Angebote benoetigten Argumente auf Null.
