@@ -54,7 +54,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -147,35 +146,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			authorizer.checkReadAuthorizationInstitution(institution);
 		}
 		return Optional.ofNullable(institution);
-	}
-
-	@Nonnull
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
-	public Institution activateInstitution(@Nonnull String institutionId) {
-		Institution institution = findInstitution(institutionId, true).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"activateInstitution",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-		authorizer.checkWriteAuthorizationInstitution(institution);
-		institution.setStatus(InstitutionStatus.AKTIV);
-		return updateInstitution(institution);
-	}
-
-	@Override
-	// same as activateInstitution but without ADMIN_INSTITUTION
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
-	public Institution setInstitutionInactive(@Nonnull String institutionId) {
-		Objects.requireNonNull(institutionId);
-
-		final InstitutionStammdaten institutionStammdaten =
-			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, true);
-		authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdaten);
-
-		institutionStammdaten.setInactive();
-		final InstitutionStammdaten mergedInstitutionstammdaten = persistence.merge(institutionStammdaten);
-		return mergedInstitutionstammdaten.getInstitution();
 	}
 
 	@Override
