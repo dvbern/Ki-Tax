@@ -15,15 +15,14 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
 /**
  * DTO fuer InstitutionStammdatenFerieninsel
@@ -38,21 +37,10 @@ public class JaxInstitutionStammdatenFerieninsel extends JaxAbstractDTO {
 	@Nonnull
 	private JaxGemeinde gemeinde;
 
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String ausweichstandortSommerferien;
 
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String ausweichstandortHerbstferien;
+	@NotNull @Nonnull
+	private Set<JaxEinstellungenFerieninsel> einstellungenFerieninsel = new HashSet<>();
 
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String ausweichstandortSportferien;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String ausweichstandortFruehlingsferien;
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
@@ -63,39 +51,12 @@ public class JaxInstitutionStammdatenFerieninsel extends JaxAbstractDTO {
 		this.gemeinde = gemeinde;
 	}
 
-	@Nullable
-	public String getAusweichstandortSommerferien() {
-		return ausweichstandortSommerferien;
+	@Nonnull
+	public Set<JaxEinstellungenFerieninsel> getEinstellungenFerieninsel() {
+		return einstellungenFerieninsel;
 	}
 
-	public void setAusweichstandortSommerferien(@Nullable String ausweichstandortSommerferien) {
-		this.ausweichstandortSommerferien = ausweichstandortSommerferien;
-	}
-
-	@Nullable
-	public String getAusweichstandortHerbstferien() {
-		return ausweichstandortHerbstferien;
-	}
-
-	public void setAusweichstandortHerbstferien(@Nullable String ausweichstandortHerbstferien) {
-		this.ausweichstandortHerbstferien = ausweichstandortHerbstferien;
-	}
-
-	@Nullable
-	public String getAusweichstandortSportferien() {
-		return ausweichstandortSportferien;
-	}
-
-	public void setAusweichstandortSportferien(@Nullable String ausweichstandortSportferien) {
-		this.ausweichstandortSportferien = ausweichstandortSportferien;
-	}
-
-	@Nullable
-	public String getAusweichstandortFruehlingsferien() {
-		return ausweichstandortFruehlingsferien;
-	}
-
-	public void setAusweichstandortFruehlingsferien(@Nullable String ausweichstandortFruehlingsferien) {
-		this.ausweichstandortFruehlingsferien = ausweichstandortFruehlingsferien;
+	public void setEinstellungenFerieninsel(@Nonnull Set<JaxEinstellungenFerieninsel> einstellungenFerieninsel) {
+		this.einstellungenFerieninsel = einstellungenFerieninsel;
 	}
 }

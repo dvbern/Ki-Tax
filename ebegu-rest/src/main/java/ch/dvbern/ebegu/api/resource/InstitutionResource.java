@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -203,6 +204,19 @@ public class InstitutionResource {
 			gemeinde = getGemeindeOrThrowException(gemeindeId);
 			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
 			stammdatenFI.setGemeinde(gemeinde);
+
+			Set<EinstellungenFerieninsel> einstellungenFerieninselSet =
+				gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream().map(
+					gesuchsperiode -> {
+						EinstellungenFerieninsel einstellungenFerieninsel = new EinstellungenFerieninsel();
+						einstellungenFerieninsel.setInstitutionStammdatenFerieninsel(stammdatenFI);
+						einstellungenFerieninsel.setGesuchsperiode(gesuchsperiode);
+						return einstellungenFerieninsel;
+					}
+				).collect(Collectors.toSet());
+
+			stammdatenFI.setEinstellungenFerieninsel(einstellungenFerieninselSet);
+
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
 			break;
 		}
