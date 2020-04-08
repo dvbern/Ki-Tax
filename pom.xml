@@ -205,12 +205,6 @@
                 <version>1.0.2</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.2</version>
-                <scope>provided</scope>
-            </dependency>
             <!-- endregion WildFly Stack -->
 
             <!-- region WildFly updates -->
@@ -235,6 +229,11 @@
             <!-- endregion -->
 
              <!-- region Hibernate-Search dependencies-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.2</version>
+            </dependency>
             <!--dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>

@@ -42,8 +42,8 @@
 			<!-- fuer Lokale Tests mit elasticsearch in einen docker container -->
 			<property name="hibernate.search.default.indexmanager" value="elasticsearch"/>
 			<property name="hibernate.search.default.elasticsearch.host" value="http://127.0.0.1:9200"/>
-			<property name="hibernate.search.default.elasticsearch.username" value="elastic"/>
-			<property name="hibernate.search.default.elasticsearch.password" value="changeme"/>
+			<property name="hibernate.search.default.elasticsearch.username" value="elastikibon"/>
+			<property name="hibernate.search.default.elasticsearch.password" value="test123"/>
 			<property name="hibernate.search.default.elasticsearch.required_index_status" value="yellow"/>
 
 			<!--<property name="hibernate.search.default.indexBase"-->
