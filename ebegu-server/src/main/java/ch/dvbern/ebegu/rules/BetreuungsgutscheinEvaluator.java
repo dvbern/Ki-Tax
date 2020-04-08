@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
 import ch.dvbern.ebegu.rechner.kitax.KitaxParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
@@ -249,6 +250,10 @@ public class BetreuungsgutscheinEvaluator {
 							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
 							// koennen wir den normalen ASIV Rechner verwenden.
 							rechnerToUse = asivRechner;
+						} else {
+							// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
+							// NullRechner? Wegen Bemerkungen?
+							rechnerToUse = new EmptyKitaxRechner();
 						}
 					} else {
 						// Alle anderen rechnen normal mit dem Asiv-Rechner

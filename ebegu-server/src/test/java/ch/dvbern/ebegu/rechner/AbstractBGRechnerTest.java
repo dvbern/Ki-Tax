@@ -243,6 +243,9 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
 		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
+		// Paris wird wie Bern behandelt. Damit die bestehenden Tests funktionieren, wird das Startdatum in die Vergangenheit gesetzt!
+		parameterDTO.setStadtBernAsivStartDate(LocalDate.of(2000, Month.JANUARY, 1));
+		parameterDTO.setStadtBernAsivConfiguered(true);
 		return parameterDTO;
 	}
 

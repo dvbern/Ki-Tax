@@ -30,19 +30,19 @@ public final class KitaxParameterDTO {
 	private BigDecimal oeffnungsstundenKita = MathUtil.DEFAULT.from(9); 	// TODO KITAX woher?
 	private BigDecimal oeffnungstageKita = MathUtil.DEFAULT.from(240); 		// TODO KITAX woher?
 
-	private BigDecimal beitragKantonProTag = MathUtil.DEFAULT.from(107.19);
-	private BigDecimal beitragStadtProTagJahr = MathUtil.DEFAULT.from(7.00);
+	private BigDecimal beitragKantonProTag = MathUtil.DEFAULT.from(111.15);
+	private BigDecimal beitragStadtProTagJahr = MathUtil.DEFAULT.from(8.00);
 
 	private BigDecimal maxTageKita = MathUtil.DEFAULT.from(244);
 
 	private BigDecimal maxStundenProTagKita = MathUtil.DEFAULT.from(11.50);
 
-	private BigDecimal kostenProStundeMaximalKitaTagi = MathUtil.DEFAULT.from(11.91);
-	private BigDecimal kostenProStundeMaximalTageseltern = MathUtil.DEFAULT.from(9.16);
-	private BigDecimal kostenProStundeMinimal = MathUtil.DEFAULT.from(0.75);
+	private BigDecimal kostenProStundeMaximalKitaTagi = MathUtil.DEFAULT.from(12.35);
+	private BigDecimal kostenProStundeMaximalTageseltern = MathUtil.DEFAULT.from(9.49);
+	private BigDecimal kostenProStundeMinimal = MathUtil.DEFAULT.from(0.79);
 
-	private BigDecimal maxMassgebendesEinkommen = MathUtil.DEFAULT.from(158690);
-	private BigDecimal minMassgebendesEinkommen = MathUtil.DEFAULT.from(42540);
+	private BigDecimal maxMassgebendesEinkommen = MathUtil.DEFAULT.from(160000);
+	private BigDecimal minMassgebendesEinkommen = MathUtil.DEFAULT.from(43000);
 
 	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
 
