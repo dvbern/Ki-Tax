@@ -80,10 +80,8 @@ public abstract class AbstractBaseService {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 		// TODO KITAX
-		if (gemeinde.getBfsNummer() == 531) {
-			parameterDTO.setStadtBernAndAsivConfiguered(applicationPropertyService.isStadtBernAsivConfigured());
-			parameterDTO.setStadtBernAsivStartDate(applicationPropertyService.getStadtBernAsivStartDatum());
-		}
+		parameterDTO.setStadtBernAsivConfiguered(applicationPropertyService.isStadtBernAsivConfigured());
+		parameterDTO.setStadtBernAsivStartDate(applicationPropertyService.getStadtBernAsivStartDatum());
 		return parameterDTO;
 	}
 

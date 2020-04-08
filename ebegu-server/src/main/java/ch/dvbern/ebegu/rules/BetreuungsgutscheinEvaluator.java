@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.rechner.kitax.KitaxParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
@@ -230,19 +231,31 @@ public class BetreuungsgutscheinEvaluator {
 				platz.setVerfuegungPreview(verfuegungPreview);
 
 				// TODO KITAX
+				LocalDate bernAsivStartDate = bgRechnerParameterDTO.getStadtBernAsivStartDate();
+				Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
+				boolean bernAsivConfiguered = bgRechnerParameterDTO.isStadtBernAsivConfiguered();
+				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);;
+				KitaxParameterDTO kitaxParameterDTO = new KitaxParameterDTO();
+				final boolean possibleKitaxRechner = isPossibleKitaxRechner(platz);
 				// Den richtigen Rechner anwerfen
 				zeitabschnitte.forEach(zeitabschnitt -> {
 					// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
 					// da fuer Stadt Bern bis zum Zeitpunkt X der alte Ki-Tax Rechner verwendet werden soll.
-					LocalDate bernAsivStartDate = bgRechnerParameterDTO.getStadtBernAsivStartDate();
-					AbstractRechner rechner;
-					if (bernAsivStartDate != null && zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
-						rechner = BGRechnerFactory.getKitaxRechner(platz);
+					AbstractRechner rechnerToUse = null;
+					if (possibleKitaxRechner) {
+						if (zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
+							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameterDTO);
+						} else if (bernAsivConfiguered) {
+							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
+							// koennen wir den normalen ASIV Rechner verwenden.
+							rechnerToUse = asivRechner;
+						}
 					} else {
-						rechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
+						// Alle anderen rechnen normal mit dem Asiv-Rechner
+						rechnerToUse = asivRechner;
 					}
-					if (rechner != null) {
-						rechner.calculate(zeitabschnitt, bgRechnerParameterDTO);
+					if (rechnerToUse != null) {
+						rechnerToUse.calculate(zeitabschnitt, bgRechnerParameterDTO);
 					}
 				});
 
@@ -360,5 +373,11 @@ public class BetreuungsgutscheinEvaluator {
 		initialerRestanspruch.setHasGemeindeSpezifischeBerechnung(hasGemeindeSpezifischeBerechnung);
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
+	}
+
+	private boolean isPossibleKitaxRechner(@Nonnull AbstractPlatz platz) {
+		// Zum Testen behandeln wir Paris wie Bern
+		long bfsNummer = platz.extractGemeinde().getBfsNummer();
+		return bfsNummer == 531 || bfsNummer == 99998;
 	}
 }

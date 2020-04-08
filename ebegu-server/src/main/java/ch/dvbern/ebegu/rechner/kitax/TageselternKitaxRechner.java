@@ -39,6 +39,10 @@ import static java.math.BigDecimal.ZERO;
  */
 public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
+	public TageselternKitaxRechner(KitaxParameterDTO kitaxParameter) {
+		super(kitaxParameter);
+	}
+
 	@Nonnull
 	@Override
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {

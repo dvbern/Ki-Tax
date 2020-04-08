@@ -39,6 +39,10 @@ import static java.math.BigDecimal.ZERO;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
+	public KitaKitaxRechner(KitaxParameterDTO kitaxParameter) {
+		super(kitaxParameter);
+	}
+
 	@Nonnull
 	@Override
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
@@ -56,7 +60,7 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		Objects.requireNonNull(oeffnungstage, "oeffnungstage darf nicht null sein");
 
 		// Zwischenresultate
-		BigDecimal faktor = BigDecimal.ONE;
+		BigDecimal faktor = input.isBabyTarif() ? kitaxParameter.getBabyFaktor() : BigDecimal.ONE;
 		BigDecimal anteilMonat = calculateAnteilMonat(von, bis);
 
 		// Abgeltung pro Tag: Abgeltung des Kantons plus Beitrag der Stadt

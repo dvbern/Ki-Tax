@@ -82,7 +82,7 @@ public final class BGRechnerParameterDTO {
 
 	// TODO KITAX
 	private LocalDate stadtBernAsivStartDate = null;
-	private boolean isStadtBernAndAsivConfiguered = false;
+	private boolean isStadtBernAsivConfiguered = false;
 
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
@@ -286,11 +286,11 @@ public final class BGRechnerParameterDTO {
 		this.stadtBernAsivStartDate = stadtBernAsivStartDate;
 	}
 
-	public boolean isStadtBernAndAsivConfiguered() {
-		return isStadtBernAndAsivConfiguered;
+	public boolean isStadtBernAsivConfiguered() {
+		return isStadtBernAsivConfiguered;
 	}
 
-	public void setStadtBernAndAsivConfiguered(boolean stadtBernAndAsivConfiguered) {
-		isStadtBernAndAsivConfiguered = stadtBernAndAsivConfiguered;
+	public void setStadtBernAsivConfiguered(boolean stadtBernAsivConfiguered) {
+		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
 	}
 }

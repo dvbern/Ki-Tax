@@ -27,8 +27,8 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public final class KitaxParameterDTO {
 
-	private BigDecimal oeffnungsstundenKita; 	// TODO KITAX woher?
-	private BigDecimal oeffnungstageKita; 		// TODO KITAX woher?
+	private BigDecimal oeffnungsstundenKita = MathUtil.DEFAULT.from(9); 	// TODO KITAX woher?
+	private BigDecimal oeffnungstageKita = MathUtil.DEFAULT.from(240); 		// TODO KITAX woher?
 
 	private BigDecimal beitragKantonProTag = MathUtil.DEFAULT.from(107.19);
 	private BigDecimal beitragStadtProTagJahr = MathUtil.DEFAULT.from(7.00);
@@ -44,8 +44,7 @@ public final class KitaxParameterDTO {
 	private BigDecimal maxMassgebendesEinkommen = MathUtil.DEFAULT.from(158690);
 	private BigDecimal minMassgebendesEinkommen = MathUtil.DEFAULT.from(42540);
 
-	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1);
-	private int babyAlterInMonaten = 12;
+	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
 
 
 	public KitaxParameterDTO() {
@@ -98,9 +97,5 @@ public final class KitaxParameterDTO {
 
 	public BigDecimal getBabyFaktor() {
 		return babyFaktor;
-	}
-
-	public int getBabyAlterInMonaten() {
-		return babyAlterInMonaten;
 	}
 }

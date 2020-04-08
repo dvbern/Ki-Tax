@@ -39,12 +39,16 @@ import ch.dvbern.ebegu.util.MathUtil;
 // TODO KITAX
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
-	protected KitaxParameterDTO kitaxParameter; // TODO KITAX woher kommen die?
+	protected KitaxParameterDTO kitaxParameter;
 
 	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
 	protected static final BigDecimal NEUN = MathUtil.EXACT.from(9L);
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
+
+	protected AbstractKitaxRechner(KitaxParameterDTO kitaxParameter) {
+		this.kitaxParameter = kitaxParameter;
+	}
 
 	@Nonnull
 	@Override
