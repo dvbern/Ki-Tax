@@ -45,7 +45,7 @@ import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_MSG;
 public class EinreichungsfristCalcRule extends AbstractCalcRule {
 
 	public EinreichungsfristCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

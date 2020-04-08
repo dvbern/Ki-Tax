@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 
 	public FachstelleAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

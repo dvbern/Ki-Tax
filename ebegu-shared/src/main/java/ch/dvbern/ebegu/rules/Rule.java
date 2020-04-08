@@ -58,6 +58,12 @@ public interface Rule {
 	RuleKey getRuleKey();
 
 	/**
+	 * Gibt  zurueck, ob diese Regel fuer ASIV oder nur fuer die GEMEINDE gueltig ist.
+	 */
+	@Nonnull
+	RuleValidity getRuleValidity();
+
+	/**
 	 * Diese Methode fuehrt die eigentliche Berechnung durch die von der Regel abgebildet wird
 	 *
 	 * @param platz Betreuung oder Anmeldung

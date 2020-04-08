@@ -43,7 +43,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 
 	public KindTarifAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

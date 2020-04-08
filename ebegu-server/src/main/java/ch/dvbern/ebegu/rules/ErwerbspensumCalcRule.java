@@ -60,7 +60,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		int minErwerbspensumEingeschult,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
 		this.zuschlagErwerbspensum = zuschlagErwerbspensum;
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;

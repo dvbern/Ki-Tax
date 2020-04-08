@@ -48,8 +48,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public abstract class AbstractEbeguRule implements Rule {
 
-	// da final und initialisiert, wird es schwierig dies jemals zu überschreiben -> Konstruktor Parameter
-	private final RuleValidity ruleValidity = RuleValidity.ASIV; // Normalfall
+	private RuleValidity ruleValidity;
 
 	/**
 	 * This is the name of the Rule, Can be used to create messages etc.
@@ -67,11 +66,13 @@ public abstract class AbstractEbeguRule implements Rule {
 	protected AbstractEbeguRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
+		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
+		this.ruleValidity = ruleValidity;
 		this.validityPeriod = validityPeriod;
 		this.locale = locale;
 	}
@@ -103,6 +104,12 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
+	}
+
+	@Override
+	@Nonnull
+	public RuleValidity getRuleValidity() {
+		return ruleValidity;
 	}
 
 	public Locale getLocale() {

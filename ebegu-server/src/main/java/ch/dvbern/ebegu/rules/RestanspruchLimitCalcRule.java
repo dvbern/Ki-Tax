@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 
 	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

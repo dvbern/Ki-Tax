@@ -52,7 +52,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		BigDecimal maximalesEinkommen,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.maximalesEinkommen = maximalesEinkommen;
 	}
 

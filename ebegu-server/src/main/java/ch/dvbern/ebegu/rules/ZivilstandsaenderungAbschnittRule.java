@@ -51,7 +51,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
