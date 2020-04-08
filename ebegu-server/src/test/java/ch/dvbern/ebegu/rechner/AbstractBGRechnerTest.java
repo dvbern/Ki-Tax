@@ -92,6 +92,8 @@ public abstract class AbstractBGRechnerTest {
 	protected static final int BASISJAHR_PLUS_1 = 2017;
 	protected static final int BASISJAHR_PLUS_2 = 2018;
 
+	private static BGRechnerParameterDTO rechnerParameterDTO = createParameterDTO();
+
 	@Before
 	public void setUpCalcuator() {
 		evaluator = createEvaluator(TestDataUtil.createGesuchsperiode1718(), TestDataUtil.createGemeindeParis());
@@ -219,34 +221,38 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
 	}
 
+	private static BGRechnerParameterDTO createParameterDTO() {
+		BGRechnerParameterDTO dto = new BGRechnerParameterDTO();
+		dto.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
+		dto.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
+		dto.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
+		dto.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
+		dto.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
+		dto.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
+		dto.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
+		dto.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
+		dto.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
+		dto.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
+		dto.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
+		dto.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
+		dto.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
+		dto.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
+		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
+		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
+		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
+		// Paris wird wie Bern behandelt. Damit die bestehenden Tests funktionieren, wird das Startdatum in die Vergangenheit gesetzt!
+		dto.setStadtBernAsivStartDate(LocalDate.of(2000, Month.JANUARY, 1));
+		dto.setStadtBernAsivConfiguered(true);
+		return dto;
+	}
+
 	/**
 	 * Stellt alle für die Berechnung benötigten Parameter zusammen
 	 */
 	public static BGRechnerParameterDTO getParameter() {
-		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO();
-		parameterDTO.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
-		parameterDTO.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
-		parameterDTO.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
-		parameterDTO.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
-		parameterDTO.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		parameterDTO.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		parameterDTO.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
-		parameterDTO.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
-		parameterDTO.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
-		parameterDTO.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
-		parameterDTO.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
-		parameterDTO.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
-		parameterDTO.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
-		parameterDTO.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
-		parameterDTO.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
-		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
-		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
-		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
-		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
-		// Paris wird wie Bern behandelt. Damit die bestehenden Tests funktionieren, wird das Startdatum in die Vergangenheit gesetzt!
-		parameterDTO.setStadtBernAsivStartDate(LocalDate.of(2000, Month.JANUARY, 1));
-		parameterDTO.setStadtBernAsivConfiguered(true);
-		return parameterDTO;
+		return rechnerParameterDTO;
 	}
 
 	/**
