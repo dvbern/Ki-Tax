@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
@@ -52,23 +51,23 @@ public class BemerkungsMergerTest {
 		VerfuegungZeitabschnitt mai = new VerfuegungZeitabschnitt(MAI);
 
 		// Abwesenheit: Durchgehend Jan-Mai
-		jan.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		feb.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		mar.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		apr.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		mai.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		mar.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		apr.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		mai.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
 
 		// Betreuungsangebot: Jan-März, Mai
-		jan.addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
-		feb.addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
-		mar.addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
-		mai.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		mar.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		mai.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
 
 		// Einreichungsfrist: Jan-Feb, Apr-Mai
-		jan.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
-		feb.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
-		apr.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
-		mai.addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		apr.getBemerkungenList().addBemerkung(MsgKey.EINREICHUNGSFRIST_MSG, Constants.DEFAULT_LOCALE);
+		mai.getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, Constants.DEFAULT_LOCALE);
 
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, feb, mar, apr, mai);
@@ -90,8 +89,8 @@ public class BemerkungsMergerTest {
 		VerfuegungZeitabschnitt jan = new VerfuegungZeitabschnitt(JAN);
 		VerfuegungZeitabschnitt overlappWithJan = new VerfuegungZeitabschnitt(new DateRange(JAN.getGueltigBis(), FEB.getGueltigBis()));
 
-		jan.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
-		overlappWithJan.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
+		overlappWithJan.getBemerkungenList().addBemerkung(MsgKey.ABWESENHEIT_MSG, Constants.DEFAULT_LOCALE);
 
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, overlappWithJan);
@@ -107,13 +106,13 @@ public class BemerkungsMergerTest {
 	public void bemerkungenVonUeberschriebenenRegelnNichtAnzeigen() {
 		// Wenn alle drei Regeln: Es wird nur der AusserordentlicheAnspruch berücksichtigt
 		VerfuegungZeitabschnitt jan = new VerfuegungZeitabschnitt(JAN);
-		jan.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
-		jan.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
-		jan.addBemerkung(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
+		jan.getBemerkungenList().addBemerkung(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, Constants.DEFAULT_LOCALE);
 		// Wenn Fachstelle und Erwerbspensum -> nur Fachstelle anzeigen
 		VerfuegungZeitabschnitt feb = new VerfuegungZeitabschnitt(FEB);
-		feb.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
-		feb.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
+		feb.getBemerkungenList().addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, Constants.DEFAULT_LOCALE);
+		feb.getBemerkungenList().addBemerkung(MsgKey.FACHSTELLE_MSG, Constants.DEFAULT_LOCALE);
 
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, feb);

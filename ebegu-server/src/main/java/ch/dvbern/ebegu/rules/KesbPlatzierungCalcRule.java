@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 
 	public KesbPlatzierungCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.KESB_PLATZIERUNG, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.KESB_PLATZIERUNG, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getKeineKesbPlatzierung()) {
 			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
 			inputData.setAnspruchspensumProzent(0);
-			inputData.getParent().addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
+			inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
 		}
 	}
 }

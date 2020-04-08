@@ -338,6 +338,30 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
+    public changeKonfigErwerbspensumMinimumOverriden(gk: TSGemeindeKonfiguration): void {
+        // if the flag is unchecked, we need to restore the original value
+        if (!gk.erwerbspensumMinimumOverriden) {
+            this.resetErwerbspensenMinimum(gk);
+        }
+    }
+
+    public changeErwerbspensumMinimumVorschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gk.erwerbspensumMiminumVorschule, gk);
+    }
+
+    public changeErwerbspensumMinimumSchulkinder(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gk.erwerbspensumMiminumSchulkinder, gk);
+    }
+
+    private resetErwerbspensenMinimum(gk: TSGemeindeKonfiguration): void {
+        gk.erwerbspensumMiminumVorschule = gk.erwerbspensumMiminumVorschuleMax;
+        gk.erwerbspensumMiminumSchulkinder = gk.erwerbspensumMiminumSchulkinderMax;
+        this.changeErwerbspensumMinimumVorschule(gk);
+        this.changeErwerbspensumMinimumSchulkinder(gk);
+    }
+
     private changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
         gk.konfigurationen
             .filter(property => einstellungKey === property.key)

@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
 	public AusserordentlicherAnspruchCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -57,8 +57,7 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 		// Es wird der grössere der beiden Werte genommen!
 		if (ausserordentlicherAnspruch > pensumAnspruch) {
 			inputData.setAnspruchspensumProzent(ausserordentlicherAnspruch);
-			inputData.getParent().addBemerkung(
-				RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
+			inputData.getParent().getBemerkungenList().addBemerkung(
 				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
 				getLocale());
 		}

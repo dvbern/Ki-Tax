@@ -66,6 +66,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
@@ -160,6 +162,14 @@ public abstract class AbstractBGRechnerTest {
 		Einstellung minTarifTs = new Einstellung(
 			MIN_TARIF, "0.78", gesuchsperiode);
 		einstellungen.put(MIN_TARIF, minTarifTs);
+
+		Einstellung gmdeMinEwpNichtEingeschult = new Einstellung(
+			GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
+		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gmdeMinEwpNichtEingeschult);
+
+		Einstellung gmdeMinEwpEingeschult = new Einstellung(
+			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
+		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gmdeMinEwpEingeschult);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);

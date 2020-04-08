@@ -51,7 +51,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -72,8 +72,6 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 
 		LocalDate gesuchsperiodeBis = platz.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
-
-		RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
 
 		if (familiensituation.getAenderungPer() != null && familiensituationErstgesuch != null &&
 			familiensituation.hasSecondGesuchsteller(gesuchsperiodeBis) != familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)) {
@@ -103,7 +101,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				stichtag,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittNachMutation.addBemerkung(ruleKey, msgKey, getLocale());
+			abschnittNachMutation.getBemerkungenList().addBemerkung(msgKey, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
@@ -126,7 +124,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				startKonkubinatPlusFive,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittKonkubinat2GS.addBemerkung(ruleKey, MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
+			abschnittKonkubinat2GS.getBemerkungenList().addBemerkung(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittKonkubinat2GS);
 
 		} else {

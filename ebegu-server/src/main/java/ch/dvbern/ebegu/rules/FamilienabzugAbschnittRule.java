@@ -76,7 +76,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		BigDecimal pauschalabzugProPersonFamiliengroesse6,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 		this.pauschalabzugProPersonFamiliengroesse3 = pauschalabzugProPersonFamiliengroesse3;
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;

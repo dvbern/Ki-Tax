@@ -45,7 +45,7 @@ import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_MSG;
 public class EinreichungsfristCalcRule extends AbstractCalcRule {
 
 	public EinreichungsfristCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 	) {
 		if (inputData.isZuSpaetEingereicht()) {
 			inputData.setAnspruchspensumProzent(0);
-			inputData.getParent().addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
+			inputData.getParent().getBemerkungenList().addBemerkung(EINREICHUNGSFRIST_MSG, getLocale());
 		}
 	}
 }
