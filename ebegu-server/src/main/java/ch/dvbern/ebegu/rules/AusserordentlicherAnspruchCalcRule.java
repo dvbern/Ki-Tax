@@ -57,8 +57,7 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 		// Es wird der grössere der beiden Werte genommen!
 		if (ausserordentlicherAnspruch > pensumAnspruch) {
 			inputData.setAnspruchspensumProzent(ausserordentlicherAnspruch);
-			inputData.getParent().addBemerkung(
-				RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
+			inputData.getParent().getBemerkungenList().addBemerkung(
 				MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
 				getLocale());
 		}

@@ -44,7 +44,7 @@ public abstract class AbstractRechner {
 		BGCalculationInput gemeindeInput = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 		BGCalculationResult gemeindeResult = calculateGemeinde(gemeindeInput, parameterDTO)
 			.map(BGCalculationResult::roundAllValues)
-			.orElse(null);
+			.orElseGet(() -> new BGCalculationResult(asivResult));
 
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(gemeindeResult);
 	}

@@ -35,6 +35,8 @@ public class JaxGemeindeKonfiguration {
 	private List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten;
 
 	private int erwerbspensumZuschlagMax;
+	private int erwerbspensumMiminumVorschuleMax;
+	private int erwerbspensumMiminumSchulkinderMax;
 
 	@Nonnull
 	public String getGesuchsperiodeName() {
@@ -87,5 +89,21 @@ public class JaxGemeindeKonfiguration {
 
 	public void setFerieninselStammdaten(@Nonnull List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten) {
 		this.ferieninselStammdaten = ferieninselStammdaten;
+	}
+
+	public int getErwerbspensumMiminumVorschuleMax() {
+		return erwerbspensumMiminumVorschuleMax;
+	}
+
+	public void setErwerbspensumMiminumVorschuleMax(int erwerbspensumMiminumVorschuleMax) {
+		this.erwerbspensumMiminumVorschuleMax = erwerbspensumMiminumVorschuleMax;
+	}
+
+	public int getErwerbspensumMiminumSchulkinderMax() {
+		return erwerbspensumMiminumSchulkinderMax;
+	}
+
+	public void setErwerbspensumMiminumSchulkinderMax(int erwerbspensumMiminumSchulkinderMax) {
+		this.erwerbspensumMiminumSchulkinderMax = erwerbspensumMiminumSchulkinderMax;
 	}
 }

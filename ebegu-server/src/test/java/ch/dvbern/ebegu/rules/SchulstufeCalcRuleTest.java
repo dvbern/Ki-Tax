@@ -59,9 +59,9 @@ public class SchulstufeCalcRuleTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		Assert.assertEquals(100, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		Assert.assertFalse(verfuegungZeitabschnitt.getBemerkungenMap().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertFalse(verfuegungZeitabschnitt.getBemerkungenList().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenList().size());
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	private void assertNichtBerechtigt(List<VerfuegungZeitabschnitt> result) {
@@ -70,10 +70,10 @@ public class SchulstufeCalcRuleTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		Assert.assertEquals(0, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG));
+		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenList().size());
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG));
 	}
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {

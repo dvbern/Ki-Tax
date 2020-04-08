@@ -55,8 +55,10 @@ public final class EbeguRuleTestsHelper {
 
 	private static final ErwerbspensumAsivAbschnittRule erwerbspensumAsivAbschnittRule = new ErwerbspensumAsivAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
-	private static final ErwerbspensumCalcRule erwerbspensumCalcRule =
-		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, DEFAULT_LOCALE);
+	private static final ErwerbspensumAsivCalcRule erwerbspensumAsivCalcRule =
+		new ErwerbspensumAsivCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, DEFAULT_LOCALE);
+	private static final ErwerbspensumGemeindeCalcRule erwerbspensumGemeindeCalcRule =
+		new ErwerbspensumGemeindeCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, DEFAULT_LOCALE);
 	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
 	private static final AusserordentlicherAnspruchAbschnittRule ausserordentlicherAnspruchAbschnittRule =
@@ -174,7 +176,8 @@ public final class EbeguRuleTestsHelper {
 		result = sozialhilfeAbschnittRule.calculate(platz, result);
 		// Anspruch
 		result = storniertCalcRule.calculate(platz, result);
-		result = erwerbspensumCalcRule.calculate(platz, result);
+		result = erwerbspensumAsivCalcRule.calculate(platz, result);
+		result = erwerbspensumGemeindeCalcRule.calculate(platz, result);
 		result = fachstelleCalcRule.calculate(platz, result);
 		result = ausserordentlicherAnspruchCalcRule.calculate(platz, result);
 		// Restanspruch

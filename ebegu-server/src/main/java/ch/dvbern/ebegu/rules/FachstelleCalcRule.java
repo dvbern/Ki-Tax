@@ -22,6 +22,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -73,12 +74,11 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 
 				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 				inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
-				inputData.getParent().addBemerkung(
-					RuleKey.FACHSTELLE,
+				inputData.getParent().getBemerkungenList().addBemerkung(new VerfuegungsBemerkung(
 					MsgKey.FACHSTELLE_MSG,
 					getLocale(),
 					getIndikation(betreuung),
-					getFachstelle(betreuung));
+					getFachstelle(betreuung)));
 			} else {
 				// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle Pensum als
 				// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
