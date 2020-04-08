@@ -55,6 +55,8 @@ export class OnboardingComponent implements OnInit {
         this.currentLangDe$ = new BehaviorSubject(this.currLangIsGerman());
         this.translate.onLangChange.subscribe(() => {
             this.currentLangDe$.next(this.currLangIsGerman());
+        }, (err: any) => {
+            console.error(err);
         });
     }
 
@@ -62,7 +64,7 @@ export class OnboardingComponent implements OnInit {
         return this.translate.currentLang === 'de';
     }
 
-    public isGerman(): Observable<boolean> {
+    public isGerman$(): Observable<boolean> {
         return this.currentLangDe$.asObservable();
     }
 }
