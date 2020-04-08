@@ -17,7 +17,7 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {from, Observable} from 'rxjs';
+import {BehaviorSubject, from, Observable} from 'rxjs';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
@@ -35,6 +35,7 @@ export class OnboardingComponent implements OnInit {
     private readonly description3: string = 'ONBOARDING_MAIN_DESC3';
     private readonly description4: string = 'ONBOARDING_MAIN_DESC4';
     public isDummyMode$: Observable<boolean>;
+    public currentLangDe$: BehaviorSubject<boolean>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -50,5 +51,18 @@ export class OnboardingComponent implements OnInit {
         this.onboardingPlaceholderService.setDescription2(this.translate.instant(this.description2));
         this.onboardingPlaceholderService.setDescription3(this.translate.instant(this.description3));
         this.onboardingPlaceholderService.setDescription4(this.translate.instant(this.description4));
+
+        this.currentLangDe$ = new BehaviorSubject(this.currLangIsGerman());
+        this.translate.onLangChange.subscribe(() => {
+            this.currentLangDe$.next(this.currLangIsGerman());
+        });
+    }
+
+    private currLangIsGerman(): boolean {
+        return this.translate.currentLang === 'de';
+    }
+
+    public isGerman(): Observable<boolean> {
+        return this.currentLangDe$.asObservable();
     }
 }
