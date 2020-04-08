@@ -31,8 +31,6 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static java.math.BigDecimal.ZERO;
-
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot Tageseltern.
@@ -73,53 +71,39 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 			elternbeitrag = MathUtil.EXACT.multiply(kostenProBetreuungsstunde, betreuungsstundenIntervall);
 		}
 
-		BigDecimal verguenstigung = ZERO;
-		if (vollkosten != null && elternbeitrag != null) {
-			verguenstigung = vollkosten.subtract(elternbeitrag);
-		}
-
 		Objects.requireNonNull(elternbeitrag);
 		Objects.requireNonNull(vollkosten);
 
-		// Runden und auf Zeitabschnitt zurückschreiben
-		// TODO KITAX: Berechnen wir den Elternbeitrag aufgrund der (fixen) Vollkosten, speichern als Kosten aber den eingegebenen Betrag aus Betreuung?
-		//		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
-		//		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
-		//		verfuegungZeitabschnitt.setBetreuungsstunden(MathUtil.EINE_NACHKOMMASTELLE.from(betreuungsstundenIntervall));
+		// Runden
+		vollkosten = MathUtil.roundToFrankenRappen(vollkosten);
+		elternbeitrag = MathUtil.roundToFrankenRappen(elternbeitrag);
+		betreuungsstundenIntervall = MathUtil.EINE_NACHKOMMASTELLE.from(betreuungsstundenIntervall);
 
-		// TODO Resultat erstellen und benoetigte Daten aus Input kopieren
-				BGCalculationResult result = new BGCalculationResult();
-				VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
+		BigDecimal verguenstigung = vollkosten.subtract(elternbeitrag);
 
+		// Resultat erstellen und benoetigte Daten aus Input kopieren
+		BGCalculationResult result = new BGCalculationResult();
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
+
+		// In Ki-Tax gab es keinen Minimalen Elternbeitrag. Dieser wird immer 0 gesetzt
 		result.setMinimalerElternbeitrag(BigDecimal.ZERO);
 		result.setMinimalerElternbeitragGekuerzt(BigDecimal.ZERO);
+		// In Ki-Tax wurden nicht drei "Stufen" des Gutscheins berechnet. Wir verwenden immer die berechnete Verguenstigung
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigung);
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigung);
 		result.setVerguenstigung(verguenstigung);
+		// Elternbeitrag
 		result.setElternbeitrag(elternbeitrag);
+		// Wir rechnen im Kitax-Rechner mit den berechneten Vollkosten, nicht mit denjenigen, die auf der Platzbestaetigung angegeben wurden.
 		result.setVollkosten(vollkosten);
 
-		result.setZeiteinheit(PensumUnits.PERCENTAGE);
-		//TODO es fehlen die Werte in Zeiteinheiten
-
-
-
-		//
-		//		result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
-		//		result.setMinimalerElternbeitrag(minBetrag);
-		//		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
-		//		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
-		//		result.setVerguenstigung(verguenstigung);
-		//		result.setVollkosten(vollkosten);
-		//		result.setElternbeitrag(elternbeitrag);
-		//		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
-		//
+		result.setZeiteinheit(PensumUnits.HOURS);
+		//TODO KITAX es fehlen die Werte in Zeiteinheiten
+		result.setBetreuungspensumZeiteinheit(betreuungsstundenIntervall);
 		//		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
 		//		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
 		//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		//		result.setZeiteinheit(getZeiteinheit());
-		//		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
-//		return verfuegungZeitabschnitt;
 
 		return Optional.of(result);
 	}

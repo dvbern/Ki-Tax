@@ -31,8 +31,6 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static java.math.BigDecimal.ZERO;
-
 /**
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot KITA.
@@ -98,47 +96,37 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 			elternbeitragIntervall = MathUtil.EXACT.multiply(elternbeitrag, anteilMonat);
 		}
 
-		BigDecimal verguenstigungIntervall = ZERO;
-		if (vollkostenIntervall != null && elternbeitragIntervall != null) {
-			verguenstigungIntervall = vollkostenIntervall.subtract(elternbeitragIntervall);
-		}
 		Objects.requireNonNull(elternbeitragIntervall);
 		Objects.requireNonNull(vollkostenIntervall);
 
-		// TODO KITAX: Berechnen wir den Elternbeitrag aufgrund der (fixen) Vollkosten, speichern als Kosten aber den eingegebenen Betrag aus Betreuung?
-		//		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkostenIntervall));
-		//		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitragIntervall));
+		// Runden
+		vollkostenIntervall = MathUtil.roundToFrankenRappen(vollkostenIntervall);
+		elternbeitragIntervall = MathUtil.roundToFrankenRappen(elternbeitragIntervall);
 
-		// TODO Resultat erstellen und benoetigte Daten aus Input kopieren
-				BGCalculationResult result = new BGCalculationResult();
-				VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
+		BigDecimal verguenstigungIntervall = vollkostenIntervall.subtract(elternbeitragIntervall);
 
-				result.setMinimalerElternbeitrag(BigDecimal.ZERO);
-				result.setMinimalerElternbeitragGekuerzt(BigDecimal.ZERO);
-				result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungIntervall);
-				result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungIntervall);
-				result.setVerguenstigung(verguenstigungIntervall);
-				result.setElternbeitrag(elternbeitragIntervall);
-				result.setVollkosten(vollkostenIntervall);
+		// Resultat erstellen und benoetigte Daten aus Input kopieren
+		BGCalculationResult result = new BGCalculationResult();
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
-				result.setZeiteinheit(PensumUnits.PERCENTAGE);
-				//TODO es fehlen die Werte in Zeiteinheiten
-		//
-//				result.setZeiteinheitenRoundingStrategy(zeiteinheitenRoundingStrategy());
-		//		result.setMinimalerElternbeitrag(minBetrag);
-		//		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
-		//		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
-		//		result.setVerguenstigung(verguenstigungIntervall);
-		//		result.setVollkosten(vollkosten);
-		//		result.setElternbeitrag(elternbeitrag);
-		//		result.setMinimalerElternbeitragGekuerzt(minimalerElternbeitragGekuerzt);
-		//
+		// In Ki-Tax gab es keinen Minimalen Elternbeitrag. Dieser wird immer 0 gesetzt
+		result.setMinimalerElternbeitrag(BigDecimal.ZERO);
+		result.setMinimalerElternbeitragGekuerzt(BigDecimal.ZERO);
+		// In Ki-Tax wurden nicht drei "Stufen" des Gutscheins berechnet. Wir verwenden immer die berechnete Verguenstigung
+		result.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungIntervall);
+		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungIntervall);
+		result.setVerguenstigung(verguenstigungIntervall);
+		// Elternbeitrag
+		result.setElternbeitrag(elternbeitragIntervall);
+		// Wir rechnen im Kitax-Rechner mit den berechneten Vollkosten, nicht mit denjenigen, die auf der Platzbestaetigung angegeben wurden.
+		result.setVollkosten(vollkostenIntervall);
+
+		result.setZeiteinheit(PensumUnits.PERCENTAGE);
+		//TODO KITAX es fehlen die Werte in Zeiteinheiten
 		//		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
 		//		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
 		//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
-		//		result.setZeiteinheit(getZeiteinheit());
 		//		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
-
 
 		return Optional.of(result);
 	}
