@@ -227,11 +227,15 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getEinstellungenTagesschule(), o.getEinstellungenTagesschule());
 		builder.append(this.getIdentifier(), o.getIdentifier());
-		builder.append(this.getZeitVon(), o.getZeitVon());
-		builder.append(this.getZeitBis(), o.getZeitBis());
-		builder.append(this.getModulTagesschuleName(), o.getModulTagesschuleName());
-		builder.append(this.getBezeichnung().getTextDeutsch(), o.getBezeichnung().getTextDeutsch());
-		builder.append(this.isWirdPaedagogischBetreut(), o.isWirdPaedagogischBetreut());
+		// bei Scolaris Modulen die Bezeichnung. Diese muss eindeutig sein.
+		if (this.getModulTagesschuleName().toString().startsWith("SCOLARIS_")) {
+			builder.append(this.getModulTagesschuleName().toString(), o.getModulTagesschuleName().toString());
+		} else {
+			builder.append(this.getZeitVon(), o.getZeitVon());
+			builder.append(this.getZeitBis(), o.getZeitBis());
+			builder.append(this.getBezeichnung().getTextDeutsch(), o.getBezeichnung().getTextDeutsch());
+			builder.append(this.isWirdPaedagogischBetreut(), o.isWirdPaedagogischBetreut());
+		}
 		return builder.toComparison();
 	}
 
