@@ -116,6 +116,7 @@ import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.TestFall12_Mischgesuch;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
+import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.types.DateRange;
@@ -1108,6 +1109,18 @@ public final class TestDataUtil {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		return gesuch;
+	}
+
+	public static Gesuch createTestgesuchLauraWalther(@Nonnull Gesuchsperiode gesuchsperiode) {
+		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		Testfall04_WaltherLaura testfall =
+			new Testfall04_WaltherLaura(gesuchsperiode, insttStammdaten);
+		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuch = testfall.fillInGesuch();
+		TestDataUtil.calculateFinanzDaten(gesuch);
+		gesuch.setGesuchsperiode(gesuchsperiode);
 		return gesuch;
 	}
 
