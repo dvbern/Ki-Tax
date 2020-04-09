@@ -100,7 +100,7 @@ FROM kind_container
 
 WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchPeriodeID IS NULL)
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
-      AND (:allGemeinden = true OR HEX(dossier.gemeinde_id) IN :gemeindeIdList)
+      AND (:allGemeinden = true OR (HEX(dossier.gemeinde_id) IN (:gemeindeIdList)))
       AND (
         IFNULL(NichtFreigegebeneGesuch.Anzahl, 0) = 1
         OR IFNULL(Mahnungen.Anzahl, 0) = 1
@@ -265,7 +265,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 			'PRUEFUNG_STV', 'IN_BEARBEITUNG_STV', 'GEPRUEFT_STV', 'KEIN_ANGEBOT')
  	  AND gesuch.eingangsdatum BETWEEN :fromDate AND :toDate
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
-	  AND (:allGemeinden = true OR HEX(dossier.gemeinde_id) IN :gemeindeIdList)
+	  AND (:allGemeinden = true OR (HEX(dossier.gemeinde_id) IN (:gemeindeIdList)))
       AND (
         IFNULL(EingegangeneGesuch.AnzahlGesuchOnline, 0) = 1
         OR IFNULL(EingegangeneGesuch.AnzahlGesuchPapier, 0) = 1
