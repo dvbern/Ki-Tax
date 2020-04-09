@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschule;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -75,7 +76,18 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 		addHeaders(excelMerger, locale, repeatColGroupList);
 
-		data.forEach(dataRow -> {
+		List<TagesschuleDataRow> nichtFreigegebeneGesuche = new ArrayList<>();
+		List<TagesschuleDataRow> freigegebeneGesuche = new ArrayList<>();
+
+		for (TagesschuleDataRow row : data) {
+			if (row.getStatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) {
+				nichtFreigegebeneGesuche.add(row);
+			} else {
+				freigegebeneGesuche.add(row);
+			}
+		}
+
+		freigegebeneGesuche.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschule.repeatRow);
 			excelRowGroup.addValue(MergeFieldTagesschule.nachnameKind, dataRow.getNachnameKind());
 			excelRowGroup.addValue(MergeFieldTagesschule.vornameKind, dataRow.getVornameKind());
@@ -86,6 +98,8 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
 		});
+
+		excelMerger.addValue(MergeFieldTagesschule.nichtFreigegebenAnzahl, nichtFreigegebeneGesuche.size());
 
 		return excelMerger;
 	}

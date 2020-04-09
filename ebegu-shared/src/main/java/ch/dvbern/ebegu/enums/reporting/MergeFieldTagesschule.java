@@ -28,6 +28,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 
 public enum MergeFieldTagesschule implements MergeFieldProvider {
 
@@ -39,6 +40,7 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	abTitle(new SimpleMergeField<>("abTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
+	nichtFreigegebenAnzahl(new SimpleMergeField<>("nichtFreigegebenAnzahl", INTEGER_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 	nachnameKind(new SimpleMergeField<>("nachnameKind", STRING_CONVERTER)),
