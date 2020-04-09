@@ -287,7 +287,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// pass a boolean param to indicate if it has to take all Gemeinden or just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
-		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? berechtigteGemeinden :
+		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? null :
 			berechtigeGemeindenUnhex);
 		List<GesuchStichtagDataRow> glist = query.getResultList();
 
@@ -392,7 +392,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
-		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? berechtigteGemeinden :
+		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? null :
 			berechtigeGemeindenUnhex);
 
 		return query.getResultList();
