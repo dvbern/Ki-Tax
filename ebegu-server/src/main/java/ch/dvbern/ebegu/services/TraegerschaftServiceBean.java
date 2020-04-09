@@ -83,13 +83,15 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 		requireNonNull(traegerschaft);
 		requireNonNull(adminEmail);
 
-		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaft.getId());
+		Optional<Traegerschaft> traegerschaftOptional =
+			criteriaQueryHelper.getEntityByUniqueAttribute(Traegerschaft.class, traegerschaft.getName(),
+		Traegerschaft_.name);
 		if (traegerschaftOptional.isPresent()) {
 			throw new EntityExistsException(
 				KibonLogLevel.INFO,
 				Traegerschaft.class,
-				"id",
-				traegerschaft.getId(),
+				"name",
+				traegerschaft.getName(),
 				ErrorCodeEnum.ERROR_ENTITY_EXISTS);
 		}
 
