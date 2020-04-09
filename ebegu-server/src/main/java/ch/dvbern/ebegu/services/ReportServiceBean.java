@@ -275,11 +275,23 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
+		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
+		// a list in a native query
+		final List<String> berechtigeGemeindenUnhex = new ArrayList<>();
+		if (berechtigteGemeinden != null) {
+			berechtigteGemeinden.forEach(s -> {
+				berechtigeGemeindenUnhex.add(s.replace("-", ""));
+			});
+		}
+
 		// pass a boolean param to indicate if it has to take all Gemeinden or just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
-		query.setParameter("gemeindeIdList", berechtigteGemeinden);
-		return query.getResultList();
+		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? null :
+			berechtigeGemeindenUnhex);
+		List<GesuchStichtagDataRow> glist = query.getResultList();
+
+		return glist;
 	}
 
 	@Nullable
@@ -369,10 +381,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
+		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
+		// a list in a native query
+		final List<String> berechtigeGemeindenUnhex = new ArrayList<>();
+		if (berechtigteGemeinden != null) {
+			berechtigteGemeinden.forEach(s -> {
+				berechtigeGemeindenUnhex.add(s.replace("-", ""));
+			});
+		}
 		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
-		query.setParameter("gemeindeIdList", berechtigteGemeinden);
+		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? null :
+			berechtigeGemeindenUnhex);
 
 		return query.getResultList();
 	}
@@ -1941,7 +1962,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS})
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1981,7 +2002,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return convertToInstitutionenDataRow(stammdaten, locale);
 	}
 
-	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer, @Nonnull InstitutionStammdaten institution) {
+	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer,
+		@Nonnull InstitutionStammdaten institution) {
 		if (currentBenutzer.getRole().isRoleTsOnly()) {
 			return institution.getBetreuungsangebotTyp().isSchulamt();
 		}
@@ -2103,13 +2125,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		requireNonNull(gesuchsperiodeId, "Das Argument 'gesuchsperiodeId' darf nicht leer sein");
 
 		if (stammdaten.getInstitutionStammdatenTagesschule() != null) {
-			for (EinstellungenTagesschule e : stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule() ) {
+			for (EinstellungenTagesschule e :
+				stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule()) {
 				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
 					return e;
 				}
 			}
 		}
-		throw new EbeguEntityNotFoundException("findEinstellungenTagesschuleByPeriode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		throw new EbeguEntityNotFoundException("findEinstellungenTagesschuleByPeriode",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 	}
 
 	@Nonnull
@@ -2128,7 +2152,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
 		if (anmeldungTagesschule == null || anmeldungTagesschuleIterator.hasNext()) {
-			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow", ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
+			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow",
+				ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
 		}
 
 		TagesschuleDataRow tdr = new TagesschuleDataRow();
@@ -2149,7 +2174,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION})
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -2178,7 +2203,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			institutionStammdatenService.findInstitutionStammdaten(stammdatenID).orElseThrow(() -> new EbeguRuntimeException(
 				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
 
-		EinstellungenTagesschule einstellungenTagesschule = findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
+		EinstellungenTagesschule einstellungenTagesschule =
+			findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
 		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
 		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);
