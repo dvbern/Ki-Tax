@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.reporting.tagesschule;
 
 import java.time.DayOfWeek;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -144,16 +143,16 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschule.abTitle, ServerMessageUtil.getMessage("Reports_abTitle", locale));
 		excelMerger.addValue(MergeFieldTagesschule.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
 
+		excelMerger.addValue(MergeFieldTagesschule.wochentagMo, ServerMessageUtil.getMessage("Reports_MontagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschule.wochentagDi, ServerMessageUtil.getMessage("Reports_DienstagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschule.wochentagMi, ServerMessageUtil.getMessage("Reports_MittwochShort", locale));
+		excelMerger.addValue(MergeFieldTagesschule.wochentagDo, ServerMessageUtil.getMessage("Reports_DonnerstagShort", locale));
+		excelMerger.addValue(MergeFieldTagesschule.wochentagFr, ServerMessageUtil.getMessage("Reports_FreitagShort", locale));
+
 		repeatColGroups.forEach(group -> {
 			int counter = Constants.MAX_MODULGROUPS_TAGESSCHULE;
-			boolean first = true;
 			for (ModulTagesschuleGroup moduleGroup : group.getModulTagesschuleList()) {
 				excelMerger.addValue(MergeFieldTagesschule.valueOf(group.getRepeatColName()), "");
-				if (first) {
-					excelMerger.addValue(MergeFieldTagesschule.wochentag,
-						group.getWochentag().getDisplayName(TextStyle.SHORT, locale));
-					first = false;
-				}
 				excelMerger.addValue(MergeFieldTagesschule.modulName,
 					moduleGroup.getBezeichnung().findTextByLocale(locale));
 				counter--;
