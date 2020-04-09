@@ -41,7 +41,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -82,18 +81,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail) {
 		requireNonNull(traegerschaft);
 		requireNonNull(adminEmail);
-
-		Optional<Traegerschaft> traegerschaftOptional =
-			criteriaQueryHelper.getEntityByUniqueAttribute(Traegerschaft.class, traegerschaft.getName(),
-		Traegerschaft_.name);
-		if (traegerschaftOptional.isPresent()) {
-			throw new EntityExistsException(
-				KibonLogLevel.INFO,
-				Traegerschaft.class,
-				"name",
-				traegerschaft.getName(),
-				ErrorCodeEnum.ERROR_ENTITY_EXISTS);
-		}
 
 		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
 
