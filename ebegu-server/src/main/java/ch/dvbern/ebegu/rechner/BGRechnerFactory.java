@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,13 +54,13 @@ public final class BGRechnerFactory {
 
 	// TODO KITAX
 	@Nullable
-	public static AbstractRechner getKitaxRechner(@Nonnull AbstractPlatz betreuung, @Nonnull KitaxParameterDTO kitaxParameterDTO) {
+	public static AbstractRechner getKitaxRechner(@Nonnull AbstractPlatz betreuung, @Nonnull KitaxParameterDTO kitaxParameterDTO, @Nonnull Locale locale) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
-			return new KitaKitaxRechner(kitaxParameterDTO);
+			return new KitaKitaxRechner(kitaxParameterDTO, locale);
 		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
-			return new TageselternKitaxRechner(kitaxParameterDTO);
+			return new TageselternKitaxRechner(kitaxParameterDTO, locale);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
 			// Tagesschulen werden von Anfang an mit dem ASIV-Rechner berechnet

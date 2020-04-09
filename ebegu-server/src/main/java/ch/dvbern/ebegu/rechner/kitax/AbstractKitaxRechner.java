@@ -22,6 +22,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -40,14 +41,16 @@ import ch.dvbern.ebegu.util.MathUtil;
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
 	protected KitaxParameterDTO kitaxParameter;
+	protected Locale locale;
 
 	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
 	protected static final BigDecimal NEUN = MathUtil.EXACT.from(9L);
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
 
-	protected AbstractKitaxRechner(KitaxParameterDTO kitaxParameter) {
+	protected AbstractKitaxRechner(@Nonnull KitaxParameterDTO kitaxParameter, @Nonnull Locale locale) {
 		this.kitaxParameter = kitaxParameter;
+		this.locale = locale;
 	}
 
 	@Nonnull

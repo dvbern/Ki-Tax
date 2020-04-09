@@ -245,7 +245,7 @@ public class BetreuungsgutscheinEvaluator {
 					AbstractRechner rechnerToUse = null;
 					if (possibleKitaxRechner) {
 						if (zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
-							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameterDTO);
+							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameterDTO, locale);
 						} else if (bernAsivConfiguered) {
 							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
 							// koennen wir den normalen ASIV Rechner verwenden.
@@ -253,7 +253,7 @@ public class BetreuungsgutscheinEvaluator {
 						} else {
 							// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
 							// NullRechner? Wegen Bemerkungen?
-							rechnerToUse = new EmptyKitaxRechner();
+							rechnerToUse = new EmptyKitaxRechner(locale);
 						}
 					} else {
 						// Alle anderen rechnen normal mit dem Asiv-Rechner

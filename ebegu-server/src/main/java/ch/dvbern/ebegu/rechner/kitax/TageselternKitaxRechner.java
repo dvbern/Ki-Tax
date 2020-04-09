@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rechner.kitax;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -37,13 +39,19 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
-	public TageselternKitaxRechner(KitaxParameterDTO kitaxParameter) {
-		super(kitaxParameter);
+	public TageselternKitaxRechner(@Nonnull KitaxParameterDTO kitaxParameter, @Nonnull Locale locale) {
+		super(kitaxParameter, locale);
 	}
 
 	@Nonnull
 	@Override
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		if (!input.isBetreuungInGemeinde()) {
+			input.setAnspruchspensumProzent(0);
+			input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
+		}
+
 		// Benoetigte Daten
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
 		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
@@ -104,6 +112,9 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		//		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
 		//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		//		result.setZeiteinheit(getZeiteinheit());
+
+		// Bemerkung hinzufuegen
+		input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_INFO, locale);
 
 		return Optional.of(result);
 	}
