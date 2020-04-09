@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
@@ -36,6 +37,11 @@ public class EmptyKitaxRechner extends AbstractRechner {
 	@Nonnull
 	@Override
 	protected BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
-		return new BGCalculationResult();
+		BGCalculationResult result = new BGCalculationResult();
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
+
+		// TODO KITAX es fehlt noch eine Bemerkung
+		result.setAnspruchspensumProzent(0);
+		return result;
 	}
 }

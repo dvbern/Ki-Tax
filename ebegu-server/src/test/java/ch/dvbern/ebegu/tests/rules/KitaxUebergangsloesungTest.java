@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -39,16 +40,48 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Testet die "Hacks", welche fuer die Uebergangsloesung der Stadt Bern mit Ki-Tax gemacht wurden
+ * Testet die "Hacks", welche fuer die Uebergangsloesung der Stadt Bern mit Ki-Tax gemacht wurden:
+ * - Vor dem Stichtag (STADT_BERN_ASIV_START_DATUM) wird gemaess FEBR (Ki-Tax) gerechnet
+ * - Nach dem Stichtag wird
+ * -- falls die ASIV Konfiguration komplett ist (STADT_BERN_ASIV_CONFIGURED) normal gemaess ASIV gerechnet, bzw. inklusive der Gemeinde-spezfischen Wuensche
+ * -- falls die Konfiguration noch nicht komplett ist, wird nichts berechnet (Anspruch 0, mit Bemerkung)
  */
 public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 
 	private final Gesuch gesuch = prepareGesuch();
 	private final BGRechnerParameterDTO parameter = getParameter();
 
+	// Fall Laura Walther, mit Anpassung Nettolohn GS1 = 0
+
+	// Erwartete Testresultate gemaess FEBR (Ki-Tax)
+	private double expectedVollkostenFEBR = 1191.50;
+	private double expectedVerguenstigungFEBR = 941.55;
+	private double expectedElternbeitragFEBR = 249.95;
+
+	// Erwartete Testresultate gemaess ASIV (ohne Zusatzwuensche)
+	private double expectedVollkostenASIV = 2000.00;
+	private double expectedVerguenstigungASIV = 828.10;
+	private double expectedElternbeitragASIV = expectedVollkostenASIV - expectedVerguenstigungASIV;
+	private double expectedElternbeitragMinASIV = 70.00;
+	private double expectedElternbeitragMinGekuerztASIV = 0.00;
+
+	// Zusatzwuensche der Stadt Bern fuer ASIV
+	private double expectedZusatzgutscheinBern = 110;
+	private double expectedVerguenstigungBernASIV = expectedVerguenstigungASIV + expectedZusatzgutscheinBern;
+	private double expectedElternbeitragBernASIV = expectedElternbeitragASIV - expectedZusatzgutscheinBern;
+
+	private int anspruchOhneZuschlag = 50;
+	private int anspruchFEBR = anspruchOhneZuschlag + 20; // TODO KITAX: Anspruchszuschlag muss fuer FEBR auf 0 gesetzt werden!
+	private int anspruchASIV = anspruchOhneZuschlag + 20;
+
 
 	@Test
 	public void uebergangsloesungStadtBern() {
+		// Konfigurationen fuer Zusatzwuensche Bern
+		parameter.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(true);
+		parameter.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinBisUndMitSchulstufeKita(EinschulungTyp.KINDERGARTEN1);
+		parameter.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinBetragKita(MathUtil.DEFAULT.from(11));
+
 		// "Normalfall": Bern wechselt unter dem Jahr zu ASIV, die Konfiguration ist noch nicht klar
 		parameter.setStadtBernAsivConfiguered(false);
 		parameter.setStadtBernAsivStartDate(LocalDate.of(2021, Month.JANUARY, 1));
@@ -59,8 +92,8 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 		BGCalculationResult augustGemeinde = august.getBgCalculationResultGemeinde();
 		BGCalculationResult augustAsiv = august.getBgCalculationResultAsiv();
 		Assert.assertNotNull(augustGemeinde);
-		assertResult(augustGemeinde, 50, 1162.70, 920.15, 242.55);
-		assertResult(augustAsiv, 0, 0, 0, 0);
+		assertResult(augustGemeinde, anspruchFEBR, expectedVollkostenFEBR, expectedVerguenstigungFEBR, expectedElternbeitragFEBR, 0, 0);
+		assertResult(augustAsiv, 0, 0, 0, 0, 0, 0);
 
 		// Bis und mit Dezember erwarten wir dieselben Resultate
 		assertAbschnitteSameData(august, abschnitte.get(1), abschnitte.get(2), abschnitte.get(3), abschnitte.get(4));
@@ -70,8 +103,8 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 		BGCalculationResult januarGemeinde = januar.getBgCalculationResultGemeinde();
 		BGCalculationResult januarAsiv = januar.getBgCalculationResultAsiv();
 		Assert.assertNotNull(januarGemeinde);
-		assertResult(januarGemeinde, 0, 0, 0, 0);
-		assertResult(januarAsiv, 0, 0, 0, 0);
+		assertResult(januarGemeinde, 0, 0, 0, 0, 0, 0);
+		assertResult(januarAsiv, 0, 0, 0, 0, 0, 0);
 
 		// Fuer den Rest des Jahres bleiben die Werte gleich
 		assertAbschnitteSameData(januar, abschnitte.get(6), abschnitte.get(7), abschnitte.get(8), abschnitte.get(9), abschnitte.get(10), abschnitte.get(11));
@@ -86,8 +119,10 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 		januarGemeinde = januar.getBgCalculationResultGemeinde();
 		januarAsiv = januar.getBgCalculationResultAsiv();
 		Assert.assertNotNull(januarGemeinde);
-		assertResult(januarGemeinde, 70, 2000, 938.10, 0);
-		assertResult(januarAsiv, 70, 2000, 938.10, 0);
+		assertResult(januarGemeinde, anspruchASIV, expectedVollkostenASIV, expectedVerguenstigungBernASIV, expectedElternbeitragBernASIV,
+			expectedElternbeitragMinASIV, expectedElternbeitragMinGekuerztASIV);
+		assertResult(januarAsiv, anspruchASIV, expectedVollkostenASIV, expectedVerguenstigungASIV, expectedElternbeitragASIV,
+			expectedElternbeitragMinASIV, expectedElternbeitragMinGekuerztASIV);
 	}
 
 	@Nonnull
@@ -97,6 +132,7 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(lauraWalther.getGesuchsteller1().getFinanzielleSituationContainer());
 		lauraWalther.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(BigDecimal.ZERO);
 		lauraWalther.getDossier().setGemeinde(TestDataUtil.createGemeindeParis());
+		TestDataUtil.calculateFinanzDaten(lauraWalther);
 		return lauraWalther;
 	}
 
@@ -116,15 +152,15 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 	}
 
 	private void assertResult(@Nonnull BGCalculationResult result, int expectedAnspruch, double expectedVollkosten, double expectedVerguenstigung,
-		double expectedElternbeitrag) {
+		double expectedElternbeitrag, double expectedMinElternbeitrag, double expectedMinElternbeitragGekuerzt) {
 		Assert.assertEquals(expectedAnspruch, result.getAnspruchspensumProzent());
-		Assert.assertEquals(MathUtil.DEFAULT.from(expectedVollkosten), result.getVollkosten());
-		Assert.assertEquals(MathUtil.DEFAULT.from(expectedVerguenstigung), result.getVerguenstigungOhneBeruecksichtigungVollkosten());
-		Assert.assertEquals(MathUtil.DEFAULT.from(expectedVerguenstigung), result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
-		Assert.assertEquals(MathUtil.DEFAULT.from(expectedVerguenstigung), result.getVerguenstigung());
-		Assert.assertEquals(MathUtil.DEFAULT.from(expectedElternbeitrag), result.getElternbeitrag());
-		Assert.assertEquals(MathUtil.DEFAULT.from(0), result.getMinimalerElternbeitrag());
-		Assert.assertEquals(MathUtil.DEFAULT.from(0), result.getMinimalerElternbeitragGekuerzt());
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedVollkosten), result.getVollkosten()));
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedVerguenstigung), result.getVerguenstigungOhneBeruecksichtigungVollkosten()));
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedVerguenstigung), result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()));
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedVerguenstigung), result.getVerguenstigung()));
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedElternbeitrag), result.getElternbeitrag()));
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedMinElternbeitrag), result.getMinimalerElternbeitrag()));
+		Assert.assertTrue(MathUtil.isSame(MathUtil.DEFAULT.from(expectedMinElternbeitragGekuerzt), result.getMinimalerElternbeitragGekuerzt()));
 	}
 
 	private void assertAbschnitteSameData(@Nonnull VerfuegungZeitabschnitt... abschnitte) {
