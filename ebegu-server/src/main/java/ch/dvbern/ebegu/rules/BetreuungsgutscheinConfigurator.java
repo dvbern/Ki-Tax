@@ -101,7 +101,7 @@ public class BetreuungsgutscheinConfigurator {
 
 	}
 
-	@SuppressWarnings("checkstyle:LocalVariableName")
+	@SuppressWarnings({"checkstyle:LocalVariableName", "PMD.NcssMethodCount"})
 	private void abschnitteErstellenRegeln(
 		@Nonnull Gemeinde gemeinde,
 		@Nullable KitaxUebergangsloesungParameter kitaxParameterDTO,
