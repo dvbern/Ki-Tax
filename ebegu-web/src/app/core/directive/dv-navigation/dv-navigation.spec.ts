@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IHttpBackendService, IQService, IScope} from 'angular';
+import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
@@ -25,6 +25,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardSubStepName} from '../../../../models/enums/TSWizardSubStepName';
 import {TSDossier} from '../../../../models/TSDossier';
+import {TSEinkommensverschlechterungInfo} from '../../../../models/TSEinkommensverschlechterungInfo';
 import {TSFall} from '../../../../models/TSFall';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../models/TSFamiliensituationContainer';
@@ -43,6 +44,7 @@ describe('dvNavigation', () => {
     let $state: StateService;
     let $q: IQService;
     let $rootScope: IScope;
+    let $timeout: ITimeoutService;
     let gesuchModelManager: GesuchModelManager;
     let authServiceRS: AuthServiceRS;
     let isStatusVerfuegen: boolean;
@@ -54,7 +56,7 @@ describe('dvNavigation', () => {
 
     beforeEach(angular.mock.inject($injector => {
         $q = $injector.get('$q');
-        const $timeout = $injector.get('$timeout');
+        $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
         wizardStepManager = $injector.get('WizardStepManager');
         wizardSubStepManager = $injector.get('WizardSubStepManager');
@@ -105,6 +107,29 @@ describe('dvNavigation', () => {
         });
     });
     describe('nextStep', () => {
+        it('does not start a transition when dvSave callback rejects', () => {
+            spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
+            spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
+            spyOn($state, 'go');
+            spyOn(navController, 'dvSave').and.rejectWith();
+            navController.dvSavingPossible = true;
+            navController.nextStep();
+            $rootScope.$apply();
+            $timeout.flush();
+            expect($state.go).not.toHaveBeenCalled();
+        });
+        it('does start a transition when dvSave callback resolves', () => {
+            spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
+            spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
+            spyOn($state, 'go');
+            spyOn(navController, 'dvSave').and.returnValue(true);
+            navController.dvSavingPossible = true;
+            navController.nextStep();
+            $rootScope.$apply();
+            $timeout.flush();
+            expect($state.go).toHaveBeenCalled();
+        });
+
         it('moves to gesuch.familiensituation when coming from GESUCH_ERSTELLEN', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.GESUCH_ERSTELLEN);
             spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FAMILIENSITUATION);
@@ -193,7 +218,7 @@ describe('dvNavigation', () => {
             mockGesuch();
             spyOn(wizardStepManager, 'isNextStepBesucht').and.returnValue(true);
             spyOn(wizardStepManager, 'isNextStepEnabled').and.returnValue(false);
-            spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.when({}));
+            spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.resolve());
             navController.dvSubStep = 1;
             callNextStep();
             $rootScope.$apply();
@@ -251,7 +276,6 @@ describe('dvNavigation', () => {
             navController.dvSubStep = 1;
             navController.dvSubStepName = TSWizardSubStepName.FINANZIELLE_SITUATION_START;
             gesuchModelManager.setGesuch(mockGesuch());
-            spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue('1');
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
@@ -269,10 +293,11 @@ describe('dvNavigation', () => {
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS required',
             () => {
                 const gesuch = mockGesuch();
-                spyOn(wizardStepManager,
-                    'getCurrentStepName').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-                spyOn(gesuch,
-                    'extractEinkommensverschlechterungInfo').and.returnValue({einkommensverschlechterung: true});
+                spyOn(wizardStepManager, 'getCurrentStepName')
+                    .and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                const info = new TSEinkommensverschlechterungInfo();
+                info.einkommensverschlechterung = true;
+                spyOn(gesuch, 'extractEinkommensverschlechterungInfo').and.returnValue(info);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
                 navController.dvSubStep = 1;
                 callNextStep();
@@ -285,12 +310,14 @@ describe('dvNavigation', () => {
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS NOT required',
             () => {
                 const gesuch = mockGesuch();
-                spyOn(gesuch,
-                    'extractEinkommensverschlechterungInfo').and.returnValue({einkommensverschlechterung: true});
-                spyOn(wizardStepManager,
-                    'getCurrentStepName').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                const info = new TSEinkommensverschlechterungInfo();
+                info.einkommensverschlechterung = true;
+                spyOn(gesuch, 'extractEinkommensverschlechterungInfo').and.returnValue(info);
+                spyOn(wizardStepManager, 'getCurrentStepName')
+                    .and
+                    .returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
-                spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue('1');
+                spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
                 navController.dvSubStep = 1;
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterung', {
@@ -303,7 +330,7 @@ describe('dvNavigation', () => {
             mockGesuch();
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.DOKUMENTE);
-            spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.when({}));
+            spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.resolve());
             navController.dvSubStep = 1;
             callNextStep();
             $rootScope.$apply();
@@ -526,7 +553,6 @@ describe('dvNavigation', () => {
         it('moves to gesuch.dokumente when coming from VERFUEGEN substep 1', () => {
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.VERFUEGEN);
             spyOn(wizardStepManager, 'getPreviousStep').and.returnValue(TSWizardStepName.DOKUMENTE);
-            spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.when({}));
             spyOn(authServiceRS, 'isRole').and.returnValue(false);
             navController.dvSubStep = 1;
             mockGesuch();
@@ -563,13 +589,13 @@ describe('dvNavigation', () => {
     }
 
     function callPreviousStep(): void {
-        spyOn($state, 'go').and.returnValue({}); // do nothing
+        spyOn($state, 'go').and.resolveTo(); // fake state transition
         navController.previousStep();
         $rootScope.$apply();
     }
 
     function callNextStep(): void {
-        spyOn($state, 'go').and.returnValue({}); // do nothing
+        spyOn($state, 'go').and.resolveTo(); // fake state transition
         navController.nextStep();
         $rootScope.$apply();
     }
@@ -579,7 +605,6 @@ describe('dvNavigation', () => {
         spyOn(wizardStepManager, 'getNextStep').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
         spyOn(wizardStepManager, 'isNextStepBesucht').and.returnValue(true);
         spyOn(wizardStepManager, 'isNextStepEnabled').and.returnValue(true);
-        spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue($q.when({}));
         navController.dvSubStep = 1;
         const gesuch = mockGesuch();
         gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = famSitRequired;

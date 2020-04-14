@@ -38,19 +38,18 @@ describe('testdatenView', () => {
                 'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
                 'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
             ]);
-        testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
         const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['getAllGesuchsteller']);
-        benutzerRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
+        benutzerRSSpy.getAllGesuchsteller.and.resolveTo([]);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
         const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
             ['getAllGesuchsperioden', 'removeGesuchsperiode']);
-        gesuchsperiodeRSSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve(true));
+        gesuchsperiodeRSSpy.getAllGesuchsperioden.and.resolveTo([]);
         const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
             ['isDevMode']);
-        applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
+        applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
         const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['gesuchVerfuegen']);
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
-        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(Promise.resolve(true));
+        gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
         const i18nServiceSpy = jasmine
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 

@@ -16,12 +16,11 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {WelcomeMainComponent} from '../welcome-main/welcome-main.component';
 
-const states: Ng2StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'welcome',
