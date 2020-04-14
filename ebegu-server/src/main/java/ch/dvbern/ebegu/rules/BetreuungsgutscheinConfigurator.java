@@ -38,6 +38,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
@@ -88,7 +89,8 @@ public class BetreuungsgutscheinConfigurator {
 			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
 			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
 			GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
-			ERWERBSPENSUM_ZUSCHLAG);
+			ERWERBSPENSUM_ZUSCHLAG,
+			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT);
 	}
 
 	private void useRulesOfGemeinde(@Nonnull Gemeinde gemeinde, @Nullable KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Map<EinstellungKey, Einstellung> einstellungen) {
@@ -111,14 +113,24 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(erwerbspensumAsivAbschnittRule);
 
 		// - Erwerbspensum: Erweiterung fuer Gemeinden
+		Einstellung param_MaxAbzugFreiwilligenarbeit = einstellungMap.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT);
+		Objects.requireNonNull(param_MaxAbzugFreiwilligenarbeit, "Parameter GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT muss gesetzt sein");
 		if (kitaxParameterDTO != null && kitaxParameterDTO.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
-			// Fuer die Stadt Bern gilt die Rule erst nach dem Stichtag
+			// Fuer die Stadt Bern gibt es die Rule mit verschiedenen Parameter: Vor dem Stichtag und nach dem Stichtag
+			// Regel 1: Gemaess FEBR bis vor dem Stichtag
+			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
+			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleVorStichtag = new ErwerbspensumGemeindeAbschnittRule(
+				nachStichtag, 0, locale);
+			rules.add(ewpBernAbschnittRuleVorStichtag);
+			// Regel 2: Nach dem Stichtag normal gemaess Konfigurationen
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
-			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleNachStichtag = new ErwerbspensumGemeindeAbschnittRule(nachStichtag, locale);
+			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleNachStichtag = new ErwerbspensumGemeindeAbschnittRule(
+				nachStichtag, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
 			rules.add(ewpBernAbschnittRuleNachStichtag);
 		} else {
 			// Fuer alle anderen Gemeinden gibt es nur *eine* Rule
-			ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(defaultGueltigkeit, locale);
+			ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(
+				defaultGueltigkeit, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
 			rules.add(erwerbspensumGmdeAbschnittRule);
 		}
 

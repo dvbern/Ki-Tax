@@ -13,7 +13,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: []}),
+        UIRouterUpgradeModule.forRoot({states: []}),
     ],
     exports: [UIRouterUpgradeModule],
 })

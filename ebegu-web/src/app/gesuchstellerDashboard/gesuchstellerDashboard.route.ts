@@ -25,7 +25,7 @@ import IQService = angular.IQService;
 gesuchstellerDashboardRun.$inject = ['RouterHelper'];
 
 export function gesuchstellerDashboardRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, []);
+    routerHelper.configureStates(ng1States);
 }
 
 export class IAngebotStateParams {

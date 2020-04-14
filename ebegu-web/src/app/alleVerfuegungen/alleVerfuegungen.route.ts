@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng2StateDeclaration} from '@uirouter/angular';
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {RouterHelper} from '../../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -39,8 +38,6 @@ const ng1States: Ng1StateDeclaration[] = [
     },
 ];
 
-const ng2States: Ng2StateDeclaration[] = [];
-
 // PARAMS
 
 export class IAlleVerfuegungenStateParams {
@@ -50,5 +47,5 @@ export class IAlleVerfuegungenStateParams {
 alleVerfuegungenRun.$inject = ['RouterHelper'];
 
 export function alleVerfuegungenRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, ng2States);
+    routerHelper.configureStates(ng1States);
 }
