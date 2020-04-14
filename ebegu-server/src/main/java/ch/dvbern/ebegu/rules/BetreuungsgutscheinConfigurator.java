@@ -111,9 +111,9 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(erwerbspensumAsivAbschnittRule);
 
 		// - Erwerbspensum: Erweiterung fuer Gemeinden
-		if (kitaxParameterDTO != null && KitaxUebergangsloesungParameter.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
+		if (kitaxParameterDTO != null && kitaxParameterDTO.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
 			// Fuer die Stadt Bern gilt die Rule erst nach dem Stichtag
-			DateRange nachStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
+			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleNachStichtag = new ErwerbspensumGemeindeAbschnittRule(nachStichtag, locale);
 			rules.add(ewpBernAbschnittRuleNachStichtag);
 		} else {
@@ -232,7 +232,7 @@ public class BetreuungsgutscheinConfigurator {
 		Objects.requireNonNull(minEWP_nichtEingeschultGmde, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultGmde, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		// Im Fall von BERN die Gueltigkeit einfach erst ab Tag X setzen?
-		if (kitaxParameterDTO != null && KitaxUebergangsloesungParameter.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
+		if (kitaxParameterDTO != null && kitaxParameterDTO.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
 			// Fuer die Stadt Bern gibt es die Rule mit verschiedenen Parameter: Vor dem Stichtag und nach dem Stichtag
 			// Regel 1: Gemaess FEBR bis vor dem Stichtag
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
@@ -244,7 +244,7 @@ public class BetreuungsgutscheinConfigurator {
 				locale);
 			rules.add(ewpBernCalcRuleVorStichtag);
 			// Regel 2: Gemaess ASIV ab dem Stichtag
-			DateRange nachStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
+			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleNachStichtag = new ErwerbspensumGemeindeCalcRule(
 				nachStichtag,
 				zuschlagEWP.getValueAsInteger(),

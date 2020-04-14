@@ -121,7 +121,7 @@ public final class KitaxUebergangsloesungParameter {
 		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
 	}
 
-	public static boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
+	public boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
 		// Zum Testen behandeln wir Paris wie Bern
 		long bfsNummer = gemeinde.getBfsNummer();
 		return bfsNummer == 531 || bfsNummer == 99998;
