@@ -117,12 +117,12 @@ public class BetreuungsgutscheinConfigurator {
 		Objects.requireNonNull(param_MaxAbzugFreiwilligenarbeit, "Parameter GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT muss gesetzt sein");
 		if (kitaxParameterDTO != null && kitaxParameterDTO.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
 			// Fuer die Stadt Bern gibt es die Rule mit verschiedenen Parameter: Vor dem Stichtag und nach dem Stichtag
-			// Regel 1: Gemaess FEBR bis vor dem Stichtag
+			// Regel 1: Gemaess FEBR bis vor dem Stichtag: Der Maximalwert ist 0
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleVorStichtag = new ErwerbspensumGemeindeAbschnittRule(
-				nachStichtag, 0, locale);
+				vorStichtag, 0, locale);
 			rules.add(ewpBernAbschnittRuleVorStichtag);
-			// Regel 2: Nach dem Stichtag normal gemaess Konfigurationen
+			// Nach dem Stichtag gilt die Regel gemaess Konfiguration
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleNachStichtag = new ErwerbspensumGemeindeAbschnittRule(
 				nachStichtag, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
