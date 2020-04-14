@@ -159,7 +159,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     private initFerieninselViewModel(): void {
-        if (!EbeguUtil.isNullOrUndefined(this.betreuung.belegungFerieninsel)) {
+        if (EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel)) {
             this.changedFerien();
 
             return;
@@ -170,12 +170,26 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         this.betreuung.belegungFerieninsel.tage = [];
     }
 
+    public isFerieninselAnmeldungAktiv(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungAktiv();
+    }
+
+    public getFerieninselAnmeldungNotYetReadyText(): string {
+        if (this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigFerieninselAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_AB_INFO', {
+                termin: terminValue,
+            });
+        }
+        return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_INFO');
+    }
+
     public changedFerien(): void {
         if (!this.betreuung.belegungFerieninsel || !this.betreuung.belegungFerieninsel.ferienname) {
             return;
         }
 
-        this.betreuung.belegungFerieninsel.tage = undefined;
         this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiodeAndFerien(
             this.gesuchModelManager.getGesuchsperiode().id,
             this.gesuchModelManager.getGemeinde().id,
@@ -196,13 +210,14 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         // Ferien sind ausgewaehlt, aber es gibt keine Stammdaten dazu
         return EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel.ferienname)
             && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten)
-            && !this.ferieninselStammdaten.ferienActive;
+            && EbeguUtil.isNullOrUndefined(this.ferieninselStammdaten.anmeldeschluss);
     }
 
     public isAnmeldeschlussAbgelaufen(): boolean {
         // Ferien sind ausgewaehlt, es gibt Stammdaten, aber das Anmeldedatum ist abgelaufen
         return EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel.ferienname)
             && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten)
+            && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten.anmeldeschluss)
             && this.ferieninselStammdaten.anmeldeschluss.isBefore(DateUtil.today());
     }
 

@@ -31,6 +31,9 @@ public enum EinstellungKey {
 	// Ab welchem Datum können Anmeldungen für die Tagesschule erfasst werden
 	GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
 
+	// Ab welchem Datum können Anmeldungen für die Ferieninsel erfasst werden
+	GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
+
 	// Erster Schultag der Tagesschule
 	GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG(EinstellungTyp.GEMEINDE),
 
