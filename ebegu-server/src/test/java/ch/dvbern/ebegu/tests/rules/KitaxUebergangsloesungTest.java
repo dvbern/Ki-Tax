@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,6 +51,7 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 
 	private final Gesuch gesuch = prepareGesuch();
 	private final BGRechnerParameterDTO parameter = getParameter();
+	private final KitaxUebergangsloesungParameter kitaxParameter = TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	// Fall Laura Walther, mit Anpassung Nettolohn GS1 = 0
 
@@ -83,9 +85,9 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 		parameter.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinBetragKita(MathUtil.DEFAULT.from(11));
 
 		// "Normalfall": Bern wechselt unter dem Jahr zu ASIV, die Konfiguration ist noch nicht klar
-		parameter.setStadtBernAsivConfiguered(false);
-		parameter.setStadtBernAsivStartDate(LocalDate.of(2021, Month.JANUARY, 1));
-		List<VerfuegungZeitabschnitt> abschnitte = evaluateGesuch(parameter);
+		kitaxParameter.setStadtBernAsivConfiguered(false);
+		kitaxParameter.setStadtBernAsivStartDate(LocalDate.of(2021, Month.JANUARY, 1));
+		List<VerfuegungZeitabschnitt> abschnitte = evaluateGesuch(parameter, kitaxParameter);
 
 		// Wir erwarten fuer die Monate vor dem Stichtag eine Berechnung nach Ki-Tax, die ASIV Werte muessen immer 0 sein
 		VerfuegungZeitabschnitt august = abschnitte.get(0);
@@ -110,9 +112,9 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 		assertAbschnitteSameData(januar, abschnitte.get(6), abschnitte.get(7), abschnitte.get(8), abschnitte.get(9), abschnitte.get(10), abschnitte.get(11));
 
 		// Jetzt setzen wir das Flag auf TRUE, damit sollten sie Monate nach dem Stichtag normal nach ASIV berechnet werden
-		parameter.setStadtBernAsivConfiguered(true);
-		parameter.setStadtBernAsivStartDate(LocalDate.of(2021, Month.JANUARY, 1));
-		abschnitte = evaluateGesuch(parameter);
+		kitaxParameter.setStadtBernAsivConfiguered(true);
+		kitaxParameter.setStadtBernAsivStartDate(LocalDate.of(2021, Month.JANUARY, 1));
+		abschnitte = evaluateGesuch(parameter, kitaxParameter);
 
 		// Ab Januar erwarten wir die Berechnung nach ASIV
 		januar = abschnitte.get(5);
@@ -137,8 +139,8 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 	}
 
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> evaluateGesuch(@Nonnull BGRechnerParameterDTO parameter) {
-		evaluator.evaluate(gesuch, parameter, Constants.DEFAULT_LOCALE);
+	private List<VerfuegungZeitabschnitt> evaluateGesuch(@Nonnull BGRechnerParameterDTO parameter, @Nonnull KitaxUebergangsloesungParameter kitaxParameter) {
+		evaluator.evaluate(gesuch, parameter, kitaxParameter, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(gesuch.getKindContainers());
 		Assert.assertEquals(1, gesuch.getKindContainers().size());
 		KindContainer kind = gesuch.getKindContainers().iterator().next();

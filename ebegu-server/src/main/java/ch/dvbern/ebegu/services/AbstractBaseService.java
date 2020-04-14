@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -78,11 +79,18 @@ public abstract class AbstractBaseService {
 	@Nonnull
 	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
-		// TODO KITAX
-		parameterDTO.setStadtBernAsivConfiguered(applicationPropertyService.isStadtBernAsivConfigured());
-		parameterDTO.setStadtBernAsivStartDate(applicationPropertyService.getStadtBernAsivStartDatum());
-		return parameterDTO;
+		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
+	}
+
+	@PermitAll
+	@Nonnull
+	// TODO KITAX
+	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
+		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
+			applicationPropertyService.getStadtBernAsivStartDatum(),
+			applicationPropertyService.isStadtBernAsivConfigured()
+		);
+		return parameter;
 	}
 
 	protected void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {

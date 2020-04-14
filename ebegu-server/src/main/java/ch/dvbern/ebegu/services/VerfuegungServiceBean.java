@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
@@ -545,7 +546,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
-		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gemeinde, gesuchsperiode, sprache.getLocale());
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
+		List<Rule> rules = rulesService.getRulesForGesuchsperiode(gemeinde, gesuchsperiode, kitaxParameter, sprache.getLocale());
 
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
@@ -557,7 +559,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
+		bgEvaluator.evaluate(gesuch, calculatorParameters, kitaxParameter, sprache.getLocale());
 		authorizer.checkReadAuthorizationForAnyPlaetze(gesuch.extractAllPlaetze()); // plaetze pruefen
 		// reicht hier glaub
 		return gesuch;
@@ -569,9 +571,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
 
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+		KitaxUebergangsloesungParameter kitaxParameter = loadKitaxUebergangsloesungParameter();
 
 		final List<Rule> rules = rulesService
-			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), sprache.getLocale());
+			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), kitaxParameter, sprache.getLocale());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED,
 			true);

@@ -39,12 +39,12 @@ import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
-import ch.dvbern.ebegu.rechner.kitax.KitaxParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +131,7 @@ public class BetreuungsgutscheinEvaluator {
 	public void evaluate(
 		@Nonnull Gesuch gesuch,
 		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nonnull Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
@@ -138,6 +139,13 @@ public class BetreuungsgutscheinEvaluator {
 			throw new IllegalStateException(
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
+
+		// TODO KITAX
+		LocalDate bernAsivStartDate = kitaxParameter.getStadtBernAsivStartDate();
+		Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
+		boolean bernAsivConfiguered = kitaxParameter.isStadtBernAsivConfiguered();
+		KitaxUebergangsloesungParameter kitaxParameterDTO = new KitaxUebergangsloesungParameter(bernAsivStartDate, bernAsivConfiguered);
+
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO, locale);
 		List<KindContainer> kinder = new ArrayList<>(gesuch.getKindContainers());
@@ -232,12 +240,8 @@ public class BetreuungsgutscheinEvaluator {
 				platz.setVerfuegungPreview(verfuegungPreview);
 
 				// TODO KITAX
-				LocalDate bernAsivStartDate = bgRechnerParameterDTO.getStadtBernAsivStartDate();
-				Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
-				boolean bernAsivConfiguered = bgRechnerParameterDTO.isStadtBernAsivConfiguered();
 				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);;
-				KitaxParameterDTO kitaxParameterDTO = new KitaxParameterDTO();
-				final boolean possibleKitaxRechner = isPossibleKitaxRechner(platz);
+				final boolean possibleKitaxRechner = kitaxParameterDTO.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde());
 				// Den richtigen Rechner anwerfen
 				zeitabschnitte.forEach(zeitabschnitt -> {
 					// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
@@ -349,7 +353,7 @@ public class BetreuungsgutscheinEvaluator {
 		return restanspruchZeitabschnitte;
 	}
 
-	private List<Rule> findRulesToRunForPeriode(Gesuchsperiode gesuchsperiode) {
+	private List<Rule> findRulesToRunForPeriode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<Rule> rulesForGesuchsperiode = new LinkedList<>();
 		for (Rule rule : rules) {
 			if (rule.isValid(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
@@ -378,11 +382,5 @@ public class BetreuungsgutscheinEvaluator {
 		initialerRestanspruch.setHasGemeindeSpezifischeBerechnung(hasGemeindeSpezifischeBerechnung);
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
-	}
-
-	private boolean isPossibleKitaxRechner(@Nonnull AbstractPlatz platz) {
-		// Zum Testen behandeln wir Paris wie Bern
-		long bfsNummer = platz.extractGemeinde().getBfsNummer();
-		return bfsNummer == 531 || bfsNummer == 99998;
 	}
 }

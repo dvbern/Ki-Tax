@@ -125,6 +125,10 @@ public abstract class AbstractEbeguRule implements Rule {
 			// Nach jeder AbschnittRule erhalten wir die *neuen* Zeitabschnitte zurueck. Diese müssen bei ASIV-Regeln
 			// immer eine identische ASIV und GEMEINDE-Berechnung haben!
 			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
+			// Wir duerfen nur neue Abschnitte verwenden, welche ueberhaupt gueltig sind
+			for (VerfuegungZeitabschnitt zeitabschnitt : zwischenresultate) {
+				limitZeitabschnittToGueltigkeitRegel(zeitabschnitt);
+			}
 			// Wenn es eine ASIV Rule ist, gilt sie fuer die Gemeinde genau gleich, die Ergebnisse (nur
 			// genau dieser Rule) muessen identisch sein
 			if (RuleValidity.ASIV == ruleValidity) {
@@ -133,6 +137,15 @@ public abstract class AbstractEbeguRule implements Rule {
 			return zwischenresultate;
 		}
 		return new ArrayList<>();
+	}
+
+	private void limitZeitabschnittToGueltigkeitRegel(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		if (zeitabschnitt.getGueltigkeit().startsBefore(this.validityPeriod)) {
+			zeitabschnitt.getGueltigkeit().setGueltigAb(this.validityPeriod.getGueltigAb());
+		}
+		if (zeitabschnitt.getGueltigkeit().endsAfter(this.validityPeriod)) {
+			zeitabschnitt.getGueltigkeit().setGueltigBis(this.validityPeriod.getGueltigBis());
+		}
 	}
 
 	private void assertSimilarAsivAndGemeindeInputs(@Nonnull Collection<VerfuegungZeitabschnitt> zeitabschnitte) {
@@ -157,7 +170,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * aktuellen Betreuungstyp relevant ist
 	 */
 	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (isAnwendbarForAngebot(platz)) {
+		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {
 			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
 				executeRule(platz, inputDatum);
 			}

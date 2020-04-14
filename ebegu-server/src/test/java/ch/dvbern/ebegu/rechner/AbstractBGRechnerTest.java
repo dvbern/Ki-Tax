@@ -172,7 +172,7 @@ public abstract class AbstractBGRechnerTest {
 		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gmdeMinEwpEingeschult);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, null, Constants.DEFAULT_LOCALE);
 		return new BetreuungsgutscheinEvaluator(rules);
 	}
 
@@ -252,9 +252,6 @@ public abstract class AbstractBGRechnerTest {
 		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
 		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
-		// Paris wird wie Bern behandelt. Damit die bestehenden Tests funktionieren, wird das Startdatum in die Vergangenheit gesetzt!
-		dto.setStadtBernAsivStartDate(LocalDate.of(2000, Month.JANUARY, 1));
-		dto.setStadtBernAsivConfiguered(true);
 		return dto;
 	}
 

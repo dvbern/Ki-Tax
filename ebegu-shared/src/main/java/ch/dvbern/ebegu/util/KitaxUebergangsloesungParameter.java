@@ -15,17 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rechner.kitax;
+package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-import ch.dvbern.ebegu.util.MathUtil;
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.Gemeinde;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
  * Diese müssen aus den EbeguParametern gelesen werden.
  */
-public final class KitaxParameterDTO {
+public final class KitaxUebergangsloesungParameter {
 
 	private BigDecimal oeffnungsstundenKita = MathUtil.DEFAULT.from(11.5); 	// TODO KITAX woher? Achtung: Der Test beruht auf diesen Daten!
 	private BigDecimal oeffnungstageKita = MathUtil.DEFAULT.from(240); 		// TODO KITAX woher? Achtung: Der Test beruht auf diesen Daten!
@@ -45,9 +48,13 @@ public final class KitaxParameterDTO {
 
 	private BigDecimal babyFaktor = MathUtil.DEFAULT.from(1.5);
 
+	private LocalDate stadtBernAsivStartDate = null;
+	private boolean isStadtBernAsivConfiguered = false;
 
-	public KitaxParameterDTO() {
 
+	public KitaxUebergangsloesungParameter(@Nonnull LocalDate stadtBernAsivStartDate, boolean isStadtBernAsivConfiguered) {
+		this.stadtBernAsivStartDate = stadtBernAsivStartDate;
+		this.isStadtBernAsivConfiguered = isStadtBernAsivConfiguered;
 	}
 
 	public BigDecimal getOeffnungsstundenKita() {
@@ -96,5 +103,27 @@ public final class KitaxParameterDTO {
 
 	public BigDecimal getBabyFaktor() {
 		return babyFaktor;
+	}
+
+	public LocalDate getStadtBernAsivStartDate() {
+		return stadtBernAsivStartDate;
+	}
+
+	public void setStadtBernAsivStartDate(LocalDate stadtBernAsivStartDate) {
+		this.stadtBernAsivStartDate = stadtBernAsivStartDate;
+	}
+
+	public boolean isStadtBernAsivConfiguered() {
+		return isStadtBernAsivConfiguered;
+	}
+
+	public void setStadtBernAsivConfiguered(boolean stadtBernAsivConfiguered) {
+		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
+	}
+
+	public static boolean isGemeindeWithKitaxUebergangsloesung(@Nonnull Gemeinde gemeinde) {
+		// Zum Testen behandeln wir Paris wie Bern
+		long bfsNummer = gemeinde.getBfsNummer();
+		return bfsNummer == 531 || bfsNummer == 99998;
 	}
 }

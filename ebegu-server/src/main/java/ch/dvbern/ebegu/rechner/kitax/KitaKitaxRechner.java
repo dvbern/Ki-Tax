@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -39,7 +40,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
-	public KitaKitaxRechner(@Nonnull KitaxParameterDTO kitaxParameter, @Nonnull Locale locale) {
+	public KitaKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
 		super(kitaxParameter, locale);
 	}
 

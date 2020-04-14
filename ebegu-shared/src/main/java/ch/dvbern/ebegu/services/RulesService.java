@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 
 /**
  * Interface fuer RulesService
@@ -32,7 +33,7 @@ public interface RulesService {
 	List<Rule> getRulesForGesuchsperiode(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO,
 		@Nonnull Locale locale
 	);
-
 }

@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.kitax.KitaKitaxRechner;
-import ch.dvbern.ebegu.rechner.kitax.KitaxParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 
@@ -54,7 +54,7 @@ public final class BGRechnerFactory {
 
 	// TODO KITAX
 	@Nullable
-	public static AbstractRechner getKitaxRechner(@Nonnull AbstractPlatz betreuung, @Nonnull KitaxParameterDTO kitaxParameterDTO, @Nonnull Locale locale) {
+	public static AbstractRechner getKitaxRechner(@Nonnull AbstractPlatz betreuung, @Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Locale locale) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaKitaxRechner(kitaxParameterDTO, locale);

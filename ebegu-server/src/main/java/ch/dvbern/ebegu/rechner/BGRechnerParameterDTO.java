@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -79,10 +78,6 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal minTarifTagesschule;
 
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
-
-	// TODO KITAX
-	private LocalDate stadtBernAsivStartDate = null;
-	private boolean isStadtBernAsivConfiguered = false;
 
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
@@ -276,21 +271,5 @@ public final class BGRechnerParameterDTO {
 
 	public void setGemeindeParameter(BGRechnerParameterGemeindeDTO gemeindeParameter) {
 		this.gemeindeParameter = gemeindeParameter;
-	}
-
-	public LocalDate getStadtBernAsivStartDate() {
-		return stadtBernAsivStartDate;
-	}
-
-	public void setStadtBernAsivStartDate(LocalDate stadtBernAsivStartDate) {
-		this.stadtBernAsivStartDate = stadtBernAsivStartDate;
-	}
-
-	public boolean isStadtBernAsivConfiguered() {
-		return isStadtBernAsivConfiguered;
-	}
-
-	public void setStadtBernAsivConfiguered(boolean stadtBernAsivConfiguered) {
-		isStadtBernAsivConfiguered = stadtBernAsivConfiguered;
 	}
 }

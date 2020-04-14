@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -40,7 +41,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 // TODO KITAX
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
-	protected KitaxParameterDTO kitaxParameter;
+	protected KitaxUebergangsloesungParameter kitaxParameter;
 	protected Locale locale;
 
 	protected static final BigDecimal ZWOELF = MathUtil.EXACT.from(12L);
@@ -48,7 +49,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
 
-	protected AbstractKitaxRechner(@Nonnull KitaxParameterDTO kitaxParameter, @Nonnull Locale locale) {
+	protected AbstractKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
 		this.kitaxParameter = kitaxParameter;
 		this.locale = locale;
 	}
@@ -93,7 +94,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	/**
 	 * Berechnet die Kosten einer Betreuungsstunde (Tagi und Tageseltern)
 	 */
-	protected BigDecimal calculateKostenBetreuungsstunde(BigDecimal kostenProStundeMaximal, BigDecimal massgebendesEinkommen, BigDecimal anspruch, KitaxParameterDTO parameterDTO) {
+	protected BigDecimal calculateKostenBetreuungsstunde(BigDecimal kostenProStundeMaximal, BigDecimal massgebendesEinkommen, BigDecimal anspruch, KitaxUebergangsloesungParameter parameterDTO) {
 		// Massgebendes Einkommen: Minimum und Maximum berücksichtigen
 		BigDecimal massgebendesEinkommenBerechnet = (massgebendesEinkommen.max(parameterDTO.getMinMassgebendesEinkommen())).min(parameterDTO.getMaxMassgebendesEinkommen());
 		BigDecimal kostenProStundeMaxMinusMin = MathUtil.EXACT.subtract(kostenProStundeMaximal, parameterDTO.getKostenProStundeMinimal());

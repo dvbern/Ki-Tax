@@ -122,6 +122,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -2024,5 +2025,10 @@ public final class TestDataUtil {
 		gesuch.getKindContainers().stream()
 			.flatMap(k -> k.getBetreuungen().stream())
 			.forEach(b -> b.initVorgaengerVerfuegungen(null, null));
+	}
+
+	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
+		// Fuer Tests gehen wir im Allgemeinen davon aus, dass Bern (Paris) bereits in der Vergangenheit zu ASIV gewechselt hat
+		return new KitaxUebergangsloesungParameter(LocalDate.of(2000, Month.JANUARY, 1), true);
 	}
 }
