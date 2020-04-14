@@ -55,7 +55,6 @@ export class DVAntragListConfig implements IComponentOptions {
         totalResultCount: '<',
         tableId: '@',
         tableTitle: '@',
-        actionVisible: '@',
         addButtonVisible: '@',
         addButtonText: '@',
         pendenz: '=',
@@ -106,7 +105,6 @@ export class DVAntragListController implements IController {
 
     public tableId: string;
     public tableTitle: string;
-    public actionVisible: string;
 
     public addButtonText: string;
     public addButtonVisible: string = 'false';
@@ -262,10 +260,6 @@ export class DVAntragListController implements IController {
 
     public isAddButtonVisible(): boolean {
         return this.addButtonVisible === 'true';
-    }
-
-    public isActionsVisible(): boolean {
-        return this.actionVisible === 'true';
     }
 
     /**

@@ -51,7 +51,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 	private static final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class);
 
 	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

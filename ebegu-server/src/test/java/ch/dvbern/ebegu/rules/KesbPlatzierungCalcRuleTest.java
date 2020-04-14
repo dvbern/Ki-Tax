@@ -68,10 +68,10 @@ public class KesbPlatzierungCalcRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.KESB_PLATZIERUNG_MSG));
+		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenList().size());
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.KESB_PLATZIERUNG_MSG));
 	}
 
 	@Test

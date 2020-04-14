@@ -49,7 +49,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 
 
 	public UnbezahlterUrlaubAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(0 - erwerbspensumJA.getPensum());
-		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
+		zeitabschnitt.getBemerkungenList().addBemerkung(MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
 		return zeitabschnitt;
 	}
 
@@ -138,7 +138,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(0 - erwerbspensumJA.getPensum());
-		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
+		zeitabschnitt.getBemerkungenList().addBemerkung(MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
 		return zeitabschnitt;
 	}
 }

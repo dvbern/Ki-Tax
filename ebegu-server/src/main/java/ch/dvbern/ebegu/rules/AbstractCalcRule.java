@@ -36,10 +36,11 @@ public abstract class AbstractCalcRule extends AbstractEbeguRule {
 	protected AbstractCalcRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
+		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
-		super(ruleKey, ruleType, validityPeriod, locale);
+		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
 	}
 
 	@Nonnull

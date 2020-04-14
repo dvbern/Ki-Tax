@@ -825,18 +825,16 @@ public class GemeindeResource {
 	public Response getExternalClients(@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 		requireNonNull(gemeindeJAXPId.getId());
 		String gemeindeID = converter.toEntityId(gemeindeJAXPId);
-		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeID)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getExternalClients",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gemeindeJAXPId.getId()));
+		GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeID).orElse(null);
 
 		Collection<ExternalClient> availableClients = externalClientService.getAllForGemeinde();
-		availableClients.removeAll(gemeindeStammdaten.getExternalClients());
-
 		JaxExternalClientAssignment jaxExternalClientAssignment = new JaxExternalClientAssignment();
+		if(gemeindeStammdaten != null) {
+			availableClients.removeAll(gemeindeStammdaten.getExternalClients());
+			jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(gemeindeStammdaten.getExternalClients()));
+		}
 		jaxExternalClientAssignment.getAvailableClients().addAll(converter.externalClientsToJAX(availableClients));
-		jaxExternalClientAssignment.getAssignedClients().addAll(converter.externalClientsToJAX(gemeindeStammdaten.getExternalClients()));
 
 		return Response.ok(jaxExternalClientAssignment).build();
 	}

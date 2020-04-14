@@ -21,6 +21,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -40,7 +41,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 
 	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -55,12 +56,11 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
 		//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 		if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-			inputData.getParent().addBemerkung(
-				RuleKey.RESTANSPRUCH,
+			inputData.getParent().getBemerkungenList().addBemerkung(new VerfuegungsBemerkung(
 				MsgKey.RESTANSPRUCH_MSG,
 				getLocale(),
 				anspruchberechtigtesPensum,
-				verfuegbarerRestanspruch
+				verfuegbarerRestanspruch)
 			);
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}

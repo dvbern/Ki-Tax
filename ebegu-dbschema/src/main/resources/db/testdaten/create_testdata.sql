@@ -462,6 +462,57 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
 		  null as erlaeuterung
 	  from gesuchsperiode as gp) as tmp;
 
+# Tagis fuer Paris aktivvieren
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED' as einstellung_key,
+			 'true' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+
+# Minimale Erwerbspensen fuer Paris ueberschreiben: 15%/30% anstatt 20%/40% fuer Vorschulkinder/EingeschulteKinder
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' as einstellung_key,
+			 '15' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', ''))    as id,
+			 '2020-01-01 00:00:00'              as timestamp_erstellt,
+			 '2020-01-01 00:00:00'              as timestamp_mutiert,
+			 'flyway'                           as user_erstellt,
+			 'flyway'                           as user_mutiert,
+			 0                                  as version,
+			 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT' as einstellung_key,
+			 '30' 								as value,
+			 UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')) as gemeinde_id,
+			 gp.id                              as gesuchsperiode_id,
+			 UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) as mandant_id
+	  from gesuchsperiode as gp) as tmp;
+
 INSERT INTO ebegu.gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde_id, gesuchsperiode_id, merkblatt_anmeldung_tagesschule_de, merkblatt_anmeldung_tagesschule_fr) VALUES
 # PARIS
 (UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null),

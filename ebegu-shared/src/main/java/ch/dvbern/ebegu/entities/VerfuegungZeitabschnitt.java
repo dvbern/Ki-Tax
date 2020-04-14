@@ -19,10 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,13 +42,13 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -124,7 +121,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
 	// "bemerkungen" geschrieben
 	@Transient
-	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+	private final VerfuegungsBemerkungList bemerkungenList = new VerfuegungsBemerkungList();
 
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -148,7 +145,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
-		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
+		this.bemerkungenList.mergeBemerkungenMap(toCopy.bemerkungenList);
 		this.bemerkungen = toCopy.bemerkungen;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
 	}
@@ -540,8 +537,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zahlungsposition = zahlungsposition;
 	}
 
-	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
-		return bemerkungenMap;
+	public VerfuegungsBemerkungList getBemerkungenList() {
+		return bemerkungenList;
 	}
 
 	/**
@@ -552,7 +549,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.hasGemeindeSpezifischeBerechnung = (this.hasGemeindeSpezifischeBerechnung || other.hasGemeindeSpezifischeBerechnung);
 		this.bgCalculationInputAsiv.add(other.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde.add(other.bgCalculationInputGemeinde);
-		this.addAllBemerkungen(other.getBemerkungenMap());
+		this.bemerkungenList.addAllBemerkungen(other.bemerkungenList);
 	}
 
 	@Override
@@ -590,7 +587,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			EbeguUtil.isSame(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
-			Objects.equals(bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
+			this.bemerkungenList.isSame(((VerfuegungZeitabschnitt) other).bemerkungenList) &&
 			Objects.equals(bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}
 
@@ -604,7 +601,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			(!this.isHasGemeindeSpezifischeBerechnung() || this.bgCalculationInputGemeinde.isSameSichtbareDaten(that.bgCalculationInputGemeinde)) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultAsiv, that.bgCalculationResultAsiv) &&
 			BGCalculationResult.isSameSichtbareDaten(this.bgCalculationResultGemeinde, that.bgCalculationResultGemeinde) &&
-			Objects.equals(bemerkungenMap, that.bemerkungenMap) &&
+			this.bemerkungenList.isSame(that.bemerkungenList) &&
 			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
@@ -644,36 +641,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationResultAsiv.copyCalculationResult(that.bgCalculationResultAsiv);
 		if (this.bgCalculationResultGemeinde != null) {
 			this.bgCalculationResultGemeinde.copyCalculationResult(that.bgCalculationResultGemeinde);
-		}
-	}
-
-	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		this.bemerkungenMap.putAll(otherBemerkungenMap);
-	}
-
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
-	}
-
-	@SuppressWarnings("OverloadedVarargsMethod")
-	public void addBemerkung(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull MsgKey msgKey,
-		@Nonnull Locale locale,
-		@Nonnull Object... args) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
-	}
-
-	/**
-	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
-	 */
-	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
-			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
-				this.bemerkungenMap.put(
-					msgKeyVerfuegungsBemerkungEntry.getKey(),
-					msgKeyVerfuegungsBemerkungEntry.getValue());
-			}
 		}
 	}
 

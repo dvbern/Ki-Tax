@@ -39,7 +39,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class StorniertCalcRule extends AbstractCalcRule {
 
 	public StorniertCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
+		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class StorniertCalcRule extends AbstractCalcRule {
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		// Bei Betreuungen mit status STORNIERT wird Bemerkung hinzugefügt
 		if (Betreuungsstatus.STORNIERT == platz.getBetreuungsstatus()) {
-			inputData.getParent().addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG, getLocale());
+			inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.STORNIERT_MSG, getLocale());
 		}
 	}
 }

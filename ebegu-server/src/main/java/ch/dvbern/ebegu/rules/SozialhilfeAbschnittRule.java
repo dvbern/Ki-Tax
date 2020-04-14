@@ -44,7 +44,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class SozialhilfeAbschnittRule extends AbstractAbschnittRule {
 
 	public SozialhilfeAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.SOZIALHILFE, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.SOZIALHILFE, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override

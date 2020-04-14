@@ -34,15 +34,15 @@ public class TagesschuleRechner extends AbstractRechner {
 	public TagesschuleRechner() {
 	}
 
-	// Fuer Tagesschule gibt es (Stand heute) keine gemeindespezifischen Regeln
+
 	@Nonnull
 	@Override
 	protected Optional<BGCalculationResult> calculateGemeinde(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
-		// Fuer Tagesschule gibt es aktuell keine Gemeindespezifische Implementation.
-		// Wir geben einfach ASIV zurueck
-		return Optional.of(calculateAsiv(input, parameterDTO));
+
+		// Fuer Tagesschule gibt es (Stand heute) keine gemeindespezifischen Regeln
+		return Optional.empty();
 	}
 
 	@Nonnull

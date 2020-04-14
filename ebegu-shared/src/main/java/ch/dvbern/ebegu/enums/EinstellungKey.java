@@ -83,6 +83,11 @@ public enum EinstellungKey {
 	// Die Schnittstelle zu Ki-Tax ist aktiviert
 	GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED(EinstellungTyp.GEMEINDE),
 
+	// Minimales Erwerbspensum, wenn das Kind nicht eingeschult ist
+	GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT(EinstellungTyp.GEMEINDE),
+	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
+	GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT(EinstellungTyp.GEMEINDE),
+
 	// *** Einstellungen fuer die Gutscheinberechnung
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten

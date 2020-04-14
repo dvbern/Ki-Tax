@@ -48,7 +48,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 
 	public EinreichungsfristAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
