@@ -366,20 +366,6 @@ describe('betreuungView', () => {
                 expect(betreuungView.showInstitutionenList()).toBe(true);
                 expect(betreuungView.showInstitutionenAsText()).toBe(false);
             });
-            it('should not showInstitutionenList and not showInstitutionenAsText for TAGESSCHULE alte Gesuchsperiode',
-                () => {
-                    // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
-                    spyOn(betreuungView, 'isTageschulenAnmeldungAktiv').and.returnValue(false);
-                    spyOn(betreuungView, 'isEnabled').and.returnValue(true);
-                    spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
-                    spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
-
-                    // TODO Reviewer KIBON-724: Dieser Test macht keinen Sinn, es sollen nie beide false sein?
-                    //  Gemäss meinen Anpassungen im Code kann nur List oder Text true resp. false sein...
-                    //  Irgendetwas wollen wir ja immer anzeigen?
-                    expect(betreuungView.showInstitutionenList()).toBe(false);
-                    expect(betreuungView.showInstitutionenAsText()).toBe(false);
-                });
             it('should showInstitutionenList and not showInstitutionenAsText for enabled TAGESSCHULE neue Gesuchsperiode',
                 () => {
                     // initGesuch(TSAntragTyp.ERSTGESUCH, TSAntragStatus.IN_BEARBEITUNG_JA, false);
