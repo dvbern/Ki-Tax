@@ -527,8 +527,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE)) {
 			return (userHasSameGemeindeAsPrincipal(benutzer))
-				|| (benutzer.getInstitution() != null && tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(),
-				principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()));
+				|| (benutzer.getInstitution() != null
+				&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(),
+				principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList())
+				|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(),
+				principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()))));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return benutzer.getRole().isRoleMandant()
@@ -552,6 +555,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
+	}
+
+	private boolean ferieninselBelongsToGemeinde(@Nonnull String institutionId, @Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten = stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+		if (stammdaten == null || stammdaten.getInstitutionStammdatenFerieninsel() == null) {
+			return false;
+		}
+		return userGemeinden.contains(stammdaten.getInstitutionStammdatenFerieninsel().getGemeinde());
 	}
 
 	private boolean userBelongsToInstitutionOfPrincipal(@Nonnull Benutzer benutzer) {

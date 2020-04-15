@@ -87,11 +87,19 @@ export class VerfuegungRS {
             });
     }
 
-    public anmeldungSchulamtUebernehmen(
+    public anmeldungTagesschuleUebernehmen(
         betreuung: TSBetreuung
     ): IPromise<TSBetreuung> {
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
         return this.http.put(`${this.serviceURL}/tagesschulanmeldung/uebernehmen`, restBetreuung)
+            .then(response => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
+    }
+
+    public anmeldungFerieninselUebernehmen(
+        betreuung: TSBetreuung
+    ): IPromise<TSBetreuung> {
+        const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
+        return this.http.put(`${this.serviceURL}/ferieninselanmeldung/uebernehmen`, restBetreuung)
             .then(response => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
     }
 }

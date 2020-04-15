@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.Validate;
@@ -94,6 +95,8 @@ public class BetreuungResource {
 	private ResourceHelper resourceHelper;
 	@Inject
 	private GesuchService gesuchService;
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@ApiOperation(value = "Speichert eine Betreuung in der Datenbank", response = JaxBetreuung.class)
 	@Nonnull
@@ -513,11 +516,18 @@ public class BetreuungResource {
 		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
 
-		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
+		if (betreuungJAXP.getBelegungTagesschule() != null) {
+			AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
+			// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
+			resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
+
+			return converter.platzToJAX(this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung));
+		}
+
+		AnmeldungFerieninsel convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung);
 
-		return converter.platzToJAX(persistedBetreuung);
+		return converter.platzToJAX(this.verfuegungService.anmeldungFerieninselUebernehmen(convertedBetreuung));
 	}
 }

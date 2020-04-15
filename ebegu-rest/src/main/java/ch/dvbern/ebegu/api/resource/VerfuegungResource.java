@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -196,13 +197,14 @@ public class VerfuegungResource {
 		return converter.verfuegungToJax(persistedVerfuegung);
 	}
 
-	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanziel Situation ist geprueft", response = JaxBetreuung.class)
+	@ApiOperation(value = "Schulamt-Anmeldung wird durch die Institution bestätigt und die Finanzielle Situation ist "
+		+ "geprueft", response = JaxBetreuung.class)
 	@Nonnull
 	@PUT
 	@Path("/tagesschulanmeldung/uebernehmen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxBetreuung anmeldungSchulamtUebernehmen(
+	public JaxBetreuung anmeldungTagesschuleUebernehmen(
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
@@ -217,7 +219,36 @@ public class VerfuegungResource {
 		AnmeldungTagesschule convertedBetreuung = converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AnmeldungTagesschule persistedBetreuung = this.verfuegungService.anmeldungSchulamtUebernehmen(convertedBetreuung);
+		AnmeldungTagesschule persistedBetreuung =
+			this.verfuegungService.anmeldungTagesschuleUebernehmen(convertedBetreuung);
+
+		return converter.platzToJAX(persistedBetreuung);
+	}
+
+	@ApiOperation(value = "Ferieninsel Anmeldung wird durch die Institution bestätigt und die Finanzielle Situation "
+		+ "ist geprueft", response = JaxBetreuung.class)
+	@Nonnull
+	@PUT
+	@Path("/ferieninselanmeldung/uebernehmen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxBetreuung anmeldungFerieninselUebernehmen(
+		@Nonnull @NotNull @Valid JaxBetreuung betreuungJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(betreuungJAXP.getId());
+		Objects.requireNonNull(betreuungJAXP.getKindId());
+
+		// Sicherstellen, dass der Status des Server-Objektes genau dem erwarteten Status entspricht
+		resourceHelper.assertBetreuungStatusEqual(betreuungJAXP.getId(),
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST, Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+
+		AnmeldungFerieninsel convertedBetreuung = converter.anmeldungFerieninselToStoreableEntity(betreuungJAXP);
+		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
+		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
+		AnmeldungFerieninsel persistedBetreuung =
+			this.verfuegungService.anmeldungFerieninselUebernehmen(convertedBetreuung);
 
 		return converter.platzToJAX(persistedBetreuung);
 	}

@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -58,7 +59,16 @@ public interface VerfuegungService {
 	 * Verfügung wird definitiv und unveränderbar gespeichert.
 	 */
 	@Nonnull
-	AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
+	AnmeldungTagesschule anmeldungTagesschuleUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule);
+
+	/**
+	 * Schliesst eine Ferieninsel-Anmeldung ab. Dies entspricht einer Verfügung bei den BGs, d.h. die
+	 * Verfügung wird definitiv und unveränderbar gespeichert.
+	 */
+	// TODO Reviewer KIBON-724: gehört eigl. eher in den BetreuungsService, finde es aber hier besser, da wir
+	//  theoretisch Ferieninsel Anmeldungen verfügen könnten
+	@Nonnull
+	AnmeldungFerieninsel anmeldungFerieninselUebernehmen(@Nonnull AnmeldungFerieninsel anmeldungFerieninsel);
 
 	/**
 	 * Eine Schulamt-Anmeldung im Status AUSGELOEST muss beim Erstellen einer Mutation trotzdem "verfügt" werden

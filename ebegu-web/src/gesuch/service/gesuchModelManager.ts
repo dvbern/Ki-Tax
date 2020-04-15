@@ -38,7 +38,7 @@ import {
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
+import {isSchulamt, TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
@@ -825,7 +825,11 @@ export class GesuchModelManager {
             case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
                 return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.verfuegungRS.anmeldungSchulamtUebernehmen(betreuungToSave);
+                if (betreuungToSave.getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL) {
+                    return this.verfuegungRS.anmeldungFerieninselUebernehmen(betreuungToSave);
+                } else {
+                    return this.verfuegungRS.anmeldungTagesschuleUebernehmen(betreuungToSave);
+                }
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
