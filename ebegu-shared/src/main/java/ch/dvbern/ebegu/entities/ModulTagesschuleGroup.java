@@ -226,7 +226,6 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	public int compareTo(@Nonnull ModulTagesschuleGroup o) {
 		CompareToBuilder builder = new CompareToBuilder();
 		builder.append(this.getEinstellungenTagesschule(), o.getEinstellungenTagesschule());
-		builder.append(this.getIdentifier(), o.getIdentifier());
 		// bei Scolaris Modulen die Bezeichnung. Diese muss eindeutig sein.
 		if (this.getModulTagesschuleName().toString().startsWith("SCOLARIS_")) {
 			builder.append(this.getModulTagesschuleName().toString(), o.getModulTagesschuleName().toString());
@@ -236,6 +235,7 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 			builder.append(this.getBezeichnung().getTextDeutsch(), o.getBezeichnung().getTextDeutsch());
 			builder.append(this.isWirdPaedagogischBetreut(), o.isWirdPaedagogischBetreut());
 		}
+		builder.append(this.getIdentifier(), o.getIdentifier());
 		return builder.toComparison();
 	}
 
