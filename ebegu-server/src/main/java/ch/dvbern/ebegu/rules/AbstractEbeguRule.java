@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -47,8 +48,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public abstract class AbstractEbeguRule implements Rule {
 
-	// da final und initialisiert, wird es schwierig dies jemals zu überschreiben -> Konstruktor Parameter
-	private final RuleValidity ruleValidity = RuleValidity.ASIV; // Normalfall
+	private RuleValidity ruleValidity;
 
 	/**
 	 * This is the name of the Rule, Can be used to create messages etc.
@@ -66,11 +66,13 @@ public abstract class AbstractEbeguRule implements Rule {
 	protected AbstractEbeguRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
+		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
+		this.ruleValidity = ruleValidity;
 		this.validityPeriod = validityPeriod;
 		this.locale = locale;
 	}
@@ -102,6 +104,12 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
+	}
+
+	@Override
+	@Nonnull
+	public RuleValidity getRuleValidity() {
+		return ruleValidity;
 	}
 
 	public Locale getLocale() {
@@ -168,6 +176,9 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	@Override
 	public final List<VerfuegungZeitabschnitt> calculate(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		if (!isAnwendbarForAngebot(platz)) {
+			return zeitabschnitte;
+		}
 
 		Collections.sort(zeitabschnitte);
 
@@ -258,7 +269,7 @@ public abstract class AbstractEbeguRule implements Rule {
 				// Gleiche Berechnungsgrundlagen: Den alten um den neuen verlängern
 				lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 				// Die Bemerkungen hinzufügen
-				lastZeitabschnitt.addAllBemerkungen(zeitabschnitt.getBemerkungenMap());
+				lastZeitabschnitt.getBemerkungenList().addAllBemerkungen(zeitabschnitt.getBemerkungenList());
 				validZeitabschnitte.remove(indexOfLast);
 				validZeitabschnitte.add(lastZeitabschnitt);
 			} else {
@@ -372,11 +383,10 @@ public abstract class AbstractEbeguRule implements Rule {
 	 */
 	@Nonnull
 	private List<BGCalculationInput> getInputData(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		List<BGCalculationInput> inputList = new ArrayList<>();
-		inputList.add(zeitabschnitt.getBgCalculationInputAsiv());
-		if (this.ruleValidity == RuleValidity.GEMEINDE) {
-			inputList.add(zeitabschnitt.getBgCalculationInputGemeinde());
+		if (this.ruleValidity == RuleValidity.ASIV) {
+			return Arrays.asList(zeitabschnitt.getBgCalculationInputGemeinde(), zeitabschnitt.getBgCalculationInputAsiv());
 		}
-		return inputList;
+
+		return Collections.singletonList(zeitabschnitt.getBgCalculationInputGemeinde());
 	}
 }

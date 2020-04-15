@@ -53,7 +53,7 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Integer abwesenheitDaysLimit,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.ABWESENHEIT, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.ABWESENHEIT, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 		this.abwesenheitDaysLimit = abwesenheitDaysLimit;
 	}
 

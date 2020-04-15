@@ -16,8 +16,7 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {IPromise} from 'angular';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -27,7 +26,7 @@ import {TraegerschaftAddComponent} from '../traegerschaft-add/traegerschaft-add.
 import {TraegerschaftEditComponent} from '../traegerschaft-edit/traegerschaft-edit.component';
 import {TraegerschaftListComponent} from '../traegerschaft-list/traegerschaft-list.component';
 
-export const STATES: Ng2StateDeclaration[] = [
+export const STATES: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'traegerschaft',

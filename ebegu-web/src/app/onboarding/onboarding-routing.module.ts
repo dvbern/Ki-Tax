@@ -14,14 +14,15 @@
  */
 
 import {NgModule} from '@angular/core';
-import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {HookResult, Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {map, take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {MandantRS} from '../core/service/mandantRS.rest';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
@@ -30,9 +31,9 @@ import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
-import {MandantRS} from '../core/service/mandantRS.rest';
 
 resolveTSEnabled.$inject = ['MandantRS'];
+
 export function resolveTSEnabled(mandantRS: MandantRS): IPromise<boolean> {
     const mandantBernId = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
     return mandantRS.findMandant(mandantBernId).then((result: { angebotTS: any; }) => {
@@ -44,7 +45,7 @@ export function nextState(): string {
     return 'onboarding.gesuchsteller.registration';
 }
 
-export const STATES: Ng2StateDeclaration[] = [
+export const STATES: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'onboarding',
@@ -142,7 +143,7 @@ export function redirectToLandingPage(transition: Transition): HookResult {
 
                 // no principal and not allowed to access the target state: redirect to default ANONYMOUS state
                 return getRoleBasedTargetState(principal.currentBerechtigung.role, transition.router.stateService);
-            })
+            }),
         ).toPromise();
 }
 
@@ -152,7 +153,7 @@ export function disableWhenDossierExists(transition: Transition): HookResult {
     const dossierService = transition.injector().get('DossierRS');
 
     return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()
-    // when there is a dossier, redirect to gesuchsteller.dashboard
+        // when there is a dossier, redirect to gesuchsteller.dashboard
         .then(() => transition.router.stateService.target('gesuchsteller.dashboard'))
         // when there is no dossier, continue entering the state
         .catch(() => true);

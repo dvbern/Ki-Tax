@@ -1310,8 +1310,12 @@
     "ANMELDESCHLUSS": "Fin de l'inscription",
     "FERIENINSEL_STAMMDATEN_INFO": "Veuillez insérer ici les dates de la Ferieninsel. Les inscriptions à cette Ferieninsel sont uniquement possibles si vous avez saisi au moins une période. ",
     "FERIENINSELZEITRAUM_ADD": "Ajouter la période",
+    "FERIENINSELZEITRAUM_DELETE": "",
+    "KEINE_FERIENINSELZEITRAUME": "",
+    "FERIENINSEL_TITLE": "Dates de l'îlot de vacances",
     "FERIENINSELSTAMMDATEN_SAVE": "Enregistrer",
-    "FERIENINSEL_TITLE": "Dates de la Ferieninsel",
+    "KEINE_FERIEN_DEFINIERT": "",
+    "ERROR_OVERLAPPING_ZEITRAUM": "",
     "EINTRITTSDATUM": "Date d'arrivée",
     "REGELN_GUELTIG_AB": "Autre date",
     "EKV_FIN_SIT_NOT_REQUIRED": "Veuillez ne pas saisir de baisse du revenu dans ce cas et cliquez sur \"Suivant\" pour continuer.",
@@ -1872,6 +1876,7 @@
     "BETREUUNG_TAGESSCHULE_ANMELDUNG_DEFINITIV": "Je prends connaissance que l'inscription est définitive",
     "BETREUUNG_TAGESSCHULE_ERLAEUTERUNG": "Explications concernant les modules",
     "TAGESSCHULE_NOCH_KEINE_MODULE": "Il n'y a pas encore de module configuré pour cette école à journée continue",
+    "TAGESSCHULE_MODULE_AUTOMATISCH_ZUGEWIESEN": "",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN": "Envoyer automatiquement des notifications par email lorsqu'une décision est prise",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP": "Lorsqu'une décision est prise un email de confirmation est alors automatiquement envoyé. Réglage recommandé: activé.",
     "BENACHRICHTIGUNGEN_EMAIL_SENDEN_JA": "Les notifications sont envoyées automatiquement par email lorsqu'une décision est prise",
@@ -1942,5 +1947,6 @@
     "INSTITUTION_TAGESSCHULE_TAGIS": "est une Tagi",
     "TAGESSCHULE_TAGIS_ENABLED": "Tagis activée",
     "TAGI": "Tagi",
+    "SCOLARIS_USERNAME": "Nom d'utilisateur scolaris",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

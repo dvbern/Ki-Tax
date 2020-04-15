@@ -54,7 +54,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 		@Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.einschulungsTypAnspruchsgrenze = einschulungsTypAnspruchsgrenze;
 	}
 
@@ -77,7 +77,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 					int anspruchVorRegel = inputData.getAnspruchspensumProzent();
 					inputData.setAnspruchspensumProzent(0);
 					inputData.setAnspruchspensumRest(anspruchVorRegel);
-					inputData.getParent().addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
+					inputData.getParent().getBemerkungenList().addBemerkung(getMsgKey(), getLocale());
 				}
 			}
 		}

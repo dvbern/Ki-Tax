@@ -19,7 +19,6 @@ import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
 
 describe('einkommensverschlechterungInfoView', () => {
 
@@ -36,8 +35,6 @@ describe('einkommensverschlechterungInfoView', () => {
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
-        const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
-        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
     }));

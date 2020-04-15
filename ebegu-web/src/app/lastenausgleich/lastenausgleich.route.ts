@@ -22,7 +22,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 lastenausgleichRun.$inject = ['RouterHelper'];
 
 export function lastenausgleichRun(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, []);
+    routerHelper.configureStates(ng1States);
 }
 
 const ng1States: Ng1StateDeclaration[] = [

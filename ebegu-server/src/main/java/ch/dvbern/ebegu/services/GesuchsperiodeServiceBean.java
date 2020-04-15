@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -100,9 +99,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	private DossierService dossierService;
 
 	@Inject
-	private FerieninselStammdatenService ferieninselStammdatenService;
-
-	@Inject
 	private EinstellungService einstellungService;
 
 	@Inject
@@ -110,6 +106,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private FerieninselStammdatenService ferieninselStammdatenService;
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
@@ -154,6 +153,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 				// Die Module der Tagesschulen sollen ebenfalls für die neue Gesuchsperiode übernommen werden
 				modulTagesschuleService.copyModuleTagesschuleToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
+
+				// Die Einstellungen der Ferieninseln sollen ebenfalls für die neue Gesuchsperiode übernommen werden
+				ferieninselStammdatenService.copyEinstellungenFerieninselToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode);
 
 				//Die Gemeinde Gesuchsperiode Stammdaten sollen auch für die neue Gesuchsperiode übernommen werden
 				gemeindeService.copyGesuchsperiodeGemeindeStammdaten(gesuchsperiode, lastGesuchsperiode);
@@ -274,12 +276,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				removeDossierIfEmpty(dossier, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 				removeFallIfEmpty(fall, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 			}
+			// TODO: FERIENINSEL. Remove Ferieninseln for periode
 			// FerieninselStammdaten dieser Gesuchsperiode loeschen
-			Collection<FerieninselStammdaten> ferieninselStammdatenList =
+/*			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
 				ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsPeriodeId);
-			for (FerieninselStammdaten ferieninselStammdaten : ferieninselStammdatenList) {
+			for (GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
-			}
+			}*/
 
 			// EinstellungenTagesschule dieser Gesuchsperiode loeschen
 			Collection<EinstellungenTagesschule> einstellungenTagesschuleList =

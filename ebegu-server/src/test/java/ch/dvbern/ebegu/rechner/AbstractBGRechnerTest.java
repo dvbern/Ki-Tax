@@ -66,6 +66,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
@@ -159,6 +161,14 @@ public abstract class AbstractBGRechnerTest {
 			MIN_TARIF, "0.78", gesuchsperiode);
 		einstellungen.put(MIN_TARIF, minTarifTs);
 
+		Einstellung gmdeMinEwpNichtEingeschult = new Einstellung(
+			GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
+		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gmdeMinEwpNichtEingeschult);
+
+		Einstellung gmdeMinEwpEingeschult = new Einstellung(
+			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
+		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gmdeMinEwpEingeschult);
+
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
 		return new BetreuungsgutscheinEvaluator(rules);
@@ -242,6 +252,7 @@ public abstract class AbstractBGRechnerTest {
 		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
 		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
 		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
+		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		return parameterDTO;
 	}
 
@@ -252,7 +263,7 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull LocalDate geburtsdatumKind,
 		@Nonnull LocalDate von,
 		@Nonnull LocalDate bis,
-		boolean eingeschult,
+		@Nonnull EinschulungTyp einschulungTyp,
 		boolean besondereBeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
@@ -265,7 +276,7 @@ public abstract class AbstractBGRechnerTest {
 		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
 		Kind kind = new Kind();
 		kind.setGeburtsdatum(geburtsdatumKind);
-		kind.setEinschulungTyp(eingeschult ? EinschulungTyp.KLASSE1 : EinschulungTyp.VORSCHULALTER);
+		kind.setEinschulungTyp(einschulungTyp);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
 		Gesuch gesuch = new Gesuch();

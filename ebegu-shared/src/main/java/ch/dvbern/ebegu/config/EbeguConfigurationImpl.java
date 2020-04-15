@@ -76,8 +76,9 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_LOGIN_API_INTERNAL_USER = "ebegu.login.api.internal.user";
 	private static final String EBEGU_LOGIN_API_INTERNAL_PASSWORD = "ebegu.login.api.internal.password";
 	private static final String EBEGU_FORCE_COOKIE_SECURE_FLAG = "ebegu.force.cookie.secure.flag";
-	private static final String EBEGU_LOGIN_API_SCHULAMT_USER = "ebegu.login.api.schulamt.user";
-	private static final String EBEGU_LOGIN_API_SCHULAMT_PASSWORD = "ebegu.login.api.schulamt.password";
+	private static final String EBEGU_LOGIN_API_KEYCLOACK_CLIENT = "ebegu.login.api.keycloack.client";
+	private static final String EBEGU_LOGIN_API_KEYCLOACK_PASSWORD = "ebegu.login.api.keycloack.password";
+	private static final String EBEGU_LOGIN_API_KEYCLOACK_AUTHSERVER = "ebegu.login.api.keycloack.authserver";
 	private static final String EBEGU_TESTFAELLE_ENABLED = "ebegu.testfaelle.enabled";
 	private static final String EBEGU_ADMINISTRATOR_MAIL = "ebegu.admin.mail";
 	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
@@ -214,13 +215,18 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
-	public String getSchulamtAPIUser() {
-		return getString(EBEGU_LOGIN_API_SCHULAMT_USER);
+	public String getKeycloackClient() {
+		return getString(EBEGU_LOGIN_API_KEYCLOACK_CLIENT);
 	}
 
 	@Override
-	public String getSchulamtAPIPassword() {
-		return getString(EBEGU_LOGIN_API_SCHULAMT_PASSWORD);
+	public String getKeycloackPassword() {
+		return getString(EBEGU_LOGIN_API_KEYCLOACK_PASSWORD);
+	}
+
+	@Override
+	public String getKeycloackAuthServer() {
+		return getString(EBEGU_LOGIN_API_KEYCLOACK_AUTHSERVER);
 	}
 
 	@Override

@@ -18,7 +18,7 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-/deep/ dv-accordion {
+::ng-deep dv-accordion {
     overflow: hidden;
     dv-accordion-tab {
         width: 100%;
@@ -114,4 +114,34 @@
             }
         }
     }
+}
+
+.ferien {
+    margin-bottom: 5rem;
+
+    .row.zeitabschnitt {
+        position: relative;
+
+        .remove-ferieninsel {
+            font-size: larger;
+        }
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .absolute-height {
+        height: 100%;
+        position: absolute;
+        right: 25%;
+        display: flex;
+        align-items: center;
+        padding-bottom: 24px;
+    }
+
+}
+
+#error-overlapping-zeitraum {
+    margin-bottom: 2rem;
 }

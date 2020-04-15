@@ -38,8 +38,21 @@ public enum MergeFieldVerrechnungKibon implements MergeFieldProvider {
 
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),
-	kinderTotal(new SimpleMergeField<>("kinderTotal", LONG_CONVERTER)),
-	kinderBereitsVerrechnet(new SimpleMergeField<>("kinderBereitsVerrechnet", LONG_CONVERTER)),
+
+	kinderKantonTotal(new SimpleMergeField<>("kinderKantonTotal", LONG_CONVERTER)),
+	kinderKantonBereitsVerrechnet(new SimpleMergeField<>("kinderKantonBereitsVerrechnet", LONG_CONVERTER)),
+	kinderBgTotal(new SimpleMergeField<>("kinderBgTotal", LONG_CONVERTER)),
+	kinderBgBereitsVerrechnet(new SimpleMergeField<>("kinderBgBereitsVerrechnet", LONG_CONVERTER)),
+	kinderTsTotal(new SimpleMergeField<>("kinderTsTotal", LONG_CONVERTER)),
+	kinderTsBereitsVerrechnet(new SimpleMergeField<>("kinderTsBereitsVerrechnet", LONG_CONVERTER)),
+	kinderKeinAngebotTotal(new SimpleMergeField<>("kinderKeinAngebotTotal", LONG_CONVERTER)),
+	kinderKeinAngebotBereitsVerrechnet(new SimpleMergeField<>("kinderKeinAngebotBereitsVerrechnet", LONG_CONVERTER)),
+	kinderGemeindeTotal(new SimpleMergeField<>("kinderGemeindeTotal", LONG_CONVERTER)),
+	kinderGemeindeBereitsVerrechnet(new SimpleMergeField<>("kinderGemeindeBereitsVerrechnet", LONG_CONVERTER)),
+	kinderFiTotal(new SimpleMergeField<>("kinderFiTotal", LONG_CONVERTER)),
+	kinderFiBereitsVerrechnet(new SimpleMergeField<>("kinderFiBereitsVerrechnet", LONG_CONVERTER)),
+	kinderTagiTotal(new SimpleMergeField<>("kinderTagiTotal", LONG_CONVERTER)),
+	kinderTagiBereitsVerrechnet(new SimpleMergeField<>("kinderTagiBereitsVerrechnet", LONG_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow"));
 

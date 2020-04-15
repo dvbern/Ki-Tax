@@ -275,6 +275,150 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Alternative Beschwerde-Adresse -->
+                        <div class="mt-5">
+                            <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE
+                                <dv-tooltip inputId="keineBeschwerdeAdresse_id"
+                                            [text]="'KEINE_BESCHWERDE_ADRESSE_TOOLTIP' | translate"></dv-tooltip>
+                            </h3>
+
+                            <div class="form-group">
+                                <mat-radio-group name="creationType"
+                                                 [(ngModel)]="stammdaten.standardRechtsmittelbelehrung"
+                                                 required>
+                                    <mat-radio-button [value]="true">{{'STANDARD_TEXT'|translate}}</mat-radio-button>
+                                    &nbsp;
+                                    <mat-radio-button [value]="false">{{'BENUTZERDEFINIERTER_TEXT'|translate}}
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                            <div class="row" *ngIf="!stammdaten.standardRechtsmittelbelehrung">
+                                <div class="col-sm-12">
+                                    <div class="form-group" *ngIf="stammdaten.korrespondenzspracheDe">
+
+                                        <label class="required" translate for="rechtsmittelbelehrung_deutsch_textarea">RECHTSMITTELBELEHRUNG_TEXT_DE</label>
+
+                                        <textarea md-no-autogrow
+                                                  class="form-control"
+                                                  rows="6"
+                                                  required
+                                                  maxlength="4000"
+                                                  id="rechtsmittelbelehrung_deutsch_textarea"
+												  #nameRechtmittelDE="ngModel"
+                                                  name="rechtsmittelbelehrung_deutsch_textarea"
+                                                  [(ngModel)]="stammdaten.rechtsmittelbelehrung.textDeutsch">
+                                                </textarea>
+                                        <dv-error-messages [errorObject]="nameRechtmittelDE.errors"
+                                                           inputId="rechtsmittelbelehrung_deutsch_textarea"></dv-error-messages>
+
+                                    </div>
+                                    <div class="form-group"
+                                         id="rechtsmittelbelehrung-franzoesisch"
+                                         *ngIf="stammdaten.korrespondenzspracheFr">
+
+                                        <label class="required" translate for="rechtsmittelbelehrung_franzoesisch_textarea">RECHTSMITTELBELEHRUNG_TEXT_FR</label>
+
+                                        <textarea md-no-autogrow
+                                                  class="form-control"
+                                                  rows="6"
+                                                  required
+                                                  maxlength="4000"
+                                                  id="rechtsmittelbelehrung_franzoesisch_textarea"
+												  #nameRechtmittelFR="ngModel"
+                                                  name="rechtsmittelbelehrung_franzoesisch_textarea"
+                                                  [(ngModel)]="stammdaten.rechtsmittelbelehrung.textFranzoesisch">
+                                                </textarea>
+                                        <dv-error-messages [errorObject]="nameRechtmittelFR.errors"
+                                                           inputId="rechtsmittelbelehrung_franzoesisch_textarea"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group checkbox-with-tooltip" *ngIf="stammdaten.standardRechtsmittelbelehrung">
+                                <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
+                                              [(ngModel)]="keineBeschwerdeAdresse"
+                                              (ngModelChange)="keineBeschwerdeAdresseChanged($event)">
+                                    {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
+                                </mat-checkbox>
+                            </div>
+                            <div *ngIf="!keineBeschwerdeAdresse && stammdaten.standardRechtsmittelbelehrung">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div>
+                                            <div class="form-group">
+                                                <label class="required"
+                                                       translate
+                                                       for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
+                                                <input id="anschrift_ba_id"
+                                                       type="text"
+                                                       name="anschrift_ba_id"
+													   #nameAnschriftBA="ngModel"
+                                                       [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
+                                                       [maxlength]="255"
+                                                       class="form-control"
+                                                       required
+                                                       placeholder="{{'ADRESSE_REGIERUNGSSTADTHALTERAMT_PLACEHOLDER'|translate}}">
+                                                <dv-error-messages [errorObject]="nameAnschriftBA.errors"
+                                                                   inputId="anschrift_ba_id"></dv-error-messages>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- Strasse -->
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <label class="required"
+                                                   translate
+                                                   for="strasse_ba_id">ADRESSE_STRASSE</label>
+                                            <input id="strasse_ba_id" type="text" name="strasse_ba_id" #nameStrasseBA="ngModel"
+                                                   [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
+                                                   [maxlength]="255" class="form-control" required>
+                                            <dv-error-messages [errorObject]="nameStrasseBA.errors"
+                                                               inputId="strasse_ba_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                    <!-- Hausnummer -->
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
+                                            <input id="hausnummer_ba_id"
+                                                   type="text"
+                                                   name="hausnummer_ba_id"
+												   #nameHausnummerBA="ngModel"
+                                                   [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
+                                                   [maxlength]="255"
+                                                   class="form-control">
+                                            <dv-error-messages [errorObject]="nameHausnummerBA.errors"
+                                                               inputId="hausnummer_ba_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- PLZ -->
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label class="required" translate for="plz_ba_id">ADRESSE_PLZ</label>
+                                            <input id="plz_ba_id" type="text" name="plz_ba_id" #namePLZBA="ngModel"
+                                                   [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
+                                                   [maxlength]="255" class="form-control" required>
+                                            <dv-error-messages [errorObject]="namePLZBA.errors"
+                                                               inputId="plz_ba_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                    <!-- Ort -->
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <label class="required" translate for="ort_ba_id">ADRESSE_ORT</label>
+                                            <input id="ort_ba_id" type="text" name="ort_ba_id" #nameOrtBA="ngModel"
+                                                   [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
+                                                   [maxlength]="255" class="form-control" required>
+                                            <dv-error-messages [errorObject]="nameOrtBA.errors"
+                                                               inputId="ort_ba_id"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -359,6 +503,65 @@
                                         <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="row">
                                                 <div class="col-sm-6">
+
+                                                    <!--                                                            Custom Minimale Erwerbspensen -->
+                                                    <div class="form-group">
+                                                        <mat-checkbox id="ewp_mininum_override_id_{{i}}"
+                                                                      name="ewp_mininum_override_id_{{i}}"
+                                                                      [(ngModel)]="konfigurationsListe[i].erwerbspensumMinimumOverriden"
+                                                                      (change)="changeKonfigErwerbspensumMinimumOverriden(konfigurationsListe[i])">
+                                                            <span translate
+                                                                  [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumVorschuleMax}">
+                                                                EWP_MINIUM_OVERRIDE
+                                                            </span>
+                                                        </mat-checkbox>
+                                                    </div>
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].erwerbspensumMinimumOverriden">
+                                                        <label for="ewp_mininum_vorschulalter_id{{i}}"
+                                                               class="required" translate
+                                                               [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumVorschuleMax}">
+                                                            EWP_MINIUM_VORSCHULKINDER_OVERRIDE</label>
+                                                        <input id="ewp_mininum_vorschulalter_id{{i}}"
+                                                               name="ewp_mininum_vorschulalter_id{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #ewp_mininum_vorschulalter='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [maxValue]="konfigurationsListe[i].erwerbspensumMiminumVorschuleMax"
+                                                               [(ngModel)]="konfigurationsListe[i].erwerbspensumMiminumVorschule"
+                                                               (change)="changeErwerbspensumMinimumVorschule(konfigurationsListe[i])">
+
+                                                        <dv-error-messages inputId="ewp_mininum_vorschulalter_id{{i}}"
+                                                                           [errorObject]="ewp_mininum_vorschulalter.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+                                                    <div class="form-group"
+                                                         *ngIf="konfigurationsListe[i].erwerbspensumMinimumOverriden">
+                                                        <label for="ewp_mininum_schulkind_id{{i}}"
+                                                               class="required" translate
+                                                               [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumSchulkinderMax}">
+                                                            EWP_MINIUM_SCHULKINDER_OVERRIDE</label>
+                                                        <input id="ewp_mininum_schulkind_id{{i}}"
+                                                               name="ewp_mininum_schulkind_id{{i}}"
+                                                               class="form-control"
+                                                               type="number"
+                                                               #ewp_mininum_schulkind='ngModel'
+                                                               required
+                                                               customMinMax
+                                                               [minValue]="0"
+                                                               [maxValue]="konfigurationsListe[i].erwerbspensumMiminumSchulkinderMax"
+                                                               [(ngModel)]="konfigurationsListe[i].erwerbspensumMiminumSchulkinder"
+                                                               (change)="changeErwerbspensumMinimumSchulkinder(konfigurationsListe[i])">
+
+                                                        <dv-error-messages inputId="ewp_mininum_schulkind_id{{i}}"
+                                                                           [errorObject]="ewp_mininum_schulkind.errors">
+                                                        </dv-error-messages>
+                                                    </div>
+
+
                                                     <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
                                                     <div class="form-group">
                                                         <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
@@ -926,7 +1129,7 @@
                         </div>
                     </div>
 
-                    <!-- Beschwerdeadresse -->
+                    <!-- Alternative Kontaktadresse -->
                     <div>
                         <div *ngIf="!altBGAdresse; else displayBGAdresse">
                             <div class="form-group">
@@ -945,6 +1148,32 @@
                             </div>
                         </ng-template>
                     </div>
+                    <!-- Beschwerdeadresse -->
+                    <div *ngIf="stammdaten.standardRechtsmittelbelehrung; else displayRechtsmittelbelehrung" class="mt-5">
+                        <div *ngIf="keineBeschwerdeAdresse; else displayBeschwerdeAdresse">
+                            <div class="form-group">
+                                <h3 translate>BESCHWERDE_ADRESSE</h3>
+                                <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
+                            </div>
+                        </div>
+                        <ng-template #displayBeschwerdeAdresse>
+                            <div class="form-group">
+                                <h3 translate>BESCHWERDE_ADRESSE</h3>
+                                <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
+                                <p>{{stammdaten.beschwerdeAdresse.strasse}}
+                                    {{stammdaten.beschwerdeAdresse.hausnummer}}</p>
+                                <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.beschwerdeAdresse.ort}}</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                    <ng-template #displayRechtsmittelbelehrung>
+                        <div class="form-group mt-5">
+                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_DE</h3>
+                            <p>{{stammdaten.rechtsmittelbelehrung.textDeutsch}}</p>
+                            <h3 translate>RECHTSMITTELBELEHRUNG_TEXT_FR</h3>
+                            <p>{{stammdaten.rechtsmittelbelehrung.textFranzoesisch}}</p>
+                        </div>
+                    </ng-template>
                 </div>
 
             </div>
@@ -967,7 +1196,7 @@
                                 <tab-body>
                                     <div class="row">
                                         <!-- readonly -->
-                                        <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
+                                        <div *ngIf="!isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-12">
                                             <div class="form-group">
                                                 <!-- BG bis Schulstufe -->
                                                 <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
@@ -975,14 +1204,30 @@
                                                 <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
                                                    class="line-through">{{getKonfigKontingentierungString()}}</p>
                                                 <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
+                                                <!-- Erwerbspensum Zuschlag -->
                                                 <p *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
-                                                <span translate
-                                                      [translateParams]="{valueMandant:
-                                                  konfigurationsListe[i].erwerbspensumZuschlagMax, value:
-                                                  konfigurationsListe[i].erwerbspensumZuschlag}">
-                                                    EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
-                                                </span>
+                                                    <span translate
+                                                          [translateParams]="{valueMandant:
+                                                      konfigurationsListe[i].erwerbspensumZuschlagMax, value:
+                                                      konfigurationsListe[i].erwerbspensumZuschlag}">
+                                                        EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
+                                                    </span>
                                                 </p>
+                                                <!-- Minimale Erwerbspensen -->
+                                                <p *ngIf="konfigurationsListe[i].erwerbspensumMinimumOverriden">
+                                                    <span translate
+                                                          [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumVorschuleMax,
+                                                                            value: konfigurationsListe[i].erwerbspensumMiminumVorschule}">
+                                                        EWP_MINIUM_VORSCHULKINDER_OVERRIDE_WITH_VALUE
+                                                    </span>
+                                                    <br/>
+                                                    <span translate
+                                                          [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumMiminumSchulkinderMax,
+                                                                            value: konfigurationsListe[i].erwerbspensumMiminumSchulkinder}">
+                                                        EWP_MINIUM_SCHULKINDER_OVERRIDE_WITH_VALUE
+                                                    </span>
+                                                </p>
+                                                <!-- Zusaetzlicher Gutschein der Gemeinde -->
                                                 <div *ngIf="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
                                                      class="mt-2">
                                                     <strong>{{'ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE' | translate}}

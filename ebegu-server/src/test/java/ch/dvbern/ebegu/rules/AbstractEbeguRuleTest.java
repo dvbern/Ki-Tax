@@ -45,8 +45,8 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractEbeguRuleTest {
 
 	private final DateRange defaultGueltigkeit = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
-	private final ErwerbspensumAbschnittRule erwerbspensumRule =
-		new ErwerbspensumAbschnittRule(defaultGueltigkeit, Constants.DEFAULT_LOCALE);
+	private final ErwerbspensumAsivAbschnittRule erwerbspensumRule =
+		new ErwerbspensumAsivAbschnittRule(defaultGueltigkeit, Constants.DEFAULT_LOCALE);
 
 	private static final LocalDate DATUM_1 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.APRIL, 1);
 	private static final LocalDate DATUM_2 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.SEPTEMBER, 1);
@@ -64,7 +64,7 @@ public class AbstractEbeguRuleTest {
 		betreuungspensen.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		betreuungspensen = erwerbspensumRule.mergeZeitabschnitte(betreuungspensen);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuungspensen) {
-			verfuegungZeitabschnitt.copyValuesToResult();
+			verfuegungZeitabschnitt.initBGCalculationResult();
 		}
 		// 01.01.1900 - DATUM2-1: 50, DATUM2 - DATUM4: 70, DATUM4+1 - 31.12.9999: 50
 
@@ -73,7 +73,7 @@ public class AbstractEbeguRuleTest {
 		erwerbspensen.add(createErwerbspensum(DATUM_2, DATUM_4, 60));
 		erwerbspensen = erwerbspensumRule.mergeZeitabschnitte(erwerbspensen);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : erwerbspensen) {
-			verfuegungZeitabschnitt.copyValuesToResult();
+			verfuegungZeitabschnitt.initBGCalculationResult();
 		}
 		// DATUM1 - DATUM2-1: 40, DATUM2 - DATUM3: 100, DATUM3+1 - DATUM 4: 60
 
@@ -82,7 +82,7 @@ public class AbstractEbeguRuleTest {
 		alles.addAll(erwerbspensen);
 		List<VerfuegungZeitabschnitt> result = erwerbspensumRule.mergeZeitabschnitte(alles);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
-			verfuegungZeitabschnitt.copyValuesToResult();
+			verfuegungZeitabschnitt.initBGCalculationResult();
 		}
 		// 01.01.1900 - DATUM1-1, DATUM1 - DATUM2-1, DATUM2 - DATUM3, DATUM3+1 - DATUM 4,  DATUM4+1 - 31.12.9999
 
@@ -169,7 +169,7 @@ public class AbstractEbeguRuleTest {
 		zeitabschnitte.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		List<VerfuegungZeitabschnitt> result = erwerbspensumRule.mergeZeitabschnitte(zeitabschnitte);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : result) {
-			verfuegungZeitabschnitt.copyValuesToResult();
+			verfuegungZeitabschnitt.initBGCalculationResult();
 		}
 
 		Assert.assertNotNull(result);
@@ -379,13 +379,13 @@ public class AbstractEbeguRuleTest {
 
 		final String bemerkungen = zeitabschnitt.getBemerkungen();
 		if (expectedBemerkungIfAny != null) {
-			Assert.assertFalse(zeitabschnitt.getBemerkungenMap().isEmpty());
-			Assert.assertTrue(zeitabschnitt.getBemerkungenMap().containsKey(expectedBemerkungIfAny));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(expectedBemerkungIfAny));
 		} else {
 			assertNotNull(bemerkungen);
-			Assert.assertFalse(zeitabschnitt.getBemerkungenMap().isEmpty());
-			Assert.assertEquals(1, zeitabschnitt.getBemerkungenMap().size());
-			Assert.assertTrue(zeitabschnitt.getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
+			Assert.assertEquals(1, zeitabschnitt.getBemerkungenList().size());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		}
 	}
 }

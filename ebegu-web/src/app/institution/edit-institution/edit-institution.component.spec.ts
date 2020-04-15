@@ -55,9 +55,8 @@ describe('EditInstitutionComponent', () => {
             declarations: [EditInstitutionComponent],
         }).compileComponents();
 
-        traegerschaftServiceSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
-        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
-        stammdatenServiceSpy.findInstitutionStammdaten.and.returnValue(Promise.resolve([]));
+        traegerschaftServiceSpy.getAllActiveTraegerschaften.and.resolveTo([]);
+        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.resolveTo([]);
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));
