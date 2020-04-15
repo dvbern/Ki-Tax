@@ -40,7 +40,6 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	abTitle(new SimpleMergeField<>("abTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
-	nichtFreigegebenAnzahl(new SimpleMergeField<>("nichtFreigegebenAnzahl", INTEGER_CONVERTER)),
 	wochentagMo(new SimpleMergeField<>("wochentagMo", STRING_CONVERTER)),
 	wochentagDi(new SimpleMergeField<>("wochentagDi", STRING_CONVERTER)),
 	wochentagMi(new SimpleMergeField<>("wochentagMi", STRING_CONVERTER)),
@@ -48,6 +47,8 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	wochentagFr(new SimpleMergeField<>("wochentagFr", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
+	repeatRow2(new RepeatRowMergeField("repeatRow2")),
+
 	nachnameKind(new SimpleMergeField<>("nachnameKind", STRING_CONVERTER)),
 	vornameKind(new SimpleMergeField<>("vornameKind", STRING_CONVERTER)),
 	geburtsdatumKind(new SimpleMergeField<>("geburtsdatumKind", DATE_CONVERTER)),

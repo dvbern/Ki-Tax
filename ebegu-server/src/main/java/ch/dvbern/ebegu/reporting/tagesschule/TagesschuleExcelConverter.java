@@ -97,8 +97,14 @@ public class TagesschuleExcelConverter implements ExcelConverter {
 
 			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
 		});
+		// wenn das Gesuch noch nicht freigegeben wurde, soll das Kind anonym erscheinen
+		nichtFreigegebeneGesuche.forEach(dataRow -> {
+			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschule.repeatRow2);
+			excelRowGroup.addValue(MergeFieldTagesschule.nachnameKind, ServerMessageUtil.getMessage("Reports_anonym", locale));
+			excelRowGroup.addValue(MergeFieldTagesschule.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
 
-		excelMerger.addValue(MergeFieldTagesschule.nichtFreigegebenAnzahl, nichtFreigegebeneGesuche.size());
+			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
+		});
 
 		return excelMerger;
 	}
