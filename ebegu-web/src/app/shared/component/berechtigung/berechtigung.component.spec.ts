@@ -50,8 +50,8 @@ describe('BerechtigungComponent', () => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue([]);
-        traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
+        traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
 
         TestBed.configureTestingModule({

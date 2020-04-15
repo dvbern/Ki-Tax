@@ -79,9 +79,9 @@ describe('AddGemeindeComponent', () => {
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeParis(), TestDataUtil.createGemeindeLondon()]));
-        gemeindeServiceSpy.getUnregisteredBfsGemeinden.and.returnValue([]);
+        gemeindeServiceSpy.getUnregisteredBfsGemeinden.and.resolveTo([]);
         transitionSpy.params.and.returnValue({});
-        gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
+        gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.resolveTo([]);
         authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
     }));
 

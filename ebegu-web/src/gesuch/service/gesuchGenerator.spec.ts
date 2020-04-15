@@ -27,7 +27,6 @@ import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSDossier} from '../../models/TSDossier';
 import {TSFall} from '../../models/TSFall';
 import {TSGemeinde} from '../../models/TSGemeinde';
-import {TSGesuch} from '../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {DossierRS} from './dossierRS.rest';
@@ -68,7 +67,7 @@ describe('gesuchGenerator', () => {
 
         const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
             ['loadLastStatusChange']);
-        antragStatusHistoryServiceSpy.loadLastStatusChange.and.callFake((gesuch: TSGesuch) => Promise.resolve(gesuch));
+        antragStatusHistoryServiceSpy.loadLastStatusChange.and.resolveTo();
 
         const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, {
             findGesuchsperiode: Promise.resolve(gesuchsperiode),

@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
+import {Transition} from '@uirouter/core';
 import {Ng1StateDeclaration, StateProvider, UIRouter} from '@uirouter/angularjs';
 import {ILocationProvider, IServiceProvider} from 'angular';
 
@@ -23,11 +23,8 @@ export class RouterHelper {
     public constructor(public stateProvider: StateProvider, public uiRouterProvider: UIRouter) {
     }
 
-    public configureStates(legacy: Ng1StateDeclaration[] = [], states: Ng2StateDeclaration[] = []): void {
+    public configureStates(legacy: Ng1StateDeclaration[] = []): void {
         legacy.forEach(state => {
-            this.stateProvider.state(state);
-        });
-        states.forEach(state => {
             this.stateProvider.state(state);
         });
 
