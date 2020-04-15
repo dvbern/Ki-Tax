@@ -163,7 +163,7 @@ public class ScolarisBackendResource {
 
 				//check if Gemeinde Scolaris erlaubt:
 				if (!this.isScolarisAktiviert(anmeldungTagesschule, request)) {
-					return createResponseUnauthorised("username");
+					return createResponseUnauthorised("Username not allowed for this Gemeinde");
 				}
 
 				if (anmeldungTagesschule.isKeineDetailinformationen()) {
