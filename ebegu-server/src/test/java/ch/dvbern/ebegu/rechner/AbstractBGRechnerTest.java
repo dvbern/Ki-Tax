@@ -68,6 +68,7 @@ import org.junit.Before;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_TARIF;
@@ -168,6 +169,10 @@ public abstract class AbstractBGRechnerTest {
 		Einstellung gmdeMinEwpEingeschult = new Einstellung(
 			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
 		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gmdeMinEwpEingeschult);
+
+		Einstellung gmdeMaxFreiwilligenarbeit = new Einstellung(
+			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, "20", gesuchsperiode);
+		einstellungen.put(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, gmdeMaxFreiwilligenarbeit);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
