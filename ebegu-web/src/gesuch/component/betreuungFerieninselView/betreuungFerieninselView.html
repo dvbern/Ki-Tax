@@ -51,10 +51,10 @@
                 </div>
             </div>
             <!-- Noch nicht abgeschickt: Tage auswaehlbar -->
-            <div class="row marginTop30">
+            <div class="row"
+                 ng-if="!vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
                 <div class="col-sm-12 dv-input-container-medium form-group">
-                    <div class="dv-ebegu-calendar__container"
-                         ng-if="!vm.isAnmeldeschlussAbgelaufen() && vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
+                    <div class="dv-ebegu-calendar__container">
                         <div class="dv-ebegu-calendar__container-weekdays">
                             <div class="dv-ebegu-calendar__weekday dv-ebegu-calendar__weekday--{{day}}"
                                  ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
@@ -80,11 +80,10 @@
                     </div>
                 </div>
             </div>
-            <div class="row marginTop30">
+            <div class="row" ng-if="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
                 <div class="col-sm-12 dv-input-container-medium form-group">
                     <!-- Abgeschickt: Liste der gewaehlten Tage readonly -->
-                    <div class="dv-ebegu-calendar__container"
-                         ng-if="!vm.betreuung.isEnabled() || vm.isFreigabequittungAusstehend()">
+                    <div class="dv-ebegu-calendar__container">
                         <div class="dv-ebegu-calendar__container-weekdays">
                             <div class="dv-ebegu-calendar__weekday"
                                  ng-repeat="day in vm.getMomentWeekdays()">{{ day | translate}}
