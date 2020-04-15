@@ -216,7 +216,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			return Optional.empty();
 		}
 		if (criteriaResults.size() > 1) {
-			throw new EbeguRuntimeException("findEinstellungByMandantGemeindeOrSystem", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+			throw new EbeguRuntimeException("findEinstellungByMandantGemeindeOrSystem", "For Key " + key, ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
 		return Optional.of(criteriaResults.get(0));
 	}

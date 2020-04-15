@@ -1558,8 +1558,6 @@ public final class TestDataUtil {
 			persistence);
 		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode, persistence);
-		saveEinstellung(
-			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, "20", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

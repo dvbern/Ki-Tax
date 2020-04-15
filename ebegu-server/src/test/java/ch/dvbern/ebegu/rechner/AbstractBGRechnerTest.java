@@ -171,7 +171,7 @@ public abstract class AbstractBGRechnerTest {
 		einstellungen.put(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gmdeMinEwpEingeschult);
 
 		Einstellung gmdeMaxFreiwilligenarbeit = new Einstellung(
-			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, "20", gesuchsperiode);
+			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, "0", gesuchsperiode);
 		einstellungen.put(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, gmdeMaxFreiwilligenarbeit);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
