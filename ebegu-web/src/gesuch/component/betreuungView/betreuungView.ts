@@ -1156,7 +1156,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isBetreuungInGemeindeRequired(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
-            && !this.isTagesschule()
+            && !this.isSchulamt()
             && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled;
     }
 
