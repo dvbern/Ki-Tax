@@ -64,7 +64,7 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull AnmeldungTagesschule anmeldungTagesschule){
 		// Tageschulanmeldungen gelten immer fuer die ganze Gesuchsperiode
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(anmeldungTagesschule.extractGesuchsperiode().getGueltigkeit());
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(anmeldungTagesschule.extractGesuchsperiode().getGueltigkeit());
 		Objects.requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
 
 		long dauerProWocheInMinutenMitBetreuung = 0;

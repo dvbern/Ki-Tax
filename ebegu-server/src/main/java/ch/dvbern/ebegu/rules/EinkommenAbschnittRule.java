@@ -63,7 +63,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			VerfuegungZeitabschnitt lastAbschnitt;
 
 			// Abschnitt Finanzielle Situation (Massgebendes Einkommen fuer die Gesuchsperiode)
-			VerfuegungZeitabschnitt abschnittFinanzielleSituation = new VerfuegungZeitabschnitt(platz.extractGesuchsperiode().getGueltigkeit());
+			VerfuegungZeitabschnitt abschnittFinanzielleSituation = createZeitabschnittWithinValidityPeriodOfRule(platz.extractGesuchsperiode().getGueltigkeit());
 			einkommensAbschnitte.add(abschnittFinanzielleSituation);
 			lastAbschnitt = abschnittFinanzielleSituation;
 
@@ -71,7 +71,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			if (finanzDatenDTOAlleine.isEkv1Erfasst() || finanzDatenDTOZuZweit.isEkv1Erfasst()) {
 				int jahr = platz.extractGesuchsperiode().getBasisJahrPlus1();
 				DateRange rangeEKV1 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
-				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
+				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = createZeitabschnittWithinValidityPeriodOfRule(rangeEKV1);
 
 				// EKV1 fuer alleine erfasst
 				abschnittEinkommensverschlechterung1.setEkv1AlleineForAsivAndGemeinde(finanzDatenDTOAlleine.isEkv1Erfasst());
@@ -88,7 +88,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			if (finanzDatenDTOAlleine.isEkv2Erfasst() || finanzDatenDTOZuZweit.isEkv2Erfasst()) {
 				int jahr = platz.extractGesuchsperiode().getBasisJahrPlus2();
 				DateRange rangeEKV2 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
-				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
+				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = createZeitabschnittWithinValidityPeriodOfRule(rangeEKV2);
 
 				// EKV2 fuer alleine erfasst
 				abschnittEinkommensverschlechterung2.setEkv2AlleineForAsivAndGemeinde(finanzDatenDTOAlleine.isEkv2Erfasst());

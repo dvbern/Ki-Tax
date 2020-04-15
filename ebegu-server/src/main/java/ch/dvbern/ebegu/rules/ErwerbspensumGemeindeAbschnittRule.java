@@ -59,7 +59,7 @@ public class ErwerbspensumGemeindeAbschnittRule extends ErwerbspensumAbschnittRu
 	) {
 		Optional<DateRange> gueltigkeitOverlap = gueltigkeit.getOverlap(new DateRange(validFrom(), validTo()));
 		if (gueltigkeitOverlap.isPresent()) {
-			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeitOverlap.get());
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeitOverlap.get());
 			zeitabschnitt.getBgCalculationInputGemeinde().getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
 			Integer limitedPensum = erwerbspensum.getPensum();
 			if (limitedPensum > maximalpensumFreiwilligenarbeit) {

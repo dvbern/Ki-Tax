@@ -94,6 +94,12 @@ public abstract class AbstractEbeguRule implements Rule {
 		return validityPeriod.contains(stichtag);
 	}
 
+	@Nonnull
+	@Override
+	public DateRange validityPeriod() {
+		return validityPeriod;
+	}
+
 	@Override
 	@Nonnull
 	public RuleType getRuleType() {
@@ -127,7 +133,7 @@ public abstract class AbstractEbeguRule implements Rule {
 			List<VerfuegungZeitabschnitt> zwischenresultate = createVerfuegungsZeitabschnitte(platz);
 			// Wir duerfen nur neue Abschnitte verwenden, welche ueberhaupt gueltig sind
 			for (VerfuegungZeitabschnitt zeitabschnitt : zwischenresultate) {
-				limitZeitabschnittToGueltigkeitRegel(zeitabschnitt);
+				validateZeitabschnittGueltigkeit(zeitabschnitt);
 			}
 			// Wenn es eine ASIV Rule ist, gilt sie fuer die Gemeinde genau gleich, die Ergebnisse (nur
 			// genau dieser Rule) muessen identisch sein
@@ -139,12 +145,20 @@ public abstract class AbstractEbeguRule implements Rule {
 		return new ArrayList<>();
 	}
 
-	private void limitZeitabschnittToGueltigkeitRegel(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+	private void validateZeitabschnittGueltigkeit(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		boolean valid = true;
 		if (zeitabschnitt.getGueltigkeit().startsBefore(this.validityPeriod)) {
-			zeitabschnitt.getGueltigkeit().setGueltigAb(this.validityPeriod.getGueltigAb());
+			valid = false;
 		}
 		if (zeitabschnitt.getGueltigkeit().endsAfter(this.validityPeriod)) {
-			zeitabschnitt.getGueltigkeit().setGueltigBis(this.validityPeriod.getGueltigBis());
+			valid = false;
+		}
+		if (!valid) {
+			String msg =
+				"Regel " + this.ruleKey + " has invalid Zeitabschnitte. Rule " +
+					this.validityPeriod.toRangeString() + ", Abschnitt: " +
+					zeitabschnitt.getGueltigkeit().toRangeString();
+			throw new EbeguRuntimeException("validateZeitabschnittGueltigkeit", msg);
 		}
 	}
 

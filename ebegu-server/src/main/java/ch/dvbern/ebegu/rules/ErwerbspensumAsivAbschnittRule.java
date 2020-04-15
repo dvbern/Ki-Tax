@@ -49,7 +49,7 @@ public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 	@Nullable
 	@Override
 	protected VerfuegungZeitabschnitt createZeitAbschnitt(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum, boolean isGesuchsteller1) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
 		if (isGesuchsteller1) {
 			zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());

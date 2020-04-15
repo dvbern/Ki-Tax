@@ -145,7 +145,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull LocalDate dateAb,
 		@Nonnull LocalDate dateBis
 	) {
-		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(new DateRange(dateAb, dateBis));
+		VerfuegungZeitabschnitt abschnitt = createZeitabschnittWithinValidityPeriodOfRule(new DateRange(dateAb, dateBis));
 		abschnitt.setHasSecondGesuchstellerForFinanzielleSituationForAsivAndGemeinde(
 			familiensituation.hasSecondGesuchsteller(
 				// it must be checked at the end of the zeitabschnitt

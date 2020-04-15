@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Interface für alle Berechnungs-Regeln in Ki-Tax.
@@ -39,6 +40,12 @@ public interface Rule {
 	 */
 	@Nonnull
 	LocalDate validTo();
+
+	/**
+	 * @return DateRange, in welchem die Regel gilt
+	 */
+	@Nonnull
+	DateRange validityPeriod();
 
 	/**
 	 * @return true wenn die Regel am Strichtag gueltig sit
