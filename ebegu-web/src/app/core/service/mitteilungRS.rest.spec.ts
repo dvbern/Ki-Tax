@@ -88,7 +88,6 @@ describe('MitteilungRS', () => {
             const mitteilung = new TSBetreuungsmitteilung();
             mitteilung.id = '987654321';
 
-            spyOn(ebeguRestUtil, 'parseBetreuungsmitteilung').and.returnValue(betreuung);
             const url = `${mitteilungRS.serviceURL}/applybetreuungsmitteilung/${mitteilung.id}`;
             $httpBackend.expectPUT(url, null).respond($q.when({id: '123456'}));
 

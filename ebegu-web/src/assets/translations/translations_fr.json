@@ -1314,6 +1314,8 @@
     "KEINE_FERIENINSELZEITRAUME": "",
     "FERIENINSEL_TITLE": "Dates de l'îlot de vacances",
     "FERIENINSELSTAMMDATEN_SAVE": "Enregistrer",
+    "KEINE_FERIEN_DEFINIERT": "",
+    "ERROR_OVERLAPPING_ZEITRAUM": "",
     "EINTRITTSDATUM": "Date d'arrivée",
     "REGELN_GUELTIG_AB": "Autre date",
     "EKV_FIN_SIT_NOT_REQUIRED": "Veuillez ne pas saisir de baisse du revenu dans ce cas et cliquez sur \"Suivant\" pour continuer.",
@@ -1945,5 +1947,6 @@
     "INSTITUTION_TAGESSCHULE_TAGIS": "est une Tagi",
     "TAGESSCHULE_TAGIS_ENABLED": "Tagis activée",
     "TAGI": "Tagi",
+    "SCOLARIS_USERNAME": "Nom d'utilisateur scolaris",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

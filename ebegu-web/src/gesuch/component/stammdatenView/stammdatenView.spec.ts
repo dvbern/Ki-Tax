@@ -46,7 +46,6 @@ describe('stammdatenView', () => {
     beforeEach(async(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
-        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         $stateParams = $injector.get('$stateParams');
         $stateParams.gesuchstellerNumber = '1';
         gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);

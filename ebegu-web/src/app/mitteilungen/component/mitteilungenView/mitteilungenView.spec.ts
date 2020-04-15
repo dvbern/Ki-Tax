@@ -190,8 +190,8 @@ describe('mitteilungenView', () => {
     function createMitteilungForUser(user: TSBenutzer): void {
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(user);
         spyOn(dossierRS, 'findDossier').and.returnValue($q.when(dossier));
-        spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.when([{}]));
-        spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.when([{}]));
+        spyOn(mitteilungRS, 'getMitteilungenOfDossierForCurrentRolle').and.returnValue($q.resolve([]));
+        spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.resolve([]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
             $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
             dossierRS, undefined);

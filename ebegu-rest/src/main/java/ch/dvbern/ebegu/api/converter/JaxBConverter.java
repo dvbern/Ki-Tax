@@ -74,6 +74,7 @@ import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellungenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellungenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxEnversRevision;
 import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuung;
@@ -164,6 +165,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
@@ -1637,12 +1639,30 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxInstitutionStammdatenFerieninsel();
 		convertAbstractFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
 		jaxInstStammdatenFerieninsel.setGemeinde(gemeindeToJAX(persistedInstStammdatenFerieninsel.getGemeinde()));
-		jaxInstStammdatenFerieninsel.setAusweichstandortFruehlingsferien(persistedInstStammdatenFerieninsel.getAusweichstandortFruehlingsferien());
-		jaxInstStammdatenFerieninsel.setAusweichstandortHerbstferien(persistedInstStammdatenFerieninsel.getAusweichstandortHerbstferien());
-		jaxInstStammdatenFerieninsel.setAusweichstandortSommerferien(persistedInstStammdatenFerieninsel.getAusweichstandortSommerferien());
-		jaxInstStammdatenFerieninsel.setAusweichstandortSportferien(persistedInstStammdatenFerieninsel.getAusweichstandortSportferien());
+
+		jaxInstStammdatenFerieninsel.setEinstellungenFerieninsel(
+			persistedInstStammdatenFerieninsel.getEinstellungenFerieninsel()
+				.stream()
+				.map(this::einstellungFerieninselToJAX)
+				.collect(Collectors.toSet())
+		);
 
 		return jaxInstStammdatenFerieninsel;
+	}
+
+	@Nonnull
+	private JaxEinstellungenFerieninsel einstellungFerieninselToJAX (
+		@Nonnull final EinstellungenFerieninsel persistedEinstellungFerieninsel
+	) {
+		JaxEinstellungenFerieninsel jaxEinstellungFI = new JaxEinstellungenFerieninsel();
+		convertAbstractFieldsToJAX(persistedEinstellungFerieninsel, jaxEinstellungFI);
+		jaxEinstellungFI.setAusweichstandortFruehlingsferien(persistedEinstellungFerieninsel.getAusweichstandortFruehlingsferien());
+		jaxEinstellungFI.setAusweichstandortHerbstferien(persistedEinstellungFerieninsel.getAusweichstandortHerbstferien());
+		jaxEinstellungFI.setAusweichstandortSommerferien(persistedEinstellungFerieninsel.getAusweichstandortSommerferien());
+		jaxEinstellungFI.setAusweichstandortSportferien(persistedEinstellungFerieninsel.getAusweichstandortSportferien());
+		jaxEinstellungFI.setGesuchsperiode(gesuchsperiodeToJAX(persistedEinstellungFerieninsel.getGesuchsperiode()));
+
+		return jaxEinstellungFI;
 	}
 
 	@Nullable
@@ -1668,12 +1688,66 @@ public class JaxBConverter extends AbstractConverter {
 				gemeindeID));
 		institutionStammdatenFerieninsel.setGemeinde(gemeinde);
 
-		institutionStammdatenFerieninsel.setAusweichstandortFruehlingsferien(institutionStammdatenFerieninselJAXP.getAusweichstandortFruehlingsferien());
-		institutionStammdatenFerieninsel.setAusweichstandortHerbstferien(institutionStammdatenFerieninselJAXP.getAusweichstandortHerbstferien());
-		institutionStammdatenFerieninsel.setAusweichstandortSommerferien(institutionStammdatenFerieninselJAXP.getAusweichstandortSommerferien());
-		institutionStammdatenFerieninsel.setAusweichstandortSportferien(institutionStammdatenFerieninselJAXP.getAusweichstandortSportferien());
+		Set<EinstellungenFerieninsel> convertedEinstellungenFerieninsel = einstellungenTagesschuleListToEntity(
+				institutionStammdatenFerieninselJAXP.getEinstellungenFerieninsel(),
+				institutionStammdatenFerieninsel.getEinstellungenFerieninsel(),
+				institutionStammdatenFerieninsel);
+
+		institutionStammdatenFerieninsel.getEinstellungenFerieninsel().clear();
+		institutionStammdatenFerieninsel.getEinstellungenFerieninsel().addAll(convertedEinstellungenFerieninsel);
 
 		return institutionStammdatenFerieninsel;
+	}
+
+	@Nonnull
+	private Set<EinstellungenFerieninsel> einstellungenTagesschuleListToEntity(
+		@Nonnull Set<JaxEinstellungenFerieninsel> jaxEinstellungenFerieninselSet,
+		@Nonnull Set<EinstellungenFerieninsel> einstellungenFerieninselSet,
+		@Nonnull InstitutionStammdatenFerieninsel owner) {
+
+		final Set<EinstellungenFerieninsel> convertedEinstellungen = new TreeSet<>();
+		for (final JaxEinstellungenFerieninsel jaxEinstellung : jaxEinstellungenFerieninselSet) {
+			final EinstellungenFerieninsel einstellungenToMergeWith = einstellungenFerieninselSet
+				.stream()
+				.filter(existingEinstellung -> existingEinstellung.getId().equals(jaxEinstellung.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElseGet(EinstellungenFerieninsel::new);
+			final EinstellungenFerieninsel einstellungToAdd =
+				einstellungFerieninselToEntity(jaxEinstellung, einstellungenToMergeWith);
+			einstellungToAdd.setInstitutionStammdatenFerieninsel(owner);
+			final boolean added = convertedEinstellungen.add(einstellungToAdd);
+			if (!added) {
+				LOGGER.warn("dropped duplicate EinstellungenTagesschule {}", einstellungToAdd);
+			}
+		}
+		return convertedEinstellungen;
+	}
+
+	@Nonnull
+	private EinstellungenFerieninsel einstellungFerieninselToEntity (
+		@Nonnull final JaxEinstellungenFerieninsel jaxEinstellungFerieninsel,
+		@Nonnull EinstellungenFerieninsel einstellungFerieninsel
+	) {
+
+		convertAbstractFieldsToEntity(jaxEinstellungFerieninsel, einstellungFerieninsel);
+
+		einstellungFerieninsel.setAusweichstandortFruehlingsferien(jaxEinstellungFerieninsel.getAusweichstandortFruehlingsferien());
+		einstellungFerieninsel.setAusweichstandortHerbstferien(jaxEinstellungFerieninsel.getAusweichstandortHerbstferien());
+		einstellungFerieninsel.setAusweichstandortSommerferien(jaxEinstellungFerieninsel.getAusweichstandortSommerferien());
+		einstellungFerieninsel.setAusweichstandortSportferien(jaxEinstellungFerieninsel.getAusweichstandortSportferien());
+
+
+		// Die Gesuchsperiode muss neu von der DB gelesen werden
+		String gesuchsperiodeId = jaxEinstellungFerieninsel.getGesuchsperiode().getId();
+		Objects.requireNonNull(gesuchsperiodeId);
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"einstellungenTagesschuleToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId));
+		einstellungFerieninsel.setGesuchsperiode(gesuchsperiode);
+
+		return einstellungFerieninsel;
 	}
 
 	public JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschuleToJAX(
@@ -4374,6 +4448,11 @@ public class JaxBConverter extends AbstractConverter {
 				.orElseGet(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum::new);
 			final GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraumToAdd =
 				(GemeindeStammdatenGesuchsperiodeFerieninselZeitraum) convertAbstractDateRangedFieldsToEntity(zeitraumJAX, zeitraumToMergeWith);
+
+			// only save a Zeitraum if the dates are set
+			requireNonNull(zeitraumToAdd.getGueltigkeit().getGueltigAb());
+			requireNonNull(zeitraumToAdd.getGueltigkeit().getGueltigBis());
+
 			final boolean added = transformedZeitraeume.add(zeitraumToAdd);
 			if (!added) {
 				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", zeitraumToAdd);
@@ -4615,6 +4694,8 @@ public class JaxBConverter extends AbstractConverter {
 				stammdaten.getRechtsmittelbelehrung()));
 		}
 
+		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
+
 		return stammdaten;
 	}
 
@@ -4699,6 +4780,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
 			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
 		}
+
+		jaxStammdaten.setUsernameScolaris(stammdaten.getUsernameScolaris());
 
 		return jaxStammdaten;
 	}
@@ -4801,10 +4884,23 @@ public class JaxBConverter extends AbstractConverter {
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 
+		Collection<Einstellung> einstellungenByMandant = einstellungService.getAllEinstellungenByMandant(gesuchsperiode);
 		konfiguration.setErwerbspensumZuschlagMax(
-			einstellungService.getAllEinstellungenByMandant(gesuchsperiode).stream()
+			einstellungenByMandant.stream()
 				.filter(einstellung ->
-					einstellung.getKey().equals(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG))
+					einstellung.getKey() == EinstellungKey.ERWERBSPENSUM_ZUSCHLAG)
+				.findFirst().get().getValueAsInteger()
+		);
+		konfiguration.setErwerbspensumMiminumVorschuleMax(
+			einstellungenByMandant.stream()
+				.filter(einstellung ->
+					einstellung.getKey() == EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT)
+				.findFirst().get().getValueAsInteger()
+		);
+		konfiguration.setErwerbspensumMiminumSchulkinderMax(
+			einstellungenByMandant.stream()
+				.filter(einstellung ->
+					einstellung.getKey() == EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT)
 				.findFirst().get().getValueAsInteger()
 		);
 
@@ -5012,6 +5108,13 @@ public class JaxBConverter extends AbstractConverter {
 
 		return sozialhilfeZeitraumContainers.stream()
 			.map(this::sozialhilfeZeitraumContainerToJAX)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public List<JaxExternalClient> externalClientsToJAX(@Nonnull Collection<ExternalClient> externalClients) {
+		return externalClients.stream()
+			.map(this::externalClientToJAX)
 			.collect(Collectors.toList());
 	}
 }

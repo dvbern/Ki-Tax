@@ -15,13 +15,16 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 
 /**
  * Service zum Verwalten von Ferieninsel-Stammdaten
@@ -50,6 +53,18 @@ public interface FerieninselStammdatenService {
 	 */
 	@Nonnull
 	Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdaten(@Nonnull String ferieninselStammdatenId);
+
+	/**
+	 * Kopiert alle vorhandenen EinstellungenFerieninsel zur neuen Gesuchsperiode
+	 */
+	void copyEinstellungenFerieninselToNewGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
+		@Nonnull Gesuchsperiode lastGesuchsperiode);
+
+	/**
+	 * Liefert alle EinstellungenFerieninsel für eine Gesuchsperiode
+	 */
+	Collection<EinstellungenFerieninsel> findEinstellungenFerieninselByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Gibt alle existierenden FerieninselStammdaten-Objekte (aller Gesuchsperioden) zurueck.

@@ -29,5 +29,8 @@ import ch.dvbern.ebegu.entities.ExternalClient;
 public interface ExternalClientService {
 
 	@Nonnull
-	Collection<ExternalClient> getAll();
+	Collection<ExternalClient> getAllForGemeinde();
+
+	@Nonnull
+	Collection<ExternalClient> getAllForInstitution();
 }

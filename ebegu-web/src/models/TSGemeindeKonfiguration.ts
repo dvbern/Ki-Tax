@@ -53,6 +53,11 @@ export class TSGemeindeKonfiguration {
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungHauptmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungNebenmahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
+    public erwerbspensumMinimumOverriden: boolean;
+    public erwerbspensumMiminumVorschule: number;
+    public erwerbspensumMiminumVorschuleMax: number;
+    public erwerbspensumMiminumSchulkinder: number;
+    public erwerbspensumMiminumSchulkinderMax: number;
     public konfigSchnittstelleKitaxEnabled: boolean;
     public erwerbspensumZuschlag: number;
     // never override this property. we just load it for validation reasons
@@ -118,6 +123,14 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.ERWERBSPENSUM_ZUSCHLAG: {
                     this.erwerbspensumZuschlag = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT: {
+                    this.erwerbspensumMiminumVorschule = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT: {
+                    this.erwerbspensumMiminumSchulkinder = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED: {
@@ -221,6 +234,9 @@ export class TSGemeindeKonfiguration {
         });
 
         this.erwerbspensumZuschlagOverriden = this.erwerbspensumZuschlag !== this.erwerbspensumZuschlagMax;
+        this.erwerbspensumMinimumOverriden =
+            (this.erwerbspensumMiminumVorschule !== this.erwerbspensumMiminumVorschuleMax) ||
+            (this.erwerbspensumMiminumSchulkinder !== this.erwerbspensumMiminumSchulkinderMax);
     }
 
     public get ferieninselStammdaten(): TSFerieninselStammdaten[] {

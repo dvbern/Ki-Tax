@@ -49,8 +49,10 @@ export class EditGemeindeComponentBG implements OnInit {
     @Input() public editMode: boolean;
     @Input() public altBGAdresse: boolean;
     @Input() public beguStartDatum: Moment;
+    @Input() public keineBeschwerdeAdresse: boolean;
 
     @Output() public readonly altBGAdresseChange: EventEmitter<boolean> = new EventEmitter();
+    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     @ViewChild(NgModelGroup) private readonly group: NgModelGroup;
 
@@ -336,6 +338,30 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
+    public changeKonfigErwerbspensumMinimumOverriden(gk: TSGemeindeKonfiguration): void {
+        // if the flag is unchecked, we need to restore the original value
+        if (!gk.erwerbspensumMinimumOverriden) {
+            this.resetErwerbspensenMinimum(gk);
+        }
+    }
+
+    public changeErwerbspensumMinimumVorschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gk.erwerbspensumMiminumVorschule, gk);
+    }
+
+    public changeErwerbspensumMinimumSchulkinder(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gk.erwerbspensumMiminumSchulkinder, gk);
+    }
+
+    private resetErwerbspensenMinimum(gk: TSGemeindeKonfiguration): void {
+        gk.erwerbspensumMiminumVorschule = gk.erwerbspensumMiminumVorschuleMax;
+        gk.erwerbspensumMiminumSchulkinder = gk.erwerbspensumMiminumSchulkinderMax;
+        this.changeErwerbspensumMinimumVorschule(gk);
+        this.changeErwerbspensumMinimumSchulkinder(gk);
+    }
+
     private changeKonfig(einstellungKey: TSEinstellungKey, konfig: any, gk: TSGemeindeKonfiguration): void {
         gk.konfigurationen
             .filter(property => einstellungKey === property.key)
@@ -365,5 +391,9 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public isSuperAdmin(): boolean {
         return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public keineBeschwerdeAdresseChanged(newVal: boolean): void {
+        this.keineBeschwerdeAdresseChange.emit(newVal);
     }
 }

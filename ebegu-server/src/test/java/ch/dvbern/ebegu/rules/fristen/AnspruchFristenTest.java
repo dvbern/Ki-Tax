@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -367,6 +368,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		neuesEWP.setErwerbspensumJA(new Erwerbspensum());
 		Assert.assertNotNull(neuesEWP.getErwerbspensumJA());
 		neuesEWP.getErwerbspensumJA().setPensum(neuesPensum);
+		neuesEWP.getErwerbspensumJA().setTaetigkeit(Taetigkeit.ANGESTELLT);
 		neuesEWP.getErwerbspensumJA().getGueltigkeit().setGueltigAb(stichtag);
 		gesuch.getGesuchsteller1().getErwerbspensenContainers().add(neuesEWP);
 	}

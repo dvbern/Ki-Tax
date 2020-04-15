@@ -44,6 +44,26 @@
             <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
         </ng-container>
+        <div class="onboarding-iframe-tutorial">
+            <iframe *ngIf="isGerman$() | async"
+                    src="https://www.youtube.com/embed/-nwcolwnI1M"
+                    frameborder="0"
+                    allow="accelerometer;
+                    encrypted-media;
+                    gyroscope;
+                    picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+            <iframe *ngIf="!(isGerman$() | async)"
+                    src="https://www.youtube.com/embed/4Um--UCWaXs"
+                    frameborder="0"
+                    allow="accelerometer;
+                    encrypted-media;
+                    gyroscope;
+                    picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
     </div>
 </div>
 

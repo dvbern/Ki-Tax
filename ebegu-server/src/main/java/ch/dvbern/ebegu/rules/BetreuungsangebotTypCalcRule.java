@@ -36,7 +36,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 
 	public BetreuungsangebotTypCalcRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.BETREUUNGSANGEBOT_TYP, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class BetreuungsangebotTypCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		// bei tagesschule hat man grundsaetzlich 100 anspruch
 		inputData.setAnspruchspensumProzent(100);
-		inputData.getParent().addBemerkung(RuleKey.BETREUUNGSANGEBOT_TYP, MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
+		inputData.getParent().getBemerkungenList().addBemerkung(MsgKey.BETREUUNGSANGEBOT_MSG, getLocale());
 		// Damit der Gesuchsteller im Entwurf die "richtigen" provisorischen Daten sieht, wird bei *noch* nicht akzeptiert
 		// nicht auf Vollkosten gesetzt, erst beim eigentlichen Ablehnen
 		if (platz.extractGesuch().getFinSitStatus() != null

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -41,13 +41,10 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;
-    @Input() public keineBeschwerdeAdresse: boolean;
     @Input() public editMode: boolean;
     @Input() public tageschuleEnabledForMandant: boolean;
 
     public readonly CONSTANTS = CONSTANTS;
-
-    @Output() public readonly keineBeschwerdeAdresseChange: EventEmitter<boolean> = new EventEmitter();
 
     public korrespondenzsprache: string;
     public benutzerListe: Array<TSBenutzer>;
@@ -110,10 +107,6 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
 
     public isSuperadmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
-    }
-
-    public keineBeschwerdeAdresseChanged(newVal: boolean): void {
-        this.keineBeschwerdeAdresseChange.emit(newVal);
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
