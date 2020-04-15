@@ -172,11 +172,9 @@ export class NavigatorController implements IController {
             const returnValue = this.dvSave();  // callback ausfuehren, could return promise
             if (returnValue) {
                 this.$q.when(returnValue)
-                    .then(() => {
-                        this.$timeout(() => {
-                            this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
-                        });
-                    })
+                    .then(() => this.$timeout(() => {
+                        this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
+                    }))
                     .catch(() => {
                         // the promise was rejected, the navigation aborted:
                         this.wizardStepManager.isTransitionInProgress = false;

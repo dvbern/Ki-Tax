@@ -53,7 +53,6 @@ describe('EinladungAbschliessenComponent', () => {
         insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
-        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of({}));
 
         TestBed.configureTestingModule({
             imports: [

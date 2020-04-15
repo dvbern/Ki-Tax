@@ -47,7 +47,6 @@ describe('abwesenheitView', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         wizardStepManager = $injector.get('WizardStepManager');
-        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         berechnungsManager = $injector.get('BerechnungsManager');
         errorService = $injector.get('ErrorService');
         $translate = $injector.get('$translate');

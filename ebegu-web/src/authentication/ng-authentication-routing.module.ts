@@ -14,8 +14,7 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {Transition} from '@uirouter/core';
 import {getTSRoleValues} from '../models/enums/TSRole';
 import {returnTo} from './authentication.route';
@@ -23,7 +22,7 @@ import {LocalLoginComponent} from './local-login/local-login.component';
 import {TutorialGemeindeLoginComponent} from './tutorial/tutorial-gemeinde-login/tutorial-gemeinde-login.component';
 import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution-login/tutorial-institution-login.component';
 
-export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
+export const LOCALLOGIN_STATE: NgHybridStateDeclaration = {
     name: 'authentication.locallogin',
     url: '/locallogin',
     component: LocalLoginComponent,
@@ -40,7 +39,7 @@ export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     },
 };
 
-export const TUTORIAL_INSTITUTION_LOGIN_STATE: Ng2StateDeclaration = {
+export const TUTORIAL_INSTITUTION_LOGIN_STATE: NgHybridStateDeclaration = {
     name: 'authentication.tutorialInstitutionLogin',
     url: '/tutorial/institution',
     component: TutorialInstitutionLoginComponent,
@@ -57,7 +56,7 @@ export const TUTORIAL_INSTITUTION_LOGIN_STATE: Ng2StateDeclaration = {
     },
 };
 
-export const TUTORIAL_GEMEINDE_LOGIN_STATE: Ng2StateDeclaration = {
+export const TUTORIAL_GEMEINDE_LOGIN_STATE: NgHybridStateDeclaration = {
     name: 'authentication.tutorialGemeindeLogin',
     url: '/tutorial/gemeinde',
     component: TutorialGemeindeLoginComponent,
@@ -82,8 +81,8 @@ export const TUTORIAL_GEMEINDE_LOGIN_STATE: Ng2StateDeclaration = {
                     LOCALLOGIN_STATE,
                     TUTORIAL_INSTITUTION_LOGIN_STATE,
                     TUTORIAL_GEMEINDE_LOGIN_STATE,
-                ]
-            }
+                ],
+            },
         ),
     ],
     exports: [],

@@ -22,7 +22,7 @@ import {getRoleBasedTargetState} from '../utils/AuthenticationUtil';
 authenticationRoutes.$inject = ['RouterHelper'];
 
 export function authenticationRoutes(routerHelper: RouterHelper): void {
-    routerHelper.configureStates(ng1States, []);
+    routerHelper.configureStates(ng1States);
 }
 
 const ng1States: Ng1StateDeclaration[] = [

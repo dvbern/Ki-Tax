@@ -16,8 +16,7 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration} from '@uirouter/angular';
-import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
@@ -25,7 +24,7 @@ import {AddInstitutionComponent} from '../add-institution/add-institution.compon
 import {EditInstitutionComponent} from '../edit-institution/edit-institution.component';
 import {InstitutionListComponent} from '../list-institution/institution-list.component';
 
-const states: Ng2StateDeclaration[] = [
+const states: NgHybridStateDeclaration[] = [
     {
         parent: 'app',
         name: 'institution',
@@ -51,7 +50,7 @@ const states: Ng2StateDeclaration[] = [
         params: {
             betreuungsangebote: {
                 type: 'any',
-                value: [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN]
+                value: [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN],
             },
             betreuungsangebot: {
                 type: 'any',
@@ -73,8 +72,8 @@ const states: Ng2StateDeclaration[] = [
             },
             editMode: {
                 type: 'bool',
-                value: false
-            }
+                value: false,
+            },
         },
     },
 ];

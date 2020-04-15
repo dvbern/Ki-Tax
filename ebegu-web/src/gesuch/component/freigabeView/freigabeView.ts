@@ -142,11 +142,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public openFreigabequittungPDF(forceCreation: boolean): IPromise<void> {
         const win = this.downloadRS.prepareDownloadWindow();
-        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-            forceCreation)
+        const gesuchId = this.gesuchModelManager.getGesuch().id;
+        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(gesuchId, forceCreation)
             .then((downloadFile: TSDownloadFile) => {
                 // wir laden das Gesuch neu, da die Erstellung des Dokumentes auch Aenderungen im Gesuch verursacht
-                this.gesuchModelManager.openGesuch(this.gesuchModelManager.getGesuch().id)
+                this.gesuchModelManager.openGesuch(gesuchId)
                     .then(() => {
                         this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
                     })

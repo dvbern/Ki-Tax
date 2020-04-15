@@ -40,7 +40,6 @@ describe('betreuungListViewTest', () => {
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
-        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
         spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
         $state = $injector.get('$state');
         const $translate: angular.translate.ITranslateService = $injector.get('$translate');
