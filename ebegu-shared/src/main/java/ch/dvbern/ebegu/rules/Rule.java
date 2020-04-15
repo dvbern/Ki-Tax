@@ -48,9 +48,9 @@ public interface Rule {
 	DateRange validityPeriod();
 
 	/**
-	 * @return true wenn die Regel am Strichtag gueltig sit
+	 * @return true, wenn die Regel *irgendwann* in diesem Zeitraum gueltig ist
 	 */
-	boolean isValid(@Nonnull LocalDate stichtag);
+	boolean isValid(@Nonnull DateRange dateRange);
 
 	/**
 	 * @return den {@link RuleType} Enumwert dieser Regel
@@ -63,12 +63,6 @@ public interface Rule {
 	 */
 	@Nonnull
 	RuleKey getRuleKey();
-
-	/**
-	 * Gibt  zurueck, ob diese Regel fuer ASIV oder nur fuer die GEMEINDE gueltig ist.
-	 */
-	@Nonnull
-	RuleValidity getRuleValidity();
 
 	/**
 	 * Diese Methode fuehrt die eigentliche Berechnung durch die von der Regel abgebildet wird

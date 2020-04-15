@@ -89,15 +89,15 @@ public abstract class AbstractEbeguRule implements Rule {
 		return validityPeriod.getGueltigBis();
 	}
 
-	@Override
-	public boolean isValid(@Nonnull LocalDate stichtag) {
-		return validityPeriod.contains(stichtag);
-	}
-
 	@Nonnull
 	@Override
 	public DateRange validityPeriod() {
 		return validityPeriod;
+	}
+
+	@Override
+	public boolean isValid(@Nonnull DateRange dateRange) {
+		return validityPeriod.getOverlap(dateRange).isPresent();
 	}
 
 	@Override
@@ -110,12 +110,6 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
-	}
-
-	@Override
-	@Nonnull
-	public RuleValidity getRuleValidity() {
-		return ruleValidity;
 	}
 
 	public Locale getLocale() {
@@ -184,7 +178,8 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * aktuellen Betreuungstyp relevant ist
 	 */
 	protected void executeRuleIfApplicable(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {
+		if (isAnwendbarForAngebot(platz) && isValid(verfuegungZeitabschnitt.getGueltigkeit())) {
+			validateZeitabschnittGueltigkeit(verfuegungZeitabschnitt);
 			for (BGCalculationInput inputDatum : getInputData(verfuegungZeitabschnitt)) {
 				executeRule(platz, inputDatum);
 			}

@@ -356,11 +356,11 @@ public class BetreuungsgutscheinEvaluator {
 	private List<Rule> findRulesToRunForPeriode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<Rule> rulesForGesuchsperiode = new LinkedList<>();
 		for (Rule rule : rules) {
-			if (rule.isValid(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+			// Die Regel muss irgendwann waehrend der Gesuchsperiode gueltig sein, sonst muessen wir sie nicht beachten
+			if (rule.isValid(gesuchsperiode.getGueltigkeit())) {
 				rulesForGesuchsperiode.add(rule);
 			} else {
 				LOG.debug("Rule did not aply to Gesuchsperiode {}", rule);
-
 			}
 		}
 		return rulesForGesuchsperiode;
