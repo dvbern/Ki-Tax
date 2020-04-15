@@ -1902,7 +1902,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				.equals(gesuch.getId())) {
 				setGesuchAndVorgaengerUngueltig(neustesVerfuegtesGesuchFuerGesuch.get());
 			}
-
+			// Email an Verantwortlicher TS senden, falls dieser gesetzt und nicht identisch mit Verantwortlicher BG ist
+			Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
+			Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
+			if (verantwortlicherTS != null && verantwortlicherBG != null && !verantwortlicherBG.getId().equals(verantwortlicherTS.getId())) {
+				try {
+					mailService.sendInfoGesuchVerfuegtVerantwortlicherTS(gesuch, verantwortlicherTS, verantwortlicherBG);
+				} catch (MailException e) {
+					LOG.error("Mail InfoGesuchVerfuegtVerantwortlicherTS konnte nicht versendet werden fuer Gesuch {}",
+						gesuch.getId(), e);
+				}
+			}
 			// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
 			gesuch.setGueltig(true);
 		}

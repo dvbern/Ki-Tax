@@ -611,4 +611,20 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			LOG.warn("skipping setInfoGemeineAngebotAktiviert because Mitteilungsempfaenger is null");
 		}
 	}
+
+	@Override
+	public void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, Benutzer verantwortlicherBG, @Nonnull Benutzer verantwortlicherTS) throws MailException {
+		String mailaddressTS = verantwortlicherTS.getEmail();
+		List<Sprache> sprachen =
+			EbeguUtil.extractGemeindeSprachen(gesuch.extractGemeinde(), gemeindeService);
+
+		if (StringUtils.isNotEmpty(mailaddressTS)) {
+			String message = mailTemplateConfig.getInfoGesuchVerfuegtVerantwortlicherTS(gesuch, mailaddressTS, sprachen);
+			sendMessageWithTemplate(message, mailaddressTS);
+			LOG.info("Email fuer InfoGesuchVerfuegtVerantwortlicherSCH wurde versendet an {}", mailaddressTS);
+		} else {
+			LOG.warn("skipping InfoGesuchVerfuegtVerantwortlicherSCH because verantwortlicherSCH has no mailaddress");
+		}
+
+	}
 }
