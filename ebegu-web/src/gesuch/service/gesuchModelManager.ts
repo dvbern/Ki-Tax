@@ -827,9 +827,8 @@ export class GesuchModelManager {
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
                 if (betreuungToSave.getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL) {
                     return this.verfuegungRS.anmeldungFerieninselUebernehmen(betreuungToSave);
-                } else {
-                    return this.verfuegungRS.anmeldungTagesschuleUebernehmen(betreuungToSave);
                 }
+                return this.verfuegungRS.anmeldungTagesschuleUebernehmen(betreuungToSave);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
