@@ -374,6 +374,9 @@ describe('betreuungView', () => {
                     spyOn(betreuungView, 'isBetreuungsstatus').and.returnValue(false);
                     spyOn(betreuungView, 'isTagesschule').and.returnValue(true);
 
+                    // TODO Reviewer KIBON-724: Dieser Test macht keinen Sinn, es sollen nie beide false sein?
+                    //  Gemäss meinen Anpassungen im Code kann nur List oder Text true resp. false sein...
+                    //  Irgendetwas wollen wir ja immer anzeigen?
                     expect(betreuungView.showInstitutionenList()).toBe(false);
                     expect(betreuungView.showInstitutionenAsText()).toBe(false);
                 });
