@@ -34,7 +34,7 @@ import ch.dvbern.ebegu.enums.Ferienname;
 public interface FerieninselStammdatenService {
 
 	@Nonnull
-	List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId);
+	List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(String gemeindeId, @Nonnull String gesuchsperiodeId);
 
 	void initFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode);
 
