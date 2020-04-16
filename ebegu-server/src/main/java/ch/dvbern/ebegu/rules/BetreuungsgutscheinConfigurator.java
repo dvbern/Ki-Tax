@@ -109,7 +109,9 @@ public class BetreuungsgutscheinConfigurator {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 
 		// - Erwerbspensum ASIV: Erstellt die grundlegenden Zeitschnitze (keine Korrekturen, nur einfügen)
-		ErwerbspensumAsivAbschnittRule erwerbspensumAsivAbschnittRule = new ErwerbspensumAsivAbschnittRule(defaultGueltigkeit, locale);
+		Einstellung zuschlagEWP = einstellungMap.get(ERWERBSPENSUM_ZUSCHLAG);
+		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
+		ErwerbspensumAsivAbschnittRule erwerbspensumAsivAbschnittRule = new ErwerbspensumAsivAbschnittRule(defaultGueltigkeit, zuschlagEWP.getValueAsInteger(), locale);
 		rules.add(erwerbspensumAsivAbschnittRule);
 
 		// - Erwerbspensum: Erweiterung fuer Gemeinden
@@ -120,17 +122,17 @@ public class BetreuungsgutscheinConfigurator {
 			// Regel 1: Gemaess FEBR bis vor dem Stichtag: Der Maximalwert ist 0
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleVorStichtag = new ErwerbspensumGemeindeAbschnittRule(
-				vorStichtag, 0, locale);
+				vorStichtag, 0, 0, locale);
 			rules.add(ewpBernAbschnittRuleVorStichtag);
 			// Nach dem Stichtag gilt die Regel gemaess Konfiguration
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeAbschnittRule ewpBernAbschnittRuleNachStichtag = new ErwerbspensumGemeindeAbschnittRule(
-				nachStichtag, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
+				nachStichtag, zuschlagEWP.getValueAsInteger(), param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
 			rules.add(ewpBernAbschnittRuleNachStichtag);
 		} else {
 			// Fuer alle anderen Gemeinden gibt es nur *eine* Rule
 			ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(
-				defaultGueltigkeit, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
+				defaultGueltigkeit, zuschlagEWP.getValueAsInteger(), param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
 			rules.add(erwerbspensumGmdeAbschnittRule);
 		}
 
@@ -223,15 +225,12 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(storniertCalcRule);
 
 		// - Erwerbspensum ASIV
-		Einstellung zuschlagEWP = einstellungMap.get(ERWERBSPENSUM_ZUSCHLAG);
 		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
-		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
 		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		ErwerbspensumAsivCalcRule erwerbspensumAsivCalcRule = new ErwerbspensumAsivCalcRule(
 			defaultGueltigkeit,
-			zuschlagEWP.getValueAsInteger(),
 			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
 			minEWP_eingeschultAsiv.getValueAsInteger(),
 			locale);
@@ -240,7 +239,6 @@ public class BetreuungsgutscheinConfigurator {
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT);
-		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
 		Objects.requireNonNull(minEWP_nichtEingeschultGmde, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultGmde, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		// Im Fall von BERN die Gueltigkeit einfach erst ab Tag X setzen?
@@ -250,7 +248,6 @@ public class BetreuungsgutscheinConfigurator {
 			DateRange vorStichtag = new DateRange(defaultGueltigkeit.getGueltigAb(), kitaxParameterDTO.getStadtBernAsivStartDate().minusDays(1));
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleVorStichtag = new ErwerbspensumGemeindeCalcRule(
 				vorStichtag,
-				0, // Der Zuschlag ist gemaess FEBR 0
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
 				locale);
@@ -259,7 +256,6 @@ public class BetreuungsgutscheinConfigurator {
 			DateRange nachStichtag = new DateRange(kitaxParameterDTO.getStadtBernAsivStartDate(), defaultGueltigkeit.getGueltigBis());
 			ErwerbspensumGemeindeCalcRule ewpBernCalcRuleNachStichtag = new ErwerbspensumGemeindeCalcRule(
 				nachStichtag,
-				zuschlagEWP.getValueAsInteger(),
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
 				locale);
@@ -268,7 +264,6 @@ public class BetreuungsgutscheinConfigurator {
 			// Fuer alle anderen Gemeinden gibt es nur *eine* Rule
 			ErwerbspensumGemeindeCalcRule erwerbspensumGemeindeCalcRule = new ErwerbspensumGemeindeCalcRule(
 				defaultGueltigkeit,
-				zuschlagEWP.getValueAsInteger(),
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
 				locale);

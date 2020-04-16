@@ -50,6 +50,9 @@ public class BGCalculationInput {
 	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
+	@Nullable
+	private Integer erwerbspensumZuschlag = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
+
 	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
 	private int fachstellenpensum;
@@ -142,6 +145,7 @@ public class BGCalculationInput {
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
+		this.erwerbspensumZuschlag = toCopy.erwerbspensumZuschlag;
 		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
 		mergedTaetigkeiten.addAll(this.taetigkeiten);
 		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
@@ -204,6 +208,15 @@ public class BGCalculationInput {
 
 	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS2) {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
+	}
+
+	@Nullable
+	public Integer getErwerbspensumZuschlag() {
+		return erwerbspensumZuschlag;
+	}
+
+	public void setErwerbspensumZuschlag (@Nullable Integer erwerbspensumZuschlag) {
+		this.erwerbspensumZuschlag = erwerbspensumZuschlag;
 	}
 
 	public Set<Taetigkeit> getTaetigkeiten() {
@@ -541,6 +554,11 @@ public class BGCalculationInput {
 				(other.getErwerbspensumGS2() != null ? other.getErwerbspensumGS2() : 0));
 		}
 
+		// Die Felder betreffend EWP Zuschlag können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
+		if (other.getErwerbspensumZuschlag() != null) {
+			this.setErwerbspensumZuschlag(other.getErwerbspensumZuschlag());
+		}
+
 		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
 		if (this.getMonatlicheBetreuungskosten() != null) {
 			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
@@ -602,6 +620,7 @@ public class BGCalculationInput {
 		return
 			isSameErwerbspensum(erwerbspensumGS1, other.erwerbspensumGS1) &&
 			isSameErwerbspensum(erwerbspensumGS2, other.erwerbspensumGS2) &&
+			isSameErwerbspensum(erwerbspensumZuschlag, other.erwerbspensumZuschlag) &&
 			fachstellenpensum == other.fachstellenpensum &&
 			ausserordentlicherAnspruch == other.ausserordentlicherAnspruch &&
 			anspruchspensumRest == other.anspruchspensumRest &&

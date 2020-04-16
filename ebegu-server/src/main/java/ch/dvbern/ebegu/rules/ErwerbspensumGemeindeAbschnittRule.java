@@ -39,8 +39,13 @@ public class ErwerbspensumGemeindeAbschnittRule extends ErwerbspensumAbschnittRu
 
 	private final Integer maximalpensumFreiwilligenarbeit;
 
-	public ErwerbspensumGemeindeAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Integer maximalpensumFreiwilligenarbeit, @Nonnull Locale locale) {
-		super(RuleValidity.GEMEINDE, validityPeriod, locale);
+	public ErwerbspensumGemeindeAbschnittRule(
+		@Nonnull DateRange validityPeriod,
+		int erwerbspensumZuschlag,
+		@Nonnull Integer maximalpensumFreiwilligenarbeit,
+		@Nonnull Locale locale
+	) {
+		super(RuleValidity.GEMEINDE, validityPeriod, erwerbspensumZuschlag, locale);
 		this.maximalpensumFreiwilligenarbeit = maximalpensumFreiwilligenarbeit;
 	}
 
@@ -76,5 +81,10 @@ public class ErwerbspensumGemeindeAbschnittRule extends ErwerbspensumAbschnittRu
 			return zeitabschnitt;
 		}
 		return null;
+	}
+
+	@Override
+	protected void setErwerbspensumZuschlag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt, int zuschlagErwerbspensum) {
+		zeitabschnitt.getBgCalculationInputGemeinde().setErwerbspensumZuschlag(zuschlagErwerbspensum);
 	}
 }

@@ -35,12 +35,11 @@ public class ErwerbspensumGemeindeCalcRule extends ErwerbspensumCalcRule {
 
 	public ErwerbspensumGemeindeCalcRule(
 		@Nonnull DateRange validityPeriod,
-		int zuschlagErwerbspensum,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
 		@Nonnull Locale locale
 	) {
-		super(RuleValidity.GEMEINDE, validityPeriod, zuschlagErwerbspensum, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
+		super(RuleValidity.GEMEINDE, validityPeriod, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
 	}
 
 	@Override

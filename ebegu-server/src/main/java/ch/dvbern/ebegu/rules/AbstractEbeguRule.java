@@ -139,7 +139,7 @@ public abstract class AbstractEbeguRule implements Rule {
 		return new ArrayList<>();
 	}
 
-	private void validateZeitabschnittGueltigkeit(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+	protected void validateZeitabschnittGueltigkeit(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		boolean valid = true;
 		if (zeitabschnitt.getGueltigkeit().startsBefore(this.validityPeriod)) {
 			valid = false;
@@ -149,7 +149,7 @@ public abstract class AbstractEbeguRule implements Rule {
 		}
 		if (!valid) {
 			String msg =
-				"Regel " + this.ruleKey + " has invalid Zeitabschnitte. Rule " +
+				"Regel " + this.getClass().getSimpleName() + " has invalid Zeitabschnitte. Rule " +
 					this.validityPeriod.toRangeString() + ", Abschnitt: " +
 					zeitabschnitt.getGueltigkeit().toRangeString();
 			throw new EbeguRuntimeException("validateZeitabschnittGueltigkeit", msg);

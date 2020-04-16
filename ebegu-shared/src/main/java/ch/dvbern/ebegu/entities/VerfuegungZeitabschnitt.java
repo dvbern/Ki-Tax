@@ -398,6 +398,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setErwerbspensumGS2(erwerbspensumGS1);
 	}
 
+	public void setErwerbspensumZuschlagForAsivAndGemeinde(int zuschlag) {
+		this.getBgCalculationInputAsiv().setErwerbspensumZuschlag(zuschlag);
+		this.getBgCalculationInputGemeinde().setErwerbspensumZuschlag(zuschlag);
+	}
+
 	public void addTaetigkeitForAsivAndGemeinde(@Nullable Taetigkeit taetigkeit) {
 		this.getBgCalculationInputAsiv().getTaetigkeiten().add(taetigkeit);
 		this.getBgCalculationInputGemeinde().getTaetigkeiten().add(taetigkeit);
