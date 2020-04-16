@@ -46,7 +46,6 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 
 	@Nonnull
 	@Override
-	@SuppressWarnings("PMD.NcssMethodCount")
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		if (!input.isBetreuungInGemeinde()) {
@@ -115,6 +114,21 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 
 		BigDecimal verguenstigungIntervall = vollkostenIntervall.subtract(elternbeitragIntervall);
 
+		// Resultat erstellen
+		BGCalculationResult result = createResult(input, vollkostenIntervall, verguenstigungIntervall, elternbeitragIntervall);
+
+		// Bemerkung hinzufuegen
+		input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_INFO, locale);
+
+		return Optional.of(result);
+	}
+
+	private BGCalculationResult createResult(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BigDecimal vollkostenIntervall,
+		@Nonnull BigDecimal verguenstigungIntervall,
+		@Nonnull BigDecimal elternbeitragIntervall
+	) {
 		// Resultat erstellen und benoetigte Daten aus Input kopieren
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
@@ -138,10 +152,6 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		//		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 
-
-		// Bemerkung hinzufuegen
-		input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_INFO, locale);
-
-		return Optional.of(result);
+		return result;
 	}
 }
