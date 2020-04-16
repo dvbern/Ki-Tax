@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -45,21 +46,16 @@ public class ErwerbspensumAsivAbschnittRule extends ErwerbspensumAbschnittRule {
 		return Taetigkeit.getTaetigkeitenForAsiv();
 	}
 
+	@Nullable
 	@Override
-	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS1(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
+	protected VerfuegungZeitabschnitt createZeitAbschnitt(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum, boolean isGesuchsteller1) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
-		return zeitabschnitt;
-	}
-
-	@Override
-	@Nonnull
-	protected VerfuegungZeitabschnitt createZeitAbschnittForGS2(@Nonnull DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.addTaetigkeitForAsivAndGemeinde(erwerbspensum.getTaetigkeit());
-		zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
+		if (isGesuchsteller1) {
+			zeitabschnitt.setErwerbspensumGS1ForAsivAndGemeinde(erwerbspensum.getPensum());
+		} else {
+			zeitabschnitt.setErwerbspensumGS2ForAsivAndGemeinde(erwerbspensum.getPensum());
+		}
 		return zeitabschnitt;
 	}
 }
