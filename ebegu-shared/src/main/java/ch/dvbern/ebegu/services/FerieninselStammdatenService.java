@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
@@ -34,7 +35,7 @@ import ch.dvbern.ebegu.enums.Ferienname;
 public interface FerieninselStammdatenService {
 
 	@Nonnull
-	List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(String gemeindeId, @Nonnull String gesuchsperiodeId);
+	List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(@Nullable String gemeindeId, @Nonnull String gesuchsperiodeId);
 
 	void initFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode);
 
@@ -68,13 +69,6 @@ public interface FerieninselStammdatenService {
 	 */
 	Collection<EinstellungenFerieninsel> findEinstellungenFerieninselByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
-	/**
-	 * Gibt alle existierenden FerieninselStammdaten-Objekte (aller Gesuchsperioden) zurueck.
-	 *//*
-	@Nonnull
-	Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> getAllFerieninselStammdaten();
-
-	*/
 	/**
 	 * Gibt alle FerieninselStammdaten-Objekte fuer die uebergebene Gesuchsperiode und Ferien zurueck.
 	 */

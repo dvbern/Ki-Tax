@@ -441,12 +441,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.getBetreuungModel()
             && ((
                 this.isTageschulenAnmeldungAktiv()
-                && this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE
                 && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                 || !this.isTageschulenAnmeldungAktiv() && (this.isEnabled() && !this.isTagesschule())
             ) || (
                 this.isFerieninselAnmeldungAktiv()
-                && this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL
                 && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                 || !this.isFerieninselAnmeldungAktiv() && (this.isEnabled() && !this.isFerieninsel())
             ))

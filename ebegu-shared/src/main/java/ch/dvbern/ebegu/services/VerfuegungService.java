@@ -65,8 +65,6 @@ public interface VerfuegungService {
 	 * Schliesst eine Ferieninsel-Anmeldung ab. Dies entspricht einer Verfügung bei den BGs, d.h. die
 	 * Verfügung wird definitiv und unveränderbar gespeichert.
 	 */
-	// TODO Reviewer KIBON-724: gehört eigl. eher in den BetreuungsService, finde es aber hier besser, da wir
-	//  theoretisch Ferieninsel Anmeldungen verfügen könnten
 	@Nonnull
 	AnmeldungFerieninsel anmeldungFerieninselUebernehmen(@Nonnull AnmeldungFerieninsel anmeldungFerieninsel);
 

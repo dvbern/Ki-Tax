@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -38,8 +39,6 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenFerieninsel_;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
@@ -73,7 +72,8 @@ public class FerieninselStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	public List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(String gemeindeId, @Nonnull String gesuchsperiodeId) {
+	public List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(@Nullable String gemeindeId,
+		@Nonnull String gesuchsperiodeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdatenGesuchsperiodeFerieninsel> query =
 			cb.createQuery(GemeindeStammdatenGesuchsperiodeFerieninsel.class);

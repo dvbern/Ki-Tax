@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -526,12 +527,11 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE)) {
+			Set<Gemeinde> gemeindenOfUser = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
 			return (userHasSameGemeindeAsPrincipal(benutzer))
 				|| (benutzer.getInstitution() != null
-				&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(),
-				principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList())
-				|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(),
-				principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList()))));
+					&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser)
+						|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return benutzer.getRole().isRoleMandant()
