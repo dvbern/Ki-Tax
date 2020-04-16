@@ -613,7 +613,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, Benutzer verantwortlicherBG, @Nonnull Benutzer verantwortlicherTS) throws MailException {
+	public void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS) throws MailException {
 		String mailaddressTS = verantwortlicherTS.getEmail();
 		List<Sprache> sprachen =
 			EbeguUtil.extractGemeindeSprachen(gesuch.extractGemeinde(), gemeindeService);

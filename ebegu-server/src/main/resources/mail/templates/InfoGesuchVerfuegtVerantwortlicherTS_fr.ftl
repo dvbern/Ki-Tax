@@ -9,7 +9,7 @@ Content-Type: text/html;charset=utf-8
 
 <html>
 <head>
-${templateConfiguration.mailCss}
+    ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title>kiBon - Betreuungsgutschein wurde verfügt</title>
@@ -20,11 +20,11 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Liebe/r ${gesuch.dossier.verantwortlicherTS.fullName}
+		Guten Tag
 	</p>
 	<p>
-		Der Antrag ${gesuch.dossier.fall.fallNummer} wurde verfügt. Es können nun auch die Tagesschulanmeldungen abgeschlossen
-		werden.
+		Der Antrag mit der Fallnummer ${gesuch.dossier.fall.fallNummer} wurde verfügt. Es können nun auch die
+		Tagesschulanmeldungen abgeschlossen werden.
 	</p>
 	<p>
 		Freundliche Grüsse<br/>

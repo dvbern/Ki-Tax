@@ -163,6 +163,6 @@ public interface MailService {
 	/**
 	 * schickt eine email an den Verantwortlichen Tagesschule und informiert, dass das Gesuch verfuegt wurde
 	 */
-	void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, Benutzer verantwortlicherBG, @Nonnull Benutzer verantwortlicherTS) throws MailException;
+	void sendInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch, @Nonnull Benutzer verantwortlicherTS) throws MailException;
 
 }

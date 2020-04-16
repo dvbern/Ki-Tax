@@ -20,11 +20,11 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Liebe/r ${gesuch.dossier.verantwortlicherTS.fullName}
+		Guten Tag
 	</p>
 	<p>
-		Der Antrag ${gesuch.dossier.fall.fallNummer} wurde verfügt. Es können nun auch die Tagesschulanmeldungen abgeschlossen
-		werden.
+		Der Antrag mit der Fallnummer ${gesuch.dossier.fall.fallNummer} wurde verfügt. Es können nun auch die
+		Tagesschulanmeldungen abgeschlossen werden.
 	</p>
 	<p>
 		Freundliche Grüsse<br/>

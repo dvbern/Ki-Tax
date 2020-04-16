@@ -382,7 +382,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoFreischaltungGesuchsperiode, sprachen),
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS, sprachen),
 			paramMap);
 	}
 

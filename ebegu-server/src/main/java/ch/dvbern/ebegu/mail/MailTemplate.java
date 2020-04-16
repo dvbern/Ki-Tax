@@ -40,5 +40,6 @@ public enum MailTemplate {
 	InfoStatistikGeneriert,
 	InfoOffenePendenzenInstitution,
 	InfoSchulamtAnmeldungAkzeptiert,
-	InfoGemeindeAngebotAktiviert
+	InfoGemeindeAngebotAktiviert,
+	InfoGesuchVerfuegtVerantwortlicherTS
 }

@@ -1907,7 +1907,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Benutzer verantwortlicherTS = gesuch.getDossier().getVerantwortlicherTS();
 			if (verantwortlicherTS != null && verantwortlicherBG != null && !verantwortlicherBG.getId().equals(verantwortlicherTS.getId())) {
 				try {
-					mailService.sendInfoGesuchVerfuegtVerantwortlicherTS(gesuch, verantwortlicherTS, verantwortlicherBG);
+					mailService.sendInfoGesuchVerfuegtVerantwortlicherTS(gesuch, verantwortlicherTS);
 				} catch (MailException e) {
 					LOG.error("Mail InfoGesuchVerfuegtVerantwortlicherTS konnte nicht versendet werden fuer Gesuch {}",
 						gesuch.getId(), e);
