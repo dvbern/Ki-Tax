@@ -44,7 +44,6 @@ import ch.dvbern.ebegu.validators.CheckFachstellenFromDate;
 import ch.dvbern.ebegu.validators.CheckFachstellenNurVorschulalter;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
@@ -64,7 +63,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 	uniqueConstraints = @UniqueConstraint(columnNames = { "kindNummer", "gesuch_id" }, name = "UK_kindcontainer_gesuch_kind_nummer")
 )
 @Indexed
-@Analyzer(impl = GermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 public class KindContainer extends AbstractMutableEntity implements Comparable<KindContainer>, Searchable {
 
 	private static final long serialVersionUID = -6784985260190035840L;

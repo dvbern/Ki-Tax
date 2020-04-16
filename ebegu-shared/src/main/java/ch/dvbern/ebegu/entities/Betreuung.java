@@ -64,7 +64,6 @@ import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -94,7 +93,7 @@ import org.hibernate.search.annotations.Indexed;
 	@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
 )
 @Indexed
-@Analyzer(impl = GermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
 public class Betreuung extends AbstractPlatz {
 

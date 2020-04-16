@@ -67,7 +67,6 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -81,7 +80,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckEmailGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
 @Entity
 @Indexed
-@Analyzer(impl = GermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @EntityListeners({ GesuchStatusListener.class , GesuchGueltigListener.class})
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" }, name = "UK_gueltiges_gesuch"),

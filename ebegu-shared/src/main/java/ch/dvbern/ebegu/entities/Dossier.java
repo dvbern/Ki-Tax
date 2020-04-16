@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherTS;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -42,7 +41,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Audited
 @Entity
 @Indexed
-@Analyzer(impl = GermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = { "fall_id", "gemeinde_id" }, name = "UK_dossier_fall_gemeinde"),
 	indexes = {

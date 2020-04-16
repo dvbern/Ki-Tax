@@ -32,7 +32,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -58,7 +57,7 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 	}
 )
 @Indexed
-@Analyzer(impl = GermanAnalyzer.class)
+@Analyzer(definition = "EBEGUGermanAnalyzer")
 public class Fall extends AbstractMutableEntity implements HasMandant {
 
 	private static final long serialVersionUID = -9154456879261811678L;
