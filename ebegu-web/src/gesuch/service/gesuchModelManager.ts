@@ -38,7 +38,7 @@ import {
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
-import {isSchulamt, TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
+import {isSchulamt} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
