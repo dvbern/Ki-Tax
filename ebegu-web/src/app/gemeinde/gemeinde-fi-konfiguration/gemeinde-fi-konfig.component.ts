@@ -20,6 +20,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Moment} from 'moment';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
@@ -103,5 +104,21 @@ export class GemeindeFiKonfigComponent implements OnInit {
         }
 
         return date.format(CONSTANTS.DATE_FORMAT);
+    }
+
+    public ferieninselAktivierungsdatumChanged(config: TSGemeindeKonfiguration): void {
+        config.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB === property.key)
+            .forEach(property => {
+                property.value = this.getFerieninselAktivierungsdatumAsString(config);
+            });
+    }
+
+    public getFerieninselAktivierungsdatumAsString(konfiguration: TSGemeindeKonfiguration): string {
+        const datum = konfiguration.konfigFerieninselAktivierungsdatum;
+        if (datum && datum.isValid()) {
+            return datum.format(CONSTANTS.DATE_FORMAT);
+        }
+        return '';
     }
 }

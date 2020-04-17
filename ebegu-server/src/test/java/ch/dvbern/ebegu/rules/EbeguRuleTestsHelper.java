@@ -54,7 +54,8 @@ public final class EbeguRuleTestsHelper {
 	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000");
 
 	private static final ErwerbspensumAsivAbschnittRule erwerbspensumAsivAbschnittRule = new ErwerbspensumAsivAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
-	private static final ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(DEFAULT_GUELTIGKEIT, DEFAULT_LOCALE);
+	private static final ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(
+		DEFAULT_GUELTIGKEIT, 20, DEFAULT_LOCALE);
 	private static final ErwerbspensumAsivCalcRule erwerbspensumAsivCalcRule =
 		new ErwerbspensumAsivCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40, DEFAULT_LOCALE);
 	private static final ErwerbspensumGemeindeCalcRule erwerbspensumGemeindeCalcRule =

@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
@@ -433,7 +434,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
 					if (anmeldungTagesschule.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
-						this.verfuegungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+						this.verfuegungService.anmeldungTagesschuleUebernehmen(anmeldungTagesschule);
+					}
+				}
+				AnmeldungFerieninsel[] anmeldungFerieninselArray =
+					kindContainerToWorkWith.getAnmeldungenFerieninsel().toArray(new AnmeldungFerieninsel[kindContainerToWorkWith.getAnmeldungenFerieninsel().size()]);
+				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenFerieninsel().size(); j++) {
+					AnmeldungFerieninsel anmeldungFerieninsel = anmeldungFerieninselArray[j];
+					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
+					if (anmeldungFerieninsel.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
+						this.verfuegungService.anmeldungFerieninselUebernehmen(anmeldungFerieninsel);
 					}
 				}
 			}

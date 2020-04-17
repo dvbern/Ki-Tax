@@ -159,7 +159,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     private initFerieninselViewModel(): void {
-        if (!EbeguUtil.isNullOrUndefined(this.betreuung.belegungFerieninsel)) {
+        if (EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel)) {
             this.changedFerien();
 
             return;
@@ -170,6 +170,21 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         this.betreuung.belegungFerieninsel.tage = [];
     }
 
+    public isFerieninselAnmeldungAktiv(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungAktiv();
+    }
+
+    public getFerieninselAnmeldungNotYetReadyText(): string {
+        if (this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungBeforePeriode()) {
+            const terminValue = DateUtil.momentToLocalDateFormat(
+                this.gesuchModelManager.gemeindeKonfiguration.konfigFerieninselAktivierungsdatum, 'DD.MM.YYYY');
+            return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_AB_INFO', {
+                termin: terminValue,
+            });
+        }
+        return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_INFO');
+    }
+
     public changedFerien(): void {
         if (!this.betreuung.belegungFerieninsel || !this.betreuung.belegungFerieninsel.ferienname) {
             return;
@@ -177,29 +192,32 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
 
         this.ferieninselStammdatenRS.findFerieninselStammdatenByGesuchsperiodeAndFerien(
             this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGemeinde().id,
             this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
-            this.ferieninselStammdaten = response;
-            // Bereits gespeicherte Daten wieder ankreuzen
-            for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
-                for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
-                    if (tagAngemeldet.tag.isSame(obj.tag)) {
-                        obj.angemeldet = true;
+                this.ferieninselStammdaten = response;
+                // Bereits gespeicherte Daten wieder ankreuzen
+                for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
+                    for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
+                        if (tagAngemeldet.tag.isSame(obj.tag)) {
+                            obj.angemeldet = true;
+                        }
                     }
                 }
-            }
-        });
+            });
     }
 
     public isAnmeldungNichtFreigegeben(): boolean {
         // Ferien sind ausgewaehlt, aber es gibt keine Stammdaten dazu
         return EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel.ferienname)
-            && EbeguUtil.isNullOrUndefined(this.ferieninselStammdaten);
+            && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten)
+            && EbeguUtil.isNullOrUndefined(this.ferieninselStammdaten.anmeldeschluss);
     }
 
     public isAnmeldeschlussAbgelaufen(): boolean {
         // Ferien sind ausgewaehlt, es gibt Stammdaten, aber das Anmeldedatum ist abgelaufen
         return EbeguUtil.isNotNullOrUndefined(this.betreuung.belegungFerieninsel.ferienname)
             && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten)
+            && EbeguUtil.isNotNullOrUndefined(this.ferieninselStammdaten.anmeldeschluss)
             && this.ferieninselStammdaten.anmeldeschluss.isBefore(DateUtil.today());
     }
 
