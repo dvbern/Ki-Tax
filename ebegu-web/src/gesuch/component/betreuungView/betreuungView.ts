@@ -331,6 +331,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     this.setErsterSchultag();
                 }
             }
+            if (this.isFerieninsel()) {
+                this.getBetreuungModel().vertrag = true;
+            }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
             if (this.isProvisorischeBetreuung()) {
@@ -436,32 +439,30 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public showInstitutionenList(): boolean {
         return this.getBetreuungModel()
-            && (
-                this.isTageschulenAnmeldungAktiv() &&
-                (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
+            && ((
+                this.isTageschulenAnmeldungAktiv()
+                && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                 || !this.isTageschulenAnmeldungAktiv() && (this.isEnabled() && !this.isTagesschule())
-            )
+            ) || (
+                this.isFerieninselAnmeldungAktiv()
+                && (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
+                || !this.isFerieninselAnmeldungAktiv() && (this.isEnabled() && !this.isFerieninsel())
+            ))
             && !this.getBetreuungModel().keineDetailinformationen;
     }
 
     public showInstitutionenAsText(): boolean {
-        return (
-                (
-                    this.isTageschulenAnmeldungAktiv() &&
-                    !this.isEnabled() &&
-                    !this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION)
-                )
-                ||
-                (
-                    !this.isTageschulenAnmeldungAktiv() && !this.isEnabled() && !this.isTagesschule()
-                )
-            )
-            && !this.getBetreuungModel().keineDetailinformationen;
+        return !this.showInstitutionenList();
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
         return this.gesuchModelManager.gemeindeKonfiguration
             && this.gesuchModelManager.gemeindeKonfiguration.isTageschulenAnmeldungAktiv();
+    }
+
+    public isFerieninselAnmeldungAktiv(): boolean {
+        return this.gesuchModelManager.gemeindeKonfiguration
+            && this.gesuchModelManager.gemeindeKonfiguration.isFerieninselAnmeldungAktiv();
     }
 
     public isFalscheInstitutionAndUserInRole(): boolean {
@@ -1153,7 +1154,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isBetreuungInGemeindeRequired(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
-            && !this.isTagesschule()
+            && !this.isSchulamt()
             && this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherGutscheinEnabled;
     }
 

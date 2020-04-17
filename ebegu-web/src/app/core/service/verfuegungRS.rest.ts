@@ -87,11 +87,11 @@ export class VerfuegungRS {
             });
     }
 
-    public anmeldungSchulamtUebernehmen(
+    public anmeldungUebernehmen(
         betreuung: TSBetreuung
     ): IPromise<TSBetreuung> {
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
-        return this.http.put(`${this.serviceURL}/tagesschulanmeldung/uebernehmen`, restBetreuung)
+        return this.http.put(`${this.serviceURL}/anmeldung/uebernehmen`, restBetreuung)
             .then(response => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
     }
 }

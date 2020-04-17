@@ -260,7 +260,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			tagesschuleModuleMap.values().stream().sorted((oneList, otherList) -> {
 				ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
 				ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
-				return other.compareTo(one);
+				return one.compareTo(other);
 			}).forEach(v -> {
 				boolean monday = false;
 				boolean tuesday = false;

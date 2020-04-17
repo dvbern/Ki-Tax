@@ -1956,5 +1956,9 @@
     "TAGESSCHULE_TAGIS_ENABLED": "Tagis aktiviert",
     "TAGI": "Tagi",
     "SCOLARIS_USERNAME": "Username Scolaris",
+    "GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB": "Anmeldungen für Ferieninseln aktiv ab",
+    "FERIENINSEL_AKTIVIERUNGSDATUM": "Anmeldungen für Ferieninsel akzeptieren ab",
+    "FREISCHALTUNG_FERIENINSEL_INFO": "Die Anmeldung ist im Moment noch nicht möglich.",
+    "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
