@@ -150,7 +150,7 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 			return;
 		}
 
-		if (isSozialhilfeempfaenger(familiensituation)) {
+		if (isSozialhilfeempfaenger(familiensituation) || isVerguenstigungGewuenscht(familiensituation)) {
 			return;
 		}
 
