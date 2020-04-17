@@ -432,7 +432,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 	@Test
 	public void testFreiwilligenarbeitAllePensenUeberMinimum() {
 		// Beide Pensen sind einzeln schon gueltig. Gemeinde=Asiv+Gemeinde, Anspruch jeweils +20
-		assertBerechnungenMitFreiwilligenarbeit(40, 25, 60, 85);
+		assertBerechnungenMitFreiwilligenarbeit(40, 20, 60, 80);
 	}
 
 	@Test
