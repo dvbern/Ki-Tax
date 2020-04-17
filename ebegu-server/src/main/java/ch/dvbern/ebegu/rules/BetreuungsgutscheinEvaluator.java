@@ -143,8 +143,6 @@ public class BetreuungsgutscheinEvaluator {
 		// TODO KITAX
 		LocalDate bernAsivStartDate = kitaxParameter.getStadtBernAsivStartDate();
 		Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
-		boolean bernAsivConfiguered = kitaxParameter.isStadtBernAsivConfiguered();
-		KitaxUebergangsloesungParameter kitaxParameterDTO = new KitaxUebergangsloesungParameter(bernAsivStartDate, bernAsivConfiguered);
 
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO, locale);
@@ -241,7 +239,7 @@ public class BetreuungsgutscheinEvaluator {
 
 				// TODO KITAX
 				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);;
-				final boolean possibleKitaxRechner = kitaxParameterDTO.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde());
+				final boolean possibleKitaxRechner = kitaxParameter.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde());
 				// Den richtigen Rechner anwerfen
 				zeitabschnitte.forEach(zeitabschnitt -> {
 					// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
@@ -249,8 +247,8 @@ public class BetreuungsgutscheinEvaluator {
 					AbstractRechner rechnerToUse = null;
 					if (possibleKitaxRechner) {
 						if (zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
-							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameterDTO, locale);
-						} else if (bernAsivConfiguered) {
+							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, locale);
+						} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
 							// koennen wir den normalen ASIV Rechner verwenden.
 							rechnerToUse = asivRechner;
