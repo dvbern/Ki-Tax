@@ -60,7 +60,6 @@ describe('einkommensverschlechterungResultateView', () => {
     }));
 
     it('should be defined', () => {
-        spyOn(berechnungsManager, 'calculateEinkommensverschlechterung').and.returnValue({});
         const bindings = {};
         component = $componentController('einkommensverschlechterungResultateView', {$scope: scope}, bindings);
         expect(component).toBeDefined();

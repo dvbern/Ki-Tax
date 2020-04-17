@@ -36,6 +36,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
@@ -85,7 +86,8 @@ public class BetreuungsgutscheinConfigurator {
 			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
 			GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
 			GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
-			ERWERBSPENSUM_ZUSCHLAG);
+			ERWERBSPENSUM_ZUSCHLAG,
+			GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT);
 	}
 
 	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
@@ -105,7 +107,10 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(erwerbspensumAsivAbschnittRule);
 
 		// - Erwerbspensum: Erweiterung fuer Gemeinden
-		ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(defaultGueltigkeit, locale);
+		Einstellung param_MaxAbzugFreiwilligenarbeit = einstellungMap.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT);
+		Objects.requireNonNull(param_MaxAbzugFreiwilligenarbeit, "Parameter GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT muss gesetzt sein");
+		ErwerbspensumGemeindeAbschnittRule erwerbspensumGmdeAbschnittRule = new ErwerbspensumGemeindeAbschnittRule(
+			defaultGueltigkeit, param_MaxAbzugFreiwilligenarbeit.getValueAsInteger(), locale);
 		rules.add(erwerbspensumGmdeAbschnittRule);
 
 		// - Unbezahlter Urlaub

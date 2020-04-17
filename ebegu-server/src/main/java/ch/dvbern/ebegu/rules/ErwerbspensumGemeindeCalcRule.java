@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -40,5 +41,10 @@ public class ErwerbspensumGemeindeCalcRule extends ErwerbspensumCalcRule {
 		@Nonnull Locale locale
 	) {
 		super(RuleValidity.GEMEINDE, validityPeriod, zuschlagErwerbspensum, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
+	}
+
+	@Override
+	protected void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData) {
+		// Keine zusaetzliche Bemerkungen fuer die Gemeinde
 	}
 }

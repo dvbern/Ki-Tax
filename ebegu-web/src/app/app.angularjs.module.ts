@@ -38,6 +38,7 @@ import {ZAHLUNG_JS_MODULE} from './zahlung/zahlung.module';
 import {ZAHLUNGSAUFTRAG_VIEW_JS_MODULE} from './zahlungsauftrag/zahlungsauftrag.module';
 
 export const APP_JS_MODULE = angular.module('ebeguWeb', [
+        'ui.router',
         upgradeModule.name,
         CORE_JS_MODULE.name,
         ADMIN_JS_MODULE.name,

@@ -30,12 +30,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -131,9 +128,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
-			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, locale);
-			inputData.getParent().getBemerkungenList().addBemerkung(
-				new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen));
+			addVerfuegungsBemerkungIfNecessary(inputData);
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
@@ -145,6 +140,8 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		// Der Anspruch wird immer auf 5-er Schritten gerundet.
 		return MathUtil.roundIntToFives(anspruch);
 	}
+
+	protected abstract void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData);
 
 	@Nonnull
 	private Integer calculateErwerbspensumGS1(
@@ -186,17 +183,5 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 		}
 		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
-	}
-
-	private String getBeschaeftigungsTypen(@Nonnull BGCalculationInput inputData, @Nonnull Locale locale) {
-		StringBuilder sb = new StringBuilder();
-		for (Taetigkeit taetigkeit : inputData.getTaetigkeiten()) {
-			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
-			sb.append(", ");
-		}
-		// Das letzte Komma entfernen
-		String taetigkeitenAsString = sb.toString();
-		taetigkeitenAsString = StringUtils.removeEnd(taetigkeitenAsString, ", ");
-		return taetigkeitenAsString;
 	}
 }
