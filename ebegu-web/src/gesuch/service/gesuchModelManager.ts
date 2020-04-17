@@ -825,7 +825,7 @@ export class GesuchModelManager {
             case TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT:
                 return this.betreuungRS.anmeldungSchulamtModuleAkzeptiert(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN:
-                return this.verfuegungRS.anmeldungSchulamtUebernehmen(betreuungToSave);
+                return this.verfuegungRS.anmeldungUebernehmen(betreuungToSave);
             case TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT:
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:

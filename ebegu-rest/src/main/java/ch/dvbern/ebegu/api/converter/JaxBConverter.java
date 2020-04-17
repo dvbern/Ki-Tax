@@ -1428,7 +1428,8 @@ public class JaxBConverter extends AbstractConverter {
 	 */
 	private boolean updateStatus(@Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
 		if (institution.getStatus() == InstitutionStatus.EINGELADEN ||
-			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.isTagesschuleActivatable())) {
+			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.isTagesschuleActivatable()) ||
+			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.getInstitutionStammdatenFerieninsel() != null)) {
 			institution.setStatus(InstitutionStatus.AKTIV);
 			return true;
 		}

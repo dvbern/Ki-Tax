@@ -20,11 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.Ferienname;
 
 /**
  * Service zum Verwalten von Ferieninsel-Stammdaten
@@ -32,7 +35,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 public interface FerieninselStammdatenService {
 
 	@Nonnull
-	List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId);
+	List<GemeindeStammdatenGesuchsperiodeFerieninsel> findGesuchsperiodeFerieninselByGemeindeAndPeriode(@Nullable String gemeindeId, @Nonnull String gesuchsperiodeId);
 
 	void initFerieninselStammdaten(@Nonnull GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode);
 
@@ -67,22 +70,17 @@ public interface FerieninselStammdatenService {
 	Collection<EinstellungenFerieninsel> findEinstellungenFerieninselByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Gibt alle existierenden FerieninselStammdaten-Objekte (aller Gesuchsperioden) zurueck.
-	 *//*
-	@Nonnull
-	Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> getAllFerieninselStammdaten();
-
-	*//**
 	 * Gibt alle FerieninselStammdaten-Objekte fuer die uebergebene Gesuchsperiode und Ferien zurueck.
-	 *//*
+	 */
 	@Nonnull
-	Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdatenForGesuchsperiodeAndFerienname(@Nonnull String gesuchsperiodeId, @Nonnull Ferienname ferienname);
+	Optional<GemeindeStammdatenGesuchsperiodeFerieninsel> findFerieninselStammdatenForGesuchsperiodeAndFerienname(
+		@Nonnull String gemeindeId, @Nonnull String gesuchsperiodeId, @Nonnull Ferienname ferienname);
 
-	*//**
+	/**
 	 * Gibt fuer eine Ferieninsel die potentiell buchbaren Daten zurück, also alle Wochentage des Zeitraums ohne
 	 * Feiertage
-	 *//*
+	 */
 	@Nonnull
 	List<BelegungFerieninselTag> getPossibleFerieninselTage(@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten);
-	*/
+
 }
