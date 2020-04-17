@@ -28,7 +28,6 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 
 public enum MergeFieldTagesschule implements MergeFieldProvider {
 
