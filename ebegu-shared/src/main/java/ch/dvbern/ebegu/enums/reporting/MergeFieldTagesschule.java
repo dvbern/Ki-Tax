@@ -39,8 +39,15 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	abTitle(new SimpleMergeField<>("abTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
+	wochentagMo(new SimpleMergeField<>("wochentagMo", STRING_CONVERTER)),
+	wochentagDi(new SimpleMergeField<>("wochentagDi", STRING_CONVERTER)),
+	wochentagMi(new SimpleMergeField<>("wochentagMi", STRING_CONVERTER)),
+	wochentagDo(new SimpleMergeField<>("wochentagDo", STRING_CONVERTER)),
+	wochentagFr(new SimpleMergeField<>("wochentagFr", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
+	repeatRow2(new RepeatRowMergeField("repeatRow2")),
+
 	nachnameKind(new SimpleMergeField<>("nachnameKind", STRING_CONVERTER)),
 	vornameKind(new SimpleMergeField<>("vornameKind", STRING_CONVERTER)),
 	geburtsdatumKind(new SimpleMergeField<>("geburtsdatumKind", DATE_CONVERTER)),
@@ -55,7 +62,6 @@ public enum MergeFieldTagesschule implements MergeFieldProvider {
 	repeatCol5(new RepeatColMergeField<>("repeatCol5", STRING_CONVERTER)),
 
 	modulName(new RepeatValMergeField<>("modulName", STRING_CONVERTER)),
-	wochentag(new RepeatValMergeField<>("wochentag", STRING_CONVERTER)),
 	angemeldet(new RepeatValMergeField<>("angemeldet", STRING_CONVERTER));
 
 	@Nonnull
