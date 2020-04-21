@@ -633,7 +633,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public boolean isCloseTo(@Nonnull VerfuegungZeitabschnitt that) {
 		// Folgende Attribute sollen bei einer "kleinen" Änderung nicht zu einer Neuberechnung führen:
-		// (explizit wird nur ASIV verglichen, da es sich um einen "alten" Rundungsfehler handelt)
 		boolean asivCloseTo = bgCalculationResultAsiv.isCloseTo(that.getBgCalculationResultAsiv());
 		boolean gemeindeCloseTo = true;
 		if (hasGemeindeSpezifischeBerechnung) {
