@@ -77,9 +77,10 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		//if Verguenstigung nicht gewuenscht - keine Dokumenten
 		final FamiliensituationContainer famSitCont = gesuch.getFamiliensituationContainer();
-		if (famSitCont == null || !isVerguenstigungGewuenscht(famSitCont.getFamiliensituationJA())) {
+		if (famSitCont != null && !isVerguenstigungGewuenscht(famSitCont.getFamiliensituationJA())) {
 			return;
 		}
+
 		// if nuer TS oder FI - keine Dokumenten
 		if (gesuch.hasOnlyBetreuungenOfSchulamt()){
 			return;
