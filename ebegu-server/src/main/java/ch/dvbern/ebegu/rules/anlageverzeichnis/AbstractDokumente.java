@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
@@ -86,5 +87,15 @@ abstract class AbstractDokumente<T1, T2> {
 			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
 		}
 		return null;
+	}
+
+	protected boolean isVerguenstigungGewuenscht(@Nullable Familiensituation familiensituation) {
+		if (familiensituation != null &&
+			familiensituation.getVerguenstigungGewuenscht() != null &&
+			familiensituation.getVerguenstigungGewuenscht()
+		) {
+			return true;
+		}
+		return false;
 	}
 }
