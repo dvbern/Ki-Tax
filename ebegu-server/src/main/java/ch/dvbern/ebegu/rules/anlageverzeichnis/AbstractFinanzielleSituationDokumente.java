@@ -142,14 +142,4 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		}
 		return false;
 	}
-
-	protected boolean isVerguenstigungGewuenscht(@Nullable Familiensituation familiensituation) {
-		if (familiensituation != null &&
-			familiensituation.getVerguenstigungGewuenscht() != null &&
-			familiensituation.getVerguenstigungGewuenscht()
-		) {
-			return true;
-		}
-		return false;
-	}
 }

@@ -75,18 +75,15 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		final LocalDate gueltigAb = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
-		final FamiliensituationContainer famSitCont = gesuch.getFamiliensituationContainer();
 		//if Verguenstigung nicht gewuenscht - keine Dokumenten
-		if(famSitCont != null && famSitCont.getFamiliensituationJA() != null
-			&& famSitCont.getFamiliensituationJA().getVerguenstigungGewuenscht() != null
-			&& !famSitCont.getFamiliensituationJA().getVerguenstigungGewuenscht()){
+		final FamiliensituationContainer famSitCont = gesuch.getFamiliensituationContainer();
+		if (famSitCont == null || !isVerguenstigungGewuenscht(famSitCont.getFamiliensituationJA())) {
 			return;
 		}
-		//if nuer TS oder FI - keine Dokumenten
-		if(gesuch.hasOnlyBetreuungenOfSchulamt()){
+		// if nuer TS oder FI - keine Dokumenten
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()){
 			return;
 		}
-
 
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, 1, gueltigAb, locale);
 
