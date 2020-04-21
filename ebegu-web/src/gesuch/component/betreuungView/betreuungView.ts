@@ -324,6 +324,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.isSchulamt()) {
             if (this.isTagesschule()) {
                 this.getBetreuungModel().vertrag = true;
+                this.onChangeVertrag();
                 // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
                 if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
                     && this.isTageschulenAnmeldungAktiv()) {
@@ -333,6 +334,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
             if (this.isFerieninsel()) {
                 this.getBetreuungModel().vertrag = true;
+                this.onChangeVertrag();
             }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
