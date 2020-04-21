@@ -38,9 +38,11 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -276,13 +278,19 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				removeDossierIfEmpty(dossier, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 				removeFallIfEmpty(fall, GesuchDeletionCause.BATCHJOB_DATENSCHUTZVERORDNUNG);
 			}
-			// TODO: FERIENINSEL. Remove Ferieninseln for periode
 			// FerieninselStammdaten dieser Gesuchsperiode loeschen
-/*			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
-				ferieninselStammdatenService.findFerieninselStammdatenForGesuchsperiode(gesuchsPeriodeId);
+			Collection<GemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdatenList =
+				ferieninselStammdatenService.findGesuchsperiodeFerieninselByGemeindeAndPeriode(null, gesuchsPeriodeId);
 			for (GemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdaten : ferieninselStammdatenList) {
 				ferieninselStammdatenService.removeFerieninselStammdaten(ferieninselStammdaten.getId());
-			}*/
+			}
+
+			// EinstellungenFerieninsel dieser Gesuchsperiode loeschen
+			Collection<EinstellungenFerieninsel> einstellungenFerieninselList =
+				ferieninselStammdatenService.findEinstellungenFerieninselByGesuchsperiode(gesuchsperiode);
+			for (EinstellungenFerieninsel einstellungenFerieninsel : einstellungenFerieninselList) {
+				persistence.remove(einstellungenFerieninsel);
+			}
 
 			// EinstellungenTagesschule dieser Gesuchsperiode loeschen
 			Collection<EinstellungenTagesschule> einstellungenTagesschuleList =
