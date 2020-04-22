@@ -134,6 +134,7 @@ import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
+import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
@@ -2082,8 +2083,8 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
-            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
-            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ? 0 : betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ? 0 : betreuungspensum.monatlicheNebenmahlzeiten;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
