@@ -2114,7 +2114,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
 		requireNonNull(kindContainerList);
-		return convertToTagesschuleDataRows(kindContainerList);
+
+		return convertToTagesschuleDataRows(kindContainerList, stammdatenID);
 	}
 
 	@Nonnull
@@ -2137,17 +2138,22 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nonnull
-	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList) {
+	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList, String stammdatenID) {
+		ReportServiceBean self = this;
 		return kindContainerList.stream()
-			.map(this::kindContainerToTagesschuleDataRow)
+			.map(kindContainer -> {
+				return self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID);
+			})
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer) {
+	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer, String stammdatenID) {
 
 		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
-			kindContainer.getAnmeldungenTagesschule().iterator();
+			kindContainer.getAnmeldungenTagesschule().stream().filter(anmeldungTagesschule -> {
+				return anmeldungTagesschule.getInstitutionStammdaten().getId().equals(stammdatenID);
+			}).iterator();
 		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
 
 		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
