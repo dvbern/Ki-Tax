@@ -325,13 +325,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Fuer saemliche Schulamt-Angebote gilt der Vertrag immer als akzeptiert
             this.getBetreuungModel().vertrag = true;
             this.onChangeVertrag();
-            if (this.isTagesschule()) {
-                // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
-                if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
-                    && this.isTageschulenAnmeldungAktiv()) {
-                    this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
-                    this.setErsterSchultag();
-                }
+            if (this.isTagesschule() && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
+                && this.isTageschulenAnmeldungAktiv()) {
+                this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST;
+                this.setErsterSchultag();
             }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
