@@ -29,7 +29,7 @@ public class BemerkungItem implements Comparable<BemerkungItem> {
 	private final String message;
 
 	public BemerkungItem(DateRange range, String message) {
-		this.range = range;
+		this.range = new DateRange(range);
 		this.message = message;
 	}
 

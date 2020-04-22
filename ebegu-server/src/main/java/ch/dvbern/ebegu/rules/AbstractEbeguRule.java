@@ -73,7 +73,7 @@ public abstract class AbstractEbeguRule implements Rule {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
 		this.ruleValidity = ruleValidity;
-		this.validityPeriod = validityPeriod;
+		this.validityPeriod = new DateRange(validityPeriod);
 		this.locale = locale;
 	}
 
