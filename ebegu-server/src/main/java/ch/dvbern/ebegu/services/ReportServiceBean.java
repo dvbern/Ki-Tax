@@ -2141,9 +2141,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList, String stammdatenID) {
 		ReportServiceBean self = this;
 		return kindContainerList.stream()
-			.map(kindContainer -> {
-				return self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID);
-			})
+			.map(kindContainer -> self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID))
 			.collect(Collectors.toList());
 	}
 
@@ -2151,9 +2149,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer, String stammdatenID) {
 
 		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
-			kindContainer.getAnmeldungenTagesschule().stream().filter(anmeldungTagesschule -> {
-				return anmeldungTagesschule.getInstitutionStammdaten().getId().equals(stammdatenID);
-			}).iterator();
+			kindContainer.getAnmeldungenTagesschule()
+				.stream()
+				.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getId().equals(stammdatenID))
+				.iterator();
 		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
 
 		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
