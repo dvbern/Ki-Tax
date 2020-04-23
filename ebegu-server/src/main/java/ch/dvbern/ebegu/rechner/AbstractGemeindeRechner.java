@@ -83,6 +83,10 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 				rechnerParameter.setHasGemeindeRules(true);
 				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
 					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
+				} else {
+					// Wenn es fuer diese Verfuegung nicht gilt, muessen wieder die Parameter nach ASIV
+					// verwendet werden!
+					prepareRechnerParameterForAsiv();
 				}
 			}
 		}

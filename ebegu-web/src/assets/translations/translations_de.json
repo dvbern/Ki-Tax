@@ -919,7 +919,7 @@
     "EINKVERS_WARNING": "Wollen Sie diese Änderungen wirklich speichern?",
     "EINKVERS_WARNING_BESCHREIBUNG": "Die bereits eingetragenen Daten von der Einkommensverschlechterung werden damit gelöscht",
     "EINKVERS_ONE_PERIODE_WARNING": "Wollen Sie fortfahren?",
-    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensverschlechterung nur fuer {{jahr1periode}} deklariert. In diesem Fall gilt fuer das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
+    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensverschlechterung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
     "FINSIT_WARNING": "Wollen Sie diese Änderungen wirklich speichern?",
     "FINSIT_WARNING_BESCHREIBUNG": "Die bereits eingetragenen Daten der finanziellen Verhältnisse und Einkommensverschlechterung werden damit gelöscht",
     "IN_BEARBEITUNG_GS": "In Bearbeitung Antragsteller/in",
