@@ -40,6 +40,10 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class KitaKitaxRechner extends AbstractKitaxRechner {
 
+	// Kitax hat nur mit Prozenten gerechnet, neu brauchen wir (auch) Zeiteinheiten, bei Kita TAGE
+	// 100% = 20 days => 1% = 0.2 days
+	public static final BigDecimal MULTIPLIER_KITA = MathUtil.DEFAULT.fromNullSafe(0.2);
+
 	public KitaKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
 		super(kitaxParameter, locale);
 	}
@@ -145,12 +149,12 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Wir rechnen im Kitax-Rechner mit den berechneten Vollkosten, nicht mit denjenigen, die auf der Platzbestaetigung angegeben wurden.
 		result.setVollkosten(vollkostenIntervall);
 
-		result.setZeiteinheit(PensumUnits.PERCENTAGE);
-		//TODO KITAX es fehlen die Werte in Zeiteinheiten
-		//		// Die Stundenwerte (Betreuungsstunden, Anspruchsstunden und BG-Stunden) müssen gerundet werden
-		//		result.setBgPensumZeiteinheit(verfuegteZeiteinheiten);
-		//		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
-		//		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
+		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in TAGE berechnen
+		result.setZeiteinheit(PensumUnits.DAYS);
+		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
+		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_KITA));
+		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_KITA));
+		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_KITA));
 
 		return result;
 	}
