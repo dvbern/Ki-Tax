@@ -583,21 +583,57 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public BigDecimal getAnspruchsPensum() {
-		return anspruchsPensum;
+	public BigDecimal getAnspruchsPensumKanton() {
+		return anspruchsPensumKanton;
 	}
 
-	public void setAnspruchsPensum(@Nullable BigDecimal anspruchsPensum) {
-		this.anspruchsPensum = anspruchsPensum;
+	public void setAnspruchsPensumKanton(@Nullable BigDecimal anspruchsPensumKanton) {
+		this.anspruchsPensumKanton = anspruchsPensumKanton;
 	}
 
 	@Nullable
-	public BigDecimal getBgPensum() {
-		return bgPensum;
+	public BigDecimal getAnspruchsPensumGemeinde() {
+		return anspruchsPensumGemeinde;
 	}
 
-	public void setBgPensum(@Nullable BigDecimal bgPensum) {
-		this.bgPensum = bgPensum;
+	public void setAnspruchsPensumGemeinde(@Nullable BigDecimal anspruchsPensumGemeinde) {
+		this.anspruchsPensumGemeinde = anspruchsPensumGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getAnspruchsPensumTotal() {
+		return anspruchsPensumTotal;
+	}
+
+	public void setAnspruchsPensumTotal(@Nullable BigDecimal anspruchsPensumTotal) {
+		this.anspruchsPensumTotal = anspruchsPensumTotal;
+	}
+
+	@Nullable
+	public BigDecimal getBgPensumKanton() {
+		return bgPensumKanton;
+	}
+
+	public void setBgPensumKanton(@Nullable BigDecimal bgPensumKanton) {
+		this.bgPensumKanton = bgPensumKanton;
+	}
+
+	@Nullable
+	public BigDecimal getBgPensumGemeinde() {
+		return bgPensumGemeinde;
+	}
+
+	public void setBgPensumGemeinde(@Nullable BigDecimal bgPensumGemeinde) {
+		this.bgPensumGemeinde = bgPensumGemeinde;
+	}
+
+	@Nullable
+	public BigDecimal getBgPensumTotal() {
+		return bgPensumTotal;
+	}
+
+	public void setBgPensumTotal(@Nullable BigDecimal bgPensumTotal) {
+		this.bgPensumTotal = bgPensumTotal;
 	}
 
 	@Nullable
