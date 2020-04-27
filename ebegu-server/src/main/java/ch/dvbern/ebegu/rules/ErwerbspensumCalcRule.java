@@ -131,7 +131,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
-			addVerfuegungsBemerkungIfNecessary(inputData);
+			addVerfuegungsBemerkung(inputData);
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
@@ -144,8 +144,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return MathUtil.roundIntToFives(anspruch);
 	}
 
-	protected void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData) {
-		// Die Bemerkung darf nur fuer den ASIV Anteil gelten
+	protected void addVerfuegungsBemerkung(@Nonnull BGCalculationInput inputData) {
 		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
 		inputData.getParent().getBemerkungenList().addBemerkung(
 			new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen));
