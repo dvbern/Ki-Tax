@@ -113,10 +113,6 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		// Ki-Tax hat nur mit Prozenten gerechnet. Wir muessen die Pensen in STUNDEN berechnen
 		result.setZeiteinheit(PensumUnits.HOURS);
 		result.setZeiteinheitenRoundingStrategy(MathUtil::toTwoKommastelle);
-
-		// TODO (hefr) DAS
-		result.setBetreuungspensumZeiteinheit(betreuungsstundenIntervall);
-		// TODO (hefr) ODER DAS?
 		result.setBetreuungspensumZeiteinheit(MathUtil.DEFAULT.multiplyNullSafe(result.getBetreuungspensumProzent(), MULTIPLIER_TAGESFAMILIEN));
 		result.setAnspruchspensumZeiteinheit(MathUtil.DEFAULT.multiply(MathUtil.DEFAULT.from(result.getAnspruchspensumProzent()), MULTIPLIER_TAGESFAMILIEN));
 		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_TAGESFAMILIEN));

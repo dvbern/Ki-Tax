@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
 
@@ -606,12 +605,16 @@ public class BGCalculationInput {
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
-			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
+			if (this.getAbzugFamGroesse() != null && !MathUtil.isSame(this.getAbzugFamGroesse(), other.getAbzugFamGroesse())) {
+				throw new IllegalArgumentException("Familiengoressenabzug kann nicht gemerged werden");
+			}
 			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
 		}
 		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
 		if (other.getFamGroesse() != null) {
-			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
+			if (this.getFamGroesse() != null && !MathUtil.isSame(this.getFamGroesse(), other.getFamGroesse())) {
+				throw new IllegalArgumentException("Familiengoressen kann nicht gemerged werden");
+			}
 			this.setFamGroesse(other.getFamGroesse());
 		}
 	}

@@ -73,7 +73,7 @@ public class KitaxUebergangsloesungTest extends AbstractBGRechnerTest {
 	private double expectedElternbeitragBernASIV = expectedElternbeitragASIV - expectedZusatzgutscheinBern;
 
 	private int anspruchOhneZuschlag = 50;
-	private int anspruchFEBR = anspruchOhneZuschlag + 20; // TODO KITAX: Anspruchszuschlag muss fuer FEBR auf 0 gesetzt werden!
+	private int anspruchFEBR = anspruchOhneZuschlag + 20;
 	private int anspruchASIV = anspruchOhneZuschlag + 20;
 
 
