@@ -30,9 +30,12 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -141,7 +144,12 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return MathUtil.roundIntToFives(anspruch);
 	}
 
-	protected abstract void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData);
+	protected void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData) {
+		// Die Bemerkung darf nur fuer den ASIV Anteil gelten
+		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
+		inputData.getParent().getBemerkungenList().addBemerkung(
+			new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen));
+	}
 
 	@Nonnull
 	private Integer calculateErwerbspensumGS1(
@@ -183,5 +191,18 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 		}
 		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
+	}
+
+	@Nonnull
+	private String getBeschaeftigungsTypen(@Nonnull BGCalculationInput inputData, @Nonnull Locale locale) {
+		StringBuilder sb = new StringBuilder();
+		for (Taetigkeit taetigkeit : inputData.getTaetigkeiten()) {
+			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
+			sb.append(", ");
+		}
+		// Das letzte Komma entfernen
+		String taetigkeitenAsString = sb.toString();
+		taetigkeitenAsString = StringUtils.removeEnd(taetigkeitenAsString, ", ");
+		return taetigkeitenAsString;
 	}
 }
