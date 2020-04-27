@@ -1377,9 +1377,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			anspruchsPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(anspruchsPensumTotalGemeinde, anspruchsPensumKanton);
 			anspruchsPensumTotal = anspruchsPensumTotalGemeinde;
 		}
-		row.setBgPensumKanton(anspruchsPensumKanton);
-		row.setBgPensumGemeinde(anspruchsPensumGemeinde);
-		row.setBgPensumTotal(anspruchsPensumTotal);
+		row.setAnspruchsPensumKanton(anspruchsPensumKanton);
+		row.setAnspruchsPensumGemeinde(anspruchsPensumGemeinde);
+		row.setAnspruchsPensumTotal(anspruchsPensumTotal);
 
 		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
 		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
