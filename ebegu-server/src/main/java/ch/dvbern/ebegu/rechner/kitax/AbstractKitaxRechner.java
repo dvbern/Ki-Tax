@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -59,6 +60,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	protected BGCalculationResult calculateAsiv(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
 		// Die ASIV Berechnung muss ausgenullt werden
 		BGCalculationResult resultAsiv = new BGCalculationResult();
+		VerfuegungZeitabschnitt.initBGCalculationResult(input, resultAsiv);
 		return resultAsiv;
 	}
 
