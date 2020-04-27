@@ -26,7 +26,7 @@ export const CONSTANTS = {
     PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
-    PATTERN_ZEMIS_NUMMER: '^[0-9]{8}\\.[0-9]$',
+    PATTERN_ZEMIS_NUMMER: '(^0?\\d{8}\\.\\d$)|(^\\d{3}\\.\\d{3}\\.\\d{3}[\\.-]\\d$)',
     INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE: '199ac4a1-448f-4d4c-b3a6-5aee21f89613',
     ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA: '00000000-0000-0000-0000-000000000000',
     ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE: '00000000-0000-0000-0000-000000000001',
