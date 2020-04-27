@@ -91,8 +91,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private LocalDate zeitabschnittBis;
 	@Nullable private String betreuungsStatus;
 	@Nullable private BigDecimal betreuungsPensum;
-	@Nullable private BigDecimal anspruchsPensum;
-	@Nullable private BigDecimal bgPensum;
+
+	@Nullable private BigDecimal anspruchsPensumKanton;
+	@Nullable private BigDecimal anspruchsPensumGemeinde;
+	@Nullable private BigDecimal anspruchsPensumTotal;
+
+	@Nullable private BigDecimal bgPensumKanton;
+	@Nullable private BigDecimal bgPensumGemeinde;
+	@Nullable private BigDecimal bgPensumTotal;
+
 	@Nullable private BigDecimal bgStunden;
 	@Nullable private BigDecimal vollkosten;
 	@Nullable private BigDecimal elternbeitrag;
