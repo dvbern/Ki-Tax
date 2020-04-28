@@ -3589,9 +3589,9 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
 
             ferieninselStammdatenTS.zeitraumList = [];
-            for (let i = 0; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
+            for (const zeitraumTS of receivedFerieninselStammdaten.zeitraumList.length) {
                 const zeitraum = new TSFerieninselZeitraum();
-                this.parseDateRangeEntity(zeitraum, receivedFerieninselStammdaten.zeitraumList[i]);
+                this.parseDateRangeEntity(zeitraum, zeitraumTS);
                 ferieninselStammdatenTS.zeitraumList.push(zeitraum);
             }
 
@@ -3629,7 +3629,7 @@ export class EbeguRestUtil {
 
             if (ferieninselStammdatenTS.zeitraumList &&
                 (ferieninselStammdatenTS.zeitraumList.length > 1 ||
-                (ferieninselStammdatenTS.zeitraumList.length == 1 &&
+                (ferieninselStammdatenTS.zeitraumList.length === 1 &&
                 ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
                 ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
                 restFerieninselStammdaten.zeitraumList = [];

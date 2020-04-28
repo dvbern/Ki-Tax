@@ -128,14 +128,14 @@ export class GemeindeFiKonfigComponent implements OnInit {
     }
 
     public areAnyFerienConfiguredForStammdaten(stammdaten: TSFerieninselStammdaten): boolean {
-        return EbeguUtil.isNotNullOrUndefined(stammdaten.anmeldeschluss)
+        return EbeguUtil.isNotNullOrUndefined(stammdaten.anmeldeschluss);
     }
 
     public trackById(fiStammdaten: TSFerieninselStammdaten): string {
         return fiStammdaten.id;
     }
 
-    public hasZeitraeume(stammdaten: TSFerieninselStammdaten) {
-        return stammdaten.zeitraumList && stammdaten.zeitraumList.length > 0
+    public hasZeitraeume(stammdaten: TSFerieninselStammdaten): boolean {
+        return stammdaten.zeitraumList && stammdaten.zeitraumList.length > 0;
     }
 }
