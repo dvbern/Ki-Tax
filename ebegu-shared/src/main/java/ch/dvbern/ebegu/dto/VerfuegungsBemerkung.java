@@ -99,4 +99,13 @@ public class VerfuegungsBemerkung {
 		result = 31 * result + Arrays.hashCode(args);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("VerfuegungsBemerkung{");
+		sb.append("msgKey=").append(msgKey);
+		sb.append(", args=").append(Arrays.toString(args));
+		sb.append('}');
+		return sb.toString();
+	}
 }

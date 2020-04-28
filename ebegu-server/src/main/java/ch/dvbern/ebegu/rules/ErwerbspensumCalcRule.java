@@ -145,6 +145,10 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	protected void addVerfuegungsBemerkung(@Nonnull BGCalculationInput inputData) {
+		// Falls fuer denselben Zeitraum bereits eine ERWERBSPENSUM_ANSPRUCH Bemerkung besteht, soll diese entfernt werden
+		// da die Bemerkung sonst fuer ASIV und fuer die GEMEINDE hinzugefuegt wird
+		inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+		// Neue Bemerkung hinzufuegen
 		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
 		inputData.getParent().getBemerkungenList().addBemerkung(
 			new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen));
