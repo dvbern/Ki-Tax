@@ -338,7 +338,7 @@ export class EbeguUtil {
         } else {
             standardZemisNummer = zemisNummer;
         }
-        if ((new RegExp(CONSTANTS.PATTERN_ZEMIS_NUMMER, 'm')).test(zemisNummer) === false) {
+        if (!(new RegExp(CONSTANTS.PATTERN_ZEMIS_NUMMER, 'm')).test(zemisNummer)) {
             throw new Error(`Wrong Format for ZEMIS-Nummer ${zemisNummer}`);
         }
         return standardZemisNummer;
