@@ -23,7 +23,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -124,8 +123,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
-			inputData.getParent().getBemerkungenList().addBemerkung(
-				new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset));
+			inputData.addBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
 			inputData.setMinimalesEwpUnterschritten(true);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
@@ -135,7 +133,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
-			inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+			inputData.getParent().getBemerkungenList().removeAsivBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
@@ -145,13 +143,8 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	protected void addVerfuegungsBemerkung(@Nonnull BGCalculationInput inputData) {
-		// Falls fuer denselben Zeitraum bereits eine ERWERBSPENSUM_ANSPRUCH Bemerkung besteht, soll diese entfernt werden
-		// da die Bemerkung sonst fuer ASIV und fuer die GEMEINDE hinzugefuegt wird
-		inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-		// Neue Bemerkung hinzufuegen
 		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
-		inputData.getParent().getBemerkungenList().addBemerkung(
-			new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen));
+		inputData.addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen);
 	}
 
 	@Nonnull
@@ -177,7 +170,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		@Nonnull Locale locale) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
-			inputData.getParent().getBemerkungenList().addBemerkung(bemerkung, locale);
+			inputData.addBemerkung(bemerkung, locale);
 		}
 		return erwerbspensum;
 	}
