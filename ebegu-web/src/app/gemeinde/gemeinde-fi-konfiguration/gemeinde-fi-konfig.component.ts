@@ -75,8 +75,9 @@ export class GemeindeFiKonfigComponent implements OnInit {
 
     public isAnmeldeschlussRequired(fiStammdaten: TSFerieninselStammdaten): boolean {
         // Wenn mindestens ein Zeitraum erfasst ist
-        return EbeguUtil.isNotNullOrUndefined(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigAb)
-            || EbeguUtil.isNotNullOrUndefined(fiStammdaten.ersterZeitraum.gueltigkeit.gueltigBis);
+        return this.hasZeitraeume(fiStammdaten) &&
+            EbeguUtil.isNotNullOrUndefined(fiStammdaten.zeitraumList[0].gueltigkeit.gueltigAb) ||
+            EbeguUtil.isNotNullOrUndefined(fiStammdaten.zeitraumList[0].gueltigkeit.gueltigBis);
     }
 
     public isDatumAbRequired(zeitraum: TSFerieninselZeitraum, fiStammdaten: TSFerieninselStammdaten): boolean {
@@ -120,5 +121,21 @@ export class GemeindeFiKonfigComponent implements OnInit {
             return datum.format(CONSTANTS.DATE_FORMAT);
         }
         return '';
+    }
+
+    public areAnyFerienConfiguredForStammdatenArray(stammdatenArr: TSFerieninselStammdaten[]): boolean {
+        return stammdatenArr.filter(f => f.anmeldeschluss).length > 0;
+    }
+
+    public areAnyFerienConfiguredForStammdaten(stammdaten: TSFerieninselStammdaten): boolean {
+        return EbeguUtil.isNotNullOrUndefined(stammdaten.anmeldeschluss)
+    }
+
+    public trackById(fiStammdaten: TSFerieninselStammdaten): string {
+        return fiStammdaten.id;
+    }
+
+    public hasZeitraeume(stammdaten: TSFerieninselStammdaten) {
+        return stammdaten.zeitraumList && stammdaten.zeitraumList.length > 0
     }
 }
