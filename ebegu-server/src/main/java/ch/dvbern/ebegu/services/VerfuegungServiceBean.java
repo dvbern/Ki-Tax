@@ -233,7 +233,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGesuch().getDossier().getGemeinde().getId()).get();
 				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !persistedAnmeldung.isTagesschuleTagi()) {
-					mailService.sendInfoSchulamtAnmeldungFerieninselUebernommen(persistedAnmeldung);
+					mailService.sendInfoSchulamtAnmeldungTagesschuleUebernommen(persistedAnmeldung);
 				}
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,
