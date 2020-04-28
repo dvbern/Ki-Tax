@@ -90,7 +90,6 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		// Runden
 		vollkosten = MathUtil.roundToFrankenRappen(vollkosten);
 		elternbeitrag = MathUtil.roundToFrankenRappen(elternbeitrag);
-		betreuungsstundenIntervall = MathUtil.EINE_NACHKOMMASTELLE.from(betreuungsstundenIntervall);
 
 		BigDecimal verguenstigung = vollkosten.subtract(elternbeitrag);
 
