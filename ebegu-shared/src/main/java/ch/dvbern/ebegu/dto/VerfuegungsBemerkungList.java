@@ -73,12 +73,15 @@ public class VerfuegungsBemerkungList {
 	}
 
 	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungList additionalBemerkungen) {
+		//  Auch hier muss sichergestellt werden, dass pro Key nur eine Bemerkung vorhanden ist. Wir loeschen die aeltere
 		for (VerfuegungsBemerkung additionalBemerkung : additionalBemerkungen.bemerkungenList) {
 			addBemerkung(additionalBemerkung);
 		}
 	}
 
 	public void addBemerkung(@Nonnull VerfuegungsBemerkung bemerkung) {
+		// Falls von einer frueheren Regel *dieselbe* Bemerkung schon vorhanden ist, diese loeschen (sie hat evtl. andere Argumente)
+		removeBemerkungByMsgKey(bemerkung.getMsgKey());
 		bemerkungenList.add(bemerkung);
 	}
 
