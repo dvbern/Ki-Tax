@@ -233,7 +233,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGesuch().getDossier().getGemeinde().getId()).get();
 				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !persistedAnmeldung.isTagesschuleTagi()) {
-					mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
+					mailService.sendInfoSchulamtAnmeldungFerieninselUebernommen(persistedAnmeldung);
 				}
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,
@@ -258,6 +258,14 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	public AnmeldungFerieninsel anmeldungFerieninselUebernehmen(@Nonnull AnmeldungFerieninsel anmeldungFerieninsel) {
 		// momentan wird nichts verfügt, wir setzen lediglich den status der betreuung auf uebernommen
 		anmeldungFerieninsel.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		try {
+			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
+			mailService.sendInfoSchulamtAnmeldungFerieninselUebernommen(anmeldungFerieninsel);
+		} catch (MailException e) {
+			LOG.error("Mail InfoSchulamtFerieninselUebernommen konnte nicht versendet werden fuer "
+					+ "AnmeldungFerieninsel {}",
+				anmeldungFerieninsel.getId(), e);
+		}
 		return betreuungService.saveAnmeldungFerieninsel(anmeldungFerieninsel, false);
 	}
 
