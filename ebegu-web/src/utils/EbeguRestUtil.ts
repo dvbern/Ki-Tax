@@ -1814,7 +1814,7 @@ export class EbeguRestUtil {
         restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.ausAsylwesen = kind.ausAsylwesen;
-        restKind.zemisNummer = kind.zemisNummer;
+        restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
