@@ -101,7 +101,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				stichtag,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittNachMutation.getBemerkungenList().addBemerkung(msgKey, getLocale());
+			abschnittNachMutation.getBgCalculationInputAsiv().addBemerkung(msgKey, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 
 		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
@@ -124,7 +124,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				startKonkubinatPlusFive,
 				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
 			);
-			abschnittKonkubinat2GS.getBemerkungenList().addBemerkung(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
+			abschnittKonkubinat2GS.getBgCalculationInputAsiv().addBemerkung(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittKonkubinat2GS);
 
 		} else {
