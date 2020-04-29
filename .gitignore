@@ -34,8 +34,8 @@ ebegu-shared/src/test/java/ch/dvbern/ebegu/config/
 ebegu-web/src/assets/impressum/
 ebegu-web/src/impressum/
 ebegu-ws/src/test/
-logstash/input/local/server.log**
-logstash/input/dev/server.log**
-logstash/input/uat/server.log**
-logstash/input/prod1/server.log**
-logstash/input/prod2/server.log**
+/logstash/input/local/server.log**
+/logstash/input/dev/server.log**
+/logstash/input/uat/server.log**
+/logstash/input/prod1/server.log**
+/logstash/input/prod2/server.log**
