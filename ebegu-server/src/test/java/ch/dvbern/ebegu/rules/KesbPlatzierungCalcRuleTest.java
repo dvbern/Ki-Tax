@@ -69,7 +69,7 @@ public class KesbPlatzierungCalcRuleTest {
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).getBemerkungenList().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenList().size());
+		Assert.assertEquals(2, result.get(0).getBemerkungenList().uniqueSize());
 		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		Assert.assertTrue(result.get(0).getBemerkungenList().containsMsgKey(MsgKey.KESB_PLATZIERUNG_MSG));
 	}

@@ -63,8 +63,12 @@ public class VerfuegungsBemerkungList {
 		return bemerkungenList.isEmpty();
 	}
 
-	public int size() {
-		return bemerkungenList.size();
+	/**
+	 * Gibt die Anzahl *unterschiedlicher* Messages zurueck, in Sinne von: Gleicher Key wird fuer ASIV und GEMEINDE
+	 * nur einmal gezaehlt
+	 */
+	public int uniqueSize() {
+		return toUniqueMap().size();
 	}
 
 	public void clear() {
@@ -125,23 +129,8 @@ public class VerfuegungsBemerkungList {
 	 */
 	@Nonnull
 	public String bemerkungenToString() {
-
-		// Zum jetzigen Zeitpunkt haben wir unter Umstaenden eine Bemerkung zweimal drin: Einmal fuer ASIV und einmal fuer die Gemeinde
-		// z.B. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 10%" aus ASIV
-		// vs. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 30%" von der Gemeinde, da dort z.B. Freiwilligenarbeit mitzaehlt
-		// Wir muessen also bei gleichem MsgKey dejenigen aus ASIV loeschen
-		Map<MsgKey, VerfuegungsBemerkung> messagesMap = new HashMap<>();
-		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenList) {
-			VerfuegungsBemerkung maybeExistingMsg = messagesMap.get(verfuegungsBemerkung.getMsgKey());
-			if (maybeExistingMsg != null) {
-				if (maybeExistingMsg.getRuleValidity() == RuleValidity.ASIV) {
-					messagesMap.remove(verfuegungsBemerkung.getMsgKey());
-					messagesMap.put(verfuegungsBemerkung.getMsgKey(), verfuegungsBemerkung);
-				}
-			} else {
-				messagesMap.put(verfuegungsBemerkung.getMsgKey(), verfuegungsBemerkung);
-			}
-		}
+		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
+		Map<MsgKey, VerfuegungsBemerkung> messagesMap = toUniqueMap();
 		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
 
 		// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
@@ -171,5 +160,25 @@ public class VerfuegungsBemerkungList {
 		String bemerkungen = sb.toString();
 		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
 		return bemerkungen;
+	}
+
+	private Map<MsgKey, VerfuegungsBemerkung> toUniqueMap() {
+		// Zum jetzigen Zeitpunkt haben wir unter Umstaenden eine Bemerkung zweimal drin: Einmal fuer ASIV und einmal fuer die Gemeinde
+		// z.B. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 10%" aus ASIV
+		// vs. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 30%" von der Gemeinde, da dort z.B. Freiwilligenarbeit mitzaehlt
+		// Wir muessen also bei gleichem MsgKey dejenigen aus ASIV loeschen
+		Map<MsgKey, VerfuegungsBemerkung> messagesMap = new HashMap<>();
+		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenList) {
+			VerfuegungsBemerkung maybeExistingMsg = messagesMap.get(verfuegungsBemerkung.getMsgKey());
+			if (maybeExistingMsg != null) {
+				if (maybeExistingMsg.getRuleValidity() == RuleValidity.ASIV) {
+					messagesMap.remove(verfuegungsBemerkung.getMsgKey());
+					messagesMap.put(verfuegungsBemerkung.getMsgKey(), verfuegungsBemerkung);
+				}
+			} else {
+				messagesMap.put(verfuegungsBemerkung.getMsgKey(), verfuegungsBemerkung);
+			}
+		}
+		return messagesMap;
 	}
 }
