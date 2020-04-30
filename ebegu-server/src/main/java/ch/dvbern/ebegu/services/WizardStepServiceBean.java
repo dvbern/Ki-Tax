@@ -566,7 +566,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void setStatusDueToFinSitRequired(WizardStep wizardStep, Gesuch gesuch) {
-		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
+		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstandig(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
 		} else if (!EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
@@ -931,7 +931,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 			}
 
-			if (wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+			if (!wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
 				setStatusDueToFinSitRequired(wizardStep, wizardStep.getGesuch());
 			}
 		}
