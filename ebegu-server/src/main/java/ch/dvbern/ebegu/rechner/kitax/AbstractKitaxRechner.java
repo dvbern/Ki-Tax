@@ -61,6 +61,8 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 		// Die ASIV Berechnung muss ausgenullt werden
 		BGCalculationResult resultAsiv = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, resultAsiv);
+		// Anspruch nach ASIV muss fuer Kitax-Rechner immer 0 sein
+		resultAsiv.setAnspruchspensumProzent(0);
 		return resultAsiv;
 	}
 
