@@ -922,9 +922,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				setWizardStepOkOrMutiert(wizardStep);
 			}
 			if (dominantType == BetreuungsangebotTyp.KITA || dominantType == BetreuungsangebotTyp.TAGESSCHULE
-				&& (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
-				|| EbeguUtil.isFinanzielleSituationVollstaendig(wizardStep.getGesuch())
-			)
+				&& EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
 				&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
 				//TODO we dont check if there is a finsit container if the field are set or not
