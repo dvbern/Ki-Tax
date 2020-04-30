@@ -98,17 +98,15 @@ public class VerfuegungsBemerkungList {
 	}
 
 	@Nonnull
-	public List<VerfuegungsBemerkung> findAsivBemerkungenByMsgKey(@Nonnull MsgKey msgKey) {
+	private List<VerfuegungsBemerkung> findBemerkungenByMsgKey(@Nonnull MsgKey msgKey) {
 		return this.bemerkungenList
 			.stream()
 			.filter(bemerkung -> bemerkung.getMsgKey() == msgKey)
-			.filter(bemerkung -> bemerkung.getRuleValidity() == RuleValidity.ASIV)
 			.collect(Collectors.toList());
 	}
 
-	public void removeAsivBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
-		// Es werden immer nur ASIV-Bemerkungen geloescht!
-		List<VerfuegungsBemerkung> toRemoveList = findAsivBemerkungenByMsgKey(msgKey);
+	public void removeBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
+		List<VerfuegungsBemerkung> toRemoveList = findBemerkungenByMsgKey(msgKey);
 		for (VerfuegungsBemerkung verfuegungsBemerkung : toRemoveList) {
 			bemerkungenList.remove(verfuegungsBemerkung);
 		}

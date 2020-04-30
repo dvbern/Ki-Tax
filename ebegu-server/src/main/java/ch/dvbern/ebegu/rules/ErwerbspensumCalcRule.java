@@ -133,7 +133,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
-			inputData.getParent().getBemerkungenList().removeAsivBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+			inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
