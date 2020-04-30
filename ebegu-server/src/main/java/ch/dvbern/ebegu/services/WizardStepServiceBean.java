@@ -921,19 +921,15 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
 			}
-			if (dominantType == BetreuungsangebotTyp.KITA
-				&& EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
+			if (dominantType == BetreuungsangebotTyp.KITA || dominantType == BetreuungsangebotTyp.TAGESSCHULE
+				&& (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
+				|| EbeguUtil.isFinanzielleSituationVollstaendig(wizardStep.getGesuch())
+			)
 				&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
-
+				//TODO we dont check if there is a finsit container if the field are set or not
+				//so the step is ok if there's a finsit or Einkommsverschlt but without value
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
-			}
-			if (dominantType == BetreuungsangebotTyp.TAGESSCHULE) {
-				if (EbeguUtil.isSozialhilfeBezuegerNull(wizardStep.getGesuch())) {
-					wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
-				} else if (!EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())) {
-					setWizardStepOkOrMutiert(wizardStep);
-				}
 			}
 
 			if (!wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
