@@ -486,11 +486,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setSameVerfuegteVerfuegungsrelevanteDaten(sameVerfuegteVerfuegungsrelevanteDaten);
 	}
 
-	public void setSameAusbezahlteVerguenstigungForAsivAndGemeinde(boolean sameAusbezahlteVerguenstigung) {
-		this.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-		this.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(sameAusbezahlteVerguenstigung);
-	}
-
 	public void setSozialhilfeempfaengerForAsivAndGemeinde(boolean sozialhilfe) {
 		this.getBgCalculationInputAsiv().setSozialhilfeempfaenger(sozialhilfe);
 		this.getBgCalculationInputGemeinde().setSozialhilfeempfaenger(sozialhilfe);
