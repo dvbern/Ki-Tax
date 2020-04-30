@@ -792,11 +792,4 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         // tslint:disable-next-line:no-magic-numbers
         this.doPostLinkActions(500);
     }
-
-    public isAbschliessenDisabled(): boolean {
-        if(this.gesuchModelManager.areThereOnlyFerieninsel()){
-
-        }
-        return !this.isFinSitChoosen();
-    }
 }

@@ -566,10 +566,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void setStatusDueToFinSitRequired(WizardStep wizardStep, Gesuch gesuch) {
-		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstandig(gesuch)) {
+		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
-		} else if (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
+		} else if (!EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
 			// the FinSit/EKV is required but has not been created yet, so it must be NOK
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}

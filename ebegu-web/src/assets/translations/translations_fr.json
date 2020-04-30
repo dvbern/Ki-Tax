@@ -1394,7 +1394,7 @@
     "GESPERRT_WEGEN_MUTATION": "Un changement est déjà en cours pour cette demande, vous ne pouvez donc pas en créer actuellement ni saisir d'offre du service scolaire.",
     "TAGESSCHULE_ANMELDEN": "Inscription à l'école à journée continue",
     "FERIENINSEL_ANMELDEN": "S'inscrire à la Ferieninsel",
-    "MUTATION_NOETIG": "Pour saisir les inscriptions à l'école à journée continue, vous devez modifier la demande. Vous pouvez lancer le changement depuis le tableau de bord.",
+    "MUTATION_NOETIG": "Pour saisir de nouvelles prises en charge ou inscriptions, vous devez modifier la demande. Vous pouvez lancer le changement depuis le tableau de bord.",
     "MUTATION_NOETIG_DB": "Pour saisir les inscriptions à l'école à journée continue, vous devez modifier la demande.",
     "NEU": "Nouveau",
     "GELESEN": "Lu",

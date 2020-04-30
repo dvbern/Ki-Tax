@@ -1394,7 +1394,7 @@
     "GESPERRT_WEGEN_MUTATION": "Es gibt bereits eine offene Mutation für diesen Antrag, Sie können daher derzeit keine Mutation erstellen oder Schulamtangebote erfassen.",
     "TAGESSCHULE_ANMELDEN": "Tagesschule anmelden",
     "FERIENINSEL_ANMELDEN": "Ferieninsel anmelden",
-    "MUTATION_NOETIG": "Um Anmeldungen für eine Tagesschule erfassen zu können, müssen sie den Antrag mutieren. Die Mutation können Sie auf dem Dashboard starten.",
+    "MUTATION_NOETIG": "Um Anmeldungen oder Betreuungen erfassen zu können, müssen sie den Antrag mutieren. Die Mutation können Sie auf dem Dashboard starten.",
     "MUTATION_NOETIG_DB": "Um Anmeldungen für eine Tagesschule erfassen zu können, müssen sie den Antrag mutieren.",
     "NEU": "neu",
     "GELESEN": "gelesen",
