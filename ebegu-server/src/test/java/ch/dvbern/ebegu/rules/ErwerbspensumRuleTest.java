@@ -78,7 +78,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
-		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().size());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
@@ -118,7 +118,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
-		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().size());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
 		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 

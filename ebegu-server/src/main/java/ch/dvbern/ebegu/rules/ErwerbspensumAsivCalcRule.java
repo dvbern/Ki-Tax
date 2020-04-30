@@ -21,13 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Berechnet die hoehe des ErwerbspensumRule eines bestimmten Erwerbspensums
@@ -46,25 +40,5 @@ public class ErwerbspensumAsivCalcRule extends ErwerbspensumCalcRule {
 		@Nonnull Locale locale
 	) {
 		super(RuleValidity.ASIV, validityPeriod, zuschlagErwerbspensum, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
-	}
-
-	@Override
-	protected void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData) {
-		// Die Bemerkung darf nur fuer den ASIV Anteil gelten
-		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
-		inputData.getParent().getBemerkungenList().addBemerkung(
-			new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen));
-	}
-
-	private String getBeschaeftigungsTypen(@Nonnull BGCalculationInput inputData, @Nonnull Locale locale) {
-		StringBuilder sb = new StringBuilder();
-		for (Taetigkeit taetigkeit : inputData.getTaetigkeiten()) {
-			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
-			sb.append(", ");
-		}
-		// Das letzte Komma entfernen
-		String taetigkeitenAsString = sb.toString();
-		taetigkeitenAsString = StringUtils.removeEnd(taetigkeitenAsString, ", ");
-		return taetigkeitenAsString;
 	}
 }

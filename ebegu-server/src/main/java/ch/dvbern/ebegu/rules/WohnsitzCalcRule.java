@@ -21,7 +21,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -54,11 +53,10 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (areNotInBern(inputData)) {
 			inputData.setAnspruchspensumProzent(0);
-			inputData.getParent().getBemerkungenList().addBemerkung(new VerfuegungsBemerkung(
+			inputData.addBemerkung(
 				MsgKey.WOHNSITZ_MSG,
 				getLocale(),
-				platz.extractGesuch().getDossier().getGemeinde().getName())
-			);
+				platz.extractGesuch().getDossier().getGemeinde().getName());
 		}
 	}
 

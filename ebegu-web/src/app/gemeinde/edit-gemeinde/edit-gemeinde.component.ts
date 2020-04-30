@@ -292,7 +292,7 @@ export class EditGemeindeComponent implements OnInit {
 
         this.forms.forEach((form, index) => {
             // do not override the index of the first error found!
-            if (!form.valid && errorIndex === undefined) {
+            if (!form.disabled && !form.valid && errorIndex === undefined) {
                 errorIndex = index - 1;
             }
         });

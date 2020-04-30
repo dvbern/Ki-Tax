@@ -320,6 +320,30 @@ export class EbeguUtil {
         return url;
     }
 
+    public static zemisNummerToStandardZemisNummer(zemisNummer: string): string {
+        if (!zemisNummer) {
+            return zemisNummer;
+        }
+
+        const re1 = /^0\d{8}\.\d$/m; // format 012345678.9
+        const re2 = /^\d{3}\.\d{3}\.\d{3}[.-]\d$/m; // format 012.345.678.9 | 012.345.678-9
+        let standardZemisNummer;
+        if (zemisNummer.match(re1)) {
+            standardZemisNummer = zemisNummer.slice(1);
+        } else if (zemisNummer.match(re2)) {
+            const tmp = zemisNummer
+                .replace(/[\\.-]/g, '')
+                .slice(1);
+            standardZemisNummer = `${tmp.slice(0, 8)}.${tmp.slice(-1)}`;
+        } else {
+            standardZemisNummer = zemisNummer;
+        }
+        if (!(new RegExp(CONSTANTS.PATTERN_ZEMIS_NUMMER, 'm')).test(zemisNummer)) {
+            throw new Error(`Wrong Format for ZEMIS-Nummer ${zemisNummer}`);
+        }
+        return standardZemisNummer;
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
