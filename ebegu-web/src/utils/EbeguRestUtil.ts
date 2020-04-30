@@ -3587,19 +3587,20 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.anmeldeschluss =
                 DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
             ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
-            const firstZeitraum = new TSFerieninselZeitraum();
-            if (receivedFerieninselStammdaten.zeitraumList[0]) {
-                this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
-            } else {
-                firstZeitraum.gueltigkeit = new TSDateRange();
-            }
-            ferieninselStammdatenTS.ersterZeitraum = firstZeitraum;
+
             ferieninselStammdatenTS.zeitraumList = [];
-            for (let i = 1; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
-                const zeitraum = new TSFerieninselZeitraum();
-                this.parseDateRangeEntity(zeitraum, receivedFerieninselStammdaten.zeitraumList[i]);
-                ferieninselStammdatenTS.zeitraumList.push(zeitraum);
+            for (const zeitraum of receivedFerieninselStammdaten.zeitraumList) {
+                const zeitraumTS = new TSFerieninselZeitraum();
+                this.parseDateRangeEntity(zeitraumTS, zeitraum);
+                ferieninselStammdatenTS.zeitraumList.push(zeitraumTS);
             }
+
+            if (ferieninselStammdatenTS.zeitraumList.length < 1) {
+                const emptyZeitraum = new TSFerieninselZeitraum();
+                emptyZeitraum.gueltigkeit = new TSDateRange();
+                ferieninselStammdatenTS.zeitraumList.push(emptyZeitraum);
+            }
+
             const tage = receivedFerieninselStammdaten.potenzielleFerieninselTageFuerBelegung;
             if (tage) {
                 ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegung =
@@ -3625,18 +3626,17 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            if (ferieninselStammdatenTS.ersterZeitraum && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit
-                && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit.gueltigAb) {
-                const firstZeitraum: any = {};
-                this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.ersterZeitraum);
+
+            if (ferieninselStammdatenTS.zeitraumList &&
+                (ferieninselStammdatenTS.zeitraumList.length > 1 ||
+                (ferieninselStammdatenTS.zeitraumList.length === 1 &&
+                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
+                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
                 restFerieninselStammdaten.zeitraumList = [];
-                restFerieninselStammdaten.zeitraumList[0] = firstZeitraum;
-            }
-            if (ferieninselStammdatenTS.zeitraumList) {
                 for (let i = 0; i < ferieninselStammdatenTS.zeitraumList.length; i++) {
                     const zeitraum: any = {};
                     this.abstractDateRangeEntityToRestObject(zeitraum, ferieninselStammdatenTS.zeitraumList[i]);
-                    restFerieninselStammdaten.zeitraumList[i + 1] = zeitraum;
+                    restFerieninselStammdaten.zeitraumList[i] = zeitraum;
                 }
             }
             return restFerieninselStammdaten;
