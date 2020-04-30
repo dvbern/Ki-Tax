@@ -21,7 +21,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -56,12 +55,11 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
 		//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 		if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-			inputData.getParent().getBemerkungenList().addBemerkung(new VerfuegungsBemerkung(
+			inputData.addBemerkung(
 				MsgKey.RESTANSPRUCH_MSG,
 				getLocale(),
 				anspruchberechtigtesPensum,
-				verfuegbarerRestanspruch)
-			);
+				verfuegbarerRestanspruch);
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
 	}

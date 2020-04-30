@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterGemeindeDTO;
 import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -88,7 +89,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 	}
 
 	private BGCalculationInput prepareInput(@Nonnull EinschulungTyp einschulungTyp, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
-		BGCalculationInput input = new BGCalculationInput(new VerfuegungZeitabschnitt());
+		BGCalculationInput input = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
 		input.setEinschulungTyp(einschulungTyp);
 		input.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		input.setAnspruchspensumProzent(100);
