@@ -1040,6 +1040,7 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
+		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		KindContainer kindContainer = createDefaultKindContainer();
 		kindContainer.getBetreuungen().add(betreuung);
 		betreuung.setKind(kindContainer);

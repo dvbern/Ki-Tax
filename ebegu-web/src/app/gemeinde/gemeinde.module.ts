@@ -30,7 +30,6 @@ import {OverlappingZeitraumDirective} from './gemeinde-fi-konfiguration/overlapp
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
 import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts-konfig.component';
-import { FilterFiStammdatenPipe } from './gemeinde-fi-konfiguration/filter-fi-stammdaten.pipe';
 
 @NgModule({
     imports: [
@@ -53,7 +52,6 @@ import { FilterFiStammdatenPipe } from './gemeinde-fi-konfiguration/filter-fi-st
         EditGemeindeComponentTS,
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
-        FilterFiStammdatenPipe,
         OverlappingZeitraumDirective
     ],
     entryComponents: [

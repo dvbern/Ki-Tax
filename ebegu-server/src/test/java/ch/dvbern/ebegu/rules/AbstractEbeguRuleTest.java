@@ -384,7 +384,7 @@ public class AbstractEbeguRuleTest {
 		} else {
 			assertNotNull(bemerkungen);
 			Assert.assertFalse(zeitabschnitt.getBemerkungenList().isEmpty());
-			Assert.assertEquals(1, zeitabschnitt.getBemerkungenList().size());
+			Assert.assertEquals(1, zeitabschnitt.getBemerkungenList().uniqueSize());
 			Assert.assertTrue(zeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		}
 	}

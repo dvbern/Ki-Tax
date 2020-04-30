@@ -25,6 +25,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -65,18 +67,19 @@ public class ErwerbspensumGemeindeAbschnittRule extends ErwerbspensumAbschnittRu
 		Optional<DateRange> gueltigkeitOverlap = gueltigkeit.getOverlap(new DateRange(validFrom(), validTo()));
 		if (gueltigkeitOverlap.isPresent()) {
 			VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeitOverlap.get());
-			zeitabschnitt.getBgCalculationInputGemeinde().getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
+			BGCalculationInput inputGemeinde = zeitabschnitt.getBgCalculationInputGemeinde();
+			inputGemeinde.getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
 			Integer limitedPensum = erwerbspensum.getPensum();
 			if (limitedPensum > maximalpensumFreiwilligenarbeit) {
 				limitedPensum = maximalpensumFreiwilligenarbeit;
 			}
 			if (limitedPensum > 0) {
 				if (isGesuchsteller1) {
-					zeitabschnitt.getBgCalculationInputGemeinde().setErwerbspensumGS1(limitedPensum);
+					inputGemeinde.setErwerbspensumGS1(limitedPensum);
 				} else {
-					zeitabschnitt.getBgCalculationInputGemeinde().setErwerbspensumGS2(limitedPensum);
+					inputGemeinde.setErwerbspensumGS2(limitedPensum);
 				}
-				zeitabschnitt.getBemerkungenList().addBemerkung(MsgKey.ERWERBSPENSUM_FREIWILLIGENARBEIT, getLocale(), limitedPensum);
+				inputGemeinde.addBemerkung(MsgKey.ERWERBSPENSUM_FREIWILLIGENARBEIT, getLocale(), limitedPensum);
 			}
 			return zeitabschnitt;
 		}

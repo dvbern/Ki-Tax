@@ -23,12 +23,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
  * DTO für eine Verfügungsbemerkung
  */
 public class VerfuegungsBemerkung {
+
+	@Nonnull
+	private RuleValidity ruleValidity;
 
 	@Nonnull
 	private MsgKey msgKey;
@@ -39,15 +43,8 @@ public class VerfuegungsBemerkung {
 	@Nonnull
 	private Locale sprache;
 
-	public VerfuegungsBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale sprache) {
-		this.msgKey = msgKey;
-		this.sprache = sprache;
-	}
-
-	public VerfuegungsBemerkung(
-		@Nonnull MsgKey msgKey,
-		@Nonnull Locale sprache,
-		@Nonnull Object... args) {
+	public VerfuegungsBemerkung(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
+		this.ruleValidity = ruleValidity;
 		this.msgKey = msgKey;
 		this.sprache = sprache;
 		this.args = args;
@@ -71,6 +68,15 @@ public class VerfuegungsBemerkung {
 		this.sprache = sprache;
 	}
 
+	@Nonnull
+	public RuleValidity getRuleValidity() {
+		return ruleValidity;
+	}
+
+	public void setRuleValidity(@Nonnull RuleValidity ruleValidity) {
+		this.ruleValidity = ruleValidity;
+	}
+
 	public String getTranslated() {
 		if (args != null) {
 			return ServerMessageUtil.translateEnumValue(msgKey, sprache, args);
@@ -90,13 +96,24 @@ public class VerfuegungsBemerkung {
 		VerfuegungsBemerkung that = (VerfuegungsBemerkung) o;
 		return msgKey == that.msgKey &&
 			Arrays.equals(args, that.args) &&
-			Objects.equals(sprache, that.sprache);
+			Objects.equals(sprache, that.sprache) &&
+			this.ruleValidity == that.ruleValidity;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(msgKey, sprache);
+		int result = Objects.hash(ruleValidity, msgKey, sprache);
 		result = 31 * result + Arrays.hashCode(args);
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("VerfuegungsBemerkung{");
+		sb.append("msgKey=").append(msgKey);
+		sb.append(", ruleValidity=").append(ruleValidity);
+		sb.append(", args=").append(Arrays.toString(args));
+		sb.append('}');
+		return sb.toString();
 	}
 }
