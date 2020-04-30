@@ -931,7 +931,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 			}
 
-			if (!wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+			if (wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
 				setStatusDueToFinSitRequired(wizardStep, wizardStep.getGesuch());
 			}
 		}
