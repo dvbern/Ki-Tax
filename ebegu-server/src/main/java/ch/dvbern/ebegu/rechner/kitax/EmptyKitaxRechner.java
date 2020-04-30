@@ -50,7 +50,7 @@ public class EmptyKitaxRechner extends AbstractRechner {
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
 
 		result.setAnspruchspensumProzent(0);
-		input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD, locale);
+		input.addBemerkung(MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD, locale);
 		return result;
 	}
 }

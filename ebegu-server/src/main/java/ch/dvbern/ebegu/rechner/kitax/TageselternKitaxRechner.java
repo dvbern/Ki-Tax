@@ -54,7 +54,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 
 		if (!input.isBetreuungInGemeinde()) {
 			input.setAnspruchspensumProzent(0);
-			input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
+			input.addBemerkung(MsgKey.FEBR_BETREUUNG_NICHT_IN_BERN, locale);
 		}
 
 		// Benoetigte Daten
@@ -117,7 +117,7 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 		result.setBgPensumZeiteinheit(MathUtil.DEFAULT.multiply(result.getBgPensumProzent(), MULTIPLIER_TAGESFAMILIEN));
 
 		// Bemerkung hinzufuegen
-		input.getParent().getBemerkungenList().addBemerkung(MsgKey.FEBR_INFO, locale);
+		input.addBemerkung(MsgKey.FEBR_INFO, locale);
 
 		return Optional.of(result);
 	}
