@@ -91,6 +91,19 @@ public class RueckforderungZahlung extends AbstractEntity {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof RueckforderungZahlung)) {
+			return false;
+		}
+		final RueckforderungZahlung otherRueckforderungZahlung = (RueckforderungZahlung) other;
+		return this.rueckforderungFormular.getId().equals(otherRueckforderungZahlung.getRueckforderungFormular().getId())
+			&& this.betrag.equals(otherRueckforderungZahlung.getBetrag())
+			&& this.datumAusgefuehrt.isEqual(otherRueckforderungZahlung.getDatumAusgefuehrt());
 	}
 }

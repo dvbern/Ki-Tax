@@ -106,6 +106,20 @@ public class RueckforderungMitteilung extends AbstractEntity {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof RueckforderungMitteilung)) {
+			return false;
+		}
+		final RueckforderungMitteilung otherRueckforderungMitteilung = (RueckforderungMitteilung) other;
+		return this.absender.getId().equals(otherRueckforderungMitteilung.getAbsender().getId())
+			&& this.betreff.equals(otherRueckforderungMitteilung.getBetreff())
+			&& this.inhalt.equals(otherRueckforderungMitteilung.getInhalt())
+			&& this.sendeDatum.equals(otherRueckforderungMitteilung.getSendeDatum());
 	}
 }

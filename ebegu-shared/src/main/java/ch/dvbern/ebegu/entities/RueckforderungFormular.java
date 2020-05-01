@@ -227,6 +227,29 @@ public class RueckforderungFormular extends AbstractEntity {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof RueckforderungFormular)) {
+			return false;
+		}
+		final RueckforderungFormular otherRueckforderungFormular = (RueckforderungFormular) other;
+		return this.status.equals(otherRueckforderungFormular.getStatus()) &&
+			this.nichtAngeboteneBetreuungStundenKantonStufe1.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungStundenKantonStufe1()) &&
+			this.nichtAngeboteneBetreuungStundenInstitutionStufe1.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungStundenInstitutionStufe1()) &&
+			this.nichtAngeboteneBetreuungStundenKantonStufe2.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungStundenKantonStufe2()) &&
+			this.nichtAngeboteneBetreuungStundenInstitutionStufe2.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungStundenInstitutionStufe2()) &&
+			this.nichtAngeboteneBetreuungTageKantonStufe1.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungTageKantonStufe1()) &&
+			this.nichtAngeboteneBetreuungTageInstitutionStufe1.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungTageInstitutionStufe1()) &&
+			this.nichtAngeboteneBetreuungTageKantonStufe2.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungTageKantonStufe2()) &&
+			this.nichtAngeboteneBetreuungTageInstitutionStufe2.equals(otherRueckforderungFormular.getNichtAngeboteneBetreuungTageInstitutionStufe2()) &&
+			this.andereEntfalleneErtraegeKantonStufe1.equals(otherRueckforderungFormular.getAndereEntfalleneErtraegeKantonStufe1()) &&
+			this.andereEntfalleneErtraegeInstitutionStufe1.equals(otherRueckforderungFormular.getAndereEntfalleneErtraegeInstitutionStufe1()) &&
+			this.andereEntfalleneErtraegeKantonStufe2.equals(otherRueckforderungFormular.getAndereEntfalleneErtraegeKantonStufe2()) &&
+			this.andereEntfalleneErtraegeInstitutionStufe2.equals(otherRueckforderungFormular.getAndereEntfalleneErtraegeInstitutionStufe2());
 	}
 }

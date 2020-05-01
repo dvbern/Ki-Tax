@@ -80,6 +80,20 @@ public class RueckforderungDokument extends FileMetadata {
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof RueckforderungDokument)) {
+			return false;
+		}
+		final RueckforderungDokument otherRueckforderungDokument = (RueckforderungDokument) other;
+		return this.rueckforderungFormular.getId().equals(otherRueckforderungDokument.getRueckforderungFormular().getId())
+			&& this.rueckforderungDokumentTyp.equals(otherRueckforderungDokument.getRueckforderungDokumentTyp())
+			&& this.timestampUpload.isEqual(otherRueckforderungDokument.getTimestampUpload());
+
 	}
 }
