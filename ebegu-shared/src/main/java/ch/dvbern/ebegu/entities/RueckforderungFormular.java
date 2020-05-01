@@ -52,10 +52,10 @@ public class RueckforderungFormular extends AbstractEntity {
 	@JoinTable(
 		joinColumns = @JoinColumn(name = "rueckforderung_formular_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "rueckforderung_mitteilung_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_rueckforderung_formular_rueckforderung_mitteilung_mitteilung_id"),
+		foreignKey = @ForeignKey(name = "FK_rueckforderung_formular_mitteilung_id"),
 		inverseForeignKey = @ForeignKey(name = "FK_rueckforderung_formular_rueckforderung_mitteilung_formular_id"),
 		indexes = {
-			@Index(name = "FK_rueckforderung_formular_rueckforderung_mitteilung_mitteilung_id", columnList = "rueckforderung_formular_id"),
+			@Index(name = "FK_rueckforderung_formular_mitteilung_id", columnList = "rueckforderung_formular_id"),
 			@Index(name = "IX_institution_external_clients_external_client_id", columnList = "rueckforderung_mitteilung_id"),
 		}
 	)

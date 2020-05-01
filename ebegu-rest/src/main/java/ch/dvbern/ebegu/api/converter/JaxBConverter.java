@@ -116,6 +116,7 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
@@ -205,6 +206,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
@@ -5117,4 +5119,38 @@ public class JaxBConverter extends AbstractConverter {
 			.map(this::externalClientToJAX)
 			.collect(Collectors.toList());
 	}
+
+	@Nonnull
+	public List<JaxRueckforderungFormular> rueckforderungFormularListToJax(@Nonnull List<RueckforderungFormular> rueckforderungFormularList) {
+		return rueckforderungFormularList.stream()
+			.map(this::rueckforderungFormularToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
+
+		jaxFormular.setInstitution(institutionToJAX(rueckforderungFormular.getInstitution()));
+		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+
+		jaxFormular.setNichtAngeboteneBetreuungStundenKantonStufe1(rueckforderungFormular.getNichtAngeboteneBetreuungStundenKantonStufe1());
+		jaxFormular.setNichtAngeboteneBetreuungStundenInstitutionStufe1(rueckforderungFormular.getNichtAngeboteneBetreuungStundenInstitutionStufe1());
+		jaxFormular.setNichtAngeboteneBetreuungStundenKantonStufe2(rueckforderungFormular.getNichtAngeboteneBetreuungStundenKantonStufe2());
+		jaxFormular.setNichtAngeboteneBetreuungStundenInstitutionStufe2(rueckforderungFormular.getNichtAngeboteneBetreuungStundenInstitutionStufe2());
+		jaxFormular.setNichtAngeboteneBetreuungTageKantonStufe1(rueckforderungFormular.getNichtAngeboteneBetreuungTageKantonStufe1());
+		jaxFormular.setNichtAngeboteneBetreuungTageInstitutionStufe1(rueckforderungFormular.getNichtAngeboteneBetreuungTageInstitutionStufe1());
+		jaxFormular.setNichtAngeboteneBetreuungTageKantonStufe2(rueckforderungFormular.getNichtAngeboteneBetreuungTageKantonStufe2());
+		jaxFormular.setNichtAngeboteneBetreuungTageInstitutionStufe2(rueckforderungFormular.getNichtAngeboteneBetreuungTageInstitutionStufe2());
+		jaxFormular.setAndereEntfalleneErtraegeKantonStufe1(rueckforderungFormular.getAndereEntfalleneErtraegeKantonStufe1());
+		jaxFormular.setAndereEntfalleneErtraegeInstitutionStufe1(rueckforderungFormular.getAndereEntfalleneErtraegeInstitutionStufe1());
+		jaxFormular.setAndereEntfalleneErtraegeKantonStufe2(rueckforderungFormular.getAndereEntfalleneErtraegeKantonStufe2());
+		jaxFormular.setAndereEntfalleneErtraegeInstitutionStufe2(rueckforderungFormular.getAndereEntfalleneErtraegeInstitutionStufe2());
+
+		// TODO: Mitteilungen
+
+		return jaxFormular;
+
+	}
+
 }

@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
@@ -36,7 +35,7 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private static final long serialVersionUID = -7620977294104032869L;
 
 	@Nonnull
-	private Institution institution;
+	private JaxInstitution institution;
 
 	@Nonnull
 	private Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
@@ -69,12 +68,12 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private BigDecimal andereEntfalleneErtraegeInstitutionStufe2;
 
 	@Nonnull
-	public Institution getInstitution() {
+	public JaxInstitution getInstitution() {
 		return institution;
 	}
 
-	public void setInstitution(@Nonnull Institution institution) {
-		this.institution = institution;
+	public void setInstitution(@Nonnull JaxInstitution jaxInstitution) {
+		this.institution = jaxInstitution;
 	}
 
 	@Nonnull
