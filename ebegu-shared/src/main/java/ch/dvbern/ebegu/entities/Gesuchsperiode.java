@@ -28,6 +28,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -45,6 +47,9 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MB;
  */
 @Audited
 @Entity
+@Table(
+	uniqueConstraints =	@UniqueConstraint(columnNames = "gueltigAb", name = "UK_Gesuchsperiode_gueltigAb")
+)
 public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -9132257370971574570L;
@@ -256,4 +261,5 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	public String getGesuchsperiodeStatusName(@Nonnull Locale locale) {
 		return "(" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
 	}
+
 }
