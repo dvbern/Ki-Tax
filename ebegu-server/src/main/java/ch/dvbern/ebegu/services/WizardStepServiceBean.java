@@ -569,7 +569,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstandig(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
-		} else if (!EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
+		} else if (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
 			// the FinSit/EKV is required but has not been created yet, so it must be NOK
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
@@ -929,10 +929,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				//TODO we dont check if there is a finsit container if the field are set or not
 				//so the step is ok if there's a finsit or Einkommsverschlt but without value
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
-			}
-
-			if (!wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
-				setStatusDueToFinSitRequired(wizardStep, wizardStep.getGesuch());
 			}
 		}
 	}
