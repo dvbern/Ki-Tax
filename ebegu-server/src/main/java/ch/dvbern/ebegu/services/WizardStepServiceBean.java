@@ -566,7 +566,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void setStatusDueToFinSitRequired(WizardStep wizardStep, Gesuch gesuch) {
-		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstandig(gesuch)) {
+		if (!EbeguUtil.isFinanzielleSituationRequired(gesuch) && EbeguUtil.isFamilienSituationVollstaendig(gesuch)) {
 			setWizardStepOkay(gesuch.getId(), wizardStep.getWizardStepName());
 
 		} else if (EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())) {
@@ -924,7 +924,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if ((dominantType == BetreuungsangebotTyp.KITA || dominantType == BetreuungsangebotTyp.TAGESSCHULE)
 				&& EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
 				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
-					|| !EbeguUtil.isFamilienSituationVollstandig(wizardStep.getGesuch()))
+					|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
 				//TODO we dont check if there is a finsit container if the field are set or not
 				//so the step is ok if there's a finsit or Einkommsverschlt but without value

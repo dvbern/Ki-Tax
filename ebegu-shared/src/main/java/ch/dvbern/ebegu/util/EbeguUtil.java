@@ -203,7 +203,7 @@ public final class EbeguUtil {
 			|| gesuch.getEinkommensverschlechterungInfoContainer() == null;
 	}
 
-	public static boolean isFamilienSituationVollstandig(@Nonnull Gesuch gesuch) {
+	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
