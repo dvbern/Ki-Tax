@@ -66,12 +66,17 @@ public interface MailService {
 	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot ins Backend uebernommen
 	 * wurde
 	 */
-	void sendInfoSchulamtAnmeldungUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
+	void sendInfoSchulamtAnmeldungTagesschuleUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
 
 	/**
 	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot abgelehnt wurde.
 	 */
 	void sendInfoSchulamtAnmeldungAbgelehnt(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
+
+	/**
+	 * Sendet eine Email mit der Information, dass eine Anmeldung für eine Ferieninsel angenommen wurde
+	 */
+	void sendInfoSchulamtAnmeldungFerieninselUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
 
 	/**
 	 * Sendet eine Email mit der Benachrichtigung, dass eine In-System Nachricht erhalten wurde.
@@ -154,7 +159,7 @@ public interface MailService {
 	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot ins Backend uebernommen
 	 * wurde
 	 */
-	void sendInfoSchulamtAnmeldungAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
+	void sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException;
 
 	/**
 	 * Sendet eine Email mit der Information, dass ein Angebot für eine Gemeinde aktiviert wurde
