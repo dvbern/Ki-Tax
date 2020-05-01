@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
