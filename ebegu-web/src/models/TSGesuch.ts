@@ -16,7 +16,11 @@
 import * as moment from 'moment';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
-import {getSchulamtBetreuungsangebotTypValues, isOfAnyBetreuungsangebotTyp, TSBetreuungsangebotTyp,} from './enums/TSBetreuungsangebotTyp';
+import {
+    getSchulamtBetreuungsangebotTypValues,
+    isOfAnyBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp,
+} from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSFinSitStatus} from './enums/TSFinSitStatus';

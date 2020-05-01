@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
     ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Anmeldung entgegengenommen</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Inscription acceptée</title>
 
 </head>
 
@@ -21,23 +21,23 @@ Content-Type: text/html;charset=utf-8
 
 <div>
 	<p>
-		Sehr geehrte Familie
+		Chère famille,
 	</p>
 	<p>
-		Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} an der ${betreuung.institutionStammdaten.institution
-        .name} wurde entgegengenommen. Sie erhalten die definitive Bestätigung der Anmeldung von der gewählten Institution. <br/>
-		Die Betreuungen können <a href="<#if configuration
-        .clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${betreuung.extractGesuch().id}">hier</a> eingesehen werden.
+		Votre inscription pour ${betreuung.kind.kindJA.fullName} à ${betreuung.institutionStammdaten.institution
+		.name} a été acceptée. Vous recevrez la confirmation définitive de l'inscription de la part de l'institution choisie. <br/>
+		Vous pouvez consulter la liste des offres de prise en charge <a href="<#if configuration
+		.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${betreuung.extractGesuch().id}">ici</a>.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Nous vous présentons nos meilleures salutations. <br/>
+		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
         <#if configuration.isDevmode>
-			<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+			<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
         </#if>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

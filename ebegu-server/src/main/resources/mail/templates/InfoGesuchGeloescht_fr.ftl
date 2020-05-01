@@ -32,7 +32,7 @@ ${templateConfiguration.mailCss}
 		Vos données ont donc été automatiquement supprimées le ${datumGeloescht?date}.
 	</p>
 	<p>
-		Nous vous présentons nos salutations les meilleures.<br/>
+		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
