@@ -405,18 +405,4 @@ export class TSGesuch extends TSAbstractAntragEntity {
         }
         return false;
     }
-
-    public isThereAnyBetreuungWithErweitertemBetreuungsaufwand(): boolean {
-        const kinderWithBetreuungList = this.getKinderWithBetreuungList();
-        for (const kind of kinderWithBetreuungList) {
-            for (const betreuung of kind.betreuungen) {
-                if (betreuung.erweiterteBetreuungContainer
-                    && betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA
-                    && EbeguUtil.isNotNullAndTrue(betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse)) {
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
 }
