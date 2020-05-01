@@ -23,15 +23,13 @@ import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.entities.Benutzer;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -8553194968646128553L;
 
 	@Nonnull
-	private Benutzer absender;
+	private JaxBenutzer absender;
 
 	@Nonnull
 	private String betreff;
@@ -46,11 +44,11 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	private String gesendetAnStatus;
 
 	@Nonnull
-	public Benutzer getAbsender() {
+	public JaxBenutzer getAbsender() {
 		return absender;
 	}
 
-	public void setAbsender(@Nonnull Benutzer absender) {
+	public void setAbsender(@Nonnull JaxBenutzer absender) {
 		this.absender = absender;
 	}
 

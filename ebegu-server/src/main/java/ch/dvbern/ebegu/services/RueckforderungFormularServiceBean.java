@@ -19,8 +19,8 @@ package ch.dvbern.ebegu.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
@@ -28,12 +28,18 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @RolesAllowed({ SUPER_ADMIN })
@@ -45,23 +51,44 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	private Persistence persistence;
 
 	@Inject
-	private InstitutionService institutionService;
+	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN })
 	public List<RueckforderungFormular> initializeRueckforderungFormulare() {
 
-		Collection<Institution> institutionen = institutionService.getAllInstitutionen();
+		Collection<InstitutionStammdaten> institutionenStammdatenCollection = institutionStammdatenService.getAllInstitutionStammdaten();
+		Collection<RueckforderungFormular> rueckforderungFormularCollection = getAllRueckforderungFormulare();
 
 		List<RueckforderungFormular> rueckforderungFormulare = new ArrayList<>();
-		for (Institution institution : institutionen) {
-			RueckforderungFormular formular = new RueckforderungFormular();
-			formular.setInstitution(institution);
-			formular.setStatus(RueckforderungStatus.NEU);
-			rueckforderungFormulare.add(createRueckforderungFormular(formular));
+		for (InstitutionStammdaten institutionStammdaten : institutionenStammdatenCollection) {
+			// neues Formular erstellen falls es sich un eine kita oder TFO handelt und noch kein Formular existiert
+			if ((institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.KITA) ||
+				institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.TAGESFAMILIEN)) &&
+				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)) {
+
+				RueckforderungFormular formular = new RueckforderungFormular();
+				formular.setInstitution(institutionStammdaten.getInstitution());
+				formular.setStatus(RueckforderungStatus.NEU);
+				rueckforderungFormulare.add(createRueckforderungFormular(formular));
+			}
 		}
 		return rueckforderungFormulare;
+	}
+
+	/**
+	 * Falls in der Liste der Rückforderungsformulare die Institution bereits existiert, wird true zurückgegeben
+	 */
+	private boolean isFormularExisting(InstitutionStammdaten stammdaten,
+		Collection<RueckforderungFormular> rueckforderungFormularCollection) {
+		List<RueckforderungFormular> filteredFormulare = rueckforderungFormularCollection.stream().filter(formular -> {
+			return formular.getInstitution().getId().equals(stammdaten.getInstitution().getId());
+		}).collect(Collectors.toList());
+		return filteredFormulare.size() > 0;
 	}
 
 	@Nonnull
@@ -69,5 +96,12 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@RolesAllowed({ SUPER_ADMIN })
 	public RueckforderungFormular createRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		return persistence.persist(rueckforderungFormular);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	public Collection<RueckforderungFormular> getAllRueckforderungFormulare(){
+		return criteriaQueryHelper.getAll(RueckforderungFormular.class);
 	}
 }

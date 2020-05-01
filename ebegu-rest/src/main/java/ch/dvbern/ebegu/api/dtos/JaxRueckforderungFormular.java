@@ -18,15 +18,14 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -38,7 +37,7 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private JaxInstitution institution;
 
 	@Nonnull
-	private Set<RueckforderungMitteilung> rueckforderungMitteilungen = new HashSet<>();
+	private List<JaxRueckforderungMitteilung> rueckforderungMitteilungen = new ArrayList<>();
 
 	@Nonnull
 	private RueckforderungStatus status;
@@ -77,11 +76,11 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public Set<RueckforderungMitteilung> getRueckforderungMitteilungen() {
+	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;
 	}
 
-	public void setRueckforderungMitteilungen(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
+	public void setRueckforderungMitteilungen(@Nonnull List<JaxRueckforderungMitteilung> rueckforderungMitteilungen) {
 		this.rueckforderungMitteilungen = rueckforderungMitteilungen;
 	}
 

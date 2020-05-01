@@ -41,7 +41,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Path("notrecht")
 @Stateless
 @Api(description = "Resource zum Verwalten von Rueckforderungsformularen für das Notrecht")
-public class RueckforderungFormularResource {
+public class NotrechtResource {
 
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;

@@ -17,6 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {TranslateModule} from '@ngx-translate/core';
 import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
 import {NotrechtComponent} from './notrecht/notrecht.component';
 
@@ -26,8 +27,10 @@ import {NotrechtComponent} from './notrecht/notrecht.component';
     ],
     imports: [
         CommonModule,
-        NotrechtRoutingModule
-    ]
+        NotrechtRoutingModule,
+        TranslateModule
+    ],
+    providers: []
 })
 export class NotrechtModule {
 }

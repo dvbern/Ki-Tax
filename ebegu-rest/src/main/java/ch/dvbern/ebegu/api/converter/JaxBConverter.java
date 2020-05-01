@@ -117,6 +117,7 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
@@ -207,6 +208,7 @@ import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
@@ -5147,10 +5149,25 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setAndereEntfalleneErtraegeKantonStufe2(rueckforderungFormular.getAndereEntfalleneErtraegeKantonStufe2());
 		jaxFormular.setAndereEntfalleneErtraegeInstitutionStufe2(rueckforderungFormular.getAndereEntfalleneErtraegeInstitutionStufe2());
 
-		// TODO: Mitteilungen
+		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen()));
 
 		return jaxFormular;
 
+	}
+
+	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
+		return rueckforderungMitteilungen.stream().map(this::rueckforderungMitteilungToJax)
+			.collect(Collectors.toList());
+	}
+
+	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
+		jaxMitteilung.setAbsender(benutzerToJaxBenutzer(rueckforderungMitteilung.getAbsender()));
+		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
+		jaxMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
+		jaxMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
+		jaxMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
+		return jaxMitteilung;
 	}
 
 }
