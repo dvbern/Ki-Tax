@@ -38,7 +38,9 @@ export class NotrechtComponent implements OnInit {
     }
 
     public initializeRueckforderungFormulare(): void {
-        this.notrechtRS.initializeRueckforderungFormulare().then(console.log);
+        this.notrechtRS.initializeRueckforderungFormulare().then(result => {
+            console.log(result);
+        });
     }
 
     public isSuperAdmin(): boolean {
