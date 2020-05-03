@@ -47,9 +47,6 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MB;
  */
 @Audited
 @Entity
-@Table(
-	uniqueConstraints =	@UniqueConstraint(columnNames = "gueltigAb", name = "UK_Gesuchsperiode_gueltigAb")
-)
 public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -9132257370971574570L;
