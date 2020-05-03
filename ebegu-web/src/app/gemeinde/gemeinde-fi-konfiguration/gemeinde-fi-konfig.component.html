@@ -188,12 +188,12 @@
                                             </div>
 
                                             <div class="row zeitabschnitt"
-                                                 *ngFor="let zeitraum of fiStammdaten.zeitraumList | slice:1; let i = index">
+                                                 *ngFor="let zeitraum of fiStammdaten.zeitraumList | slice:1; let j = index">
                                                 <div class="col-md-4">
                                                     <input class="dv-mat-datepicker" type="text"
                                                            #zeitraumGueltigAbInput='ngModel'
-                                                           [name]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigAb-'+i"
-                                                           [id]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigAb-'+i"
+                                                           [name]="fiStammdaten.ferienname + zeitraum.id + '-gueltigAb-'+j"
+                                                           [id]="fiStammdaten.ferienname + zeitraum.id + '-gueltigAb-'+j"
                                                            [(ngModel)]="zeitraum.gueltigkeit.gueltigAb"
                                                            [matDatepicker]="zeitraumGueltigAb"
                                                            [max]="zeitraum.gueltigkeit.gueltigBis"
@@ -208,8 +208,8 @@
                                                 <div class="col-md-4">
                                                     <input class="dv-mat-datepicker" type="text"
                                                            #zeitraumGueltigBisInput='ngModel'
-                                                           [name]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigBis-'+i"
-                                                           [id]="fiStammdaten.ferienname + '-' + zeitraum + '_gueltigBis-'+i"
+                                                           [name]="fiStammdaten.ferienname + zeitraum.id +'-gueltigBis-'+j"
+                                                           [id]="fiStammdaten.ferienname + zeitraum.id + '-gueltigBis-'+j"
                                                            [(ngModel)]="zeitraum.gueltigkeit.gueltigBis"
                                                            [matDatepicker]="zeitraumGueltigBis"
                                                            [min]="zeitraum.gueltigkeit.gueltigAb"
