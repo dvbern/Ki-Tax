@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,41 +68,60 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	private RueckforderungStatus status;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_institution_kostenuebernahme_anzahl_stunden", nullable = true)
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_institution_kostenuebernahme_anzahl_tage", nullable = true)
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlStunden;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_institution_kostenuebernahme_betreuung", nullable = true)
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_kanton_kostenuebernahme_anzahl_tage", nullable = true)
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlTage;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_kanton_kostenuebernahme_betreuung", nullable = true)
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlTage;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_freigabe_ausbezahlt_am", nullable = true)
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_freigabe_betrag", nullable = true)
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 
-	@Column(nullable = true)
+	@Column(name="stufe_1_freigabe_datum", nullable = true)
 	private BigDecimal stufe1KantonKostenuebernahmeBetreuung;
 
-	@Column(nullable = true)
+	@Column(name="stufe_2_institution_kostenuebernahme_anzahl_stunden", nullable = true)
 	private BigDecimal stufe1InstitutionKostenuebernahmeBetreuung;
 
-	@Column(nullable = true)
+	@Column(name="stufe_2_institution_kostenuebernahme_anzahl_tage", nullable = true)
 	private BigDecimal stufe2KantonKostenuebernahmeBetreuung;
 
-	@Column(nullable = true)
+	@Column(name="stufe_2_institution_kostenuebernahme_betreuung", nullable = true)
 	private BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
+
+	@Column(name="stufe_2_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
+	private BigDecimal stufe1FreigabeBetrag;
+
+	@Column(name="stufe_2_kanton_kostenuebernahme_anzahl_tage", nullable = true)
+	private LocalDateTime stufe1FreigabeDatum;
+
+	@Column(name="stufe_2_kanton_kostenuebernahme_betreuung", nullable = true)
+	private LocalDateTime stufe1FreigabeAusbezahltAm;
+
+	@Column(name="stufe_2_verfuegung_ausbezahlt_am", nullable = true)
+	private BigDecimal stufe2VerfuegungBetrag;
+
+	@Column(name="stufe_2_verfuegung_betrag", nullable = true)
+	private LocalDateTime stufe2VerfuegungDatum;
+
+	@Column(name="stufe_2_verfuegung_datum", nullable = true)
+	private LocalDateTime stufe2VerfuegungAusbezahltAm;
+
 
 	public Institution getInstitution() {
 		return institution;
@@ -225,6 +245,54 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.stufe2InstitutionKostenuebernahmeBetreuung = andereEntfalleneErtraegeInstitutionStufe2;
 	}
 
+	public BigDecimal getStufe1FreigabeBetrag() {
+		return stufe1FreigabeBetrag;
+	}
+
+	public void setStufe1FreigabeBetrag(BigDecimal stufe1FreigabeBetrag) {
+		this.stufe1FreigabeBetrag = stufe1FreigabeBetrag;
+	}
+
+	public LocalDateTime getStufe1FreigabeDatum() {
+		return stufe1FreigabeDatum;
+	}
+
+	public void setStufe1FreigabeDatum(LocalDateTime stufe1FreigabeDatum) {
+		this.stufe1FreigabeDatum = stufe1FreigabeDatum;
+	}
+
+	public LocalDateTime getStufe1FreigabeAusbezahltAm() {
+		return stufe1FreigabeAusbezahltAm;
+	}
+
+	public void setStufe1FreigabeAusbezahltAm(LocalDateTime stufe1FreigabeAusbezahltAm) {
+		this.stufe1FreigabeAusbezahltAm = stufe1FreigabeAusbezahltAm;
+	}
+
+	public BigDecimal getStufe2VerfuegungBetrag() {
+		return stufe2VerfuegungBetrag;
+	}
+
+	public void setStufe2VerfuegungBetrag(BigDecimal stufe2VerfuegungBetrag) {
+		this.stufe2VerfuegungBetrag = stufe2VerfuegungBetrag;
+	}
+
+	public LocalDateTime getStufe2VerfuegungDatum() {
+		return stufe2VerfuegungDatum;
+	}
+
+	public void setStufe2VerfuegungDatum(LocalDateTime stufe2VerfuegungDatum) {
+		this.stufe2VerfuegungDatum = stufe2VerfuegungDatum;
+	}
+
+	public LocalDateTime getStufe2VerfuegungAusbezahltAm() {
+		return stufe2VerfuegungAusbezahltAm;
+	}
+
+	public void setStufe2VerfuegungAusbezahltAm(LocalDateTime stufe2VerfuegungAusbezahltAm) {
+		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -239,17 +307,6 @@ public class RueckforderungFormular extends AbstractEntity {
 		}
 		final RueckforderungFormular otherRueckforderungFormular = (RueckforderungFormular) other;
 		return this.status.equals(otherRueckforderungFormular.getStatus()) &&
-			this.stufe1KantonKostenuebernahmeAnzahlStunden.equals(otherRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden()) &&
-			this.stufe1InstitutionKostenuebernahmeAnzahlStunden.equals(otherRueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlStunden()) &&
-			this.stufe2KantonKostenuebernahmeAnzahlStunden.equals(otherRueckforderungFormular.getStufe2KantonKostenuebernahmeAnzahlStunden()) &&
-			this.stufe2InstitutionKostenuebernahmeAnzahlStunden.equals(otherRueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()) &&
-			this.stufe1KantonKostenuebernahmeAnzahlTage.equals(otherRueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage()) &&
-			this.stufe1InstitutionKostenuebernahmeAnzahlTage.equals(otherRueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlTage()) &&
-			this.stufe2KantonKostenuebernahmeAnzahlTage.equals(otherRueckforderungFormular.getStufe2KantonKostenuebernahmeAnzahlTage()) &&
-			this.stufe2InstitutionKostenuebernahmeAnzahlTage.equals(otherRueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage()) &&
-			this.stufe1KantonKostenuebernahmeBetreuung.equals(otherRueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung()) &&
-			this.stufe1InstitutionKostenuebernahmeBetreuung.equals(otherRueckforderungFormular.getStufe1InstitutionKostenuebernahmeBetreuung()) &&
-			this.stufe2KantonKostenuebernahmeBetreuung.equals(otherRueckforderungFormular.getStufe2KantonKostenuebernahmeBetreuung()) &&
-			this.stufe2InstitutionKostenuebernahmeBetreuung.equals(otherRueckforderungFormular.getStufe2InstitutionKostenuebernahmeBetreuung());
+			this.getInstitution().getId().equals(otherRueckforderungFormular.getInstitution().getId());
 	}
 }

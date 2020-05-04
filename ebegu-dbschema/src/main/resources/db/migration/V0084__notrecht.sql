@@ -28,7 +28,7 @@
         stufe_2_institution_kostenuebernahme_betreuung decimal(19,2),
         stufe_1_kanton_kostenuebernahme_betreuung decimal(19,2),
         stufe_2_kanton_kostenuebernahme_betreuung decimal(19,2),
-        stufe_1_stufe_1_institution_kostenuebernahme_anzahl_stunden decimal(19,2),
+        stufe_1_institution_kostenuebernahme_anzahl_stunden decimal(19,2),
         stufe_2_institution_kostenuebernahme_anzahl_stunden decimal(19,2),
         stufe_1_kanton_kostenuebernahme_anzahl_stunden decimal(19,2),
         stufe_2_kanton_kostenuebernahme_anzahl_stunden decimal(19,2),
@@ -36,6 +36,12 @@
         stufe_2_institution_kostenuebernahme_anzahl_tage decimal(19,2),
         stufe_1_kanton_kostenuebernahme_anzahl_tage decimal(19,2),
         stufe_2_kanton_kostenuebernahme_anzahl_tage decimal(19,2),
+		stufe_1_freigabe_betrag decimal(19,2),
+		stufe_1_freigabe_datum datetime,
+		stufe_1_freigabe_ausbezahlt_am datetime,
+		stufe_2_verfuegung_betrag decimal(19,2),
+		stufe_2_verfuegung_datum datetime,
+		stufe_2_verfuegung_ausbezahlt_am datetime,
         status integer,
         institution_id binary(16),
         primary key (id, rev)
@@ -62,21 +68,6 @@
         inhalt varchar(255),
         sende_datum datetime,
         absender_id binary(16),
-        primary key (id, rev)
-    );
-
-    create table rueckforderung_zahlung_aud (
-        id binary(16) not null,
-        rev integer not null,
-        revtype tinyint,
-        timestamp_erstellt datetime,
-        timestamp_mutiert datetime,
-        user_erstellt varchar(255),
-        user_mutiert varchar(255),
-        betrag decimal(19,2),
-        datum_ausgefuehrt datetime,
-        zahlung_ausgefuehrt bit,
-        rueckforderung_formular_id binary(16),
         primary key (id, rev)
     );
 
@@ -108,7 +99,7 @@
         stufe_2_institution_kostenuebernahme_betreuung decimal(19,2),
         stufe_1_kanton_kostenuebernahme_betreuung decimal(19,2),
         stufe_2_kanton_kostenuebernahme_betreuung decimal(19,2),
-        stufe_1_stufe_1_institution_kostenuebernahme_anzahl_stunden decimal(19,2),
+        stufe_1_institution_kostenuebernahme_anzahl_stunden decimal(19,2),
         stufe_2_institution_kostenuebernahme_anzahl_stunden decimal(19,2),
         stufe_1_kanton_kostenuebernahme_anzahl_stunden decimal(19,2),
         stufe_2_kanton_kostenuebernahme_anzahl_stunden decimal(19,2),
@@ -116,6 +107,12 @@
         stufe_2_institution_kostenuebernahme_anzahl_tage decimal(19,2),
         stufe_1_kanton_kostenuebernahme_anzahl_tage decimal(19,2),
         stufe_2_kanton_kostenuebernahme_anzahl_tage decimal(19,2),
+		stufe_1_freigabe_betrag decimal(19,2),
+		stufe_1_freigabe_datum datetime,
+		stufe_1_freigabe_ausbezahlt_am datetime,
+		stufe_2_verfuegung_betrag decimal(19,2),
+		stufe_2_verfuegung_datum datetime,
+		stufe_2_verfuegung_ausbezahlt_am datetime,
         status integer not null,
         institution_id binary(16) not null,
         primary key (id)
@@ -142,20 +139,6 @@
         primary key (id)
     );
 
-    create table rueckforderung_zahlung (
-        id binary(16) not null,
-        timestamp_erstellt datetime not null,
-        timestamp_mutiert datetime not null,
-        user_erstellt varchar(255) not null,
-        user_mutiert varchar(255) not null,
-        version bigint not null,
-        betrag decimal(19,2) not null,
-        datum_ausgefuehrt datetime not null,
-        zahlung_ausgefuehrt bit not null,
-        rueckforderung_formular_id binary(16) not null,
-        primary key (id)
-    );
-
     alter table rueckforderung_mitteilung 
         add constraint UK_rueckforderung_mitteilung_absender unique (absender_id);
 
@@ -176,11 +159,6 @@
 
     alter table rueckforderung_mitteilung_aud 
         add constraint FK_rueckforderung_mitteilung_rev
-        foreign key (rev) 
-        references revinfo (rev);
-
-    alter table rueckforderung_zahlung_aud 
-        add constraint FK_rueckforderung_zahlung_rev
         foreign key (rev) 
         references revinfo (rev);
 
@@ -208,8 +186,3 @@
         add constraint FK_RueckforderungMitteilung_Benutzer_id 
         foreign key (absender_id) 
         references benutzer (id);
-
-    alter table rueckforderung_zahlung 
-        add constraint FK_rueckforderungZahlung_rueckforderungFormular_id 
-        foreign key (rueckforderung_formular_id) 
-        references rueckforderung_formular (id);

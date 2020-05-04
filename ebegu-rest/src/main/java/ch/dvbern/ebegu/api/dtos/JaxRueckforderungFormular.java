@@ -18,6 +18,8 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +67,19 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private BigDecimal stufe2KantonKostenuebernahmeBetreuung;
 
 	private BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
+
+	private BigDecimal stufe1FreigabeBetrag;
+
+	private LocalDateTime stufe1FreigabeDatum;
+
+	private LocalDateTime stufe1FreigabeAusbezahltAm;
+
+	private BigDecimal stufe2VerfuegungBetrag;
+
+	private LocalDateTime stufe2VerfuegungDatum;
+
+	private LocalDateTime stufe2VerfuegungAusbezahltAm;
+
 
 	@Nonnull
 	public JaxInstitution getInstitution() {
@@ -199,5 +214,53 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 
 	public void setStufe2InstitutionKostenuebernahmeBetreuung(@Nullable BigDecimal stufe2InstitutionKostenuebernahmeBetreuung) {
 		this.stufe2InstitutionKostenuebernahmeBetreuung = stufe2InstitutionKostenuebernahmeBetreuung;
+	}
+
+	public BigDecimal getStufe1FreigabeBetrag() {
+		return stufe1FreigabeBetrag;
+	}
+
+	public void setStufe1FreigabeBetrag(BigDecimal stufe1FreigabeBetrag) {
+		this.stufe1FreigabeBetrag = stufe1FreigabeBetrag;
+	}
+
+	public LocalDateTime getStufe1FreigabeDatum() {
+		return stufe1FreigabeDatum;
+	}
+
+	public void setStufe1FreigabeDatum(LocalDateTime stufe1FreigabeDatum) {
+		this.stufe1FreigabeDatum = stufe1FreigabeDatum;
+	}
+
+	public LocalDateTime getStufe1FreigabeAusbezahltAm() {
+		return stufe1FreigabeAusbezahltAm;
+	}
+
+	public void setStufe1FreigabeAusbezahltAm(LocalDateTime stufe1FreigabeAusbezahltAm) {
+		this.stufe1FreigabeAusbezahltAm = stufe1FreigabeAusbezahltAm;
+	}
+
+	public BigDecimal getStufe2VerfuegungBetrag() {
+		return stufe2VerfuegungBetrag;
+	}
+
+	public void setStufe2VerfuegungBetrag(BigDecimal stufe2VerfuegungBetrag) {
+		this.stufe2VerfuegungBetrag = stufe2VerfuegungBetrag;
+	}
+
+	public LocalDateTime getStufe2VerfuegungDatum() {
+		return stufe2VerfuegungDatum;
+	}
+
+	public void setStufe2VerfuegungDatum(LocalDateTime stufe2VerfuegungDatum) {
+		this.stufe2VerfuegungDatum = stufe2VerfuegungDatum;
+	}
+
+	public LocalDateTime getStufe2VerfuegungAusbezahltAm() {
+		return stufe2VerfuegungAusbezahltAm;
+	}
+
+	public void setStufe2VerfuegungAusbezahltAm(LocalDateTime stufe2VerfuegungAusbezahltAm) {
+		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
 	}
 }

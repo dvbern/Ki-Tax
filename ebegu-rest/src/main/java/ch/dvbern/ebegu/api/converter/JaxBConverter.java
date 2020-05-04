@@ -5147,6 +5147,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFormular.setStufe1InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeBetreuung());
 		jaxFormular.setStufe2KantonKostenuebernahmeBetreuung(rueckforderungFormular.getStufe2KantonKostenuebernahmeBetreuung());
 		jaxFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeBetreuung());
+		jaxFormular.setStufe1FreigabeBetrag(rueckforderungFormular.getStufe1FreigabeBetrag());
+		jaxFormular.setStufe1FreigabeDatum(rueckforderungFormular.getStufe1FreigabeDatum());
+		jaxFormular.setStufe1FreigabeAusbezahltAm(rueckforderungFormular.getStufe1FreigabeAusbezahltAm());
+		jaxFormular.setStufe2VerfuegungBetrag(rueckforderungFormular.getStufe2VerfuegungBetrag());
+		jaxFormular.setStufe2VerfuegungDatum(rueckforderungFormular.getStufe2VerfuegungDatum());
+		jaxFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormular.getStufe2VerfuegungAusbezahltAm());
 
 		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen()));
 
