@@ -791,7 +791,7 @@
     "DECEMBER": "Dezember",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Einkommensverschlechterung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Wird Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 20% tiefer sein als im Jahr {{basisjahr}}? (Vergleich ohne Abzug des Pauschalbetrags gemäss Familiengrösse)",
-    "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend tiefer ist als im Jahr {{basisjahr}} fuellen Sie bitte beide Jahre aus.",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend tiefer ist als im Jahr {{basisjahr}} füllen Sie bitte beide Jahre aus.",
     "EKVI_FUER_JAHR": "für {{basisjahr}}",
     "EKVI_MONAT_DES_EREIGNISSES": "In welchem Monat trat die Einkommensverschlechterung ein?",
     "EKVI_GRUND_DES_EREIGNISSES": "Grund des Ereignisses",
