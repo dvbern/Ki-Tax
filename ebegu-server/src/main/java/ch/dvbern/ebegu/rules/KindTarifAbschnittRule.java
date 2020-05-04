@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -42,7 +43,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 
 	public KindTarifAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -50,13 +51,6 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
-	private VerfuegungZeitabschnitt createZeitabschnitt(DateRange gueltigkeit, boolean baby, boolean eingeschult) {
-		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBabyTarif(baby);
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setEingeschult(eingeschult);
-		return verfuegungZeitabschnitt;
-	}
 
 	@Override
 	@Nonnull
@@ -67,20 +61,32 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		Kind kind = platz.getKind().getKindJA();
 		final LocalDate geburtsdatum = kind.getGeburtsdatum();
 		LocalDate stichtagBabyTarifEnde = geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth());
-		boolean eingeschult = kind.getEinschulungTyp() != null && kind.getEinschulungTyp().isEingeschult();
 		DateRange gesuchsperiode = platz.extractGesuchsperiode().getGueltigkeit();
 
+		EinschulungTyp einschulungTyp = kind.getEinschulungTyp() != null ? kind.getEinschulungTyp() : EinschulungTyp.VORSCHULALTER;
 		if (gesuchsperiode.contains(stichtagBabyTarifEnde)) {
 			DateRange abschnittBaby = new DateRange(gesuchsperiode.getGueltigAb(), stichtagBabyTarifEnde);
-			zeitabschnittList.add(createZeitabschnitt(abschnittBaby, true, eingeschult));
+			zeitabschnittList.add(createZeitabschnitt(abschnittBaby, true, einschulungTyp));
 
 			DateRange abschnittKind = new DateRange(stichtagBabyTarifEnde.plusDays(1), gesuchsperiode.getGueltigBis());
-			zeitabschnittList.add(createZeitabschnitt(abschnittKind, false, eingeschult));
+			zeitabschnittList.add(createZeitabschnitt(abschnittKind, false, einschulungTyp));
 		} else {
 			boolean baby = stichtagBabyTarifEnde.isAfter(gesuchsperiode.getGueltigBis());
-			zeitabschnittList.add(createZeitabschnitt(gesuchsperiode, baby, eingeschult));
+			zeitabschnittList.add(createZeitabschnitt(gesuchsperiode, baby, einschulungTyp));
 		}
 
 		return zeitabschnittList;
+	}
+
+	private VerfuegungZeitabschnitt createZeitabschnitt(
+		@Nonnull DateRange gueltigkeit,
+		boolean baby,
+		@Nonnull EinschulungTyp einschulungTyp
+	) {
+		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
+		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(baby);
+		verfuegungZeitabschnitt.setEinschulungTypForAsivAndGemeinde(einschulungTyp);
+		return verfuegungZeitabschnitt;
 	}
 }

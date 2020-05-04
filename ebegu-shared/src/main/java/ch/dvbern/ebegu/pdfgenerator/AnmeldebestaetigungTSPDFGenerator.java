@@ -156,7 +156,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			verfuegung.getZeitabschnitte()
 				.stream()
 				.filter(verfuegungZeitabschnitt ->
-					verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() != null)
+					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung() != null)
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(abschnitteMitBetreuung)) {
 			document.add(createGebuehrTabelleTitle(true, false));
@@ -169,7 +169,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			verfuegung.getZeitabschnitte()
 				.stream()
 				.filter(verfuegungZeitabschnitt ->
-					verfuegungZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
+					verfuegungZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung() != null)
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(abschnitteOhneBetreuung)) {
 			document.add(createGebuehrTabelleTitle(false, false));
@@ -260,7 +260,7 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			tagesschuleModuleMap.values().stream().sorted((oneList, otherList) -> {
 				ModulTagesschuleGroup one = oneList.get(0).getModulTagesschule().getModulTagesschuleGroup();
 				ModulTagesschuleGroup other = otherList.get(0).getModulTagesschule().getModulTagesschuleGroup();;
-				return other.compareTo(one);
+				return one.compareTo(other);
 			}).forEach(v -> {
 				boolean monday = false;
 				boolean tuesday = false;
@@ -352,8 +352,8 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	private void fillGebuehrenTable(PdfPTable table, List<VerfuegungZeitabschnitt> abschnitte, boolean mitPedagogischerBetreuug) {
 		for (VerfuegungZeitabschnitt anmeldungTagesschuleZeitabschnitt : abschnitte) {
 			TSCalculationResult tsResult = mitPedagogischerBetreuug ?
-				anmeldungTagesschuleZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultMitPaedagogischerBetreuung() :
-				anmeldungTagesschuleZeitabschnitt.getBgCalculationResultAsiv().getTsCalculationResultOhnePaedagogischerBetreuung();
+				anmeldungTagesschuleZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultMitPaedagogischerBetreuung() :
+				anmeldungTagesschuleZeitabschnitt.getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung();
 			Objects.requireNonNull(tsResult);
 
 			table.addCell(createCell(Element.ALIGN_RIGHT,

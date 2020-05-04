@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -43,7 +44,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 	public BetreuungspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -75,8 +76,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(betreuungspensum.getPensum());
-		zeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
+		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(betreuungspensum.getPensum());
+		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
+
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 
@@ -86,12 +88,17 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
 				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
 
-		zeitabschnitt.getBgCalculationResultAsiv().setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		zeitabschnitt.setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(besondereBeduerfnisseBestaetigt);
+
+		// Betreuung in Gemeinde?
+		ErweiterteBetreuung erweiterteBetreuung = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+		if (erweiterteBetreuung != null && erweiterteBetreuung.getBetreuungInGemeinde() != null) {
+			zeitabschnitt.setBetreuungInGemeindeForAsivAndGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
+		}
 
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {
 			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-				RuleKey.ERWEITERTE_BEDUERFNISSE,
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());
 		}

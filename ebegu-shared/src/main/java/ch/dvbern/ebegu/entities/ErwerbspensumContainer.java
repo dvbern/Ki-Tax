@@ -99,7 +99,7 @@ public class ErwerbspensumContainer extends AbstractMutableEntity {
 			return false;
 		}
 		final ErwerbspensumContainer otherErwerbspensumContainer = (ErwerbspensumContainer) other;
-		return EbeguUtil.isSameObject(getErwerbspensumJA(), otherErwerbspensumContainer.getErwerbspensumJA());
+		return EbeguUtil.isSame(getErwerbspensumJA(), otherErwerbspensumContainer.getErwerbspensumJA());
 	}
 
 	@Nonnull

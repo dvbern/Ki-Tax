@@ -243,7 +243,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			} else {
 				target.setBetreuungsstatus(this.getBetreuungsstatus());
 			}
-			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
+			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen() && target instanceof AnmeldungTagesschule){
 				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 			}
 			target.setKind(targetKindContainer);

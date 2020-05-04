@@ -20,8 +20,8 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -50,25 +50,20 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(
-		@Nonnull AbstractPlatz platz,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
-	) {
-		if (areNotInBern(verfuegungZeitabschnitt)) {
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
-			verfuegungZeitabschnitt.getBgCalculationInputAsiv().addBemerkung(
-				RuleKey.WOHNSITZ,
+	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+		if (areNotInBern(inputData)) {
+			inputData.setAnspruchspensumProzent(0);
+			inputData.addBemerkung(
 				MsgKey.WOHNSITZ_MSG,
 				getLocale(),
-				platz.extractGesuch().getDossier().getGemeinde().getName()
-			);
+				platz.extractGesuch().getDossier().getGemeinde().getName());
 		}
 	}
 
 	/**
 	 * Nur GS 1 ist relevant. GS 2 muss per Definition bei GS 1 wohnen
 	 */
-	private boolean areNotInBern(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		return verfuegungZeitabschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
+	private boolean areNotInBern(@Nonnull BGCalculationInput inputData) {
+		return inputData.isWohnsitzNichtInGemeindeGS1();
 	}
 }

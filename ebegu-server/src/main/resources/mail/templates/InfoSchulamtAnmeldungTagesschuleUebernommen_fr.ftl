@@ -27,7 +27,7 @@ ${templateConfiguration.mailCss}
 		Votre inscription pour ${betreuung.kind.kindJA.fullName} à ${betreuung.institutionStammdaten.institution.name} a été acceptée. Vous pouvez consulter la liste des offres de prise en charge <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">ici</a>.
 	</p>
 	<p>
-		Nous vous présentons nos salutations les meilleures.<br/>
+		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>

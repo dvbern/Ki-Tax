@@ -28,6 +28,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -256,4 +258,5 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	public String getGesuchsperiodeStatusName(@Nonnull Locale locale) {
 		return "(" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
 	}
+
 }

@@ -1120,25 +1120,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
-	public AnmeldungTagesschule getFirstAnmeldungTagesschule() {
-		return extractAllAnmeldungenTagesschule().stream()
+	public AbstractPlatz getFirstBetreuungOrAnmeldungTagesschule() {
+		return extractAllPlaetze().stream()
+			.filter(platz -> platz.getBetreuungsangebotTyp().isBerechnetesAngebot())
 			.findFirst()
 			.orElse(null);
-	}
-
-	/**
-	 * Ermittelt, ob mindestens eine Betreuung mit erweitertem Betreuungsaufwand erfasst wurde.
-	 * Falls ja, wird die finanzielle Situation nicht mehr zwingend.
-	 * Achtung. Code Duplikat aus TSGesuch!
-	 */
-	public boolean isThereAnyBetreuungWithErweitertemBetreuungsaufwand() {
-		List<Betreuung> betreuungs = this.extractAllBetreuungen();
-		for (Betreuung betreuung : betreuungs) {
-			if (betreuung.hasErweiterteBetreuung()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public boolean hasSecondGesuchstellerAtEndOfGesuchsperiode() {

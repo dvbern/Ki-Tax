@@ -186,7 +186,6 @@
         //        "newline-before-return": true,
         "no-angle-bracket-type-assertion": true,
         "no-arg": true,
-        "no-attribute-parameter-decorator": true,
         "no-bitwise": true,
         "no-boolean-literal-compare": true,
         "no-collapsible-if": true,
@@ -213,7 +212,8 @@
         "no-eval": true,
         "no-implicit-dependencies": [
             true,
-            "dev"
+            "dev",
+            ["@uirouter/core", "@uirouter/angular", "@uirouter/angularjs"]
         ],
         "no-import-side-effect": [
             true,
@@ -259,7 +259,6 @@
         "no-misused-new": true,
         "no-namespace": true,
         "no-object-literal-type-assertion": true,
-        "no-output-named-after-standard-event": true,
         "no-output-on-prefix": true,
         "no-output-rename": true,
         "no-parameter-reassignment": true,
@@ -428,18 +427,6 @@
         "rxjs-no-internal": {
             "severity": "error"
         },
-        "rxjs-no-operator": {
-            "severity": "error"
-        },
-        "rxjs-no-patched": {
-            "severity": "error"
-        },
-        //        "rxjs-no-unbound-methods": {
-        //            "severity": "error"
-        //        },
-        //        "rxjs-no-unsafe-scope": {
-        //            "severity": "error"
-        //        },
         "rxjs-no-subject-unsubscribe": {
             "severity": "error"
         },

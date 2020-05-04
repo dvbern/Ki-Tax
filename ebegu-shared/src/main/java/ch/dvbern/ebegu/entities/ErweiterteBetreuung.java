@@ -128,6 +128,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 				this.isErweiterteBeduerfnisseBestaetigt());
 			target.setFachstelle(this.getFachstelle());
 			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
+			target.setBetreuungInGemeinde(this.getBetreuungInGemeinde());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

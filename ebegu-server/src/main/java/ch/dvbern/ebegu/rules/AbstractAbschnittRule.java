@@ -19,8 +19,8 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -34,15 +34,16 @@ public abstract class AbstractAbschnittRule extends AbstractEbeguRule {
 	protected AbstractAbschnittRule(
 		@Nonnull RuleKey ruleKey,
 		@Nonnull RuleType ruleType,
+		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
-		super(ruleKey, ruleType, validityPeriod, locale);
+		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
 	}
 
 	//Subklassen dieser Abstrakten Klasse benoetigen diese Methode nicht da sie nur Abschnitte erstellen. Daher hier NOP
 	@Override
-	protected final void executeRule(@Nonnull AbstractPlatz platz, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected final void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		//NOP
 	}
 }

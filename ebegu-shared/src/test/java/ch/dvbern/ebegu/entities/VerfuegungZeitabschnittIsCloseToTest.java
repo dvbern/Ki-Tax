@@ -37,10 +37,10 @@ public class VerfuegungZeitabschnittIsCloseToTest {
 	@Test
 	public void isCloseTo_falseWhenDifferentAnspruch() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(80);
+		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(80);
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.getBgCalculationResultAsiv().setAnspruchspensumProzent(79);
+		other.getBgCalculationInputAsiv().setAnspruchspensumProzent(79);
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}
@@ -48,10 +48,10 @@ public class VerfuegungZeitabschnittIsCloseToTest {
 	@Test
 	public void isCloseTo_falseWhenPensumProzentDiffersMoreThanOneHundredth() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.00));
+		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.00));
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.02));
+		other.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.02));
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}
@@ -59,10 +59,10 @@ public class VerfuegungZeitabschnittIsCloseToTest {
 	@Test
 	public void isCloseTo_trueWhenPensumProzentDiffersOneHundredth() {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.00));
+		zeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.00));
 
 		VerfuegungZeitabschnitt other = new VerfuegungZeitabschnitt();
-		other.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.01));
+		other.getBgCalculationInputAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10.01));
 
 		assertThat(zeitabschnitt.isCloseTo(other), is(true));
 	}

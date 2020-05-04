@@ -44,7 +44,7 @@ describe('betreuungRS', () => {
         ebeguRestUtil = $injector.get('EbeguRestUtil');
         wizardStepManager = $injector.get('WizardStepManager');
         $q = $injector.get('$q');
-        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.when({}));
+        spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
     }));
 
     beforeEach(() => {

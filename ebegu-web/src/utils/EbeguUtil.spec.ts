@@ -187,4 +187,31 @@ describe('EbeguUtil', () => {
                 .toBe(false);
         });
     });
+    describe('ZemisNummerToStandardZemisNummer', () => {
+        it('Formate sollten in Standard Format konvertiert werden können', () => {
+            // tslint:disable-next-line:no-duplicate-string
+                const zemis1 = '12345678.9';
+                const zemis2 = '012345678.9';
+                const zemis3 = '012.345.678.9';
+                const zemis4 = '012.345.678-9';
+                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis1)).toBe('12345678.9');
+                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis2)).toBe('12345678.9');
+                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis3)).toBe('12345678.9');
+                expect(EbeguUtil.zemisNummerToStandardZemisNummer(zemis4)).toBe('12345678.9');
+        });
+        it('Formate sollen nicht akzeptiert werden und Fehler werfen', () => {
+            const zemis1 = '123.45678.9';
+            const zemis2 = '12.345.678.9';
+            const zemis3 = '0012.345.678.9';
+            const zemis4 = '0012345678-9';
+            expect(() => { EbeguUtil.zemisNummerToStandardZemisNummer(zemis1); })
+                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis1}`));
+            expect(() => { EbeguUtil.zemisNummerToStandardZemisNummer(zemis2); })
+                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis2}`));
+            expect(() => { EbeguUtil.zemisNummerToStandardZemisNummer(zemis3); })
+                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis3}`));
+            expect(() => { EbeguUtil.zemisNummerToStandardZemisNummer(zemis4); })
+                .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis4}`));
+        });
+    });
 });

@@ -36,7 +36,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 
 	public GutscheineStartdatumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
+		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 		boolean abschnittLiegtNachBEGUStartdatum) {
 
 		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(dateRange);
-		abschnitt.getBgCalculationInputAsiv().setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+		abschnitt.setAbschnittLiegtNachBEGUStartdatumForAsivAndGemeinde(abschnittLiegtNachBEGUStartdatum);
 
 		return abschnitt;
 	}

@@ -72,6 +72,7 @@
                             <table class="table fixedtable table-hover" title="Title">
                                 <thead>
                                 <tr>
+                                    <th *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" translate>MODUL_NAME</th>
                                     <th translate>MODUL_BEZEICHNUNG</th>
                                     <th translate>MODUL_ZEITRAUM</th>
                                     <th translate>MODUL_VERPFLEGUNG</th>
@@ -82,6 +83,10 @@
                                 </thead>
                                 <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
                                 <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier">
+                                    <td *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" title="{{getModulName(group)}}"
+                                        (click)="editModulTagesschuleGroup(einstellungGP, group)">
+                                        <span>{{getModulName(group)}}</span>
+                                    </td>
                                     <td title="{{getBezeichnung(group)}}"
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         <span>{{getBezeichnung(group)}}</span>

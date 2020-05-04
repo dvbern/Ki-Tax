@@ -76,8 +76,8 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FerieninselStammdaten;
-import ch.dvbern.ebegu.entities.FerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -132,7 +132,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_TAGIS_ENABLED;
@@ -776,6 +779,7 @@ public final class TestDataUtil {
 	public static ErwerbspensumContainer createErwerbspensum(LocalDate von, LocalDate bis, int pensum) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 		Erwerbspensum erwerbspensum = new Erwerbspensum();
+		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(pensum);
 		erwerbspensum.setGueltigkeit(new DateRange(von, bis));
 		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
@@ -1034,6 +1038,7 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
+		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		KindContainer kindContainer = createDefaultKindContainer();
 		kindContainer.getBetreuungen().add(betreuung);
 		betreuung.setKind(kindContainer);
@@ -1179,7 +1184,7 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+	private static Gesuch createAndPersistWaeltiDagmarGesuch(
 		InstitutionService instService, Persistence persistence,
 		@Nullable LocalDate eingangsdatum, @Nullable AntragStatus status) {
 
@@ -1514,6 +1519,8 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION, "60", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB,
+			Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB,
 			Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG,
@@ -1553,6 +1560,8 @@ public final class TestDataUtil {
 			persistence);
 		saveEinstellung(GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED, "false", gesuchsperiode,
 			persistence);
+		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -1947,16 +1956,16 @@ public final class TestDataUtil {
 	}
 
 	@Nonnull
-	public static FerieninselStammdaten createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
-		FerieninselStammdaten stammdaten = new FerieninselStammdaten();
+	// TODO: FERIENINSEL ANPASSEN
+	public static GemeindeStammdatenGesuchsperiodeFerieninsel createDefaultFerieninselStammdaten(@Nonnull Gesuchsperiode gesuchsperiode) {
+		GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = new GemeindeStammdatenGesuchsperiodeFerieninsel();
 		stammdaten.setFerienname(Ferienname.SOMMERFERIEN);
 		stammdaten.setAnmeldeschluss(LocalDate.now().plusMonths(1));
-		List<FerieninselZeitraum> zeitraumList = new ArrayList<>();
-		FerieninselZeitraum zeitraum = new FerieninselZeitraum();
+		List<GemeindeStammdatenGesuchsperiodeFerieninselZeitraum> zeitraumList = new ArrayList<>();
+		GemeindeStammdatenGesuchsperiodeFerieninselZeitraum zeitraum = new GemeindeStammdatenGesuchsperiodeFerieninselZeitraum();
 		zeitraum.setGueltigkeit(new DateRange(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3)));
 		zeitraumList.add(zeitraum);
 		stammdaten.setZeitraumList(zeitraumList);
-		stammdaten.setGesuchsperiode(gesuchsperiode);
 		return stammdaten;
 	}
 
@@ -1977,10 +1986,10 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.getBgCalculationResultAsiv().setBetreuungspensumProzent(BigDecimal.valueOf(10));
-		zeitabschnitt.getBgCalculationResultAsiv().setAnspruchspensumProzent(50);
-		zeitabschnitt.getBgCalculationResultAsiv().setEinkommensjahr(PERIODE_JAHR_1);
-		zeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(false);
+		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(BigDecimal.valueOf(10));
+		zeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(50);
+		zeitabschnitt.setEinkommensjahrForAsivAndGemeinde(PERIODE_JAHR_1);
+		zeitabschnitt.setZuSpaetEingereichtForAsivAndGemeinde(false);
 		return zeitabschnitt;
 	}
 

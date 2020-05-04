@@ -48,7 +48,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 
 	public EinreichungsfristAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		// Der Anspruch beginnt erst am 1. des Monats der Einreichung
 		verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(startGP);
 		verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(tagBevorAnspruch);
-		verfuegungZeitabschnitt.getBgCalculationResultAsiv().setZuSpaetEingereicht(true);
+		verfuegungZeitabschnitt.setZuSpaetEingereichtForAsivAndGemeinde(true);
 		// Sicherstellen, dass nicht der ganze Zeitraum vor dem Einreichungsdatum liegt
 		if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb())) {
 			return verfuegungZeitabschnitt;

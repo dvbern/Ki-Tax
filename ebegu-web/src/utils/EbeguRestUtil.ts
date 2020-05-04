@@ -21,6 +21,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSAbstractAntragEntity} from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
@@ -64,6 +65,7 @@ import {TSEinkommensverschlechterungContainer} from '../models/TSEinkommensversc
 import {TSEinkommensverschlechterungInfo} from '../models/TSEinkommensverschlechterungInfo';
 import {TSEinkommensverschlechterungInfoContainer} from '../models/TSEinkommensverschlechterungInfoContainer';
 import {TSEinstellung} from '../models/TSEinstellung';
+import {TSEinstellungenFerieninsel} from '../models/TSEinstellungenFerieninsel';
 import {TSEinstellungenTagesschule} from '../models/TSEinstellungenTagesschule';
 import {TSErweiterteBetreuung} from '../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../models/TSErweiterteBetreuungContainer';
@@ -132,6 +134,7 @@ import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
+import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
@@ -893,7 +896,9 @@ export class EbeguRestUtil {
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.bgAdresse = this.adresseToRestObject({}, stammdaten.bgAdresse);
             restStammdaten.tsAdresse = this.adresseToRestObject({}, stammdaten.tsAdresse);
-            restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            if (stammdaten.gemeinde.angebotBG) {
+                restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            }
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
@@ -913,6 +918,8 @@ export class EbeguRestUtil {
             restStammdaten.standardDokUnterschriftName = stammdaten.standardDokUnterschriftName;
             restStammdaten.standardDokUnterschriftTitel2 = stammdaten.standardDokUnterschriftTitel2;
             restStammdaten.standardDokUnterschriftName2 = stammdaten.standardDokUnterschriftName2;
+            restStammdaten.externalClients = stammdaten.externalClients || null;
+            restStammdaten.usernameScolaris = stammdaten.usernameScolaris;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -968,6 +975,7 @@ export class EbeguRestUtil {
             stammdatenTS.standardDokUnterschriftName = stammdatenFromServer.standardDokUnterschriftName;
             stammdatenTS.standardDokUnterschriftTitel2 = stammdatenFromServer.standardDokUnterschriftTitel2;
             stammdatenTS.standardDokUnterschriftName2 = stammdatenFromServer.standardDokUnterschriftName2;
+            stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
 
             return stammdatenTS;
         }
@@ -987,6 +995,8 @@ export class EbeguRestUtil {
         if (konfiguration) {
             restKonfiguration.gesuchsperiode = this.gesuchsperiodeToRestObject({}, konfiguration.gesuchsperiode);
             restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
+            restKonfiguration.ferieninselStammdaten =
+                this.ferieninselStammdatenListToRestObject(konfiguration.ferieninselStammdaten);
             return restKonfiguration;
         }
         return undefined;
@@ -1006,12 +1016,22 @@ export class EbeguRestUtil {
         konfigurationFromServer: any,
     ): TSGemeindeKonfiguration {
         if (konfigurationFromServer) {
-            konfigurationTS.erwerbspensumZuschlagMax = konfigurationFromServer.erwerbspensumZuschlagMax;
-            konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
-            konfigurationTS.gesuchsperiodeStatusName = konfigurationFromServer.gesuchsperiodeStatusName;
+            konfigurationTS.erwerbspensumZuschlagMax =
+                konfigurationFromServer.erwerbspensumZuschlagMax;
+            konfigurationTS.erwerbspensumMiminumVorschuleMax =
+                konfigurationFromServer.erwerbspensumMiminumVorschuleMax;
+            konfigurationTS.erwerbspensumMiminumSchulkinderMax =
+                konfigurationFromServer.erwerbspensumMiminumSchulkinderMax;
+            konfigurationTS.gesuchsperiodeName =
+                konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeStatusName =
+                konfigurationFromServer.gesuchsperiodeStatusName;
             konfigurationTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), konfigurationFromServer.gesuchsperiode);
-            konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            konfigurationTS.konfigurationen =
+                this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            konfigurationTS.ferieninselStammdaten =
+                this.parseFerieninselStammdatenList(konfigurationFromServer.ferieninselStammdaten);
             return konfigurationTS;
         }
         return undefined;
@@ -1436,15 +1456,42 @@ export class EbeguRestUtil {
                 institutionStammdatenFerieninsel);
             restInstitutionStammdatenFerieninsel.gemeinde =
                 this.gemeindeToRestObject({}, institutionStammdatenFerieninsel.gemeinde);
-            restInstitutionStammdatenFerieninsel.ausweichstandortFruehlingsferien =
-                institutionStammdatenFerieninsel.ausweichstandortFruehlingsferien;
-            restInstitutionStammdatenFerieninsel.ausweichstandortHerbstferien =
-                institutionStammdatenFerieninsel.ausweichstandortHerbstferien;
-            restInstitutionStammdatenFerieninsel.ausweichstandortSommerferien =
-                institutionStammdatenFerieninsel.ausweichstandortSommerferien;
-            restInstitutionStammdatenFerieninsel.ausweichstandortSportferien =
-                institutionStammdatenFerieninsel.ausweichstandortSportferien;
+
+            restInstitutionStammdatenFerieninsel.einstellungenFerieninsel
+                = this.einstellungenFerieninselArrayToRestObject(institutionStammdatenFerieninsel.einstellungenFerieninsel);
+
             return restInstitutionStammdatenFerieninsel;
+        }
+        return undefined;
+    }
+
+    private einstellungenFerieninselArrayToRestObject(data: Array<TSEinstellungenFerieninsel>): any[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.einstellungenFerieninselToRestObject({}, item))
+            : [];
+    }
+
+    private einstellungenFerieninselToRestObject(
+        restEinstellung: any, einstellungFerieninselTS: TSEinstellungenFerieninsel
+    ): any {
+        if (einstellungFerieninselTS) {
+            this.abstractEntityToRestObject(restEinstellung, einstellungFerieninselTS);
+            restEinstellung.gesuchsperiode =
+                this.gesuchsperiodeToRestObject({}, einstellungFerieninselTS.gesuchsperiode);
+
+            restEinstellung.ausweichstandortFruehlingsferien =
+                einstellungFerieninselTS.ausweichstandortFruehlingsferien;
+            restEinstellung.ausweichstandortHerbstferien =
+                einstellungFerieninselTS.ausweichstandortHerbstferien;
+            restEinstellung.ausweichstandortSommerferien =
+                einstellungFerieninselTS.ausweichstandortSommerferien;
+            restEinstellung.ausweichstandortSportferien =
+                einstellungFerieninselTS.ausweichstandortSportferien;
+
+            return restEinstellung;
         }
         return undefined;
     }
@@ -1458,15 +1505,42 @@ export class EbeguRestUtil {
                 institutionStammdatenFerieninselFromServer);
             institutionStammdatenFerieninselTS.gemeinde =
                 this.parseGemeinde(new TSGemeinde(), institutionStammdatenFerieninselFromServer.gemeinde);
-            institutionStammdatenFerieninselTS.ausweichstandortFruehlingsferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortFruehlingsferien;
-            institutionStammdatenFerieninselTS.ausweichstandortHerbstferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortHerbstferien;
-            institutionStammdatenFerieninselTS.ausweichstandortSommerferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortSommerferien;
-            institutionStammdatenFerieninselTS.ausweichstandortSportferien =
-                institutionStammdatenFerieninselFromServer.ausweichstandortSportferien;
+
+            institutionStammdatenFerieninselTS.einstellungenFerieninsel =
+                this.parseEinstellungenFerieninselArray(institutionStammdatenFerieninselFromServer.einstellungenFerieninsel);
+
             return institutionStammdatenFerieninselTS;
+        }
+        return undefined;
+    }
+
+    public parseEinstellungenFerieninselArray(data: Array<any>): TSEinstellungenFerieninsel[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseEinstellungenFerieninsel(new TSEinstellungenFerieninsel(), item))
+            : [this.parseEinstellungenFerieninsel(new TSEinstellungenFerieninsel(), data)];
+    }
+
+    private parseEinstellungenFerieninsel(
+        einstellungenFerieninselTS: TSEinstellungenFerieninsel, einstellungFromServer: any
+    ): TSEinstellungenFerieninsel {
+        if (einstellungFromServer) {
+            this.parseAbstractEntity(einstellungenFerieninselTS, einstellungFromServer);
+            einstellungenFerieninselTS.gesuchsperiode =
+                this.parseGesuchsperiode(new TSGesuchsperiode(), einstellungFromServer.gesuchsperiode);
+
+            einstellungenFerieninselTS.ausweichstandortFruehlingsferien =
+                einstellungFromServer.ausweichstandortFruehlingsferien;
+            einstellungenFerieninselTS.ausweichstandortHerbstferien =
+                einstellungFromServer.ausweichstandortHerbstferien;
+            einstellungenFerieninselTS.ausweichstandortSommerferien =
+                einstellungFromServer.ausweichstandortSommerferien;
+            einstellungenFerieninselTS.ausweichstandortSportferien =
+                einstellungFromServer.ausweichstandortSportferien;
+
+            return einstellungenFerieninselTS;
         }
         return undefined;
     }
@@ -1740,7 +1814,7 @@ export class EbeguRestUtil {
         restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.ausAsylwesen = kind.ausAsylwesen;
-        restKind.zemisNummer = kind.zemisNummer;
+        restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -2009,8 +2083,8 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
-            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
-            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ? 0 : betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ? 0 : betreuungspensum.monatlicheNebenmahlzeiten;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -3499,6 +3573,7 @@ export class EbeguRestUtil {
         }
         return Array.isArray(data)
             ? data.map(item => this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), item))
+                .sort((a, b) => ferienInselNameOrder(a.ferienname) - ferienInselNameOrder(b.ferienname))
             : [this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data)];
     }
 
@@ -3511,19 +3586,21 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.ferienname = receivedFerieninselStammdaten.ferienname;
             ferieninselStammdatenTS.anmeldeschluss =
                 DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
-            ferieninselStammdatenTS.gesuchsperiode =
-                this.parseGesuchsperiode(new TSGesuchsperiode(), receivedFerieninselStammdaten.gesuchsperiode);
-            if (receivedFerieninselStammdaten.zeitraumList[0]) {
-                const firstZeitraum = new TSFerieninselZeitraum();
-                this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
-                ferieninselStammdatenTS.zeitraum = firstZeitraum;
-            }
+            ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
+
             ferieninselStammdatenTS.zeitraumList = [];
-            for (let i = 1; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
-                const zeitraum = new TSFerieninselZeitraum();
-                this.parseDateRangeEntity(zeitraum, receivedFerieninselStammdaten.zeitraumList[i]);
-                ferieninselStammdatenTS.zeitraumList.push(zeitraum);
+            for (const zeitraum of receivedFerieninselStammdaten.zeitraumList) {
+                const zeitraumTS = new TSFerieninselZeitraum();
+                this.parseDateRangeEntity(zeitraumTS, zeitraum);
+                ferieninselStammdatenTS.zeitraumList.push(zeitraumTS);
             }
+
+            if (ferieninselStammdatenTS.zeitraumList.length < 1) {
+                const emptyZeitraum = new TSFerieninselZeitraum();
+                emptyZeitraum.gueltigkeit = new TSDateRange();
+                ferieninselStammdatenTS.zeitraumList.push(emptyZeitraum);
+            }
+
             const tage = receivedFerieninselStammdaten.potenzielleFerieninselTageFuerBelegung;
             if (tage) {
                 ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegung =
@@ -3532,6 +3609,12 @@ export class EbeguRestUtil {
             return ferieninselStammdatenTS;
         }
         return undefined;
+    }
+
+    public ferieninselStammdatenListToRestObject(ferieninselStammdatenList: TSFerieninselStammdaten[]): Array<any> {
+        return ferieninselStammdatenList
+            ? ferieninselStammdatenList.map(item => this.ferieninselStammdatenToRestObject({}, item))
+            : [];
     }
 
     public ferieninselStammdatenToRestObject(
@@ -3543,19 +3626,17 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            restFerieninselStammdaten.gesuchsperiode =
-                this.gesuchsperiodeToRestObject({}, ferieninselStammdatenTS.gesuchsperiode);
-            if (ferieninselStammdatenTS.zeitraum) {
-                const firstZeitraum: any = {};
-                this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.zeitraum);
+
+            if (ferieninselStammdatenTS.zeitraumList &&
+                (ferieninselStammdatenTS.zeitraumList.length > 1 ||
+                (ferieninselStammdatenTS.zeitraumList.length === 1 &&
+                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
+                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
                 restFerieninselStammdaten.zeitraumList = [];
-                restFerieninselStammdaten.zeitraumList[0] = firstZeitraum;
-            }
-            if (ferieninselStammdatenTS.zeitraumList) {
                 for (let i = 0; i < ferieninselStammdatenTS.zeitraumList.length; i++) {
                     const zeitraum: any = {};
                     this.abstractDateRangeEntityToRestObject(zeitraum, ferieninselStammdatenTS.zeitraumList[i]);
-                    restFerieninselStammdaten.zeitraumList[i + 1] = zeitraum;
+                    restFerieninselStammdaten.zeitraumList[i] = zeitraum;
                 }
             }
             return restFerieninselStammdaten;
@@ -3580,9 +3661,15 @@ export class EbeguRestUtil {
         if (!data) {
             return [];
         }
-        return Array.isArray(data)
+        const tage = Array.isArray(data)
             ? data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
             : [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
+
+        tage.sort( (a: TSBelegungFerieninselTag, b: TSBelegungFerieninselTag) => {
+            return a.tag.valueOf() - b.tag.valueOf();
+        });
+
+        return tage;
     }
 
     private parseBelegungFerieninselTag(

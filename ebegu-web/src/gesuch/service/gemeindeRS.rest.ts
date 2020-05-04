@@ -26,6 +26,7 @@ import {TSRole} from '../../models/enums/TSRole';
 import {TSSprache} from '../../models/enums/TSSprache';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSBfsGemeinde} from '../../models/TSBfsGemeinde';
+import {TSExternalClientAssignment} from '../../models/TSExternalClientAssignment';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
 import {TSGemeindeRegistrierung} from '../../models/TSGemeindeRegistrierung';
@@ -242,7 +243,7 @@ export class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
 
-    public updateAngebote(gemeinde: TSGemeinde): any {
+    public updateAngebote(gemeinde: TSGemeinde): IPromise<any> {
         let restGemeinde = {};
         restGemeinde = this.ebeguRestUtil.gemeindeToRestObject(restGemeinde, gemeinde);
         return this.$http.put(`${this.serviceURL}/updateangebote`, restGemeinde);
@@ -271,5 +272,10 @@ export class GemeindeRS implements IEntityRS {
             .then((response: any) => {
                 return response.data;
             });
+    }
+
+    public getExternalClients(gemeindeId: string): IPromise<TSExternalClientAssignment> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gemeindeId)}/externalclients`)
+            .then(response => this.ebeguRestUtil.parseExternalClientAssignment(response.data));
     }
 }

@@ -31,6 +31,9 @@ public enum EinstellungKey {
 	// Ab welchem Datum können Anmeldungen für die Tagesschule erfasst werden
 	GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
 
+	// Ab welchem Datum können Anmeldungen für die Ferieninsel erfasst werden
+	GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB(EinstellungTyp.GEMEINDE),
+
 	// Erster Schultag der Tagesschule
 	GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG(EinstellungTyp.GEMEINDE),
 
@@ -79,6 +82,11 @@ public enum EinstellungKey {
 
 	// Die Schnittstelle zu Ki-Tax ist aktiviert
 	GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED(EinstellungTyp.GEMEINDE),
+
+	// Minimales Erwerbspensum, wenn das Kind nicht eingeschult ist
+	GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT(EinstellungTyp.GEMEINDE),
+	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
+	GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT(EinstellungTyp.GEMEINDE),
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 

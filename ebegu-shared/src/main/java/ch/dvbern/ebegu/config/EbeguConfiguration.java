@@ -140,12 +140,17 @@ public interface EbeguConfiguration {
 	/**
 	 * @return den Benutzernamen des Schulamt API users
 	 */
-	String getSchulamtAPIUser();
+	String getKeycloackClient();
 
 	/**
 	 * @return das Benutzerpasswort fuer den Schulamt API USER
 	 */
-	String getSchulamtAPIPassword();
+	String getKeycloackPassword();
+
+	/**
+	 * @return das Benutzerpasswort fuer den Schulamt API USER
+	 */
+	String getKeycloackAuthServer();
 
 	/**
 	 * @return by default the secure flag of cookies will be set based on the incoming request. To force the application
