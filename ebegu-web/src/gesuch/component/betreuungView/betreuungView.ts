@@ -474,10 +474,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
         }).then(() => {
             let betreuungsstatus: TSBetreuungsstatus;
-            (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
-                isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
-                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+
+            if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
+                (this.gesuchModelManager.getGesuch().status === TSAntragStatus.VERFUEGEN ||
+                    isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) ?
+                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                    : betreuungsstatus = TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+            } else {
+                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+            }
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.save(betreuungsstatus,

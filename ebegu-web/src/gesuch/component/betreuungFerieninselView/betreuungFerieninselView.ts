@@ -341,4 +341,9 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         return '';
     }
 
+    public saveAnmeldungSchulamtUebernehmen(): void {
+        if (this.form.$valid) {
+            this.anmeldungSchulamtUebernehmen({isScolaris: false});
+        }
+    }
 }
