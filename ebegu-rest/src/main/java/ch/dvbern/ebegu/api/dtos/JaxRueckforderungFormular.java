@@ -42,29 +42,29 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nonnull
 	private RueckforderungStatus status;
 
-	private BigDecimal nichtAngeboteneBetreuungStundenKantonStufe1;
+	private BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden;
 
-	private BigDecimal nichtAngeboteneBetreuungStundenInstitutionStufe1;
+	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlStunden;
 
-	private BigDecimal nichtAngeboteneBetreuungStundenKantonStufe2;
+	private BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 
-	private BigDecimal nichtAngeboteneBetreuungStundenInstitutionStufe2;
+	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 
-	private BigDecimal nichtAngeboteneBetreuungTageKantonStufe1;
+	private BigDecimal stufe1KantonKostenuebernahmeAnzahlTage;
 
-	private BigDecimal nichtAngeboteneBetreuungTageInstitutionStufe1;
+	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlTage;
 
-	private BigDecimal nichtAngeboteneBetreuungTageKantonStufe2;
+	private BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 
-	private BigDecimal nichtAngeboteneBetreuungTageInstitutionStufe2;
+	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 
-	private BigDecimal andereEntfalleneErtraegeKantonStufe1;
+	private BigDecimal stufe1KantonKostenuebernahmeBetreuung;
 
-	private BigDecimal andereEntfalleneErtraegeInstitutionStufe1;
+	private BigDecimal stufe1InstitutionKostenuebernahmeBetreuung;
 
-	private BigDecimal andereEntfalleneErtraegeKantonStufe2;
+	private BigDecimal stufe2KantonKostenuebernahmeBetreuung;
 
-	private BigDecimal andereEntfalleneErtraegeInstitutionStufe2;
+	private BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
 
 	@Nonnull
 	public JaxInstitution getInstitution() {
@@ -94,110 +94,110 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungStundenKantonStufe1() {
-		return nichtAngeboteneBetreuungStundenKantonStufe1;
+	public BigDecimal getStufe1KantonKostenuebernahmeAnzahlStunden() {
+		return stufe1KantonKostenuebernahmeAnzahlStunden;
 	}
 
-	public void setNichtAngeboteneBetreuungStundenKantonStufe1(@Nullable BigDecimal nichtAngeboteneBetreuungStundenKantonStufe1) {
-		this.nichtAngeboteneBetreuungStundenKantonStufe1 = nichtAngeboteneBetreuungStundenKantonStufe1;
-	}
-
-	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungStundenInstitutionStufe1() {
-		return nichtAngeboteneBetreuungStundenInstitutionStufe1;
-	}
-
-	public void setNichtAngeboteneBetreuungStundenInstitutionStufe1(@Nullable BigDecimal nichtAngeboteneBetreuungStundenInstitutionStufe1) {
-		this.nichtAngeboteneBetreuungStundenInstitutionStufe1 = nichtAngeboteneBetreuungStundenInstitutionStufe1;
+	public void setStufe1KantonKostenuebernahmeAnzahlStunden(@Nullable BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden) {
+		this.stufe1KantonKostenuebernahmeAnzahlStunden = stufe1KantonKostenuebernahmeAnzahlStunden;
 	}
 
 	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungStundenKantonStufe2() {
-		return nichtAngeboteneBetreuungStundenKantonStufe2;
+	public BigDecimal getStufe1InstitutionKostenuebernahmeAnzahlStunden() {
+		return stufe1InstitutionKostenuebernahmeAnzahlStunden;
 	}
 
-	public void setNichtAngeboteneBetreuungStundenKantonStufe2(@Nullable BigDecimal nichtAngeboteneBetreuungStundenKantonStufe2) {
-		this.nichtAngeboteneBetreuungStundenKantonStufe2 = nichtAngeboteneBetreuungStundenKantonStufe2;
-	}
-
-	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungStundenInstitutionStufe2() {
-		return nichtAngeboteneBetreuungStundenInstitutionStufe2;
-	}
-
-	public void setNichtAngeboteneBetreuungStundenInstitutionStufe2(@Nullable BigDecimal nichtAngeboteneBetreuungStundenInstitutionStufe2) {
-		this.nichtAngeboteneBetreuungStundenInstitutionStufe2 = nichtAngeboteneBetreuungStundenInstitutionStufe2;
+	public void setStufe1InstitutionKostenuebernahmeAnzahlStunden(@Nullable BigDecimal stufe1InstitutionKostenuebernahmeAnzahlStunden) {
+		this.stufe1InstitutionKostenuebernahmeAnzahlStunden = stufe1InstitutionKostenuebernahmeAnzahlStunden;
 	}
 
 	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungTageKantonStufe1() {
-		return nichtAngeboteneBetreuungTageKantonStufe1;
+	public BigDecimal getStufe2KantonKostenuebernahmeAnzahlStunden() {
+		return stufe2KantonKostenuebernahmeAnzahlStunden;
 	}
 
-	public void setNichtAngeboteneBetreuungTageKantonStufe1(@Nullable BigDecimal nichtAngeboteneBetreuungTageKantonStufe1) {
-		this.nichtAngeboteneBetreuungTageKantonStufe1 = nichtAngeboteneBetreuungTageKantonStufe1;
-	}
-
-	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungTageInstitutionStufe1() {
-		return nichtAngeboteneBetreuungTageInstitutionStufe1;
-	}
-
-	public void setNichtAngeboteneBetreuungTageInstitutionStufe1(@Nullable BigDecimal nichtAngeboteneBetreuungTageInstitutionStufe1) {
-		this.nichtAngeboteneBetreuungTageInstitutionStufe1 = nichtAngeboteneBetreuungTageInstitutionStufe1;
+	public void setStufe2KantonKostenuebernahmeAnzahlStunden(@Nullable BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden) {
+		this.stufe2KantonKostenuebernahmeAnzahlStunden = stufe2KantonKostenuebernahmeAnzahlStunden;
 	}
 
 	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungTageKantonStufe2() {
-		return nichtAngeboteneBetreuungTageKantonStufe2;
+	public BigDecimal getStufe2InstitutionKostenuebernahmeAnzahlStunden() {
+		return stufe2InstitutionKostenuebernahmeAnzahlStunden;
 	}
 
-	public void setNichtAngeboteneBetreuungTageKantonStufe2(@Nullable BigDecimal nichtAngeboteneBetreuungTageKantonStufe2) {
-		this.nichtAngeboteneBetreuungTageKantonStufe2 = nichtAngeboteneBetreuungTageKantonStufe2;
-	}
-
-	@Nullable
-	public BigDecimal getNichtAngeboteneBetreuungTageInstitutionStufe2() {
-		return nichtAngeboteneBetreuungTageInstitutionStufe2;
-	}
-
-	public void setNichtAngeboteneBetreuungTageInstitutionStufe2(@Nullable BigDecimal nichtAngeboteneBetreuungTageInstitutionStufe2) {
-		this.nichtAngeboteneBetreuungTageInstitutionStufe2 = nichtAngeboteneBetreuungTageInstitutionStufe2;
+	public void setStufe2InstitutionKostenuebernahmeAnzahlStunden(@Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden) {
+		this.stufe2InstitutionKostenuebernahmeAnzahlStunden = stufe2InstitutionKostenuebernahmeAnzahlStunden;
 	}
 
 	@Nullable
-	public BigDecimal getAndereEntfalleneErtraegeKantonStufe1() {
-		return andereEntfalleneErtraegeKantonStufe1;
+	public BigDecimal getStufe1KantonKostenuebernahmeAnzahlTage() {
+		return stufe1KantonKostenuebernahmeAnzahlTage;
 	}
 
-	public void setAndereEntfalleneErtraegeKantonStufe1(@Nullable BigDecimal andereEntfalleneErtraegeKantonStufe1) {
-		this.andereEntfalleneErtraegeKantonStufe1 = andereEntfalleneErtraegeKantonStufe1;
-	}
-
-	@Nullable
-	public BigDecimal getAndereEntfalleneErtraegeInstitutionStufe1() {
-		return andereEntfalleneErtraegeInstitutionStufe1;
-	}
-
-	public void setAndereEntfalleneErtraegeInstitutionStufe1(@Nullable BigDecimal andereEntfalleneErtraegeInstitutionStufe1) {
-		this.andereEntfalleneErtraegeInstitutionStufe1 = andereEntfalleneErtraegeInstitutionStufe1;
+	public void setStufe1KantonKostenuebernahmeAnzahlTage(@Nullable BigDecimal stufe1KantonKostenuebernahmeAnzahlTage) {
+		this.stufe1KantonKostenuebernahmeAnzahlTage = stufe1KantonKostenuebernahmeAnzahlTage;
 	}
 
 	@Nullable
-	public BigDecimal getAndereEntfalleneErtraegeKantonStufe2() {
-		return andereEntfalleneErtraegeKantonStufe2;
+	public BigDecimal getStufe1InstitutionKostenuebernahmeAnzahlTage() {
+		return stufe1InstitutionKostenuebernahmeAnzahlTage;
 	}
 
-	public void setAndereEntfalleneErtraegeKantonStufe2(@Nullable BigDecimal andereEntfalleneErtraegeKantonStufe2) {
-		this.andereEntfalleneErtraegeKantonStufe2 = andereEntfalleneErtraegeKantonStufe2;
+	public void setStufe1InstitutionKostenuebernahmeAnzahlTage(@Nullable BigDecimal stufe1InstitutionKostenuebernahmeAnzahlTage) {
+		this.stufe1InstitutionKostenuebernahmeAnzahlTage = stufe1InstitutionKostenuebernahmeAnzahlTage;
 	}
 
 	@Nullable
-	public BigDecimal getAndereEntfalleneErtraegeInstitutionStufe2() {
-		return andereEntfalleneErtraegeInstitutionStufe2;
+	public BigDecimal getStufe2KantonKostenuebernahmeAnzahlTage() {
+		return stufe2KantonKostenuebernahmeAnzahlTage;
 	}
 
-	public void setAndereEntfalleneErtraegeInstitutionStufe2(@Nullable BigDecimal andereEntfalleneErtraegeInstitutionStufe2) {
-		this.andereEntfalleneErtraegeInstitutionStufe2 = andereEntfalleneErtraegeInstitutionStufe2;
+	public void setStufe2KantonKostenuebernahmeAnzahlTage(@Nullable BigDecimal stufe2KantonKostenuebernahmeAnzahlTage) {
+		this.stufe2KantonKostenuebernahmeAnzahlTage = stufe2KantonKostenuebernahmeAnzahlTage;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2InstitutionKostenuebernahmeAnzahlTage() {
+		return stufe2InstitutionKostenuebernahmeAnzahlTage;
+	}
+
+	public void setStufe2InstitutionKostenuebernahmeAnzahlTage(@Nullable BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage) {
+		this.stufe2InstitutionKostenuebernahmeAnzahlTage = stufe2InstitutionKostenuebernahmeAnzahlTage;
+	}
+
+	@Nullable
+	public BigDecimal getStufe1KantonKostenuebernahmeBetreuung() {
+		return stufe1KantonKostenuebernahmeBetreuung;
+	}
+
+	public void setStufe1KantonKostenuebernahmeBetreuung(@Nullable BigDecimal stufe1KantonKostenuebernahmeBetreuung) {
+		this.stufe1KantonKostenuebernahmeBetreuung = stufe1KantonKostenuebernahmeBetreuung;
+	}
+
+	@Nullable
+	public BigDecimal getStufe1InstitutionKostenuebernahmeBetreuung() {
+		return stufe1InstitutionKostenuebernahmeBetreuung;
+	}
+
+	public void setStufe1InstitutionKostenuebernahmeBetreuung(@Nullable BigDecimal stufe1InstitutionKostenuebernahmeBetreuung) {
+		this.stufe1InstitutionKostenuebernahmeBetreuung = stufe1InstitutionKostenuebernahmeBetreuung;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2KantonKostenuebernahmeBetreuung() {
+		return stufe2KantonKostenuebernahmeBetreuung;
+	}
+
+	public void setStufe2KantonKostenuebernahmeBetreuung(@Nullable BigDecimal stufe2KantonKostenuebernahmeBetreuung) {
+		this.stufe2KantonKostenuebernahmeBetreuung = stufe2KantonKostenuebernahmeBetreuung;
+	}
+
+	@Nullable
+	public BigDecimal getStufe2InstitutionKostenuebernahmeBetreuung() {
+		return stufe2InstitutionKostenuebernahmeBetreuung;
+	}
+
+	public void setStufe2InstitutionKostenuebernahmeBetreuung(@Nullable BigDecimal stufe2InstitutionKostenuebernahmeBetreuung) {
+		this.stufe2InstitutionKostenuebernahmeBetreuung = stufe2InstitutionKostenuebernahmeBetreuung;
 	}
 }
