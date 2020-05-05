@@ -182,10 +182,14 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittBis, dataRow.getZeitabschnittBis());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungsStatus, dataRow.getBetreuungsStatus());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungsPensum, dataRow.getBetreuungspensum());
-			BigDecimal anspruchsPensum = dataRow.getAnspruchsPensum();
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensum, anspruchsPensum);
-			if (anspruchsPensum != null && anspruchsPensum.compareTo(BigDecimal.ZERO) > 0) {
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensum, dataRow.getBgPensum());
+			BigDecimal anspruchsPensumTotal = dataRow.getAnspruchsPensumTotal();
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumKanton, dataRow.getAnspruchsPensumKanton());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumGemeinde, dataRow.getAnspruchsPensumGemeinde());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumTotal, anspruchsPensumTotal);
+			if (anspruchsPensumTotal != null && anspruchsPensumTotal.compareTo(BigDecimal.ZERO) > 0) {
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, dataRow.getBgPensumKanton());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, dataRow.getBgPensumGemeinde());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotal, dataRow.getBgPensumTotal());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, dataRow.getBgStunden());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, dataRow.getVollkosten());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, dataRow.getElternbeitrag());
@@ -193,7 +197,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, dataRow.getVerguenstigungGemeinde());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, dataRow.getVerguenstigungTotal());
 			} else {
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensum, BigDecimal.ZERO);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, BigDecimal.ZERO);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, BigDecimal.ZERO);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotal, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, BigDecimal.ZERO);
@@ -391,11 +397,23 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.kostenTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.kostenTitle, ServerMessageUtil.getMessage("Reports_kostenTitle", locale));
 
-		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtTitle.getMergeField());
-		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtTitle, ServerMessageUtil.getMessage("Reports_anspruchberechtigtTitle", locale));
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtKantonTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtKantonTitle, ServerMessageUtil.getMessage(			"Reports_anspruchberechtigtKantonTitle", locale));
 
-		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumTitle.getMergeField());
-		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTitle, ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale));
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtGemeindeTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtGemeindeTitle, ServerMessageUtil.getMessage(			"Reports_anspruchberechtigtGemeindeTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtTotalTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtTotalTitle, ServerMessageUtil.getMessage(			"Reports_anspruchberechtigtTotalTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumKantonTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKantonTitle, ServerMessageUtil.getMessage("Reports_bgPensumKantonTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeindeTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeindeTitle, ServerMessageUtil.getMessage("Reports_bgPensumGemeindeTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotalTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotalTitle, ServerMessageUtil.getMessage("Reports_bgPensumTotalTitle", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumStdTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumStdTitle, ServerMessageUtil.getMessage("Reports_bgPensumStdTitle", locale));

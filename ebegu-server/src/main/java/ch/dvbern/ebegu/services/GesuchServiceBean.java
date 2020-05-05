@@ -625,7 +625,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
 					// der Mutation eine Verfügung gespeichert. Diese muss nun wieder gelöscht werden
 					vorgaenger.setVerfuegung(null);
@@ -636,7 +637,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
-			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isSchulamt())
+			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
 			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
 				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(anmeldung.extractGesuch().getId(), anmeldung.getId());

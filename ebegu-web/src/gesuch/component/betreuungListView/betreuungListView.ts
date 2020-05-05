@@ -341,8 +341,13 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         return tagesschuleGrundsaetzlichErlaubt || ferieninselGrundsaetzlichErlaubt;
     }
 
-    public hasOnlyFerieninsel(): boolean {
+    public isNeueBetreuungErlaubtForFI(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
-        return !!gesuch && gesuch.areThereOnlyFerieninsel();
+        if (!!gesuch && !gesuch.areThereOnlyFerieninsel()) {
+            return true;
+        }
+        return !!gesuch && (gesuch.status === TSAntragStatus.IN_BEARBEITUNG_GS
+            || (EbeguUtil.isNullOrUndefined(gesuch.freigabeDatum)
+                && gesuch.status === TSAntragStatus.IN_BEARBEITUNG_JA));
     }
 }

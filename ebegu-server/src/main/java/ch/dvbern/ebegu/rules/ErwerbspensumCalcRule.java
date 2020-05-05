@@ -23,16 +23,18 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.StringUtils;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -121,14 +123,13 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
-			inputData.getParent().getBemerkungenList().addBemerkung(
-				new VerfuegungsBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset));
+			inputData.addBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
 			inputData.setMinimalesEwpUnterschritten(true);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
-			addVerfuegungsBemerkungIfNecessary(inputData);
+			addVerfuegungsBemerkung(inputData);
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
@@ -141,7 +142,10 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return MathUtil.roundIntToFives(anspruch);
 	}
 
-	protected abstract void addVerfuegungsBemerkungIfNecessary(@Nonnull BGCalculationInput inputData);
+	protected void addVerfuegungsBemerkung(@Nonnull BGCalculationInput inputData) {
+		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
+		inputData.addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen);
+	}
 
 	@Nonnull
 	private Integer calculateErwerbspensumGS1(
@@ -166,7 +170,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		@Nonnull Locale locale) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
-			inputData.getParent().getBemerkungenList().addBemerkung(bemerkung, locale);
+			inputData.addBemerkung(bemerkung, locale);
 		}
 		return erwerbspensum;
 	}
@@ -183,5 +187,18 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 		}
 		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
+	}
+
+	@Nonnull
+	private String getBeschaeftigungsTypen(@Nonnull BGCalculationInput inputData, @Nonnull Locale locale) {
+		StringBuilder sb = new StringBuilder();
+		for (Taetigkeit taetigkeit : inputData.getTaetigkeiten()) {
+			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
+			sb.append(", ");
+		}
+		// Das letzte Komma entfernen
+		String taetigkeitenAsString = sb.toString();
+		taetigkeitenAsString = StringUtils.removeEnd(taetigkeitenAsString, ", ");
+		return taetigkeitenAsString;
 	}
 }

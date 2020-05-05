@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.dto;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,11 +31,16 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
+
+	@Nonnull
+	private RuleValidity ruleValidity;
 
 	private VerfuegungZeitabschnitt parent;
 
@@ -134,8 +140,9 @@ public class BGCalculationInput {
 	private boolean betreuungInGemeinde = false;
 
 
-	public BGCalculationInput(VerfuegungZeitabschnitt parent) {
+	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
+		this.ruleValidity = ruleValidity;
 	}
 
 	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
@@ -178,6 +185,16 @@ public class BGCalculationInput {
 		this.tsInputOhneBetreuung = toCopy.tsInputOhneBetreuung.copy();
 		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
+		this.ruleValidity = toCopy.ruleValidity;
+	}
+
+	@Nonnull
+	public RuleValidity getRuleValidity() {
+		return ruleValidity;
+	}
+
+	public void setRuleValidity(@Nonnull RuleValidity ruleValidity) {
+		this.ruleValidity = ruleValidity;
 	}
 
 	public VerfuegungZeitabschnitt getParent() {
@@ -673,5 +690,10 @@ public class BGCalculationInput {
 	@Nonnull
 	public BigDecimal getBgPensumProzent() {
 		return getBetreuungspensumProzent().min(MathUtil.DEFAULT.from(getAnspruchspensumProzent()));
+	}
+
+	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
+		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleValidity, msgKey, locale, args);
+		this.getParent().getBemerkungenList().addBemerkung(bemerkung);
 	}
 }
