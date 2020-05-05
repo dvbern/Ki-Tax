@@ -46,7 +46,7 @@ export class NotrechtRS {
     }
 
     public getServiceName(): string {
-        return 'GesuchstellerRS';
+        return 'NotrechtRS';
     }
 
 }
