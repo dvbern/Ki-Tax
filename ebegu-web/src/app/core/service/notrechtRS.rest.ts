@@ -38,7 +38,8 @@ export class NotrechtRS {
     public initializeRueckforderungFormulare(): IPromise<void> {
         return this.http.post(`${this.serviceURL}/initialize`, {})
             .then(response => {
-                console.log(response);
+                const rueckforderungFormulare = this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
+                console.log(rueckforderungFormulare);
             }, error => {
                 console.error(error);
             });
