@@ -315,6 +315,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    public displayBetreuungsPensumChangeWarning(): boolean {
+        return this.form.$dirty && this.isMutationsmeldungStatus;
+    }
+
     // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
