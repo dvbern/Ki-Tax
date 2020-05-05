@@ -18,16 +18,19 @@
 package ch.dvbern.ebegu.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.VerfuegungsBemerkungComparator;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,13 +40,13 @@ import org.apache.commons.lang3.StringUtils;
 public class VerfuegungsBemerkungList {
 
 
+	/**
+	 * Wir schreiben alle Bemerkungen in ein Set. Damit stellen wir sicher, dass alle Varianten von Bemerkungen drin
+	 * bleiben, also z.B. Restanspruch nach ASIV und Restanspruch nach GEMEINDE, so dass wir am Schluss entscheiden
+	 * koennen, welche Bemerkungen wir genau benoetigen.
+	 */
 	@Nonnull
-	private final List<VerfuegungsBemerkung> bemerkungenList = new ArrayList<>();
-
-	@Nonnull
-	public List<VerfuegungsBemerkung> getBemerkungenList() {
-		return bemerkungenList;
-	}
+	private final Set<VerfuegungsBemerkung> bemerkungenList = new HashSet<>();
 
 	public boolean isSame(@Nullable VerfuegungsBemerkungList other) {
 		//noinspection ObjectEquality
@@ -53,15 +56,19 @@ public class VerfuegungsBemerkungList {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		return Objects.equals(this.getBemerkungenList(), other.getBemerkungenList());
+		return Objects.equals(this.bemerkungenList, other.bemerkungenList);
 	}
 
 	public boolean isEmpty() {
 		return bemerkungenList.isEmpty();
 	}
 
-	public int size() {
-		return bemerkungenList.size();
+	/**
+	 * Gibt die Anzahl *unterschiedlicher* Messages zurueck, in Sinne von: Gleicher Key wird fuer ASIV und GEMEINDE
+	 * nur einmal gezaehlt
+	 */
+	public int uniqueSize() {
+		return toUniqueMap().size();
 	}
 
 	public void clear() {
@@ -73,36 +80,29 @@ public class VerfuegungsBemerkungList {
 	}
 
 	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungList additionalBemerkungen) {
-		//  Auch hier muss sichergestellt werden, dass pro Key nur eine Bemerkung vorhanden ist. Wir loeschen die aeltere
 		for (VerfuegungsBemerkung additionalBemerkung : additionalBemerkungen.bemerkungenList) {
 			addBemerkung(additionalBemerkung);
 		}
 	}
 
 	public void addBemerkung(@Nonnull VerfuegungsBemerkung bemerkung) {
-		// Falls von einer frueheren Regel *dieselbe* Bemerkung schon vorhanden ist, diese loeschen (sie hat evtl. andere Argumente)
-		removeBemerkungByMsgKey(bemerkung.getMsgKey());
 		bemerkungenList.add(bemerkung);
-	}
-
-	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(msgKey, locale);
-		this.addBemerkung(bemerkung);
-	}
-
-	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nonnull Object... args) {
-		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(msgKey, locale, args);
-		this.addBemerkung(bemerkung);
 	}
 
 	@Nullable
 	public VerfuegungsBemerkung findFirstBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
-		return this.bemerkungenList.stream().filter(bemerkung -> bemerkung.getMsgKey() == msgKey).findFirst().orElse(null);
+		return this.bemerkungenList
+			.stream()
+			.filter(bemerkung -> bemerkung.getMsgKey() == msgKey)
+			.findFirst().orElse(null);
 	}
 
 	@Nonnull
-	public List<VerfuegungsBemerkung> findBemerkungenByMsgKey(@Nonnull MsgKey msgKey) {
-		return this.bemerkungenList.stream().filter(bemerkung -> bemerkung.getMsgKey() == msgKey).collect(Collectors.toList());
+	private List<VerfuegungsBemerkung> findBemerkungenByMsgKey(@Nonnull MsgKey msgKey) {
+		return this.bemerkungenList
+			.stream()
+			.filter(bemerkung -> bemerkung.getMsgKey() == msgKey)
+			.collect(Collectors.toList());
 	}
 
 	public void removeBemerkungByMsgKey(@Nonnull MsgKey msgKey) {
@@ -113,15 +113,11 @@ public class VerfuegungsBemerkungList {
 	}
 
 	/**
-	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
+	 * Fügt otherBemerkungen zur Liste hinzu
 	 */
 	public void mergeBemerkungenMap(@Nonnull VerfuegungsBemerkungList otherList) {
-		for (VerfuegungsBemerkung otherBemerkung : otherList.getBemerkungenList()) {
-			Optional<VerfuegungsBemerkung> bemerkungPresentOptional =
-				this.getBemerkungenList().stream().filter(thisBemerkung -> thisBemerkung.getMsgKey() == otherBemerkung.getMsgKey()).findAny();
-			if (!bemerkungPresentOptional.isPresent()) {
-				this.addBemerkung(otherBemerkung);
-			}
+		for (VerfuegungsBemerkung otherBemerkung : otherList.bemerkungenList) {
+			this.addBemerkung(otherBemerkung);
 		}
 	}
 
@@ -131,25 +127,30 @@ public class VerfuegungsBemerkungList {
 	 */
 	@Nonnull
 	public String bemerkungenToString() {
-		StringBuilder sb = new StringBuilder();
+		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
+		Map<MsgKey, VerfuegungsBemerkung> messagesMap = toUniqueMap();
+		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
 
 		// Einige Regeln "überschreiben" einander. Die Bemerkungen der überschriebenen Regeln müssen hier entfernt werden
 		// Aktuell bekannt:
 		// 1. Ausserordentlicher Anspruch
 		// 2. Fachstelle
 		// 3. Erwerbspensum
-		if (containsMsgKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
-			removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
-			removeBemerkungByMsgKey(MsgKey.FACHSTELLE_MSG);
+		if (messagesMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
+			messagesMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+			messagesMap.remove(MsgKey.FACHSTELLE_MSG);
 		}
-		if (containsMsgKey(MsgKey.FACHSTELLE_MSG)) {
-			removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH);
+		if (messagesMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
+			messagesMap.remove(MsgKey.ERWERBSPENSUM_ANSPRUCH);
 		}
+
+		List<VerfuegungsBemerkung> sortedAndUnique = new ArrayList<>(messagesMap.values());
 
 		// Die Bemerkungen so sortieren, wie sie auf der Verfuegung stehen sollen
-		bemerkungenList.sort(new VerfuegungsBemerkungComparator());
+		sortedAndUnique.sort(new VerfuegungsBemerkungComparator());
 
-		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenList) {
+		StringBuilder sb = new StringBuilder();
+		for (VerfuegungsBemerkung verfuegungsBemerkung : sortedAndUnique) {
 			sb.append(verfuegungsBemerkung.getTranslated());
 			sb.append('\n');
 		}
@@ -157,5 +158,25 @@ public class VerfuegungsBemerkungList {
 		String bemerkungen = sb.toString();
 		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
 		return bemerkungen;
+	}
+
+	private Map<MsgKey, VerfuegungsBemerkung> toUniqueMap() {
+		// Zum jetzigen Zeitpunkt haben wir unter Umstaenden eine Bemerkung zweimal drin: Einmal fuer ASIV und einmal fuer die Gemeinde
+		// z.B. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 10%" aus ASIV
+		// vs. "Da ihr Kind weitere Angebote ... bleibt ein Anspruch von 30%" von der Gemeinde, da dort z.B. Freiwilligenarbeit mitzaehlt
+		// Wir muessen also bei gleichem MsgKey dejenigen aus ASIV loeschen
+		Map<MsgKey, VerfuegungsBemerkung> messagesMap = new HashMap<>();
+		for (VerfuegungsBemerkung verfuegungsBemerkung : bemerkungenList) {
+			VerfuegungsBemerkung maybeExistingMsg = messagesMap.get(verfuegungsBemerkung.getMsgKey());
+			if (maybeExistingMsg != null) {
+				if (maybeExistingMsg.getRuleValidity() == RuleValidity.ASIV) {
+					messagesMap.remove(verfuegungsBemerkung.getMsgKey());
+					messagesMap.put(verfuegungsBemerkung.getMsgKey(), verfuegungsBemerkung);
+				}
+			} else {
+				messagesMap.put(verfuegungsBemerkung.getMsgKey(), verfuegungsBemerkung);
+			}
+		}
+		return messagesMap;
 	}
 }

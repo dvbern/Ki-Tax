@@ -65,7 +65,7 @@ ${templateConfiguration.mailCss}
 		Les informations ont été saisies le ${datumErstellung}.
 	</p>
 	<p>
-		Nous vous présentons nos salutations les meilleures.<br/>
+		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>

@@ -23,8 +23,7 @@ import {TSGesuchsperiode} from './TSGesuchsperiode';
 export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     private _ferienname: TSFerienname;
-    private _ersterZeitraum: TSFerieninselZeitraum;              // Der erste Zeitraum
-    private _zeitraumList: TSFerieninselZeitraum[] = [];   // Evt. weitere Zeitraeume
+    private _zeitraumList: TSFerieninselZeitraum[] = [];
     private _anmeldeschluss: moment.Moment;
     private _gesuchsperiode: TSGesuchsperiode;
     private _ferienActive: boolean;
@@ -40,14 +39,6 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     public set ferienname(value: TSFerienname) {
         this._ferienname = value;
-    }
-
-    public get ersterZeitraum(): TSFerieninselZeitraum {
-        return this._ersterZeitraum;
-    }
-
-    public set ersterZeitraum(value: TSFerieninselZeitraum) {
-        this._ersterZeitraum = value;
     }
 
     public get zeitraumList(): TSFerieninselZeitraum[] {

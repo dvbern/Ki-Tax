@@ -27,7 +27,7 @@ ${templateConfiguration.mailCss}
 		L'ensemble des offres de prise en charge sont approuvées. La demande kiBon peut être validée
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>.
 	<p>
-		Nous vous présentons nos salutations les meilleures.<br/>
+		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
 

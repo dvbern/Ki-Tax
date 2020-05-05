@@ -136,7 +136,7 @@
                     </div>
 
                     <!--vertrag radiogroup-->
-                    <div class="row" ng-if="vm.isGesuchsteller() && !vm.isTagesschule()">
+                    <div class="row" ng-if="vm.isGesuchsteller() && !vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <md-radio-group class="radio"
@@ -286,7 +286,7 @@
                     </div>
 
                     <!--erweiterte Beduerfnisse-->
-                    <div class="row" ng-if="vm.showErweiterteBeduerfnisse() && !vm.isTagesschule()">
+                    <div class="row" ng-if="vm.showErweiterteBeduerfnisse() && !vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
@@ -678,7 +678,7 @@
                 <div ng-if="vm.displayModuleTagesschule()">
                     <betreuung-tagesschule-view betreuung="vm.getBetreuungModel()" form="vm.form"
                                                 on-save="vm.anmeldenSchulamt()"
-                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen()"
+                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen(isScolaris)"
                                                 anmeldung-schulamt-ablehnen="vm.anmeldungSchulamtAblehnen()"
                                                 anmeldung-schulamt-falsche-institution="vm.anmeldungSchulamtFalscheInstitution()"
                                                 cancel="vm.cancel()">
@@ -689,7 +689,7 @@
                 <div ng-if="vm.isFerieninsel()">
                     <betreuung-ferieninsel-view betreuung="vm.getBetreuungModel()" form="vm.form"
                                                 on-save="vm.anmeldenSchulamt()"
-                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen()"
+                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen(isScolaris)"
                                                 anmeldung-schulamt-ablehnen="vm.anmeldungSchulamtAblehnen()"
                                                 anmeldung-schulamt-falsche-institution="vm.anmeldungSchulamtFalscheInstitution()"
                                                 cancel="vm.cancel()">

@@ -1428,7 +1428,8 @@ public class JaxBConverter extends AbstractConverter {
 	 */
 	private boolean updateStatus(@Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
 		if (institution.getStatus() == InstitutionStatus.EINGELADEN ||
-			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.isTagesschuleActivatable())) {
+			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.isTagesschuleActivatable()) ||
+			(institution.getStatus() == InstitutionStatus.KONFIGURATION && stammdaten.getInstitutionStammdatenFerieninsel() != null)) {
 			institution.setStatus(InstitutionStatus.AKTIV);
 			return true;
 		}
@@ -4472,7 +4473,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienname(persistedFerieninselStammdaten.getFerienname());
 		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
 		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienActive(persistedFerieninselStammdaten.isFerienActive());
-		Collections.sort(persistedFerieninselStammdaten.getZeitraumList());
 		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : persistedFerieninselStammdaten.getZeitraumList()) {
 			JaxFerieninselZeitraum jaxFerieninselZeitraum = new JaxFerieninselZeitraum();
 			convertAbstractDateRangedFieldsToJAX(ferieninselZeitraum, jaxFerieninselZeitraum);

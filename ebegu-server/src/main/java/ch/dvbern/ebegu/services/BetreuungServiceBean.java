@@ -389,7 +389,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(persistedBetreuung.extractGesuch().getDossier().getGemeinde().getId()).get();
 				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !anmeldungTagesschule.isTagesschuleTagi()) {
-					mailService.sendInfoSchulamtAnmeldungAkzeptiert(persistedBetreuung);
+					mailService.sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(persistedBetreuung);
 				}
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,

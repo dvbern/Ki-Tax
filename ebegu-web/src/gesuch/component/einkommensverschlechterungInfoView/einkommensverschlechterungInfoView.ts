@@ -37,6 +37,7 @@ import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
@@ -63,6 +64,7 @@ export class EinkommensverschlechterungInfoViewController
         'AuthServiceRS',
         'EinkommensverschlechterungContainerRS',
         '$timeout',
+        '$translate',
     ];
 
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
@@ -86,6 +88,7 @@ export class EinkommensverschlechterungInfoViewController
         private readonly authServiceRS: AuthServiceRS,
         private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
         $timeout: ITimeoutService,
+        private readonly $translate: ITranslateService,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -152,10 +155,22 @@ export class EinkommensverschlechterungInfoViewController
             // return the promise immediately
             return this.$q.when(this.model);
         }
-        if (this.isConfirmationRequired()) {
+        if (this.isConfirmationDeleteDataRequired()) {
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'EINKVERS_WARNING',
                 deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
+            }).then(() => {   // User confirmed changes
+                return this.save();
+            });
+        }
+        if (this.isConfirmationOnlyOnePeriodeRequired()) {
+            const descriptionText: any = this.$translate.instant(
+                'EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG',
+                this.basisJahrUndPeriode
+            );
+            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'EINKVERS_ONE_PERIODE_WARNING',
+                deleteText: descriptionText,
             }).then(() => {   // User confirmed changes
                 return this.save();
             });
@@ -281,13 +296,22 @@ export class EinkommensverschlechterungInfoViewController
     /**
      * Confirmation is required when the user already introduced data for the EV and is about to remove it
      */
-    private isConfirmationRequired(): boolean {
+    private isConfirmationDeleteDataRequired(): boolean {
         const info = this.getEinkommensverschlechterungsInfo();
 
         return this.initialEinkVersInfo && this.initialEinkVersInfo.einkommensverschlechterungInfoJA
             && info
             && !info.einkommensverschlechterung
             && this.hasGS1Ekv();
+    }
+
+    /**
+     * Confirmation is required when the user checked EKV for BasisJahrPlus1 but not for BasisJahrPlus2. Prevents
+     * users from entering wrong input data
+     */
+    private isConfirmationOnlyOnePeriodeRequired(): boolean {
+        return this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 &&
+            !this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
     }
 
     /**

@@ -137,13 +137,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+	public void sendInfoSchulamtAnmeldungTagesschuleUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
-			"InfoSchulamtAnmeldungUebernommen",
+			"InfoSchulamtAnmeldungTagesschuleUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(abstractAnmeldung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleUebernommen(abstractAnmeldung, gesuchsteller, adr, sprache),
 			AntragStatus.values()
 		);
 	}
@@ -159,6 +159,19 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				gesuchsteller,
 				adr,
 				sprache),
+			AntragStatus.values()
+		);
+	}
+
+	@Override
+	public void sendInfoSchulamtAnmeldungFerieninselUebernommen(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
+		sendMail(
+			abstractAnmeldung.extractGesuch(),
+			"InfoSchulamtAnmeldungFerieninselUebernommen",
+			(gesuchsteller, adr) ->
+				mailTemplateConfig.getInfoSchulamtAnmeldungFerieninselUebernommen(abstractAnmeldung, gesuchsteller, adr,
+					sprache),
 			AntragStatus.values()
 		);
 	}
@@ -573,13 +586,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInfoSchulamtAnmeldungAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
+	public void sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(@Nonnull AbstractAnmeldung abstractAnmeldung) throws MailException {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(abstractAnmeldung.extractGesuch(), gemeindeService);
 		sendMail(
 			abstractAnmeldung.extractGesuch(),
-			"InfoSchulamtAnmeldungAkzeptiert",
+			"InfoSchulamtAnmeldungTagesschuleAkzeptiert",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
+				mailTemplateConfig.getInfoSchulamtAnmeldungTagesschuleAkzeptiert(abstractAnmeldung, gesuchsteller, adr, sprache),
 			AntragStatus.values()
 		);
 	}

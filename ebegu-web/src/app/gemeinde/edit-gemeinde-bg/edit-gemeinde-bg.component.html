@@ -499,7 +499,7 @@
                                                 </div>
                                             </div>
                                         </div>
-<!--                                            Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
+                                        <!-- Gemeindeeinstellungen. TODO: für Gemeinde wieder sichtbar machen sobald fertig implementiert-->
                                         <div *ngIf="isSuperAdmin() && isKonfigurationEditable(konfigurationsListe[i])">
                                             <div class="row">
                                                 <div class="col-sm-6">
@@ -1042,69 +1042,18 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <h3>{{'STANDARD_DOK_SIGNATURE_NEIN'|translate}}</h3>
-                                        <div>
-                                            <div class="form-group">
-                                                <label translate
-                                                       for="standardDokTitleDisplay_id">STANDARD_DOK_TITLE</label>
-                                                <input id="standardDokTitleDisplay_id"
-                                                       type="text"
-                                                       name="standardDokTitleDisplay_id"
-                                                       [(ngModel)]="stammdaten.standardDokTitle"
-                                                       class="form-control"
-                                                       disabled="true">
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <!-- Unterschrift 1 Titel-->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate
-                                                   for="standardDokUnterschriftTitelDisplay_id">STANDARD_DOK_UNTERSCHRIFT1_TITEL</label>
-                                            <input id="standardDokUnterschriftTitelDisplay_id" type="text"
-                                                   name="standardDokUnterschriftTitelDisplay_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel"
-                                                   class="form-control" disabled="true">
-                                        </div>
+                                <div class="form-group">
+                                    <p><b>{{stammdaten.standardDokTitle}}</b></p>
+                                    <div class="row">
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftTitel}}</p></div>
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftTitel2}}</p></div>
                                     </div>
-                                    <!-- Unterschrift 1 Name -->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate for="standardDokUnterschriftNameDisplay_id">
-                                                STANDARD_DOK_UNTERSCHRIFT1_NAME</label>
-                                            <input id="standardDokUnterschriftNameDisplay_id"
-                                                   type="text"
-                                                   name="standardDokUnterschriftNameDisplay_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName"
-                                                   class="form-control" disabled="true">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <!-- Unterschrift 2 Titel-->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate
-                                                   for="standardDokUnterschriftTitel2Display_id">
-                                                STANDARD_DOK_UNTERSCHRIFT2_TITEL</label>
-                                            <input id="standardDokUnterschriftTitel2Display_id" type="text"
-                                                   name="standardDokUnterschriftTitel2Display_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftTitel2"
-                                                   class="form-control" disabled="true">
-                                        </div>
-                                    </div>
-                                    <!-- Unterschrift 2 Name -->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label translate for="standardDokUnterschriftName2Display_id">
-                                                STANDARD_DOK_UNTERSCHRIFT2_NAME</label>
-                                            <input id="standardDokUnterschriftName2Display_id"
-                                                   type="text"
-                                                   name="standardDokUnterschriftName2Display_id"
-                                                   [(ngModel)]="stammdaten.standardDokUnterschriftName2"
-                                                   class="form-control" disabled="true">
-                                        </div>
+                                    <br/>
+                                    <div class="row">
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftName}}</p></div>
+                                        <div class="col-sm-6"><p>{{stammdaten.standardDokUnterschriftName2}}</p></div>
                                     </div>
                                 </div>
                             </div>

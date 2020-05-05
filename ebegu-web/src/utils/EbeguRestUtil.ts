@@ -134,6 +134,7 @@ import {TSZahlungsauftrag} from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
+import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
@@ -1813,7 +1814,7 @@ export class EbeguRestUtil {
         restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.ausAsylwesen = kind.ausAsylwesen;
-        restKind.zemisNummer = kind.zemisNummer;
+        restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -2082,8 +2083,8 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
-            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
-            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ? 0 : betreuungspensum.monatlicheHauptmahlzeiten;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ? 0 : betreuungspensum.monatlicheNebenmahlzeiten;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -3586,19 +3587,20 @@ export class EbeguRestUtil {
             ferieninselStammdatenTS.anmeldeschluss =
                 DateUtil.localDateToMoment(receivedFerieninselStammdaten.anmeldeschluss);
             ferieninselStammdatenTS.ferienActive = receivedFerieninselStammdaten.ferienActive;
-            const firstZeitraum = new TSFerieninselZeitraum();
-            if (receivedFerieninselStammdaten.zeitraumList[0]) {
-                this.parseDateRangeEntity(firstZeitraum, receivedFerieninselStammdaten.zeitraumList[0]);
-            } else {
-                firstZeitraum.gueltigkeit = new TSDateRange();
-            }
-            ferieninselStammdatenTS.ersterZeitraum = firstZeitraum;
+
             ferieninselStammdatenTS.zeitraumList = [];
-            for (let i = 1; i < receivedFerieninselStammdaten.zeitraumList.length; i++) {
-                const zeitraum = new TSFerieninselZeitraum();
-                this.parseDateRangeEntity(zeitraum, receivedFerieninselStammdaten.zeitraumList[i]);
-                ferieninselStammdatenTS.zeitraumList.push(zeitraum);
+            for (const zeitraum of receivedFerieninselStammdaten.zeitraumList) {
+                const zeitraumTS = new TSFerieninselZeitraum();
+                this.parseDateRangeEntity(zeitraumTS, zeitraum);
+                ferieninselStammdatenTS.zeitraumList.push(zeitraumTS);
             }
+
+            if (ferieninselStammdatenTS.zeitraumList.length < 1) {
+                const emptyZeitraum = new TSFerieninselZeitraum();
+                emptyZeitraum.gueltigkeit = new TSDateRange();
+                ferieninselStammdatenTS.zeitraumList.push(emptyZeitraum);
+            }
+
             const tage = receivedFerieninselStammdaten.potenzielleFerieninselTageFuerBelegung;
             if (tage) {
                 ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegung =
@@ -3624,18 +3626,17 @@ export class EbeguRestUtil {
             restFerieninselStammdaten.ferienname = ferieninselStammdatenTS.ferienname;
             restFerieninselStammdaten.anmeldeschluss =
                 DateUtil.momentToLocalDate(ferieninselStammdatenTS.anmeldeschluss);
-            if (ferieninselStammdatenTS.ersterZeitraum && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit
-                && ferieninselStammdatenTS.ersterZeitraum.gueltigkeit.gueltigAb) {
-                const firstZeitraum: any = {};
-                this.abstractDateRangeEntityToRestObject(firstZeitraum, ferieninselStammdatenTS.ersterZeitraum);
+
+            if (ferieninselStammdatenTS.zeitraumList &&
+                (ferieninselStammdatenTS.zeitraumList.length > 1 ||
+                (ferieninselStammdatenTS.zeitraumList.length === 1 &&
+                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit &&
+                ferieninselStammdatenTS.zeitraumList[0].gueltigkeit.gueltigAb))) {
                 restFerieninselStammdaten.zeitraumList = [];
-                restFerieninselStammdaten.zeitraumList[0] = firstZeitraum;
-            }
-            if (ferieninselStammdatenTS.zeitraumList) {
                 for (let i = 0; i < ferieninselStammdatenTS.zeitraumList.length; i++) {
                     const zeitraum: any = {};
                     this.abstractDateRangeEntityToRestObject(zeitraum, ferieninselStammdatenTS.zeitraumList[i]);
-                    restFerieninselStammdaten.zeitraumList[i + 1] = zeitraum;
+                    restFerieninselStammdaten.zeitraumList[i] = zeitraum;
                 }
             }
             return restFerieninselStammdaten;
@@ -3660,9 +3661,15 @@ export class EbeguRestUtil {
         if (!data) {
             return [];
         }
-        return Array.isArray(data)
+        const tage = Array.isArray(data)
             ? data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
             : [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
+
+        tage.sort( (a: TSBelegungFerieninselTag, b: TSBelegungFerieninselTag) => {
+            return a.tag.valueOf() - b.tag.valueOf();
+        });
+
+        return tage;
     }
 
     private parseBelegungFerieninselTag(
