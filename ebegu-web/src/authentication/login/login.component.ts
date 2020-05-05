@@ -16,7 +16,7 @@
 import {StateService, TargetState} from '@uirouter/core';
 import {IComponentOptions, IController, ILocationService, ITimeoutService, IWindowService} from 'angular';
 import {DvDialog} from '../../app/core/directive/dv-dialog/dv-dialog';
-import {environment} from '../../environments/environment';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {OkHtmlDialogController} from '../../gesuch/dialog/OkHtmlDialogController';
 import {TSRole} from '../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
@@ -38,7 +38,7 @@ const okHtmlDialogTempl = require('../../gesuch/dialog/okHtmlDialogTemplate.html
 export class LoginComponentController implements IController {
 
     public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location',
-        'DvDialog'];
+        'DvDialog', 'ApplicationPropertyRS'];
 
     public redirectionHref: string;
     public logoutHref: string;
@@ -55,6 +55,7 @@ export class LoginComponentController implements IController {
         private readonly authService: AuthServiceRS,
         private readonly $location: ILocationService,
         private readonly dvDialog: DvDialog,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
@@ -65,16 +66,18 @@ export class LoginComponentController implements IController {
             return;
         }
 
-        // tslint:disable-next-line:early-exit
-        if (environment.test) {
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: 'TESTLOGIN_REDIRECT_WARNING',
-            }).then(() => {
+        this.applicationPropertyRS.isDevMode().then(isDevMode => {
+            // tslint:disable-next-line:early-exit
+            if (isDevMode) {
+                this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                    title: 'TESTLOGIN_REDIRECT_WARNING',
+                }).then(() => {
+                    this.doRelocate();
+                });
+            } else {
                 this.doRelocate();
-            });
-        } else {
-            this.doRelocate();
-        }
+            }
+        });
     }
 
     private doRelocate(): void {
