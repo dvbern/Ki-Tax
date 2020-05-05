@@ -76,7 +76,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		BigDecimal pauschalabzugProPersonFamiliengroesse6,
 		@Nonnull Locale locale
 	) {
-		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 		this.pauschalabzugProPersonFamiliengroesse3 = pauschalabzugProPersonFamiliengroesse3;
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;
@@ -138,8 +138,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 			verfuegungZeitabschnitt.getGueltigkeit().setGueltigAb(entry.getKey());
 			verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setAbzugFamGroesse(calculateAbzugAufgrundFamiliengroesse(entry.getValue().getKey(), entry.getValue().getValue()));
-			verfuegungZeitabschnitt.getBgCalculationResultAsiv().setFamGroesse(new BigDecimal(String.valueOf(entry.getValue().getKey())));
+			verfuegungZeitabschnitt.setAbzugFamGroesseForAsivAndGemeinde(calculateAbzugAufgrundFamiliengroesse(entry.getValue().getKey(), entry.getValue().getValue()));
+			verfuegungZeitabschnitt.setFamGroesseForAsivAndGemeinde(new BigDecimal(String.valueOf(entry.getValue().getKey())));
 
 			familienAbzugZeitabschnitt.add(verfuegungZeitabschnitt);
 		}
@@ -240,8 +240,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		BigDecimal abzugAufgrundFamiliengroesse = getAbzugFamGroesse(gesuch, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
-		initialFamAbzug.getBgCalculationResultAsiv().setAbzugFamGroesse(abzugAufgrundFamiliengroesse);
-		initialFamAbzug.getBgCalculationResultAsiv().setFamGroesse(new BigDecimal(String.valueOf(famGrBeruecksichtigungAbzug)));
+		initialFamAbzug.setAbzugFamGroesseForAsivAndGemeinde(abzugAufgrundFamiliengroesse);
+		initialFamAbzug.setFamGroesseForAsivAndGemeinde(new BigDecimal(String.valueOf(famGrBeruecksichtigungAbzug)));
 
 		List<VerfuegungZeitabschnitt> initialFamAbzugList = new ArrayList<>();
 		initialFamAbzugList.add(initialFamAbzug);

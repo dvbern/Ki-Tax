@@ -250,6 +250,10 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.getAnmeldungenTagesschule().add(anmeldungTagesschule.copyAnmeldungTagesschule(
 				new AnmeldungTagesschule(), copyType, target, targetGesuch.getEingangsart()));
 		}
+		for (AnmeldungFerieninsel anmeldungFerieninsel : this.getAnmeldungenFerieninsel()) {
+			target.getAnmeldungenFerieninsel().add(anmeldungFerieninsel.copyAnmeldungFerieninsel(
+				new AnmeldungFerieninsel(), copyType, target, targetGesuch.getEingangsart()));
+		}
 	}
 
 	@Nonnull
@@ -311,7 +315,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			return false;
 		}
 		final KindContainer otherKindContainer = (KindContainer) other;
-		return EbeguUtil.isSameObject(getKindJA(), otherKindContainer.getKindJA()) &&
+		return EbeguUtil.isSame(getKindJA(), otherKindContainer.getKindJA()) &&
 			Objects.equals(getKindNummer(), otherKindContainer.getKindNummer());
 	}
 }

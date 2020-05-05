@@ -110,7 +110,7 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			return;
 		}
 
-		if (isSozialhilfeempfaenger(familiensituation)) {
+		if (isSozialhilfeempfaenger(familiensituation) || !isVerguenstigungGewuenscht(familiensituation)) {
 			return;
 		}
 

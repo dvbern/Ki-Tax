@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
@@ -433,7 +434,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleArray[j];
 					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
 					if (anmeldungTagesschule.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
-						this.verfuegungService.anmeldungSchulamtUebernehmen(anmeldungTagesschule);
+						this.verfuegungService.anmeldungTagesschuleUebernehmen(anmeldungTagesschule);
+					}
+				}
+				AnmeldungFerieninsel[] anmeldungFerieninselArray =
+					kindContainerToWorkWith.getAnmeldungenFerieninsel().toArray(new AnmeldungFerieninsel[kindContainerToWorkWith.getAnmeldungenFerieninsel().size()]);
+				for (int j = 0; j < kindContainerToWorkWith.getAnmeldungenFerieninsel().size(); j++) {
+					AnmeldungFerieninsel anmeldungFerieninsel = anmeldungFerieninselArray[j];
+					// Alle Anmeldungen, die mindestens AKZEPTIERT waren, werden nun "verfügt"
+					if (anmeldungFerieninsel.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) {
+						this.verfuegungService.anmeldungFerieninselUebernehmen(anmeldungFerieninsel);
 					}
 				}
 			}
@@ -615,7 +625,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 						betreuung.getVorgaengerId()));
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
+				&& vorgaenger.getBetreuungsangebotTyp().isTagesschule()) {
 					// Sonderfall: Wenn die Anmeldung auf dem Vorgänger im Status AUSGELOEST war, wurde beim erstellen
 					// der Mutation eine Verfügung gespeichert. Diese muss nun wieder gelöscht werden
 					vorgaenger.setVerfuegung(null);
@@ -626,7 +637,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
-			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isSchulamt())
+			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
 			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
 				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(anmeldung.extractGesuch().getId(), anmeldung.getId());

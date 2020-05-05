@@ -17,112 +17,142 @@
 
 package ch.dvbern.ebegu.dto;
 
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.rules.RuleKey;
-import ch.dvbern.ebegu.util.MathUtil;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Transient;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.Map.Entry;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
 
-	//TODO (hefr) @Transient Annotationen entfernen, falls hier wirklich kein Entity benötigt wird
+	@Nonnull
+	private RuleValidity ruleValidity;
 
-	@Transient
+	private VerfuegungZeitabschnitt parent;
+
 	private boolean sameVerfuegteVerfuegungsrelevanteDaten;
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
-	@Transient
 	private boolean sameAusbezahlteVerguenstigung;
 
-	@Transient
 	@Nullable
 	private Integer erwerbspensumGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
-	@Transient
 	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
-	@Transient
 	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
-	@Transient
 	private int fachstellenpensum;
 
-	@Transient
 	private boolean betreuungspensumMustBeAtLeastFachstellenpensum = false;
 
-	@Transient
 	private int ausserordentlicherAnspruch;
 
-	@Transient
 	//es muss by default null sein um zu wissen, wann es nicht definiert wurde
 	private Boolean wohnsitzNichtInGemeindeGS1 = null;
 
-	@Transient
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
 	private boolean bezahltVollkosten;
 
-	@Transient
 	private boolean longAbwesenheit;
 
-	@Transient
 	private int anspruchspensumRest;
 
-	@Transient
 	// Achtung, dieses Flag wird erst ab 1. des Folgemonats gesetzt, weil die Finanzielle Situation ab dann gilt. Für
 	// Erwerbspensen zählt der GS2 ab sofort!
 	private boolean hasSecondGesuchstellerForFinanzielleSituation;
 
-	@Transient
 	private boolean ekv1Alleine;
 
-	@Transient
 	private boolean ekv1ZuZweit;
 
-	@Transient
 	private boolean ekv2Alleine;
 
-	@Transient
 	private boolean ekv2ZuZweit;
 
-	@Transient
 	private boolean kategorieMaxEinkommen = false;
 
-	@Transient
 	private boolean kategorieKeinPensum = false;
 
-	@Transient
 	private boolean abschnittLiegtNachBEGUStartdatum = true;
 
-	@Transient
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
-	@Transient
 	private boolean babyTarif;
 
-	@Transient
-	private boolean eingeschult;
+	@Nullable
+	private EinschulungTyp einschulungTyp;
 
-	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
-	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
-	// "bemerkungen" geschrieben
-	@Transient
-	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+	private BetreuungsangebotTyp betreuungsangebotTyp;
 
-	public BGCalculationInput() {
+	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
+	private int anspruchspensumProzent;
+
+	@NotNull @Nonnull
+	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
+
+	@NotNull @Nonnull
+	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
+
+	private boolean besondereBeduerfnisseBestaetigt;
+
+	@Nullable
+	private BigDecimal abzugFamGroesse = null;
+
+	@NotNull @Nonnull
+	private Integer einkommensjahr;
+
+	private boolean zuSpaetEingereicht;
+
+	private boolean minimalesEwpUnterschritten;
+
+	@Nullable
+	private BigDecimal famGroesse = null;
+
+	@Valid
+	@NotNull
+	@Nonnull
+	private TSCalculationInput tsInputMitBetreuung = new TSCalculationInput();
+
+	@Valid
+	@NotNull
+	@Nonnull
+	private TSCalculationInput tsInputOhneBetreuung = new TSCalculationInput();
+
+	private boolean sozialhilfeempfaenger = false;
+
+	private boolean betreuungInGemeinde = false;
+
+
+	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
+		this.parent = parent;
+		this.ruleValidity = ruleValidity;
 	}
 
 	public BGCalculationInput(@Nonnull BGCalculationInput toCopy) {
+		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
-		this.taetigkeiten = toCopy.taetigkeiten;
+		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
+		mergedTaetigkeiten.addAll(this.taetigkeiten);
+		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
+		this.taetigkeiten = mergedTaetigkeiten;
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
@@ -140,8 +170,39 @@ public class BGCalculationInput {
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
 		this.babyTarif = toCopy.babyTarif;
-		this.eingeschult = toCopy.eingeschult;
-		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
+		this.einschulungTyp = toCopy.einschulungTyp;
+		this.betreuungsangebotTyp = toCopy.betreuungsangebotTyp;
+		this.betreuungspensumProzent = toCopy.betreuungspensumProzent;
+		this.anspruchspensumProzent = toCopy.anspruchspensumProzent;
+		this.einkommensjahr = toCopy.einkommensjahr;
+		this.abzugFamGroesse = toCopy.abzugFamGroesse;
+		this.famGroesse = toCopy.famGroesse;
+		this.massgebendesEinkommenVorAbzugFamgr = toCopy.massgebendesEinkommenVorAbzugFamgr;
+		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
+		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
+		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
+		this.tsInputMitBetreuung = toCopy.tsInputMitBetreuung.copy();
+		this.tsInputOhneBetreuung = toCopy.tsInputOhneBetreuung.copy();
+		this.sozialhilfeempfaenger = toCopy.sozialhilfeempfaenger;
+		this.betreuungInGemeinde = toCopy.betreuungInGemeinde;
+		this.ruleValidity = toCopy.ruleValidity;
+	}
+
+	@Nonnull
+	public RuleValidity getRuleValidity() {
+		return ruleValidity;
+	}
+
+	public void setRuleValidity(@Nonnull RuleValidity ruleValidity) {
+		this.ruleValidity = ruleValidity;
+	}
+
+	public VerfuegungZeitabschnitt getParent() {
+		return parent;
+	}
+
+	public void setParent(VerfuegungZeitabschnitt parent) {
+		this.parent = parent;
 	}
 
 	@Nullable
@@ -208,10 +269,6 @@ public class BGCalculationInput {
 
 	public void setHasSecondGesuchstellerForFinanzielleSituation(boolean hasSecondGesuchstellerForFinanzielleSituation) {
 		this.hasSecondGesuchstellerForFinanzielleSituation = hasSecondGesuchstellerForFinanzielleSituation;
-	}
-
-	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
-		return bemerkungenMap;
 	}
 
 	public boolean isBezahltVollkosten() {
@@ -326,12 +383,150 @@ public class BGCalculationInput {
 		this.babyTarif = babyTarif;
 	}
 
-	public boolean isEingeschult() {
-		return eingeschult;
+	@Nullable
+	public EinschulungTyp getEinschulungTyp() {
+		return einschulungTyp;
 	}
 
-	public void setEingeschult(boolean eingeschult) {
-		this.eingeschult = eingeschult;
+	public void setEinschulungTyp(@Nullable EinschulungTyp einschulungTyp) {
+		this.einschulungTyp = einschulungTyp;
+	}
+
+	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
+		return betreuungsangebotTyp;
+	}
+
+	public void setBetreuungsangebotTyp(BetreuungsangebotTyp betreuungsangebotTyp) {
+		this.betreuungsangebotTyp = betreuungsangebotTyp;
+	}
+
+	public int getAnspruchspensumProzent() {
+		return anspruchspensumProzent;
+	}
+
+	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
+		this.anspruchspensumProzent = anspruchspensumProzent;
+	}
+
+	@Nonnull
+	public BigDecimal getBetreuungspensumProzent() {
+		return betreuungspensumProzent;
+	}
+
+	public void setBetreuungspensumProzent(@Nonnull BigDecimal betreuungspensumProzent) {
+		this.betreuungspensumProzent = betreuungspensumProzent;
+	}
+
+	@Nonnull
+	public BigDecimal getMassgebendesEinkommenVorAbzugFamgr() {
+		return massgebendesEinkommenVorAbzugFamgr;
+	}
+
+	public void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
+		this.massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommenVorAbzugFamgr;
+	}
+
+	public boolean isBesondereBeduerfnisseBestaetigt() {
+		return besondereBeduerfnisseBestaetigt;
+	}
+
+	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugFamGroesse() {
+		return abzugFamGroesse;
+	}
+
+	@Nonnull
+	public BigDecimal getAbzugFamGroesseNonNull() {
+		return abzugFamGroesse != null ? abzugFamGroesse : MathUtil.DEFAULT.from(0);
+	}
+
+	public void setAbzugFamGroesse(@Nullable BigDecimal abzugFamGroesse) {
+		this.abzugFamGroesse = abzugFamGroesse;
+	}
+
+	@Nonnull
+	public Integer getEinkommensjahr() {
+		return einkommensjahr;
+	}
+
+	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
+		this.einkommensjahr = einkommensjahr;
+	}
+
+	public boolean isZuSpaetEingereicht() {
+		return zuSpaetEingereicht;
+	}
+
+	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
+		this.zuSpaetEingereicht = zuSpaetEingereicht;
+	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return minimalesEwpUnterschritten;
+	}
+
+	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
+		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
+	}
+
+	@Nullable
+	public BigDecimal getFamGroesse() {
+		return famGroesse;
+	}
+
+	@Nonnull
+	public BigDecimal getFamGroesseNonNull() {
+		return famGroesse != null ? famGroesse : MathUtil.DEFAULT.from(0);
+	}
+
+	public void setFamGroesse(@Nullable BigDecimal famGroesse) {
+		this.famGroesse = famGroesse;
+	}
+
+	public void setTsBetreuungszeitProWocheMitBetreuung(@Nonnull Integer tsBetreuungszeitProWocheMitBetreuung) {
+		this.tsInputMitBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheMitBetreuung);
+	}
+
+	public void setTsVerpflegungskostenMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenMitBetreuung) {
+		this.tsInputMitBetreuung.setVerpflegungskosten(tsVerpflegungskostenMitBetreuung);
+	}
+
+	public void setTsBetreuungszeitProWocheOhneBetreuung(@Nonnull Integer tsBetreuungszeitProWocheOhneBetreuung) {
+		this.tsInputOhneBetreuung.setBetreuungszeitProWoche(tsBetreuungszeitProWocheOhneBetreuung);
+	}
+
+	public void setTsVerpflegungskostenOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenOhneBetreuung) {
+		this.tsInputOhneBetreuung.setVerpflegungskosten(tsVerpflegungskostenOhneBetreuung);
+	}
+
+	@Nonnull
+	public TSCalculationInput getTsInputMitBetreuung() {
+		return tsInputMitBetreuung;
+	}
+
+	@Nonnull
+	public TSCalculationInput getTsInputOhneBetreuung() {
+		return tsInputOhneBetreuung;
+	}
+
+	public boolean isSozialhilfeempfaenger() {
+		return sozialhilfeempfaenger;
+	}
+
+	public void setSozialhilfeempfaenger(boolean sozialhilfeempfaenger) {
+		this.sozialhilfeempfaenger = sozialhilfeempfaenger;
+	}
+
+	public boolean isBetreuungInGemeinde() {
+		return betreuungInGemeinde;
+	}
+
+	public void setBetreuungInGemeinde(boolean betreuungInGemeinde) {
+		this.betreuungInGemeinde = betreuungInGemeinde;
 	}
 
 	@Override
@@ -342,6 +537,7 @@ public class BGCalculationInput {
 		return sb;
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void add(@Nonnull BGCalculationInput other) {
 		this.setBetreuungspensumMustBeAtLeastFachstellenpensum(this.isBetreuungspensumMustBeAtLeastFachstellenpensum() || other.isBetreuungspensumMustBeAtLeastFachstellenpensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
@@ -372,7 +568,6 @@ public class BGCalculationInput {
 		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
-		this.addAllBemerkungen(other.getBemerkungenMap());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
 
 		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
@@ -392,7 +587,32 @@ public class BGCalculationInput {
 			&& other.abschnittLiegtNachBEGUStartdatum);
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
-		this.setEingeschult(this.eingeschult || other.eingeschult);
+		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
+		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
+
+		// Zusätzliche Felder aus Result
+		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
+		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
+		this.einkommensjahr = other.einkommensjahr;
+		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
+		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
+		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
+		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
+		this.tsInputMitBetreuung.add(other.tsInputMitBetreuung);
+		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
+		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
+		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
+
+		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
+		if (other.getAbzugFamGroesse() != null) {
+			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
+			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
+		}
+		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
+		if (other.getFamGroesse() != null) {
+			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
+			this.setFamGroesse(other.getFamGroesse());
+		}
 	}
 
 	public boolean isSame(BGCalculationInput other) {
@@ -412,10 +632,22 @@ public class BGCalculationInput {
 			ekv2ZuZweit == other.ekv2ZuZweit &&
 			abschnittLiegtNachBEGUStartdatum == other.abschnittLiegtNachBEGUStartdatum &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, other.wohnsitzNichtInGemeindeGS1) &&
-			Objects.equals(bemerkungenMap, other.bemerkungenMap) &&
 			babyTarif == other.babyTarif &&
-			eingeschult == other.eingeschult &&
-			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten);
+			einschulungTyp == other.einschulungTyp &&
+			betreuungsangebotTyp == other.betreuungsangebotTyp &&
+			MathUtil.isSame(monatlicheBetreuungskosten, other.monatlicheBetreuungskosten) &&
+			// Zusätzliche Felder aus Result
+			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
+			this.anspruchspensumProzent == other.anspruchspensumProzent &&
+			MathUtil.isSame(abzugFamGroesse, other.abzugFamGroesse) &&
+			MathUtil.isSame(famGroesse, other.famGroesse) &&
+			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, other.massgebendesEinkommenVorAbzugFamgr) &&
+			zuSpaetEingereicht == other.zuSpaetEingereicht &&
+			minimalesEwpUnterschritten == other.minimalesEwpUnterschritten &&
+			Objects.equals(einkommensjahr, other.einkommensjahr) &&
+			besondereBeduerfnisseBestaetigt == other.besondereBeduerfnisseBestaetigt &&
+			this.tsInputMitBetreuung.isSame(other.tsInputMitBetreuung) &&
+			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung);
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -424,19 +656,20 @@ public class BGCalculationInput {
 			return true;
 		}
 		return babyTarif == that.babyTarif &&
-			eingeschult == that.eingeschult &&
+			einschulungTyp == that.einschulungTyp &&
+			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
-			Objects.equals(bemerkungenMap, that.bemerkungenMap);
-	}
-
-	/**
-	 * Aller persistierten Daten ohne Kommentar
-	 */
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
-		"QuestionableName" })
-	public boolean isSamePersistedValues(BGCalculationInput that) {
-		//TODO (hefr) etwas merkwürdig, isSamePersistedValues, aber monatlicheBetreuungskosten sind gar nicht persistiert. vorsichtshalber so gelassen
-		return MathUtil.isSame(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten);
+			// Zusätzliche Felder aus Result
+			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
+			this.anspruchspensumProzent == that.anspruchspensumProzent &&
+			MathUtil.isSame(this.abzugFamGroesse, that.abzugFamGroesse) &&
+			MathUtil.isSame(this.famGroesse, that.famGroesse) &&
+			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
+			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			this.besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
+			this.minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
+			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
+			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -446,32 +679,21 @@ public class BGCalculationInput {
 	}
 
 	/**
-	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
+	 * @return berechneter Wert. Zieht vom massgebenenEinkommenVorAbzug den Familiengroessen Abzug ab
 	 */
-	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
-			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
-				this.bemerkungenMap.put(
-					msgKeyVerfuegungsBemerkungEntry.getKey(),
-					msgKeyVerfuegungsBemerkungEntry.getValue());
-			}
-		}
+	@Nonnull
+	public BigDecimal getMassgebendesEinkommen() {
+		BigDecimal abzugFamSize = this.abzugFamGroesse;
+		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
 	}
 
-	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
-		this.bemerkungenMap.putAll(otherBemerkungenMap);
+	@Nonnull
+	public BigDecimal getBgPensumProzent() {
+		return getBetreuungspensumProzent().min(MathUtil.DEFAULT.from(getAnspruchspensumProzent()));
 	}
 
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
-	}
-
-	@SuppressWarnings("OverloadedVarargsMethod")
-	public void addBemerkung(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull MsgKey msgKey,
-		@Nonnull Locale locale,
-		@Nonnull Object... args) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
+	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
+		VerfuegungsBemerkung bemerkung = new VerfuegungsBemerkung(ruleValidity, msgKey, locale, args);
+		this.getParent().getBemerkungenList().addBemerkung(bemerkung);
 	}
 }

@@ -18,9 +18,11 @@ import {IHttpBackendService, IQService, IScope} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDossier} from '../../../models/TSDossier';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -61,21 +63,28 @@ describe('verfuegenListViewTest', () => {
         tsKindContainer = new TSKindContainer();
         tsKindContainer.kindNummer = 1;
         const wizardStepManager: WizardStepManager = $injector.get('WizardStepManager');
-        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue({});
+        spyOn(wizardStepManager, 'updateWizardStepStatus').and.returnValue($q.resolve());
         spyOn(gesuchModelManager, 'getKinderWithBetreuungList').and.returnValue([tsKindContainer]);
-        spyOn(gesuchModelManager, 'calculateVerfuegungen').and.returnValue($q.when({}));
+        spyOn(gesuchModelManager, 'calculateVerfuegungen').and.returnValue($q.resolve());
 
         const gesuchMock = new TSGesuch();
         gesuchMock.dossier = new TSDossier();
         gesuchMock.dossier.gemeinde = new TSGemeinde();
+        const gemeindeId = 'mock-gemeinde-id';
+        gesuchMock.dossier.gemeinde.id = gemeindeId;
         spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuchMock);
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(gesuchMock.dossier);
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
+        const gesuchsperiode = new TSGesuchsperiode();
+        gesuchsperiode.id = 'mock-gesuchsperiode-id';
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
 
         berechnungsManager = $injector.get('BerechnungsManager');
-        spyOn(berechnungsManager, 'calculateFinanzielleSituation').and.returnValue({});
-        spyOn(berechnungsManager, 'calculateEinkommensverschlechterung').and.returnValue({});
-        spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.when('false'));
+        spyOn(berechnungsManager, 'calculateFinanzielleSituation')
+            .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
+        spyOn(berechnungsManager, 'calculateEinkommensverschlechterung')
+          .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
+        spyOn(einstellungRS, 'findEinstellung')
+            .and.returnValue($q.resolve(new TSEinstellung()));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         verfuegenListView = new VerfuegenListViewController($state,

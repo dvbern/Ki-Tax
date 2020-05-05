@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -122,7 +121,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			null,
 			gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		Assert.assertEquals(60, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
+		Assert.assertEquals(63, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);
@@ -259,6 +258,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private VerfuegungZeitabschnitt createGesuchWithVerfuegungZeitabschnitt() {
 		Verfuegung verfuegung = insertVerfuegung();
 		VerfuegungZeitabschnitt zeitabschnitt = TestDataUtil.createDefaultZeitabschnitt(verfuegung);
+		zeitabschnitt.initBGCalculationResult();
 		persistence.persist(zeitabschnitt);
 		return zeitabschnitt;
 	}

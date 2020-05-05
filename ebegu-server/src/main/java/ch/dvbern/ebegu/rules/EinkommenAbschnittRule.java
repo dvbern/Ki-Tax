@@ -41,7 +41,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
 	public EinkommenAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -74,9 +74,9 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
 				// EKV1 fuer alleine erfasst
-				abschnittEinkommensverschlechterung1.getBgCalculationInputAsiv().setEkv1Alleine(finanzDatenDTOAlleine.isEkv1Erfasst());
+				abschnittEinkommensverschlechterung1.setEkv1AlleineForAsivAndGemeinde(finanzDatenDTOAlleine.isEkv1Erfasst());
 				// EKV1 fuer zu Zweit erfasst
-				abschnittEinkommensverschlechterung1.getBgCalculationInputAsiv().setEkv1ZuZweit(finanzDatenDTOZuZweit.isEkv1Erfasst());
+				abschnittEinkommensverschlechterung1.setEkv1ZuZweitForAsivAndGemeinde(finanzDatenDTOZuZweit.isEkv1Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung1);
 				// Den vorherigen Zeitabschnitt erst nach der EKV 1 beginnen
@@ -91,9 +91,9 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
 
 				// EKV2 fuer alleine erfasst
-				abschnittEinkommensverschlechterung2.getBgCalculationInputAsiv().setEkv2Alleine(finanzDatenDTOAlleine.isEkv2Erfasst());
+				abschnittEinkommensverschlechterung2.setEkv2AlleineForAsivAndGemeinde(finanzDatenDTOAlleine.isEkv2Erfasst());
 				// EKV2 fuer zu Zweit erfasst
-				abschnittEinkommensverschlechterung2.getBgCalculationInputAsiv().setEkv2ZuZweit(finanzDatenDTOZuZweit.isEkv2Erfasst());
+				abschnittEinkommensverschlechterung2.setEkv2ZuZweitForAsivAndGemeinde(finanzDatenDTOZuZweit.isEkv2Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung2);
 				// Den vorherigen Zeitabschnitt beenden

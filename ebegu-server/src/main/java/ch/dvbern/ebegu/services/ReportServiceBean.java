@@ -275,11 +275,23 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
+		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
+		// a list in a native query
+		final List<String> berechtigeGemeindenUnhex = new ArrayList<>();
+		if (berechtigteGemeinden != null) {
+			berechtigteGemeinden.forEach(s -> {
+				berechtigeGemeindenUnhex.add(s.replace("-", ""));
+			});
+		}
+
 		// pass a boolean param to indicate if it has to take all Gemeinden or just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
-		query.setParameter("gemeindeIdList", berechtigteGemeinden);
-		return query.getResultList();
+		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? null :
+			berechtigeGemeindenUnhex);
+		List<GesuchStichtagDataRow> glist = query.getResultList();
+
+		return glist;
 	}
 
 	@Nullable
@@ -369,10 +381,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
+		// we need to remove the extra - as in the query they are not working and we cannot use a REPLACE function on
+		// a list in a native query
+		final List<String> berechtigeGemeindenUnhex = new ArrayList<>();
+		if (berechtigteGemeinden != null) {
+			berechtigteGemeinden.forEach(s -> {
+				berechtigeGemeindenUnhex.add(s.replace("-", ""));
+			});
+		}
 		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
-		query.setParameter("gemeindeIdList", berechtigteGemeinden);
+		query.setParameter("gemeindeIdList", berechtigteGemeinden == null ? null :
+			berechtigeGemeindenUnhex);
 
 		return query.getResultList();
 	}
@@ -515,9 +536,37 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 			row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-			row.setBgPensum(zeitabschnitt.getBgPensum());
+
+			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+			BigDecimal pensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+			BigDecimal pensumGemeinde = BigDecimal.ZERO;
+			BigDecimal pensumTotal = pensumKanton;
+			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+				BigDecimal pensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+				pensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(pensumTotalGemeinde, pensumKanton);
+				pensumTotal = pensumTotalGemeinde;
+			}
+			row.setBgPensumKanton(pensumKanton);
+			row.setBgPensumGemeinde(pensumGemeinde);
+			row.setBgPensumTotal(pensumTotal);
+
 			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
-			row.setVerguenstigung(zeitabschnitt.getVerguenstigung());
+
+			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+			BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
+			BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
+			BigDecimal verguenstigungTotal = verguenstigungKanton;
+			if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+				BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
+				verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
+				verguenstigungTotal = verguenstigungTotalGemeinde;
+			}
+			row.setVerguenstigungKanton(verguenstigungKanton);
+			row.setVerguenstigungGemeinde(verguenstigungGemeinde);
+			row.setVerguenstigungTotal(verguenstigungTotal);
+
 			row.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
 			row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
 			kantonDataRowList.add(row);
@@ -1317,12 +1366,51 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			)
 		);
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensumProzent()));
-		row.setAnspruchsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getAnspruchberechtigtesPensum()));
-		row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
+
+		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+		BigDecimal anspruchsPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
+		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+			BigDecimal anspruchsPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+			anspruchsPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(anspruchsPensumTotalGemeinde, anspruchsPensumKanton);
+			anspruchsPensumTotal = anspruchsPensumTotalGemeinde;
+		}
+		row.setAnspruchsPensumKanton(anspruchsPensumKanton);
+		row.setAnspruchsPensumGemeinde(anspruchsPensumGemeinde);
+		row.setAnspruchsPensumTotal(anspruchsPensumTotal);
+
+		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+		BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
+		BigDecimal bgPensumTotal = bgPensumKanton;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+			BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+			bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
+			bgPensumTotal = bgPensumTotalGemeinde;
+		}
+		row.setBgPensumKanton(bgPensumKanton);
+		row.setBgPensumGemeinde(bgPensumGemeinde);
+		row.setBgPensumTotal(bgPensumTotal);
+		
 		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
-		row.setVerguenstigt(zeitabschnitt.getVerguenstigung());
+		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+		BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
+		BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
+		BigDecimal verguenstigungTotal = verguenstigungKanton;
+		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+			BigDecimal verguenstigungTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
+			verguenstigungGemeinde = MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
+			verguenstigungTotal = verguenstigungTotalGemeinde;
+		}
+		row.setVerguenstigungKanton(verguenstigungKanton);
+		row.setVerguenstigungGemeinde(verguenstigungGemeinde);
+		row.setVerguenstigungTotal(verguenstigungTotal);
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -1915,7 +2003,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS})
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1955,7 +2043,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return convertToInstitutionenDataRow(stammdaten, locale);
 	}
 
-	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer, @Nonnull InstitutionStammdaten institution) {
+	private boolean isCurrentBenutzerZustaendigForInstitution(@Nonnull Benutzer currentBenutzer,
+		@Nonnull InstitutionStammdaten institution) {
 		if (currentBenutzer.getRole().isRoleTsOnly()) {
 			return institution.getBetreuungsangebotTyp().isSchulamt();
 		}
@@ -2066,7 +2155,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		List<KindContainer> kindContainerList = persistence.getCriteriaResults(query);
 		requireNonNull(kindContainerList);
-		return convertToTagesschuleDataRows(kindContainerList);
+
+		return convertToTagesschuleDataRows(kindContainerList, stammdatenID);
 	}
 
 	@Nonnull
@@ -2077,32 +2167,39 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		requireNonNull(gesuchsperiodeId, "Das Argument 'gesuchsperiodeId' darf nicht leer sein");
 
 		if (stammdaten.getInstitutionStammdatenTagesschule() != null) {
-			for (EinstellungenTagesschule e : stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule() ) {
+			for (EinstellungenTagesschule e :
+				stammdaten.getInstitutionStammdatenTagesschule().getEinstellungenTagesschule()) {
 				if (e.getGesuchsperiode().getId().equals(gesuchsperiodeId)) {
 					return e;
 				}
 			}
 		}
-		throw new EbeguEntityNotFoundException("findEinstellungenTagesschuleByPeriode", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		throw new EbeguEntityNotFoundException("findEinstellungenTagesschuleByPeriode",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 	}
 
 	@Nonnull
-	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList) {
+	private List<TagesschuleDataRow> convertToTagesschuleDataRows(@Nonnull List<KindContainer> kindContainerList, String stammdatenID) {
+		ReportServiceBean self = this;
 		return kindContainerList.stream()
-			.map(this::kindContainerToTagesschuleDataRow)
+			.map(kindContainer -> self.kindContainerToTagesschuleDataRow(kindContainer, stammdatenID))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer) {
+	private TagesschuleDataRow kindContainerToTagesschuleDataRow(@Nonnull KindContainer kindContainer, String stammdatenID) {
 
 		Iterator<AnmeldungTagesschule> anmeldungTagesschuleIterator =
-			kindContainer.getAnmeldungenTagesschule().iterator();
+			kindContainer.getAnmeldungenTagesschule()
+				.stream()
+				.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten().getId().equals(stammdatenID))
+				.iterator();
 		AnmeldungTagesschule anmeldungTagesschule = anmeldungTagesschuleIterator.next();
 
 		// es darf hier nur einge Anmeldung geben. Ist bereits nach Gesuchsperiode gefiltert.
 		if (anmeldungTagesschule == null || anmeldungTagesschuleIterator.hasNext()) {
-			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow", ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
+			throw new EbeguRuntimeException("kindContainerToTagesschuleDataRow",
+				ANMELDUNGEN_TAGESSCHULE_SIZE_EXCEPTION);
 		}
 
 		TagesschuleDataRow tdr = new TagesschuleDataRow();
@@ -2123,7 +2220,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION})
+		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -2152,7 +2249,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			institutionStammdatenService.findInstitutionStammdaten(stammdatenID).orElseThrow(() -> new EbeguRuntimeException(
 				"findEinstellungenTagesschule", NO_STAMMDATEN_FOUND));
 
-		EinstellungenTagesschule einstellungenTagesschule = findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
+		EinstellungenTagesschule einstellungenTagesschule =
+			findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
 		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
 		List<TagesschuleDataRow> reportData = getReportDataTagesschuleOhneFinSit(stammdatenID, gesuchsperiodeID);

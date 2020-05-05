@@ -20,8 +20,10 @@ import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -29,6 +31,7 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Test;
@@ -74,9 +77,9 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
-		assertEquals(1, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -114,9 +117,9 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
-		assertNotNull(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
-		assertEquals(1, verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().size());
-		assertTrue(verfuegungZeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungenList());
+		assertEquals(1, verfuegungZeitabschnitt.getBemerkungenList().uniqueSize());
+		assertTrue(verfuegungZeitabschnitt.getBemerkungenList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -424,6 +427,67 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertFalse(verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
 		assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+	}
+
+	@Test
+	public void testFreiwilligenarbeitAllePensenUeberMinimum() {
+		// Beide Pensen sind einzeln schon gueltig. Gemeinde=Asiv+Gemeinde, Anspruch jeweils +20
+		assertBerechnungenMitFreiwilligenarbeit(40, 20, 60, 80);
+	}
+
+	@Test
+	public void testFreiwilligenarbeitTotalUnterMinimum() {
+		// Beide Pensen sind einzeln zu tief, zusammen auch. Anspruch Asiv und Gemeinde 0
+		assertBerechnungenMitFreiwilligenarbeit(5, 5, 0, 0);
+	}
+
+	@Test
+	public void testFreiwilligenarbeitEinzelnUnterMinimum() {
+		// Beide Pensen sind einzeln zu tief, zusammen aber wir der Anspruch erreicht. Anspruch Asiv=0, Gemeinde=Asiv+Gemeinde+20
+		assertBerechnungenMitFreiwilligenarbeit(5, 15, 0, 40);
+	}
+
+	@Test
+	public void testFreiwilligenarbeitAsivUnterMinimum() {
+		// Pensum Asiv unter Minimum, zusammen mit Pensum Gemeinde wird es gueltig: Anspruch Asiv=0, Anspruch Gemeinde = Asiv+Gemeinde+20
+		assertBerechnungenMitFreiwilligenarbeit(5, 20, 0, 45);
+	}
+
+	@Test
+	public void testFreiwilligenarbeitGemeindeUnterMinimum() {
+		// Pensum Gemeinde alleine unter Minimum -> keine speziellen Auswirkungen
+		assertBerechnungenMitFreiwilligenarbeit(20, 5, 40, 45);
+	}
+
+	private void assertBerechnungenMitFreiwilligenarbeit(int pensumAngestellt, int pensumFreiwillig, int erwarteterAnspruchAsiv, int erwarteterAnspruchGemeinde) {
+		Betreuung betreuung = createGesuch(false);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		assertNotNull(gesuch.getGesuchsteller1());
+		ErwerbspensumContainer ewpAngestellt = TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, pensumAngestellt);
+		assertNotNull(ewpAngestellt.getErwerbspensumJA());
+		ewpAngestellt.getErwerbspensumJA().setTaetigkeit(Taetigkeit.ANGESTELLT);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewpAngestellt);
+
+		ErwerbspensumContainer ewpFreiwilligenarbeit = TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, pensumFreiwillig);
+		assertNotNull(ewpFreiwilligenarbeit.getErwerbspensumJA());
+		ewpFreiwilligenarbeit.getErwerbspensumJA().setTaetigkeit(Taetigkeit.FREIWILLIGENARBEIT);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewpFreiwilligenarbeit);
+
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
+		BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
+		assertNotNull(inputAsiv.getErwerbspensumGS1());
+		assertNotNull(inputGemeinde.getErwerbspensumGS1());
+		assertEquals(pensumAngestellt, inputAsiv.getErwerbspensumGS1().intValue());
+		assertEquals(erwarteterAnspruchAsiv, inputAsiv.getAnspruchspensumProzent());
+		assertEquals(pensumAngestellt+pensumFreiwillig, inputGemeinde.getErwerbspensumGS1().intValue());
+		assertEquals(erwarteterAnspruchGemeinde, inputGemeinde.getAnspruchspensumProzent());
 	}
 
 	private Betreuung createGesuch(final boolean gs2) {

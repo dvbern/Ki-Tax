@@ -40,7 +40,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class AusserordentlicherAnspruchAbschnittRule extends AbstractAbschnittRule {
 
 	public AusserordentlicherAnspruchAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
-		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
+		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class AusserordentlicherAnspruchAbschnittRule extends AbstractAbschnittRu
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumAusserordentlicherAnspruch anspruch) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(anspruch.getGueltigkeit());
-		zeitabschnitt.getBgCalculationInputAsiv().setAusserordentlicherAnspruch(anspruch.getPensum());
+		zeitabschnitt.setAusserordentlicherAnspruchForAsivAndGemeinde(anspruch.getPensum());
 		return zeitabschnitt;
 	}
 }

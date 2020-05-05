@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -49,6 +48,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -327,14 +327,13 @@ public class GesuchsperiodeResource {
 		@Nonnull String gemeindeId,
 		@Nonnull Collection<Gesuchsperiode> perioden
 	) {
-		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"extractValidGesuchsperiodenForGemeinde",
-				String.format("Keine Gemeinde für ID %s", gemeindeId)))
-			.getBetreuungsgutscheineStartdatum();
+				String.format("Keine Gemeinde für ID %s", gemeindeId)));
 
 		return perioden.stream()
-			.filter(periode -> periode.getGueltigkeit().endsAfterOrSame(startdatum))
+			.filter(gemeinde::isGesuchsperiodeRelevantForGemeinde)
 			.map(periode -> converter.gesuchsperiodeToJAX(periode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())

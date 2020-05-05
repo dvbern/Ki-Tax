@@ -20,23 +20,38 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import org.apache.commons.collections.MapUtils;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Abschlussmerger, welcher nach allen Regeln die vorhandenen Abschnitte überprüft und solche mit gleichen *sichtbaren*
  * Daten zusammenmergt.
  */
-public final class AbschlussNormalizer {
+public final class AbschlussNormalizer extends AbstractAbschlussRule {
 
-	private AbschlussNormalizer() {
+	private boolean keepMonate;
+
+	public AbschlussNormalizer(boolean keepMonate) {
+		this.keepMonate = keepMonate;
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
 	}
 
 	@Nonnull
-	public static List<VerfuegungZeitabschnitt> execute(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte, boolean keepMonate) {
+	@Override
+	public List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> result = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			normalizeZeitabschnitte(result, zeitabschnitt, keepMonate);
+			normalizeZeitabschnitte(result, zeitabschnitt);
 		}
 		return result;
 	}
@@ -45,10 +60,9 @@ public final class AbschlussNormalizer {
 	 * Stellt sicher, dass zwei aufeinander folgende Zeitabschnitte nie dieselben Daten haben. Falls
 	 * dies der Fall wäre, werden sie zu einem neuen Schnitz gemergt.
 	 */
-	private static void normalizeZeitabschnitte(
+	private void normalizeZeitabschnitte(
 		@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte,
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		boolean keepMonate
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
 	) {
 		// Zuerst vergleichen, ob sich der neue Zeitabschnitt vom letzt hinzugefügten (und angrenzenden) unterscheidet
 		int indexOfLast = validZeitabschnitte.size() - 1;
@@ -60,8 +74,8 @@ public final class AbschlussNormalizer {
 				if (!keepMonate || isSameMonth(zeitabschnitt, lastZeitabschnitt)) {
 					lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 					// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-					if (!MapUtils.isEmpty(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap())) {
-						lastZeitabschnitt.getBgCalculationInputAsiv().mergeBemerkungenMap(zeitabschnitt.getBgCalculationInputAsiv().getBemerkungenMap());
+					if (zeitabschnitt.getBemerkungenList() != null) {
+						lastZeitabschnitt.getBemerkungenList().mergeBemerkungenMap(zeitabschnitt.getBemerkungenList());
 					}
 					validZeitabschnitte.remove(indexOfLast);
 					validZeitabschnitte.add(lastZeitabschnitt);
@@ -80,7 +94,7 @@ public final class AbschlussNormalizer {
 		}
 	}
 
-	private static boolean isSameMonth(@Nonnull VerfuegungZeitabschnitt abschnittA, @Nonnull VerfuegungZeitabschnitt abschnittB) {
+	private boolean isSameMonth(@Nonnull VerfuegungZeitabschnitt abschnittA, @Nonnull VerfuegungZeitabschnitt abschnittB) {
 		return abschnittA.getGueltigkeit().getGueltigAb().getMonth() == abschnittB.getGueltigkeit().getGueltigAb().getMonth()
 			&& abschnittA.getGueltigkeit().getGueltigBis().getMonth() == abschnittB.getGueltigkeit().getGueltigBis().getMonth();
 	}

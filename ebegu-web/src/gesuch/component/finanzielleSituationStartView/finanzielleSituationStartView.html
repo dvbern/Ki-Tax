@@ -150,7 +150,10 @@
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float" data-translate="IBAN" for="iban"></label>
+                                    <label class="md-no-float"for="iban">
+                                        <span data-translate="IBAN" ></span>
+                                        <dv-tooltip input-id="iban" text="'IBAN_NUMMER_HINT'"></dv-tooltip>
+                                    </label>
                                     <input id="iban" type="text" name="iban"
                                            ng-model="vm.model.zahlungsinformationen.iban"
                                            dv-max-length class="form-control" required>

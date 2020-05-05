@@ -35,14 +35,14 @@ public class JaxExternalAnmeldungTagesschule extends JaxExternalAnmeldung {
 
 
 	public JaxExternalAnmeldungTagesschule(
-		@Nonnull String bgNummer,
+		@Nonnull String referenznummer,
 		@Nonnull JaxExternalBetreuungsstatus betreuungsstatus,
 		@Nonnull String institutionName,
 		@Nonnull List<JaxExternalModul> anmeldungen,
 		@Nonnull String kindName,
 		@Nonnull String kindVorname) {
 
-		super(bgNummer, betreuungsstatus, JaxExternalBetreuungsangebotTyp.TAGESSCHULE, institutionName, kindName, kindVorname);
+		super(referenznummer, betreuungsstatus, JaxExternalBetreuungsangebotTyp.TAGESSCHULE, institutionName, kindName, kindVorname);
 		this.anmeldungen = anmeldungen;
 	}
 

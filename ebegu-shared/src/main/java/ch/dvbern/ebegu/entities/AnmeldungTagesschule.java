@@ -176,6 +176,10 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	}
 
 	public boolean isTagesschuleTagi() {
+		// Bei Keine-Detailinformationen gehen wir davon aus, dass es eine normale Tagesschule ist
+		if (isKeineDetailinformationen()) {
+			return false;
+		}
 		Objects.requireNonNull(getBelegungTagesschule());
 		Set<BelegungTagesschuleModul> belegungTagesschuleModulList = getBelegungTagesschule().getBelegungTagesschuleModule();
 		BelegungTagesschuleModul belegungTagesschuleModul = belegungTagesschuleModulList.iterator().next();

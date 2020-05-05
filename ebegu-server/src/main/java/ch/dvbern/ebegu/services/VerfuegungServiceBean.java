@@ -41,7 +41,25 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
+import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -181,7 +199,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
-	public AnmeldungTagesschule anmeldungSchulamtUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
+	public AnmeldungTagesschule anmeldungTagesschuleUebernehmen(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		// Da die Module auch beim Uebernehmen noch verändert worden sein können, muss die Anmeldung zuerst nochmals
 		// gespeichert werden
 		betreuungService.saveAnmeldungTagesschule(anmeldungTagesschule, false);
@@ -215,7 +233,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				GemeindeStammdaten gemeindeStammdaten =
 					gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGesuch().getDossier().getGemeinde().getId()).get();
 				if (gemeindeStammdaten.getBenachrichtigungTsEmailAuto() && !persistedAnmeldung.isTagesschuleTagi()) {
-					mailService.sendInfoSchulamtAnmeldungUebernommen(persistedAnmeldung);
+					mailService.sendInfoSchulamtAnmeldungTagesschuleUebernommen(persistedAnmeldung);
 				}
 			} catch (MailException e) {
 				logExceptionAccordingToEnvironment(e,
@@ -231,6 +249,24 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		setVorgaengerAnmeldungTagesschuleAufUebernommen(persistedAnmeldung);
 
 		return persistedAnmeldung;
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public AnmeldungFerieninsel anmeldungFerieninselUebernehmen(@Nonnull AnmeldungFerieninsel anmeldungFerieninsel) {
+		// momentan wird nichts verfügt, wir setzen lediglich den status der betreuung auf uebernommen
+		anmeldungFerieninsel.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		try {
+			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
+			mailService.sendInfoSchulamtAnmeldungFerieninselUebernommen(anmeldungFerieninsel);
+		} catch (MailException e) {
+			LOG.error("Mail InfoSchulamtFerieninselUebernommen konnte nicht versendet werden fuer "
+					+ "AnmeldungFerieninsel {}",
+				anmeldungFerieninsel.getId(), e);
+		}
+		return betreuungService.saveAnmeldungFerieninsel(anmeldungFerieninsel, false);
 	}
 
 	private void setVorgaengerAnmeldungTagesschuleAufUebernommen(@Nonnull AnmeldungTagesschule anmeldung) {
@@ -418,10 +454,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
 		if (!verfuegung.isKategorieNichtEintreten()) {
 			for (VerfuegungZeitabschnitt zeitabschnitt : verfuegung.getZeitabschnitte()) {
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieKeinPensum()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieKeinPensum()) {
 					verfuegung.setKategorieKeinPensum(true);
 				}
-				if (zeitabschnitt.getBgCalculationInputAsiv().isKategorieMaxEinkommen()) {
+				if (zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
 			}
@@ -447,7 +483,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Bei Nicht-Eintreten muss der Anspruch auf der Verfuegung auf 0 gesetzt werden, da diese u.U. bei Mutationen
 		// als Vergleichswert hinzugezogen werden
 		verfuegungPreview.getZeitabschnitte()
-			.forEach(z -> z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0));
+			.forEach(z -> {
+				z.getBgCalculationResultAsiv().setAnspruchspensumProzent(0);
+				if (z.getBgCalculationResultGemeinde() != null) {
+					z.getBgCalculationResultGemeinde().setAnspruchspensumProzent(0);
+				}
+			});
 		verfuegungPreview.setKategorieNichtEintreten(true);
 		initializeVorgaengerVerfuegungen(betreuungMitVerfuegungPreview.extractGesuch());
 		Verfuegung persistedVerfuegung = persistVerfuegung(betreuungMitVerfuegungPreview,
@@ -557,7 +598,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		initializeVorgaengerVerfuegungen(gesuch);
 
-		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale(), true);
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
 	@Override

@@ -114,6 +114,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public isAnmeldenClicked: boolean = false;
     public erlaeuterung: string = null;
     public agbVorhanden: boolean;
+    private _showWarningModuleZugewiesen: boolean = false;
     public isScolaris: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
@@ -153,9 +154,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             if (newValue === oldValue) {
                 return;
             }
-            this.modulGroups = (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION) && newValue.institution.id !== oldValue.institution.id)
-                ? TagesschuleUtil.initModuleTagesschuleAfterInstitutionChange(this.getBetreuungModel(), oldValue, this.gesuchModelManager.getGesuchsperiode(), false)
-                : TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+            if (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION) && newValue.institution.id !== oldValue.institution.id) {
+                this.modulGroups = TagesschuleUtil.initModuleTagesschuleAfterInstitutionChange(this.getBetreuungModel(), oldValue, this.gesuchModelManager.getGesuchsperiode(), false);
+                this._showWarningModuleZugewiesen = true;
+            } else {
+                this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(), this.gesuchModelManager.getGesuchsperiode(), false);
+            }
 
             if (this.betreuung.institutionStammdaten) {
                 this.loadEinstellungPropertiesForTagesschule();
@@ -284,6 +288,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
                     this.onSave();
                 });
             }
+            this.showWarningModuleZugewiesen = false;
             this.onSave();
         }
         return undefined;
@@ -367,7 +372,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public saveAnmeldungSchulamtUebernehmen(): void {
         if (this.form.$valid) {
             this.preSave();
-            this.anmeldungSchulamtUebernehmen();
+            this.anmeldungSchulamtUebernehmen({isScolaris: this.isScolaris});
         }
     }
 
@@ -417,5 +422,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             result => {
                 this.agbVorhanden = result;
             });
+    }
+
+    public set showWarningModuleZugewiesen(value: boolean) {
+        this._showWarningModuleZugewiesen = value;
+    }
+
+    public get showWarningModuleZugewiesen(): boolean {
+        return this._showWarningModuleZugewiesen;
     }
 }

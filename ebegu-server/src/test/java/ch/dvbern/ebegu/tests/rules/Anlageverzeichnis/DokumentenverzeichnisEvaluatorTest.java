@@ -440,7 +440,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	public void finSiDokumenteTest() {
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
-
+		createFamilienSituation(testgesuch, false, false);
 		Assert.assertNotNull(testgesuch.getGesuchsteller1());
 		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		final FinanzielleSituation finanzielleSituationJA = testgesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();

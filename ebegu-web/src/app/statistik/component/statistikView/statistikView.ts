@@ -359,6 +359,8 @@ export class StatistikViewController implements IController {
     public getGesuchsperiodenForTagesschule(stammdaten: TSInstitutionStammdaten): TSGesuchsperiode[] {
         return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.map(d => {
             return d.gesuchsperiode;
+        }).sort((a, b) => {
+            return b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString);
         });
     }
 }

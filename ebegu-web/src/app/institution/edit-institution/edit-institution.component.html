@@ -233,7 +233,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="externalClients" class="col-sm-6">
+                    <div *ngIf="externalClients && !isTagesschule()" class="col-sm-6">
                         <dv-external-client-multiselect
                             [externalClients]="externalClients">
                         </dv-external-client-multiselect>
@@ -325,7 +325,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group">
+                            <div class="form-group" *ngIf="!isTagesschule()">
                                 <dv-external-client-assignment [externalClients]="externalClients">
                                 </dv-external-client-assignment>
                             </div>

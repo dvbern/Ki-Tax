@@ -18,5 +18,6 @@
 package ch.dvbern.ebegu.enums;
 
 public enum ExternalClientType {
-	EXCHANGE_SERVICE_USER
+	EXCHANGE_SERVICE_USER,
+	GEMEINDE_SCOLARIS_SERVICE
 }

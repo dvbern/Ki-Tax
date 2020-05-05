@@ -18,12 +18,19 @@ package ch.dvbern.ebegu.rules.initalizer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rules.AbstractAbschlussRule;
+import com.google.common.collect.ImmutableList;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Hilfsklasse die nach der eigentlich Evaluation einer Betreuung angewendet wird um den Restanspruch zu uebernehmen fuer die
@@ -43,38 +50,66 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
  * </ul>
  * Die 2. Betreuung wird genau wie die erste durchgeführt. Nun wird allerdings die allerletzte Reduktionsregel den Anspruch reduzieren auf den gesetzten Restanspruch.
  */
-public final class RestanspruchInitializer {
+public final class RestanspruchInitializer extends AbstractAbschlussRule {
 
-	private RestanspruchInitializer() {
+
+	public RestanspruchInitializer() {
+	}
+
+	@Override
+	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
 	@Nonnull
-	public static List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		List<VerfuegungZeitabschnitt> restanspruchsZeitabschnitte = new ArrayList<>();
+	@Override
+	protected List<VerfuegungZeitabschnitt> execute(@Nonnull AbstractPlatz platz, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte = new ArrayList<>();
+		boolean verfuegt = platz.getBetreuungsstatus().isAnyStatusOfVerfuegt();
+
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			VerfuegungZeitabschnitt restanspruchsAbschnitt = new VerfuegungZeitabschnitt(zeitabschnitt.getGueltigkeit());
-			restanspruchUebernehmen(platz, zeitabschnitt, restanspruchsAbschnitt);
-			restanspruchsZeitabschnitte.add(restanspruchsAbschnitt);
+			restanspruchsAbschnitt.setHasGemeindeSpezifischeBerechnung(zeitabschnitt.isHasGemeindeSpezifischeBerechnung());
+			if (verfuegt) {
+				// Wenn die Betreuung schon verfuegt ist, muss der Restanspruch aufgrund der (gespeicherten) Resultate
+				// berechnet werden
+				restanspruchUebernehmenVerfuegt(zeitabschnitt.getBgCalculationResultAsiv(), restanspruchsAbschnitt.getBgCalculationInputAsiv());
+				if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+					restanspruchUebernehmenVerfuegt(zeitabschnitt.getBgCalculationResultGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
+				}
+			} else {
+				// Noch nicht verfuegt: Die Restansprueche wurden im Input initialisiert
+				restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputAsiv(), restanspruchsAbschnitt.getBgCalculationInputAsiv());
+				restanspruchUebernehmenNichtVerfuegt(zeitabschnitt.getBgCalculationInputGemeinde(), restanspruchsAbschnitt.getBgCalculationInputGemeinde());
+			}
+			restanspruchZeitabschnitte.add(restanspruchsAbschnitt);
 		}
-		return restanspruchsZeitabschnitte;
+		return restanspruchZeitabschnitte;
 	}
 
-	private static void restanspruchUebernehmen(@Nonnull AbstractPlatz betreuung, @Nonnull VerfuegungZeitabschnitt sourceZeitabschnitt, VerfuegungZeitabschnitt targetZeitabschnitt) {
-		//Die  vom der letzen Berechnung uebernommenen Zeitabschnitte betrachten und den restanspruch berechnen.
-		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-			int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchberechtigtesPensum();
-			BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
-			int anspruchspensumRest = sourceZeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumRest();
-			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
-			if (anspruchberechtigtesPensum == 0 && anspruchspensumRest != -1) {
-				// Der Restanspruch war schon initialisiert und bleibt gleich wie auf der vorherigen Betreuung
-				targetZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchspensumRest);
-			} else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
-				targetZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
-			} else {
-				targetZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumRest(0);
-			}
+	private void restanspruchUebernehmenVerfuegt(@Nonnull BGCalculationResult sourceZeitabschnitt, BGCalculationInput targetZeitabschnitt) {
+		int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchspensumProzent();
+		BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
+		//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
+	 	if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
+			targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
+		} else {
+			targetZeitabschnitt.setAnspruchspensumRest(0);
+		}
+	}
+
+	private void restanspruchUebernehmenNichtVerfuegt(@Nonnull BGCalculationInput sourceZeitabschnitt, BGCalculationInput targetZeitabschnitt) {
+		int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchspensumProzent();
+		BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensumProzent();
+		int anspruchspensumRest = sourceZeitabschnitt.getAnspruchspensumRest();
+		//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
+		if (anspruchberechtigtesPensum == 0 && anspruchspensumRest != -1) {
+			// Der Restanspruch war schon initialisiert und bleibt gleich wie auf der vorherigen Betreuung
+			targetZeitabschnitt.setAnspruchspensumRest(anspruchspensumRest);
+		} else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
+			targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
+		} else {
+			targetZeitabschnitt.setAnspruchspensumRest(0);
 		}
 	}
 }

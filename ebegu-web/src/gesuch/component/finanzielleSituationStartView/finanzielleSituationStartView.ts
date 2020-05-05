@@ -270,7 +270,8 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
-            (this.model.sozialhilfeBezueger || this.model.verguenstigungGewuenscht);
+            (this.model.sozialhilfeBezueger || this.model.verguenstigungGewuenscht)
+            && !this.getGesuch().areThereOnlyFerieninsel();
     }
 
     public isZahlungsdatenRequired(): boolean {
@@ -284,7 +285,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             !this.isGesuchReadonly();
     }
 
-    public preSave():  IPromise<TSGesuch> {
+    public preSave(): IPromise<TSGesuch> {
         if (!this.isGesuchValid()) {
             return undefined;
         }

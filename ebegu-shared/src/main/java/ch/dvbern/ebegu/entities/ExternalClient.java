@@ -45,7 +45,8 @@ public class ExternalClient extends AbstractEntity {
 	private static final long serialVersionUID = 7465912998960188302L;
 
 	/**
-	 * Should match the Keycloak clientId
+	 * Wenn ExternalClientType ist EXCHANGE_SERVICE_USER dann es ist einen Keycloack Benutzer
+	 * Wenn ExternalClientType ist anders dann es ist einen Schnittstelle Name
 	 */
 	@Nonnull
 	@Column(nullable = false)

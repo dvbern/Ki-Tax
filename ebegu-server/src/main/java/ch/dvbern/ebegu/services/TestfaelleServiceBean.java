@@ -530,7 +530,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Fall fall;
 		Dossier dossier = null;
 		if (!fallByBesitzer.isPresent()) {
-			if (currentBenutzer.isPresent()) {
+			boolean nichtFreigegebenesOnlineGesuch = besitzer != null && !verfuegen;
+			if (!nichtFreigegebenesOnlineGesuch && currentBenutzer.isPresent()) {
+				// Wir setzen den aktuellen Benutzer als Verantwortliche Person, aber nur,
+				// wenn es nicht ein nicht-freigegebenes OnlineGesuch ist
 				fall = fromTestfall.createFall(currentBenutzer.get());
 			} else {
 				fall = fromTestfall.createFall();
@@ -548,8 +551,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			} else if (dossiersByFall.size() == 1) {
 				dossier = dossiersByFall.iterator().next();
 			} else {
-				//TODO (KIBON-6) Behandlung von mehreren Dossiers pro Fall
-				throw new IllegalStateException("Fall hat mehrere Dossiers. Dieser Zustand sollte aktuell nicht auftreten!");
+				throw new IllegalStateException("Fall hat mehrere Dossiers. Dieser Zustand darf bei Testfaellen nicht vorkommen");
 			}
 		}
 		if (besitzer != null) {
@@ -961,8 +963,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		anmeldung.setInstitutionStammdaten(firstBetreuung.getInstitutionStammdaten());
 		anmeldung.setKind(firstBetreuung.getKind());
 
-		mailService.sendInfoSchulamtAnmeldungAkzeptiert(anmeldung);
-		mailService.sendInfoSchulamtAnmeldungUebernommen(anmeldung);
+		mailService.sendInfoSchulamtAnmeldungTagesschuleAkzeptiert(anmeldung);
+		mailService.sendInfoSchulamtAnmeldungTagesschuleUebernommen(anmeldung);
 		mailService.sendInfoSchulamtAnmeldungAbgelehnt(anmeldung);
 	}
 

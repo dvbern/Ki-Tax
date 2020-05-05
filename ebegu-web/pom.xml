@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2020.6.0-SNAPSHOT</version>
+        <version>2020.8.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -73,8 +73,8 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v10.16.2</nodeVersion>
-                                    <npmVersion>6.9.0</npmVersion>
+                                    <nodeVersion>v12.16.2</nodeVersion>
+                                    <npmVersion>6.14.4</npmVersion>
                                     <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
                                     <npmDownloadRoot>https://registry.npmjs.org/npm/-/</npmDownloadRoot>
                                 </configuration>

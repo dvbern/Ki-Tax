@@ -59,7 +59,7 @@ describe('AuthServiceRS', () => {
 
     describe('API usage', () => {
         beforeEach(() => {
-            spyOn($http, 'post').and.returnValue($q.when({}));
+            spyOn($http, 'post').and.returnValue($q.resolve() as any);
         });
         it('does not nothing for an undefined user', () => {
             expect(authServiceRS.loginRequest(undefined)).toBeUndefined();
