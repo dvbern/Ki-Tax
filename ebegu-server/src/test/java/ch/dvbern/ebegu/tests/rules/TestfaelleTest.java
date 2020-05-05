@@ -103,8 +103,6 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		evaluator.evaluate(gesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
-
-		//TODO (hefr) der hier schlägt fehl: bgPensum  = 0, evtl. zu hoher lohn?
 		checkTestfall04WaltherLaura(gesuch);
 	}
 

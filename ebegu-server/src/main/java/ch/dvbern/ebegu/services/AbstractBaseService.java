@@ -84,7 +84,6 @@ public abstract class AbstractBaseService {
 
 	@PermitAll
 	@Nonnull
-	// TODO KITAX
 	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter() {
 		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
 			applicationPropertyService.getStadtBernAsivStartDatum(),

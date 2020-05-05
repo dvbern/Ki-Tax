@@ -72,8 +72,14 @@ public enum ApplicationPropertyKey {
 	 */
 	SENTRY_ENV,
 
-	// TODO KITAX
-	STADT_BERN_ASIV_START_DATUM,					// Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
-	STADT_BERN_ASIV_CONFIGURED,						// Wenn TRUE koennen die Zeitraeume ab ASIV_START_DATUM verfuegt werden
+	/**
+	 * Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
+	 */
+	STADT_BERN_ASIV_START_DATUM,
+
+	/**
+	 * Wenn TRUE koennen die Zeitraeume ab ASIV_START_DATUM verfuegt werden
+	 */
+	STADT_BERN_ASIV_CONFIGURED,
 
 }

@@ -52,7 +52,6 @@ public final class BGRechnerFactory {
 		return null;
 	}
 
-	// TODO KITAX
 	@Nullable
 	public static AbstractRechner getKitaxRechner(@Nonnull AbstractPlatz betreuung, @Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO, @Nonnull Locale locale) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();

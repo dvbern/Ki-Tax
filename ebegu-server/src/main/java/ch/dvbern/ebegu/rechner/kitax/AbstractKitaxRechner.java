@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Superklasse für BG-Rechner
  */
-// TODO KITAX
 public abstract class AbstractKitaxRechner extends AbstractRechner {
 
 	protected KitaxUebergangsloesungParameter kitaxParameter;

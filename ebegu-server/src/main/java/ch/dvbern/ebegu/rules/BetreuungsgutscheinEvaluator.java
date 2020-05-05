@@ -140,7 +140,6 @@ public class BetreuungsgutscheinEvaluator {
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 
-		// TODO KITAX
 		LocalDate bernAsivStartDate = kitaxParameter.getStadtBernAsivStartDate();
 		Objects.requireNonNull(bernAsivStartDate, "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
 
@@ -237,8 +236,7 @@ public class BetreuungsgutscheinEvaluator {
 				Verfuegung verfuegungPreview = new Verfuegung();
 				platz.setVerfuegungPreview(verfuegungPreview);
 
-				// TODO KITAX
-				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);;
+				AbstractRechner asivRechner = BGRechnerFactory.getRechner(platz, rechnerRulesForGemeinde);
 				final boolean possibleKitaxRechner = kitaxParameter.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde());
 				// Den richtigen Rechner anwerfen
 				zeitabschnitte.forEach(zeitabschnitt -> {

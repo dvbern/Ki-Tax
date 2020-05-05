@@ -104,11 +104,15 @@ public interface ApplicationPropertyService {
 	@Nonnull
 	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue);
 
-	// TODO KITAX
+	/**
+	 * Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
+	 */
 	@Nonnull
 	LocalDate getStadtBernAsivStartDatum();
 
-	// TODO KITAX
+	/**
+	 * Wenn TRUE koennen die Zeitraeume ab ASIV_START_DATUM verfuegt werden
+	 */
 	@Nonnull
 	Boolean isStadtBernAsivConfigured();
 }

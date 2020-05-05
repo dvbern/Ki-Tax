@@ -201,7 +201,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		return property;
 	}
 
-	// TODO KITAX
 	@Override
 	@Nonnull
 	@PermitAll
@@ -214,7 +213,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		return LocalDate.of(2021, Month.JANUARY, 1);
 	}
 
-	// TODO KITAX
 	@Override
 	@Nonnull
 	@PermitAll
