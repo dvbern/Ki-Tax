@@ -15,28 +15,36 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 
-import { NotrechtComponent } from './notrecht.component';
+import {NotrechtComponent} from './notrecht.component';
 
 describe('NotrechtComponent', () => {
-  let component: NotrechtComponent;
-  let fixture: ComponentFixture<NotrechtComponent>;
+    let component: NotrechtComponent;
+    let fixture: ComponentFixture<NotrechtComponent>;
+    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['initializeRueckforderungFormulare']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NotrechtComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [NotrechtComponent],
+            providers: [
+                {provide: NotrechtRS, useValue: notrechtRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NotrechtComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NotrechtComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
