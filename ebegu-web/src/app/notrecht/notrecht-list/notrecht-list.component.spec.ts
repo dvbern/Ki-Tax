@@ -15,21 +15,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
-import {NotrechtComponent} from './notrecht/notrecht.component';
-import { NotrechtListComponent } from './notrecht-list/notrecht-list.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-@NgModule({
-    declarations: [
-        NotrechtComponent,
-        NotrechtListComponent
-    ],
-    imports: [
-        CommonModule,
-        NotrechtRoutingModule
-    ]
-})
-export class NotrechtModule {
-}
+import { NotrechtListComponent } from './notrecht-list.component';
+
+describe('NotrechtListComponent', () => {
+  let component: NotrechtListComponent;
+  let fixture: ComponentFixture<NotrechtListComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ NotrechtListComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NotrechtListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
