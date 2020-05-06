@@ -33,7 +33,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
  */
 public final class KitaxUebergangsloesungParameter {
 
-	private MathUtil MATH = MathUtil.DEFAULT;
+	private static final MathUtil MATH = MathUtil.DEFAULT;
 
 	private Map<String, KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeitenMap = new HashMap<>();
 
@@ -62,6 +62,7 @@ public final class KitaxUebergangsloesungParameter {
 		initOeffnungszeitenMap();
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void initOeffnungszeitenMap() {
 		oeffnungszeitenMap.put("kita dängelibänz", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
 		oeffnungszeitenMap.put("kita matahari weissenbühl", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
