@@ -207,12 +207,13 @@ export class TSFinanzModel {
      * the same for steuererklaerungAusgefuellt
      */
     private resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch: TSGesuch): void {
-        if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2) {
-            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
-                =  gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
-            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
-                =  gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt;
+        if (!(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2)) {
+            return;
         }
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
+            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
+            = gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt;
     }
 
     public copyEkvSitDataToGesuch(gesuch: TSGesuch): TSGesuch {
