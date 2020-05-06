@@ -1965,5 +1965,8 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "L'inscription n'est pas possible pour l'instant. Elle peut être effectuée au plus tôt le {{termin}}.",
     "NOTRECHT": "",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "",
+    "ZAHLUNG_STUFE_1_AUSGELOEST": "",
+    "ZAHLUNG_STUFE_2_AUSGELOEST": "",
+    "RUECKFORDERUNG_FORMULARE_INITIALISIERT": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -24,6 +24,73 @@
             <hr class="header">
         </div>
 
+        <div class="table-responsive notrecht-table">
+            <mat-table #table [dataSource]="rueckforderungFormulareSource" matSort matSortActive="institution.name">
+
+                <!-- Institution -->
+                <ng-container matColumnDef="institution.name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="institution.name">
+                        {{'INSTITUTION' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
+                        {{formular.institution.name}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Typ -->
+<!--                <ng-container matColumnDef="typ">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="institution.typ">
+                        {{'TYP' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
+                        {{formular.institution.typ}}
+                    </mat-cell>
+                </ng-container>-->
+
+                <!-- Typ -->
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'STATUS' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
+                        {{formular.status}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Zahlung Stufe 1 ausgelöst -->
+                <ng-container matColumnDef="zahlungStufe1">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'ZAHLUNG_STUFE_1_AUSGELOEST' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
+                        <span *ngIf="isZahlungAusgeloest(formular.stufe1FreigabeAusbezahltAm)" translate>LABEL_JA</span>
+                        <span *ngIf="!isZahlungAusgeloest(formular.stufe1FreigabeAusbezahltAm)" translate>LABEL_NEIN</span>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Zahlung Stufe 2 ausgelöst -->
+                <ng-container matColumnDef="zahlungStufe2">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="zahlungStufe2">
+                        {{'ZAHLUNG_STUFE_2_AUSGELOEST' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
+                        <span *ngIf="isZahlungAusgeloest(formular.stufe2VerfuegungAusbezahltAm)" translate>LABEL_JA</span>
+                        <span *ngIf="!isZahlungAusgeloest(formular.stufe2VerfuegungAusbezahltAm)" translate>LABEL_NEIN</span>
+                    </mat-cell>
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+
+<!--            <div class="mat-row" *ngIf="showNoContentMessage()"
+                 [textContent]="'INSTITUTIONEN_NOCH_KEINE' | translate">
+            </div>-->
+        </div>
+
         <button class="dv-btn" (click)="initializeRueckforderungFormulare()" *ngIf="isSuperAdmin()" translate>
             RUECKFORDERUNGSFORMULARE_INITIALISIEREN
         </button>

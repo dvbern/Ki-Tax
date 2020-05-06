@@ -1965,5 +1965,8 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "NOTRECHT": "Notrecht",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
+    "ZAHLUNG_STUFE_1_AUSGELOEST": "Zahlung Stufe 1 ausgelöst",
+    "ZAHLUNG_STUFE_2_AUSGELOEST": "Zahlung Stufe 2 ausgelöst",
+    "RUECKFORDERUNG_FORMULARE_INITIALISIERT": "{{ anzahlFormulare }} Rückforderungsformulare erfolgreich initialisiert. Siehe Konsole für Details.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

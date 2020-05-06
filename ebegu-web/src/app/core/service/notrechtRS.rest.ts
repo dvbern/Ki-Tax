@@ -16,6 +16,7 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
+import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class NotrechtRS {
@@ -35,14 +36,24 @@ export class NotrechtRS {
 
     }
 
-    public initializeRueckforderungFormulare(): IPromise<void> {
+    public initializeRueckforderungFormulare(): IPromise<TSRueckforderungFormular[]> {
         return this.http.post(`${this.serviceURL}/initialize`, {})
             .then(response => {
-                const rueckforderungFormulare = this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
-                console.log(rueckforderungFormulare);
-            }, error => {
-                console.error(error);
+                return this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
             });
+    }
+
+    public getRueckforderungFormulareForCurrentBenutzer(): IPromise<TSRueckforderungFormular[]> {
+        return this.http.get(`${this.serviceURL}/currentuser`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
+            });
+    }
+
+    public currentUserHasFormular(): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/currentuser/hasformular`, {}).then(response => {
+            return response.data as boolean;
+        });
     }
 
     public getServiceName(): string {

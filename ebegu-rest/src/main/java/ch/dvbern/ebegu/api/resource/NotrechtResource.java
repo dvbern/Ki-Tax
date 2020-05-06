@@ -24,6 +24,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -36,6 +37,12 @@ import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("notrecht")
@@ -48,6 +55,7 @@ public class NotrechtResource {
 
 	@Inject
 	private JaxBConverter converter;
+
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response = JaxRueckforderungFormular.class)
@@ -64,5 +72,40 @@ public class NotrechtResource {
 
 		return converter.rueckforderungFormularListToJax(createdFormulare);
 	}
+
+	@ApiOperation(value = "Gibt alle Rückforderungsformulare zurück, die der aktuelle Benutzer lesen kann",
+		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+	@GET
+	@Path("/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public List<JaxRueckforderungFormular> getRueckforderungFormulareForCurrentUser() {
+
+		List<RueckforderungFormular> formulareCurrentBenutzer =
+			rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
+
+		return converter.rueckforderungFormularListToJax(formulareCurrentBenutzer);
+	}
+
+	@ApiOperation(value = "Gibt zurück, ob der aktuelle eingeloggte Benutzer mindestens ein Rückforderungformular "
+		+ "sehen kann",
+		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+	@GET
+	@Path("/currentuser/hasformular")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public boolean currentUserHasFormular() {
+
+		List<RueckforderungFormular> formulareCurrentBenutzer =
+			rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
+
+		return formulareCurrentBenutzer.size() > 0;
+	}
+
+
 
 }

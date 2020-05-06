@@ -49,4 +49,7 @@ public interface RueckforderungFormularService {
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
+
+	@Nonnull
+	List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer();
 }

@@ -22,6 +22,7 @@ import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
+import {NotrechtRS} from '../../service/notrechtRS.rest';
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -35,11 +36,12 @@ const LOG = LogFactory.createLog('DvPulldownUserMenuController');
 
 export class DvPulldownUserMenuController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', 'NotrechtRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
     public principal?: TSBenutzer = undefined;
+    public notrechtVisible: boolean;
 
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
@@ -47,6 +49,7 @@ export class DvPulldownUserMenuController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly notrechtRS: NotrechtRS
     ) {
     }
 
@@ -57,6 +60,10 @@ export class DvPulldownUserMenuController implements IController {
                 principal => this.principal = principal,
                 err => LOG.error(err)
             );
+        this.notrechtRS.currentUserHasFormular()
+            .then(result => {
+                this.notrechtVisible = result;
+            });
     }
 
     public $onDestroy(): void {

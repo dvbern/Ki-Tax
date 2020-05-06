@@ -28,6 +28,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
@@ -42,7 +43,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@RolesAllowed({ SUPER_ADMIN })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION })
 @Stateless
 @Local(RueckforderungFormularService.class)
 public class RueckforderungFormularServiceBean extends AbstractBaseService implements RueckforderungFormularService {
@@ -55,6 +56,9 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private InstitutionService institutionService;
 
 	@Nonnull
 	@Override
@@ -100,8 +104,27 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION })
 	public Collection<RueckforderungFormular> getAllRueckforderungFormulare(){
 		return criteriaQueryHelper.getAll(RueckforderungFormular.class);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION })
+	public List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer() {
+		Collection<Institution> institutionenCurrentBenutzer =
+			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
+
+		Collection<RueckforderungFormular> allRueckforderungFormulare = getAllRueckforderungFormulare();
+
+		return allRueckforderungFormulare.stream().filter(formular -> {
+			for (Institution institution : institutionenCurrentBenutzer) {
+				if (institution.getId().equals(formular.getInstitution().getId())) {
+					return true;
+				}
+			}
+			return false;
+		}).collect(Collectors.toList());
 	}
 }
