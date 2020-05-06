@@ -16,22 +16,23 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {RueckforderungFormularComponent} from './rueckforderung-formular.component';
 
-import { NotrechtListComponent } from './notrecht-list.component';
 
-describe('NotrechtListComponent', () => {
-  let component: NotrechtListComponent;
-  let fixture: ComponentFixture<NotrechtListComponent>;
+
+describe('RueckforderungFormularComponent', () => {
+  let component: RueckforderungFormularComponent;
+  let fixture: ComponentFixture<RueckforderungFormularComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotrechtListComponent ]
+      declarations: [ RueckforderungFormularComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NotrechtListComponent);
+    fixture = TestBed.createComponent(RueckforderungFormularComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

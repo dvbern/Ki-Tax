@@ -16,32 +16,14 @@
  */
 
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
-import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 
 @Component({
-  selector: 'dv-notrecht-list',
-  templateUrl: './notrecht-list.component.html',
-  styleUrls: ['./notrecht-list.component.less'],
+  selector: 'dv-rueckforderung-formular',
+  templateUrl: './rueckforderung-formular.component.html',
+  styleUrls: ['./rueckforderung-formular.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotrechtListComponent {
+export class RueckforderungFormularComponent {
 
-    public constructor(
-        private readonly notrechtRS: NotrechtRS,
-        private readonly authServiceRS: AuthServiceRS
-    ) {
-    }
-
-    public initializeRueckforderungFormulare(): void {
-        this.notrechtRS.initializeRueckforderungFormulare().then(result => {
-            console.log(result);
-        });
-    }
-
-    public isSuperAdmin(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
-    }
-
+  public constructor() { }
 }
