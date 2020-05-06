@@ -15,15 +15,43 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {Component, ChangeDetectionStrategy, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Transition} from '@uirouter/core';
+import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 
 @Component({
-  selector: 'dv-rueckforderung-formular',
-  templateUrl: './rueckforderung-formular.component.html',
-  styleUrls: ['./rueckforderung-formular.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-rueckforderung-formular',
+    templateUrl: './rueckforderung-formular.component.html',
+    styleUrls: ['./rueckforderung-formular.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RueckforderungFormularComponent {
+export class RueckforderungFormularComponent implements OnInit {
 
-  public constructor() { }
+    @ViewChild(NgForm) private readonly form: NgForm;
+
+    public rueckforderungFormular: TSRueckforderungFormular;
+
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly notrechtRS: NotrechtRS
+    )
+        {
+    }
+
+    public ngOnInit(): void {
+        const rueckforederungFormId: string = this.$transition$.params().benutzerId;
+
+        if (!rueckforederungFormId) {
+            return;
+        }
+
+
+        this.rueckforderungFormular = new TSRueckforderungFormular();
+    }
+
+    public saveRueckforderungFormular(): void{
+        // TODO
+    }
 }

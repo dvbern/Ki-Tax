@@ -14,17 +14,22 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
+<dv-full-height-container>
+    <form role="form"
+		  #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          *ngIf="rueckforderungFormular"
+          (ngSubmit)="saveRueckforderungFormular()"
+          novalidate>
+        <div class="notrecht adminModul" flex="auto">
+            <div class="col-md-8 col-md-offset-2">
 
-<div class="notrecht adminModul" flex="auto">
-    <div class="col-md-8 col-md-offset-2">
-
-        <h1 class="access-for-all-title" translate>RUECKFORDERUNG FORMULAR</h1>
-        <div class="viewTitle">
-            <h2 translate>RUECKFORDERUNG</h2>
-            <hr class="header">
+                <h1 class="access-for-all-title" translate>RUECKFORDERUNG FORMULAR</h1>
+                <div class="viewTitle">
+                    <h2 translate>RUECKFORDERUNG</h2>
+                    <hr class="header">
+                </div>
+            </div>
         </div>
-
-
-
-    </div>
-</div>
+    </form>
+</dv-full-height-container>
