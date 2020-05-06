@@ -15,24 +15,3 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
-import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
-import {NotrechtComponent} from './notrecht/notrecht.component';
-import { NotrechtListComponent } from './notrecht-list/notrecht-list.component';
-
-@NgModule({
-    declarations: [
-        NotrechtComponent,
-        NotrechtListComponent
-    ],
-    imports: [
-        CommonModule,
-        NotrechtRoutingModule,
-        TranslateModule
-    ],
-    providers: []
-})
-export class NotrechtModule {
-}

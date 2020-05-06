@@ -15,24 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
-import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
-import {NotrechtComponent} from './notrecht/notrecht.component';
-import { NotrechtListComponent } from './notrecht-list/notrecht-list.component';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
-@NgModule({
-    declarations: [
-        NotrechtComponent,
-        NotrechtListComponent
-    ],
-    imports: [
-        CommonModule,
-        NotrechtRoutingModule,
-        TranslateModule
-    ],
-    providers: []
+@Component({
+  selector: 'dv-notrecht-list',
+  templateUrl: './notrecht-list.component.html',
+  styleUrls: ['./notrecht-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotrechtModule {
+export class NotrechtListComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
 }
