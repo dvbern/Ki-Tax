@@ -174,10 +174,12 @@ public class VerfuegungEventConverter {
 	private ZeitabschnittDTO toZeitabschnittDTO(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		MathUtil ROUND = MathUtil.ZWEI_NACHKOMMASTELLE;
 
+		Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
 		return ZeitabschnittDTO.newBuilder()
 			.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb())
 			.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis())
-			.setVerfuegungNr(zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer())
+			.setVerfuegungNr(betreuung.extractGesuch().getLaufnummer())
 			.setEffektiveBetreuungPct(ROUND.from(zeitabschnitt.getBetreuungspensumProzent()))
 			.setAnspruchPct(zeitabschnitt.getAnspruchberechtigtesPensum())
 			.setVerguenstigtPct(ROUND.from(zeitabschnitt.getBgPensum()))
@@ -188,6 +190,7 @@ public class VerfuegungEventConverter {
 			.setVerfuegteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getVerfuegteAnzahlZeiteinheiten()))
 			.setAnspruchsberechtigteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()))
 			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
+//			.setRegelwerk() // TODO (hefr) muss im kibon-exchange-api-commons angepasst werden!
 			.build();
 	}
 }

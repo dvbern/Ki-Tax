@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.dto.VerfuegungsBemerkungList;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.rules.RuleValidity;
@@ -68,6 +69,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Column(nullable = false)
 	private boolean hasGemeindeSpezifischeBerechnung = false;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column(nullable = false)
+	private Regelwerk regelwerk = Regelwerk.ASIV;
 
 	/**
 	 * Input-Werte für die Rules. Berechnung nach ASIV (Standard)
@@ -134,6 +140,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@SuppressWarnings({ "AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod" })
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
+		this.regelwerk = toCopy.regelwerk;
 		this.hasGemeindeSpezifischeBerechnung = toCopy.hasGemeindeSpezifischeBerechnung;
 		this.bgCalculationInputAsiv = new BGCalculationInput(toCopy.bgCalculationInputAsiv);
 		this.bgCalculationInputGemeinde = new BGCalculationInput(toCopy.bgCalculationInputGemeinde);
@@ -153,6 +160,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	public VerfuegungZeitabschnitt(DateRange gueltigkeit) {
 		this.setGueltigkeit(new DateRange(gueltigkeit));
+	}
+
+	@Nonnull
+	public Regelwerk getRegelwerk() {
+		return regelwerk;
+	}
+
+	public void setRegelwerk(@Nonnull Regelwerk regelwerk) {
+		this.regelwerk = regelwerk;
 	}
 
 	public boolean isHasGemeindeSpezifischeBerechnung() {
@@ -558,7 +574,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationInputGemeinde: " + bgCalculationInputGemeinde + '\t'
 			+ " bgCalculationResultAsiv: " + bgCalculationResultAsiv+ '\t'
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
-			+ " Status: " + zahlungsstatus + '\t'
+			+ " Regelwerk: " + regelwerk + '\t'
 			+ " Status: " + zahlungsstatus + '\t'
 			+ " Bemerkungen: " + bemerkungen;
 		return sb;
@@ -573,9 +589,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof VerfuegungZeitabschnitt)) {
 			return false;
 		}
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;

@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.Regelwerk;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -51,6 +52,8 @@ public class TageselternKitaxRechner extends AbstractKitaxRechner {
 	@Nonnull
 	@Override
 	protected Optional<BGCalculationResult> calculateGemeinde(@Nonnull BGCalculationInput input, @Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		input.getParent().setRegelwerk(Regelwerk.FEBR);
 
 		if (!input.isBetreuungInGemeinde()) {
 			input.setAnspruchspensumProzent(0);
