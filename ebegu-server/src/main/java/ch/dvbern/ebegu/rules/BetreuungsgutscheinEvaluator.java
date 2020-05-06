@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -245,7 +246,13 @@ public class BetreuungsgutscheinEvaluator {
 					AbstractRechner rechnerToUse = null;
 					if (possibleKitaxRechner) {
 						if (zeitabschnitt.getGueltigkeit().endsBefore(bernAsivStartDate)) {
-							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, locale);
+							String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
+							KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten =
+								kitaxParameter.getOeffnungszeiten(kitaName);
+							if (oeffnungszeiten == null) {
+								throw new EbeguRuntimeException("getOeffnungszeiten", "Keine Oeffnungszeiten gefunden fuer Kita " + kitaName);
+							}
+							rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
 						} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
 							// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
 							// koennen wir den normalen ASIV Rechner verwenden.

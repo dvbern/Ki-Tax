@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -44,8 +45,12 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 	// 100% = 20 days => 1% = 0.2 days
 	public static final BigDecimal MULTIPLIER_KITA = MathUtil.DEFAULT.fromNullSafe(0.2);
 
-	public KitaKitaxRechner(@Nonnull KitaxUebergangsloesungParameter kitaxParameter, @Nonnull Locale locale) {
-		super(kitaxParameter, locale);
+	public KitaKitaxRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
+		@Nonnull Locale locale
+	) {
+		super(kitaxParameter, oeffnungszeiten, locale);
 	}
 
 	@Nonnull
@@ -60,8 +65,9 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		// Benoetigte Daten
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
 		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
-		BigDecimal oeffnungsstunden = kitaxParameter.getOeffnungsstundenKita();
-		BigDecimal oeffnungstage = kitaxParameter.getOeffnungstageKita();
+
+		BigDecimal oeffnungsstunden = oeffnungszeiten.oeffnungsstunden;
+		BigDecimal oeffnungstage = oeffnungszeiten.oeffnungstage;
 		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(input.getBgPensumProzent());
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 
