@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	private static final long serialVersionUID = -7620977294104032869L;
 
 	@Nonnull
-	private JaxInstitution institution;
+	private JaxInstitutionStammdaten institutionStammdaten;
 
 	@Nonnull
 	private List<JaxRueckforderungMitteilung> rueckforderungMitteilungen = new ArrayList<>();
@@ -44,51 +43,59 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@Nonnull
 	private RueckforderungStatus status;
 
+	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden;
 
+	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlStunden;
 
+	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 
+	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 
+	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlTage;
 
+	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlTage;
 
+	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 
+	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 
+	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeBetreuung;
 
+	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeBetreuung;
 
+	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeBetreuung;
 
+	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
 
+	@Nullable
 	private BigDecimal stufe1FreigabeBetrag;
 
+	@Nullable
 	private LocalDateTime stufe1FreigabeDatum;
 
+	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
+	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
+	@Nullable
 	private LocalDateTime stufe2VerfuegungDatum;
 
+	@Nullable
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
-
-
-	@Nonnull
-	public JaxInstitution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(@Nonnull JaxInstitution jaxInstitution) {
-		this.institution = jaxInstitution;
-	}
 
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
@@ -216,51 +223,66 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 		this.stufe2InstitutionKostenuebernahmeBetreuung = stufe2InstitutionKostenuebernahmeBetreuung;
 	}
 
+	@Nonnull
+	public JaxInstitutionStammdaten getInstitutionStammdaten() {
+		return institutionStammdaten;
+	}
+
+	public void setInstitutionStammdaten(@Nonnull JaxInstitutionStammdaten institutionStammdaten) {
+		this.institutionStammdaten = institutionStammdaten;
+	}
+
+	@Nullable
 	public BigDecimal getStufe1FreigabeBetrag() {
 		return stufe1FreigabeBetrag;
 	}
 
-	public void setStufe1FreigabeBetrag(BigDecimal stufe1FreigabeBetrag) {
+	public void setStufe1FreigabeBetrag(@Nullable BigDecimal stufe1FreigabeBetrag) {
 		this.stufe1FreigabeBetrag = stufe1FreigabeBetrag;
 	}
 
+	@Nullable
 	public LocalDateTime getStufe1FreigabeDatum() {
 		return stufe1FreigabeDatum;
 	}
 
-	public void setStufe1FreigabeDatum(LocalDateTime stufe1FreigabeDatum) {
+	public void setStufe1FreigabeDatum(@Nullable LocalDateTime stufe1FreigabeDatum) {
 		this.stufe1FreigabeDatum = stufe1FreigabeDatum;
 	}
 
+	@Nullable
 	public LocalDateTime getStufe1FreigabeAusbezahltAm() {
 		return stufe1FreigabeAusbezahltAm;
 	}
 
-	public void setStufe1FreigabeAusbezahltAm(LocalDateTime stufe1FreigabeAusbezahltAm) {
+	public void setStufe1FreigabeAusbezahltAm(@Nullable LocalDateTime stufe1FreigabeAusbezahltAm) {
 		this.stufe1FreigabeAusbezahltAm = stufe1FreigabeAusbezahltAm;
 	}
 
+	@Nullable
 	public BigDecimal getStufe2VerfuegungBetrag() {
 		return stufe2VerfuegungBetrag;
 	}
 
-	public void setStufe2VerfuegungBetrag(BigDecimal stufe2VerfuegungBetrag) {
+	public void setStufe2VerfuegungBetrag(@Nullable BigDecimal stufe2VerfuegungBetrag) {
 		this.stufe2VerfuegungBetrag = stufe2VerfuegungBetrag;
 	}
 
+	@Nullable
 	public LocalDateTime getStufe2VerfuegungDatum() {
 		return stufe2VerfuegungDatum;
 	}
 
-	public void setStufe2VerfuegungDatum(LocalDateTime stufe2VerfuegungDatum) {
+	public void setStufe2VerfuegungDatum(@Nullable LocalDateTime stufe2VerfuegungDatum) {
 		this.stufe2VerfuegungDatum = stufe2VerfuegungDatum;
 	}
 
+	@Nullable
 	public LocalDateTime getStufe2VerfuegungAusbezahltAm() {
 		return stufe2VerfuegungAusbezahltAm;
 	}
 
-	public void setStufe2VerfuegungAusbezahltAm(LocalDateTime stufe2VerfuegungAusbezahltAm) {
+	public void setStufe2VerfuegungAusbezahltAm(@Nullable LocalDateTime stufe2VerfuegungAusbezahltAm) {
 		this.stufe2VerfuegungAusbezahltAm = stufe2VerfuegungAusbezahltAm;
 	}
 }

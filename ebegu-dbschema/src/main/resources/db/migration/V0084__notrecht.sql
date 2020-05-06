@@ -43,7 +43,7 @@
 		stufe_2_verfuegung_datum datetime,
 		stufe_2_verfuegung_ausbezahlt_am datetime,
         status integer,
-        institution_id binary(16),
+        institution_stammdaten_id binary(16),
         primary key (id, rev)
     );
 
@@ -114,7 +114,7 @@
 		stufe_2_verfuegung_datum datetime,
 		stufe_2_verfuegung_ausbezahlt_am datetime,
         status integer not null,
-        institution_id binary(16) not null,
+        institution_stammdaten_id binary(16) not null,
         primary key (id)
     );
 
@@ -168,9 +168,9 @@
         references rueckforderung_formular (id);
 
     alter table rueckforderung_formular 
-        add constraint FK_rueckforderungFormular_institution_id 
-        foreign key (institution_id) 
-        references institution (id);
+        add constraint FK_rueckforderungFormular_institution_stammdaten_id
+        foreign key (institution_stammdaten_id)
+        references institution_stammdaten (id);
 
     alter table rueckforderung_formular_rueckforderung_mitteilung 
         add constraint FK_rueckforderung_formular_rueckforderung_mitteilung_formular_id 
