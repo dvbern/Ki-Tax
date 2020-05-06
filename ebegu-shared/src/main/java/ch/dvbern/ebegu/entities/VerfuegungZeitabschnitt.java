@@ -591,6 +591,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
+		//noinspection ConstantConditions: Sonst motzt PMD
+		if (!(other instanceof VerfuegungZeitabschnitt)) {
+			return false;
+		}
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return
 			bgCalculationInputAsiv.isSame(otherVerfuegungZeitabschnitt.getBgCalculationInputAsiv()) &&
