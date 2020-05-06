@@ -179,11 +179,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 			boolean stvErhaltenGs2 = false; 	// by default
 			boolean stekAusgefuelltGs2 = false; // by default
-			if (gemeinsameStek) {
-				if (gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA() != null) {
-					stvErhaltenGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerveranlagungErhalten();
-					stekAusgefuelltGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuererklaerungAusgefuellt();
-				}
+			if (gemeinsameStek && gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA() != null) {
+				stvErhaltenGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerveranlagungErhalten();
+				stekAusgefuelltGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuererklaerungAusgefuellt();
 			}
 
 			final FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
