@@ -174,14 +174,16 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			boolean gemeinsameStek = familiensituation.getGemeinsameSteuererklaerung() != null ?
 				familiensituation.getGemeinsameSteuererklaerung() : false;
 			GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
+			Objects.requireNonNull(gesuchsteller1, "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt sein");
+			Objects.requireNonNull(gesuchsteller1.getFinanzielleSituationContainer(), "Finanzielle Situation GS1 muss zu diesem Zeitpunkt gesetzt sein");
+
 			boolean stvErhaltenGs2 = false; 	// by default
 			boolean stekAusgefuelltGs2 = false; // by default
 			if (gemeinsameStek) {
-				Objects.requireNonNull(gesuchsteller1);
-				Objects.requireNonNull(gesuchsteller1.getFinanzielleSituationContainer());
-				Objects.requireNonNull(gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA());
-				stvErhaltenGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerveranlagungErhalten();
-				stekAusgefuelltGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuererklaerungAusgefuellt();
+				if (gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA() != null) {
+					stvErhaltenGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerveranlagungErhalten();
+					stekAusgefuelltGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuererklaerungAusgefuellt();
+				}
 			}
 
 			final FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
@@ -190,12 +192,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			finanzielleSituationJA.setSteuererklaerungAusgefuellt(stekAusgefuelltGs2);
 			finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationJA); // alle Werte by default
 			// auf null -> nichts eingetragen
-			Objects.requireNonNull(gesuchsteller1, "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt "
-				+ "sein");
-			Objects.requireNonNull(
-				gesuchsteller1.getFinanzielleSituationContainer(),
-				"Finanzielle Situation GS1 muss zu diesem Zeitpunkt gesetzt sein");
-			finanzielleSituationContainer.setJahr(gesuchsteller1
+				finanzielleSituationContainer.setJahr(gesuchsteller1
 				.getFinanzielleSituationContainer()
 				.getJahr()); // copy it from GS1
 			finanzielleSituationContainer.setGesuchsteller(gesuchsteller);
