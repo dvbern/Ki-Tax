@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -191,6 +192,19 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			familiensituation.setKontoinhaber(null);
 			familiensituation.setAbweichendeZahlungsadresse(false);
 			familiensituation.setZahlungsadresse(null);
+		}
+
+		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
+		if (gemeinsameSteuererklaerung && gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+			Objects.requireNonNull(gesuch.getGesuchsteller1(), "GS1 darf zu diesem Zeitpunkt nicht null sein");
+			Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), "Die FinSit des GS1 darf zu diesem Zeitpunkt nicht null sein");
+			Objects.requireNonNull(gesuch.getGesuchsteller2(), "GS2 darf zu diesem Zeitpunkt nicht null sein");
+			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), "Die FinSit des GS2 darf zu diesem Zeitpunkt nicht null sein");
+			FinanzielleSituation finanzielleSituationGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+			FinanzielleSituation finanzielleSituationGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+
+			finanzielleSituationGS2.setSteuerveranlagungErhalten(finanzielleSituationGS1.getSteuerveranlagungErhalten());
+			finanzielleSituationGS2.setSteuererklaerungAusgefuellt(finanzielleSituationGS1.getSteuererklaerungAusgefuellt());
 		}
 		return gesuchService.updateGesuch(gesuch, false);
 	}

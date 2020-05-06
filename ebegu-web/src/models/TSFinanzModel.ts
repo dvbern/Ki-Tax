@@ -188,7 +188,7 @@ export class TSFinanzModel {
             // wenn wir keinen gs2 haben sollten wir auch gar keinen solchen container haben
             console.log('illegal state: finanzielleSituationContainerGS2 exists but no gs2 is available');
         }
-        this.resetSteuerveranlagungErhalten(gesuch);
+        this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
 
         gesuch.extractFamiliensituation().kontoinhaber = this.zahlungsinformationen.kontoinhaber;
         gesuch.extractFamiliensituation().iban = this.zahlungsinformationen.iban;
@@ -204,13 +204,14 @@ export class TSFinanzModel {
     /**
      * if gemeinsameSteuererklaerung has been set to true and steuerveranlagungErhalten ist set to true for the GS1
      * as well, then we need to set steuerveranlagungErhalten to true for the GS2 too, if it exists.
+     * the same for steuererklaerungAusgefuellt
      */
-    private resetSteuerveranlagungErhalten(gesuch: TSGesuch): void {
-        if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung
-            && gesuch.gesuchsteller1 && gesuch.gesuchsteller2
-            && gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten) {
-
-            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten = true;
+    private resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch: TSGesuch): void {
+        if (gesuch.extractFamiliensituation().gemeinsameSteuererklaerung && gesuch.gesuchsteller1 && gesuch.gesuchsteller2) {
+            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten
+                =  gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuerveranlagungErhalten;
+            gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt
+                =  gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.steuererklaerungAusgefuellt;
         }
     }
 

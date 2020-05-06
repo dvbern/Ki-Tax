@@ -43,6 +43,7 @@ import javax.validation.Validator;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -89,7 +90,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public GesuchstellerContainer saveGesuchsteller(
 		@Nonnull GesuchstellerContainer gesuchsteller,
-		final Gesuch gesuch, Integer gsNumber, boolean umzug) {
+		@Nonnull final Gesuch gesuch, @Nonnull Integer gsNumber, boolean umzug) {
 		Objects.requireNonNull(gesuchsteller);
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(gsNumber);
@@ -157,28 +158,44 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	/**
 	 * Bei Mutationen fuer den GS2 muss eine leere Finanzielle Situation hinzugefuegt werden, wenn sie noch nicht
-	 * existiert. Dies aber
-	 * nur wenn die FinSit required ist.
+	 * existiert. Dies aber nur wenn die FinSit required ist.
 	 */
 	private void createFinSitInMutationIfNotExisting(
 		@Nonnull GesuchstellerContainer gesuchsteller,
-		Gesuch gesuch,
-		Integer gsNumber) {
+		@Nonnull Gesuch gesuch,
+		@Nonnull Integer gsNumber) {
 		if (gesuch.isMutation() && gsNumber == 2 && gesuchsteller.getFinanzielleSituationContainer() == null
 			&& EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 
+			// Die Felder SteuerveranlagungErhalten und SteuererklaerungAusgefuellt muessen u.U. vom GS1 kopiert werden
+			// (bei gemeinsamer Steuererklaerung)
+			Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			Objects.requireNonNull(familiensituation);
+			boolean gemeinsameStek = familiensituation.getGemeinsameSteuererklaerung() != null ?
+				familiensituation.getGemeinsameSteuererklaerung() : false;
+			GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
+			boolean stvErhaltenGs2 = false; 	// by default
+			boolean stekAusgefuelltGs2 = false; // by default
+			if (gemeinsameStek) {
+				Objects.requireNonNull(gesuchsteller1);
+				Objects.requireNonNull(gesuchsteller1.getFinanzielleSituationContainer());
+				Objects.requireNonNull(gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA());
+				stvErhaltenGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerveranlagungErhalten();
+				stekAusgefuelltGs2 = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuererklaerungAusgefuellt();
+			}
+
 			final FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
 			final FinanzielleSituation finanzielleSituationJA = new FinanzielleSituation();
-			finanzielleSituationJA.setSteuerveranlagungErhalten(false); // by default
-			finanzielleSituationJA.setSteuererklaerungAusgefuellt(false); // by default
+			finanzielleSituationJA.setSteuerveranlagungErhalten(stvErhaltenGs2);
+			finanzielleSituationJA.setSteuererklaerungAusgefuellt(stekAusgefuelltGs2);
 			finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationJA); // alle Werte by default
 			// auf null -> nichts eingetragen
-			Objects.requireNonNull(gesuch.getGesuchsteller1(), "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt "
+			Objects.requireNonNull(gesuchsteller1, "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt "
 				+ "sein");
 			Objects.requireNonNull(
-				gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
+				gesuchsteller1.getFinanzielleSituationContainer(),
 				"Finanzielle Situation GS1 muss zu diesem Zeitpunkt gesetzt sein");
-			finanzielleSituationContainer.setJahr(gesuch.getGesuchsteller1()
+			finanzielleSituationContainer.setJahr(gesuchsteller1
 				.getFinanzielleSituationContainer()
 				.getJahr()); // copy it from GS1
 			finanzielleSituationContainer.setGesuchsteller(gesuchsteller);

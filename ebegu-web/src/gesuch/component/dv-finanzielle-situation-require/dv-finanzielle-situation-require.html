@@ -24,7 +24,7 @@
             </span>
             <dv-radio-container name="sozialhilfeBezueger" id="sozialhilfeBezueger" class="input-element"
                                 ng-model="vm.sozialhilfeBezueger"
-                                ng-required="true" class="radio"
+                                ng-required="true" class="radio" ng-change="vm.setFinanziellesituationRequired()"
                                 dv-enable-element
                                 dv-enable-allowed-roles="vm.allowedRoles"
                                 dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
@@ -49,7 +49,7 @@
             <dv-radio-container name="verguenstigungGewuenscht" class="input-element"
                                 id="verguenstigungGewuenscht"
                                 ng-model="vm.verguenstigungGewuenscht"
-                                ng-required="true" class="radio"
+                                ng-required="true" class="radio" ng-change="vm.setFinanziellesituationRequired()"
                                 dv-enable-element
                                 dv-enable-allowed-roles="vm.allowedRoles"
                                 dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
