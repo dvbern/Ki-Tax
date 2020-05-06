@@ -61,12 +61,8 @@ public abstract class AbstractGemeindeRechner extends AbstractAsivRechner {
 		prepareRechnerParameterForGemeinde(input, parameterDTO);
 
 		// Jetzt die Berechnung mit den Input-Werten der Gemeinde durchfuehren
-		if (rechnerParameter.isHasGemeindeRules()) {
-			// Es muss die Methode der superklasse ausgefuehrt werden, sonst werden die Parameter wieder ueberschrieben
-			return Optional.of(super.calculateAsiv(input, parameterDTO));
-		}
-
-		return Optional.empty();
+		// Es muss die Methode der superklasse ausgefuehrt werden, sonst werden die Parameter wieder ueberschrieben
+		return Optional.of(super.calculateAsiv(input, parameterDTO));
 	}
 
 	private void prepareRechnerParameterForAsiv() {

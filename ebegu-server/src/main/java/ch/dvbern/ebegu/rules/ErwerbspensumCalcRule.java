@@ -122,6 +122,8 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
+			// Falls schon eine Bemerkung mit einem eventuell anderen Minimum erstellt wurde, dieses zuerst entfernen
+			inputData.getParent().getBemerkungenList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
 			inputData.addBemerkung(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
 			inputData.setMinimalesEwpUnterschritten(true);
