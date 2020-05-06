@@ -19,8 +19,8 @@ import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
-import {NotrechtListComponent} from '../notrecht-list/notrecht-list.component';
 import {NotrechtComponent} from '../notrecht/notrecht.component';
+import {RueckforderungFormularComponent} from '../rueckforderung-formular/rueckforderung-formular.component';
 
 const states: NgHybridStateDeclaration[] = [
     {
@@ -33,15 +33,15 @@ const states: NgHybridStateDeclaration[] = [
     {
         name: 'notrecht.list',
         url: '/list',
-        component: NotrechtListComponent,
+        component: NotrechtComponent,
         data: {
             roles: TSRoleUtil.getAllRolesForNotrecht(),
         },
     },
     {
         name: 'notrecht.form',
-        component: NotrechtComponent,
-        url: '/list/notrecht/:notrechtId',
+        component: RueckforderungFormularComponent,
+        url: '/list/rueckforderung/:rueckforderungId',
         data: {
             roles: TSRoleUtil.getAllRolesForNotrecht(),
         },

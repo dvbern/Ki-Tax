@@ -20,12 +20,13 @@ import {CommonModule} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
 import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
 import {NotrechtComponent} from './notrecht/notrecht.component';
-import { NotrechtListComponent } from './notrecht-list/notrecht-list.component';
+import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckforderung-formular.component';
+
 
 @NgModule({
     declarations: [
         NotrechtComponent,
-        NotrechtListComponent
+        RueckforderungFormularComponent
     ],
     imports: [
         CommonModule,

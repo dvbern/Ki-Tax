@@ -34,4 +34,13 @@ export class NotrechtComponent  {
     ) {
     }
 
+    public initializeRueckforderungFormulare(): void {
+        this.notrechtRS.initializeRueckforderungFormulare().then(result => {
+            console.log(result); // man sollte vermeiden console.log and logger verwenden
+        });
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
 }
