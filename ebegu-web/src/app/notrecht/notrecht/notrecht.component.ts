@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
@@ -26,7 +26,7 @@ import {NotrechtRS} from '../../core/service/notrechtRS.rest';
     styleUrls: ['./notrecht.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotrechtComponent implements OnInit {
+export class NotrechtComponent  {
 
     public constructor(
         private readonly notrechtRS: NotrechtRS,
@@ -34,16 +34,4 @@ export class NotrechtComponent implements OnInit {
     ) {
     }
 
-    public ngOnInit(): void {
-    }
-
-    public initializeRueckforderungFormulare(): void {
-        this.notrechtRS.initializeRueckforderungFormulare().then(result => {
-            console.log(result);
-        });
-    }
-
-    public isSuperAdmin(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
-    }
 }
