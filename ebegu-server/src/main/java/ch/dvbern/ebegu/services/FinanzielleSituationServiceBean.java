@@ -203,6 +203,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				// Falls der GS2 Container zu diesem Zeitpunkt noch nicht existiert, wird er hier erstellt
 				gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer()
+					.setJahr(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getJahr());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setGesuchsteller(gesuch.getGesuchsteller2());
 			}
 			FinanzielleSituation finanzielleSituationGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 			FinanzielleSituation finanzielleSituationGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
