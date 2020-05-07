@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.util;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -35,22 +36,22 @@ public final class KitaxUebergangsloesungParameter {
 
 	private static final MathUtil MATH = MathUtil.DEFAULT;
 
-	private Map<String, KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeitenMap = new HashMap<>();
+	private final @Nonnull Map<String, KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeitenMap = new HashMap<>();
 
-	private BigDecimal beitragKantonProTag = MATH.from(111.15);
-	private BigDecimal beitragStadtProTagJahr = MATH.from(8.00);
+	private final @Nonnull BigDecimal beitragKantonProTag = MATH.from(111.15);
+	private final @Nonnull BigDecimal beitragStadtProTagJahr = MATH.from(8.00);
 
-	private BigDecimal maxTageKita = MATH.from(244);
-	private BigDecimal maxStundenProTagKita = MATH.from(11.5);
+	private final @Nonnull BigDecimal maxTageKita = MATH.from(244);
+	private final @Nonnull BigDecimal maxStundenProTagKita = MATH.from(11.5);
 
-	private BigDecimal kostenProStundeMaximalKitaTagi = MATH.from(12.35);
-	private BigDecimal kostenProStundeMaximalTageseltern = MATH.from(9.49);
-	private BigDecimal kostenProStundeMinimal = MATH.from(0.79);
+	private final @Nonnull BigDecimal kostenProStundeMaximalKitaTagi = MATH.from(12.35);
+	private final @Nonnull BigDecimal kostenProStundeMaximalTageseltern = MATH.from(9.49);
+	private final @Nonnull BigDecimal kostenProStundeMinimal = MATH.from(0.79);
 
-	private BigDecimal maxMassgebendesEinkommen = MATH.from(160000);
-	private BigDecimal minMassgebendesEinkommen = MATH.from(43000);
+	private final @Nonnull BigDecimal maxMassgebendesEinkommen = MATH.from(160000);
+	private final @Nonnull BigDecimal minMassgebendesEinkommen = MATH.from(43000);
 
-	private BigDecimal babyFaktor = MATH.from(1.5);
+	private final @Nonnull BigDecimal babyFaktor = MATH.from(1.5);
 
 	private LocalDate stadtBernAsivStartDate = null;
 	private boolean isStadtBernAsivConfiguered = false;
@@ -156,46 +157,56 @@ public final class KitaxUebergangsloesungParameter {
 	@Nullable
 	public KitaxUebergangsloesungInstitutionOeffnungszeiten getOeffnungszeiten(@Nonnull String kitaName) {
 		KitaxUebergangsloesungInstitutionOeffnungszeiten dto =
-			oeffnungszeitenMap.get(kitaName.trim().toLowerCase());
+			oeffnungszeitenMap.get(kitaName.trim().toLowerCase(Locale.GERMAN));
 		return dto;
 	}
 
+	@Nonnull
 	public BigDecimal getBeitragKantonProTag() {
 		return beitragKantonProTag;
 	}
 
+	@Nonnull
 	public BigDecimal getBeitragStadtProTagJahr() {
 		return beitragStadtProTagJahr;
 	}
 
+	@Nonnull
 	public BigDecimal getMaxTageKita() {
 		return maxTageKita;
 	}
 
+	@Nonnull
 	public BigDecimal getMaxStundenProTagKita() {
 		return maxStundenProTagKita;
 	}
 
+	@Nonnull
 	public BigDecimal getKostenProStundeMaximalKitaTagi() {
 		return kostenProStundeMaximalKitaTagi;
 	}
 
+	@Nonnull
 	public BigDecimal getKostenProStundeMaximalTageseltern() {
 		return kostenProStundeMaximalTageseltern;
 	}
 
+	@Nonnull
 	public BigDecimal getKostenProStundeMinimal() {
 		return kostenProStundeMinimal;
 	}
 
+	@Nonnull
 	public BigDecimal getMaxMassgebendesEinkommen() {
 		return maxMassgebendesEinkommen;
 	}
 
+	@Nonnull
 	public BigDecimal getMinMassgebendesEinkommen() {
 		return minMassgebendesEinkommen;
 	}
 
+	@Nonnull
 	public BigDecimal getBabyFaktor() {
 		return babyFaktor;
 	}
