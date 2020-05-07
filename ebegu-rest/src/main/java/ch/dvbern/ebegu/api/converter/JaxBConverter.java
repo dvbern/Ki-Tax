@@ -5134,6 +5134,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
 
+		convertAbstractFieldsToJAX(rueckforderungFormular, jaxFormular);
+
 		jaxFormular.setInstitutionStammdaten(institutionStammdatenToJAX(rueckforderungFormular.getInstitutionStammdaten()));
 		jaxFormular.setStatus(rueckforderungFormular.getStatus());
 
@@ -5164,6 +5166,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public RueckforderungFormular rueckforderungFormularToEntity(@Nonnull JaxRueckforderungFormular rueckforderungFormularJax, @Nonnull RueckforderungFormular rueckforderungFormular) {
+
+		convertAbstractFieldsToEntity(rueckforderungFormularJax, rueckforderungFormular);
 
 		//InstitutionStammdaten
 		String instStammdatenID = rueckforderungFormularJax.getInstitutionStammdaten().getId();
@@ -5208,6 +5212,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
+		convertAbstractFieldsToJAX(rueckforderungMitteilung, jaxMitteilung);
 		jaxMitteilung.setAbsender(benutzerToJaxBenutzer(rueckforderungMitteilung.getAbsender()));
 		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
 		jaxMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());

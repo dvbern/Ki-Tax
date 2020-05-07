@@ -18,7 +18,9 @@
 import {Component, ChangeDetectionStrategy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 
 @Component({
@@ -31,7 +33,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
-    public rueckforderungFormular: TSRueckforderungFormular;
+    public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -45,14 +47,19 @@ export class RueckforderungFormularComponent implements OnInit {
         if (!rueckforederungFormId) {
             return;
         }
-
-        this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
-            (response: TSRueckforderungFormular) => {
-                this.rueckforderungFormular = response;
-            });
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
+                (response: TSRueckforderungFormular) => {
+                    return response;
+                }));
     }
 
-    public saveRueckforderungFormular(): void {
-        // TODO
+    public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (!this.form.valid) {
+            EbeguUtil.selectFirstInvalid();
+            return;
+        }
+
+        this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular);
     }
 }

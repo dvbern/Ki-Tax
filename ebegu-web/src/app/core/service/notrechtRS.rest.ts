@@ -16,7 +16,6 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
@@ -55,5 +54,18 @@ export class NotrechtRS {
                 this.$log.debug('PARSING RueckforderungFormular REST object ', response.data);
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
             });
+    }
+
+    public saveRueckforderungFormular(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        let restRueckforderungFormular = {};
+        restRueckforderungFormular =
+            this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
+
+        return this.$http.put(this.serviceURL, restRueckforderungFormular).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
     }
 }

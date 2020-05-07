@@ -1967,5 +1967,8 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
+    "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}}",
+    "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Anzahl Plätze (in Tagen ausgedrückt), die nicht zur Verfügung standen",
+    "RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG": "Kostenübernahme Betreuung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
