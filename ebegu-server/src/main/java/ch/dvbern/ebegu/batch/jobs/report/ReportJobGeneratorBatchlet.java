@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
+import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -68,6 +69,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportLastenausgleichSelbstbehaltService reportLastenausgleichKibonService;
+
+	@Inject
+	private ReportNotrechtService reportNotrechtService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -177,7 +181,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return this.reportService.generateExcelReportInstitutionen(locale);
 		}
 		case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
-			boolean doSave = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+			boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
 			return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
 		}
@@ -188,6 +192,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			Objects.requireNonNull(gesuchPeriodeId);
 			final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
 			return this.reportService.generateExcelReportTagesschuleOhneFinSit(stammdatenId, gesuchPeriodeId, locale);
+		}
+		case VORLAGE_REPORT_NOTRECHT: {
+			boolean zahlungenAusloesen = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+			return this.reportNotrechtService.generateExcelReportNotrecht(zahlungenAusloesen);
 		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

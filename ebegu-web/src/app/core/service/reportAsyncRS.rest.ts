@@ -241,6 +241,16 @@ export class ReportAsyncRS {
             });
     }
 
+    public getNotrechtReportExcel(zahlungenAusloesen: boolean): IPromise<string> {
+        const reportParams = this.httpParamSerializer({
+            zahlungenAusloesen,
+        });
+        return this.http.get(`${this.serviceURL}/excel/notrecht?${reportParams}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }

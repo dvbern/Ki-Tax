@@ -1419,6 +1419,7 @@
     "ReportType_verrechnungkibon": "VerrechnungKibon",
     "ReportType_lastenausgleich": "Lastenausgleich",
     "ReportType_tagesschuleOhneFinSit": "Tagesschule Anmeldungen",
+    "ReportType_notrecht": "Notrecht",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
@@ -1967,5 +1968,9 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
+    "NOTRECHT_STATISTIK": "Notrecht Corona",
+    "NOTRECHT_INFO": "Statistik zu Auszahlungen Corona",
+    "NOTRECHT_ZAHLUNGEN_AUSLOESEN": "Fällige Zahlungen auslösen",
+    "STATISTIK_NOTRECHT_HINT": "TODO Text definieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

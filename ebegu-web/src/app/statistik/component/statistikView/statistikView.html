@@ -802,6 +802,49 @@
                     </div>
                 </div>
 
+                <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
+                    <dv-accordion-tab tabid="notrecht">
+                        <tab-title>
+                            <span class="uppercase" data-translate="NOTRECHT_STATISTIK"></span>
+                            <dv-tooltip input-id="notrecht_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_NOTRECHT_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
+                        <tab-body>
+                            <form name="notrecht"
+                                  ng-submit="vm.generateStatistik(notrecht, vm.TSStatistikParameterType.NOTRECHT)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-12 form-group md-no-float statistik-no-fields">
+                                        <span data-translate="NOTRECHT_INFO"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <dv-input-container class="form-group">
+                                            <md-checkbox name="doSave"
+                                                         ng-model="vm.statistikParameter.doSave"
+                                                         aria-label="NOTRECHT_DEFINITIV"
+                                                         class="input-element">
+                                                <span data-translate="NOTRECHT_ZAHLUNGEN_AUSLOESEN"></span>
+                                            </md-checkbox>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
+
             </dv-accordion>
         </div>
     </div>
