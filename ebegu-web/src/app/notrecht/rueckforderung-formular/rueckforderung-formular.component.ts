@@ -36,22 +36,23 @@ export class RueckforderungFormularComponent implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly notrechtRS: NotrechtRS
-    )
-        {
+    ) {
     }
 
     public ngOnInit(): void {
-        const rueckforederungFormId: string = this.$transition$.params().benutzerId;
+        const rueckforederungFormId: string = this.$transition$.params().rueckforderungId;
 
         if (!rueckforederungFormId) {
             return;
         }
 
-
-        this.rueckforderungFormular = new TSRueckforderungFormular();
+        this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
+            (response: TSRueckforderungFormular) => {
+                this.rueckforderungFormular = response;
+            });
     }
 
-    public saveRueckforderungFormular(): void{
+    public saveRueckforderungFormular(): void {
         // TODO
     }
 }

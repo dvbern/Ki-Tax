@@ -16,6 +16,8 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
+import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
+import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class NotrechtRS {
@@ -23,25 +25,23 @@ export class NotrechtRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public $http: angular.IHttpService;
-
     public constructor(
-        public http: IHttpService,
+        public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        public log: ILogService,
+        public $log: ILogService,
     ) {
         this.serviceURL = `${REST_API}notrecht`;
 
     }
 
     public initializeRueckforderungFormulare(): IPromise<void> {
-        return this.http.post(`${this.serviceURL}/initialize`, {})
+        return this.$http.post(`${this.serviceURL}/initialize`, {})
             .then(response => {
                 const rueckforderungFormulare = this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
                 console.log(rueckforderungFormulare);
             }, error => {
-                console.error(error);
+                this.$log.error(error);
             });
     }
 
@@ -49,4 +49,11 @@ export class NotrechtRS {
         return 'NotrechtRS';
     }
 
+    public findRueckforderungFormular(rueckforderungFormularID: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(rueckforderungFormularID)}`)
+            .then((response: any) => {
+                this.$log.debug('PARSING RueckforderungFormular REST object ', response.data);
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
 }
