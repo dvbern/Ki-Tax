@@ -95,6 +95,7 @@ public abstract class AbstractBGRechnerTest {
 	protected static final int BASISJAHR_PLUS_1 = 2017;
 	protected static final int BASISJAHR_PLUS_2 = 2018;
 
+
 	@Before
 	public void setUpCalcuator() {
 		evaluator = createEvaluator(TestDataUtil.createGesuchsperiode1718(), TestDataUtil.createGemeindeParis());
@@ -175,7 +176,7 @@ public abstract class AbstractBGRechnerTest {
 		einstellungen.put(GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT, gmdeMaxFreiwilligenarbeit);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
 		return new BetreuungsgutscheinEvaluator(rules);
 	}
 
@@ -232,6 +233,30 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(MATH.from(massgebendesEinkVorFamAbz), MATH.from(abschnitt.getMassgebendesEinkommenVorAbzFamgr()));
 		assertEquals(MATH.from(abzugFam), MATH.from(abschnitt.getAbzugFamGroesse()));
 		assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
+	}
+
+	private static BGRechnerParameterDTO createParameterDTO() {
+		BGRechnerParameterDTO dto = new BGRechnerParameterDTO();
+		dto.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
+		dto.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
+		dto.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
+		dto.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
+		dto.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
+		dto.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
+		dto.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
+		dto.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
+		dto.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
+		dto.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
+		dto.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
+		dto.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
+		dto.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
+		dto.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
+		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
+		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
+		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
+		return dto;
 	}
 
 	/**

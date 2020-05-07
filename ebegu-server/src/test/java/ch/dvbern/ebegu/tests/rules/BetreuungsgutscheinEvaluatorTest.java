@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -89,12 +90,14 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 	private final DateRange gesuchsperiode = new DateRange(LocalDate.of(2016, Month.AUGUST, 1), LocalDate.of(2017, Month.JULY, 31));
 
+	private KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter = TestDataUtil.geKitaxUebergangsloesungParameter();
+
 	@Test
 	public void doTestEvaluation() {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setEingangsdatum(LocalDate.of(2016, 7, 1));
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
@@ -109,7 +112,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(new BigDecimal("500000")); //zu hoch -> Comment wird erzeugt
 
-		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(testgesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {

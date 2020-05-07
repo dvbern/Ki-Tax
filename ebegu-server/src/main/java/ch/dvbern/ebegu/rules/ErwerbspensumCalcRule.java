@@ -49,20 +49,17 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 
-	private final int zuschlagErwerbspensum;
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
 
 	protected ErwerbspensumCalcRule(
 		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
-		int zuschlagErwerbspensum,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, ruleValidity, validityPeriod, locale);
-		this.zuschlagErwerbspensum = zuschlagErwerbspensum;
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
 	}
@@ -127,7 +124,9 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			inputData.setMinimalesEwpUnterschritten(true);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
-			anspruch += zuschlagErwerbspensum;
+			if (inputData.getErwerbspensumZuschlag() != null) {
+				anspruch += inputData.getErwerbspensumZuschlag();
+			}
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
 			addVerfuegungsBemerkung(inputData);
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
