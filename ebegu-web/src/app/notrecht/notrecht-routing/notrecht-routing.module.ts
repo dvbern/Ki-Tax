@@ -27,7 +27,7 @@ const states: NgHybridStateDeclaration[] = [
         parent: 'app',
         name: 'notrecht',
         abstract: true,
-        url: '/notrecht',
+        url: '/corona-finanzierung',
         component: UiViewComponent,
     },
     {

@@ -1963,7 +1963,7 @@
     "FERIENINSEL_AKTIVIERUNGSDATUM": "Anmeldungen für Ferieninsel akzeptieren ab",
     "FREISCHALTUNG_FERIENINSEL_INFO": "Die Anmeldung ist im Moment noch nicht möglich.",
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
-    "NOTRECHT": "Notrecht",
+    "CORONA_FINANZIERUNG": "Corona Finanzierung",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
