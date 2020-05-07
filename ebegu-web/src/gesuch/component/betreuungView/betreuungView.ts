@@ -1229,6 +1229,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getBetreuungInGemeindeLabel(): string {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGemeinde())) {
+            return '';
+        }
         return this.$translate.instant('BETREUUNG_IN_GEMEINDE',
             {gemeinde: this.gesuchModelManager.getGemeinde().name});
     }
