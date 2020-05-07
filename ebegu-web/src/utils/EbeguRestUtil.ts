@@ -3845,7 +3845,7 @@ export class EbeguRestUtil {
 
     public parseRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular,
                                        rueckforderungFormularFromServer: any): TSRueckforderungFormular {
-        rueckforderungFormular.institution = this.parseInstitution(new TSInstitution(), rueckforderungFormularFromServer.institution);
+        rueckforderungFormular.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(), rueckforderungFormularFromServer.institutionStammdaten);
         rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
         rueckforderungFormular.status = rueckforderungFormularFromServer.status;
         rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
