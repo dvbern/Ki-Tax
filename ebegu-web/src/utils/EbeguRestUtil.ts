@@ -117,6 +117,8 @@ import {TSPendenzBetreuung} from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSPublicAppConfig} from '../models/TSPublicAppConfig';
+import {TSRueckforderungFormular} from '../models/TSRueckforderungFormular';
+import {TSRueckforderungMitteilung} from '../models/TSRueckforderungMitteilung';
 import {TSSozialhilfeZeitraum} from '../models/TSSozialhilfeZeitraum';
 import {TSSozialhilfeZeitraumContainer} from '../models/TSSozialhilfeZeitraumContainer';
 import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
@@ -3829,5 +3831,72 @@ export class EbeguRestUtil {
         kitaxResponse.fallNummer = response.fallNr;
 
         return kitaxResponse;
+    }
+
+    public parseRueckforderungFormularList(data: any): TSRueckforderungFormular[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(
+                item => this.parseRueckforderungFormular(new TSRueckforderungFormular(), item))
+            : [this.parseRueckforderungFormular(new TSRueckforderungFormular(), data)];
+    }
+
+    public parseRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular,
+                                       rueckforderungFormularFromServer: any): TSRueckforderungFormular {
+        rueckforderungFormular.institution = this.parseInstitution(new TSInstitution(), rueckforderungFormularFromServer.institution);
+        rueckforderungFormular.rueckforderungMitteilungen = this.parseRueckforderungMitteilungList(rueckforderungFormularFromServer.rueckforderungMitteilungen);
+        rueckforderungFormular.status = rueckforderungFormularFromServer.status;
+        rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlStunden =
+            rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlStunden = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlStunden;
+        rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe2KantonKostenuebernahmeAnzahlTage =
+            rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeAnzahlTage = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeAnzahlTage;
+        rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe1KantonKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe1InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe2KantonKostenuebernahmeBetreuung =
+            rueckforderungFormularFromServer.stufe2KantonKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeBetreuung;
+        rueckforderungFormular.stufe1FreigabeBetrag = rueckforderungFormularFromServer.stufe1FreigabeBetrag;
+        rueckforderungFormular.stufe1FreigabeDatum =
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
+        rueckforderungFormular.stufe1FreigabeAusbezahltAm =
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe1FreigabeAusbezahltAm);
+        rueckforderungFormular.stufe2VerfuegungBetrag = rueckforderungFormularFromServer.stufe2VerfuegungBetrag;
+        rueckforderungFormular.stufe2VerfuegungDatum =
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
+        rueckforderungFormular.stufe2VerfuegungAusbezahltAm =
+            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
+        return rueckforderungFormular;
+    }
+
+    public parseRueckforderungMitteilungList(data: Array<any>): TSRueckforderungMitteilung[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(
+                item => this.parseRueckforderungMitteilung(new TSRueckforderungMitteilung(), item))
+            : [this.parseRueckforderungMitteilung(new TSRueckforderungMitteilung(), data)];
+    }
+
+    public parseRueckforderungMitteilung(rueckforderungMitteilung: TSRueckforderungMitteilung,
+                                         rueckforderungMitteilungFromServer: any): TSRueckforderungMitteilung {
+        rueckforderungMitteilung.absender = this.parseUser(new TSBenutzer(), rueckforderungMitteilungFromServer.absender);
+        rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
+        rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
+        rueckforderungMitteilung.sendeDatum = DateUtil.localDateToMoment(rueckforderungMitteilungFromServer.sendeDatum);
+        rueckforderungMitteilung.gesendetAnStatus = rueckforderungMitteilungFromServer.gesendetAnStatus;
+        return rueckforderungMitteilung;
     }
 }

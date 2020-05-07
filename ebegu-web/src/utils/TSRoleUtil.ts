@@ -577,4 +577,16 @@ export class TSRoleUtil {
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
         return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
     }
+
+    public static getAllRolesForNotrecht(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+        ];
+    }
 }
