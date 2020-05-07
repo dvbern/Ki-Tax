@@ -49,8 +49,8 @@ import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
-import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTOv2;
-import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTOv2;
+import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
+import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -58,16 +58,16 @@ import static java.util.Objects.requireNonNull;
 @ApplicationScoped
 public class VerfuegungEventConverter {
 
-	private static final Comparator<ZeitabschnittDTOv2> ZEITABSCHNITT_COMPARATOR = Comparator
-		.comparing(ZeitabschnittDTOv2::getVon)
-		.thenComparing(ZeitabschnittDTOv2::getBis);
+	private static final Comparator<ZeitabschnittDTO> ZEITABSCHNITT_COMPARATOR = Comparator
+		.comparing(ZeitabschnittDTO::getVon)
+		.thenComparing(ZeitabschnittDTO::getBis);
 
 	@Inject
 	private VerfuegungService verfuegungService;
 
 	@Nonnull
 	public Optional<VerfuegungVerfuegtEvent> of(@Nonnull Verfuegung verfuegung) {
-		VerfuegungEventDTOv2 dto = toVerfuegungEventDTOv2(verfuegung);
+		VerfuegungEventDTO dto = toVerfuegungEventDTO(verfuegung);
 		if (dto == null) {
 			return Optional.empty();
 		}
@@ -78,7 +78,7 @@ public class VerfuegungEventConverter {
 	}
 
 	@Nullable
-	private VerfuegungEventDTOv2 toVerfuegungEventDTOv2(@Nonnull Verfuegung verfuegung) {
+	private VerfuegungEventDTO toVerfuegungEventDTO(@Nonnull Verfuegung verfuegung) {
 		Betreuung betreuung = verfuegung.getBetreuung();
 		if (betreuung == null) {
 			return null;
@@ -92,7 +92,7 @@ public class VerfuegungEventConverter {
 		LocalDateTime timestampErstellt = verfuegung.getTimestampErstellt();
 		Instant verfuegtAm = requireNonNull(timestampErstellt).atZone(ZoneId.systemDefault()).toInstant();
 
-		VerfuegungEventDTOv2.Builder builder = VerfuegungEventDTOv2.newBuilder()
+		VerfuegungEventDTO.Builder builder = VerfuegungEventDTO.newBuilder()
 			.setKind(toKindDTO(kind))
 			.setGesuchsteller(toGesuchstellerDTO(gesuchsteller))
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()))
@@ -129,7 +129,7 @@ public class VerfuegungEventConverter {
 			.build();
 	}
 
-	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTOv2.Builder builder) {
+	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
 			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend()));
@@ -164,20 +164,20 @@ public class VerfuegungEventConverter {
 	}
 
 	@Nonnull
-	private List<ZeitabschnittDTOv2> convertZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> abschnitte) {
+	private List<ZeitabschnittDTO> convertZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> abschnitte) {
 		return abschnitte.stream()
-			.map(this::toZeitabschnittDTOv2)
+			.map(this::toZeitabschnittDTO)
 			.sorted(ZEITABSCHNITT_COMPARATOR)
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private ZeitabschnittDTOv2 toZeitabschnittDTOv2(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+	private ZeitabschnittDTO toZeitabschnittDTO(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		MathUtil ROUND = MathUtil.ZWEI_NACHKOMMASTELLE;
 
 		Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 		Objects.requireNonNull(betreuung);
-		return ZeitabschnittDTOv2.newBuilder()
+		return ZeitabschnittDTO.newBuilder()
 			.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb())
 			.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis())
 			.setVerfuegungNr(betreuung.extractGesuch().getLaufnummer())

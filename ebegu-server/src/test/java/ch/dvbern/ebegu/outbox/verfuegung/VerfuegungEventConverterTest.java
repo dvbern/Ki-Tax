@@ -43,8 +43,8 @@ import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.verfuegung.GesuchstellerDTO;
 import ch.dvbern.kibon.exchange.commons.verfuegung.KindDTO;
-import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTOv2;
-import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTOv2;
+import ch.dvbern.kibon.exchange.commons.verfuegung.VerfuegungEventDTO;
+import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.junit.Assert;
 import org.junit.Test;
@@ -104,34 +104,34 @@ public class VerfuegungEventConverterTest {
 		);
 
 		//noinspection deprecation
-		VerfuegungEventDTOv2 specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
+		VerfuegungEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		// Avro only serializes Instant with microsecond precision (opposed to nano)
 		long expectedVerfuegtAm = TIMESTAMP_ERSTELLT.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-		assertThat(specificRecord, is(pojo(VerfuegungEventDTOv2.class)
-			.where(VerfuegungEventDTOv2::getRefnr, is(bgNummer))
-			.where(VerfuegungEventDTOv2::getInstitutionId, is(institutionId))
-			.where(VerfuegungEventDTOv2::getVon, is(gesuchsperiode.getGueltigkeit().getGueltigAb()))
-			.where(VerfuegungEventDTOv2::getBis, is(gesuchsperiode.getGueltigkeit().getGueltigBis()))
-			.where(VerfuegungEventDTOv2::getVersion, is(0))
-			.where(VerfuegungEventDTOv2::getVerfuegtAm, is(pojo(Instant.class)
+		assertThat(specificRecord, is(pojo(VerfuegungEventDTO.class)
+			.where(VerfuegungEventDTO::getRefnr, is(bgNummer))
+			.where(VerfuegungEventDTO::getInstitutionId, is(institutionId))
+			.where(VerfuegungEventDTO::getVon, is(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+			.where(VerfuegungEventDTO::getBis, is(gesuchsperiode.getGueltigkeit().getGueltigBis()))
+			.where(VerfuegungEventDTO::getVersion, is(0))
+			.where(VerfuegungEventDTO::getVerfuegtAm, is(pojo(Instant.class)
 				.where(Instant::toEpochMilli, is(expectedVerfuegtAm))))
-			.where(VerfuegungEventDTOv2::getKind, is(pojo(KindDTO.class)
+			.where(VerfuegungEventDTO::getKind, is(pojo(KindDTO.class)
 				.where(KindDTO::getVorname, is(KIND_VORNAME))
 				.where(KindDTO::getNachname, is(KIND_NACHNAME))
 				.where(KindDTO::getGeburtsdatum, is(KIND_GEBURTSDATUM))
 			))
-			.where(VerfuegungEventDTOv2::getGesuchsteller, is(pojo(GesuchstellerDTO.class)
+			.where(VerfuegungEventDTO::getGesuchsteller, is(pojo(GesuchstellerDTO.class)
 				.where(GesuchstellerDTO::getVorname, is(GESUCHSTELLER_VORNAME))
 				.where(GesuchstellerDTO::getNachname, is(GESUCHSTELLER_NACHNAME))
 				.where(GesuchstellerDTO::getEmail, is(GESUCHSTELLER_MAIL))
 			))
-			.where(VerfuegungEventDTOv2::getBetreuungsArt, is(BetreuungsangebotTyp.KITA))
-			.where(VerfuegungEventDTOv2::getGemeindeName, is(gemeinde.getName()))
-			.where(VerfuegungEventDTOv2::getGemeindeBfsNr, is(gemeinde.getBfsNummer()))
-			.where(VerfuegungEventDTOv2::getZeitabschnitte, is(contains(defaultZeitAbschnitt())))
-			.where(VerfuegungEventDTOv2::getIgnorierteZeitabschnitte, is(empty()))
+			.where(VerfuegungEventDTO::getBetreuungsArt, is(BetreuungsangebotTyp.KITA))
+			.where(VerfuegungEventDTO::getGemeindeName, is(gemeinde.getName()))
+			.where(VerfuegungEventDTO::getGemeindeBfsNr, is(gemeinde.getBfsNummer()))
+			.where(VerfuegungEventDTO::getZeitabschnitte, is(contains(defaultZeitAbschnitt())))
+			.where(VerfuegungEventDTO::getIgnorierteZeitabschnitte, is(empty()))
 		));
 	}
 
@@ -147,29 +147,29 @@ public class VerfuegungEventConverterTest {
 			.orElseThrow(() -> new IllegalStateException("Test setup broken"));
 
 		//noinspection deprecation
-		VerfuegungEventDTOv2 specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
+		VerfuegungEventDTO specificRecord = AvroConverter.fromAvroBinary(event.getSchema(), event.getPayload());
 
 		// expecting value from verfuegung
 		assertThat(specificRecord.getZeitabschnitte(), everyItem(hasProperty("regelwerk", equalTo(Regelwerk.FEBR))));
 	}
 
 	@Nonnull
-	private IsPojo<ZeitabschnittDTOv2> defaultZeitAbschnitt() {
-		return pojo(ZeitabschnittDTOv2.class)
-			.where(ZeitabschnittDTOv2::getVon, is(LocalDate.now()))
-			.where(ZeitabschnittDTOv2::getBis, is(Constants.END_OF_TIME))
-			.where(ZeitabschnittDTOv2::getVerfuegungNr, is(0))
-			.where(ZeitabschnittDTOv2::getEffektiveBetreuungPct, comparesEqualTo(BigDecimal.TEN))
-			.where(ZeitabschnittDTOv2::getAnspruchPct, is(50))
-			.where(ZeitabschnittDTOv2::getVerguenstigtPct, comparesEqualTo(BigDecimal.TEN))
-			.where(ZeitabschnittDTOv2::getVollkosten, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTOv2::getBetreuungsgutschein, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTOv2::getMinimalerElternbeitrag, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTOv2::getVerguenstigung, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTOv2::getVerfuegteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTOv2::getAnspruchsberechtigteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
-			.where(ZeitabschnittDTOv2::getZeiteinheit, is(Zeiteinheit.DAYS))
-			.where(ZeitabschnittDTOv2::getRegelwerk, is(Regelwerk.ASIV));
+	private IsPojo<ZeitabschnittDTO> defaultZeitAbschnitt() {
+		return pojo(ZeitabschnittDTO.class)
+			.where(ZeitabschnittDTO::getVon, is(LocalDate.now()))
+			.where(ZeitabschnittDTO::getBis, is(Constants.END_OF_TIME))
+			.where(ZeitabschnittDTO::getVerfuegungNr, is(0))
+			.where(ZeitabschnittDTO::getEffektiveBetreuungPct, comparesEqualTo(BigDecimal.TEN))
+			.where(ZeitabschnittDTO::getAnspruchPct, is(50))
+			.where(ZeitabschnittDTO::getVerguenstigtPct, comparesEqualTo(BigDecimal.TEN))
+			.where(ZeitabschnittDTO::getVollkosten, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getBetreuungsgutschein, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getMinimalerElternbeitrag, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getVerguenstigung, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getVerfuegteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getAnspruchsberechtigteAnzahlZeiteinheiten, comparesEqualTo(BigDecimal.ZERO))
+			.where(ZeitabschnittDTO::getZeiteinheit, is(Zeiteinheit.DAYS))
+			.where(ZeitabschnittDTO::getRegelwerk, is(Regelwerk.ASIV));
 	}
 
 	@Nonnull
