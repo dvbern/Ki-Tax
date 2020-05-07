@@ -199,7 +199,11 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			Objects.requireNonNull(gesuch.getGesuchsteller1(), "GS1 darf zu diesem Zeitpunkt nicht null sein");
 			Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), "Die FinSit des GS1 darf zu diesem Zeitpunkt nicht null sein");
 			Objects.requireNonNull(gesuch.getGesuchsteller2(), "GS2 darf zu diesem Zeitpunkt nicht null sein");
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), "Die FinSit des GS2 darf zu diesem Zeitpunkt nicht null sein");
+			if (gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null) {
+				// Falls der GS2 Container zu diesem Zeitpunkt noch nicht existiert, wird er hier erstellt
+				gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
+			}
 			FinanzielleSituation finanzielleSituationGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 			FinanzielleSituation finanzielleSituationGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 
