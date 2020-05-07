@@ -70,7 +70,7 @@ public class SozialhilfeAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	private VerfuegungZeitabschnitt createZeitabschnitt(@Nonnull DateRange gueltigkeit) {
-		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
 		verfuegungZeitabschnitt.setSozialhilfeempfaengerForAsivAndGemeinde(true);
 		return verfuegungZeitabschnitt;

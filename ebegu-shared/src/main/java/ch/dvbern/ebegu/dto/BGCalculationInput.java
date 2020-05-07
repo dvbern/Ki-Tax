@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang.Validate;
 
 public class BGCalculationInput {
 
@@ -55,6 +54,9 @@ public class BGCalculationInput {
 
 	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
+
+	@Nullable
+	private Integer erwerbspensumZuschlag = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
@@ -149,6 +151,7 @@ public class BGCalculationInput {
 		this.parent = toCopy.parent;
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
+		this.erwerbspensumZuschlag = toCopy.erwerbspensumZuschlag;
 		HashSet<Taetigkeit> mergedTaetigkeiten = new HashSet<>();
 		mergedTaetigkeiten.addAll(this.taetigkeiten);
 		mergedTaetigkeiten.addAll(toCopy.taetigkeiten);
@@ -221,6 +224,15 @@ public class BGCalculationInput {
 
 	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS2) {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
+	}
+
+	@Nullable
+	public Integer getErwerbspensumZuschlag() {
+		return erwerbspensumZuschlag;
+	}
+
+	public void setErwerbspensumZuschlag (@Nullable Integer erwerbspensumZuschlag) {
+		this.erwerbspensumZuschlag = erwerbspensumZuschlag;
 	}
 
 	public Set<Taetigkeit> getTaetigkeiten() {
@@ -558,6 +570,11 @@ public class BGCalculationInput {
 				(other.getErwerbspensumGS2() != null ? other.getErwerbspensumGS2() : 0));
 		}
 
+		// Die Felder betreffend EWP Zuschlag können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
+		if (other.getErwerbspensumZuschlag() != null) {
+			this.setErwerbspensumZuschlag(other.getErwerbspensumZuschlag());
+		}
+
 		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
 		if (this.getMonatlicheBetreuungskosten() != null) {
 			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
@@ -605,12 +622,16 @@ public class BGCalculationInput {
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
-			Validate.isTrue(this.getAbzugFamGroesse() == null, "Familiengoressenabzug kann nicht gemerged werden");
+			if (this.getAbzugFamGroesse() != null && !MathUtil.isSame(this.getAbzugFamGroesse(), other.getAbzugFamGroesse())) {
+				throw new IllegalArgumentException("Familiengoressenabzug kann nicht gemerged werden");
+			}
 			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
 		}
 		// Die Familiengroesse kann nicht linear addiert werden, daher darf es hier nie uebschneidungen geben
 		if (other.getFamGroesse() != null) {
-			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
+			if (this.getFamGroesse() != null && !MathUtil.isSame(this.getFamGroesse(), other.getFamGroesse())) {
+				throw new IllegalArgumentException("Familiengoressen kann nicht gemerged werden");
+			}
 			this.setFamGroesse(other.getFamGroesse());
 		}
 	}
@@ -619,6 +640,7 @@ public class BGCalculationInput {
 		return
 			isSameErwerbspensum(erwerbspensumGS1, other.erwerbspensumGS1) &&
 			isSameErwerbspensum(erwerbspensumGS2, other.erwerbspensumGS2) &&
+			isSameErwerbspensum(erwerbspensumZuschlag, other.erwerbspensumZuschlag) &&
 			fachstellenpensum == other.fachstellenpensum &&
 			ausserordentlicherAnspruch == other.ausserordentlicherAnspruch &&
 			anspruchspensumRest == other.anspruchspensumRest &&

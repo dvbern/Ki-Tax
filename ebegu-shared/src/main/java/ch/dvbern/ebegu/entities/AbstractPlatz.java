@@ -299,6 +299,12 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	}
 
 	@Nonnull
+	@Transient
+	public Gemeinde extractGemeinde() {
+		return this.extractGesuch().extractGemeinde();
+	}
+
+	@Nonnull
 	public String getInstitutionAndBetreuungsangebottyp(@Nonnull Locale locale) {
 		String angebot = ServerMessageUtil
 			.translateEnumValue(getBetreuungsangebotTyp(), locale);

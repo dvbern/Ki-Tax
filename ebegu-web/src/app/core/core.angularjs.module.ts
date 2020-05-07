@@ -142,6 +142,7 @@ import {LastenausgleichRS} from './service/lastenausgleichRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MandantRS} from './service/mandantRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
+import {NotrechtRS} from './service/notrechtRS.rest';
 import {ReportAsyncRS} from './service/reportAsyncRS.rest';
 import {ReportRS} from './service/reportRS.rest';
 import {SearchIndexRS} from './service/searchIndexRS.rest';
@@ -233,6 +234,7 @@ export const CORE_JS_MODULE = angular
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
+    .service('NotrechtRS', NotrechtRS)
     .service('EinstellungRS', EinstellungRS)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
