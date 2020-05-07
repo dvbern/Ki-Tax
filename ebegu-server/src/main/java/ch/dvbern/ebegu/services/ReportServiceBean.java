@@ -1368,12 +1368,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensumProzent()));
 
 		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
-		BigDecimal anspruchsPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+		BigDecimal anspruchsPensumKanton =
+			new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
 		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
 		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
 		if (zeitabschnitt.getBgCalculationResultGemeinde() != null) {
 			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
-			BigDecimal anspruchsPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+			BigDecimal anspruchsPensumTotalGemeinde =
+				new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
 			anspruchsPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(anspruchsPensumTotalGemeinde, anspruchsPensumKanton);
 			anspruchsPensumTotal = anspruchsPensumTotalGemeinde;
 		}
@@ -1394,7 +1396,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgPensumKanton(bgPensumKanton);
 		row.setBgPensumGemeinde(bgPensumGemeinde);
 		row.setBgPensumTotal(bgPensumTotal);
-		
+
 		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());

@@ -79,7 +79,6 @@ export class NotrechtComponent implements OnInit {
                 'RUECKFORDERUNG_FORMULARE_INITIALISIERT',
                 {anzahlFormulare: formulare.length}
             ));
-            console.log(formulare);
         });
     }
 

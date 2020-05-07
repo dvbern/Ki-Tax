@@ -203,6 +203,14 @@ public final class EbeguUtil {
 			|| gesuch.getEinkommensverschlechterungInfoContainer() == null;
 	}
 
+	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
+		return gesuch.getFamiliensituationContainer() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+			&& (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
+			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger()))
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() != null;
+	}
+
 	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
 		// Im Status ENTWURF sollen die Erläuterungen immer als Beilage aufgeführt werden
 		if (!gesuch.getStatus().isAnyStatusOfVerfuegt()) {

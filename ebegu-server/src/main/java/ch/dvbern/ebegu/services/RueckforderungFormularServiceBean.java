@@ -20,6 +20,8 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -76,7 +78,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)) {
 
 				RueckforderungFormular formular = new RueckforderungFormular();
-				formular.setInstitution(institutionStammdaten.getInstitution());
+				formular.setInstitutionStammdaten(institutionStammdaten);
 				formular.setStatus(RueckforderungStatus.NEU);
 				rueckforderungFormulare.add(createRueckforderungFormular(formular));
 			}
@@ -90,7 +92,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	private boolean isFormularExisting(InstitutionStammdaten stammdaten,
 		Collection<RueckforderungFormular> rueckforderungFormularCollection) {
 		List<RueckforderungFormular> filteredFormulare = rueckforderungFormularCollection.stream().filter(formular -> {
-			return formular.getInstitution().getId().equals(stammdaten.getInstitution().getId());
+			return formular.getInstitutionStammdaten().getId().equals(stammdaten.getId());
 		}).collect(Collectors.toList());
 		return filteredFormulare.size() > 0;
 	}
@@ -126,5 +128,21 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 			}
 			return false;
 		}).collect(Collectors.toList());
+	}
+
+	@Nonnull
+	@Override
+	public Optional<RueckforderungFormular> findRueckforderungFormular(String id) {
+		Objects.requireNonNull(id, "id muss gesetzt sein");
+		RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, id);
+		return Optional.ofNullable(rueckforderungFormular);
+	}
+
+	@Nonnull
+	@Override
+	public RueckforderungFormular save(RueckforderungFormular rueckforderungFormular) {
+		Objects.requireNonNull(rueckforderungFormular);
+		final RueckforderungFormular mergedRueckforderungFormular = persistence.merge(rueckforderungFormular);
+		return mergedRueckforderungFormular;
 	}
 }

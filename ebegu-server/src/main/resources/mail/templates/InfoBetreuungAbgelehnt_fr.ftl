@@ -30,7 +30,7 @@ ${templateConfiguration.mailCss}
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
 	</p>
 	<p>
-		Nous vous présentons nos salutations les meilleures.<br/>
+		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>

@@ -1276,10 +1276,12 @@ export class GesuchModelManager {
 
     public isThereAnyNotGeprueftesKind(): boolean {
         const kinderList = this.getKinderList();
-        for (const kind of kinderList) {
-            // das kind muss schon gespeichert sein damit es zahelt
-            if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
-                return true;
+        if (EbeguUtil.isNotNullOrUndefined(kinderList)) {
+            for (const kind of kinderList) {
+                // das kind muss schon gespeichert sein damit es zahelt
+                if (kind.kindJA && !kind.kindJA.isNew() && !kind.kindJA.isGeprueft()) {
+                    return true;
+                }
             }
         }
         return false;

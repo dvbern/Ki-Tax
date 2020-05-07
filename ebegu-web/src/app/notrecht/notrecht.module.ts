@@ -21,10 +21,12 @@ import {TranslateModule} from '@ngx-translate/core';
 import {MaterialModule} from '../shared/material.module';
 import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
 import {NotrechtComponent} from './notrecht/notrecht.component';
+import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckforderung-formular.component';
 
 @NgModule({
     declarations: [
-        NotrechtComponent
+        NotrechtComponent,
+        RueckforderungFormularComponent
     ],
     imports: [
         CommonModule,
