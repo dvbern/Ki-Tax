@@ -235,4 +235,19 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	public void setFerieninselanmeldungenStartdatum(@Nonnull LocalDate ferieninselanmeldungenStartdatum) {
 		this.ferieninselanmeldungenStartdatum = ferieninselanmeldungenStartdatum;
 	}
+
+	public boolean isGesuchsperiodeRelevantForGemeinde(@Nonnull Gesuchsperiode gesuchsperiode) {
+		// Pruefen, ob irgendein Angebot waehrend dieser Gesuchsperiode vorhanden war
+		LocalDate endeGesuchperiode = gesuchsperiode.getGueltigkeit().getGueltigBis();
+		if (angebotBG && betreuungsgutscheineStartdatum.isBefore(endeGesuchperiode)) {
+			return true;
+		}
+		if (angebotTS && tagesschulanmeldungenStartdatum.isBefore(endeGesuchperiode)) {
+			return true;
+		}
+		if (angebotFI && ferieninselanmeldungenStartdatum.isBefore(endeGesuchperiode)) {
+			return true;
+		}
+		return false;
+	}
 }

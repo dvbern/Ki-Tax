@@ -18,20 +18,34 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +64,8 @@ public class NotrechtResource {
 	private JaxBConverter converter;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
-		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response = JaxRueckforderungFormular.class)
+		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
+		JaxRueckforderungFormular.class)
 	@Nullable
 	@POST
 	@Path("/initialize")
@@ -63,6 +78,57 @@ public class NotrechtResource {
 			rueckforderungFormularService.initializeRueckforderungFormulare();
 
 		return converter.rueckforderungFormularListToJax(createdFormulare);
+	}
+
+	@ApiOperation(value = "Updates a RueckforderungFormular in the database", response =
+		JaxRueckforderungFormular.class)
+	@Nullable
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungFormular update(
+		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(rueckforderungFormularJAXP.getId());
+
+		RueckforderungFormular rueckforderungFormularFromDB =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				rueckforderungFormularJAXP.getId()));
+
+		RueckforderungFormular rueckforderungFormularToMerge =
+			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
+			rueckforderungFormularFromDB);
+		RueckforderungFormular modifiedRueckforderungFormular =
+			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
+		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
+	}
+
+	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
+		response = JaxRueckforderungFormular.class)
+	@Nullable
+	@GET
+	@Path("/{rueckforderungFormId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxRueckforderungFormular findRueckforderungFormular(
+		@Nonnull @NotNull @PathParam("rueckforderungFormId") JaxId rueckforderungFormJaxId) {
+
+		Objects.requireNonNull(rueckforderungFormJaxId.getId());
+		String rueckforderungFormId = converter.toEntityId(rueckforderungFormJaxId);
+		Optional<RueckforderungFormular> rueckforderungFormularOptional =
+			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormId);
+
+		if (!rueckforderungFormularOptional.isPresent()) {
+			return null;
+		}
+		RueckforderungFormular rueckforderungFormularToReturn = rueckforderungFormularOptional.get();
+		final JaxRueckforderungFormular jaxRueckforderungFormular =
+			converter.rueckforderungFormularToJax(rueckforderungFormularToReturn);
+		return jaxRueckforderungFormular;
 	}
 
 }

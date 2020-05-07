@@ -106,7 +106,7 @@ public class MailTemplateConfiguration {
 			sprache);
 	}
 
-	public String getInfoSchulamtAnmeldungUebernommen(
+	public String getInfoSchulamtAnmeldungTagesschuleUebernommen(
 		@Nonnull AbstractAnmeldung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
@@ -114,7 +114,22 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateAnmeldung(
-			MailTemplate.InfoSchulamtAnmeldungUebernommen,
+			MailTemplate.InfoSchulamtAnmeldungTagesschuleUebernommen,
+			betreuung,
+			gesuchsteller,
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
+	}
+
+	public String getInfoSchulamtAnmeldungFerieninselUebernommen(
+		@Nonnull AbstractAnmeldung betreuung,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
+
+		return processTemplateAnmeldung(
+			MailTemplate.InfoSchulamtAnmeldungFerieninselUebernommen,
 			betreuung,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -588,7 +603,7 @@ public class MailTemplateConfiguration {
 		return paramMap;
 	}
 
-	public String getInfoSchulamtAnmeldungAkzeptiert(
+	public String getInfoSchulamtAnmeldungTagesschuleAkzeptiert(
 		@Nonnull AbstractAnmeldung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
@@ -596,7 +611,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateAnmeldung(
-			MailTemplate.InfoSchulamtAnmeldungAkzeptiert,
+			MailTemplate.InfoSchulamtAnmeldungTagesschuleAkzeptiert,
 			betreuung,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),

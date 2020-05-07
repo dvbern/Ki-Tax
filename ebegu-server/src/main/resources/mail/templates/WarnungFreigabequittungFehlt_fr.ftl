@@ -36,7 +36,7 @@ ${templateConfiguration.mailCss}
 		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
 	</p>
 	<p>
-		Nous vous présentons nos salutations les meilleures.<br/>
+		Nous vous présentons nos meilleures salutations.<br/>
 		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>

@@ -3663,9 +3663,15 @@ export class EbeguRestUtil {
         if (!data) {
             return [];
         }
-        return Array.isArray(data)
+        const tage = Array.isArray(data)
             ? data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
             : [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
+
+        tage.sort( (a: TSBelegungFerieninselTag, b: TSBelegungFerieninselTag) => {
+            return a.tag.valueOf() - b.tag.valueOf();
+        });
+
+        return tage;
     }
 
     private parseBelegungFerieninselTag(

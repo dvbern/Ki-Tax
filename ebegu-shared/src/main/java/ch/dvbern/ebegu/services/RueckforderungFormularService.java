@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
@@ -49,4 +50,13 @@ public interface RueckforderungFormularService {
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
+
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	Optional<RueckforderungFormular> findRueckforderungFormular(String id);
+
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
+
 }

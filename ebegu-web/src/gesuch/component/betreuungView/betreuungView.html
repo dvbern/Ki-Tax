@@ -678,7 +678,7 @@
                 <div ng-if="vm.displayModuleTagesschule()">
                     <betreuung-tagesschule-view betreuung="vm.getBetreuungModel()" form="vm.form"
                                                 on-save="vm.anmeldenSchulamt()"
-                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen()"
+                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen(isScolaris)"
                                                 anmeldung-schulamt-ablehnen="vm.anmeldungSchulamtAblehnen()"
                                                 anmeldung-schulamt-falsche-institution="vm.anmeldungSchulamtFalscheInstitution()"
                                                 cancel="vm.cancel()">
@@ -689,7 +689,7 @@
                 <div ng-if="vm.isFerieninsel()">
                     <betreuung-ferieninsel-view betreuung="vm.getBetreuungModel()" form="vm.form"
                                                 on-save="vm.anmeldenSchulamt()"
-                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen()"
+                                                anmeldung-schulamt-uebernehmen="vm.anmeldungSchulamtUebernehmen(isScolaris)"
                                                 anmeldung-schulamt-ablehnen="vm.anmeldungSchulamtAblehnen()"
                                                 anmeldung-schulamt-falsche-institution="vm.anmeldungSchulamtFalscheInstitution()"
                                                 cancel="vm.cancel()">
