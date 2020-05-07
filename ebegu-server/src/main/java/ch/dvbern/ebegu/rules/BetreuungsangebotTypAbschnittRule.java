@@ -57,7 +57,7 @@ public class BetreuungsangebotTypAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull AbstractPlatz platz) {
-		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(platz.extractGesuchsperiode().getGueltigkeit());
+		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(platz.extractGesuchsperiode().getGueltigkeit());
 		zeitabschnitt.setBetreuungsangebotTypForAsivAndGemeinde(platz.getBetreuungsangebotTyp());
 		return zeitabschnitt;
 	}

@@ -83,8 +83,7 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		boolean baby,
 		@Nonnull EinschulungTyp einschulungTyp
 	) {
-		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		verfuegungZeitabschnitt.setGueltigkeit(gueltigkeit);
+		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(baby);
 		verfuegungZeitabschnitt.setEinschulungTypForAsivAndGemeinde(einschulungTyp);
 		return verfuegungZeitabschnitt;
