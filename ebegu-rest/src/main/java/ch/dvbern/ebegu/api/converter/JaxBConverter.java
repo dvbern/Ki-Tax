@@ -5164,7 +5164,6 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public RueckforderungFormular rueckforderungFormularToEntity(@Nonnull JaxRueckforderungFormular rueckforderungFormularJax, @Nonnull RueckforderungFormular rueckforderungFormular) {
-		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
 
 		//InstitutionStammdaten
 		String instStammdatenID = rueckforderungFormularJax.getInstitutionStammdaten().getId();
