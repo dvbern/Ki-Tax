@@ -14,17 +14,67 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
+<dv-full-height-container>
+    <form role="form"
+		  #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          *ngIf="rueckforderungFormular$ | async as rueckforderungFormular"
+          (ngSubmit)="saveRueckforderungFormular(rueckforderungFormular)"
+          novalidate>
+        <div class="notrecht adminModul" flex="auto">
+            <div class="col-md-8 col-md-offset-2">
 
-<div class="notrecht adminModul" flex="auto">
-    <div class="col-md-8 col-md-offset-2">
-
-        <h1 class="access-for-all-title" translate>RUECKFORDERUNG FORMULAR</h1>
-        <div class="viewTitle">
-            <h2 translate>RUECKFORDERUNG</h2>
-            <hr class="header">
+                <div class="row viewTitle">
+                    <div class="col-md-12">
+                        <h2>{{'RUECKFORDERUNGSFORMULARE_DETAIL' | translate: {
+							name:
+							rueckforderungFormular.institutionStammdaten.institution.name
+						}
+                            }}</h2>
+                        <hr class="header">
+                    </div>
+                </div>
+                <fieldset>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="required" translate for="anzahl_plaetze_stufe1_insti_in_tage_id">
+                                    RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE</label>
+                                <input id="anzahl_plaetze_stufe1_insti_in_tage_id" type="number"
+                                       name="anzahl_plaetze_stufe1_insti_in_tage"
+                                       #stufe1InstitutionKostenuebernahmeAnzahlTage="ngModel"
+                                       [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage"
+                                       class="form-control" required>
+                                <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeAnzahlTage.errors"
+                                                   inputId="anzahl_plaetze_stufe1_insti_in_tage_id">
+                                </dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="required" translate for="kostenuebernahme_betreuung_stuf1_insti_id">
+                                    RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG</label>
+                                <input id="kostenuebernahme_betreuung_stuf1_insti_id" type="number"
+                                       name="kostenuebernahme_betreuung_stuf1_insti"
+									   #stufe1InstitutionKostenuebernahmeBetreuung="ngModel"
+                                       [(ngModel)]="rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung"
+                                       class="form-control" required>
+                                <dv-error-messages [errorObject]="stufe1InstitutionKostenuebernahmeBetreuung.errors"
+                                                   inputId="kostenuebernahme_betreuung_stuf1_insti_id">
+                                </dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
         </div>
-
-
-
-    </div>
-</div>
+        <!-- Buttons -->
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>SPEICHERN</span>
+            </dv-loading-button>
+        </div>
+    </form>
+</dv-full-height-container>
