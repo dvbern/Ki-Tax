@@ -116,6 +116,8 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
@@ -176,7 +178,6 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FileMetadata;
@@ -205,6 +206,8 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
@@ -766,7 +769,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (containerJAX.getSozialhilfeZeitraumContainers() != null) {
 			sozialhilfeZeitraumContainersToEntity(containerJAX.getSozialhilfeZeitraumContainers(),
-					container.getSozialhilfeZeitraumContainers());
+				container.getSozialhilfeZeitraumContainers());
 		}
 
 		return container;
@@ -1362,7 +1365,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstitution;
 	}
 
-	public JaxInstitutionListDTO institutionListDTOToJAX(final Entry<Institution,InstitutionStammdaten> entry) {
+	public JaxInstitutionListDTO institutionListDTOToJAX(final Entry<Institution, InstitutionStammdaten> entry) {
 		final JaxInstitutionListDTO jaxInstitutionListDTO = new JaxInstitutionListDTO();
 		convertAbstractVorgaengerFieldsToJAX(entry.getKey(), jaxInstitutionListDTO);
 		jaxInstitutionListDTO.setName(entry.getKey().getName());
@@ -1380,7 +1383,8 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxInstitutionListDTO;
 	}
 
-	public boolean institutionToEntity(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution, @Nonnull InstitutionStammdaten stammdaten) {
+	public boolean institutionToEntity(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution,
+		@Nonnull InstitutionStammdaten stammdaten) {
 		boolean nameUpdated = updateName(update, institution);
 		boolean traegerschaftUpdated = updateTraegerschaft(update, institution);
 		boolean statusUpdated = updateStatus(institution, stammdaten);
@@ -1652,7 +1656,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxEinstellungenFerieninsel einstellungFerieninselToJAX (
+	private JaxEinstellungenFerieninsel einstellungFerieninselToJAX(
 		@Nonnull final EinstellungenFerieninsel persistedEinstellungFerieninsel
 	) {
 		JaxEinstellungenFerieninsel jaxEinstellungFI = new JaxEinstellungenFerieninsel();
@@ -1690,9 +1694,9 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdatenFerieninsel.setGemeinde(gemeinde);
 
 		Set<EinstellungenFerieninsel> convertedEinstellungenFerieninsel = einstellungenTagesschuleListToEntity(
-				institutionStammdatenFerieninselJAXP.getEinstellungenFerieninsel(),
-				institutionStammdatenFerieninsel.getEinstellungenFerieninsel(),
-				institutionStammdatenFerieninsel);
+			institutionStammdatenFerieninselJAXP.getEinstellungenFerieninsel(),
+			institutionStammdatenFerieninsel.getEinstellungenFerieninsel(),
+			institutionStammdatenFerieninsel);
 
 		institutionStammdatenFerieninsel.getEinstellungenFerieninsel().clear();
 		institutionStammdatenFerieninsel.getEinstellungenFerieninsel().addAll(convertedEinstellungenFerieninsel);
@@ -1725,7 +1729,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private EinstellungenFerieninsel einstellungFerieninselToEntity (
+	private EinstellungenFerieninsel einstellungFerieninselToEntity(
 		@Nonnull final JaxEinstellungenFerieninsel jaxEinstellungFerieninsel,
 		@Nonnull EinstellungenFerieninsel einstellungFerieninsel
 	) {
@@ -1736,7 +1740,6 @@ public class JaxBConverter extends AbstractConverter {
 		einstellungFerieninsel.setAusweichstandortHerbstferien(jaxEinstellungFerieninsel.getAusweichstandortHerbstferien());
 		einstellungFerieninsel.setAusweichstandortSommerferien(jaxEinstellungFerieninsel.getAusweichstandortSommerferien());
 		einstellungFerieninsel.setAusweichstandortSportferien(jaxEinstellungFerieninsel.getAusweichstandortSportferien());
-
 
 		// Die Gesuchsperiode muss neu von der DB gelesen werden
 		String gesuchsperiodeId = jaxEinstellungFerieninsel.getGesuchsperiode().getId();
@@ -3047,7 +3050,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		return betreuungspensum;
 	}
-
 
 	@Nonnull
 	private Set<JaxBetreuung> betreuungListToJax(@Nullable final Set<Betreuung> betreuungen) {
@@ -4467,13 +4469,16 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenToJAX(
 		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel persistedFerieninselStammdaten) {
 
-		final JaxGemeindeStammdatenGesuchsperiodeFerieninsel jaxGemeindeStammdatenGesuchsperiodeFerieninsel = new JaxGemeindeStammdatenGesuchsperiodeFerieninsel();
+		final JaxGemeindeStammdatenGesuchsperiodeFerieninsel jaxGemeindeStammdatenGesuchsperiodeFerieninsel =
+			new JaxGemeindeStammdatenGesuchsperiodeFerieninsel();
 
-		convertAbstractVorgaengerFieldsToJAX(persistedFerieninselStammdaten, jaxGemeindeStammdatenGesuchsperiodeFerieninsel);
+		convertAbstractVorgaengerFieldsToJAX(persistedFerieninselStammdaten,
+			jaxGemeindeStammdatenGesuchsperiodeFerieninsel);
 		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienname(persistedFerieninselStammdaten.getFerienname());
 		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
 		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienActive(persistedFerieninselStammdaten.isFerienActive());
-		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum : persistedFerieninselStammdaten.getZeitraumList()) {
+		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum :
+			persistedFerieninselStammdaten.getZeitraumList()) {
 			JaxFerieninselZeitraum jaxFerieninselZeitraum = new JaxFerieninselZeitraum();
 			convertAbstractDateRangedFieldsToJAX(ferieninselZeitraum, jaxFerieninselZeitraum);
 			jaxGemeindeStammdatenGesuchsperiodeFerieninsel.getZeitraumList().add(jaxFerieninselZeitraum);
@@ -4884,7 +4889,8 @@ public class JaxBConverter extends AbstractConverter {
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 
-		Collection<Einstellung> einstellungenByMandant = einstellungService.getAllEinstellungenByMandant(gesuchsperiode);
+		Collection<Einstellung> einstellungenByMandant =
+			einstellungService.getAllEinstellungenByMandant(gesuchsperiode);
 		konfiguration.setErwerbspensumZuschlagMax(
 			einstellungenByMandant.stream()
 				.filter(einstellung ->
@@ -4931,7 +4937,6 @@ public class JaxBConverter extends AbstractConverter {
 
 	public void alwaysEditablePropertiesToGesuch(@Nonnull final JaxAlwaysEditableProperties properties,
 		@Nonnull Gesuch gesuch) {
-
 
 		// fields on GS1
 		Gesuchsteller gs1 = gesuch.extractGesuchsteller1().orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -5116,5 +5121,143 @@ public class JaxBConverter extends AbstractConverter {
 		return externalClients.stream()
 			.map(this::externalClientToJAX)
 			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public List<JaxRueckforderungFormular> rueckforderungFormularListToJax(@Nonnull List<RueckforderungFormular> rueckforderungFormularList) {
+		return rueckforderungFormularList.stream()
+			.map(this::rueckforderungFormularToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxRueckforderungFormular rueckforderungFormularToJax(@Nonnull RueckforderungFormular rueckforderungFormular) {
+		JaxRueckforderungFormular jaxFormular = new JaxRueckforderungFormular();
+
+		convertAbstractFieldsToJAX(rueckforderungFormular, jaxFormular);
+
+		jaxFormular.setInstitutionStammdaten(institutionStammdatenToJAX(rueckforderungFormular.getInstitutionStammdaten()));
+		jaxFormular.setStatus(rueckforderungFormular.getStatus());
+
+		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+		jaxFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
+		jaxFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2KantonKostenuebernahmeAnzahlStunden());
+		jaxFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
+		jaxFormular.setStufe1KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+		jaxFormular.setStufe1InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeAnzahlTage());
+		jaxFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2KantonKostenuebernahmeAnzahlTage());
+		jaxFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
+		jaxFormular.setStufe1KantonKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+		jaxFormular.setStufe1InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe1InstitutionKostenuebernahmeBetreuung());
+		jaxFormular.setStufe2KantonKostenuebernahmeBetreuung(rueckforderungFormular.getStufe2KantonKostenuebernahmeBetreuung());
+		jaxFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormular.getStufe2InstitutionKostenuebernahmeBetreuung());
+		jaxFormular.setStufe1FreigabeBetrag(rueckforderungFormular.getStufe1FreigabeBetrag());
+		jaxFormular.setStufe1FreigabeDatum(rueckforderungFormular.getStufe1FreigabeDatum());
+		jaxFormular.setStufe1FreigabeAusbezahltAm(rueckforderungFormular.getStufe1FreigabeAusbezahltAm());
+		jaxFormular.setStufe2VerfuegungBetrag(rueckforderungFormular.getStufe2VerfuegungBetrag());
+		jaxFormular.setStufe2VerfuegungDatum(rueckforderungFormular.getStufe2VerfuegungDatum());
+		jaxFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormular.getStufe2VerfuegungAusbezahltAm());
+
+		jaxFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToJax(rueckforderungFormular.getRueckforderungMitteilungen()));
+
+		return jaxFormular;
+
+	}
+
+	@Nonnull
+	public RueckforderungFormular rueckforderungFormularToEntity(@Nonnull JaxRueckforderungFormular rueckforderungFormularJax, @Nonnull RueckforderungFormular rueckforderungFormular) {
+
+		convertAbstractFieldsToEntity(rueckforderungFormularJax, rueckforderungFormular);
+
+		//InstitutionStammdaten
+		String instStammdatenID = rueckforderungFormularJax.getInstitutionStammdaten().getId();
+		requireNonNull(instStammdatenID, "Die Institutionsstammdaten muessen gesetzt sein");
+		InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.findInstitutionStammdaten(instStammdatenID)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"rueckforderungFormularToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularJax.getInstitutionStammdaten().getId())
+				);
+		rueckforderungFormular.setInstitutionStammdaten(institutionStammdaten);
+		rueckforderungFormular.setStatus(rueckforderungFormularJax.getStatus());
+
+		rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1KantonKostenuebernahmeAnzahlStunden());
+		rueckforderungFormular.setStufe1InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
+		rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe2KantonKostenuebernahmeAnzahlStunden());
+		rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlStunden(rueckforderungFormularJax.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
+		rueckforderungFormular.setStufe1KantonKostenuebernahmeAnzahlTage(rueckforderungFormularJax.getStufe1KantonKostenuebernahmeAnzahlTage());
+		rueckforderungFormular.setStufe1InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormularJax.getStufe1InstitutionKostenuebernahmeAnzahlTage());
+		rueckforderungFormular.setStufe2KantonKostenuebernahmeAnzahlTage(rueckforderungFormularJax.getStufe2KantonKostenuebernahmeAnzahlTage());
+		rueckforderungFormular.setStufe2InstitutionKostenuebernahmeAnzahlTage(rueckforderungFormularJax.getStufe2InstitutionKostenuebernahmeAnzahlTage());
+		rueckforderungFormular.setStufe1KantonKostenuebernahmeBetreuung(rueckforderungFormularJax.getStufe1KantonKostenuebernahmeBetreuung());
+		rueckforderungFormular.setStufe1InstitutionKostenuebernahmeBetreuung(rueckforderungFormularJax.getStufe1InstitutionKostenuebernahmeBetreuung());
+		rueckforderungFormular.setStufe2KantonKostenuebernahmeBetreuung(rueckforderungFormularJax.getStufe2KantonKostenuebernahmeBetreuung());
+		rueckforderungFormular.setStufe2InstitutionKostenuebernahmeBetreuung(rueckforderungFormularJax.getStufe2InstitutionKostenuebernahmeBetreuung());
+		rueckforderungFormular.setStufe1FreigabeBetrag(rueckforderungFormularJax.getStufe1FreigabeBetrag());
+		rueckforderungFormular.setStufe1FreigabeDatum(rueckforderungFormularJax.getStufe1FreigabeDatum());
+		rueckforderungFormular.setStufe1FreigabeAusbezahltAm(rueckforderungFormularJax.getStufe1FreigabeAusbezahltAm());
+		rueckforderungFormular.setStufe2VerfuegungBetrag(rueckforderungFormularJax.getStufe2VerfuegungBetrag());
+		rueckforderungFormular.setStufe2VerfuegungDatum(rueckforderungFormularJax.getStufe2VerfuegungDatum());
+		rueckforderungFormular.setStufe2VerfuegungAusbezahltAm(rueckforderungFormularJax.getStufe2VerfuegungAusbezahltAm());
+		rueckforderungFormular.setRueckforderungMitteilungen(rueckforderungMitteilungenToEntity(rueckforderungFormularJax.getRueckforderungMitteilungen(), rueckforderungFormular.getRueckforderungMitteilungen()));
+
+		return rueckforderungFormular;
+	}
+
+	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
+		return rueckforderungMitteilungen.stream().map(this::rueckforderungMitteilungToJax)
+			.collect(Collectors.toList());
+	}
+
+	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
+		convertAbstractFieldsToJAX(rueckforderungMitteilung, jaxMitteilung);
+		jaxMitteilung.setAbsender(benutzerToJaxBenutzer(rueckforderungMitteilung.getAbsender()));
+		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
+		jaxMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
+		jaxMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
+		jaxMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
+		return jaxMitteilung;
+	}
+
+	@Nonnull
+	public Set<RueckforderungMitteilung> rueckforderungMitteilungenToEntity(@Nonnull List<JaxRueckforderungMitteilung> jaxRueckforderungMitteilungen, @Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen) {
+		final Set<RueckforderungMitteilung> convertedRueckforderungMitteilung = new TreeSet<>();
+		for (final JaxRueckforderungMitteilung jaxRueckforderungMitteilung : jaxRueckforderungMitteilungen) {
+			final RueckforderungMitteilung rueckforderungMitteilungToMergeWith = rueckforderungMitteilungen
+				.stream()
+				.filter(existingRueckforderungMitteilung -> existingRueckforderungMitteilung.getId().equals(jaxRueckforderungMitteilung.getId()))
+				.reduce(StreamsUtil.toOnlyElement())
+				.orElseGet(RueckforderungMitteilung::new);
+			final RueckforderungMitteilung rueckforderungMitteilungToAdd =
+				rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung,
+					rueckforderungMitteilungToMergeWith);
+			final boolean added = convertedRueckforderungMitteilung.add(rueckforderungMitteilungToAdd);
+			if (!added) {
+				LOGGER.warn("dropped duplicate berechtigung {}", rueckforderungMitteilungToAdd);
+			}
+		}
+		return convertedRueckforderungMitteilung;
+	}
+
+	public RueckforderungMitteilung rueckforderungMitteilungToEntity(@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung, @Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+
+		convertAbstractFieldsToEntity(jaxRueckforderungMitteilung, rueckforderungMitteilung);
+
+		Benutzer benutzer =
+			benutzerService.findBenutzer(jaxRueckforderungMitteilung.getAbsender().getUsername())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"rueckforderungMitteilungToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					jaxRueckforderungMitteilung.getAbsender().getUsername()));
+
+		rueckforderungMitteilung.setAbsender(benutzer);
+		rueckforderungMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
+		rueckforderungMitteilung.setGesendetAnStatus(rueckforderungMitteilung.getGesendetAnStatus());
+		rueckforderungMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
+		rueckforderungMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());
+
+		return rueckforderungMitteilung;
 	}
 }

@@ -100,6 +100,13 @@
                 </md-button>
             </md-menu-item>
 
+            <!-- Notrecht -->
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesForNotrecht()">
+                <md-button ui-sref-active="active" ui-sref="notrecht.list" aria-label="{{'NOTRECHT' | translate}}">
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="CORONA_FINANZIERUNG" aria-hidden></a>
+                </md-button>
+            </md-menu-item>
+
             <md-menu-divider></md-menu-divider>
 
             <md-menu-item>
