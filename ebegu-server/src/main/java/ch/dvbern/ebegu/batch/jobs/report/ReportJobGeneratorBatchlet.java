@@ -158,6 +158,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
+			Objects.requireNonNull(gesuchPeriodeId);
 			return generateReportMassenversand(dateFrom, dateTo, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_INSTITUTIONEN: {
@@ -183,8 +184,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
 	}
 
-	private UploadFileInfo generateReportMassenversand(@Nonnull LocalDate dateFrom, @Nonnull LocalDate dateTo, @Nullable String gesuchPeriodeId, @Nonnull Locale locale) throws ExcelMergeException {
-		Objects.requireNonNull(gesuchPeriodeId);
+	private UploadFileInfo generateReportMassenversand(
+		@Nonnull LocalDate dateFrom, @Nonnull LocalDate dateTo, @Nonnull String gesuchPeriodeId, @Nonnull Locale locale
+	) throws ExcelMergeException {
 		boolean inklBgGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
 		boolean inklMischGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
 		boolean inklTsGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
