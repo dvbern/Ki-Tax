@@ -15,24 +15,38 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {resolveComponentResources} from '@angular/core/src/metadata/resource_loading';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {SharedModule} from '../../shared/shared.module';
 
 import {NotrechtComponent} from './notrecht.component';
 
 describe('NotrechtComponent', () => {
     let component: NotrechtComponent;
     let fixture: ComponentFixture<NotrechtComponent>;
-    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['initializeRueckforderungFormulare']);
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name,
+        ['initializeRueckforderungFormulare', 'getRueckforderungFormulareForCurrentBenutzer']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole', 'isOneOfRoles']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+            ],
             declarations: [NotrechtComponent],
             providers: [
+                WindowRef,
                 {provide: NotrechtRS, useValue: notrechtRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ]
         })
             .compileComponents();
@@ -45,6 +59,8 @@ describe('NotrechtComponent', () => {
     });
 
     it('should create', () => {
+        spyOn(notrechtRSSpy, 'getRueckforderungFormulareForCurrentBenutzer')
+            .and.returnValue( Promise.resolve([] ));
         expect(component).toBeTruthy();
     });
 });
