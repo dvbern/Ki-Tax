@@ -15,7 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {resolveComponentResources} from '@angular/core/src/metadata/resource_loading';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
