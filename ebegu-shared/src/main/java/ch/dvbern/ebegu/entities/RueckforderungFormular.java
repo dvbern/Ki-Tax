@@ -346,4 +346,21 @@ public class RueckforderungFormular extends AbstractEntity {
 		return this.status.equals(otherRueckforderungFormular.getStatus()) &&
 			this.getInstitutionStammdaten().getId().equals(otherRueckforderungFormular.getInstitutionStammdaten().getId());
 	}
+
+	private boolean isAuszuzahlenStufe1() {
+		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null;
+	}
+
+	private boolean isAuszuzahlenStufe2() {
+		return RueckforderungStatus.VERFUEGT == status && stufe2VerfuegungAusbezahltAm == null;
+	}
+
+	public void handleAuszahlungIfNecessary() {
+		if (isAuszuzahlenStufe1()) {
+			this.stufe1FreigabeAusbezahltAm = LocalDateTime.now();
+		}
+		if (isAuszuzahlenStufe2()) {
+			this.stufe2VerfuegungAusbezahltAm = LocalDateTime.now();
+		}
+	}
 }

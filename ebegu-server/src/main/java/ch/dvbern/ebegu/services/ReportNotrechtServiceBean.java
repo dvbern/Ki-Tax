@@ -76,8 +76,10 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 	public List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen) {
 		List<NotrechtDataRow> formulare = new ArrayList<>();
 		Collection<RueckforderungFormular> auszuzahlendeFormulare = findAllAuszuzahlendeFormulare();
-		// TODO (hefr) das Flag beachten!
 		for (RueckforderungFormular rueckforderungFormular : auszuzahlendeFormulare) {
+			if (zahlungenAusloesen) {
+				rueckforderungFormular.handleAuszahlungIfNecessary();
+			}
 			NotrechtDataRow dataRow = convertToDataRow(rueckforderungFormular);
 			formulare.add(dataRow);
 		}
@@ -146,6 +148,7 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 	@Nonnull
 	private Collection<RueckforderungFormular> findAllAuszuzahlendeFormulare() {
+		// Wir geben immer alle Formulare aus in der Statistik
 		return rueckforderungFormularService.getAllRueckforderungFormulare();
 	}
 
