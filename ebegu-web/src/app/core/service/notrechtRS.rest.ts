@@ -35,21 +35,21 @@ export class NotrechtRS {
     }
 
     public initializeRueckforderungFormulare(): IPromise<TSRueckforderungFormular[]> {
-        return this.http.post(`${this.serviceURL}/initialize`, {})
+        return this.$http.post(`${this.serviceURL}/initialize`, {})
             .then(response => {
                 return this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
             });
     }
 
     public getRueckforderungFormulareForCurrentBenutzer(): IPromise<TSRueckforderungFormular[]> {
-        return this.http.get(`${this.serviceURL}/currentuser`, {})
+        return this.$http.get(`${this.serviceURL}/currentuser`, {})
             .then(response => {
                 return this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
             });
     }
 
     public currentUserHasFormular(): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/currentuser/hasformular`, {}).then(response => {
+        return this.$http.get(`${this.serviceURL}/currentuser/hasformular`, {}).then(response => {
             return response.data as boolean;
         });
     }

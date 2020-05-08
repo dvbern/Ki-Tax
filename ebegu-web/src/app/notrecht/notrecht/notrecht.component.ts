@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {MatSort, MatTableDataSource} from '@angular/material';
+import {MatSort, MatTableDataSource, MatPaginator} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
@@ -25,6 +25,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
@@ -40,10 +41,13 @@ export class NotrechtComponent implements OnInit {
     @ViewChild(MatSort)
     private readonly sort: MatSort;
 
+    @ViewChild(MatPaginator) public paginator: MatPaginator;
+
     public rueckforderungFormulare: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
+    // tslint:disable-next-line:no-duplicate-string
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
-        'status', 'zahlungStufe1', 'zahlungStufe2', 'clickable-hint'];
+        'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
 
     public constructor(
         private readonly notrechtRS: NotrechtRS,
@@ -64,10 +68,17 @@ export class NotrechtComponent implements OnInit {
 
     private initDataSource(formulare: TSRueckforderungFormular[]): void {
         this.rueckforderungFormulareSource = new MatTableDataSource<TSRueckforderungFormular>(formulare);
-        this.rueckforderungFormulareSource.sort = this.sort;
+        this.rueckforderungFormulareSource.paginator = this.paginator;
+
+        this.initFilter();
+        this.initSort();
+    }
+
+    private initSort(): void {
         this.rueckforderungFormulareSource.sortingDataAccessor = (item, property) => {
             switch (property) {
                 case 'institutionStammdaten.institution.name': return item.institutionStammdaten.institution.name;
+                case 'status': return this.translateRueckforderungStatus(item.status);
                 case 'institutionStammdaten.betreuungsangebotTyp': return item.institutionStammdaten.betreuungsangebotTyp;
                 case 'zahlungStufe1': return this.getZahlungAusgeloest(item.stufe1FreigabeAusbezahltAm);
                 case 'zahlungStufe2': return this.getZahlungAusgeloest(item.stufe2VerfuegungAusbezahltAm);
@@ -76,12 +87,26 @@ export class NotrechtComponent implements OnInit {
                     return item[property];
             }
         };
-        this.rueckforderungFormulareSource.filterPredicate = (data: TSRueckforderungFormular, filter: string)  => {
+        this.rueckforderungFormulareSource.sort = this.sort;
+        this.sortTable();
+    }
+
+    private sortTable(): void {
+        this.sort.sort({
+                id: 'institutionStammdaten.institution.name',
+                start: 'asc',
+                disableClear: false,
+            },
+        );
+    }
+
+    private initFilter(): void {
+        this.rueckforderungFormulareSource.filterPredicate = (data, filter)  => {
             return EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
-            || EbeguUtil.hasTextCaseInsensitive(data.status, filter)
-            || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
-            || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
-            || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter);
+                || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
+                || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
+                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
+                || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter);
         };
     }
 
@@ -102,12 +127,25 @@ export class NotrechtComponent implements OnInit {
         if (EbeguUtil.isNotNullOrUndefined(date)) {
             return date.format(CONSTANTS.DATE_FORMAT);
         }
-        return this.translate.instant('LABEL_NEIN');
+        return this.translate.instant('NICHT_AUSGELOEST');
     }
 
-    public isClickable(formular: TSRueckforderungFormular): boolean {
-        return formular.status !== TSRueckforderungStatus.NEU &&
-            formular.status !== TSRueckforderungStatus.EINGELADEN;
+    /**
+     * Kanton darf Formular erst sehen, wenn es mindestens im Status IN_PRUEFUNG_KANTON_STUFE_1 ist
+     * Superadmin darf Formular erst sehen, wenn mindestens im Status IN_BEARBEITUNG_INSTITUTION_STUFE_1 ist
+     * Institutionen & Trägerschaften dürfen Formulare ab Status EINGELADEN sehen
+     */
+    public openFormularAllowed(formular: TSRueckforderungFormular): boolean {
+        if (this.isSuperAdmin()) {
+            return formular.status !== TSRueckforderungStatus.NEU &&
+                formular.status !== TSRueckforderungStatus.EINGELADEN;
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            return formular.status !== TSRueckforderungStatus.NEU
+                && formular.status !== TSRueckforderungStatus.EINGELADEN
+                && formular.status !== TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1;
+        }
+        return formular.status !== TSRueckforderungStatus.NEU;
     }
 
     public doFilter = (value: string) => {
@@ -117,11 +155,15 @@ export class NotrechtComponent implements OnInit {
     };
 
     public openRueckforderungFormular(formular: TSRueckforderungFormular): void {
-      if (!this.isClickable(formular)) {
+      if (!this.openFormularAllowed(formular)) {
           return;
       }
       this.$state.go('notrecht.form', {
           rueckforderungId: formular.id,
       });
+    }
+
+    public translateRueckforderungStatus(status: string): string {
+        return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
     }
 }
