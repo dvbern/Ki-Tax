@@ -42,6 +42,13 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
 
+    // Checkbox for Institution:
+    public betreuungKorrektAusgewiesen: boolean;
+    public gutscheinPlaetzenReduziert: boolean;
+    public erstattungGemaessKanton: boolean;
+    public mahlzeitenBGSubventionenGebuehrensystem: boolean;
+    public belegeEinreichenBetrageKantonZurueckfordern: boolean;
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly notrechtRS: NotrechtRS,
@@ -101,6 +108,34 @@ export class RueckforderungFormularComponent implements OnInit {
         }
 
         this.saveRueckforderungFormular(rueckforderungFormular);
+    }
+
+    public enableRueckforderungAbschliessen(): boolean {
+        return this.betreuungKorrektAusgewiesen === true
+        && this.gutscheinPlaetzenReduziert === true
+        && this.erstattungGemaessKanton === true
+        && this.mahlzeitenBGSubventionenGebuehrensystem === true
+        && this.belegeEinreichenBetrageKantonZurueckfordern === true;
+    }
+
+    public showButtonAbsenden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public showButtonGeprueft(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 }

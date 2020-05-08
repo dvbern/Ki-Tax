@@ -67,14 +67,53 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Checkbox -->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <mat-checkbox id="betreuungKorrektAusgewiesenCbx_id"
+                                              name="betreuungKorrektAusgewiesenCbx_id"
+                                              [(ngModel)]="betreuungKorrektAusgewiesen" required>
+                                    {{'BETREUUNG_KORREKT_AUSGEWIESEN'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="gutscheinPlaetzenReduziertCbx_id"
+                                              name="gutscheinPlaetzenReduziertCbx_id"
+                                              [(ngModel)]="gutscheinPlaetzenReduziert" required>
+                                    {{'GUTSCHEIN_PLAETZEN_REDUZIERT'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="erstattungGemaessKantonCbx_id"
+                                              name="erstattungGemaessKantonCbx_id"
+                                              [(ngModel)]="erstattungGemaessKanton" required>
+                                    {{'ERSTATTUNG_GEMAESS_KANTON'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                              name="mahlzeitenBGSubventionenGebuehrensystemCbx_id"
+                                              [(ngModel)]="mahlzeitenBGSubventionenGebuehrensystem" required>
+                                    {{'MAHLZEITEN_BG_SUBVENTIONEN_GEBUEHRENSYSTEM'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                              name="belegeEinreichenBetrageKantonZurueckfordernCbx_id"
+                                              [(ngModel)]="belegeEinreichenBetrageKantonZurueckfordern" required>
+                                    {{'BELEGE_EINREICHEN_BETRAG_KANTON_ZURUECKFORDERN'|translate}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
             </div>
         </div>
         <!-- Buttons -->
         <div class="dv-footer">
-            <button class="dv-btn" type="submit">
-                <span translate>SPEICHERN</span>
-            </button>
+            <dv-loading-button *ngIf="showButtonAbsenden(rueckforderungFormular)" [type]="'submit'"
+                               [buttonDisabled]="!enableRueckforderungAbschliessen()">
+                <span translate>ABSENDEN</span>
+            </dv-loading-button>
+            <dv-loading-button *ngIf="showButtonAbsenden(rueckforderungFormular)" (buttonClick)="rueckforderungAbschliessen(rueckforderungFormular);">
+                <span translate>KEIN_GESUCH_BEANTRAGEN</span>
+            </dv-loading-button>
+            <dv-loading-button *ngIf="showButtonGeprueft(rueckforderungFormular)" [type]="'submit'">
+                <span translate>GEPRUEFT</span>
+            </dv-loading-button>
             <button type="button"
                     class="dv-btn cancel-button"
                     [uiSref]="'notrecht.list'"
