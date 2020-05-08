@@ -15,15 +15,51 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {Component, ChangeDetectionStrategy, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Transition} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
+import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 
 @Component({
-  selector: 'dv-rueckforderung-formular',
-  templateUrl: './rueckforderung-formular.component.html',
-  styleUrls: ['./rueckforderung-formular.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-rueckforderung-formular',
+    templateUrl: './rueckforderung-formular.component.html',
+    styleUrls: ['./rueckforderung-formular.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RueckforderungFormularComponent {
+export class RueckforderungFormularComponent implements OnInit {
 
-  public constructor() { }
+    @ViewChild(NgForm) private readonly form: NgForm;
+
+    public rueckforderungFormular$: Observable<TSRueckforderungFormular>;
+
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly notrechtRS: NotrechtRS
+    ) {
+    }
+
+    public ngOnInit(): void {
+        const rueckforederungFormId: string = this.$transition$.params().rueckforderungId;
+
+        if (!rueckforederungFormId) {
+            return;
+        }
+        this.rueckforderungFormular$ = from(
+            this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
+                (response: TSRueckforderungFormular) => {
+                    return response;
+                }));
+    }
+
+    public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (!this.form.valid) {
+            EbeguUtil.selectFirstInvalid();
+            return;
+        }
+
+        this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular);
+    }
 }

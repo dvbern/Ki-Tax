@@ -167,6 +167,7 @@ public abstract class AbstractTestfall {
 		Gemeinde testGemeinde = new Gemeinde();
 		testGemeinde.setStatus(GemeindeStatus.AKTIV);
 		testGemeinde.setName("Testgemeinde");
+		testGemeinde.setBfsNummer(1L);
 		testGemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		testGemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2018,8,1));
 		testGemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2018,8,1));

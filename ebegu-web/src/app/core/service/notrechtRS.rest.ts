@@ -24,13 +24,11 @@ export class NotrechtRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
     public serviceURL: string;
 
-    public $http: angular.IHttpService;
-
     public constructor(
-        public http: IHttpService,
+        public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        public log: ILogService,
+        public $log: ILogService,
     ) {
         this.serviceURL = `${REST_API}notrecht`;
 
@@ -60,4 +58,24 @@ export class NotrechtRS {
         return 'NotrechtRS';
     }
 
+    public findRueckforderungFormular(rueckforderungFormularID: string): IPromise<TSRueckforderungFormular> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(rueckforderungFormularID)}`)
+            .then((response: any) => {
+                this.$log.debug('PARSING RueckforderungFormular REST object ', response.data);
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            });
+    }
+
+    public saveRueckforderungFormular(
+        rueckforderungFormular: TSRueckforderungFormular
+    ): IPromise<TSRueckforderungFormular> {
+        let restRueckforderungFormular = {};
+        restRueckforderungFormular =
+            this.ebeguRestUtil.rueckforderungFormularToRestObject(restRueckforderungFormular, rueckforderungFormular);
+
+        return this.$http.put(this.serviceURL, restRueckforderungFormular).then((response: any) => {
+                return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
 }
