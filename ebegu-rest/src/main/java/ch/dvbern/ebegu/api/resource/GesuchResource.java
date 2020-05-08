@@ -688,6 +688,23 @@ public class GesuchResource {
 		return Response.ok().build();
 	}
 
+	@DELETE
+	@Path("/removeAntragForced/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	public Response removeAntragForced(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(gesuchJaxId.getId());
+
+		Gesuch gesuch = gesuchService.findGesuch(gesuchJaxId.getId(), true).orElseThrow(()
+			-> new EbeguEntityNotFoundException("removeAntragForced", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId "
+			+ "invalid: " + gesuchJaxId.getId()));
+
+		gesuchService.removeAntragForced(gesuch);
+		return Response.ok().build();
+	}
+
 	@ApiOperation(value = "Schliesst ein Gesuch ab, das kein Angebot hat", response = JaxGesuch.class)
 	@Nullable
 	@POST
