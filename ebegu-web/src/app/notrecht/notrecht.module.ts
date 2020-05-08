@@ -29,11 +29,9 @@ import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckfo
         RueckforderungFormularComponent
     ],
     imports: [
-        SharedModule,
         MaterialModule,
         NotrechtRoutingModule,
         TranslateModule,
-        MaterialModule,
         SharedModule
     ],
     providers: []
