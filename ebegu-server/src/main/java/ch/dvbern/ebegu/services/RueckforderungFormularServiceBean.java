@@ -122,7 +122,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 		return allRueckforderungFormulare.stream().filter(formular -> {
 			for (Institution institution : institutionenCurrentBenutzer) {
-				if (institution.getId().equals(formular.getInstitution().getId())) {
+				if (institution.getId().equals(formular.getInstitutionStammdaten().getInstitution().getId())) {
 					return true;
 				}
 			}

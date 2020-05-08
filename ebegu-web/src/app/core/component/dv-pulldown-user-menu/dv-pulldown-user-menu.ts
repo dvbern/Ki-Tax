@@ -19,6 +19,7 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
@@ -60,6 +61,14 @@ export class DvPulldownUserMenuController implements IController {
                 principal => this.principal = principal,
                 err => LOG.error(err)
             );
+        this.setNotrechtVisible();
+    }
+
+    private setNotrechtVisible(): void {
+        if (this.isSuperAdmin()) {
+            this.notrechtVisible = true;
+            return;
+        }
         this.notrechtRS.currentUserHasFormular()
             .then(result => {
                 this.notrechtVisible = result;
@@ -73,5 +82,9 @@ export class DvPulldownUserMenuController implements IController {
 
     public logout(): void {
         this.$state.go('authentication.login', {type: 'logout'});
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

@@ -24,35 +24,42 @@
             <hr class="header">
         </div>
 
+        <div class="filter">
+            <input class="filter" matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
+        </div>
+
         <div class="table-responsive notrecht-table">
             <mat-table #table [dataSource]="rueckforderungFormulareSource" matSort matSortActive="institution.name">
 
                 <!-- Institution -->
-                <ng-container matColumnDef="institution.name">
+                <ng-container matColumnDef="institutionStammdaten.institution.name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header="institution.name">
                         {{'INSTITUTION' | translate}}
                     </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
-                        {{formular.institution.name}}
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': isClickable(formular)}" *matCellDef="let formular">
+                        {{formular.institutionStammdaten.institution.name}}
                     </mat-cell>
                 </ng-container>
 
                 <!-- Typ -->
-<!--                <ng-container matColumnDef="typ">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="institution.typ">
+                <ng-container matColumnDef="institutionStammdaten.betreuungsangebotTyp">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="institutionStammdaten.betreuungsangebotTyp">
                         {{'TYP' | translate}}
                     </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
-                        {{formular.institution.typ}}
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': isClickable(formular)}" *matCellDef="let formular" translate>
+                        {{formular.institutionStammdaten.betreuungsangebotTyp}}
                     </mat-cell>
-                </ng-container>-->
+                </ng-container>
 
                 <!-- Typ -->
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'STATUS' | translate}}
                     </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': isClickable(formular)}" *matCellDef="let formular">
                         {{formular.status}}
                     </mat-cell>
                 </ng-container>
@@ -62,9 +69,9 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'ZAHLUNG_STUFE_1_AUSGELOEST' | translate}}
                     </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
-                        <span *ngIf="isZahlungAusgeloest(formular.stufe1FreigabeAusbezahltAm)" translate>LABEL_JA</span>
-                        <span *ngIf="!isZahlungAusgeloest(formular.stufe1FreigabeAusbezahltAm)" translate>LABEL_NEIN</span>
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': isClickable(formular)}" *matCellDef="let formular">
+                        {{getZahlungAusgeloest(formular.stufe1FreigabeAusbezahltAm)}}
                     </mat-cell>
                 </ng-container>
 
@@ -73,9 +80,20 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header="zahlungStufe2">
                         {{'ZAHLUNG_STUFE_2_AUSGELOEST' | translate}}
                     </mat-header-cell>
-                    <mat-cell class="mat-cell-clickable" *matCellDef="let formular">
-                        <span *ngIf="isZahlungAusgeloest(formular.stufe2VerfuegungAusbezahltAm)" translate>LABEL_JA</span>
-                        <span *ngIf="!isZahlungAusgeloest(formular.stufe2VerfuegungAusbezahltAm)" translate>LABEL_NEIN</span>
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': isClickable(formular)}" *matCellDef="let formular">
+                        {{getZahlungAusgeloest(formular.stufe2VerfuegungAusbezahltAm)}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- clickable hint -->
+                <ng-container matColumnDef="clickable-hint">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell (click)="openRueckforderungFormular(formular)"
+                              [ngClass]="{'mat-cell-clickable': isClickable(formular)}" *matCellDef="let formular">
+                        <dv-loading-button buttonClass="dv-btn-sm" *ngIf="isClickable(formular)">
+                            <i class="fa fa-eye"></i>
+                        </dv-loading-button>
                     </mat-cell>
                 </ng-container>
 
