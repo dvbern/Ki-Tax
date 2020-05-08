@@ -1260,11 +1260,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// Von allem ausser MUTATION darf es pro Dossier und Gesuchsperiode nur einen Antrag geben
 			List<Gesuch> existingGesuch = findExistingGesuch(gesuchToPersist.getDossier(), gesuchToPersist.getGesuchsperiode(), gesuchToPersist.getTyp());
 			if (!existingGesuch.isEmpty()) {
-				String message = MessageFormat.format("Es gibt schon ein Gesuch dieses Typs fuer die Gesuchsperiode {0} und Dossier {1}/{2}: ",
+				String message = MessageFormat.format("Es gibt schon ein Gesuch dieses Typs fuer die Gesuchsperiode {0} und Dossier {1} / {2}: ",
 					gesuchToPersist.getGesuchsperiode().getGesuchsperiodeString(),
-					gesuchToPersist.getDossier().getFall().getFallNummer(),
+					String.valueOf(gesuchToPersist.getDossier().getFall().getFallNummer()),
 					gesuchToPersist.getDossier().getGemeinde().getName());
-				throw new IllegalStateException(message);
+				throw new EbeguRuntimeException("ensureUniqueErstgesuchProDossierAndGesuchsperiode", message, ErrorCodeEnum.ERROR_ERSTGESUCH_ALREADY_EXISTS);
 			}
 		}
 	}
