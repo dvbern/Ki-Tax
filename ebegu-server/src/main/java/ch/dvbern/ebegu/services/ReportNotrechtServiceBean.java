@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -65,13 +66,16 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 	@Inject
 	private FileSaverService fileSaverService;
 
+	@Inject
+	private RueckforderungFormularService rueckforderungFormularService;
+
 
 	@Nonnull
 	@Override
 	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen) {
 		List<NotrechtDataRow> formulare = new ArrayList<>();
-		List<RueckforderungFormular> auszuzahlendeFormulare = findAllAuszuzahlendeFormulare();
+		Collection<RueckforderungFormular> auszuzahlendeFormulare = findAllAuszuzahlendeFormulare();
 		// TODO (hefr) das Flag beachten!
 		for (RueckforderungFormular rueckforderungFormular : auszuzahlendeFormulare) {
 			NotrechtDataRow dataRow = convertToDataRow(rueckforderungFormular);
@@ -141,11 +145,8 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 	}
 
 	@Nonnull
-	private List<RueckforderungFormular> findAllAuszuzahlendeFormulare() {
-		List<RueckforderungFormular> auszuzahlendeFormulare = new ArrayList<>();
-		RueckforderungFormular formular = new RueckforderungFormular();
-//		formular.set
-		return auszuzahlendeFormulare;
+	private Collection<RueckforderungFormular> findAllAuszuzahlendeFormulare() {
+		return rueckforderungFormularService.getAllRueckforderungFormulare();
 	}
 
 	@Nonnull

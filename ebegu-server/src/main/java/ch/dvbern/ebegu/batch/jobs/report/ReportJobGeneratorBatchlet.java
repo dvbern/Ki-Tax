@@ -158,24 +158,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
-			Objects.requireNonNull(gesuchPeriodeId);
-			boolean inklBgGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
-			boolean inklMischGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
-			boolean inklTsGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
-			boolean ohneFolgegesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE));
-			final String text = getParameters().getProperty(WorkJobConstants.TEXT);
-			UploadFileInfo uploadFileInfo = reportMassenversandService.generateExcelReportMassenversand(
-				dateFrom,
-				dateTo,
-				gesuchPeriodeId,
-				inklBgGesuche,
-				inklMischGesuche,
-				inklTsGesuche,
-				ohneFolgegesuche,
-				text,
-				locale
-			);
-			return uploadFileInfo;
+			return generateReportMassenversand(dateFrom, dateTo, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_INSTITUTIONEN: {
 			return this.reportService.generateExcelReportInstitutionen(locale);
@@ -194,11 +177,36 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return this.reportService.generateExcelReportTagesschuleOhneFinSit(stammdatenId, gesuchPeriodeId, locale);
 		}
 		case VORLAGE_REPORT_NOTRECHT: {
-			boolean zahlungenAusloesen = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
-			return this.reportNotrechtService.generateExcelReportNotrecht(zahlungenAusloesen);
+			return generateReportNotrecht();
 		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
+	}
+
+	private UploadFileInfo generateReportMassenversand(@Nonnull LocalDate dateFrom, @Nonnull LocalDate dateTo, @Nullable String gesuchPeriodeId, @Nonnull Locale locale) throws ExcelMergeException {
+		Objects.requireNonNull(gesuchPeriodeId);
+		boolean inklBgGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
+		boolean inklMischGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
+		boolean inklTsGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
+		boolean ohneFolgegesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE));
+		final String text = getParameters().getProperty(WorkJobConstants.TEXT);
+		UploadFileInfo uploadFileInfo = reportMassenversandService.generateExcelReportMassenversand(
+			dateFrom,
+			dateTo,
+			gesuchPeriodeId,
+			inklBgGesuche,
+			inklMischGesuche,
+			inklTsGesuche,
+			ohneFolgegesuche,
+			text,
+			locale
+		);
+		return uploadFileInfo;
+	}
+
+	private UploadFileInfo generateReportNotrecht() throws ExcelMergeException {
+		boolean zahlungenAusloesen = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+		return this.reportNotrechtService.generateExcelReportNotrecht(zahlungenAusloesen);
 	}
 
 	private Properties getParameters() {
