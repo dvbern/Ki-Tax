@@ -16,8 +16,9 @@
  */
 
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
+import {MaterialModule} from '../shared/material.module';
+import {SharedModule} from '../shared/shared.module';
 import {NotrechtRoutingModule} from './notrecht-routing/notrecht-routing.module';
 import {NotrechtComponent} from './notrecht/notrecht.component';
 import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckforderung-formular.component';
@@ -28,7 +29,8 @@ import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckfo
         RueckforderungFormularComponent
     ],
     imports: [
-        CommonModule,
+        SharedModule,
+        MaterialModule,
         NotrechtRoutingModule,
         TranslateModule
     ],

@@ -16,10 +16,10 @@
  */
 
 import * as moment from 'moment';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSBenutzer} from './TSBenutzer';
 
-export class TSRueckforderungMitteilung extends TSAbstractMutableEntity {
+export class TSRueckforderungMitteilung extends TSAbstractEntity {
 
     private _absender: TSBenutzer;
     private _betreff: string;
