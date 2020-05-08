@@ -14,14 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 export enum TSRueckforderungStatus {
     NEU = 'NEU',
     EINGELADEN = 'EINGELADEN',
-    IN_BEARBEITUNG_KANTON_STUFE_1 = 'IN_BEARBEITUNG_KANTON_STUFE_1',
+    IN_BEARBEITUNG_INSTITUTION_STUFE_1 = 'IN_BEARBEITUNG_INSTITUTION_STUFE_1',
     IN_PRUEFUNG_KANTON_STUFE_1 = 'IN_PRUEFUNG_KANTON_STUFE_1',
     GEPRUEFT_STUFE_1 = 'GEPRUEFT_STUFE_1',
     IN_BEARBEITUNG_INSTITUTION_STUFE_2 = 'IN_BEARBEITUNG_INSTITUTION_STUFE_2',
     IN_PRUEFUNG_KANTON_STUFE_2 = 'IN_PRUEFUNG_KANTON_STUFE_2',
     VERFUEGT = 'VERFUEGT',
     ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH',
+}
+
+
+export function isNeuOrEingeladenStatus(status: TSRueckforderungStatus): boolean {
+    return status === TSRueckforderungStatus.NEU
+        || status === TSRueckforderungStatus.EINGELADEN;
 }

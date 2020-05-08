@@ -72,9 +72,14 @@
         </div>
         <!-- Buttons -->
         <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
+            <button class="dv-btn" type="submit">
                 <span translate>SPEICHERN</span>
-            </dv-loading-button>
+            </button>
+            <button type="button"
+                    class="dv-btn cancel-button"
+                    [uiSref]="'notrecht.list'"
+                    translate>CANCEL
+            </button>
         </div>
     </form>
 </dv-full-height-container>

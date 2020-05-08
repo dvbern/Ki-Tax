@@ -43,9 +43,13 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -66,6 +70,9 @@ public class NotrechtResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -106,6 +113,11 @@ public class NotrechtResource {
 		RueckforderungFormular rueckforderungFormularToMerge =
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
 			rueckforderungFormularFromDB);
+
+		if(!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)){
+			throw(new EbeguRuntimeException("update", "Action not allowed for this user"));
+		}
+
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
@@ -136,4 +148,14 @@ public class NotrechtResource {
 		return jaxRueckforderungFormular;
 	}
 
+	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular){
+		if(principalBean.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION) && RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
+			return true;
+		}
+		if(principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
+			UserRole.SUPER_ADMIN) && RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())){
+			return true;
+		}
+		return false;
+	}
 }

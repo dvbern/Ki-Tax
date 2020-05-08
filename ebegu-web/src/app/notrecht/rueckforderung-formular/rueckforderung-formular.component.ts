@@ -19,9 +19,16 @@ import {Component, ChangeDetectionStrategy, OnInit, ViewChild} from '@angular/co
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {
+    isNeuOrEingeladenStatus,
+    TSRueckforderungStatus
+} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 
 @Component({
     selector: 'dv-rueckforderung-formular',
@@ -37,7 +44,8 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public constructor(
         private readonly $transition$: Transition,
-        private readonly notrechtRS: NotrechtRS
+        private readonly notrechtRS: NotrechtRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -59,7 +67,40 @@ export class RueckforderungFormularComponent implements OnInit {
             EbeguUtil.selectFirstInvalid();
             return;
         }
+        if (isNeuOrEingeladenStatus(rueckforderungFormular.status)) {
+            return;
+        }
+
+        //Status wechseln:
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1) {
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+                rueckforderungFormular.status = TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1;
+            } else {
+                // ERROR transition not accepted
+                return;
+            }
+        } else if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1) {
+            if (this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+                rueckforderungFormular.status = TSRueckforderungStatus.GEPRUEFT_STUFE_1;
+            } else {
+                // ERROR transition not accepted
+                return;
+            }
+        }
 
         this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular);
     }
+
+    public rueckforderungAbschliessen(rueckforderungFormular: TSRueckforderungFormular): void {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+            rueckforderungFormular.status = TSRueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH;
+        } else {
+            // ERROR transition not accepted
+            return;
+        }
+
+        this.saveRueckforderungFormular(rueckforderungFormular);
+    }
+
 }

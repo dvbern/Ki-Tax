@@ -29,11 +29,13 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -109,6 +111,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
+	@Interceptors(UpdateRueckfordFormStatusInterceptor.class)
 	public Optional<RueckforderungFormular> findRueckforderungFormular(String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, id);
