@@ -151,6 +151,10 @@ public class RueckforderungFormular extends AbstractEntity {
 		this.rueckforderungMitteilungen = rueckforderungMitteilungen;
 	}
 
+	public void addRueckforderungMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+		this.rueckforderungMitteilungen.add(rueckforderungMitteilung);
+	}
+
 	@Nonnull
 	public RueckforderungStatus getStatus() {
 		return status;

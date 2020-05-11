@@ -43,7 +43,9 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
@@ -134,6 +136,23 @@ public class NotrechtResource {
 		final JaxRueckforderungFormular jaxRueckforderungFormular =
 			converter.rueckforderungFormularToJax(rueckforderungFormularToReturn);
 		return jaxRueckforderungFormular;
+	}
+
+	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
+		+ "Status",
+		response = JaxRueckforderungMitteilung.class)
+	@Nullable
+	@POST
+	@Path("/message")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxRueckforderungMitteilung sendMessage(
+		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+		RueckforderungMitteilung rueckforderungMitteilung =
+			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
+		return jaxRueckforderungMitteilung;
 	}
 
 }

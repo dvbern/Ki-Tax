@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -25,8 +26,10 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -55,10 +58,18 @@ public class RueckforderungMitteilung extends AbstractEntity {
 	@Nonnull
 	private LocalDateTime sendeDatum;
 
-	@NotNull
-	@Column(nullable = false)
-	@Nonnull
-	private String gesendetAnStatus;
+	// Transientes Feld, das die Status als Liste speichert. Wird nur zum Senden der Mitteilungen benötigt
+	@Transient
+	private ArrayList<RueckforderungStatus> gesendetAnStatusList = new ArrayList<>();
+
+	public RueckforderungMitteilung() {}
+
+	public RueckforderungMitteilung(RueckforderungMitteilung toCopy) {
+		this.absender = toCopy.getAbsender();
+		this.betreff = toCopy.getBetreff();
+		this.inhalt = toCopy.getInhalt();
+		this.sendeDatum = toCopy.getSendeDatum();
+	}
 
 	public Benutzer getAbsender() {
 		return absender;
@@ -95,13 +106,12 @@ public class RueckforderungMitteilung extends AbstractEntity {
 		this.sendeDatum = sendeDatum;
 	}
 
-	@Nonnull
-	public String getGesendetAnStatus() {
-		return gesendetAnStatus;
+	public ArrayList<RueckforderungStatus> getGesendetAnStatusList() {
+		return gesendetAnStatusList;
 	}
 
-	public void setGesendetAnStatus(@Nonnull String gesendetAnStatus) {
-		this.gesendetAnStatus = gesendetAnStatus;
+	public void setGesendetAnStatusList(ArrayList<RueckforderungStatus> gesendetAnStatusList) {
+		this.gesendetAnStatusList = gesendetAnStatusList;
 	}
 
 	@Override

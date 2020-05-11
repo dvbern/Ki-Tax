@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,6 @@ import javax.annotation.security.RolesAllowed;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
-import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -38,36 +36,10 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 /**
  * Service fuer die Rueckforderungsformulare
  */
-public interface RueckforderungFormularService {
-
-	/**
-	 * Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren
-	 * und bisher kein Rückforderungsformular haben
-	 */
-	@Nonnull
-	List<RueckforderungFormular> initializeRueckforderungFormulare();
-
-	@Nonnull
-	RueckforderungFormular createRueckforderungFormular(RueckforderungFormular rueckforderungFormular);
-
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
-	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
-
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
-	Optional<RueckforderungFormular> findRueckforderungFormular(String id);
-
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
-	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
-
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
-	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull ArrayList<RueckforderungStatus> status);
+public interface RueckforderungMitteilungService {
 
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
+	void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung);
 
 }

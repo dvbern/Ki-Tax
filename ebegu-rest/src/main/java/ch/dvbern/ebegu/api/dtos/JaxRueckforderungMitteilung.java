@@ -18,10 +18,13 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
@@ -41,7 +44,7 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	private LocalDateTime sendeDatum;
 
 	@Nonnull
-	private String gesendetAnStatus;
+	private ArrayList<RueckforderungStatus> gesendetAnStatus;
 
 	@Nonnull
 	public JaxBenutzer getAbsender() {
@@ -80,11 +83,11 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	}
 
 	@Nonnull
-	public String getGesendetAnStatus() {
+	public ArrayList<RueckforderungStatus> getGesendetAnStatus() {
 		return gesendetAnStatus;
 	}
 
-	public void setGesendetAnStatus(@Nonnull String gesendetAnStatus) {
+	public void setGesendetAnStatus(@Nonnull ArrayList<RueckforderungStatus> gesendetAnStatus) {
 		this.gesendetAnStatus = gesendetAnStatus;
 	}
 }
