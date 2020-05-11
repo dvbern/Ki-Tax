@@ -22,12 +22,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.kitax.KitaKitaxRechner;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungInstitutionOeffnungszeiten;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
+import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 
 /**
  * Factory, welche für eine Betreuung den richtigen BG-Rechner ermittelt

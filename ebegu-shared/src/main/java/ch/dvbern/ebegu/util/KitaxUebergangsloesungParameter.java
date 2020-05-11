@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -57,107 +59,22 @@ public final class KitaxUebergangsloesungParameter {
 	private boolean isStadtBernAsivConfiguered = false;
 
 
-	public KitaxUebergangsloesungParameter(@Nonnull LocalDate stadtBernAsivStartDate, boolean isStadtBernAsivConfiguered) {
+	public KitaxUebergangsloesungParameter(
+		@Nonnull LocalDate stadtBernAsivStartDate,
+		boolean isStadtBernAsivConfiguered,
+		@Nonnull Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten
+	) {
 		this.stadtBernAsivStartDate = stadtBernAsivStartDate;
 		this.isStadtBernAsivConfiguered = isStadtBernAsivConfiguered;
-		initOeffnungszeitenMap();
-	}
-
-	@SuppressWarnings("PMD.NcssMethodCount")
-	private void initOeffnungszeitenMap() {
-		oeffnungszeitenMap.put("kita dängelibänz", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita matahari weissenbühl", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita sandburg", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita bachmätteli", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("roti zora", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(9), MATH.from(225)));
-		oeffnungszeitenMap.put("kita wombat zieglerstrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("tagi libelle", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("matahari kirchenfeld", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita breitsch", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita loryplatz", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita murifeld mindstrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita weissenstein", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("globegarden parkterrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita morillon", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita wirbelwind", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("coccodrillo", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita murifeld weltpost", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("chindertroum waldkita", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11), MATH.from(238)));
-		oeffnungszeitenMap.put("kita burgunder", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita himugüegeli", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita holenacker", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("strampolino", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita taka tuka", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kids & co wankdorf", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita krokofant", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita altenberg", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("private kindertagesstätte mattenhof", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita balou kirchenfeld", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("globegarden thunstrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita tscharnergut", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("wyleregg", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita eigerplatz", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita wombat buchserstrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("brünnen", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("villa tagi", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita lorraine", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita yeladim", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(237)));
-		oeffnungszeitenMap.put("kita länggasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita fantasia", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kids & co viktoriastrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita wyler", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("röseligarte", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita brünnengut", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita breitenrain", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita stöckacker", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita steckgut", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita weissenbühl", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("montessori kh lorraine", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(242)));
-		oeffnungszeitenMap.put("kita wundertüte", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(10), MATH.from(224)));
-		oeffnungszeitenMap.put("kita smallworld", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(237)));
-		oeffnungszeitenMap.put("hagebutte", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("elfenau", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("mixmax kindertagegstätte schönegg", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(242)));
-		oeffnungszeitenMap.put("kita farfallina", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11), MATH.from(235)));
-		oeffnungszeitenMap.put("kita im favorite", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita spittel", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita bümpliz", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kinderort", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.25), MATH.from(230)));
-		oeffnungszeitenMap.put("montessori a. d. aare", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("angelie hirt", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita làpurzel", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita publica", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita rosenweg", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita aaregg", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("topolina", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita spitalacker", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("sputnik (prokids ag)", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(237)));
-		oeffnungszeitenMap.put("montessori kindertagesbetreuung viki", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita piccolino", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita crescendo", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("waldkita murifeld", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita ausserholligen", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita lindenhof", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita dählhölzli", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita tiefenau", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita murtenstrasse", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita rappard", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita bitzius", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("pop e poppa", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita ottilotti", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("tartaruga", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("ginkgo", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(12), MATH.from(244)));
-		oeffnungszeitenMap.put("kirchenfeld", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita firlifanz", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita pop e poppa forsthaus", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
-		oeffnungszeitenMap.put("kita matte", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(240)));
-		oeffnungszeitenMap.put("kita falkennest", new KitaxUebergangsloesungInstitutionOeffnungszeiten(MATH.from(11.5), MATH.from(244)));
+		for (KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeit : oeffnungszeiten) {
+			oeffnungszeitenMap.put(oeffnungszeit.getNameKibon().toLowerCase(Locale.GERMAN).trim(), oeffnungszeit);
+		}
 	}
 
 	@Nullable
 	public KitaxUebergangsloesungInstitutionOeffnungszeiten getOeffnungszeiten(@Nonnull String kitaName) {
 		KitaxUebergangsloesungInstitutionOeffnungszeiten dto =
-			oeffnungszeitenMap.get(kitaName.trim().toLowerCase(Locale.GERMAN));
+			oeffnungszeitenMap.get(kitaName.toLowerCase(Locale.GERMAN).trim());
 		return dto;
 	}
 

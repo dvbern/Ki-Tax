@@ -27,11 +27,11 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -66,8 +66,8 @@ public class KitaKitaxRechner extends AbstractKitaxRechner {
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
 		LocalDate bis = input.getParent().getGueltigkeit().getGueltigBis();
 
-		BigDecimal oeffnungsstunden = oeffnungszeiten.oeffnungsstunden;
-		BigDecimal oeffnungstage = oeffnungszeiten.oeffnungstage;
+		BigDecimal oeffnungsstunden = oeffnungszeiten.getOeffnungsstunden();
+		BigDecimal oeffnungstage = oeffnungszeiten.getOeffnungstage();
 		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(input.getBgPensumProzent());
 		BigDecimal massgebendesEinkommen = input.getMassgebendesEinkommen();
 

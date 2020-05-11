@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -2032,7 +2033,18 @@ public final class TestDataUtil {
 	}
 
 	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
+		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
+		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(248));
+		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
+		oeffnungszeiten.setNameKibon("Kita Aaregg");
+		oeffnungszeiten.setNameKitax("Kita Aaregg");
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> collection = new ArrayList<>();
+		collection.add(oeffnungszeiten);
 		// Fuer Tests gehen wir im Allgemeinen davon aus, dass Bern (Paris) bereits in der Vergangenheit zu ASIV gewechselt hat
-		return new KitaxUebergangsloesungParameter(LocalDate.of(2000, Month.JANUARY, 1), true);
+		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
+			LocalDate.of(2000, Month.JANUARY, 1),
+			true,
+			collection);
+		return parameter;
 	}
 }
