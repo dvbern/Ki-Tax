@@ -15,27 +15,58 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {TranslateModule} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {WindowRef} from '../../core/service/windowRef.service';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
+import {MaterialModule} from '../../shared/material.module';
+import {SharedModule} from '../../shared/shared.module';
+import {NotrechtRoutingModule} from '../notrecht-routing/notrecht-routing.module';
+import {NotrechtModule} from '../notrecht.module';
 
 import {NotrechtComponent} from './notrecht.component';
 
 describe('NotrechtComponent', () => {
     let component: NotrechtComponent;
     let fixture: ComponentFixture<NotrechtComponent>;
-    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name, ['initializeRueckforderungFormulare']);
-    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const notrechtRSSpy = jasmine.createSpyObj<NotrechtRS>(NotrechtRS.name,
+        ['initializeRueckforderungFormulare', 'getRueckforderungFormulareForCurrentBenutzer']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole', 'isOneOfRoles']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [NotrechtComponent],
+            imports: [
+                NotrechtRoutingModule,
+                TranslateModule,
+                MaterialModule,
+                SharedModule,
+                NotrechtModule,
+                NoopAnimationsModule
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
+                WindowRef,
                 {provide: NotrechtRS, useValue: notrechtRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-            ]
-        })
-            .compileComponents();
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+            ],
+            declarations: [],
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+        ).compileComponents();
+        notrechtRSSpy.getRueckforderungFormulareForCurrentBenutzer.and.resolveTo([]);
     }));
 
     beforeEach(() => {

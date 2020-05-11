@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
@@ -38,6 +41,7 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	private String inhalt;
 
 	@Nonnull
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime sendeDatum;
 
 	@Nonnull
