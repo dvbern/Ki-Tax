@@ -191,6 +191,13 @@ export class GesuchRS implements IEntityRS {
             });
     }
 
+    public removeAntragForced(gesuchId: string): IPromise<boolean> {
+        return this.$http.delete(`${this.serviceURL}/removeAntragForced/${encodeURIComponent(gesuchId)}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public closeWithoutAngebot(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/closeWithoutAngebot/${encodeURIComponent(antragId)}`, null).then(
             response => {
