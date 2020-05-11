@@ -161,9 +161,10 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
+		String nameTraegerschaft = traegerschaft.getName();
 		traegerschaft = persistence.persist(traegerschaft);
 		assertEquals("TestMandantDBUnit", mandant.getName());
-		assertEquals("Traegerschaft1", traegerschaft.getName());
+		assertEquals(nameTraegerschaft, traegerschaft.getName());
 
 		Institution institution = TestDataUtil.createDefaultInstitution();
 		institution.setTraegerschaft(traegerschaft);
