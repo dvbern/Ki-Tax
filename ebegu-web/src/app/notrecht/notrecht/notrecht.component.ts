@@ -137,6 +137,7 @@ export class NotrechtComponent implements OnInit {
 
     public sendMitteilung(): void {
         const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
         dialogConfig.data = {mitteilung: this.tempSavedMitteilung};
         dialogConfig.panelClass = this.panelClass;
         // Bei Ok erhalten wir die Mitteilung, die gesendet werden soll, sonst nichts
