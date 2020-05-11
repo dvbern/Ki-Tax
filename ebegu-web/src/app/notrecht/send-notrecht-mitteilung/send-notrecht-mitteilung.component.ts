@@ -17,7 +17,9 @@
 
 import {Component, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
 
@@ -31,17 +33,23 @@ export class SendNotrechtMitteilungComponent {
     @ViewChild(NgForm) public form: NgForm;
 
     public mitteilung: TSRueckforderungMitteilung;
+    public isEinladung: boolean;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<SendNotrechtMitteilungComponent>,
+        private readonly translate: TranslateService,
         @Inject(MAT_DIALOG_DATA) data: any
     ) {
-        this.mitteilung = data.mitteilung;
+        this.isEinladung = data.isEinladung;
     }
 
     public ngOnInit(): void {
-        if (!this.mitteilung) {
-            this.mitteilung = new TSRueckforderungMitteilung();
+        if (this.mitteilung) {
+            return;
+        }
+        this.mitteilung = new TSRueckforderungMitteilung();
+        if (this.isEinladung) {
+            this.mitteilung.gesendetAnStatus = [TSRueckforderungStatus.NEU];
         }
     }
 
@@ -49,7 +57,6 @@ export class SendNotrechtMitteilungComponent {
         if (this.isValid()) {
             this.dialogRef.close({
                 mitteilung: this.mitteilung,
-                send: true
             });
             return;
         }
@@ -60,15 +67,15 @@ export class SendNotrechtMitteilungComponent {
         return this.form.valid;
     }
 
-    // wir geben die Mitteilung trotzdem zurück, damit sie in beim Erneuten Öffnen wieder erscheinen kann
     public close(): void {
-        this.dialogRef.close({
-            mitteilung: this.mitteilung,
-            send: false
-        });
+        this.dialogRef.close();
     }
 
     public getAllRueckforderungFormularStatus(): string[] {
         return Object.keys(TSRueckforderungStatus);
+    }
+
+    public translateRueckforderungStatus(status: string): string {
+        return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
     }
 }

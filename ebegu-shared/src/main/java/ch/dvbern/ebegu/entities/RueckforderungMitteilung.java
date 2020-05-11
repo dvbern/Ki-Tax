@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -62,7 +63,7 @@ public class RueckforderungMitteilung extends AbstractEntity {
 
 	// Transientes Feld, das die Status als Liste speichert. Wird nur zum Senden der Mitteilungen benötigt
 	@Transient
-	private ArrayList<RueckforderungStatus> gesendetAnStatusList = new ArrayList<>();
+	private List<RueckforderungStatus> gesendetAnStatusList = new ArrayList<>();
 
 	public RueckforderungMitteilung() {}
 
@@ -108,11 +109,11 @@ public class RueckforderungMitteilung extends AbstractEntity {
 		this.sendeDatum = sendeDatum;
 	}
 
-	public ArrayList<RueckforderungStatus> getGesendetAnStatusList() {
+	public List<RueckforderungStatus> getGesendetAnStatusList() {
 		return gesendetAnStatusList;
 	}
 
-	public void setGesendetAnStatusList(ArrayList<RueckforderungStatus> gesendetAnStatusList) {
+	public void setGesendetAnStatusList(List<RueckforderungStatus> gesendetAnStatusList) {
 		this.gesendetAnStatusList = gesendetAnStatusList;
 	}
 

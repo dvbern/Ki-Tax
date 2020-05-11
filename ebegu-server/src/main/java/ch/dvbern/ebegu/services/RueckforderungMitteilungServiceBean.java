@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -57,12 +58,29 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 	@Inject
 	private Persistence persistence;
 
-	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	public void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung) {
 		Collection<RueckforderungFormular> formulareWithStatus =
 			rueckforderungFormularService.getRueckforderungFormulareByStatus(rueckforderungMitteilung.getGesendetAnStatusList());
+		send(formulareWithStatus, rueckforderungMitteilung);
+	}
+
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@Override
+	public void sendEinladung(RueckforderungMitteilung rueckforderungMitteilung) {
+		ArrayList<RueckforderungStatus> statusNeu = new ArrayList<>();
+		statusNeu.add(RueckforderungStatus.NEU);
+		Collection<RueckforderungFormular> formulareWithStatus =
+			rueckforderungFormularService.getRueckforderungFormulareByStatus(statusNeu);
+		for (RueckforderungFormular formular : formulareWithStatus) {
+			formular.setStatus(RueckforderungStatus.EINGELADEN);
+			rueckforderungFormularService.save(formular);
+		}
+		send(formulareWithStatus, rueckforderungMitteilung);
+	}
+
+	private void send(Collection<RueckforderungFormular> formulareWithStatus, RueckforderungMitteilung rueckforderungMitteilung) {
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"sendMessage", "Kein Benutzer eingeloggt"));
 		LocalDateTime dateNow = LocalDateTime.now();
@@ -76,7 +94,6 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		HashMap<String, RueckforderungMitteilung> mitteilungen = prepareMitteilungen(uniqueEmpfaenger, rueckforderungMitteilung);
 
 		sendMitteilungen(mitteilungen);
-
 	}
 
 	private void saveMitteilungenInFormulare(Collection<RueckforderungFormular> formulareWithStatus,

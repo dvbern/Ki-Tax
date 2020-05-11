@@ -21,19 +21,19 @@
       novalidate>
     <mat-dialog-content class="send-notrecht-mitteilung-dialog">
 
-        <div class="row">
+        <div class="row" *ngIf="!isEinladung">
             <div class="col-md-8">
                 <div class="form-group">
                     <label for="select-status" translate>MITTEILUNG_SENDEN_AN_STATUS</label>
                     <mat-select class="form-control"
-                                [ngModel]="mitteilung.gesendetAnStatus"
+                                [(ngModel)]="mitteilung.gesendetAnStatus"
                                 name="selectStatus"
                                 id="select-status"
                                 required
                                 [multiple]="true">
                         <mat-option *ngFor="let status of getAllRueckforderungFormularStatus()"
                                     [value]="status">
-                            {{status}}
+                            {{translateRueckforderungStatus(status)}}
                         </mat-option>
                     </mat-select>
                 </div>
@@ -65,7 +65,7 @@
                            for="inhalt">
                     </label>
                     <textarea name="inhalt"
-                              class="form-control " rows="7"
+                              class="form-control " rows="12"
                               id="inhalt"
                               required
                               [(ngModel)]="mitteilung.inhalt"

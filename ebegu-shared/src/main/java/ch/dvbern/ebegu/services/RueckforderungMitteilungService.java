@@ -38,9 +38,11 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 public interface RueckforderungMitteilungService {
 
-	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung);
+
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	void sendEinladung(RueckforderungMitteilung rueckforderungMitteilung);
 
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})

@@ -52,7 +52,6 @@ export class NotrechtComponent implements OnInit {
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
 
     private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
-    private tempSavedMitteilung: TSRueckforderungMitteilung;
 
     public constructor(
         private readonly notrechtRS: NotrechtRS,
@@ -135,23 +134,32 @@ export class NotrechtComponent implements OnInit {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
-    public sendMitteilung(): void {
+    public sendMitteilung(isEinladung: boolean): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
-        dialogConfig.data = {mitteilung: this.tempSavedMitteilung};
+        dialogConfig.data = {isEinladung};
         dialogConfig.panelClass = this.panelClass;
         // Bei Ok erhalten wir die Mitteilung, die gesendet werden soll, sonst nichts
         this.dialog.open(SendNotrechtMitteilungComponent, dialogConfig).afterClosed().toPromise().then(result => {
             if (EbeguUtil.isNullOrUndefined(result) || EbeguUtil.isNullOrUndefined(result.mitteilung)) {
                 return;
             }
-            if (result.send) {
-                console.log(result.mitteilung);
+            if (isEinladung) {
+                this.notrechtRS.sendEinladung(result.mitteilung).then(() => {
+                    this.errorService.addMesageAsInfo(this.translate.instant(
+                        'RUECKFORDERUNG_EINLADUNG_VERSENDET'
+                    ));
+                });
+                // Daten neu laden weil sich Status aktualisiert haben
+                this.ngOnInit();
                 return;
             }
-            // Mitteilung wurde nicht gesendet, deshalb wird sie zwischengespeichert um sie allenfalls später wieder
-            // zu öffnen
-            this.tempSavedMitteilung = result.mitteilung;
+            // tslint:disable-next-line:no-identical-functions
+            this.notrechtRS.sendMitteilung(result.mitteilung).then(() => {
+                this.errorService.addMesageAsInfo(this.translate.instant(
+                    'RUECKFORDERUNG_MITTEILUNG_VERSENDET'
+                ));
+            });
         });
     }
 

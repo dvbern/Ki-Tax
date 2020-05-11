@@ -179,7 +179,6 @@ public class NotrechtResource {
 	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
 		+ "Status",
 		response = JaxRueckforderungMitteilung.class)
-	@Nullable
 	@POST
 	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
@@ -197,19 +196,18 @@ public class NotrechtResource {
 	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
 		+ "Status",
 		response = JaxRueckforderungMitteilung.class)
-	@Nullable
 	@POST
 	@Path("/einladung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
-	public JaxRueckforderungMitteilung sendEinladung(
+	public void sendEinladung(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 		RueckforderungMitteilung rueckforderungMitteilung =
 			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
-		return jaxRueckforderungMitteilung;
+		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
 	}
 
 }

@@ -119,8 +119,12 @@
                 RUECKFORDERUNGSFORMULARE_INITIALISIEREN
             </button>
 
-            <button class="dv-btn" (click)="sendMitteilung()" dv-show-allowed-roles="isSuperAdmin()" translate>
-                MITTEILUNG_SENDEN
+            <button class="dv-btn" (click)="sendMitteilung(true)" translate>
+                NOTVERORDNUNG_EINLADUNG_SENDEN
+            </button>
+
+            <button class="dv-btn" (click)="sendMitteilung(false)" translate>
+                NOTVERORDNUNG_MITTEILUNG_SENDEN
             </button>
         </div>
     </div>
