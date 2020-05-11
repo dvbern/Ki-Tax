@@ -52,14 +52,6 @@ import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-
 @Path("notrecht")
 @Stateless
 @Api(description = "Resource zum Verwalten von Rueckforderungsformularen für das Notrecht")
