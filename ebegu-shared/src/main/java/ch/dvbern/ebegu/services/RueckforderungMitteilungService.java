@@ -42,4 +42,8 @@ public interface RueckforderungMitteilungService {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung);
 
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	RueckforderungMitteilung createMitteilung(RueckforderungMitteilung mitteilung);
+
 }

@@ -5242,21 +5242,14 @@ public class JaxBConverter extends AbstractConverter {
 		return convertedRueckforderungMitteilung;
 	}
 
-	public RueckforderungMitteilung rueckforderungMitteilungToEntity(@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung, @Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+	public RueckforderungMitteilung rueckforderungMitteilungToEntity(
+		@Nonnull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 
 		convertAbstractFieldsToEntity(jaxRueckforderungMitteilung, rueckforderungMitteilung);
 
-		Benutzer benutzer =
-			benutzerService.findBenutzer(jaxRueckforderungMitteilung.getAbsender().getUsername())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"rueckforderungMitteilungToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxRueckforderungMitteilung.getAbsender().getUsername()));
-
-		rueckforderungMitteilung.setAbsender(benutzer);
 		rueckforderungMitteilung.setBetreff(jaxRueckforderungMitteilung.getBetreff());
 		rueckforderungMitteilung.setInhalt(jaxRueckforderungMitteilung.getInhalt());
-		rueckforderungMitteilung.setSendeDatum(jaxRueckforderungMitteilung.getSendeDatum());
 		rueckforderungMitteilung.setGesendetAnStatusList(jaxRueckforderungMitteilung.getGesendetAnStatus());
 
 		return rueckforderungMitteilung;

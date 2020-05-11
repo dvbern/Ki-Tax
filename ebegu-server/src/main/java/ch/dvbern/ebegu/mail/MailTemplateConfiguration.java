@@ -617,4 +617,19 @@ public class MailTemplateConfiguration {
 			paramsWithEmpfaenger(empfaengerMail),
 			sprache);
 	}
+
+	public String getNotrechtGenerischeMitteilung(
+		String empfaengerMail,
+		String betreff,
+		String content
+	) {
+
+		Map<Object, Object> paramMap = initParamMap();
+
+		paramMap.put("empfaenger", empfaengerMail);
+		paramMap.put("betreff", betreff);
+		paramMap.put("content", content);
+
+		return doProcessTemplate(MailTemplate.NotrechtGenerischeMitteilung.name() + ".ftl", paramMap);
+	}
 }

@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.constraints.Null;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -31,7 +33,7 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -8553194968646128553L;
 
-	@Nonnull
+	@Nullable
 	private JaxBenutzer absender;
 
 	@Nonnull
@@ -40,13 +42,13 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	@Nonnull
 	private String inhalt;
 
-	@Nonnull
+	@Nullable
 	private LocalDateTime sendeDatum;
 
 	@Nonnull
 	private ArrayList<RueckforderungStatus> gesendetAnStatus;
 
-	@Nonnull
+	@Nullable
 	public JaxBenutzer getAbsender() {
 		return absender;
 	}
@@ -73,7 +75,7 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 		this.inhalt = inhalt;
 	}
 
-	@Nonnull
+	@Nullable
 	public LocalDateTime getSendeDatum() {
 		return sendeDatum;
 	}

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,9 +30,12 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -44,22 +48,47 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
 
+	@Inject
+	private MailService mailService;
+
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Inject
+	private Persistence persistence;
+
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
 	public void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung) {
 		Collection<RueckforderungFormular> formulareWithStatus =
 			rueckforderungFormularService.getRueckforderungFormulareByStatus(rueckforderungMitteilung.getGesendetAnStatusList());
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"sendMessage", "Kein Benutzer eingeloggt"));
+		LocalDateTime dateNow = LocalDateTime.now();
+
+		rueckforderungMitteilung.setAbsender(currentBenutzer);
+		rueckforderungMitteilung.setSendeDatum(dateNow);
+		this.createMitteilung(rueckforderungMitteilung);
 		saveMitteilungenInFormulare(formulareWithStatus, rueckforderungMitteilung);
 
 		HashMap<String, ArrayList<Institution>> uniqueEmpfaenger = makeEmpfaengerUnique(formulareWithStatus);
 		HashMap<String, RueckforderungMitteilung> mitteilungen = prepareMitteilungen(uniqueEmpfaenger, rueckforderungMitteilung);
+
+		sendMitteilungen(mitteilungen);
+
 	}
 
 	private void saveMitteilungenInFormulare(Collection<RueckforderungFormular> formulareWithStatus,
 		RueckforderungMitteilung mitteilung) {
 		for (RueckforderungFormular formular : formulareWithStatus) {
 			rueckforderungFormularService.addMitteilung(formular, mitteilung);
+		}
+	}
+
+	private void sendMitteilungen(HashMap<String, RueckforderungMitteilung> mitteilungen) {
+		for (Entry<String, RueckforderungMitteilung> mitteilung : mitteilungen.entrySet()) {
+			mailService.sendNotrechtGenerischeMitteilung(mitteilung.getValue(), mitteilung.getKey());
 		}
 	}
 
@@ -90,6 +119,12 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 			mitteilungen.put(empfaenger.getKey(), mitteilung);
 		}
 		return mitteilungen;
+	}
+
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public RueckforderungMitteilung createMitteilung(RueckforderungMitteilung mitteilung) {
+		return persistence.persist(mitteilung);
 	}
 
 }

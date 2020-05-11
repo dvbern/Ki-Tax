@@ -25,6 +25,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -39,7 +41,7 @@ public class RueckforderungMitteilung extends AbstractEntity {
 	private static final long serialVersionUID = 5010422246166625084L;
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne()
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_RueckforderungMitteilung_Benutzer_id"), nullable = false)
 	private Benutzer absender;
 

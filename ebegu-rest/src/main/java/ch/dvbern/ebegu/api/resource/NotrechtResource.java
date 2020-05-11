@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -65,6 +66,9 @@ public class NotrechtResource {
 
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
+
+	@Inject
+	private RueckforderungMitteilungService rueckforderungMitteilungService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -143,10 +147,29 @@ public class NotrechtResource {
 		response = JaxRueckforderungMitteilung.class)
 	@Nullable
 	@POST
-	@Path("/message")
+	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JaxRueckforderungMitteilung sendMessage(
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
+	public void sendMessage(
+		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+		RueckforderungMitteilung rueckforderungMitteilung =
+			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
+		rueckforderungMitteilungService.sendMitteilung(rueckforderungMitteilung);
+	}
+
+	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
+		+ "Status",
+		response = JaxRueckforderungMitteilung.class)
+	@Nullable
+	@POST
+	@Path("/einladung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
+	public JaxRueckforderungMitteilung sendEinladung(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {

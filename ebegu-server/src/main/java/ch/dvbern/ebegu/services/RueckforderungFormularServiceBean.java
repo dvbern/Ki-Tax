@@ -133,6 +133,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	public Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull ArrayList<RueckforderungStatus> status) {
 		Objects.requireNonNull(status.get(0), "Mindestens ein Status muss angegeben werden");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -147,6 +148,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public RueckforderungFormular addMitteilung(RueckforderungFormular formular,
 		RueckforderungMitteilung mitteilung) {
 		formular.addRueckforderungMitteilung(mitteilung);
