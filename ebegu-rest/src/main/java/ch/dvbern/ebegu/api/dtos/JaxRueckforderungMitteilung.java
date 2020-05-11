@@ -25,6 +25,9 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.Null;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
@@ -43,6 +46,7 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	private String inhalt;
 
 	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime sendeDatum;
 
 	@Nonnull

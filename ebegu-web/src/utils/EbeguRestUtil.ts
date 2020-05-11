@@ -3875,14 +3875,14 @@ export class EbeguRestUtil {
         rueckforderungFormular.stufe2InstitutionKostenuebernahmeBetreuung = rueckforderungFormularFromServer.stufe2InstitutionKostenuebernahmeBetreuung;
         rueckforderungFormular.stufe1FreigabeBetrag = rueckforderungFormularFromServer.stufe1FreigabeBetrag;
         rueckforderungFormular.stufe1FreigabeDatum =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeDatum);
         rueckforderungFormular.stufe1FreigabeAusbezahltAm =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe1FreigabeAusbezahltAm);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe1FreigabeAusbezahltAm);
         rueckforderungFormular.stufe2VerfuegungBetrag = rueckforderungFormularFromServer.stufe2VerfuegungBetrag;
         rueckforderungFormular.stufe2VerfuegungDatum =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungDatum);
         rueckforderungFormular.stufe2VerfuegungAusbezahltAm =
-            DateUtil.localDateToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
+            DateUtil.localDateTimeToMoment(rueckforderungFormularFromServer.stufe2VerfuegungAusbezahltAm);
         return rueckforderungFormular;
     }
 
@@ -3902,7 +3902,7 @@ export class EbeguRestUtil {
         rueckforderungMitteilung.absender = this.parseUser(new TSBenutzer(), rueckforderungMitteilungFromServer.absender);
         rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
         rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
-        rueckforderungMitteilung.sendeDatum = DateUtil.localDateToMoment(rueckforderungMitteilungFromServer.sendeDatum);
+        rueckforderungMitteilung.sendeDatum = DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
         rueckforderungMitteilung.gesendetAnStatus = rueckforderungMitteilungFromServer.gesendetAnStatus;
         return rueckforderungMitteilung;
     }

@@ -31,10 +31,10 @@ import {SendNotrechtMitteilungComponent} from './send-notrecht-mitteilung/send-n
         SendNotrechtMitteilungComponent
     ],
     imports: [
-        SharedModule,
         MaterialModule,
         NotrechtRoutingModule,
-        TranslateModule
+        TranslateModule,
+        SharedModule
     ],
     providers: [],
     entryComponents: [
