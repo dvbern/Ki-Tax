@@ -58,6 +58,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("notrecht")
@@ -91,13 +93,45 @@ public class NotrechtResource {
 		return converter.rueckforderungFormularListToJax(createdFormulare);
 	}
 
+	@ApiOperation(value = "Gibt alle Rückforderungsformulare zurück, die der aktuelle Benutzer lesen kann",
+		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+	@GET
+	@Path("/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public List<JaxRueckforderungFormular> getRueckforderungFormulareForCurrentUser() {
+
+		List<RueckforderungFormular> formulareCurrentBenutzer =
+			rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
+
+		return converter.rueckforderungFormularListToJax(formulareCurrentBenutzer);
+	}
+
+	@ApiOperation(value = "Gibt zurück, ob der aktuelle eingeloggte Benutzer mindestens ein Rückforderungformular "
+		+ "sehen kann",
+		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+	@GET
+	@Path("/currentuser/hasformular")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	public boolean currentUserHasFormular() {
+
+		List<RueckforderungFormular> formulareCurrentBenutzer =
+			rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
+
+		return formulareCurrentBenutzer.size() > 0;
+	}
+
 	@ApiOperation(value = "Updates a RueckforderungFormular in the database", response =
 		JaxRueckforderungFormular.class)
 	@Nullable
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	public JaxRueckforderungFormular update(
 		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
 		@Context UriInfo uriInfo,
