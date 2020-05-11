@@ -70,19 +70,19 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nonnull
 	private RueckforderungStatus status;
 
-	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlStunden;
 
-	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_tage", nullable = true)
+	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlStunden;
 
-	@Column(name = "stufe_1_institution_kostenuebernahme_betreuung", nullable = true)
+	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlStunden;
 
-	@Column(name = "stufe_1_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_stunden", nullable = true)
 	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlStunden;
 
@@ -90,27 +90,27 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_kanton_kostenuebernahme_betreuung", nullable = true)
+	@Column(name = "stufe_1_institution_kostenuebernahme_anzahl_tage", nullable = true)
 	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_freigabe_ausbezahlt_am", nullable = true)
+	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_tage", nullable = true)
 	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_freigabe_betrag", nullable = true)
+	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_tage", nullable = true)
 	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeAnzahlTage;
 
-	@Column(name = "stufe_1_freigabe_datum", nullable = true)
+	@Column(name = "stufe_1_kanton_kostenuebernahme_betreuung", nullable = true)
 	@Nullable
 	private BigDecimal stufe1KantonKostenuebernahmeBetreuung;
 
-	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_1_institution_kostenuebernahme_betreuung", nullable = true)
 	@Nullable
 	private BigDecimal stufe1InstitutionKostenuebernahmeBetreuung;
 
-	@Column(name = "stufe_2_institution_kostenuebernahme_anzahl_tage", nullable = true)
+	@Column(name = "stufe_2_kanton_kostenuebernahme_betreuung", nullable = true)
 	@Nullable
 	private BigDecimal stufe2KantonKostenuebernahmeBetreuung;
 
@@ -118,27 +118,27 @@ public class RueckforderungFormular extends AbstractEntity {
 	@Nullable
 	private BigDecimal stufe2InstitutionKostenuebernahmeBetreuung;
 
-	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_stunden", nullable = true)
+	@Column(name = "stufe_1_freigabe_betrag", nullable = true)
 	@Nullable
 	private BigDecimal stufe1FreigabeBetrag;
 
-	@Column(name = "stufe_2_kanton_kostenuebernahme_anzahl_tage", nullable = true)
+	@Column(name = "stufe_1_freigabe_datum", nullable = true)
 	@Nullable
 	private LocalDateTime stufe1FreigabeDatum;
 
-	@Column(name = "stufe_2_kanton_kostenuebernahme_betreuung", nullable = true)
+	@Column(name = "stufe_1_freigabe_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe1FreigabeAusbezahltAm;
 
-	@Column(name = "stufe_2_verfuegung_ausbezahlt_am", nullable = true)
+	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
 	@Nullable
 	private BigDecimal stufe2VerfuegungBetrag;
 
-	@Column(name = "stufe_2_verfuegung_betrag", nullable = true)
+	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2VerfuegungDatum;
 
-	@Column(name = "stufe_2_verfuegung_datum", nullable = true)
+	@Column(name = "stufe_2_verfuegung_ausbezahlt_am", nullable = true)
 	@Nullable
 	private LocalDateTime stufe2VerfuegungAusbezahltAm;
 

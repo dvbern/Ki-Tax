@@ -29,10 +29,10 @@ import {RueckforderungFormularComponent} from './rueckforderung-formular/rueckfo
         RueckforderungFormularComponent
     ],
     imports: [
-        SharedModule,
         MaterialModule,
         NotrechtRoutingModule,
-        TranslateModule
+        TranslateModule,
+        SharedModule
     ],
     providers: []
 })
