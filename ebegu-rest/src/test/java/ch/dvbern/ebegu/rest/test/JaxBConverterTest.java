@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -145,6 +146,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(null, null);
+		jaxGesuch.setTyp(AntragTyp.MUTATION);
 		jaxGesuch.setDossier(converter.dossierToJAX(gesuch.getDossier()));
 		jaxGesuch.setGesuchsperiode(converter.gesuchsperiodeToJAX(gesuchsperiode));
 		jaxGesuch.getGesuchsperiode().setStatus(GesuchsperiodeStatus.INAKTIV);
