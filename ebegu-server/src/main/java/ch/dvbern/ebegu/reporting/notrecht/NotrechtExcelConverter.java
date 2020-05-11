@@ -44,12 +44,12 @@ public class NotrechtExcelConverter implements ExcelConverter {
 
 		checkNotNull(data);
 
+		Locale locale = Locale.GERMAN;
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
 		excelMerger.addValue(MergeFieldNotrecht.datumErstellt, LocalDate.now());
-		excelMerger.addValue(MergeFieldNotrecht.flagZahlungenAusloesen, zahlungenausloesen);
-
-		Locale locale = Locale.GERMAN;
+		String zahlungenAusloesenKey = zahlungenausloesen ? "label_true" : "label_false";
+		excelMerger.addValue(MergeFieldNotrecht.flagZahlungenAusloesen, ServerMessageUtil.getMessage(zahlungenAusloesenKey, locale));
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldNotrecht.repeatRow);

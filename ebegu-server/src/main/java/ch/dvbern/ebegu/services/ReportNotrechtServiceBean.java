@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -107,31 +109,33 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 
 		row.setTelefon(stammdaten.getTelefon());
 
-		row.setStufe1InstitutionKostenuebernahmeAnzahlTage(formular.getStufe1InstitutionKostenuebernahmeAnzahlTage());
-		row.setStufe1InstitutionKostenuebernahmeAnzahlStunden(formular.getStufe1InstitutionKostenuebernahmeAnzahlStunden());
-		row.setStufe1InstitutionKostenuebernahmeBetreuung(formular.getStufe1InstitutionKostenuebernahmeBetreuung());
-		row.setStufe1KantonKostenuebernahmeAnzahlTage(formular.getStufe1KantonKostenuebernahmeAnzahlTage());
-		row.setStufe1KantonKostenuebernahmeAnzahlStunden(formular.getStufe1KantonKostenuebernahmeAnzahlStunden());
-		row.setStufe1KantonKostenuebernahmeBetreuung(formular.getStufe1KantonKostenuebernahmeBetreuung());
+		row.setStufe1InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe1InstitutionKostenuebernahmeAnzahlTage()));
+		row.setStufe1InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe1InstitutionKostenuebernahmeAnzahlStunden()));
+		row.setStufe1InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe1InstitutionKostenuebernahmeBetreuung()));
+		row.setStufe1KantonKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe1KantonKostenuebernahmeAnzahlTage()));
+		row.setStufe1KantonKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe1KantonKostenuebernahmeAnzahlStunden()));
+		row.setStufe1KantonKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe1KantonKostenuebernahmeBetreuung()));
 
-		row.setStufe1FreigabeBetrag(formular.getStufe1FreigabeBetrag());
+		row.setStufe1FreigabeBetrag(printBigDecimal(formular.getStufe1FreigabeBetrag()));
 		row.setStufe1FreigabeDatum(formular.getStufe1FreigabeDatum());
 		row.setStufe1FreigabeAusbezahltAm(formular.getStufe1FreigabeAusbezahltAm());
 
-		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage());
-		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden());
-		row.setStufe2InstitutionKostenuebernahmeBetreuung(formular.getStufe2InstitutionKostenuebernahmeBetreuung());
-		row.setStufe2KantonKostenuebernahmeAnzahlTage(formular.getStufe2KantonKostenuebernahmeAnzahlTage());
-		row.setStufe2KantonKostenuebernahmeAnzahlStunden(formular.getStufe2KantonKostenuebernahmeAnzahlStunden());
-		row.setStufe2KantonKostenuebernahmeBetreuung(formular.getStufe2KantonKostenuebernahmeBetreuung());
+		row.setStufe2InstitutionKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlTage()));
+		row.setStufe2InstitutionKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeAnzahlStunden()));
+		row.setStufe2InstitutionKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2InstitutionKostenuebernahmeBetreuung()));
+		row.setStufe2KantonKostenuebernahmeAnzahlTage(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlTage()));
+		row.setStufe2KantonKostenuebernahmeAnzahlStunden(printBigDecimal(formular.getStufe2KantonKostenuebernahmeAnzahlStunden()));
+		row.setStufe2KantonKostenuebernahmeBetreuung(printBigDecimal(formular.getStufe2KantonKostenuebernahmeBetreuung()));
 
-		row.setStufe2VerfuegungBetrag(formular.getStufe2VerfuegungBetrag());
+		row.setStufe2VerfuegungBetrag(printBigDecimal(formular.getStufe2VerfuegungBetrag()));
 		row.setStufe2VerfuegungDatum(formular.getStufe2VerfuegungDatum());
 		row.setStufe2VerfuegungAusbezahltAm(formular.getStufe2VerfuegungAusbezahltAm());
 
 		InstitutionStammdatenBetreuungsgutscheine stammdatenBetreuungsgutscheine = stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
 		if (stammdatenBetreuungsgutscheine != null) {
-			row.setIban(stammdatenBetreuungsgutscheine.getIban().getIban());
+			if (stammdatenBetreuungsgutscheine.getIban() != null) {
+				row.setIban(stammdatenBetreuungsgutscheine.getIban().getIban());
+			}
 			row.setKontoinhaber(stammdatenBetreuungsgutscheine.getKontoinhaber());
 
 			Adresse zahlungsadresse = stammdatenBetreuungsgutscheine.getAdresseKontoinhaber();
@@ -150,6 +154,14 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 	private Collection<RueckforderungFormular> findAllAuszuzahlendeFormulare() {
 		// Wir geben immer alle Formulare aus in der Statistik
 		return rueckforderungFormularService.getAllRueckforderungFormulare();
+	}
+
+	@Nonnull
+	private BigDecimal printBigDecimal(@Nullable BigDecimal input) {
+		if (input == null) {
+			return BigDecimal.ZERO;
+		}
+		return input;
 	}
 
 	@Nonnull

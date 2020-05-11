@@ -25,14 +25,13 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldNotrecht implements MergeFieldProvider {
 
 	datumErstellt(new SimpleMergeField<>("datumErstellt", DATE_CONVERTER)),
-	flagZahlungenAusloesen(new SimpleMergeField<>("flagZahlungenAusloesen", BOOLEAN_CONVERTER)),
+	flagZahlungenAusloesen(new SimpleMergeField<>("flagZahlungenAusloesen", STRING_CONVERTER)),
 
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
