@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -84,7 +82,6 @@ public class NotrechtResource {
 	@Path("/initialize")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN })
 	public List<JaxRueckforderungFormular> initializeRueckforderungFormulare() {
 
 		List<RueckforderungFormular> createdFormulare =
@@ -99,8 +96,6 @@ public class NotrechtResource {
 	@Path("/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<JaxRueckforderungFormular> getRueckforderungFormulareForCurrentUser() {
 
 		List<RueckforderungFormular> formulareCurrentBenutzer =
@@ -116,8 +111,6 @@ public class NotrechtResource {
 	@Path("/currentuser/hasformular")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public boolean currentUserHasFormular() {
 
 		List<RueckforderungFormular> formulareCurrentBenutzer =
@@ -164,7 +157,6 @@ public class NotrechtResource {
 	@Path("/{rueckforderungFormId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
 	public JaxRueckforderungFormular findRueckforderungFormular(
 		@Nonnull @NotNull @PathParam("rueckforderungFormId") JaxId rueckforderungFormJaxId) {
 
