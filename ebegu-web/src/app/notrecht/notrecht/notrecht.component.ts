@@ -59,6 +59,10 @@ export class NotrechtComponent implements OnInit {
     ) {}
 
     public ngOnInit(): void {
+      this.loadRueckforderungFormulareForCurrentBenutzer();
+    }
+
+    private loadRueckforderungFormulareForCurrentBenutzer(): void {
         this.notrechtRS.getRueckforderungFormulareForCurrentBenutzer().then(formulare => {
             this.rueckforderungFormulare = formulare;
             this.initDataSource(formulare);
@@ -116,6 +120,7 @@ export class NotrechtComponent implements OnInit {
                 'RUECKFORDERUNG_FORMULARE_INITIALISIERT',
                 {anzahlFormulare: formulare.length}
             ));
+            this.loadRueckforderungFormulareForCurrentBenutzer();
         });
     }
 
