@@ -466,7 +466,7 @@ public final class TestDataUtil {
 
 	public static Traegerschaft createDefaultTraegerschaft() {
 		Traegerschaft traegerschaft = new Traegerschaft();
-		traegerschaft.setName("Traegerschaft1");
+		traegerschaft.setName("Traegerschaft" + UUID.randomUUID().toString());
 		return traegerschaft;
 	}
 
