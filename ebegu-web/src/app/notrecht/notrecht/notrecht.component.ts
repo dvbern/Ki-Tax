@@ -16,9 +16,13 @@
  */
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
+import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
 
 @Component({
     selector: 'dv-notrecht',
@@ -28,9 +32,13 @@ import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 })
 export class NotrechtComponent  {
 
+    private readonly panelClass = 'dv-mat-dialog-send-notrecht-mitteilung';
+    private tempSavedMitteilung: TSRueckforderungMitteilung;
+
     public constructor(
         private readonly notrechtRS: NotrechtRS,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -42,5 +50,24 @@ export class NotrechtComponent  {
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public sendMitteilung(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {mitteilung: this.tempSavedMitteilung};
+        dialogConfig.panelClass = this.panelClass;
+        // Bei Ok erhalten wir die Mitteilung, die gesendet werden soll, sonst nichts
+        this.dialog.open(SendNotrechtMitteilungComponent, dialogConfig).afterClosed().toPromise().then(result => {
+            if (EbeguUtil.isNullOrUndefined(result) || EbeguUtil.isNullOrUndefined(result.mitteilung)) {
+                return;
+            }
+            if (result.send) {
+                console.log(result.mitteilung);
+                return;
+            }
+            // Mitteilung wurde nicht gesendet, deshalb wird sie zwischengespeichert um sie allenfalls später wieder
+            // zu öffnen
+            this.tempSavedMitteilung = result.mitteilung;
+        });
     }
 }

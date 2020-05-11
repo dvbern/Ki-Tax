@@ -1970,5 +1970,6 @@
     "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Anzahl Plätze (in Tagen ausgedrückt), die nicht zur Verfügung standen",
     "RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG": "Kostenübernahme Betreuung",
+    "MITTEILUNG_SENDEN_AN_STATUS": "Mitteilung senden an Status",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
