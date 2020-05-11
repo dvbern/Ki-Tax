@@ -15,20 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {
-    isNeuOrEingeladenStatus,
-    TSRueckforderungStatus
-} from '../../../models/enums/TSRueckforderungStatus';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSRole} from '../../../models/enums/TSRole';
+import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
 
 @Component({
     selector: 'dv-rueckforderung-formular',
@@ -51,6 +50,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public constructor(
         private readonly $transition$: Transition,
+        private readonly translate: TranslateService,
         private readonly notrechtRS: NotrechtRS,
         private readonly authServiceRS: AuthServiceRS
     ) {
@@ -70,7 +70,7 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public saveRueckforderungFormular(rueckforderungFormular: TSRueckforderungFormular): void {
-        if (!this.form.valid) {
+        if (!this.form.valid && rueckforderungFormular.status !== TSRueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH) {
             EbeguUtil.selectFirstInvalid();
             return;
         }
@@ -78,16 +78,20 @@ export class RueckforderungFormularComponent implements OnInit {
             return;
         }
 
-        //Status wechseln:
+        // Status wechseln:
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1) {
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 rueckforderungFormular.status = TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1;
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlStunden = rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlStunden;
+                rueckforderungFormular.stufe1KantonKostenuebernahmeAnzahlTage = rueckforderungFormular.stufe1InstitutionKostenuebernahmeAnzahlTage;
+                rueckforderungFormular.stufe1KantonKostenuebernahmeBetreuung = rueckforderungFormular.stufe1InstitutionKostenuebernahmeBetreuung;
             } else {
                 // ERROR transition not accepted
                 return;
             }
         } else if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1) {
-            if (this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            if (this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
                 rueckforderungFormular.status = TSRueckforderungStatus.GEPRUEFT_STUFE_1;
             } else {
                 // ERROR transition not accepted
@@ -100,7 +104,7 @@ export class RueckforderungFormularComponent implements OnInit {
 
     public rueckforderungAbschliessen(rueckforderungFormular: TSRueckforderungFormular): void {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             rueckforderungFormular.status = TSRueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH;
         } else {
             // ERROR transition not accepted
@@ -111,31 +115,43 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public enableRueckforderungAbschliessen(): boolean {
-        return this.betreuungKorrektAusgewiesen === true
-        && this.gutscheinPlaetzenReduziert === true
-        && this.erstattungGemaessKanton === true
-        && this.mahlzeitenBGSubventionenGebuehrensystem === true
-        && this.belegeEinreichenBetrageKantonZurueckfordern === true;
+        return this.betreuungKorrektAusgewiesen
+            && this.gutscheinPlaetzenReduziert
+            && this.erstattungGemaessKanton
+            && this.mahlzeitenBGSubventionenGebuehrensystem
+            && this.belegeEinreichenBetrageKantonZurueckfordern;
     }
 
-    public showButtonAbsenden(rueckforderungFormular: TSRueckforderungFormular): boolean {
+    public isInstitutionStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
-    public showButtonGeprueft(rueckforderungFormular: TSRueckforderungFormular): boolean {
+    public isPruefungKantonStufe1(rueckforderungFormular: TSRueckforderungFormular): boolean {
         if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
-            && this.authServiceRS.isOneOfRoles([TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
+            && this.authServiceRS.isOneOfRoles(
+                [TSRole.SUPER_ADMIN, TSRole.ADMIN_MANDANT, TSRole.SACHBEARBEITER_MANDANT])) {
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
+    public showAbsendenText(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        if (rueckforderungFormular.status === TSRueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return true;
+        }
+        return false;
+    }
+
+    public translateStatus(status: string): string {
+        return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
+    }
+
+    public isKitaAngebot(rueckforderungFormular: TSRueckforderungFormular): boolean {
+        return rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA;
+    }
 }

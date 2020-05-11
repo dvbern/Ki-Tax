@@ -27,7 +27,6 @@ export enum TSRueckforderungStatus {
     ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH',
 }
 
-
 export function isNeuOrEingeladenStatus(status: TSRueckforderungStatus): boolean {
     return status === TSRueckforderungStatus.NEU
         || status === TSRueckforderungStatus.EINGELADEN;
