@@ -30,6 +30,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 public final class KitaxUebergangsloesungInstitutionOeffnungszeiten extends AbstractEntity {
 
+	private static final long serialVersionUID = 6906112225260019153L;
+
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	private BigDecimal oeffnungstage = BigDecimal.ZERO;
