@@ -83,12 +83,12 @@ export class NotrechtRS {
 
     public sendMitteilung(
         mitteilung: TSRueckforderungMitteilung,
-        statusList: TSRueckforderungStatus[]
+        statusToSendMitteilung: TSRueckforderungStatus[]
     ): IPromise<void> {
         let restRueckforderungMitteilung = {};
         restRueckforderungMitteilung =
             this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
-        const data = {mitteilung: restRueckforderungMitteilung, statusList: statusList};
+        const data = {mitteilung: restRueckforderungMitteilung, statusList: statusToSendMitteilung};
         return this.$http.post(`${this.serviceURL}/mitteilung`, data)
             .then(() => {
                     return;
