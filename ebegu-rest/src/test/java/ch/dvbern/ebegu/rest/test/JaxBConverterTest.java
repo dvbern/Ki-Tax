@@ -176,9 +176,9 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 			BetreuungsangebotTyp.KITA, "mail@example.com", null, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
-		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
+		final Traegerschaft loadedTraegerschaft = persistence.find(Traegerschaft.class, traegerschaft.getId());
 		assertEquals("TestMandantDBUnit", loadedMandant.getName());
-		assertEquals("Traegerschaft1", loadedTraegerschaft.getName());
+		assertEquals(nameTraegerschaft, loadedTraegerschaft.getName());
 	}
 
 	@Test
