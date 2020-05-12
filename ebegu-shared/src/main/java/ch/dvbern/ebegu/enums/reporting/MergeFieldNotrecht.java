@@ -25,6 +25,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
@@ -53,8 +54,8 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe1KantonKostenuebernahmeBetreuung(new SimpleMergeField<>("stufe1KantonKostenuebernahmeBetreuung", BIGDECIMAL_CONVERTER)),
 
 	stufe1FreigabeBetrag(new SimpleMergeField<>("stufe1FreigabeBetrag", BIGDECIMAL_CONVERTER)),
-	stufe1FreigabeDatum(new SimpleMergeField<>("stufe1FreigabeDatum", DATE_CONVERTER)),
-	stufe1FreigabeAusbezahltAm(new SimpleMergeField<>("stufe1FreigabeAusbezahltAm", DATE_CONVERTER)),
+	stufe1FreigabeDatum(new SimpleMergeField<>("stufe1FreigabeDatum", DATETIME_CONVERTER)),
+	stufe1FreigabeAusbezahltAm(new SimpleMergeField<>("stufe1FreigabeAusbezahltAm", DATETIME_CONVERTER)),
 
 	stufe2InstitutionKostenuebernahmeAnzahlTage(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlTage", BIGDECIMAL_CONVERTER)),
 	stufe2InstitutionKostenuebernahmeAnzahlStunden(new SimpleMergeField<>("stufe2InstitutionKostenuebernahmeAnzahlStunden", BIGDECIMAL_CONVERTER)),
@@ -64,8 +65,8 @@ public enum MergeFieldNotrecht implements MergeFieldProvider {
 	stufe2KantonKostenuebernahmeBetreuung(new SimpleMergeField<>("stufe2KantonKostenuebernahmeBetreuung", BIGDECIMAL_CONVERTER)),
 
 	stufe2VerfuegungBetrag(new SimpleMergeField<>("stufe2VerfuegungBetrag", BIGDECIMAL_CONVERTER)),
-	stufe2VerfuegungDatum(new SimpleMergeField<>("stufe2VerfuegungDatum", DATE_CONVERTER)),
-	stufe2VerfuegungAusbezahltAm(new SimpleMergeField<>("stufe2VerfuegungAusbezahltAm", DATE_CONVERTER)),
+	stufe2VerfuegungDatum(new SimpleMergeField<>("stufe2VerfuegungDatum", DATETIME_CONVERTER)),
+	stufe2VerfuegungAusbezahltAm(new SimpleMergeField<>("stufe2VerfuegungAusbezahltAm", DATETIME_CONVERTER)),
 
 	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
 	kontoinhaber(new SimpleMergeField<>("kontoinhaber", STRING_CONVERTER)),
