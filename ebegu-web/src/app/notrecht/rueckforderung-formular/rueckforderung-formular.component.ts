@@ -25,6 +25,7 @@ import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotT
 import {TSRole} from '../../../models/enums/TSRole';
 import {isNeuOrEingeladenStatus, TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {TSRueckforderungZahlung} from '../../../models/TSRueckforderungZahlung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
@@ -36,6 +37,9 @@ import {NotrechtRS} from '../../core/service/notrechtRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungFormularComponent implements OnInit {
+    public get rueckforderungZahlungenList(): TSRueckforderungZahlung[] {
+        return this._rueckforderungZahlungenList;
+    }
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
@@ -47,6 +51,7 @@ export class RueckforderungFormularComponent implements OnInit {
     public erstattungGemaessKanton: boolean;
     public mahlzeitenBGSubventionenGebuehrensystem: boolean;
     public belegeEinreichenBetrageKantonZurueckfordern: boolean;
+    private _rueckforderungZahlungenList: TSRueckforderungZahlung[];
 
     public constructor(
         private readonly $transition$: Transition,
@@ -65,6 +70,7 @@ export class RueckforderungFormularComponent implements OnInit {
         this.rueckforderungFormular$ = from(
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
+                    this.initRueckforderungZahlungen(response);
                     return response;
                 }));
     }
@@ -112,6 +118,26 @@ export class RueckforderungFormularComponent implements OnInit {
         }
 
         this.saveRueckforderungFormular(rueckforderungFormular);
+    }
+
+    public initRueckforderungZahlungen(rueckfordeungFormular: TSRueckforderungFormular): void {
+        this._rueckforderungZahlungenList = [];
+        if (rueckfordeungFormular.stufe1FreigabeBetrag) {
+            let rueckforderungZahlungStufe1 = new TSRueckforderungZahlung();
+            rueckforderungZahlungStufe1.betrag = rueckfordeungFormular.stufe1FreigabeBetrag;
+            rueckforderungZahlungStufe1.datumErstellt = rueckfordeungFormular.stufe1FreigabeDatum;
+            rueckforderungZahlungStufe1.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_STUFE_1';
+            rueckforderungZahlungStufe1.ausgeloest = EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe1FreigabeAusbezahltAm);
+            this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe1);
+        }
+        if (rueckfordeungFormular.stufe2VerfuegungBetrag) {
+            let rueckforderungZahlungStufe2 = new TSRueckforderungZahlung();
+            rueckforderungZahlungStufe2.betrag = rueckfordeungFormular.stufe2VerfuegungBetrag;
+            rueckforderungZahlungStufe2.datumErstellt = rueckfordeungFormular.stufe2VerfuegungDatum;
+            rueckforderungZahlungStufe2.stufe = 'RUECKFORDERUNG_ZAHLUNGEN_STUFE_2';
+            rueckforderungZahlungStufe2.ausgeloest = EbeguUtil.isNotNullOrUndefined(rueckfordeungFormular.stufe2VerfuegungAusbezahltAm);
+            this.rueckforderungZahlungenList.push(rueckforderungZahlungStufe2);
+        }
     }
 
     public enableRueckforderungAbschliessen(): boolean {

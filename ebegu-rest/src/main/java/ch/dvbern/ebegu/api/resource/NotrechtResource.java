@@ -131,6 +131,8 @@ public class NotrechtResource {
 				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					rueckforderungFormularJAXP.getId()));
 
+		RueckforderungStatus statusFromDB = rueckforderungFormularFromDB.getStatus();
+
 		RueckforderungFormular rueckforderungFormularToMerge =
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
 				rueckforderungFormularFromDB);
@@ -140,7 +142,7 @@ public class NotrechtResource {
 		}
 
 		// Zahlungen generieren
-		zahlungenGenerieren(rueckforderungFormularToMerge, rueckforderungFormularFromDB);
+		zahlungenGenerieren(rueckforderungFormularToMerge, statusFromDB);
 
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
@@ -183,9 +185,9 @@ public class NotrechtResource {
 	}
 
 	private void zahlungenGenerieren(RueckforderungFormular rueckforderungFormular,
-		RueckforderungFormular rueckforderungFormularFromDB) {
+		RueckforderungStatus statusFromDB) {
 		// Kanton hat der Stufe 1 eingaben geprueft
-		if (rueckforderungFormularFromDB.getStatus().equals(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1)
+		if (statusFromDB.equals(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1)
 			&& rueckforderungFormular.getStatus().equals(RueckforderungStatus.GEPRUEFT_STUFE_1)) {
 			BigDecimal freigabeBetrag;
 			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {

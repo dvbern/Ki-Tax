@@ -1992,5 +1992,12 @@
     "ERSTATTUNG_GEMAESS_KANTON_INFO": "Nicht übernommen werden die Betreuungsgebühren von Eltern, deren Kinder weiterhin in der Kita oder von der TFO betreut wurden sowie von Eltern, die ihre Kinder zwar nicht mehr in die Betreuung gebracht haben, diese aber auch nicht abgemeldet haben.<br><br>Auch bei Abwesenheiten, die nicht coronabedingt sind, zum Beispiel wegen Ferien der Familie, Krankheit des Kindes, werden allfällige Gebühren nicht übernommen und sind von den Eltern geschuldet.",
     "MAHLZEITEN_BG_SUBVENTIONEN_GEBUEHRENSYSTEM": "Wir bestätigen, dass wir bei der Berechnung Betreuungskosten die Kosten für Mahlzeiten und allfällige Betreuungsgutscheine oder Subventionen gemäss Gebührensystem in Abzug gebracht haben.",
     "BELEGE_EINREICHEN_BETRAG_KANTON_ZURUECKFORDERN": "Wir nehmen zur Kenntnis, dass wir innerhalb von drei Monaten nach Auszahlung die geforderten Belege zur Plausibilisierung einreichen müssen und ansonsten die Beträge durch den Kanton zurückgefordert werden.",
+    "RUECKFORDERUNG_ZAHLUNGEN": "Zahlungen",
+    "RUECKFORDERUNG_ZAHLUNGEN_ERSTELLT": "ERSTELLT",
+    "RUECKFORDERUNG_ZAHLUNGEN_STUFE": "STUFE",
+    "RUECKFORDERUNG_ZAHLUNGEN_BETRAG": "BETRAG",
+    "RUECKFORDERUNG_ZAHLUNGEN_AUSGELOEST": "AUSGELÖST",
+    "RUECKFORDERUNG_ZAHLUNGEN_STUFE_1": "STUFE 1",
+    "RUECKFORDERUNG_ZAHLUNGEN_STUFE_2": "STUFE 2",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
