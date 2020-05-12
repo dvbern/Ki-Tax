@@ -133,8 +133,8 @@ public class NotrechtResource {
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
 			rueckforderungFormularFromDB);
 
-		if(!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)){
-			throw(new EbeguRuntimeException("update", "Action not allowed for this user"));
+		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
+			throw new EbeguRuntimeException("update", "Action not allowed for this user");
 		}
 
 		RueckforderungFormular modifiedRueckforderungFormular =
@@ -166,12 +166,13 @@ public class NotrechtResource {
 		return jaxRueckforderungFormular;
 	}
 
-	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular){
-		if(principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles()) && RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
+	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
+			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
 			return true;
 		}
-		if(principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
-			UserRole.SUPER_ADMIN) && RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())){
+		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT, UserRole.SUPER_ADMIN)
+			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())) {
 			return true;
 		}
 		return false;

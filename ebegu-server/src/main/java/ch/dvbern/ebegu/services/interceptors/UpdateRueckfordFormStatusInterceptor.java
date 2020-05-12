@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.interceptors;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
@@ -31,15 +32,10 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
-
 public class UpdateRueckfordFormStatusInterceptor {
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(UpdateRueckfordFormStatusInterceptor.class.getSimpleName());
-
-	private static final UserRole[] INSTITUTION_ROLEN = { ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION };
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -67,7 +63,8 @@ public class UpdateRueckfordFormStatusInterceptor {
 					LOG.info("RueckforderungFormular mit ID {} wurde nicht in der DB gefunden",
 						rueckforderungFormularID);
 				} else {
-					if (principalBean.isCallerInAnyOfRole(INSTITUTION_ROLEN) && RueckforderungStatus.EINGELADEN == rueckforderungFormular.getStatus()) {
+					if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
+							&& RueckforderungStatus.EINGELADEN == rueckforderungFormular.getStatus()) {
 						changeRueckforderungFormularStatus(rueckforderungFormular,
 							RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1);
 					}
@@ -77,8 +74,10 @@ public class UpdateRueckfordFormStatusInterceptor {
 		return ctx.proceed();
 	}
 
-	private void changeRueckforderungFormularStatus(RueckforderungFormular rueckforderungFormular,
-		RueckforderungStatus newStatus) {
+	private void changeRueckforderungFormularStatus(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull RueckforderungStatus newStatus
+	) {
 		rueckforderungFormular.setStatus(newStatus);
 		rueckforderungFormularService.save(rueckforderungFormular);
 
