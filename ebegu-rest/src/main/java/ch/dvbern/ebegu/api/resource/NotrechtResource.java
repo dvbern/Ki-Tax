@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -44,22 +42,18 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("notrecht")
 @Stateless
@@ -75,6 +69,9 @@ public class NotrechtResource {
 	@Inject
 	private JaxBConverter converter;
 
+	@Inject
+	private PrincipalBean principalBean;
+
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
 		JaxRueckforderungFormular.class)
@@ -83,7 +80,6 @@ public class NotrechtResource {
 	@Path("/initialize")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN })
 	public List<JaxRueckforderungFormular> initializeRueckforderungFormulare() {
 
 		List<RueckforderungFormular> createdFormulare =
@@ -98,8 +94,6 @@ public class NotrechtResource {
 	@Path("/currentuser")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public List<JaxRueckforderungFormular> getRueckforderungFormulareForCurrentUser() {
 
 		List<RueckforderungFormular> formulareCurrentBenutzer =
@@ -115,8 +109,6 @@ public class NotrechtResource {
 	@Path("/currentuser/hasformular")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public boolean currentUserHasFormular() {
 
 		List<RueckforderungFormular> formulareCurrentBenutzer =
@@ -140,12 +132,17 @@ public class NotrechtResource {
 
 		RueckforderungFormular rueckforderungFormularFromDB =
 			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
-				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					rueckforderungFormularJAXP.getId()));
+			.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				rueckforderungFormularJAXP.getId()));
 
 		RueckforderungFormular rueckforderungFormularToMerge =
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
-				rueckforderungFormularFromDB);
+			rueckforderungFormularFromDB);
+
+		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
+			throw new EbeguRuntimeException("update", "Action not allowed for this user");
+		}
+
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
@@ -158,7 +155,6 @@ public class NotrechtResource {
 	@Path("/{rueckforderungFormId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
 	public JaxRueckforderungFormular findRueckforderungFormular(
 		@Nonnull @NotNull @PathParam("rueckforderungFormId") JaxId rueckforderungFormJaxId) {
 
@@ -176,6 +172,18 @@ public class NotrechtResource {
 		return jaxRueckforderungFormular;
 	}
 
+	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
+			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
+			return true;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT, UserRole.SUPER_ADMIN)
+			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())) {
+			return true;
+		}
+		return false;
+	}
+
 	@ApiOperation(value = "Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem "
 		+ "Status",
 		response = JaxRueckforderungMitteilung.class)
@@ -183,7 +191,6 @@ public class NotrechtResource {
 	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
 	public void sendMessage(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,
@@ -200,7 +207,6 @@ public class NotrechtResource {
 	@Path("/einladung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
 	public void sendEinladung(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,

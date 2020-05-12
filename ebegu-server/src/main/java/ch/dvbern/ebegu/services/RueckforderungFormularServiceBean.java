@@ -33,6 +33,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.interceptor.Interceptors;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
@@ -42,6 +43,7 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusInterceptor;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -72,7 +74,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	public List<RueckforderungFormular> initializeRueckforderungFormulare() {
 
 		Collection<InstitutionStammdaten> institutionenStammdatenCollection = institutionStammdatenService.getAllInstitutionStammdaten();
@@ -107,7 +109,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	public RueckforderungFormular createRueckforderungFormular(@Nonnull RueckforderungFormular rueckforderungFormular) {
 		return persistence.persist(rueckforderungFormular);
 	}
@@ -144,6 +146,7 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	@Interceptors(UpdateRueckfordFormStatusInterceptor.class)
 	public Optional<RueckforderungFormular> findRueckforderungFormular(String id) {
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		RueckforderungFormular rueckforderungFormular = persistence.find(RueckforderungFormular.class, id);
