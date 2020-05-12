@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,8 +26,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
-
-import ch.dvbern.ebegu.enums.RueckforderungStatus;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
@@ -45,8 +42,6 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime sendeDatum;
 
-	@Nonnull
-	private List<RueckforderungStatus> gesendetAnStatus;
 
 	@Nonnull
 	public String getBetreff() {
@@ -73,14 +68,5 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 
 	public void setSendeDatum(@Nonnull LocalDateTime sendeDatum) {
 		this.sendeDatum = sendeDatum;
-	}
-
-	@Nonnull
-	public List<RueckforderungStatus> getGesendetAnStatus() {
-		return gesendetAnStatus;
-	}
-
-	public void setGesendetAnStatus(@Nonnull List<RueckforderungStatus> gesendetAnStatus) {
-		this.gesendetAnStatus = gesendetAnStatus;
 	}
 }

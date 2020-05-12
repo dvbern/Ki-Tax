@@ -5247,7 +5247,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		rueckforderungMitteilung.setBetreff(jaxRueckforderungMitteilung.getBetreff());
 		rueckforderungMitteilung.setInhalt(jaxRueckforderungMitteilung.getInhalt());
-		rueckforderungMitteilung.setGesendetAnStatusList(jaxRueckforderungMitteilung.getGesendetAnStatus());
 
 		return rueckforderungMitteilung;
 	}

@@ -21,8 +21,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -47,6 +50,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Local(RueckforderungMitteilungService.class)
 public class RueckforderungMitteilungServiceBean extends AbstractBaseService implements RueckforderungMitteilungService {
 
+	private static final Pattern PATTERN = Pattern.compile("<INSTITUTIONEN>", Pattern.LITERAL);
+
 	@Inject
 	private RueckforderungFormularService rueckforderungFormularService;
 
@@ -61,10 +66,10 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
-	public void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
+	public void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull List<RueckforderungStatus> statusList) {
 		Collection<RueckforderungFormular> formulareWithStatus =
-			rueckforderungFormularService.getRueckforderungFormulareByStatus(rueckforderungMitteilung.getGesendetAnStatusList());
-		send(formulareWithStatus, rueckforderungMitteilung);
+			rueckforderungFormularService.getRueckforderungFormulareByStatus(statusList);
+		send(formulareWithStatus, rueckforderungMitteilung, statusList);
 	}
 
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
@@ -78,10 +83,14 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 			formular.setStatus(RueckforderungStatus.EINGELADEN);
 			rueckforderungFormularService.save(formular);
 		}
-		send(formulareWithStatus, rueckforderungMitteilung);
+		send(formulareWithStatus, rueckforderungMitteilung, statusNeu);
 	}
 
-	private void send(Collection<RueckforderungFormular> formulareWithStatus, RueckforderungMitteilung rueckforderungMitteilung) {
+	private void send(
+		@Nonnull Collection<RueckforderungFormular> formulareWithStatus,
+		@Nonnull RueckforderungMitteilung rueckforderungMitteilung,
+		@Nonnull List<RueckforderungStatus> statusList
+	) {
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"sendMessage", "Kein Benutzer eingeloggt"));
 		LocalDateTime dateNow = LocalDateTime.now();
@@ -95,49 +104,54 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		Map<String, RueckforderungMitteilung> mitteilungen = prepareMitteilungen(uniqueEmpfaenger,
 			rueckforderungMitteilung);
 
-		sendMitteilungen(mitteilungen);
+		sendMitteilungen(mitteilungen, statusList);
 	}
 
-	private void saveMitteilungenInFormulare(Collection<RueckforderungFormular> formulareWithStatus,
-		RueckforderungMitteilung mitteilung) {
+	private void saveMitteilungenInFormulare(
+		@Nonnull Collection<RueckforderungFormular> formulareWithStatus,
+		@Nonnull RueckforderungMitteilung mitteilung
+	) {
 		for (RueckforderungFormular formular : formulareWithStatus) {
 			rueckforderungFormularService.addMitteilung(formular, mitteilung);
 		}
 	}
 
-	private void sendMitteilungen(Map<String, RueckforderungMitteilung> mitteilungen) {
+	private void sendMitteilungen(
+		@Nonnull Map<String, RueckforderungMitteilung> mitteilungen,
+		@Nonnull List<RueckforderungStatus> statusList
+	) {
 		for (Entry<String, RueckforderungMitteilung> mitteilung : mitteilungen.entrySet()) {
-			mailService.sendNotrechtGenerischeMitteilung(mitteilung.getValue(), mitteilung.getKey());
+			mailService.sendNotrechtGenerischeMitteilung(mitteilung.getValue(), mitteilung.getKey(), statusList);
 		}
 	}
 
-	private Map<String, ArrayList<Institution>> makeEmpfaengerUnique(Collection<RueckforderungFormular> formulareWithStatus) {
+	@Nonnull
+	private Map<String, ArrayList<Institution>> makeEmpfaengerUnique(@Nonnull Collection<RueckforderungFormular> formulareWithStatus) {
 		HashMap<String, ArrayList<Institution>> uniqueEmpfaenger = new HashMap<>();
 		for (RueckforderungFormular formular : formulareWithStatus) {
-			ArrayList<Institution> instList;
 			final String mail = formular.getInstitutionStammdaten().getMail();
-			if (uniqueEmpfaenger.containsKey(mail)) {
-				instList = uniqueEmpfaenger.get(mail);
-				instList.add(formular.getInstitutionStammdaten().getInstitution());
-			} else {
-				instList = new ArrayList<>();
-				uniqueEmpfaenger.put(mail, instList);
+			if (!uniqueEmpfaenger.containsKey(mail)) {
+				uniqueEmpfaenger.put(mail, new ArrayList<>());
 			}
+			uniqueEmpfaenger.get(mail).add(formular.getInstitutionStammdaten().getInstitution());
 		}
 		return uniqueEmpfaenger;
 	}
 
-	private Map<String, RueckforderungMitteilung> prepareMitteilungen(Map<String, ArrayList<Institution>> uniqueEmpfaenger,
-		RueckforderungMitteilung rueckforderungMitteilung) {
+	@Nonnull
+	private Map<String, RueckforderungMitteilung> prepareMitteilungen(
+		@Nonnull Map<String, ArrayList<Institution>> uniqueEmpfaenger,
+		@Nonnull RueckforderungMitteilung rueckforderungMitteilung
+	) {
 		final String DELIMITER = ", ";
 		HashMap<String, RueckforderungMitteilung> mitteilungen = new HashMap<>();
-		for (Entry<String, ArrayList<Institution>> empfaenger : uniqueEmpfaenger.entrySet()) {
+		uniqueEmpfaenger.forEach((empfaenger, institutions) -> {
 			RueckforderungMitteilung mitteilung = new RueckforderungMitteilung(rueckforderungMitteilung);
 			String institutionenString =
-				empfaenger.getValue().stream().map(Institution::getName).collect(Collectors.joining(DELIMITER));
-			mitteilung.setInhalt(mitteilung.getInhalt().replace("<INSTITUTIONEN>", institutionenString));
-			mitteilungen.put(empfaenger.getKey(), mitteilung);
-		}
+				institutions.stream().map(Institution::getName).collect(Collectors.joining(DELIMITER));
+			mitteilung.setInhalt(PATTERN.matcher(mitteilung.getInhalt()).replaceAll(Matcher.quoteReplacement(institutionenString)));
+			mitteilungen.put(empfaenger, mitteilung);
+		});
 		return mitteilungen;
 	}
 }

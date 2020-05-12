@@ -3902,7 +3902,6 @@ export class EbeguRestUtil {
         rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
         rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
         rueckforderungMitteilung.sendeDatum = DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
-        rueckforderungMitteilung.gesendetAnStatus = rueckforderungMitteilungFromServer.gesendetAnStatus;
         return rueckforderungMitteilung;
     }
 
@@ -3956,7 +3955,6 @@ export class EbeguRestUtil {
         rueckforderungMitteilungRest.betreff = rueckforderungMitteilungTS.betreff;
         rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
         rueckforderungMitteilungRest.sendeDatum = DateUtil.momentToLocalDateTime(rueckforderungMitteilungTS.sendeDatum);
-        rueckforderungMitteilungRest.gesendetAnStatus = rueckforderungMitteilungTS.gesendetAnStatus;
         return rueckforderungMitteilungRest;
     }
 }

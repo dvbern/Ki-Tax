@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -27,14 +25,9 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.RueckforderungStatus;
-import org.hibernate.envers.Audited;
-
 @Entity
-@Audited
 public class RueckforderungMitteilung extends AbstractEntity {
 
 	private static final long serialVersionUID = 5010422246166625084L;
@@ -58,10 +51,6 @@ public class RueckforderungMitteilung extends AbstractEntity {
 	@Column(nullable = false)
 	@Nonnull
 	private LocalDateTime sendeDatum;
-
-	// Transientes Feld, das die Status als Liste speichert. Wird nur zum Senden der Mitteilungen benötigt
-	@Transient
-	private List<RueckforderungStatus> gesendetAnStatusList = new ArrayList<>();
 
 	public RueckforderungMitteilung() {}
 
@@ -105,14 +94,6 @@ public class RueckforderungMitteilung extends AbstractEntity {
 
 	public void setSendeDatum(@Nonnull LocalDateTime sendeDatum) {
 		this.sendeDatum = sendeDatum;
-	}
-
-	public List<RueckforderungStatus> getGesendetAnStatusList() {
-		return gesendetAnStatusList;
-	}
-
-	public void setGesendetAnStatusList(List<RueckforderungStatus> gesendetAnStatusList) {
-		this.gesendetAnStatusList = gesendetAnStatusList;
 	}
 
 	@Override
