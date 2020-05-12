@@ -2034,7 +2034,7 @@ public final class TestDataUtil {
 
 	public static KitaxUebergangsloesungParameter geKitaxUebergangsloesungParameter() {
 		KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = new KitaxUebergangsloesungInstitutionOeffnungszeiten();
-		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(248));
+		oeffnungszeiten.setOeffnungstage(MathUtil.DEFAULT.from(240));
 		oeffnungszeiten.setOeffnungsstunden(MathUtil.DEFAULT.from(11.5));
 		oeffnungszeiten.setNameKibon("Kita Aaregg");
 		oeffnungszeiten.setNameKitax("Kita Aaregg");
