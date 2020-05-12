@@ -61,7 +61,7 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
-	public void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung) {
+	public void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 		Collection<RueckforderungFormular> formulareWithStatus =
 			rueckforderungFormularService.getRueckforderungFormulareByStatus(rueckforderungMitteilung.getGesendetAnStatusList());
 		send(formulareWithStatus, rueckforderungMitteilung);
@@ -69,7 +69,7 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	@Override
-	public void sendEinladung(RueckforderungMitteilung rueckforderungMitteilung) {
+	public void sendEinladung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 		ArrayList<RueckforderungStatus> statusNeu = new ArrayList<>();
 		statusNeu.add(RueckforderungStatus.NEU);
 		Collection<RueckforderungFormular> formulareWithStatus =
@@ -88,7 +88,7 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 
 		rueckforderungMitteilung.setAbsender(currentBenutzer);
 		rueckforderungMitteilung.setSendeDatum(dateNow);
-		this.createMitteilung(rueckforderungMitteilung);
+		rueckforderungMitteilung = persistence.persist(rueckforderungMitteilung);
 		saveMitteilungenInFormulare(formulareWithStatus, rueckforderungMitteilung);
 
 		Map<String, ArrayList<Institution>> uniqueEmpfaenger = makeEmpfaengerUnique(formulareWithStatus);
@@ -115,12 +115,13 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		HashMap<String, ArrayList<Institution>> uniqueEmpfaenger = new HashMap<>();
 		for (RueckforderungFormular formular : formulareWithStatus) {
 			ArrayList<Institution> instList;
-			if (uniqueEmpfaenger.containsKey(formular.getInstitutionStammdaten().getMail())) {
-				instList = uniqueEmpfaenger.get(formular.getInstitutionStammdaten().getMail());
+			final String mail = formular.getInstitutionStammdaten().getMail();
+			if (uniqueEmpfaenger.containsKey(mail)) {
+				instList = uniqueEmpfaenger.get(mail);
 				instList.add(formular.getInstitutionStammdaten().getInstitution());
 			} else {
 				instList = new ArrayList<>();
-				uniqueEmpfaenger.put(formular.getInstitutionStammdaten().getMail(), instList);
+				uniqueEmpfaenger.put(mail, instList);
 			}
 		}
 		return uniqueEmpfaenger;
@@ -139,11 +140,4 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		}
 		return mitteilungen;
 	}
-
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public RueckforderungMitteilung createMitteilung(RueckforderungMitteilung mitteilung) {
-		return persistence.persist(mitteilung);
-	}
-
 }

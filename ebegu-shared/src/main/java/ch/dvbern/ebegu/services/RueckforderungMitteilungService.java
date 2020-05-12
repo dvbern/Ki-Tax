@@ -17,35 +17,17 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
-import javax.annotation.security.RolesAllowed;
 
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer die Rueckforderungsformulare
  */
 public interface RueckforderungMitteilungService {
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung);
+	void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung);
 
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	void sendEinladung(RueckforderungMitteilung rueckforderungMitteilung);
-
-	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	RueckforderungMitteilung createMitteilung(RueckforderungMitteilung mitteilung);
+	void sendEinladung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung);
 
 }

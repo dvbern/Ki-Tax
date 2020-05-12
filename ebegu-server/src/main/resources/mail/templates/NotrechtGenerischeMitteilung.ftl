@@ -26,8 +26,8 @@ ${templateConfiguration.mailCss}
 		${inhalt}
     </p>
     <p>
-		Der aktuelle Stand Ihrer Rückforderungsformulare finden Sie unter <a
-                href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung">https://kibon.ch/corona-finanzierung</a>
+		Den aktuellen Stand Ihrer Rückforderungsformulare finden Sie unter <a
+                href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list">https://kibon.ch/corona-finanzierung/list</a>
     </p>
     <p>
         <#if configuration.isDevmode>
