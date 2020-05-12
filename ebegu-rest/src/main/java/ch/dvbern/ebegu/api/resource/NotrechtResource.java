@@ -220,7 +220,6 @@ public class NotrechtResource {
 	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
 	public void sendMessage(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,
@@ -237,7 +236,6 @@ public class NotrechtResource {
 	@Path("/einladung")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT})
 	public void sendEinladung(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,

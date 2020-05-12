@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<div class="row marginTop50">
+    <div class="col-sm-12">
+        <h2 translate>RUECKFORDERUNG_MITTEILUNGEN</h2>
+        <hr class="header"/>
+        <dv-accordion [allowMultipleSections]="true" *ngFor="let mitteilung of rueckforderungMitteilungen; let i = index">
+            <dv-accordion-tab>
+                <tab-title>
+                    <div class="message-header">
+                        <div class="subject-container">
+                            <span class="subject" [textContent]="mitteilung.betreff"></span>
+                        </div>
+                        <div>
+                            <span [textContent]="formatDateTime(mitteilung.sendeDatum)"></span>
+                        </div>
+                    </div>
+                    <div class="arrow"><i class="fa fa-angle-down"></i></div>
+                </tab-title>
+                <tab-body>
+                    <div class="message" [textContent]="mitteilung.inhalt"></div>
+                </tab-body>
+            </dv-accordion-tab>
+        </dv-accordion>
+    </div>
+</div>
