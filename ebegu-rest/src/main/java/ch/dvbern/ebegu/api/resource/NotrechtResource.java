@@ -167,7 +167,7 @@ public class NotrechtResource {
 	}
 
 	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular){
-		if(principalBean.isCallerInAnyOfRole(UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION) && RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
+		if(principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles()) && RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
 			return true;
 		}
 		if(principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT,
