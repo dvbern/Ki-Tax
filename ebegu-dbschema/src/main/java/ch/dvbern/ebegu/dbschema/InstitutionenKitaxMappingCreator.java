@@ -62,9 +62,10 @@ public class InstitutionenKitaxMappingCreator {
 	}
 
 	private void readKitax() {
+		BufferedReader reader = null;
 		try (InputStream resourceAsStream = InstitutionenKitaxMappingCreator.class.getResourceAsStream(INPUT_FILE)) {
 			String str = "";
-			BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
+			reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
 			while ((str = reader.readLine()) != null) {
 				if (StringUtils.isEmpty(str)) {
 					return;
@@ -76,6 +77,13 @@ public class InstitutionenKitaxMappingCreator {
 		} catch (IOException e) {
 			LOG.error("Ki-Tax Daten koennen nicht gelesen werden", e);
 		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ignore) {
+					// nop
+				}
+			}
 			printWriter.flush();
 			printWriter.close();
 		}
