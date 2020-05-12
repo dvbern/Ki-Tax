@@ -18,15 +18,21 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -36,7 +42,7 @@ public class RueckforderungMitteilung extends AbstractEntity {
 	private static final long serialVersionUID = 5010422246166625084L;
 
 	@NotNull
-	@OneToOne(optional = false)
+	@ManyToOne()
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_RueckforderungMitteilung_Benutzer_id"), nullable = false)
 	private Benutzer absender;
 
@@ -55,10 +61,18 @@ public class RueckforderungMitteilung extends AbstractEntity {
 	@Nonnull
 	private LocalDateTime sendeDatum;
 
-	@NotNull
-	@Column(nullable = false)
-	@Nonnull
-	private String gesendetAnStatus;
+	// Transientes Feld, das die Status als Liste speichert. Wird nur zum Senden der Mitteilungen benötigt
+	@Transient
+	private List<RueckforderungStatus> gesendetAnStatusList = new ArrayList<>();
+
+	public RueckforderungMitteilung() {}
+
+	public RueckforderungMitteilung(RueckforderungMitteilung toCopy) {
+		this.absender = toCopy.getAbsender();
+		this.betreff = toCopy.getBetreff();
+		this.inhalt = toCopy.getInhalt();
+		this.sendeDatum = toCopy.getSendeDatum();
+	}
 
 	public Benutzer getAbsender() {
 		return absender;
@@ -95,13 +109,12 @@ public class RueckforderungMitteilung extends AbstractEntity {
 		this.sendeDatum = sendeDatum;
 	}
 
-	@Nonnull
-	public String getGesendetAnStatus() {
-		return gesendetAnStatus;
+	public List<RueckforderungStatus> getGesendetAnStatusList() {
+		return gesendetAnStatusList;
 	}
 
-	public void setGesendetAnStatus(@Nonnull String gesendetAnStatus) {
-		this.gesendetAnStatus = gesendetAnStatus;
+	public void setGesendetAnStatusList(List<RueckforderungStatus> gesendetAnStatusList) {
+		this.gesendetAnStatusList = gesendetAnStatusList;
 	}
 
 	@Override

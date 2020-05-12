@@ -17,48 +17,35 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.security.RolesAllowed;
 
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
-import ch.dvbern.ebegu.enums.RueckforderungStatus;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer die Rueckforderungsformulare
  */
-public interface RueckforderungFormularService {
+public interface RueckforderungMitteilungService {
 
-	/**
-	 * Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren
-	 * und bisher kein Rückforderungsformular haben
-	 */
-	@Nonnull
-	List<RueckforderungFormular> initializeRueckforderungFormulare();
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	void sendMitteilung(RueckforderungMitteilung rueckforderungMitteilung);
 
-	@Nonnull
-	RueckforderungFormular createRueckforderungFormular(RueckforderungFormular rueckforderungFormular);
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	void sendEinladung(RueckforderungMitteilung rueckforderungMitteilung);
 
 	@Nonnull
-	Collection<RueckforderungFormular> getAllRueckforderungFormulare();
-
-	@Nonnull
-	List<RueckforderungFormular> getRueckforderungFormulareForCurrentBenutzer();
-
-	@Nonnull
-	Optional<RueckforderungFormular> findRueckforderungFormular(String id);
-
-	@Nonnull
-	RueckforderungFormular save(RueckforderungFormular rueckforderungFormular);
-
-	@Nonnull
-	Collection<RueckforderungFormular> getRueckforderungFormulareByStatus(@Nonnull List<RueckforderungStatus> status);
-
-	@Nonnull
-	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	RueckforderungMitteilung createMitteilung(RueckforderungMitteilung mitteilung);
 
 }

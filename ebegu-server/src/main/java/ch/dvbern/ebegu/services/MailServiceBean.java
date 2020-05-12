@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -622,6 +623,26 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			}
 		} else {
 			LOG.warn("skipping setInfoGemeineAngebotAktiviert because Mitteilungsempfaenger is null");
+		}
+	}
+
+	@Override
+	public void sendNotrechtGenerischeMitteilung(@Nonnull RueckforderungMitteilung mitteilung, @Nonnull String empfaengerMail) {
+		if (StringUtils.isNotEmpty(empfaengerMail)) {
+			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(empfaengerMail,
+			mitteilung.getBetreff(), mitteilung.getInhalt());
+			try {
+				sendMessageWithTemplate(mail, empfaengerMail);
+				LOG.debug("Email fuer NotrechtGenerischeMitteilung wurde versendet an {} für Status {}",
+					empfaengerMail, mitteilung.getGesendetAnStatusList());
+			} catch (Exception e) {
+				logExceptionAccordingToEnvironment(
+					e,
+					"Mail NotrechtGenerischeMitteilung konnte nicht verschickt werden fuer Empfaenger ",
+					empfaengerMail);
+			}
+		} else {
+			LOG.warn("skipping NotrechtGenerischeMitteilung because Mitteilungsempfaenger is null");
 		}
 	}
 }

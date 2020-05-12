@@ -17,6 +17,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class NotrechtRS {
@@ -75,6 +76,34 @@ export class NotrechtRS {
 
         return this.$http.put(this.serviceURL, restRueckforderungFormular).then((response: any) => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
+    public sendMitteilung(
+        mitteilung: TSRueckforderungMitteilung
+    ): IPromise<void> {
+        let restRueckforderungMitteilung = {};
+        restRueckforderungMitteilung =
+            this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
+
+        return this.$http.post(`${this.serviceURL}/mitteilung`, restRueckforderungMitteilung)
+            .then(() => {
+                return;
+            },
+        );
+    }
+
+    public sendEinladung(
+        mitteilung: TSRueckforderungMitteilung
+    ): IPromise<void> {
+        let restRueckforderungMitteilung = {};
+        restRueckforderungMitteilung =
+            this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
+
+        return this.$http.post(`${this.serviceURL}/einladung`, restRueckforderungMitteilung)
+            .then(() => {
+                return;
             },
         );
     }
