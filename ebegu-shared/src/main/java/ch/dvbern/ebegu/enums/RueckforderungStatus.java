@@ -26,5 +26,20 @@ public enum RueckforderungStatus {
 	IN_BEARBEITUNG_INSTITUTION_STUFE_2,
 	IN_PRUEFUNG_KANTON_STUFE_2,
 	VERFUEGT,
-	ABGESCHLOSSEN_OHNE_GESUCH
+	ABGESCHLOSSEN_OHNE_GESUCH;
+
+	public static boolean isStatusForInstitutionAuthorized(RueckforderungStatus status) {
+		return status == RueckforderungStatus.NEU ||
+			status == RueckforderungStatus.EINGELADEN ||
+			status == RueckforderungStatus.IN_BEARBEITUNG_INSTITUTION_STUFE_1 ||
+			status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1 ||
+			status == RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH;
+	}
+
+	public static boolean isStatusForKantonAuthorized(RueckforderungStatus status) {
+		return status == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1 ||
+			status == RueckforderungStatus.GEPRUEFT_STUFE_1;
+	}
 }
+
+

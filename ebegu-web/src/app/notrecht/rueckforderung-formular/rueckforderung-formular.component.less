@@ -14,4 +14,46 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+@import (reference) '../../../style/variables.less';
+
+.bisherForm {
+    width: 100%;
+    display: inline-block;
+}
+
+.dv-bisher {
+    font-size: 1.6rem;
+    clear: both;
+    background-color: @contrast;
+    width: 100%;
+    min-height: 2.3rem;
+    height: auto;
+    padding: 0 0 0 1rem;
+    margin: 1rem 0 0;
+    display: inline-block;
+    border-color: @contrast-light;
+    span:first-child {
+        font-weight: 400;
+        font-style: italic;
+    }
+    span {
+        font-size: 1.3rem;
+        color: @contrast-darkest;
+        letter-spacing: 0.1rem;
+        line-height: 1rem;
+    }
+}
+
+::ng-deep .checkbox-with-tooltip {
+    display: flex;
+    dv-tooltip {
+        display: flex;
+        align-items: center;
+        padding-left: 0.75rem;
+    }
+}
+
+::ng-deep .mt-5 {
+    margin-top: 5rem;
+}
 
