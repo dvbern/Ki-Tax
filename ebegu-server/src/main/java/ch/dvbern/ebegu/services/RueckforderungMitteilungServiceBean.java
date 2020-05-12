@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -90,8 +91,9 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		this.createMitteilung(rueckforderungMitteilung);
 		saveMitteilungenInFormulare(formulareWithStatus, rueckforderungMitteilung);
 
-		HashMap<String, ArrayList<Institution>> uniqueEmpfaenger = makeEmpfaengerUnique(formulareWithStatus);
-		HashMap<String, RueckforderungMitteilung> mitteilungen = prepareMitteilungen(uniqueEmpfaenger, rueckforderungMitteilung);
+		Map<String, ArrayList<Institution>> uniqueEmpfaenger = makeEmpfaengerUnique(formulareWithStatus);
+		Map<String, RueckforderungMitteilung> mitteilungen = prepareMitteilungen(uniqueEmpfaenger,
+			rueckforderungMitteilung);
 
 		sendMitteilungen(mitteilungen);
 	}
@@ -103,13 +105,13 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		}
 	}
 
-	private void sendMitteilungen(HashMap<String, RueckforderungMitteilung> mitteilungen) {
+	private void sendMitteilungen(Map<String, RueckforderungMitteilung> mitteilungen) {
 		for (Entry<String, RueckforderungMitteilung> mitteilung : mitteilungen.entrySet()) {
 			mailService.sendNotrechtGenerischeMitteilung(mitteilung.getValue(), mitteilung.getKey());
 		}
 	}
 
-	private HashMap<String, ArrayList<Institution>> makeEmpfaengerUnique(Collection<RueckforderungFormular> formulareWithStatus) {
+	private Map<String, ArrayList<Institution>> makeEmpfaengerUnique(Collection<RueckforderungFormular> formulareWithStatus) {
 		HashMap<String, ArrayList<Institution>> uniqueEmpfaenger = new HashMap<>();
 		for (RueckforderungFormular formular : formulareWithStatus) {
 			ArrayList<Institution> instList;
@@ -124,7 +126,7 @@ public class RueckforderungMitteilungServiceBean extends AbstractBaseService imp
 		return uniqueEmpfaenger;
 	}
 
-	private HashMap<String, RueckforderungMitteilung> prepareMitteilungen(HashMap<String, ArrayList<Institution>> uniqueEmpfaenger,
+	private Map<String, RueckforderungMitteilung> prepareMitteilungen(Map<String, ArrayList<Institution>> uniqueEmpfaenger,
 		RueckforderungMitteilung rueckforderungMitteilung) {
 		final String DELIMITER = ", ";
 		HashMap<String, RueckforderungMitteilung> mitteilungen = new HashMap<>();

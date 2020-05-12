@@ -17,11 +17,9 @@
 
 import * as moment from 'moment';
 import {TSAbstractEntity} from './TSAbstractEntity';
-import {TSBenutzer} from './TSBenutzer';
 
 export class TSRueckforderungMitteilung extends TSAbstractEntity {
 
-    private _absender: TSBenutzer;
     private _betreff: string;
     private _inhalt: string;
     private _sendeDatum: moment.Moment;
@@ -29,14 +27,6 @@ export class TSRueckforderungMitteilung extends TSAbstractEntity {
 
     public constructor() {
         super();
-    }
-
-    public get absender(): TSBenutzer {
-        return this._absender;
-    }
-
-    public set absender(value: TSBenutzer) {
-        this._absender = value;
     }
 
     public get betreff(): string {
@@ -69,13 +59,5 @@ export class TSRueckforderungMitteilung extends TSAbstractEntity {
 
     public set gesendetAnStatus(value: string[]) {
         this._gesendetAnStatus = value;
-    }
-
-    public addGesendetAnStatus(status: string): void {
-        if (this._gesendetAnStatus && Array.isArray(this._gesendetAnStatus)) {
-            this._gesendetAnStatus.push(status);
-            return;
-        }
-        this._gesendetAnStatus = [status];
     }
 }

@@ -5215,7 +5215,6 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxRueckforderungMitteilung rueckforderungMitteilungToJax(@Nonnull RueckforderungMitteilung rueckforderungMitteilung) {
 		JaxRueckforderungMitteilung jaxMitteilung = new JaxRueckforderungMitteilung();
 		convertAbstractFieldsToJAX(rueckforderungMitteilung, jaxMitteilung);
-		jaxMitteilung.setAbsender(benutzerToJaxBenutzer(rueckforderungMitteilung.getAbsender()));
 		jaxMitteilung.setBetreff(rueckforderungMitteilung.getBetreff());
 		jaxMitteilung.setInhalt(rueckforderungMitteilung.getInhalt());
 		jaxMitteilung.setSendeDatum(rueckforderungMitteilung.getSendeDatum());

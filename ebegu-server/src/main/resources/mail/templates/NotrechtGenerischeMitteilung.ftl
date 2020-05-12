@@ -1,13 +1,8 @@
 <#-- @ftlvariable name="empfaenger" type="java.lang.String" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
-<#-- @ftlvariable name="contentDE" type="java.lang.String" -->
-<#-- @ftlvariable name="contentFR" type="java.lang.String" -->
-<#-- @ftlvariable name="footerDE" type="java.lang.String" -->
-<#-- @ftlvariable name="footerFR" type="java.lang.String" -->
-<#-- @ftlvariable name="acceptLink" type="java.lang.String" -->
-<#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 <#-- @ftlvariable name="betreff" type="java.lang.String" -->
+<#-- @ftlvariable name="inhalt" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaenger}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> –
@@ -17,6 +12,7 @@ Content-Type: text/html;charset=utf-8
 <html>
 <head>
 ${templateConfiguration.mailCss}
+	<style type="text/css">body {white-space: pre}</style>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – ${betreff}</title>
@@ -27,7 +23,7 @@ ${templateConfiguration.mailCss}
 
 <div>
     <p>
-		${content}
+		${inhalt}
     </p>
     <p>
 		Der aktuelle Stand Ihrer Rückforderungsformulare finden Sie unter <a

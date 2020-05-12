@@ -36,9 +36,6 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -8553194968646128553L;
 
-	@Nullable
-	private JaxBenutzer absender;
-
 	@Nonnull
 	private String betreff;
 
@@ -51,15 +48,6 @@ public class JaxRueckforderungMitteilung extends JaxAbstractDTO {
 
 	@Nonnull
 	private ArrayList<RueckforderungStatus> gesendetAnStatus;
-
-	@Nullable
-	public JaxBenutzer getAbsender() {
-		return absender;
-	}
-
-	public void setAbsender(@Nonnull JaxBenutzer absender) {
-		this.absender = absender;
-	}
 
 	@Nonnull
 	public String getBetreff() {

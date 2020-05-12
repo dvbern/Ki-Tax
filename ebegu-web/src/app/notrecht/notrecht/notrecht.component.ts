@@ -24,10 +24,10 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
-import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {DvDialog} from '../../core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';
 import {SendNotrechtMitteilungComponent} from '../send-notrecht-mitteilung/send-notrecht-mitteilung.component';
