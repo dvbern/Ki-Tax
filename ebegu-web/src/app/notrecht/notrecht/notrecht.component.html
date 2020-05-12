@@ -115,11 +115,11 @@
                 RUECKFORDERUNGSFORMULARE_INITIALISIEREN
             </button>
 
-            <button class="dv-btn" (click)="sendMitteilung(true)" translate>
+            <button class="dv-btn" (click)="sendMitteilung(true)" *ngIf="showMitteilungSenden()" translate>
                 NOTVERORDNUNG_EINLADUNG_SENDEN
             </button>
 
-            <button class="dv-btn" (click)="sendMitteilung(false)" translate>
+            <button class="dv-btn" (click)="sendMitteilung(false)" *ngIf="showMitteilungSenden()" translate>
                 NOTVERORDNUNG_MITTEILUNG_SENDEN
             </button>
         </div>

@@ -205,4 +205,8 @@ export class NotrechtComponent implements OnInit {
     public translateRueckforderungStatus(status: string): string {
         return this.translate.instant(`RUECKFORDERUNG_STATUS_${status}`);
     }
+
+    public showMitteilungSenden(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
 }
