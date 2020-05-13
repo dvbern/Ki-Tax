@@ -358,7 +358,8 @@ public class RueckforderungFormular extends AbstractEntity {
 	}
 
 	private boolean isAuszuzahlenStufe1() {
-		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null;
+		return RueckforderungStatus.GEPRUEFT_STUFE_1.ordinal() <=  status.ordinal() && stufe1FreigabeAusbezahltAm == null
+			&& !status.equals(RueckforderungStatus.ABGESCHLOSSEN_OHNE_GESUCH);
 	}
 
 	private boolean isAuszuzahlenStufe2() {

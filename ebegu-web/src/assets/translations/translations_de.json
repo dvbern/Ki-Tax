@@ -1968,7 +1968,7 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "Die Anmeldung ist im Moment noch nicht möglich. Sie kann frühestens am {{termin}} erfolgen.",
     "CORONA_FINANZIERUNG": "Corona Finanzierung",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
-    "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}} - {{status}}",
+    "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Anzahl Plätze (in Tagen ausgedrückt), die nicht zur Verfügung standen",
     "RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN": "Anzahl Plätze (in Stunden ausgedrückt), die nicht zur Verfügung standen",
     "RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG": "Kostenübernahme Betreuung",
@@ -2009,7 +2009,7 @@
     "RUECKFORDERUNG_ABSENDEN": "Absenden",
     "RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN": "Kein Gesuch beantragen",
     "RUECKFORDERUNG_GEPRUEFT": "Geprüft",
-    "RUECKFORDERUNG_CANCEL": "Abbrechen",
+    "RUECKFORDERUNG_CANCEL": "Zurück",
     "RUECKFORDERUNG_ZAHLUNGEN": "Zahlungen",
     "RUECKFORDERUNG_ZAHLUNGEN_ERSTELLT": "ERSTELLT",
     "RUECKFORDERUNG_ZAHLUNGEN_STUFE": "STUFE",
@@ -2018,5 +2018,6 @@
     "RUECKFORDERUNG_ZAHLUNGEN_STUFE_1": "STUFE 1",
     "RUECKFORDERUNG_ZAHLUNGEN_STUFE_2": "STUFE 2",
     "RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG": "Provisorische Betrag",
+    "BESTAETIGEN": "Bestätigen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

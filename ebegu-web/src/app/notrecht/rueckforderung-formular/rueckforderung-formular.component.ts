@@ -108,7 +108,11 @@ export class RueckforderungFormularComponent implements OnInit {
             }
         }
 
-        this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular);
+        this.rueckforderungFormular$ = from(this.notrechtRS.saveRueckforderungFormular(rueckforderungFormular)
+            .then((response: TSRueckforderungFormular) => {
+                this.initRueckforderungZahlungen(response);
+                return response;
+            }));
     }
 
     public rueckforderungAbschliessen(rueckforderungFormular: TSRueckforderungFormular): void {
