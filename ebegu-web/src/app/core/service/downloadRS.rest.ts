@@ -150,7 +150,8 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenNotrechtvorlage(language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
+    public getAccessTokenNotrechtvorlage(
+        language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
         const languageEnc = encodeURIComponent(language);
         const angebotTypEnc = encodeURIComponent(angebotTyp);
         return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGE/${languageEnc}/${angebotTypEnc}`)

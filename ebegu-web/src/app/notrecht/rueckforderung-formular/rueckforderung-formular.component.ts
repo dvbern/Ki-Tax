@@ -170,14 +170,14 @@ export class RueckforderungFormularComponent implements OnInit {
     }
 
     public downloadVorlage(rueckforderungFormular: TSRueckforderungFormular): void {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+        const win = this.downloadRS.prepareDownloadWindow();
         const language = this.i18nServiceRS.currentLanguage();
         const angebotTyp = rueckforderungFormular.institutionStammdaten.betreuungsangebotTyp;
         this.downloadRS.getAccessTokenNotrechtvorlage(language, angebotTyp)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
             });
     }
