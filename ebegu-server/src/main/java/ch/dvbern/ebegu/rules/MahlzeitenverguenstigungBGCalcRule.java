@@ -65,6 +65,8 @@ public final class MahlzeitenverguenstigungBGCalcRule extends AbstractCalcRule {
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		//falls vergünstigung aktiv ist
+
+		// TODO KIBON-1233 hier sollten wir auch prüfen, ob die betreuung in der entsprechenden gemeinde stattfindet
 		if (!mahlzeitenverguenstigungParams.isEnabled()) {
 			return;
 		}
