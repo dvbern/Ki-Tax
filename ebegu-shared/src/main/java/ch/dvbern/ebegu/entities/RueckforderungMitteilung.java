@@ -27,8 +27,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 @Entity
-public class RueckforderungMitteilung extends AbstractEntity implements Comparable {
+public class RueckforderungMitteilung extends AbstractEntity implements Comparable<RueckforderungMitteilung> {
 
 	private static final long serialVersionUID = 5010422246166625084L;
 
@@ -116,20 +118,12 @@ public class RueckforderungMitteilung extends AbstractEntity implements Comparab
 	}
 
 	@Override
-	public int compareTo(@Nonnull Object o) {
-		if (this == o) {
-			return 1;
-		}
-		if (!getClass().equals(o.getClass())) {
-			return -1;
-		}
-		if (!(o instanceof RueckforderungMitteilung)) {
-			return -1;
-		}
-		final RueckforderungMitteilung otherRueckforderungMitteilung = (RueckforderungMitteilung) o;
-		if (this.sendeDatum.isBefore(otherRueckforderungMitteilung.sendeDatum)) {
-			return -1;
-		}
-		return 1;
+	public int compareTo(@Nonnull RueckforderungMitteilung other) {
+		CompareToBuilder compareToBuilder = new CompareToBuilder();
+		compareToBuilder.append(this.getAbsender(), other.getAbsender());
+		compareToBuilder.append(this.getBetreff(), other.getBetreff());
+		compareToBuilder.append(this.getInhalt(), other.getInhalt());
+		compareToBuilder.append(this.getSendeDatum(), other.getSendeDatum());
+		return compareToBuilder.toComparison();
 	}
 }

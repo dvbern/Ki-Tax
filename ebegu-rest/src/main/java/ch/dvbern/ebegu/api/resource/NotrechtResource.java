@@ -193,33 +193,10 @@ public class NotrechtResource {
 		return false;
 	}
 
-	private void zahlungenGenerieren(RueckforderungFormular rueckforderungFormular,
-		RueckforderungStatus statusFromDB) {
-		// Kanton hat der Stufe 1 eingaben geprueft
-		if (statusFromDB.equals(RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1)
-			&& rueckforderungFormular.getStatus().equals(RueckforderungStatus.GEPRUEFT_STUFE_1)) {
-			BigDecimal freigabeBetrag;
-			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
-				assert rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage() != null;
-				freigabeBetrag =
-					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage().multiply(new BigDecimal(25));
-			} else {
-				assert rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden() != null;
-				freigabeBetrag =
-					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden();
-			}
-			assert rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung() != null;
-			freigabeBetrag = freigabeBetrag.add(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
-			rueckforderungFormular.setStufe1FreigabeBetrag(freigabeBetrag);
-			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
-		}
-	}
-
 	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
 	@POST
 	@Path("/mitteilung")
 	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
 	public void sendMessage(
 		@Nonnull @NotNull JaxRueckforderungMitteilungRequestParams data,
 		@Context UriInfo uriInfo,
@@ -236,7 +213,6 @@ public class NotrechtResource {
 	@POST
 	@Path("/einladung")
 	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
 	public void sendEinladung(
 		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
 		@Context UriInfo uriInfo,
@@ -246,4 +222,28 @@ public class NotrechtResource {
 		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
 	}
 
+	private void zahlungenGenerieren(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull RueckforderungStatus statusFromDB
+	) {
+		// Kanton hat der Stufe 1 eingaben geprueft
+		if (statusFromDB == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+			&& rueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
+		) {
+			BigDecimal freigabeBetrag;
+			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+				freigabeBetrag =
+					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage().multiply(new BigDecimal(25));
+			} else {
+				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+				freigabeBetrag =
+					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden();
+			}
+			Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			freigabeBetrag = freigabeBetrag.add(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			rueckforderungFormular.setStufe1FreigabeBetrag(freigabeBetrag);
+			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
+		}
+	}
 }
