@@ -365,7 +365,13 @@
                     </div>
                 </fieldset>
             </div>
+            <div class="col-md-8 col-md-offset-2">
+                <dv-rueckforderung-mitteilungen
+                    [rueckforderungMitteilungen]="rueckforderungFormular.rueckforderungMitteilungen"
+                ></dv-rueckforderung-mitteilungen>
+            </div>
         </div>
+
         <div class="col-md-8 col-md-offset-2" *ngIf="isGeprueftKantonStufe1(rueckforderungFormular)">
             <h1 translate class="marginTop50">RUECKFORDERUNG_ZAHLUNGEN</h1>
             <div class="table-responsive">
