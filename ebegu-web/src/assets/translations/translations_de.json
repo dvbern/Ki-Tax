@@ -1970,6 +1970,7 @@
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "Rückforderungsformulare initialisieren",
     "RUECKFORDERUNGSFORMULARE_DETAIL": "Angaben {{name}} - {{status}}",
     "RUECKFORDERUNGFORMULAR_ANZAHL_PLAETZE": "Anzahl Plätze (in Tagen ausgedrückt), die nicht zur Verfügung standen",
+    "RUECKFORDERUNGFORMULAR_ANZAHL_STUNDEN": "Anzahl Plätze (in Stunden ausgedrückt), die nicht zur Verfügung standen",
     "RUECKFORDERUNGFORMULAR_KOSTENUEBERNAHME_BETREUUNG": "Kostenübernahme Betreuung",
     "MITTEILUNG_SENDEN_AN_STATUS": "Mitteilung senden an Status",
     "ZAHLUNG_STUFE_1_AUSGELOEST": "Zahlung Stufe 1 ausgelöst am",
@@ -2009,5 +2010,13 @@
     "RUECKFORDERUNG_KEIN_GESUCH_BEANTRAGEN": "Kein Gesuch beantragen",
     "RUECKFORDERUNG_GEPRUEFT": "Geprüft",
     "RUECKFORDERUNG_CANCEL": "Abbrechen",
+    "RUECKFORDERUNG_ZAHLUNGEN": "Zahlungen",
+    "RUECKFORDERUNG_ZAHLUNGEN_ERSTELLT": "ERSTELLT",
+    "RUECKFORDERUNG_ZAHLUNGEN_STUFE": "STUFE",
+    "RUECKFORDERUNG_ZAHLUNGEN_BETRAG": "BETRAG",
+    "RUECKFORDERUNG_ZAHLUNGEN_AUSGELOEST": "AUSGELÖST",
+    "RUECKFORDERUNG_ZAHLUNGEN_STUFE_1": "STUFE 1",
+    "RUECKFORDERUNG_ZAHLUNGEN_STUFE_2": "STUFE 2",
+    "RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG": "Provisorische Betrag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
