@@ -144,7 +144,8 @@ public class InstitutionenKitaxMappingCreator {
 		}
 
 		public String toSqlInsert() {
-			String sql = "INSERT INTO kitax_uebergangsloesung_institution_oeffnungszeiten VALUES (UUID(), '2020-06-01', '2020-06-01', 'flyway', 'flyway', 0, "
+			String sql = "INSERT INTO kitax_uebergangsloesung_institution_oeffnungszeiten VALUES ("
+				+ "UNHEX(REPLACE(UUID(), '-','')), '2020-06-01', '2020-06-01', 'flyway', 'flyway', 0, "
 				+ "' " + nameKibon + "', '" + nameKitax + "', " + oeffnungsstunden + ", " + oeffnungstage + ");";
 			return sql;
 		}
