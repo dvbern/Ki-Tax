@@ -1603,6 +1603,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
 		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
+		jaxInstStammdaten.setTarifProHauptmahlzeit(persistedInstStammdaten.getTarifProHauptmahlzeit());
+		jaxInstStammdaten.setTarifProNebenmahlzeit(persistedInstStammdaten.getTarifProNebenmahlzeit());
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
@@ -1626,6 +1628,8 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
 		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
+		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());
+		institutionStammdaten.setTarifProNebenmahlzeit(institutionStammdatenJAXP.getTarifProNebenmahlzeit());
 
 		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {

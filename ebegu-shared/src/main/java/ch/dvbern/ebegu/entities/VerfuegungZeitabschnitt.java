@@ -496,6 +496,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBetreuungInGemeinde(inGemeinde);
 	}
 
+	public void setMonatlicheHauptmahlzeitenForAsivAndGemeinde(Integer monatlicheHauptmahlzeiten) {
+		this.getBgCalculationInputAsiv().setAnzahlHauptmahlzeiten(monatlicheHauptmahlzeiten);
+		this.getBgCalculationInputGemeinde().setAnzahlHauptmahlzeiten(monatlicheHauptmahlzeiten);
+	}
+
+	public void setMonatlicheNebenmahlzeitenForAsivAndGemeinde(Integer monatlicheNebenmahlzeiten) {
+		this.getBgCalculationInputAsiv().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
+		this.getBgCalculationInputGemeinde().setAnzahlNebenmahlzeiten(monatlicheNebenmahlzeiten);
+	}
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 

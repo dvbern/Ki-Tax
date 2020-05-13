@@ -1965,5 +1965,9 @@
     "FREISCHALTUNG_FERIENINSEL_AB_INFO": "L'inscription n'est pas possible pour l'instant. Elle peut être effectuée au plus tôt le {{termin}}.",
     "CORONA_FINANZIERUNG": "",
     "RUECKFORDERUNGSFORMULARE_INITIALISIEREN": "",
+    "TARIF_PRO_HAUPTMAHLZEIT": "",
+    "TARIF_PRO_NEBENMAHLZEIT": "",
+    "TARIF_PRO_HAUPTMAHLZEIT_HELP": "",
+    "TARIF_PRO_NEBENMAHLZEIT_HELP": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

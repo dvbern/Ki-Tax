@@ -134,6 +134,12 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private boolean besondereBeduerfnisseBestaetigt;
 
+	@Column(nullable = true)
+	private BigDecimal verguenstigungHauptmahlzeitenTotal;
+
+	@Column(nullable = true)
+	private BigDecimal verguenstigungNebenmahlzeitenTotal;
+
 	@Valid
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -178,6 +184,9 @@ public class BGCalculationResult extends AbstractEntity {
 		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
+
+		this.verguenstigungHauptmahlzeitenTotal = toCopy.verguenstigungHauptmahlzeitenTotal;
+		this.verguenstigungNebenmahlzeitenTotal = toCopy.verguenstigungNebenmahlzeitenTotal;
 
 		if (toCopy.tsCalculationResultMitPaedagogischerBetreuung != null) {
 			this.tsCalculationResultMitPaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultMitPaedagogischerBetreuung);
@@ -232,6 +241,9 @@ public class BGCalculationResult extends AbstractEntity {
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
+
+		this.verguenstigungHauptmahlzeitenTotal = roundToFrankenRappen(verguenstigungHauptmahlzeitenTotal);
+		this.verguenstigungNebenmahlzeitenTotal = roundToFrankenRappen(verguenstigungNebenmahlzeitenTotal);
 		return this;
 	}
 
@@ -599,5 +611,21 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setTsCalculationResultOhnePaedagogischerBetreuung(@Nullable TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung) {
 		this.tsCalculationResultOhnePaedagogischerBetreuung = tsCalculationResultOhnePaedagogischerBetreuung;
+	}
+
+	public BigDecimal getVerguenstigungHauptmahlzeitenTotal() {
+		return verguenstigungHauptmahlzeitenTotal;
+	}
+
+	public void setVerguenstigungHauptmahlzeitenTotal(BigDecimal verguenstigungHauptmahlzeitenTotal) {
+		this.verguenstigungHauptmahlzeitenTotal = verguenstigungHauptmahlzeitenTotal;
+	}
+
+	public BigDecimal getVerguenstigungNebenmahlzeitenTotal() {
+		return verguenstigungNebenmahlzeitenTotal;
+	}
+
+	public void setVerguenstigungNebenmahlzeitenTotal(BigDecimal verguenstigungNebenmahlzeitenTotal) {
+		this.verguenstigungNebenmahlzeitenTotal = verguenstigungNebenmahlzeitenTotal;
 	}
 }

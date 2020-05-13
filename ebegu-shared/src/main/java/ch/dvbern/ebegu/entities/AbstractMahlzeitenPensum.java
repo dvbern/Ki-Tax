@@ -39,6 +39,14 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 	@Column(nullable = false)
 	private Integer monatlicheNebenmahlzeiten = 0;
 
+	@NotNull
+	@Column(nullable = false)
+	private Integer tarifProHauptmahlzeit = 0;
+
+	@NotNull
+	@Column(nullable = false)
+	private Integer tarifProNebenmahlzeit = 0;
+
 	@Nonnull
 	public Integer getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
@@ -57,6 +65,22 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
 	}
 
+	public Integer getTarifProHauptmahlzeit() {
+		return tarifProHauptmahlzeit;
+	}
+
+	public void setTarifProHauptmahlzeit(Integer tarifProHauptmahlzeit) {
+		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+	}
+
+	public Integer getTarifProNebenmahlzeit() {
+		return tarifProNebenmahlzeit;
+	}
+
+	public void setTarifProNebenmahlzeit(Integer tarifProNebenmahlzeit) {
+		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
+	}
+
 	@Nonnull
 	public void copyAbstractBetreuungspensumMahlzeitenEntity(@Nonnull AbstractMahlzeitenPensum target,
 		@Nonnull AntragCopyType copyType) {
@@ -65,6 +89,8 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 		case MUTATION:
 			target.setMonatlicheHauptmahlzeiten(this.getMonatlicheHauptmahlzeiten());
 			target.setMonatlicheNebenmahlzeiten(this.getMonatlicheNebenmahlzeiten());
+			target.setTarifProHauptmahlzeit(this.getTarifProHauptmahlzeit());
+			target.setTarifProNebenmahlzeit(this.getTarifProNebenmahlzeit());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

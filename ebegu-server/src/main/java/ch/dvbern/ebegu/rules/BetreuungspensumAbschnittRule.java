@@ -79,6 +79,10 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setBetreuungspensumProzentForAsivAndGemeinde(betreuungspensum.getPensum());
 		zeitabschnitt.setMonatlicheBetreuungskostenForAsivAndGemeinde(betreuungspensum.getMonatlicheBetreuungskosten());
 
+		// Anzahl Haupt und Nebenmahlzeiten übernehmen
+		zeitabschnitt.setMonatlicheHauptmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheHauptmahlzeiten());
+		zeitabschnitt.setMonatlicheNebenmahlzeitenForAsivAndGemeinde(betreuungspensum.getMonatlicheNebenmahlzeiten());
+
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 

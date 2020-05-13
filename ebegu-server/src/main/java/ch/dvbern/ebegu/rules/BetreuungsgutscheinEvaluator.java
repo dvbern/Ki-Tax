@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxRechner;
+import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
@@ -367,6 +368,10 @@ public class BetreuungsgutscheinEvaluator {
 		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinEnabled()) {
 			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
 		}
+		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeMahlzeitenverguenstigungEnabled()) {
+			rechnerRules.add(new MahlzeitenverguenstigungRechnerRule(locale));
+		}
+
 		return rechnerRules;
 	}
 

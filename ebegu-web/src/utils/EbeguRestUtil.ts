@@ -1421,6 +1421,9 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
+            restInstitutionStammdaten.tarifProHauptmahlzeit = institutionStammdaten.tarifProHauptmahlzeit;
+            restInstitutionStammdaten.tarifProNebenmahlzeit = institutionStammdaten.tarifProNebenmahlzeit;
+
             return restInstitutionStammdaten;
         }
         return undefined;
@@ -1444,6 +1447,8 @@ export class EbeguRestUtil {
             institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
+            institutionStammdatenTS.tarifProHauptmahlzeit = institutionStammdatenFromServer.tarifProHauptmahlzeit;
+            institutionStammdatenTS.tarifProNebenmahlzeit = institutionStammdatenFromServer.tarifProNebenmahlzeit;
             return institutionStammdatenTS;
         }
         return undefined;
@@ -2087,6 +2092,8 @@ export class EbeguRestUtil {
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
             restBetreuungspensum.monatlicheHauptmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ? 0 : betreuungspensum.monatlicheHauptmahlzeiten;
             restBetreuungspensum.monatlicheNebenmahlzeiten = EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ? 0 : betreuungspensum.monatlicheNebenmahlzeiten;
+            restBetreuungspensum.tarifProHauptmahlzeit = EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProHauptmahlzeit) ? 0 : betreuungspensum.tarifProHauptmahlzeit;
+            restBetreuungspensum.tarifProNebenmahlzeit = EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProNebenmahlzeit) ? 0 : betreuungspensum.tarifProNebenmahlzeit;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
@@ -2099,6 +2106,8 @@ export class EbeguRestUtil {
         this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten;
         restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
+        restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit;
+        restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit;
         return restBetreuungspensum;
     }
 
@@ -2266,6 +2275,8 @@ export class EbeguRestUtil {
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
             betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
+            betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
+            betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
@@ -2280,6 +2291,8 @@ export class EbeguRestUtil {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.monatlicheHauptmahlzeiten = betreuungspensumFromServer.monatlicheHauptmahlzeiten;
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
+            betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
+            betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             return betreuungspensumTS;
         }
         return undefined;

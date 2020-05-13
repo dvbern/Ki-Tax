@@ -39,6 +39,12 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 	private Integer monatlicheNebenmahlzeiten;
 
 	@Nonnull
+	private Integer tarifProHauptmahlzeit;
+
+	@Nonnull
+	private Integer tarifProNebenmahlzeit;
+
+	@Nonnull
 	public Integer getMonatlicheHauptmahlzeiten() {
 		return monatlicheHauptmahlzeiten;
 	}
@@ -54,5 +60,23 @@ public class JaxAbstractMahlzeitenPensumDTO extends JaxAbstractDecimalPensumDTO 
 
 	public void setMonatlicheNebenmahlzeiten(@Nonnull Integer monatlicheNebenmahlzeiten) {
 		this.monatlicheNebenmahlzeiten = monatlicheNebenmahlzeiten;
+	}
+
+	@Nonnull
+	public Integer getTarifProHauptmahlzeit() {
+		return tarifProHauptmahlzeit;
+	}
+
+	public void setTarifProHauptmahlzeit(@Nonnull Integer tarifProHauptmahlzeit) {
+		this.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
+	}
+
+	@Nonnull
+	public Integer getTarifProNebenmahlzeit() {
+		return tarifProNebenmahlzeit;
+	}
+
+	public void setTarifProNebenmahlzeit(@Nonnull Integer tarifProNebenmahlzeit) {
+		this.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
 	}
 }

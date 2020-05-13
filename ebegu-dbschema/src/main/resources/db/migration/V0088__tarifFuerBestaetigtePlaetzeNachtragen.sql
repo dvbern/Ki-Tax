@@ -1,0 +1,2 @@
+-- TODO: für alle bestätigten betreuungen der STADT BERN muss für jedes pensum der auf den
+--  institutionsstammdaten hinterlegte tarif nachgetragen werden!

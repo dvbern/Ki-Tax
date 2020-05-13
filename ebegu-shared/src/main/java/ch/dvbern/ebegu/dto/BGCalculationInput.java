@@ -141,6 +141,10 @@ public class BGCalculationInput {
 
 	private boolean betreuungInGemeinde = false;
 
+	private BigDecimal anzahlHauptmahlzeiten = BigDecimal.ZERO;
+
+	private BigDecimal anzahlNebenmahlzeiten = BigDecimal.ZERO;
+
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -164,6 +168,8 @@ public class BGCalculationInput {
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
 		this.betreuungspensumMustBeAtLeastFachstellenpensum = toCopy.betreuungspensumMustBeAtLeastFachstellenpensum;
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
+		this.anzahlHauptmahlzeiten = toCopy.anzahlHauptmahlzeiten;
+		this.anzahlNebenmahlzeiten = toCopy.anzahlNebenmahlzeiten;
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
 		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
@@ -541,6 +547,22 @@ public class BGCalculationInput {
 		this.betreuungInGemeinde = betreuungInGemeinde;
 	}
 
+	public BigDecimal getAnzahlHauptmahlzeiten() {
+		return anzahlHauptmahlzeiten;
+	}
+
+	public void setAnzahlHauptmahlzeiten(BigDecimal anzahlHauptmahlzeiten) {
+		this.anzahlHauptmahlzeiten = anzahlHauptmahlzeiten;
+	}
+
+	public BigDecimal getAnzahlNebenmahlzeiten() {
+		return anzahlNebenmahlzeiten;
+	}
+
+	public void setAnzahlNebenmahlzeiten(BigDecimal anzahlNebenmahlzeiten) {
+		this.anzahlNebenmahlzeiten = anzahlNebenmahlzeiten;
+	}
+
 	@Override
 	public String toString() {
 		String sb = "EP GS1: " + getErwerbspensumGS1() + '\t'
@@ -583,6 +605,24 @@ public class BGCalculationInput {
 			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(other.getMonatlicheBetreuungskosten());
 		}
 		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
+
+		BigDecimal newMonatlicheHauptmahlzeiten = BigDecimal.ZERO;
+		if (this.getAnzahlHauptmahlzeiten() != null) {
+			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(this.getAnzahlHauptmahlzeiten());
+		}
+		if (other.getAnzahlHauptmahlzeiten() != null) {
+			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(other.getAnzahlHauptmahlzeiten());
+		}
+		this.setAnzahlHauptmahlzeiten(newMonatlicheHauptmahlzeiten);
+
+		BigDecimal newMonatlicheNebenmahlzeiten = BigDecimal.ZERO;
+		if (this.getAnzahlNebenmahlzeiten() != null) {
+			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(this.getAnzahlNebenmahlzeiten());
+		}
+		if (other.getAnzahlNebenmahlzeiten() != null) {
+			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(other.getAnzahlNebenmahlzeiten());
+		}
+		this.setAnzahlNebenmahlzeiten(newMonatlicheNebenmahlzeiten);
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -681,6 +721,10 @@ public class BGCalculationInput {
 			einschulungTyp == that.einschulungTyp &&
 			betreuungsangebotTyp == that.betreuungsangebotTyp &&
 			MathUtil.isSame(monatlicheBetreuungskosten, that.monatlicheBetreuungskosten) &&
+
+			// TODO KIBON-1233: sind das sichtbare daten?
+			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
+			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
 			this.anspruchspensumProzent == that.anspruchspensumProzent &&
