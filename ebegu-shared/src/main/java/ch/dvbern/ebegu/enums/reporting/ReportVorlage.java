@@ -137,6 +137,12 @@ public enum ReportVorlage {
 		ReportFileName.TAGESSCHULE_OHNE_FINSIT,
 		Constants.DATA,
 		MergeFieldTagesschule.class
+	),
+	VORLAGE_REPORT_NOTRECHT(
+		"/reporting/Notrecht.xlsx",
+		ReportFileName.NOTRECHT,
+		Constants.DATA,
+		MergeFieldNotrecht.class
 	);
 
 	@Nonnull

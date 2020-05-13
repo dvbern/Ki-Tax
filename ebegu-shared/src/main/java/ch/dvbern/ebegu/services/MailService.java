@@ -31,7 +31,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.errors.MailException;
 
 /**
@@ -166,4 +168,8 @@ public interface MailService {
 	 */
 	void sendInfoGemeineAngebotAktiviert(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeAngebotTyp angebot);
 
+	void sendNotrechtGenerischeMitteilung(
+		@Nonnull RueckforderungMitteilung mitteilung,
+		@Nonnull String empfaengerMail,
+		@Nonnull List<RueckforderungStatus> statusList);
 }

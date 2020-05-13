@@ -15,19 +15,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSRueckforderungStatus {
-    NEU = 'NEU',
-    EINGELADEN = 'EINGELADEN',
-    IN_BEARBEITUNG_INSTITUTION_STUFE_1 = 'IN_BEARBEITUNG_INSTITUTION_STUFE_1',
-    IN_PRUEFUNG_KANTON_STUFE_1 = 'IN_PRUEFUNG_KANTON_STUFE_1',
-    GEPRUEFT_STUFE_1 = 'GEPRUEFT_STUFE_1',
-    IN_BEARBEITUNG_INSTITUTION_STUFE_2 = 'IN_BEARBEITUNG_INSTITUTION_STUFE_2',
-    IN_PRUEFUNG_KANTON_STUFE_2 = 'IN_PRUEFUNG_KANTON_STUFE_2',
-    VERFUEGT = 'VERFUEGT',
-    ABGESCHLOSSEN_OHNE_GESUCH = 'ABGESCHLOSSEN_OHNE_GESUCH',
-}
+package ch.dvbern.ebegu.services;
 
-export function isNeuOrEingeladenStatus(status: TSRueckforderungStatus): boolean {
-    return status === TSRueckforderungStatus.NEU
-        || status === TSRueckforderungStatus.EINGELADEN;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
+
+/**
+ * Service fuer die Rueckforderungsformulare
+ */
+public interface RueckforderungMitteilungService {
+
+	void sendMitteilung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung, @Nonnull List<RueckforderungStatus> statusList);
+
+	void sendEinladung(@Nonnull RueckforderungMitteilung rueckforderungMitteilung);
+
 }

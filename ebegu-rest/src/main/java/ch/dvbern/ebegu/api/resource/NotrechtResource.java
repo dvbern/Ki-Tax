@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,18 +41,20 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilungRequestParams;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
+import ch.dvbern.ebegu.services.RueckforderungMitteilungService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("notrecht")
 @Stateless
@@ -65,7 +65,13 @@ public class NotrechtResource {
 	private RueckforderungFormularService rueckforderungFormularService;
 
 	@Inject
+	private RueckforderungMitteilungService rueckforderungMitteilungService;
+
+	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Erstellt leere Rückforderungsformulare für alle Kitas & TFOs die in kiBon existieren "
 		+ "und bisher kein Rückforderungsformular haben", responseContainer = "List", response =
@@ -75,7 +81,6 @@ public class NotrechtResource {
 	@Path("/initialize")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN })
 	public List<JaxRueckforderungFormular> initializeRueckforderungFormulare() {
 
 		List<RueckforderungFormular> createdFormulare =
@@ -84,13 +89,41 @@ public class NotrechtResource {
 		return converter.rueckforderungFormularListToJax(createdFormulare);
 	}
 
+	@ApiOperation(value = "Gibt alle Rückforderungsformulare zurück, die der aktuelle Benutzer lesen kann",
+		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+	@GET
+	@Path("/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxRueckforderungFormular> getRueckforderungFormulareForCurrentUser() {
+
+		List<RueckforderungFormular> formulareCurrentBenutzer =
+			rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
+
+		return converter.rueckforderungFormularListToJax(formulareCurrentBenutzer);
+	}
+
+	@ApiOperation(value = "Gibt zurück, ob der aktuelle eingeloggte Benutzer mindestens ein Rückforderungformular "
+		+ "sehen kann",
+		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+	@GET
+	@Path("/currentuser/hasformular")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean currentUserHasFormular() {
+
+		List<RueckforderungFormular> formulareCurrentBenutzer =
+			rueckforderungFormularService.getRueckforderungFormulareForCurrentBenutzer();
+
+		return formulareCurrentBenutzer.size() > 0;
+	}
+
 	@ApiOperation(value = "Updates a RueckforderungFormular in the database", response =
 		JaxRueckforderungFormular.class)
 	@Nullable
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, ADMIN_INSTITUTION, SACHBEARBEITER_MANDANT, SACHBEARBEITER_INSTITUTION})
 	public JaxRueckforderungFormular update(
 		@Nonnull @NotNull JaxRueckforderungFormular rueckforderungFormularJAXP,
 		@Context UriInfo uriInfo,
@@ -106,6 +139,11 @@ public class NotrechtResource {
 		RueckforderungFormular rueckforderungFormularToMerge =
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
 			rueckforderungFormularFromDB);
+
+		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
+			throw new EbeguRuntimeException("update", "Action not allowed for this user");
+		}
+
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
 		return converter.rueckforderungFormularToJax(modifiedRueckforderungFormular);
@@ -118,7 +156,6 @@ public class NotrechtResource {
 	@Path("/{rueckforderungFormId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
 	public JaxRueckforderungFormular findRueckforderungFormular(
 		@Nonnull @NotNull @PathParam("rueckforderungFormId") JaxId rueckforderungFormJaxId) {
 
@@ -134,6 +171,47 @@ public class NotrechtResource {
 		final JaxRueckforderungFormular jaxRueckforderungFormular =
 			converter.rueckforderungFormularToJax(rueckforderungFormularToReturn);
 		return jaxRueckforderungFormular;
+	}
+
+	private boolean checkStatusErlaubtFuerRole(RueckforderungFormular rueckforderungFormular) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles())
+			&& RueckforderungStatus.isStatusForInstitutionAuthorized(rueckforderungFormular.getStatus())){
+			return true;
+		}
+		if (principalBean.isCallerInAnyOfRole(UserRole.SACHBEARBEITER_MANDANT, UserRole.ADMIN_MANDANT, UserRole.SUPER_ADMIN)
+			&& RueckforderungStatus.isStatusForKantonAuthorized(rueckforderungFormular.getStatus())) {
+			return true;
+		}
+		return false;
+	}
+
+	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
+	@POST
+	@Path("/mitteilung")
+	@Consumes(MediaType.WILDCARD)
+	public void sendMessage(
+		@Nonnull @NotNull JaxRueckforderungMitteilungRequestParams data,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		final JaxRueckforderungMitteilung jaxRueckforderungMitteilung = data.getMitteilung();
+		List<RueckforderungStatus> statusList = data.getStatusList();
+		RueckforderungMitteilung rueckforderungMitteilung =
+			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
+		rueckforderungMitteilungService.sendMitteilung(rueckforderungMitteilung, statusList);
+	}
+
+	@ApiOperation("Sendet eine Nachricht an alle Besitzer von Rückforderungsformularen mit gewünschtem Status")
+	@POST
+	@Path("/einladung")
+	@Consumes(MediaType.WILDCARD)
+	public void sendEinladung(
+		@Nonnull @NotNull JaxRueckforderungMitteilung jaxRueckforderungMitteilung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+		RueckforderungMitteilung rueckforderungMitteilung =
+			converter.rueckforderungMitteilungToEntity(jaxRueckforderungMitteilung, new RueckforderungMitteilung());
+		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
 	}
 
 }

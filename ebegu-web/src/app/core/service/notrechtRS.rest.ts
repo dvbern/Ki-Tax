@@ -16,7 +16,9 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
+import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungFormular} from '../../../models/TSRueckforderungFormular';
+import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 export class NotrechtRS {
@@ -34,14 +36,24 @@ export class NotrechtRS {
 
     }
 
-    public initializeRueckforderungFormulare(): IPromise<void> {
+    public initializeRueckforderungFormulare(): IPromise<TSRueckforderungFormular[]> {
         return this.$http.post(`${this.serviceURL}/initialize`, {})
             .then(response => {
-                const rueckforderungFormulare = this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
-                console.log(rueckforderungFormulare);
-            }, error => {
-                this.$log.error(error);
+                return this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
             });
+    }
+
+    public getRueckforderungFormulareForCurrentBenutzer(): IPromise<TSRueckforderungFormular[]> {
+        return this.$http.get(`${this.serviceURL}/currentuser`, {})
+            .then(response => {
+                return this.ebeguRestUtil.parseRueckforderungFormularList(response.data);
+            });
+    }
+
+    public currentUserHasFormular(): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/currentuser/hasformular`, {}).then(response => {
+            return response.data as boolean;
+        });
     }
 
     public getServiceName(): string {
@@ -65,6 +77,35 @@ export class NotrechtRS {
 
         return this.$http.put(this.serviceURL, restRueckforderungFormular).then((response: any) => {
                 return this.ebeguRestUtil.parseRueckforderungFormular(new TSRueckforderungFormular(), response.data);
+            },
+        );
+    }
+
+    public sendMitteilung(
+        mitteilung: TSRueckforderungMitteilung,
+        statusToSendMitteilung: TSRueckforderungStatus[]
+    ): IPromise<void> {
+        let restRueckforderungMitteilung = {};
+        restRueckforderungMitteilung =
+            this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
+        const data = {mitteilung: restRueckforderungMitteilung, statusList: statusToSendMitteilung};
+        return this.$http.post(`${this.serviceURL}/mitteilung`, data)
+            .then(() => {
+                    return;
+                },
+            );
+    }
+
+    public sendEinladung(
+        mitteilung: TSRueckforderungMitteilung
+    ): IPromise<void> {
+        let restRueckforderungMitteilung = {};
+        restRueckforderungMitteilung =
+            this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
+
+        return this.$http.post(`${this.serviceURL}/einladung`, restRueckforderungMitteilung)
+            .then(() => {
+                return;
             },
         );
     }
