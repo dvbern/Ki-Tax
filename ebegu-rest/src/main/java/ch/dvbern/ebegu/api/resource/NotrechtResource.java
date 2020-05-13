@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -90,7 +92,7 @@ public class NotrechtResource {
 	}
 
 	@ApiOperation(value = "Gibt alle Rückforderungsformulare zurück, die der aktuelle Benutzer lesen kann",
-		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+		responseContainer = "List", response = JaxRueckforderungFormular.class)
 	@GET
 	@Path("/currentuser")
 	@Consumes(MediaType.WILDCARD)
@@ -105,7 +107,7 @@ public class NotrechtResource {
 
 	@ApiOperation(value = "Gibt zurück, ob der aktuelle eingeloggte Benutzer mindestens ein Rückforderungformular "
 		+ "sehen kann",
-		responseContainer = "List",	response =	JaxRueckforderungFormular.class)
+		responseContainer = "List", response = JaxRueckforderungFormular.class)
 	@GET
 	@Path("/currentuser/hasformular")
 	@Consumes(MediaType.WILDCARD)
@@ -133,16 +135,21 @@ public class NotrechtResource {
 
 		RueckforderungFormular rueckforderungFormularFromDB =
 			rueckforderungFormularService.findRueckforderungFormular(rueckforderungFormularJAXP.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				rueckforderungFormularJAXP.getId()));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					rueckforderungFormularJAXP.getId()));
+
+		RueckforderungStatus statusFromDB = rueckforderungFormularFromDB.getStatus();
 
 		RueckforderungFormular rueckforderungFormularToMerge =
 			converter.rueckforderungFormularToEntity(rueckforderungFormularJAXP,
-			rueckforderungFormularFromDB);
+				rueckforderungFormularFromDB);
 
 		if (!checkStatusErlaubtFuerRole(rueckforderungFormularToMerge)) {
 			throw new EbeguRuntimeException("update", "Action not allowed for this user");
 		}
+
+		// Zahlungen generieren
+		zahlungenGenerieren(rueckforderungFormularToMerge, statusFromDB);
 
 		RueckforderungFormular modifiedRueckforderungFormular =
 			this.rueckforderungFormularService.save(rueckforderungFormularToMerge);
@@ -214,4 +221,28 @@ public class NotrechtResource {
 		rueckforderungMitteilungService.sendEinladung(rueckforderungMitteilung);
 	}
 
+	private void zahlungenGenerieren(
+		@Nonnull RueckforderungFormular rueckforderungFormular,
+		@Nonnull RueckforderungStatus statusFromDB
+	) {
+		// Kanton hat der Stufe 1 eingaben geprueft
+		if (statusFromDB == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_1
+			&& rueckforderungFormular.getStatus() == RueckforderungStatus.GEPRUEFT_STUFE_1
+		) {
+			BigDecimal freigabeBetrag;
+			if (rueckforderungFormular.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage());
+				freigabeBetrag =
+					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlTage().multiply(new BigDecimal(25));
+			} else {
+				Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden());
+				freigabeBetrag =
+					rueckforderungFormular.getStufe1KantonKostenuebernahmeAnzahlStunden();
+			}
+			Objects.requireNonNull(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			freigabeBetrag = freigabeBetrag.add(rueckforderungFormular.getStufe1KantonKostenuebernahmeBetreuung());
+			rueckforderungFormular.setStufe1FreigabeBetrag(freigabeBetrag);
+			rueckforderungFormular.setStufe1FreigabeDatum(LocalDateTime.now());
+		}
+	}
 }
