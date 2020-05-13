@@ -29,11 +29,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.interceptor.Interceptors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.interceptor.Interceptors;
 
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -82,8 +82,8 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 		List<RueckforderungFormular> rueckforderungFormulare = new ArrayList<>();
 		for (InstitutionStammdaten institutionStammdaten : institutionenStammdatenCollection) {
 			// neues Formular erstellen falls es sich un eine kita oder TFO handelt und noch kein Formular existiert
-			if ((institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.KITA) ||
-				institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.TAGESFAMILIEN)) &&
+			if ((institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ||
+				institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN) &&
 				!isFormularExisting(institutionStammdaten, rueckforderungFormularCollection)) {
 
 				RueckforderungFormular formular = new RueckforderungFormular();

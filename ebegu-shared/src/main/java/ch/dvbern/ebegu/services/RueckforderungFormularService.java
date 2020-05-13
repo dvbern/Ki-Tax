@@ -59,5 +59,4 @@ public interface RueckforderungFormularService {
 
 	@Nonnull
 	RueckforderungFormular addMitteilung(RueckforderungFormular formular, RueckforderungMitteilung mitteilung);
-
 }
