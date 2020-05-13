@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2020 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,24 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.reporting;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_SELBSTBEHALT,
-	LASTENAUSGLEICH_BERECHNUNG,
-	TAGESSCHULE_OHNE_FINSIT,
-	NOTRECHT
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.reporting.notrecht.NotrechtDataRow;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+
+public interface ReportNotrechtService {
+
+	@Nonnull
+	List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen);
+
+	@Nonnull
+	UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException;
 }
