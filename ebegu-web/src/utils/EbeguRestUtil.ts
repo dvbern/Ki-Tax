@@ -3899,11 +3899,9 @@ export class EbeguRestUtil {
     public parseRueckforderungMitteilung(rueckforderungMitteilung: TSRueckforderungMitteilung,
                                          rueckforderungMitteilungFromServer: any): TSRueckforderungMitteilung {
         this.parseAbstractEntity(rueckforderungMitteilung, rueckforderungMitteilungFromServer);
-        rueckforderungMitteilung.absender = this.parseUser(new TSBenutzer(), rueckforderungMitteilungFromServer.absender);
         rueckforderungMitteilung.betreff = rueckforderungMitteilungFromServer.betreff;
         rueckforderungMitteilung.inhalt = rueckforderungMitteilungFromServer.inhalt;
         rueckforderungMitteilung.sendeDatum = DateUtil.localDateTimeToMoment(rueckforderungMitteilungFromServer.sendeDatum);
-        rueckforderungMitteilung.gesendetAnStatus = rueckforderungMitteilungFromServer.gesendetAnStatus;
         return rueckforderungMitteilung;
     }
 
@@ -3954,11 +3952,9 @@ export class EbeguRestUtil {
     public rueckforderungMitteilungToRestObject(rueckforderungMitteilungRest: any,
                                                 rueckforderungMitteilungTS: TSRueckforderungMitteilung): any {
         this.abstractEntityToRestObject(rueckforderungMitteilungRest, rueckforderungMitteilungTS);
-        rueckforderungMitteilungRest.absender = this.userToRestObject({}, rueckforderungMitteilungTS.absender);
         rueckforderungMitteilungRest.betreff = rueckforderungMitteilungTS.betreff;
         rueckforderungMitteilungRest.inhalt = rueckforderungMitteilungTS.inhalt;
         rueckforderungMitteilungRest.sendeDatum = DateUtil.momentToLocalDateTime(rueckforderungMitteilungTS.sendeDatum);
-        rueckforderungMitteilungRest.gesendetAnStatus = rueckforderungMitteilungTS.gesendetAnStatus;
         return rueckforderungMitteilungRest;
     }
 }

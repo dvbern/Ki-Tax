@@ -67,6 +67,11 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 			hasAnspruch = false;
 			addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
 		}
+		// (4) Lange Abwesenheit
+		if (inputGemeinde.isLongAbwesenheit()) {
+			// Bei Abwesenheit wird der Anspruch *nicht* auf 0 gesetzt, darum muss es hier speziell behandelt werden
+			hasAnspruch = false;
+		}
 		return hasAnspruch;
 	}
 

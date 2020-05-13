@@ -59,6 +59,7 @@ public class MailTemplateConfiguration {
 	public static final String MITTEILUNG = "mitteilung";
 	public static final String TEMPLATES_FOLDER = "/mail/templates";
 	public static final String INSTITUTION_STAMMDATEN = "institutionStammdaten";
+	public static final String FTL_FILE_EXTENSION = ".ftl";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -357,7 +358,7 @@ public class MailTemplateConfiguration {
 
 		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
 
-		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + ".ftl", paramMap);
+		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + "" + FTL_FILE_EXTENSION, paramMap);
 	}
 
 	/**
@@ -372,7 +373,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 
-		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + ".ftl", paramMap);
+		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + "" + FTL_FILE_EXTENSION, paramMap);
 	}
 
 	public String getInfoGemeindeAngebotAktiviert(
@@ -547,11 +548,11 @@ public class MailTemplateConfiguration {
 		if (sprachen.size() == 1) {
 			return appendLanguageToTemplateName(mailTemplate, sprachen.get(0).getLocale());
 		}
-		return mailTemplate.name() + "_defr.ftl";
+		return mailTemplate.name() + "_defr" + FTL_FILE_EXTENSION;
 	}
 
 	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Locale locale) {
-		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + ".ftl";
+		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + "" + FTL_FILE_EXTENSION;
 	}
 
 	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
@@ -616,5 +617,20 @@ public class MailTemplateConfiguration {
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
 			sprache);
+	}
+
+	public String getNotrechtGenerischeMitteilung(
+		String empfaengerMail,
+		String betreff,
+		String inhalt
+	) {
+
+		Map<Object, Object> paramMap = initParamMap();
+
+		paramMap.put("empfaenger", empfaengerMail);
+		paramMap.put("betreff", betreff);
+		paramMap.put("inhalt", inhalt);
+
+		return doProcessTemplate(MailTemplate.NotrechtGenerischeMitteilung.name() + "" + FTL_FILE_EXTENSION, paramMap);
 	}
 }
