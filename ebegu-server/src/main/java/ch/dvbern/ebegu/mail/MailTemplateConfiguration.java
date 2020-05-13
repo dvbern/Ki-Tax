@@ -359,7 +359,7 @@ public class MailTemplateConfiguration {
 
 		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
 
-		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + "" + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + FTL_FILE_EXTENSION, paramMap);
 	}
 
 	/**
@@ -373,7 +373,7 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 
-		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + "" + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + FTL_FILE_EXTENSION, paramMap);
 	}
 
 	public String getInfoGemeindeAngebotAktiviert(
@@ -552,7 +552,7 @@ public class MailTemplateConfiguration {
 	}
 
 	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Locale locale) {
-		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + "" + FTL_FILE_EXTENSION;
+		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + FTL_FILE_EXTENSION;
 	}
 
 	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
@@ -631,7 +631,7 @@ public class MailTemplateConfiguration {
 		paramMap.put("betreff", betreff);
 		paramMap.put("inhalt", inhalt);
 
-		return doProcessTemplate(MailTemplate.NotrechtGenerischeMitteilung.name() + "" + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(MailTemplate.NotrechtGenerischeMitteilung.name() + FTL_FILE_EXTENSION, paramMap);
 	}
 
 	@Nonnull
@@ -643,6 +643,6 @@ public class MailTemplateConfiguration {
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(BETRAG, betrag);
 
-		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + "" + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + FTL_FILE_EXTENSION, paramMap);
 	}
 }

@@ -53,7 +53,7 @@ Content-Type: text/html;charset=utf-8
 		<li>Entweder das ausgefüllte Excel-Formular oder sonstige Dokumente, aus denen die im Excel-Formular enthaltenen
 			Angaben ersichtlich sind.
 		</li>
-		<li>Die Kommunikation mit den Eltern (alle Rundschreiben, Rundmails, interne Sprach-regelungen) bezüglich der
+		<li>Die Kommunikation mit den Eltern (alle Rundschreiben, Rundmails, interne Sprachregelungen) bezüglich der
 			Betreuung zwischen dem 17. März und 16. Mai 2020.
 		</li>
 		<li>Einsatzpläne für die Zeit vom 17. März bis 16. Mai, aus denen ersichtlich ist, welches Personal
@@ -62,10 +62,10 @@ Content-Type: text/html;charset=utf-8
 	</ul>
 	<p>
 		Stichprobenartig können auch die Elternverträge und Rechnungen für die betroffene Periode angefordert werden.
-		Eltern können kontaktiert werden um die Angaben zur Kommunika-tion zu plausibilisieren.
+		Eltern können kontaktiert werden um die Angaben zur Kommunikation zu plausibilisieren.
 	</p>
 	<p>
-		Sie können zudem noch Angaben, die Sie während der ersten Stufe gemacht haben, korri-gieren.
+		Sie können zudem noch Angaben, die Sie während der ersten Stufe gemacht haben, korrigieren.
 	</p>
 	<p>
 		Nach der Freigabe der Stufe 2 findet die detaillierte Prüfung der Angaben statt. Das Resultat der Prüfung ist
@@ -77,6 +77,10 @@ Content-Type: text/html;charset=utf-8
 		Abteilung Familie Kanton Bern
 		info.fam@be.ch
 		031 633 78 91
+	</p>
+	<p>
+		Den aktuellen Stand Ihrer Rückforderungsformulare finden Sie unter <a
+				href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list">https://kibon.ch/corona-finanzierung/list</a>
 	</p>
     <#if configuration.isDevmode>
 		<p>
