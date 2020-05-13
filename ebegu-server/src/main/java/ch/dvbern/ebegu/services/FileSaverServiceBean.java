@@ -183,7 +183,17 @@ public class FileSaverServiceBean implements FileSaverService {
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void deleteAllFilesInTempReportsFolder() {
-		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + Constants.TEMP_REPORT_FOLDERNAME;
+		deleteAllFilesInTempFolder(Constants.TEMP_REPORT_FOLDERNAME);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void deleteAllFilesInTempNotverordnungFolder() {
+		deleteAllFilesInTempFolder(Constants.TEMP_NOTVERORDNUNG);
+	}
+
+	private void deleteAllFilesInTempFolder(@Nonnull String folder) {
+		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + folder;
 		Path tempFolder = Paths.get(absoluteFilePath);
 		try {
 			if (Files.exists(tempFolder) && Files.isDirectory(tempFolder)) {

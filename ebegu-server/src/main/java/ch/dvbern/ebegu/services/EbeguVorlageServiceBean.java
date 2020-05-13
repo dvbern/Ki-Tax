@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,7 +43,6 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
 import ch.dvbern.ebegu.entities.EbeguVorlage_;
@@ -53,8 +53,9 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections4.CollectionUtils;
@@ -198,26 +199,15 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		if (key == null) {
 			return null;
 		}
-
-		final Optional<EbeguVorlage> vorlageOptional = getNewestEbeguVorlageByKey(key);
-		EbeguVorlage ebeguVorlage = null;
-		if (vorlageOptional.isPresent()) {
-			ebeguVorlage = vorlageOptional.get();
-		} else {
-			EbeguVorlage newVorlage = new EbeguVorlage(key, new DateRange());
-			ebeguVorlage = saveEbeguVorlage(newVorlage);
-		}
-		if (ebeguVorlage.getVorlage() != null) {
-			return ebeguVorlage.getVorlage();
-		}
 		try {
 			Vorlage vorlage = new Vorlage();
 			vorlage.setFilesize("10");
-			vorlage.setFilename(key.name() + ".xlsx");
+			final String filename = ServerMessageUtil.getMessage(key.name(), new Locale(language)) + ".xlsx";
+			vorlage.setFilename(filename);
 			// Das Defaultfile lesen und im Filesystem ablegen
 			InputStream is = EbeguVorlageServiceBean.class.getResourceAsStream(key.getDefaultVorlagePath());
 			byte[] bytes = IOUtils.toByteArray(is);
-			String folder = "AntragFinanzierung";
+			String folder = Constants.TEMP_NOTVERORDNUNG;
 			UploadFileInfo notrechtVorlage = fileSaverService.save(bytes, vorlage.getFilename(), folder);
 			vorlage.setFilepfad(notrechtVorlage.getPathWithoutFileName() + File.separator + notrechtVorlage.getActualFilename());
 			return vorlage;

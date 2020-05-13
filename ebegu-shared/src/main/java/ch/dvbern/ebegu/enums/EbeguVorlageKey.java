@@ -52,7 +52,7 @@ public enum EbeguVorlageKey {
 			if (Locale.FRENCH.getLanguage().equals(language)) {
 				return VORLAGE_NOTRECHT_KITA_FR;
 			}
-			return VORLAGE_NOTRECHT_TFO_DE;
+			return VORLAGE_NOTRECHT_KITA_DE;
 		}
 		if (angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
 			if (Locale.FRENCH.getLanguage().equals(language)) {

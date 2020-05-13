@@ -219,8 +219,7 @@ public class DownloadResource {
 		return getFileDownloadResponse(uriInfo, ip, dokument);
 	}
 
-	@ApiOperation("Erstellt ein Token f&uuml;r den Download des Benutzerhandbuchs. Es wird je nach Rolle des " +
-		"eingeloggten Benutzers ein anderes Benutzerhandbuch zur&uuml;ckgegeben")
+	@ApiOperation("Erstellt ein Token f&uuml;r den Download einer Vorlage fuer die Notrecht Rueckforderung")
 	@Nonnull
 	@GET
 	@Path("/NOTRECHTVORLAGE/{language}/{angebotTyp}")
