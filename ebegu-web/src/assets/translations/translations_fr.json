@@ -2016,5 +2016,7 @@
     "RUECKFORDERUNG_ZAHLUNGEN_STUFE_1": "ÉTAPE 1",
     "RUECKFORDERUNG_ZAHLUNGEN_STUFE_2": "ÉTAPE 2",
     "RUECKFORDERUNGFORMULAR_PROVISORISCHE_BETRAG": "Montant provisoire",
+    "RUECKFORDERUNG_MITTEILUNGEN": "Messages",
+    "RUECKFORDERUNG_DOWNLOAD_VORLAGE": "Télécharger le modèle",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
