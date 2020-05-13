@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -222,15 +223,17 @@ public class DownloadResource {
 		"eingeloggten Benutzers ein anderes Benutzerhandbuch zur&uuml;ckgegeben")
 	@Nonnull
 	@GET
-	@Path("/BENUTZERHANDBUCH")
+	@Path("/NOTRECHTVORLAGE/{language}/{angebotTyp}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getDokumentAccessTokenBenutzerhandbuch(
+	public Response getDokumentAccessTokenNotrechtvorlage(
+		@Nonnull @Valid @PathParam("language") String language,
+		@Nonnull @Valid @PathParam("angebotTyp") BetreuungsangebotTyp angebotTyp,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
 
 		String ip = getIP(request);
-		FileMetadata benutzerhandbuch = ebeguVorlageService.getBenutzerhandbuch();
-		return getFileDownloadResponse(uriInfo, ip, benutzerhandbuch);
+		FileMetadata vorlageNotrecht = ebeguVorlageService.getVorlageNotrecht(language, angebotTyp);
+		return getFileDownloadResponse(uriInfo, ip, vorlageNotrecht);
 	}
 
 	/**

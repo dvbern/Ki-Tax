@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -25,8 +24,8 @@ import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.EbeguVorlage;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Vorlage;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
 
 /**
@@ -80,7 +79,8 @@ public interface EbeguVorlageService {
 	Collection<EbeguVorlage> getALLEbeguVorlageByDate(@Nonnull LocalDate date);
 
 	/**
-	 * Gibt fuer den eingeloggten Benutzer das richtige Benutzerhandbuch zurueck.
+	 * Gibt die richtige Notrecht-Vorlage fuer die Sprache und den Angebotstyp zurueck
 	 */
-	Vorlage getBenutzerhandbuch();
+	@Nullable
+	Vorlage getVorlageNotrecht(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp);
 }

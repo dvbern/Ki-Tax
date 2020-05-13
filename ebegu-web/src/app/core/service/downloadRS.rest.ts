@@ -14,6 +14,7 @@
  */
 
 import {IHttpService, IIntervalService, ILogService, IPromise, IWindowService} from 'angular';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSMahnung} from '../../../models/TSMahnung';
@@ -149,8 +150,10 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenBenutzerhandbuch(): IPromise<TSDownloadFile> {
-        return this.http.get(`${this.serviceURL}/BENUTZERHANDBUCH`)
+    public getAccessTokenNotrechtvorlage(language: string, angebotTyp: TSBetreuungsangebotTyp): IPromise<TSDownloadFile> {
+        const languageEnc = encodeURIComponent(language);
+        const angebotTypEnc = encodeURIComponent(angebotTyp);
+        return this.http.get(`${this.serviceURL}/NOTRECHTVORLAGE/${languageEnc}/${angebotTypEnc}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
             });

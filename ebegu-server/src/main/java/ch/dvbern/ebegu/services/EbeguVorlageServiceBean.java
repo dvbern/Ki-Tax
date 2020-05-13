@@ -47,9 +47,9 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
 import ch.dvbern.ebegu.entities.EbeguVorlage_;
 import ch.dvbern.ebegu.entities.Vorlage;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -196,12 +196,8 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	@Override
 	@PermitAll
 	@Nullable
-	public Vorlage getBenutzerhandbuch() {
-		UserRole userRole = principalBean.discoverMostPrivilegedRole();
-		if (userRole == null) {
-			return null;
-		}
-		EbeguVorlageKey key = EbeguVorlageKey.getBenutzerHandbuchKeyForRole(userRole);
+	public Vorlage getVorlageNotrecht(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlage(language, angebotTyp);
 		if (key == null) {
 			return null;
 		}
@@ -220,16 +216,16 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		try {
 			Vorlage vorlage = new Vorlage();
 			vorlage.setFilesize("10");
-			vorlage.setFilename(key.name() + ".pdf");
+			vorlage.setFilename(key.name() + ".xlsx");
 			// Das Defaultfile lesen und im Filesystem ablegen
 			InputStream is = EbeguVorlageServiceBean.class.getResourceAsStream(key.getDefaultVorlagePath());
 			byte[] bytes = IOUtils.toByteArray(is);
-			String folder = "benutzerhandbuch";
-			UploadFileInfo benutzerhandbuch = fileSaverService.save(bytes, vorlage.getFilename(), folder);
-			vorlage.setFilepfad(benutzerhandbuch.getPathWithoutFileName() + File.separator + benutzerhandbuch.getActualFilename());
+			String folder = "AntragFinanzierung";
+			UploadFileInfo notrechtVorlage = fileSaverService.save(bytes, vorlage.getFilename(), folder);
+			vorlage.setFilepfad(notrechtVorlage.getPathWithoutFileName() + File.separator + notrechtVorlage.getActualFilename());
 			return vorlage;
 		} catch (IOException | MimeTypeParseException e) {
-			throw new EbeguRuntimeException("getBenutzerhandbuch", "Could not create Benutzerhandbuch", e);
+			throw new EbeguRuntimeException("getVorlageNotrecht", "Could not create Vorlage Notrecht", e);
 		}
 	}
 }
