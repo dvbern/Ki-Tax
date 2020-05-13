@@ -74,6 +74,9 @@ export class RueckforderungFormularComponent implements OnInit {
             this.notrechtRS.findRueckforderungFormular(rueckforederungFormId).then(
                 (response: TSRueckforderungFormular) => {
                     this.initRueckforderungZahlungen(response);
+                    if (this.isPruefungKantonStufe1(response)) {
+                        this.calculateKantonProvBetrag(response);
+                    }
                     return response;
                 }));
     }
