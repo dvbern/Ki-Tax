@@ -391,8 +391,12 @@
                 </table>
             </div>
         </div>
+
         <!-- Buttons -->
         <div class="dv-footer">
+            <dv-loading-button (buttonClick)="downloadVorlage(rueckforderungFormular);">
+                <span translate>RUECKFORDERUNG_DOWNLOAD_VORLAGE</span>
+            </dv-loading-button>
             <dv-loading-button *ngIf="isInstitutionStufe1(rueckforderungFormular)" [type]="'submit'"
                                [buttonDisabled]="!enableRueckforderungAbschliessen()">
                 <span translate>RUECKFORDERUNG_ABSENDEN</span>
