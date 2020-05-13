@@ -23,7 +23,7 @@ ${templateConfiguration.mailCss}
 
 <div>
     <p>
-		${inhalt}
+${inhalt}
     </p>
     <p>
 		Den aktuellen Stand Ihrer Rückforderungsformulare finden Sie unter <a
